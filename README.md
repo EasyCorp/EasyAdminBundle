@@ -34,8 +34,10 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 -----
+
 **NOTE**: don't execute the following command on your computer because the 
 bundle hasn't been released yet. It will be published in the coming days.
+
 -----
 
 ```bash

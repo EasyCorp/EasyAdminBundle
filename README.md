@@ -1,8 +1,9 @@
+<img src="https://cloud.githubusercontent.com/assets/73419/5748433/476724ec-9c40-11e4-8f7a-5916c1212a22.png" alt="EasyAdmin" title="EasyAdmin" />
+
 EasyAdmin
 =========
 
-<img src="https://cloud.githubusercontent.com/assets/73419/5711880/23b3700c-9aae-11e4-997b-cf88b257132e.png"
- alt="EasyAdmin for Symfony Backends" title="EasyAdmin" align="right" />
+<img src="https://cloud.githubusercontent.com/assets/73419/5748254/e0697de0-9c3e-11e4-8b42-792a25538676.png" alt="EasyAdmin creates Symfony Backends" title="EasyAdmin" align="right" />
 
 EasyAdmin lets you create administration backends for Symfony applications
 with unprecedented simplicity.
@@ -12,16 +13,14 @@ with unprecedented simplicity.
   * **CRUD** operations on Doctrine entities (create, edit, list, delete).
   * Full-text **search**, **pagination** and column **sorting**.
   * Fully **responsive** design with four break points.
-  * No need to pre-generate code.
-  * **Fast**, **simple** and **smart** where appropriate.
   * **Lightweight** (less than 500 lines of code).
+  * **Fast**, **simple** and **smart** where appropriate.
 
 **Requirements**
 
-The current version of EasyAdmin is compatible with Symfony 2.3+ applications
-that define their model using Doctrine ORM entities. These entities must
-define a simple primary key called `id` and `many-to-many` associations are
-not supported.
+EasyAdmin is compatible with Symfony 2.3+ applications that use Doctrine ORM
+entities to define their model. These entities must include a simple primary
+key called `id` and `many-to-many` associations are not supported.
 
 Installation
 ------------
@@ -34,15 +33,8 @@ console commands, as explained in the following steps.
 Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
------
-
-**NOTE**: don't execute the following command on your computer because the
-bundle hasn't been released yet. It will be published in the coming days.
-
------
-
 ```bash
-$ composer require javiereguiluz/easyadmin
+$ composer require javiereguiluz/easyadmin-bundle
 ```
 
 This command requires you to have Composer installed globally, as explained
@@ -65,7 +57,7 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             // ...
-            new JavierEguiluz\EasyAdminBundle\JavierEguiluzEasyAdminBundle(),
+            new JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle(),
         );
     }
 
@@ -126,45 +118,43 @@ the admin backend:
 ![Default listing interface](Resources/doc/images/easyadmin-customer-listing.png)
 
 
-Unlike most of the usual admin generators, EasyAdmin doesn't generate any code.
-All resources are served on-the-fly to ensure an exceptional developer
-experience.
+EasyAdmin doesn't generate any code, not even for the templates. All resources
+are served on-the-fly to ensure an exceptional developer experience.
 
-Without any further configuration, EasyAdmin guesses the best settings for you
-admin backend. This ensures that all interfaces look "good enough", which may
-be acceptable for simple backends and rapid prototypes. However, most of the
-times you may need to customize some parts of the backend. Keep reading to
-learn how to do it.
+Without any further configuration, EasyAdmin guesses the best settings to make
+your admin backend look "good enough". This may be acceptable for simple
+backends and rapid prototypes, but most of the times, you need to customize
+some parts of the backend. Keep reading to learn how to do it.
 
 Custom Backends
 ---------------
 
 ### Customize the URL Prefix Used to Access the Backend
 
-By default, EasyAdmin backends are located at the `/admin` URI of your Symfony
-application. This value is the one defined in the `prefix` option used when
-loading the routes of the bundle. To change the URL of the backend, just change
-the value of this option in the main routing configuration file:
+By default, your backend will be accessible at the `/admin` URI of your Symfony
+application. This value is defined in the `prefix` option used when loading
+the routes of the bundle. You are free to change its value to meet your own
+backend requirements:
 
 ```yaml
 # app/config/routing.yml
 easy_admin_bundle:
     resource: "@EasyAdminBundle/Controller/"
     type:     annotation
-    prefix:   /_secret_backend
+    prefix:   /_secret_backend  # <-- change this value
 
 # ...
 ```
 
 ### Customize the Order of the Main Menu Items
 
-EasyAdmin displays main menu items following the same order of the entities
-defined in the configuration file. So you just have to reorder the list of
-entities to reorder the main menu elements.
+Main menu items follow the same order of the entities defined in the admin
+configuration file. So you just have to reorder the list of entities to
+reorder the main menu elements.
 
 ### Customize the Label of the Main Menu Items
 
-By default, EasyAdmin uses the name of the entity as the name of its menu item.
+By default, main menu items are called after the entities that they represent.
 You can define a custom label for each menu item using this alternative
 configuration format:
 
@@ -181,7 +171,7 @@ easy_admin:
 ```
 
 The keys defined under the `entities` key (in this case, `Clients`, `Orders`
-and `Inventory`) will be the labels used in the main menu items. If the labels
+and `Inventory`) will be displayed in the main menu items. If the labels
 include white spaces or any reserved YAML character, enclose it with quotes:
 
 ```yaml
@@ -196,9 +186,8 @@ easy_admin:
             class: AppBundle\Entity\Product
 ```
 
-This alternative configuration format is probably the one you will use in real
-backends, because it allows for a lot more customizations, as you'll see in the
-next sections.
+This extended configuration format is not only useful to customize main menu
+labels, but to define additional options, as you'll see in the next sections.
 
 ### Customize the Name of the Backend
 
@@ -212,21 +201,21 @@ easy_admin:
     # ...
 ```
 
-Companies and organizations needs can be so different, that EasyAdmin doesn't
-restrict the contents of this option. In fact, the contents are displayed with
+Companies and organizations needs can be so different, that the contents of
+this option are not restricted. In fact, the contents are displayed with
 the `raw` Twig filter. This means that you can use any HTML markup to display
 the name exactly as you are required:
 
 ```yaml
 # app/config/config.yml
 easy_admin:
-    site_name: 'ACME <sup style="color: yellow">Megacorp.</sup>'
+    site_name: 'ACME <em style="font-size: 80%; color: yellow">Megacorp.</em>'
     # ...
 ```
 
-If you want to display the name as an image instead of text, just define a
-`<img>` HTML element. The following example will show the beautiful Symfony
-logo as the name of your backend:
+If you want to display an image of your logo, use an `<img>` HTML element as
+the site name. The following example would show the beautiful Symfony logo as
+the name of your backend:
 
 ```yaml
 # app/config/config.yml
@@ -237,8 +226,8 @@ easy_admin:
 
 ### Customize the Number of Items Displayed in Listings
 
-By default, EasyAdmin displays a maximum of `15` items in each listing page.
-Use the `list_max_results` option to change this value:
+By default, listings display a maximum of `15` items. Define the
+`list_max_results` option to change this value:
 
 ```yaml
 # app/config/config.yml
@@ -250,7 +239,7 @@ easy_admin:
 ### Customize the Actions Displayed for Each Listing Item
 
 By default, listings just display the `Edit` action for each item. If you also
-want to add the popular `Show` action, use the `list_actions` option:
+want to add the popular `Show` action, define the `list_actions` option:
 
 ```yaml
 # app/config/config.yml
@@ -263,9 +252,9 @@ In the current version of EasyAdmin you cannot define custom actions.
 
 ### Customize the Columns Displayed in Listings
 
-By default, EasyAdmin makes some "smart guesses" to decide which columns to
-display in each entity listing to make it look "good enough". Add the `list`
-option in each entity which you want to customize:
+By default, the backend makes some "smart guesses" to decide which columns to
+display in each entity listing to make it look "good enough". If you want to override this behavior for some entity, define the fields to show using the
+`list` option as follows:
 
 ```yaml
 # app/config/config.yml
@@ -281,7 +270,7 @@ easy_admin:
 
 Sometimes it's useful to modify the original entity properties before
 displaying them in the listings. For example, if your `Customer` entity
-defines a `firstName` and `lastName` properties, you may want to just display
+defines `firstName` and `lastName` properties, you may want to just display
 a column called `Name` with both information. These are called `virtual fields`
 because they don't really exist as real Doctrine entity fields.
 
@@ -296,9 +285,10 @@ easy_admin:
     # ...
 ```
 
-Then, you have to add a new public method in your entity. The name of the
-method must must be `getXxx()` or `xxx()`, where `xxx` is the name of the
-virtual field (in this case, `name`):
+If you reload your backend, you'll get an error because the `name` field does
+not match any of the entity's properties. To fix this issue, add a new public
+method in your entity called `getXxx()` or `xxx()`, where `xxx` is the name of
+the virtual field (in this case, `name`):
 
 ```php
 namespace AppBundle\Entity;
@@ -321,13 +311,13 @@ class Customer
 
 That's it. Reload your backend and you'll see the new virtual field displayed
 in the entity listing. The only current limitation of virtual fields is that
-you cannot reorder listing contents using these type of fields.
+you cannot reorder listings using these fields.
 
 ### Customize the Fields Displayed in Forms
 
-By default, EasyAdmin includes all the entity fields in the forms used to
-create and edit entities. Use the `new` and `edit` options of the entity to
-define the form fields displayed in each case:
+By default, the forms used to create and edit entities display all their
+properties. Customize any of these forms for any of your entities using the
+`new` and `edit` options:
 
 ```yaml
 easy_admin:
@@ -339,59 +329,193 @@ easy_admin:
     # ...
 ```
 
-### Customize the Interface of the Backend
+### Customize the Visual Design of the Backend
 
 The current version of EasyAdmin doesn't support the concept of themes, but you
-can fully customize its interface using CSS and JavaScript files. Add the
+can fully customize its design using CSS and JavaScript files. Define the
 `assets` option to load your own web assets:
 
 ```yaml
 easy_admin:
     assets:
         css:
-            - 'bundles/app/css/styles1.css'
-            - 'bundles/app/css/styles2.css'
-            - 'bundles/acmedemo/css/styles3.css'
+            - 'bundles/app/css/admin1.css'
+            - 'bundles/acmedemo/css/admin2.css'
         js:
-            - 'bundles/app/js/script1.js'
-            - 'bundles/app/js/script2.js'
-            - 'bundles/acmedemo/js/script3.js'
+            - 'bundles/app/js/admin1.js'
+            - 'bundles/acmedemo/js/admin2.js'
     # ...
 ```
 
-EasyAdmin supports any kind of web asset and links to them accordingly:
+EasyAdmin supports any kind of web asset (internal, external, relative and
+absolute) and links to them accordingly:
 
 ```yaml
 easy_admin:
     assets:
         css:
             # HTTP protocol-relative URL
-            - '//example.org/css/styles1.css'
+            - '//example.org/css/admin1.css'
             # absolute non-secure URL
-            - 'http://example.org/css/styles2.css'
+            - 'http://example.org/css/admin2.css'
             # absolute secure URL
-            - 'https://example.org/css/styles3.css'
+            - 'https://example.org/css/admin3.css'
             # absolute internal bundle URL
-            - '/bundles/acmedemo/css/styles4.css'
+            - '/bundles/acmedemo/css/admin4.css'
             # relative internal bundle URL
-            - 'bundles/app/css/styles5.css'
+            - 'bundles/app/css/admin5.css'
         js:
             # this option works exactly the same as the 'css' option
-            - '//example.org/js/script1.css'
-            - 'http://example.org/js/script2.css'
-            - 'https://example.org/js/script3.js'
-            - '/bundles/acmedemo/js/script4.js'
-            - 'bundles/app/js/script5.js'
+            - '//example.org/js/admin1.js'
+            - 'http://example.org/js/admin2.js'
+            - 'https://example.org/js/admin3.js'
+            - '/bundles/acmedemo/js/admin4.js'
+            - 'bundles/app/js/admin5.js'
     # ...
 ```
 
+### Customize the Templates of the Backend
+
+In addition to loading your own stylesheets and scripts, you can also override
+the templates used to build the backend interface. To do so, follow the well-
+known Symfony bundle [inheritance mechanism](http://symfony.com/doc/current/book/templating.html#overriding-bundle-templates).
+
+The most important templates used by EasyAdmin are the following:
+
+  * `layout.html.twig`
+  * `new.html.twig`
+  * `show.html.twig`
+  * `edit.html.twig`
+  * `list.html.twig`
+  * `_list_paginator.html.twig`
+  * `_flashes.html.twig`
+
+Suppose you want to modify the paginator displayed at the bottom of each
+listing. This element is built with the `_list_paginator.html.twig` template,
+so you have to create the following new template to override it:
+
+```
+your-project/
+    ├─ app/
+    │  ├─ ...
+    │  └─ Resources/
+    │     └─ EasyAdminBundle/
+    │        └─ views/
+    │           └─ _list_paginator.html.twig
+    ├─ src/
+    ├─ vendor/
+    └─ web/
+```
+
+Be careful to use those exact folder and file names. If you do, the backend
+will use your template instead of the default one. Please note that when
+adding a template in a new location, **you may need to clear your cache** (with
+the command `php app/console cache:clear`), **even if you are in debug mode**.
+
 ### Customize the Actions Used to Create and Edit Entities
 
-// Coming soon ...
+By default, new and edited entities are persisted without any further
+modification. In case you want to manipulate the entity before persisting it,
+you can override the methods used by EasyAdmin.
+
+Similarly to customizing templates, you need to use the Symfony bundle
+[inheritance mechanism](http://symfony.com/doc/current/book/templating.html#overriding-bundle-templates)
+to override the controller used to generate the backend. Among many other
+methods, this controller contains two methods which are called just before the
+entity is persisted:
+
+```php
+protected function prepareEditEntityForPersist($entity)
+{
+    return $entity;
+}
+
+protected function prepareNewEntityForPersist($entity)
+{
+    return $entity;
+}
+```
+
+Suppose you want to automatically set the slug of some entity called `Article`
+whenever the entity is persisted. First, create a new controller inside any of
+your own bundles. Make this bundle extend the `AdminController` provided by
+EasyAdmin and include, at least, the following contents:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
+
+class AdminController extends EasyAdminController
+{
+    /**
+     * @Route("/admin/", name="admin")
+     */
+    public function indexAction(Request $request)
+    {
+        return parent::indexAction($request);
+    }
+}
+```
+
+Now you can add in this new controller any of the original controller's
+methods to override them. Let's add `prepareEditEntityForPersist()` and
+`prepareNewEntityForPersist()` to set the `slug` of the `Article` entity:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
+use AppBundle\Entity\Article;
+
+class AdminController extends EasyAdminController
+{
+    /**
+     * @Route("/admin/", name="admin")
+     */
+    public function indexAction(Request $request)
+    {
+        return parent::indexAction($request);
+    }
+
+    public function prepareEditEntityForPersist($entity)
+    {
+        if ($entity instanceof Article) {
+            return $this->setSlug($entity);
+        }
+    }
+    public function prepareNewEntityForPersist($entity)
+    {
+        if ($entity instanceof Article) {
+            return $this->setSlug($entity);
+        }
+    }
+
+    private function updateSlug($entity)
+    {
+        $slug = $this->get('app.slugger')->slugify($entity->getTitle());
+        $entity->setSlug($slug);
+
+        return $entity;
+    }
+}
+```
+
+The example above is trivial, but your custom admin controller can be as
+complex as needed. In fact, you can override any of the original controller's
+methods to customize the backend as much as you need.
 
 ### Customize the Translation of the Backend Interface
 
-// Coming soon ...
+The first version of EasyAdmin is only available in English. But thanks to the
+generous Symfony community, the interface will probably be translated to lots
+of new languages very soon.
 
 ### Customize the Security of the Backend Interface
 
@@ -407,7 +531,31 @@ name of user who is logged in the application.
 How to Collaborate in this Project
 ----------------------------------
 
-// Coming soon ...
+**1.** Ideas, Feature Requests, Issues, Bug Reports and Comments (positive or
+negative) are more than welcome.
+
+Feature Requests will be accepted if they are useful for a majority of users,
+don't overcomplicate the code and prioritize the user and developer experience.
+
+**2.** Unsolicited Pull Requests are currently not accepted.
+
+EasyAdmin is a very young project. In order to protect the original vision of
+the project, we don't accept unsolicited Pull Requests. This decision will of
+course be revised in the near term, once we fully realize how the project is
+being used and what do users expect from us.
+
+LEGAL DISCLAIMER
+----------------
+
+This software is published under the MIT License, which states that:
+
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> SOFTWARE.
 
 -----
 

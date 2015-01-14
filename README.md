@@ -297,7 +297,7 @@ easy_admin:
 ```
 
 Then, you have to add a new public method in your entity. The name of the
-method must must be `getXXX()` or `xxx()`, where `xxx` is the name of the
+method must must be `getXxx()` or `xxx()`, where `xxx` is the name of the
 virtual field (in this case, `name`):
 
 ```php
@@ -323,7 +323,7 @@ That's it. Reload your backend and you'll see the new virtual field displayed
 in the entity listing. The only current limitation of virtual fields is that
 you cannot reorder listing contents using these type of fields.
 
-### Customize the Columns Displayed in Forms
+### Customize the Fields Displayed in Forms
 
 By default, EasyAdmin includes all the entity fields in the forms used to
 create and edit entities. Use the `new` and `edit` options of the entity to
@@ -336,6 +336,52 @@ easy_admin:
             class: AppBundle\Entity\Customer
             edit:  ['firstName', 'secondName', 'phone', 'email']
             new:   ['firstName', 'secondName', 'phone', 'email', 'creditLimit']
+    # ...
+```
+
+### Customize the Interface of the Backend
+
+The current version of EasyAdmin doesn't support the concept of themes, but you
+can fully customize its interface using CSS and JavaScript files. Add the
+`assets` option to load your own web assets:
+
+```yaml
+easy_admin:
+    assets:
+        css:
+            - 'bundles/app/css/styles1.css'
+            - 'bundles/app/css/styles2.css'
+            - 'bundles/acmedemo/css/styles3.css'
+        js:
+            - 'bundles/app/js/script1.js'
+            - 'bundles/app/js/script2.js'
+            - 'bundles/acmedemo/js/script3.js'
+    # ...
+```
+
+EasyAdmin supports any kind of web asset and links to them accordingly:
+
+```yaml
+easy_admin:
+    assets:
+        css:
+            # HTTP protocol-relative URL
+            - '//example.org/css/styles1.css'
+            # absolute non-secure URL
+            - 'http://example.org/css/styles2.css'
+            # absolute secure URL
+            - 'https://example.org/css/styles3.css'
+            # absolute internal bundle URL
+            - '/bundles/acmedemo/css/styles4.css'
+            # relative internal bundle URL
+            - 'bundles/app/css/styles5.css'
+        js:
+            # this option works exactly the same as the 'css' option
+            - '//example.org/js/script1.css'
+            - 'http://example.org/js/script2.css'
+            - 'https://example.org/js/script3.js'
+            - '/bundles/acmedemo/js/script4.js'
+            - 'bundles/app/js/script5.js'
     # ...
 ```
 
@@ -354,6 +400,9 @@ access to the backend. In case you need it, checkout the
 [Security Chapter](http://symfony.com/doc/current/book/security.html) of the
 official Symfony documentation to learn how to restrict the access to the
 backend section of your application.
+
+In addition, when accessing a protected backend, EasyAdmin will display the
+name of user who is logged in the application.
 
 How to Collaborate in this Project
 ----------------------------------

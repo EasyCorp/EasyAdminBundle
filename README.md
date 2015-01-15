@@ -396,15 +396,15 @@ so you have to create the following new template to override it:
 
 ```
 your-project/
-    ├─ app/
-    │  ├─ ...
-    │  └─ Resources/
-    │     └─ EasyAdminBundle/
-    │        └─ views/
-    │           └─ _list_paginator.html.twig
-    ├─ src/
-    ├─ vendor/
-    └─ web/
+├─ app/
+│  ├─ ...
+│  └─ Resources/
+│     └─ EasyAdminBundle/
+│        └─ views/
+│           └─ _list_paginator.html.twig
+├─ src/
+├─ vendor/
+└─ web/
 ```
 
 Be careful to use those exact folder and file names. If you do, the backend
@@ -438,7 +438,7 @@ protected function prepareNewEntityForPersist($entity)
 
 Suppose you want to automatically set the slug of some entity called `Article`
 whenever the entity is persisted. First, create a new controller inside any of
-your own bundles. Make this bundle extend the `AdminController` provided by
+your own bundles. Make this controller extend the `AdminController` provided by
 EasyAdmin and include, at least, the following contents:
 
 ```php

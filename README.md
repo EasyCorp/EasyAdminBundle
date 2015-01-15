@@ -304,7 +304,7 @@ class Customer
 
     public function getName()
     {
-        return $this->getFirstName().' '.$this->getLastName();
+        return $this->firstName.' '.$this->lastName;
     }
 }
 ```

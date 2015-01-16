@@ -160,32 +160,24 @@ configuration format:
 # app/config/config.yml
 easy_admin:
     entities:
-        Clients:
-            class: AppBundle\Entity\Customer
-        Orders:
-            class: AppBundle\Entity\Order
-        Inventory:
-            class: AppBundle\Entity\Product
+        Clients: AppBundle\Entity\Customer
+        Orders: AppBundle\Entity\Order
+        Inventory: AppBundle\Entity\Product
 ```
 
 The keys defined under the `entities` key (in this case, `Clients`, `Orders`
-and `Inventory`) will be displayed in the main menu items. If the labels
-include white spaces or any reserved YAML character, enclose it with quotes:
+and `Inventory`) will be used as the labels of the main menu items. If the
+keys include white spaces or any reserved YAML character, enclose them with
+quotes:
 
 ```yaml
 # app/config/config.yml
 easy_admin:
     entities:
-        'Active Clients':
-            class: AppBundle\Entity\Customer
-        'Pending Orders':
-            class: AppBundle\Entity\Order
-        'Inventory (2015)':
-            class: AppBundle\Entity\Product
+        'Active Clients': AppBundle\Entity\Customer
+        'Pending Orders': AppBundle\Entity\Order
+        'Inventory (2015)': AppBundle\Entity\Product
 ```
-
-This extended configuration format is not only useful to customize main menu
-labels, but to define additional options, as you'll see in the next sections.
 
 ### Customize the Name of the Backend
 
@@ -251,7 +243,8 @@ In the current version of EasyAdmin you cannot define custom actions.
 ### Customize the Columns Displayed in Listings
 
 By default, the backend makes some "smart guesses" to decide which columns to
-display in each entity listing to make it look "good enough". If you want to override this behavior for some entity, define the fields to show using the
+display in each entity listing to make it look "good enough". If you want to
+override this behavior for some entity, define the fields to show using the
 `list` option as follows:
 
 ```yaml
@@ -261,6 +254,23 @@ easy_admin:
         Customer:
             class: AppBundle\Entity\Customer
             list:  ['id', 'firstName', 'lastName', 'phone', 'email']
+    # ...
+```
+
+Please note that defining the `list` option (or any of the other options
+explained in the sections below) requires you to also add the `class` option
+to indicate the PHP class associated with the entity.
+
+In other words, **the following configuration IS NOT VALID and it will result
+in application errors**:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        # this configuration IS NOT VALID. Use the configuration showed above
+        Customer: AppBundle\Entity\Customer
+            list: ['id', 'firstName', 'lastName', 'phone', 'email']
     # ...
 ```
 

@@ -9,6 +9,10 @@
         {
             "name": "Javier Eguiluz",
             "email": "javiereguiluz@gmail.com"
+        },
+        {
+            "name": "Project Contributors",
+            "homepage": "http://github.com/javiereguiluz/easyadmin/blob/master/CONTRIBUTORS.md"
         }
     ],
     "require": {

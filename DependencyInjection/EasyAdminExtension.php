@@ -40,8 +40,8 @@ class EasyAdminExtension extends Extension
             return $entitiesConfiguration;
         }
 
-        $entitiesConfigurationKeys = array_keys($entitiesConfiguration);
-        if (is_integer($entitiesConfigurationKeys[0])) {
+        $entitiesConfigurationValues = array_values($entitiesConfiguration);
+        if (is_string($entitiesConfigurationValues[0])) {
             return $this->processEntityConfigurationFromSimpleParameters($entitiesConfiguration);
         }
 
@@ -51,12 +51,12 @@ class EasyAdminExtension extends Extension
     private function processEntityConfigurationFromSimpleParameters($config)
     {
         $entities = array();
-        foreach ($config as $entityClass) {
+        foreach ($config as $key => $entityClass) {
             $parts = explode('\\', $entityClass);
             $entityName = array_pop($parts);
 
             $entities[$entityName] = array(
-                'label' => $entityName,
+                'label' => !is_numeric($key) ? $key : $entityName,
                 'name'  => $entityName,
                 'class' => $entityClass,
             );

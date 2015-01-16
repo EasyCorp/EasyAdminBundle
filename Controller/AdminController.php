@@ -38,14 +38,14 @@ class AdminController extends Controller
         $this->config = $this->container->getParameter('easy_admin.config');
 
         if (0 === count($this->config['entities'])) {
-            return $this->render('@EasyAdmin/error/no_entities.html.twig');
+            return $this->render('@EasyAdmin/error/no_entities.html.twig', array(), new Response('', 404));
         }
 
         if (!in_array($action = $request->get('action', 'list'), $this->allowedActions)) {
             return $this->render('@EasyAdmin/error/forbidden_action.html.twig', array(
                 'action' => $action,
                 'allowed_actions' => $this->allowedActions,
-            ));
+            ), new Response('', 404));
         }
 
         if (null !== $entityName = $request->get('entity')) {

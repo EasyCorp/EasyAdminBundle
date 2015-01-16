@@ -80,7 +80,7 @@ class AdminController extends Controller
         $action = $request->get('action', 'list');
 
         // for now, the homepage redirects to the 'list' action of the first entity
-        if (null === $entity = $request->get('entity')) {
+        if (null === $request->get('entity')) {
             return $this->redirect($this->generateUrl('admin', array('action' => $action, 'entity' => $this->getNameOfTheFirstConfiguredEntity())));
         }
 

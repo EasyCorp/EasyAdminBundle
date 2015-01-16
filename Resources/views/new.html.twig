@@ -1,11 +1,12 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
+{% trans_default_domain "EasyAdminBundle" %}
 
 {% form_theme form '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig' %}
 
 {% block body_class 'admin new ' ~ entity.name|lower %}
 
 {% block content_title %}
-    Create {{ entity.name }}
+    {{ 'entity.create' | trans({"%entity%": entity.name}) }}
 {% endblock %}
 
 {% block main %}
@@ -15,11 +16,11 @@
         <div class="form-group">
             <div class="col-sm-10 col-sm-offset-2">
                 <button type="submit" class="btn">
-                    <i class="fa fa-save"></i> Save changes
+                    <i class="fa fa-save"></i> {{ 'entity.save_changes' | trans }}
                 </button>
 
                 <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
-                    Back to Listing
+                    {{ 'link.back_to_listing' | trans }}
                 </a>
             </div>
         </div>

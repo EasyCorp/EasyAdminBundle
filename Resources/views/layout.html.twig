@@ -1,3 +1,4 @@
+{% trans_default_domain "EasyAdminBundle" %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -46,7 +47,7 @@
                             </li>
                         {% endfor %}
                             <li class="visible-xs visible-sm header-nav-close">
-                                <a href="#header">Close</a>
+                                <a href="#header">{{ 'header.close' | trans }}</a>
                             </li>
                     </ul>
                 </div>
@@ -54,7 +55,7 @@
                 {% if app.user %}
                     <div id="header-security" class="col-xs-12 col-md-2 col-lg-12">
                         <p>
-                            <small><i class="fa fa-lock"></i> <span>Logged in as</span></small>
+                            <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as' | trans }}</span></small>
                             {{ app.user.username|default('Unnamed User') }}
                         </p>
                     </div>

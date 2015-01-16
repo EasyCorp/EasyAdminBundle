@@ -57,7 +57,7 @@ class AdminController extends Controller
         if (!$request->query->has('sortField')) {
             $request->query->set('sortField', 'id');
         }
-        if (!$request->query->has('sortDirection')) {
+        if (!$request->query->has('sortDirection') || !in_array(strtoupper($request->query->has('sortDirection')), array('ASC', 'DESC'))) {
             $request->query->set('sortDirection', 'DESC');
         }
 
@@ -375,7 +375,11 @@ class AdminController extends Controller
         ;
 
         if (null !== $sortField) {
-            $query->orderBy('entity.'.$sortField, $sortDirection ?: 'DESC');
+            if (!$sortDirection || !in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
+                $sortDirection = 'DESC';
+            }
+
+            $query->orderBy('entity.'.$sortField, $sortDirection);
         }
 
         $paginator = new Pagerfanta(new DoctrineORMAdapter($query));

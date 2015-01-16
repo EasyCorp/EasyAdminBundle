@@ -1,5 +1,3 @@
-<img src="https://cloud.githubusercontent.com/assets/73419/5748433/476724ec-9c40-11e4-8f7a-5916c1212a22.png" alt="EasyAdmin" title="EasyAdmin" />
-
 EasyAdmin
 =========
 

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="generator" content="EasyAdmin" />
+
+        <title>EasyAdmin Error</title>
+
+        <link href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('bundles/easyadmin/stylesheet/admin.css') }}" rel="stylesheet">
+        <link rel="shortcut icon" type="image/png" href="/favicon.png">
+    </head>
+
+    <body class="error">
+    <div id="wrapper" class="container">
+        <div id="header" class="col-lg-2">
+            <div id="header-contents" class="row">
+                <div id="header-logo" class="col-xs-6 col-md-2 col-lg-12">
+                    <a href="{{ path('admin') }}">EasyAdmin</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="content" class="col-lg-10 col-lg-offset-2">
+            <div class="row">
+                <div class="col-sm-9" id="main">
+                    <h1>Runtime error</h1>
+                    <p class="lead">
+                        The requested <code>{{ action }}</code> action is not allowed.
+                    </p>
+
+                    <h2>How to fix this problem</h2>
+
+                    <ul>
+                        <li>
+                            Change this action for one of the following allowed actions:
+                            <code>{{ allowed_actions|join('</code>, <code>')|raw }}</code>
+                        </li>
+                        <li>
+                            If the action name is correct, make sure it's included in
+                            the <code>$allowedActions</code> property of your backend.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

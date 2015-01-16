@@ -1,0 +1,69 @@
+{% if paginator.haveToPaginate %}
+    <div class="list-pagination">
+        <div class="row">
+            <div class="col-sm-2 hidden-xs" class="list-pagination-counter">
+                <strong>{{ paginator.currentPageOffsetStart }}</strong> - <strong>{{ paginator.currentPageOffsetEnd }}</strong> of <strong>{{ paginator.nbResults }}</strong>
+            </div>
+
+            <div class="col-xs-12 col-sm-10">
+                <ul class="pagination list-pagination-paginator">
+                    {% if 1 == paginator.currentPage %}
+                        <li class="disabled">
+                            <span>
+                                <i class="fa fa-angle-double-left"></i> First
+                            </span>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{{ path('admin', request_attributes|merge({ page: 1 }) ) }}">
+                                <i class="fa fa-angle-double-left"></i> First
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if paginator.hasPreviousPage %}
+                        <li>
+                            <a href="{{ path('admin', request_attributes|merge({ page: paginator.previousPage }) ) }}">
+                                <i class="fa fa-angle-left"></i> Previous
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <span>
+                                <i class="fa fa-angle-left"></i> Previous
+                            </span>
+                        </li>
+                    {% endif %}
+
+                    {% if paginator.hasNextPage %}
+                        <li>
+                            <a href="{{ path('admin', request_attributes|merge({ page: paginator.nextPage }) ) }}">
+                                Next <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <span>
+                                Next <i class="fa fa-angle-right"></i>
+                            </span>
+                        </li>
+                    {% endif %}
+
+                    {% if paginator.currentPage < paginator.nbPages %}
+                        <li>
+                            <a href="{{ path('admin', request_attributes|merge({ page: paginator.nbPages }) ) }}">
+                                Last <i class="fa fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <span>
+                                Last <i class="fa fa-angle-double-right"></i>
+                            </span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}

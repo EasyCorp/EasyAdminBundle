@@ -1,0 +1,939 @@
+/*! ========================================================================
+    EasyAdmin Default Theme | (c) 2015 Javier Eguiluz | MIT License
+    ======================================================================== */
+
+/* -------------------------------------------------------------------------
+   BASIC STYLES
+   ------------------------------------------------------------------------- */
+body {
+    background: #F3EFEB;
+    color: #222;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Links
+   ------------------------------------------------------------------------- */
+a {
+    color: #1122CC;
+    text-decoration: none;
+}
+a:hover {
+    border: none;
+    color: #D47843;
+    text-decoration: underline;
+}
+a:active {
+    outline: 0;
+    position: relative;
+    top: 1px;
+}
+
+/* Headings
+   ------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+    color: #222;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: .3em;
+    margin-top: 1em;
+    text-rendering: optimizelegibility;
+}
+
+h1 + h2,
+h1 + h3,
+h1 + h4,
+h2 + h3,
+h3 + h4 {
+    margin-top: 1em;
+}
+
+h1 { font-size: 21px; }
+h2 { font-size: 18px; }
+h3 { font-size: 16px; }
+h4 { font-size: 16px; }
+h5 { font-size: 14px; }
+h6 { font-size: 14px; }
+
+h1.title {
+    font-weight: 400;
+    margin-top: 0;
+}
+
+/* Text
+   ------------------------------------------------------------------------- */
+p {
+    margin: 0 0 1em 0;
+}
+
+p.lead {
+    font-size: 18px;
+    font-weight: normal;
+}
+
+i {
+    font-style: normal;
+}
+
+blockquote {
+    border-left: 5px solid #F5F5F1;
+    font-size: 16px;
+    font-style: italic;
+    margin: 1em 2em 1em 1em;
+    padding: 0 0 0 1em;
+}
+
+.disabled {
+    color: #A59D95 !important;
+}
+
+/* Lists
+   ------------------------------------------------------------------------- */
+ul, ol {
+    margin: 1em 0 1em 1em;
+    padding: 0;
+}
+ul ul, ul ol, ol ol, ol ul {
+    margin-top: .5em;
+}
+li {
+    margin-bottom: 1em;
+}
+
+dl dt {
+    margin-bottom: .5em;
+}
+dl dd {
+    margin: 0 0 1.5em 1em;
+}
+
+.list-group-item {
+    border-color: #D5D2CA;
+    padding: 0;
+}
+.list-group-item a {
+    padding: 10px 15px;
+}
+.list-group-item:hover {
+    border: 1px solid #D5D2CA;
+}
+.list-group-item:hover,
+.list-group-item:focus {
+    background: #F5F5F1;
+}
+
+/* Code
+   ------------------------------------------------------------------------- */
+code, pre {
+    font-family: Consolas, "Liberation Mono", "Droid Sans Mono", Monaco, Menlo, "Courier New", Courier, monospace;
+    font-size: 14px;
+    font-size-adjust: .5;
+}
+code {
+    background: transparent;
+    border-radius: 0;
+    color: #06960E;
+    padding: 0;
+}
+h1 code, h2 code, h3 code, h4 code, h5 code, h6 code,
+.navigation code,
+.breadcrumb code,
+.pager code {
+    color: inherit;
+    font: inherit !important;
+}
+
+pre {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    line-height: 1.5;
+    margin: 1em 0;
+    padding: 0;
+    word-wrap: break-word;
+    white-space: pre;
+    white-space: pre-wrap;
+}
+
+/* Flash messages
+   ------------------------------------------------------------------------- */
+div.flash {
+    padding: .5em;
+}
+div.flash-success {
+    background: #00994D;
+    color: #FFF;
+}
+div.flash-error {
+    background: #D44542;
+    color: #FFF;
+}
+div.flash-error strong {
+    padding-right: .5em;
+}
+
+/* Pager
+   ------------------------------------------------------------------------- */
+ul.pager {
+    margin: 2em 0;
+}
+ul.pager li:hover,
+.pager .disabled > a:hover {
+    background: #F5F5F1;
+}
+ul.pager a {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 1em 0;
+}
+ul.pager a:hover,
+ul.pager a:focus {
+    background: transparent;
+}
+ul.pager .previous {
+    text-align: left;
+}
+ul.pager .next {
+    text-align: right;
+}
+
+/* Labels
+   ------------------------------------------------------------------------- */
+span.label {
+    background: #222;
+    color: #FFF;
+    font-size: 11px;
+    padding: 2px 4px;
+    text-transform: uppercase;
+}
+span.label-success {
+    background: #00994D;
+}
+span.label-danger {
+    background: #D44542;
+}
+
+/* Buttons
+   ------------------------------------------------------------------------- */
+a.btn,
+input.btn,
+button.btn {
+    background: #D47843;
+    border: none;
+    border-radius: 4px;
+    color: #FFF;
+    line-height: 1.2;
+    padding: .7em 1em;
+    text-align: center;
+}
+a.btn:hover,
+input.btn:hover,
+button.btn:hover {
+    color: #FFF;
+    opacity: .9;
+}
+.btn + .btn {
+    margin-left: 5px;
+}
+
+a.btn i,
+input.btn i,
+button.btn i {
+    font-size: 18px;
+    padding-right: 6px;
+}
+
+a.btn-secondary,
+input.btn-secondary,
+button.btn-secondary,
+a.btn-secondary:hover,
+input.btn-secondary:hover,
+button.btn-secondary:hover {
+    background: transparent;
+    color: #D47843;
+    text-decoration: underline;
+}
+a.btn-secondary:hover,
+input.btn-secondary:hover,
+button.btn-secondary:hover {
+    text-decoration: none;
+}
+
+a.btn-danger,
+input.btn-danger,
+button.btn-danger {
+    background: #D44542;
+}
+
+/* Forms
+   ------------------------------------------------------------------------- */
+.form-control,
+.form-control:focus {
+    color: #222;
+    border: 1px solid #A59D95;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+    -webkit-transition: none;
+    -o-transition: none;
+    transition: none;
+}
+.help-block {
+    color: #797470;
+}
+
+.has-error .control-label {
+    color: #D44542;
+}
+.has-error .form-control,
+.has-error .form-control:focus {
+    border-color: #D44542;
+    box-shadow: none;
+}
+.has-error .help-block {
+    color: #D44542;
+    font-weight: bold;
+}
+.has-error .help-block ul {
+    margin: 0;
+}
+.has-error  .help-block .glyphicon {
+    display: none;
+}
+
+/* -------------------------------------------------------------------------
+   LAYOUT
+   ------------------------------------------------------------------------- */
+
+/* Wrapper
+   ------------------------------------------------------------------------- */
+#wrapper {
+    padding: 60px 0 0;
+}
+
+/* Header
+   ------------------------------------------------------------------------- */
+/* Responsive menu inspired by http://www.joesnellpdx.com/toggle-navigation-no-javascript/ */
+
+#header {
+    background: #302A2F;
+    height: 35px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+#header-logo {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#header-logo a {
+    color: #F5F5F1;
+    display: block;
+    float: left;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 35px;
+    margin: 0;
+    position: relative;
+    text-decoration: none;
+    z-index: 1002;
+}
+#header-logo a img {
+    max-width: 100%;
+}
+#header-logo:active {
+    position: static;
+}
+
+.header-nav-open,
+.header-nav-open:visited,
+.header-nav-open:hover,
+.header-nav-open:active {
+  border: 0;
+  color: #FFF;
+  font-size: 21px;
+  padding: 7px;
+  position: absolute;
+  right: 0;
+  top: -40px;
+  z-index: 1001;
+}
+
+#header-menu {
+    background: #222;
+}
+#header-menu li {
+    display: block;
+    margin-bottom: 0;
+    text-align: left;
+}
+#header-menu li a {
+    border-bottom: 1px solid #797470;
+    color: #F5F5F1;
+    display: block;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 1.2em 1em;
+}
+#header-menu li:hover,
+#header-menu li.active {
+  background: #242123;
+}
+#header-menu li:hover a,
+#header-menu li.active a {
+  color: #D47843;
+}
+
+body:not(:target) #header-menu {
+    margin: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+}
+body:not(:target) #header-menu li {
+    width: 100%;
+    height: 0;
+    line-height: 0;
+    overflow: hidden;
+}
+body:not(:target) #header-menu:target {
+    z-index: 1001;
+}
+body:not(:target) #header-menu:target li {
+    height: auto;
+    line-height: auto;
+    overflow: visible;
+}
+body:not(:target) #header-menu:target .header-nav-close {
+    height: 0;
+    line-height: 0;
+}
+body:not(:target) #header-menu:target .header-nav-close a {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    height: auto;
+    position: absolute;
+    top: -101em;
+    bottom: -101em;
+    left: 0;
+    right: 0;
+    text-indent: -999em;
+    z-index: -1;
+}
+
+#header #header-security {
+    display: none;
+}
+
+/* Footer
+   ------------------------------------------------------------------------- */
+#footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    clear: both;
+    margin-top: 2em;
+    padding-bottom: 2em;
+    padding-top: 1em;
+}
+#footer {
+    color: #A59D95;
+    font-size: 12px;
+}
+
+/* -------------------------------------------------------------------------
+   SIDEBAR
+   ------------------------------------------------------------------------- */
+#sidebar {
+    border-top: 1px solid #A59D95;
+    margin-top: 2em;
+    padding-top: 1em;
+}
+#sidebar .block {
+    border-bottom: 1px solid #F5F5F1;
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+}
+#sidebar .block h3 {
+    font-size: 12px;
+    font-weight: bold;
+}
+#sidebar .block:last-child {
+    border: none;
+}
+
+/* -------------------------------------------------------------------------
+   COMMON ADMIN PAGES
+   ------------------------------------------------------------------------- */
+body.admin h1.title {
+    margin-bottom: 20px;
+}
+
+/* -------------------------------------------------------------------------
+   DASHBOARD PAGE
+   ------------------------------------------------------------------------- */
+body.dashboard #main {
+    height: 500px;
+}
+
+/* -------------------------------------------------------------------------
+   LIST PAGE
+   ------------------------------------------------------------------------- */
+body.list h1.title {
+    margin-bottom: 10px;
+    padding-top: 6px;
+}
+body.list #content-header {
+    margin-bottom: 10px;
+}
+
+body.list #content-header #content-search,
+body.list #content-header #content-actions {
+    float: right;
+}
+body.list #content-header #content-search {
+    float: left;
+    padding-left: 0;
+}
+body.list #content-header #content-search .input-group {
+    position: relative;
+    width: 100%;
+}
+body.list #content-header #content-search #content-search-query {
+    border-radius: 0;
+    padding-right: 28px;
+}
+body.list #content-header #content-search .input-group:after {
+  content: "\f002";
+  color: #D5D2CA;
+  font-family: "FontAwesome";
+  font-size: 16px;
+  position: absolute;
+  margin-left: -25px;
+  margin-top: 5px;
+  z-index: 10;
+}
+
+body.list table {
+    background: #FFF;
+    border: 1px solid #E5E3E5;
+    margin-bottom: 10px;
+}
+body.list table thead th {
+    padding: 0;
+}
+body.list table thead th i {
+    color: #A59D95;
+    padding: 0 3px;
+}
+body.list table thead th a,
+body.list table thead th span {
+    color: #222;
+    display: block;
+    padding: 10px 6px;
+    white-space: nowrap;
+}
+body.list table thead th a:hover {
+    background: #F2F1F2;
+    color: #D47843;
+    text-decoration: none;
+}
+body.list table thead th a:hover i {
+    color: #D47843;
+}
+
+body.list table thead th.sorted,
+body.list table thead th.sorted a {
+    background: #D47843;
+    border-bottom-color: #A15932 !important;
+    color: #FFF;
+    text-decoration: none;
+}
+body.list table thead th.sorted a:hover i,
+body.list table thead th.sorted i {
+    color: #FFF;
+}
+body.list table tbody td.sorted {
+    background: #F2F1F2;
+    border-color: #FFF;
+}
+
+body.list .table thead tr th {
+    border-bottom: 2px solid #DBD6DB;
+}
+body.list .table tbody {
+    border-bottom: 2px solid #D47843;
+}
+body.list .table tbody tr:hover td {
+    background: #F3EFEB;
+}
+body.list table tbody td {
+    border-bottom: 1px solid #F2F1F2;
+}
+body.list table tbody td.actions a {
+    margin-right: 10px;
+}
+
+body.list .pagination {
+    float: right;
+    margin: 0;
+}
+body.list .pagination > .disabled > span {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+}
+body.list .pagination > li > a {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0;
+    color: #222;
+}
+body.list .pagination > li > a:hover {
+    background: #D47843;
+    color: #FFF;
+}
+body.list .pagination > li i {
+    padding: 0 3px;
+}
+
+/* -------------------------------------------------------------------------
+   NEW PAGE
+   ------------------------------------------------------------------------- */
+body.new form textarea {
+    min-height: 250px;
+}
+
+/* -------------------------------------------------------------------------
+   EDIT PAGE
+   ------------------------------------------------------------------------- */
+body.edit form textarea {
+    min-height: 250px;
+}
+
+/* -------------------------------------------------------------------------
+   SHOW PAGE
+   ------------------------------------------------------------------------- */
+body.show .form-control {
+    background: rgba(255, 255, 255, 0.9);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+body.show .form-control.text {
+    height: auto;
+    min-height: 34px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+/* -------------------------------------------------------------------------
+   ERROR PAGE
+   ------------------------------------------------------------------------- */
+body.error code {
+    font-size: inherit;
+}
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   VERTICAL TABLETS and LANDSCAPE SMARTPHONES
+   ------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+
+    h1, h2, h3, h4, h5, h6 {
+        margin-top: 2em;
+    }
+
+    h1 { font-size: 21px; }
+    h2 { font-size: 18px; }
+    h3 { font-size: 16px; }
+    h4 { font-size: 16px; }
+    h5 { font-size: 14px; }
+    h6 { font-size: 14px; }
+
+    h1.title {
+        font-size: 21px;
+    }
+
+    ul, ol {
+        margin-left: 2em;
+    }
+
+    pre {
+        padding-left: 1em;
+    }
+
+    body #wrapper {
+        padding: 60px 0 0;
+        width: 100%;
+    }
+
+    body.list h1.title {
+        margin-bottom: 0;
+    }
+    body.list #content-header #content-search {
+        float: right;
+    }
+}
+
+/* -------------------------------------------------------------------------
+   NORMAL DESKTOPS and LANDSCAPE TABLETS
+   ------------------------------------------------------------------------- */
+@media (min-width: 1024px) {
+    body #wrapper {
+        padding: 0;
+        width: 100%;
+    }
+
+    #header {
+        height: 50px;
+        margin-bottom: 2em;
+        position: static;
+        width: 100%;
+    }
+
+    #header-logo a {
+        line-height: 50px;
+    }
+
+    #header-nav {
+        position: static;
+    }
+    #header-menu {
+        background: transparent;
+        line-height: 50px;
+        margin: 0;
+        padding: 0 15px;
+        position: static;
+        width: 100%;
+        overflow: hidden;
+    }
+    #header-menu li {
+        background: transparent;
+        float: left;
+        display: inline-block;
+        line-height: 40px;
+    }
+    #header-menu li a {
+        border: 0;
+        color: #D5D2CA;
+        display: block;
+        line-height: 40px;
+        padding: 5px 1.5em 5px 0;
+    }
+    #header-menu li a:hover {
+        background: transparent;
+        color: #D47843;
+    }
+
+    #header #header-menu li:hover,
+    #header #header-menu li.active {
+        background: transparent;
+    }
+    #header #header-menu li.active a {
+        color: #D47843;
+    }
+
+    body:not(:target) #header-menu {
+        position: static;
+    }
+    body:not(:target) #header-menu li {
+        height: auto;
+        overflow: visible;
+        width: auto;
+    }
+    #header #header-security {
+        color: #D5D2CA;
+        display: block;
+        font-size: 14px;
+    }
+    #header #header-security p {
+        line-height: 50px;
+        margin: 0;
+        text-align: right;
+    }
+    #header #header-security p small span {
+        display: none;
+    }
+    #header #header-security p small i {
+        font-size: 14px;
+        padding-right: 3px;
+    }
+
+
+    #content {
+        border: 0;
+        box-shadow: none;
+        margin-left: 0;
+        padding: 0 15px;
+        width: 100%;
+    }
+    #content #main {
+        padding-right: 15px;
+    }
+    #content #sidebar {
+        border-top: 0;
+        margin-top: 0;
+        padding-left: 10px;
+        padding-right: 5px;
+        padding-top: 0;
+    }
+
+    body.list .table-responsive {
+        overflow-x: hidden;
+    }
+}
+
+/* -------------------------------------------------------------------------
+   LARGE DESKTOPS
+   ------------------------------------------------------------------------- */
+@media (min-width: 1200px) {
+   /* all the '100%' below are necessary for the sticky left sidebar */
+    html {
+      height: 100%;
+    }
+    body {
+      height: 100%;
+      min-height: 100%;
+    }
+
+    body #wrapper {
+        height: 100%;
+        min-height: 100%;
+        margin-left: 0;
+        width: 1240px;
+    }
+
+    /* Header
+       ------------------------------------------------------------------------- */
+    #header {
+        padding-left: 15px;
+        padding-right: 25px;
+        padding-top: 0;
+        margin-bottom: 0;
+        overflow: visible;
+        min-height: 100%;
+        top: 0;
+        bottom: 0;
+        position: fixed;
+        width: 202px;
+    }
+    #header-contents {
+        margin-right: -25px;
+        min-height: 100%;
+    }
+    #header-logo {
+        background: #242123;
+        border-bottom: 2px solid #1D191D;
+        margin: 0;
+        overflow: visible;
+        text-overflow: inherit;
+        padding: 0;
+        white-space: inherit;
+    }
+    #header-logo a {
+        display: block;
+        float: none;
+        font-size: 18px;
+        line-height: 1.2;
+        padding: 28px 10px 25px;
+    }
+    #header-logo a:hover {
+        background: #D47843;
+    }
+    #header #header-nav {
+        margin-left: 0;
+        margin-right: 0;
+        padding-right: 0;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+    #header #header-menu {
+        display: block;
+        height: auto;
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 0;
+        max-height: 100%;
+        padding: 0;
+        list-style: none;
+        width: 100%;
+    }
+    #header #header-menu li {
+        border-bottom: 1px solid #2B2528;
+        display: block;
+        float: none;
+        margin: 0;
+        padding: 0 0 0 10px;
+    }
+    #header #header-menu li.active {
+        background: #242123;
+    }
+    #header #header-menu li:last-child {
+        border: none;
+    }
+    #header #header-menu li a {
+        color: #D5D2CA;
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 2.5;
+        padding: 0;
+        text-align: left;
+        -moz-transition: padding-left .1s ease-out 0s;
+        -webkit-transition: padding-left .1s ease-out;
+        -webkit-transition-delay: 0s;
+    }
+    #header #header-menu li a:hover {
+        color: #D47843;
+        padding-left: .5em;
+        text-decoration: none;
+    }
+    #header #header-security {
+        border-top: 1px solid #483D43;
+        bottom: 0;
+        color: #D5D2CA;
+        font-size: 14px;
+        margin-top: 1em;
+        padding-bottom: 1em;
+        padding-top: 1em;
+        position: absolute;
+        width: 100%;
+    }
+    #header #header-security p {
+        line-height: 1.5;
+        text-align: left;
+    }
+    #header #header-security p small {
+        display: block;
+        font-size: 11px;
+    }
+    #header #header-security p small span {
+        display: inline-block;
+    }
+
+    #content {
+        margin-left: 200px;
+        min-height: 100%;
+        padding-left: 25px;
+        padding-top: 20px;
+        width: 83.3333%;
+    }
+    #content #main {
+        min-height: 100%;
+    }
+    #content #sidebar {
+    }
+
+    body.error #content h1 {
+        margin-top: .25em;
+    }
+}

@@ -1,0 +1,78 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% block body_class 'admin show ' ~ entity.name|lower %}
+
+{% block content_title %}
+    {{ entity.name ~ ' #' ~ item.id }}
+{% endblock %}
+
+{% block main %}
+    <div class="form-horizontal">
+        {% for field, metadata in fields %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    {{ metadata.fieldName|humanize }}
+                </label>
+                <div class="col-sm-10">
+                    <div class="form-control {{ metadata.type|lower }}">
+                        {% if metadata.type in ['date', 'datetime', 'datetimetz', 'time'] %}
+                            {{ attribute(item, field|replace({'_': ''}))|date }}
+                        {% elseif metadata.type in ['boolean'] %}
+                            <span class="label label-{{ attribute(item, field|replace({'_': ''})) ? 'success' : 'danger' }}">
+                                {{ attribute(item, field|replace({'_': ''})) ? 'YES' : 'NO' }}
+                            </span>
+                        {% elseif metadata.type in ['array', 'simple_array'] %}
+                            {{ attribute(item, field|replace({'_': ''}))|join(', ') }}
+                        {% elseif metadata.type in ['string', 'text'] %}
+                            {{ attribute(item, field|replace({'_': ''}))[:128] }}
+                        {% elseif field != 'id' and metadata.type in ['bigint', 'integer', 'smallint', 'decimal', 'float'] %}
+                            {{ attribute(item, field|replace({'_': ''}))|number_format }}
+                        {% elseif metadata.type in ['association'] %}
+                            {% set associatedEntityName = metadata.targetEntity|split('\\')|last %}
+                            {% set associatedItem = attribute(item, field|replace({'_': ''})) %}
+
+                            {% if not associatedItem.__isInitialized__|default(false) %}
+                                {% if associatedItem is iterable %}
+                                    <span class="label">{{ associatedItem.count|default(0) }}</span>
+                                    <small>{{ associatedEntityName }}</small>
+                                {% elseif associatedItem is not null and associatedItem['id'] is defined %}
+                                    <a href="{{ path('admin', { action: 'show', entity: associatedEntityName, id: associatedItem.id }) }}">{{ associatedItem }}</a>
+                                {% elseif associatedItem is null %}
+                                    <span class="label">null</span>
+                                {% else %}
+                                    {{ associatedItem }}
+                                {% endif %}
+                            {% elseif associatedItem is not null %}
+                                <a href="{{ path('admin', { action: 'show', entity: associatedEntityName, id: associatedItem.id }) }}">{{ associatedItem }}</a>
+                            {% else %}
+                                <span class="label">null</span>
+                            {% endif %}
+                        {% elseif metadata.type in ['blob', 'binary'] %}
+                            <span class="label">{{ metadata.type }}</span>
+                        {% else %}
+                            {{ attribute(item, field|replace({'_': ''})) }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="form-group form-actions">
+            <div class="col-sm-10 col-sm-offset-2">
+                <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, 'id') }) }}">
+                    <i class="fa fa-edit"></i> Edit {{ entity.name }}
+                </a>
+
+                <button onclick="document.getElementById('delete-form').submit()" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> Delete
+                </button>
+
+                <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
+                    Back to Listing
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
+{% endblock %}

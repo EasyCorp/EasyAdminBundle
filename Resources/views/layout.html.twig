@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="generator" content="EasyAdmin" />
+
+        <title>{% block page_title %}{{ block('content_title') }}{% endblock %}</title>
+
+        <link href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('bundles/easyadmin/stylesheet/admin.css') }}" rel="stylesheet">
+        {% for css_asset in config.assets.css %}
+            {% if css_asset starts with '//' or css_asset starts with 'http://' or css_asset starts with 'https://' %}
+                <link rel="stylesheet" href="{{ css_asset }}">
+            {% else %}
+                <link rel="stylesheet" href="{{ asset(css_asset) }}">
+            {% endif %}
+        {% endfor %}
+        {% block head_stylesheets %}{% endblock %}
+
+        <link rel="shortcut icon" type="image/png" href="/favicon.png">
+
+        {% block head_javascript %}{% endblock %}
+    </head>
+
+    <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
+    <div id="wrapper" class="container">
+        <div id="header" class="col-lg-2">
+            <div id="header-contents" class="row">
+                <div id="header-logo" class="col-xs-6 col-md-2 col-lg-12">
+                    <a href="{{ path('admin') }}">{{ config.site_name|raw }}</a>
+                </div>
+
+                <div id="header-nav" class="col-xs-12 col-md-8 col-lg-12">
+                    <div class="visible-xs visible-sm">
+                        <a href="#header-menu" class="header-nav-open">
+                            <i class="fa fa-bars"></i>
+                        </a>
+                    </div>
+
+                    <ul id="header-menu">
+                        {% for item in config.entities %}
+                            <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
+                                <a href="{{ path('admin', { entity: item.name, action: 'list' }) }}">
+                                    {{ item.label }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                            <li class="visible-xs visible-sm header-nav-close">
+                                <a href="#header">Close</a>
+                            </li>
+                    </ul>
+                </div>
+
+                {% if app.user %}
+                    <div id="header-security" class="col-xs-12 col-md-2 col-lg-12">
+                        <p>
+                            <small><i class="fa fa-lock"></i> <span>Logged in as</span></small>
+                            {{ app.user.username|default('Unnamed User') }}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="content" class="col-lg-10 col-lg-offset-2">
+            {% block content %}
+                <div class="row">
+                    <div id="content-header" class="col-sm-12">
+                        {% block content_header %}
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h1 class="title">{% block content_title %}{% endblock %}</h1>
+                                </div>
+                            </div>
+                        {% endblock %}
+                    </div>
+
+                    <div id="main" class="col-sm-9">
+                        {% block main %}{% endblock %}
+                    </div>
+
+                    <div id="sidebar" class="col-sm-3">
+                        {% block sidebar %}{% endblock %}
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+
+    {% for js_asset in config.assets.js %}
+        {% if js_asset starts with '//' or js_asset starts with 'http://' or js_asset starts with 'https://' %}
+            <script src="{{ js_asset }}"></script>
+        {% else %}
+            <script src="{{ asset(js_asset) }}"></script>
+        {% endif %}
+    {% endfor %}
+    {% block body_javascript %}{% endblock %}
+</body>
+</html>

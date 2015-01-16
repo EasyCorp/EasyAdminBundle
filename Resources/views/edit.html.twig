@@ -1,0 +1,43 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% form_theme form '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block body_class 'admin edit ' ~ entity.name|lower %}
+
+{% block content_title %}
+    Edit {{ entity.name ~ ' #' ~ item.id }}
+{% endblock %}
+
+{% block main %}
+    {{ form_start(form, { attr: { id: 'edit-form', novalidate: 'novalidate' } }) }}
+        {{ form_widget(form) }}
+
+        <div class="form-group">
+            <div class="col-sm-10 col-sm-offset-2">
+                <button type="submit" class="btn">
+                    <i class="fa fa-save"></i> Save changes
+                </button>
+
+                <button onclick="document.getElementById('delete-form').submit()" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> Delete
+                </button>
+
+                <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
+                    Back to Listing
+                </a>
+            </div>
+        </div>
+    {{ form_end(form) }}
+
+    {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
+{% endblock %}
+
+{% block body_javascript %}
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.are-you-sure.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#edit-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
+        });
+    </script>
+{% endblock %}

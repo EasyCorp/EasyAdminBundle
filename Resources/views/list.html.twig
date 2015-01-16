@@ -1,0 +1,158 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% block body_class 'admin list ' ~ entity.name|lower %}
+
+{% block content %}
+{% if 'search' == app.request.get('action') %}
+    {% set request_attributes = { action: 'search', entity: entity.name, query: app.request.get('query')|default('') } %}
+{% else %}
+    {% set request_attributes = { action: 'list', entity: entity.name, sortDirection: app.request.get('sortDirection', 'DESC') } %}
+{% endif %}
+
+<div class="row">
+    <div id="content-header" class="col-sm-12">
+        <div class="row">
+            <div class="col-xs-12 col-sm-5">
+                {% if 'search' == app.request.get('action') %}
+                    <h1 class="title"><strong>{{ paginator.nbResults }}</strong> result{{ paginator.nbResults == 1 ? '' : 's' }} found</h1>
+                {% else %}
+                    <h1 class="title">{{ config['entities'][entity.name]['label'] }}</h1>
+                {% endif %}
+            </div>
+            <div class="col-xs-12 col-sm-7">
+                <div id="content-actions">
+                    <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
+                        Create {{ entity.name }}
+                    </a>
+                </div>
+                <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
+                    <div class="input-group">
+                        <input type="hidden" name="action" value="search">
+                        <input type="hidden" name="entity" value="{{ entity.name }}">
+                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="Search" value="{{ app.request.get('query')|default('') }}">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="main" class="col-sm-12">
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        {% for field, metadata in fields %}
+                            {% set isSortingField = metadata.fieldName == app.request.get('sortField') %}
+
+                            <th class="{{ isSortingField ? 'sorted' : '' }}">
+                                {% if isSortingField %}
+                                    {% set sortDirection = ('DESC' == app.request.get('sortDirection')) ? 'ASC' : 'DESC' %}
+                                    {% set request_attributes = request_attributes|merge({ sortField: metadata.fieldName }) %}
+                                {% endif %}
+
+                                {# for now you cannot sort by virtual fields not directly mapped to entity attributes #}
+                                {% if metadata.type != 'virtual' %}
+                                    <a href="{{ path('admin', request_attributes|merge({ sortField: metadata.fieldName, sortDirection: sortDirection|default('DESC') })) }}">
+                                        {% if isSortingField and sortDirection == 'DESC' %}
+                                            <i class="fa fa-caret-up"></i>
+                                        {% elseif isSortingField and sortDirection == 'ASC' %}
+                                            <i class="fa fa-caret-down"></i>
+                                        {% else %}
+                                            <i class="fa fa-sort"></i>
+                                        {% endif %}
+
+                                        {% if 'id' == metadata.fieldName %}
+                                            ID
+                                        {% else %}
+                                            {{ field|humanize }}
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    <span>{{ field|humanize }}</span>
+                                {% endif %}
+                            </th>
+                        {% endfor %}
+                            <th>
+                                <span>Actions</span>
+                            </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in paginator.currentPageResults %}
+                        <tr>
+                            {% for field, metadata in fields %}
+                                {% set isSortingField = metadata.fieldName == app.request.get('sortField') %}
+
+                                <td class="{{ isSortingField ? 'sorted' : '' }}">
+                                    {% if metadata.type in ['date', 'datetime', 'datetimetz', 'time'] %}
+                                        {{ attribute(item, field|replace({'_': ''}))|date }}
+                                    {% elseif metadata.type in ['boolean'] %}
+                                        <span class="label label-{{ attribute(item, field|replace({'_': ''})) ? 'success' : 'danger' }}">
+                                            {{ attribute(item, field|replace({'_': ''})) ? 'YES' : 'NO' }}
+                                        </span>
+                                    {% elseif metadata.type in ['array', 'simple_array'] %}
+                                        {{ attribute(item, field|replace({'_': ''}))|join(', ') }}
+                                    {% elseif metadata.type in ['string', 'text'] %}
+                                        {{ attribute(item, field|replace({'_': ''}))[:128] }}
+                                    {% elseif field != 'id' and metadata.type in ['bigint', 'integer', 'smallint', 'decimal', 'float'] %}
+                                        {{ attribute(item, field|replace({'_': ''}))|number_format }}
+                                    {% elseif metadata.type in ['association'] %}
+                                        {% set associatedEntityName = metadata.targetEntity|split('\\')|last %}
+                                        {% set associatedItem = attribute(item, field|replace({'_': ''})) %}
+
+                                        {% if not associatedItem.__isInitialized__|default(false) %}
+                                            {% if associatedItem is iterable %}
+                                                <span class="label">{{ associatedItem.count|default(0) }}</span>
+                                                <small>{{ associatedEntityName }}</small>
+                                            {% elseif associatedItem is not null and associatedItem['id'] is defined %}
+                                                <a href="{{ path('admin', { action: 'show', entity: associatedEntityName, id: associatedItem.id }) }}">{{ associatedItem }}</a>
+                                            {% elseif associatedItem is null %}
+                                                <span class="label">null</span>
+                                            {% else %}
+                                                {{ associatedItem }}
+                                            {% endif %}
+                                        {% elseif associatedItem is not null %}
+                                            <a href="{{ path('admin', { action: 'show', entity: associatedEntityName, id: associatedItem.id }) }}">{{ associatedItem }}</a>
+                                        {% else %}
+                                            <span class="label">null</span>
+                                        {% endif %}
+                                    {% elseif metadata.type in ['blob', 'binary'] %}
+                                        <span class="label">{{ metadata.type }}</span>
+                                    {% else %}
+                                        {{ attribute(item, field|replace({'_': ''}))|default(null) }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                                <td class="actions">
+                                    {% for action in config['list_actions'] %}
+                                        <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, 'id') }) }}">
+                                            {{ action|humanize }}
+                                        </a>
+                                    {% endfor %}
+
+                                    {#
+                                    <a href="{{ path('admin', { action: 'show', entity: entity.name, id: attribute(item, 'id') }) }}">
+                                        Show
+                                    </a>
+                                    <a href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, 'id') }) }}">
+                                        Edit
+                                    </a>
+                                    #}
+
+                                </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="{{ fields|length + 1 }}">No results found.</<td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {{ include('@EasyAdmin/_list_paginator.html.twig') }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

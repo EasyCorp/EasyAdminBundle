@@ -33,6 +33,29 @@ class AdminController extends Controller
     protected $entity;
     protected $request;
 
+    /**
+     * @Route("/", name="admin")
+     */
+    public function indexAction(Request $request)
+    {
+        $result = $this->initialize($request);
+
+        // initialize() returns a Response object when an error occurs.
+        // This allows to display a detailed error message.
+        if ($result instanceof Response) {
+            return $result;
+        }
+
+        $action = $request->get('action', 'list');
+
+        // for now, the homepage redirects to the 'list' action of the first entity
+        if (null === $request->get('entity')) {
+            return $this->redirect($this->generateUrl('admin', array('action' => $action, 'entity' => $this->getNameOfTheFirstConfiguredEntity())));
+        }
+
+        return $this->{$action.'Action'}($request);
+    }
+
     protected function initialize(Request $request)
     {
         $this->config = $this->container->getParameter('easy_admin.config');
@@ -64,33 +87,8 @@ class AdminController extends Controller
         $this->em = $this->getDoctrine()->getManager();
     }
 
-    /**
-     * @Route("/", name="admin")
-     */
-    public function indexAction(Request $request)
-    {
-        $result = $this->initialize($request);
-
-        // initialize() returns a Response object when an error occurs.
-        // This allows to display a detailed error message.
-        if ($result instanceof Response) {
-            return $result;
-        }
-
-        $action = $request->get('action', 'list');
-
-        // for now, the homepage redirects to the 'list' action of the first entity
-        if (null === $request->get('entity')) {
-            return $this->redirect($this->generateUrl('admin', array('action' => $action, 'entity' => $this->getNameOfTheFirstConfiguredEntity())));
-        }
-
-        return $this->{$action.'Action'}($request);
-    }
-
     public function listAction(Request $request)
     {
-        $this->initialize($request);
-
         $fields = $this->getFieldsForList($this->entity['metadata']->fieldMappings);
         $paginator = $this->findAll($this->entity['class'], $request->get('page', 1), $this->config['list_max_results'], $request->get('sortField'), $request->get('sortDirection'));
 
@@ -104,8 +102,6 @@ class AdminController extends Controller
 
     public function editAction(Request $request)
     {
-        $this->initialize($request);
-
         if (!$item = $this->em->getRepository($this->entity['class'])->find($request->get('id'))) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $request->get('id')));
         }
@@ -133,8 +129,6 @@ class AdminController extends Controller
 
     public function showAction(Request $request)
     {
-        $this->initialize($request);
-
         if (!$item = $this->em->getRepository($this->entity['class'])->find($request->get('id'))) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $request->get('id')));
         }
@@ -153,8 +147,6 @@ class AdminController extends Controller
 
     public function newAction(Request $request)
     {
-        $this->initialize($request);
-
         $entityFullyQualifiedClassName = $this->entity['class'];
         $item = new $entityFullyQualifiedClassName();
 
@@ -180,8 +172,6 @@ class AdminController extends Controller
 
     public function deleteAction(Request $request)
     {
-        $this->initialize($request);
-
         if ('DELETE' !== $request->getMethod()) {
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
         }
@@ -203,8 +193,6 @@ class AdminController extends Controller
 
     public function searchAction(Request $request)
     {
-        $this->initialize($request);
-
         $searchableFields = $this->getSearchableFields($this->entity['metadata']->fieldMappings);
         $paginator = $this->findBy($this->entity['class'], $request->get('query'), $searchableFields, $request->get('page', 1), $this->config['list_max_results']);
         $fields = $this->getFieldsForSearch($this->entity['metadata']->fieldMappings);

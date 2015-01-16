@@ -1,4 +1,5 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
+{% trans_default_domain "EasyAdminBundle" %}
 
 {% block body_class 'admin show ' ~ entity.name|lower %}
 
@@ -60,15 +61,15 @@
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
                 <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, 'id') }) }}">
-                    <i class="fa fa-edit"></i> Edit {{ entity.name }}
+                    <i class="fa fa-edit"></i> {{ 'entity.edit' | trans({"%entity%": entity.name}) }}
                 </a>
 
                 <button type="button" onclick="document.getElementById('delete-form').submit()" class="btn btn-danger">
-                    <i class="fa fa-trash"></i> Delete
+                    <i class="fa fa-trash"></i> {{ 'entity.delete' | trans() }}
                 </button>
 
                 <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
-                    Back to Listing
+                    {{ 'link.back_to_listing' | trans }}
                 </a>
             </div>
         </div>

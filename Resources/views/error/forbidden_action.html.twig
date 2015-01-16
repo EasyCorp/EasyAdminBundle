@@ -1,3 +1,4 @@
+{% trans_default_domain "EasyAdminBundle" %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -7,7 +8,7 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <meta name="generator" content="EasyAdmin" />
 
-        <title>EasyAdmin Error</title>
+        <title>EasyAdmin {{ 'errors.head_error' | trans }}</title>
 
         <link href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}" rel="stylesheet">
@@ -28,23 +29,7 @@
         <div id="content" class="col-lg-10 col-lg-offset-2">
             <div class="row">
                 <div class="col-sm-9" id="main">
-                    <h1>Runtime error</h1>
-                    <p class="lead">
-                        The requested <code>{{ action }}</code> action is not allowed.
-                    </p>
-
-                    <h2>How to fix this problem</h2>
-
-                    <ul>
-                        <li>
-                            Change this action for one of the following allowed actions:
-                            <code>{{ allowed_actions|join('</code>, <code>')|raw }}</code>
-                        </li>
-                        <li>
-                            If the action name is correct, make sure it's included in
-                            the <code>$allowedActions</code> property of your backend.
-                        </li>
-                    </ul>
+                    {{ 'errors.forbidden_actions' | trans({"%action%": action, "%allowed_actions%": allowed_actions|join('</code>, <code>') }) | raw }}
                 </div>
             </div>
         </div>

@@ -264,7 +264,7 @@ class AdminController extends Controller
     /**
      * These are the entity fields on which the query is performed.
      */
-    protected function getSearchableFields($entityFields)
+    protected function getSearchableFields(array $entityFields)
     {
         $excludedFieldNames = array();
         $excludedFieldTypes = array('association', 'binary', 'blob', 'date', 'datetime', 'datetimetz', 'time', 'json_array', 'object');
@@ -275,7 +275,7 @@ class AdminController extends Controller
     /**
      * These are the entity fields displayed in the listings.
      */
-    protected function getFieldsForList($entityFields)
+    protected function getFieldsForList(array $entityFields)
     {
         $entityConfiguration = $this->config['entities'][$this->entity['name']];
 
@@ -286,7 +286,7 @@ class AdminController extends Controller
         }
     }
 
-    protected function filterEntityFieldsBasedOnWhitelist($fields, $whiteList)
+    protected function filterEntityFieldsBasedOnWhitelist(array $fields, array $whiteList)
     {
         $filteredFields = array();
 
@@ -309,7 +309,7 @@ class AdminController extends Controller
         return $filteredFields;
     }
 
-    protected function filterEntityFieldsBasedOnNameAndTypeBlackList($fields, $fieldNameBlackList, $fieldTypeBlackList)
+    protected function filterEntityFieldsBasedOnNameAndTypeBlackList(array $fields, array $fieldNameBlackList, array $fieldTypeBlackList)
     {
         $filteredFields = array();
 
@@ -322,7 +322,7 @@ class AdminController extends Controller
         return $filteredFields;
     }
 
-    protected function filterListFieldsBasedOnSmartGuesses($fields)
+    protected function filterListFieldsBasedOnSmartGuesses(array $fields)
     {
         // empirical guess: listings with more than 8 fields look ugly
         $maxListFields = 8;
@@ -354,7 +354,7 @@ class AdminController extends Controller
     /**
      * These are the entity fields displayed in the 'show' action.
      */
-    protected function getFieldsForShow($entityFields)
+    protected function getFieldsForShow(array $entityFields)
     {
         return $entityFields;
     }
@@ -362,7 +362,7 @@ class AdminController extends Controller
     /**
      * These are the fields displayed in the search results listings
      */
-    protected function getFieldsForSearch($entityFields)
+    protected function getFieldsForSearch(array $entityFields)
     {
         return $this->getFieldsForList($entityFields);
     }
@@ -385,7 +385,7 @@ class AdminController extends Controller
         return $paginator;
     }
 
-    protected function findBy($entityClass, $searchQuery, $searchableFields, $page = 1, $maxPerPage = 15)
+    protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
     {
         $query = $this->em->createQueryBuilder()
             ->select('entity')
@@ -403,7 +403,7 @@ class AdminController extends Controller
         return $paginator;
     }
 
-    protected function createEditForm($entity, $entityFieldsMapping)
+    protected function createEditForm($entity, array $entityFieldsMapping)
     {
         $form = $this->createFormBuilder($entity);
 
@@ -417,7 +417,7 @@ class AdminController extends Controller
     /**
      * These are the entity fields included in the form displayed for the 'edit' action.
      */
-    protected function getFieldsForEdit($entityFields)
+    protected function getFieldsForEdit(array $entityFields)
     {
         $entityConfiguration = $this->config['entities'][$this->entity['name']];
 
@@ -431,7 +431,7 @@ class AdminController extends Controller
         return $this->filterEntityFieldsBasedOnNameAndTypeBlackList($entityFields, $excludedFieldNames, $excludedFieldTypes);
     }
 
-    protected function getFieldsForNew($entityFields)
+    protected function getFieldsForNew(array $entityFields)
     {
         $entityConfiguration = $this->config['entities'][$this->entity['name']];
 
@@ -445,7 +445,7 @@ class AdminController extends Controller
         return $this->filterEntityFieldsBasedOnNameAndTypeBlackList($entityFields, $excludedFieldNames, $excludedFieldTypes);
     }
 
-    protected function createNewForm($entity, $entityFieldsMapping)
+    protected function createNewForm($entity, array $entityFieldsMapping)
     {
         $form = $this->createFormBuilder($entity);
         foreach ($entityFieldsMapping as $name => $metadata) {

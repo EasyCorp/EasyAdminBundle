@@ -34,7 +34,7 @@ class EasyAdminExtension extends Extension
         $container->setParameter('easy_admin.config', $options);
     }
 
-    protected function processEntityConfiguration($entitiesConfiguration)
+    protected function processEntityConfiguration(array $entitiesConfiguration)
     {
         if (0 === count($entitiesConfiguration)) {
             return $entitiesConfiguration;
@@ -48,7 +48,7 @@ class EasyAdminExtension extends Extension
         return $this->processEntityConfigurationFromComplexParameters($entitiesConfiguration);
     }
 
-    private function processEntityConfigurationFromSimpleParameters($config)
+    private function processEntityConfigurationFromSimpleParameters(array $config)
     {
         $entities = array();
         foreach ($config as $entityClass) {
@@ -65,7 +65,7 @@ class EasyAdminExtension extends Extension
         return $entities;
     }
 
-    private function processEntityConfigurationFromComplexParameters($config)
+    private function processEntityConfigurationFromComplexParameters(array $config)
     {
         $entities = array();
         foreach ($config as $customEntityName => $entityConfiguration) {

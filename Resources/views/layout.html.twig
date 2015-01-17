@@ -13,11 +13,7 @@
         <link href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}" rel="stylesheet">
         <link href="{{ asset('bundles/easyadmin/stylesheet/admin.css') }}" rel="stylesheet">
         {% for css_asset in config.assets.css %}
-            {% if css_asset starts with '//' or css_asset starts with 'http://' or css_asset starts with 'https://' %}
-                <link rel="stylesheet" href="{{ css_asset }}">
-            {% else %}
-                <link rel="stylesheet" href="{{ asset(css_asset) }}">
-            {% endif %}
+            <link rel="stylesheet" href="{{ asset(css_asset) }}">
         {% endfor %}
         {% block head_stylesheets %}{% endblock %}
 
@@ -92,11 +88,7 @@
     </div>
 
     {% for js_asset in config.assets.js %}
-        {% if js_asset starts with '//' or js_asset starts with 'http://' or js_asset starts with 'https://' %}
-            <script src="{{ js_asset }}"></script>
-        {% else %}
-            <script src="{{ asset(js_asset) }}"></script>
-        {% endif %}
+        <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
     {% block body_javascript %}{% endblock %}
 </body>

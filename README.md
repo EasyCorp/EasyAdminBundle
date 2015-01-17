@@ -253,7 +253,8 @@ easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
-            list:  ['id', 'firstName', 'lastName', 'phone', 'email']
+            list:
+                fields: ['id', 'firstName', 'lastName', 'phone', 'email']
     # ...
 ```
 
@@ -270,7 +271,8 @@ easy_admin:
     entities:
         # this configuration IS NOT VALID. Use the configuration showed above
         Customer: AppBundle\Entity\Customer
-            list: ['id', 'firstName', 'lastName', 'phone', 'email']
+            list:
+                fields: ['id', 'firstName', 'lastName', 'phone', 'email']
     # ...
 ```
 
@@ -289,7 +291,8 @@ easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
-            list:  ['id', 'name', 'phone', 'email']
+            list:
+                fields: ['id', 'name', 'phone', 'email']
     # ...
 ```
 
@@ -332,8 +335,10 @@ easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
-            edit:  ['firstName', 'secondName', 'phone', 'email']
-            new:   ['firstName', 'secondName', 'phone', 'email', 'creditLimit']
+            edit:
+                fields: ['firstName', 'secondName', 'phone', 'email']
+            new:
+                fields: ['firstName', 'secondName', 'phone', 'email', 'creditLimit']
     # ...
 ```
 

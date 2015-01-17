@@ -17,6 +17,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -30,8 +31,12 @@ class AdminController extends Controller
 {
     protected $allowedActions = array('list', 'edit', 'new', 'show', 'search', 'delete');
     protected $config;
-    protected $entity;
-    protected $request;
+    protected $entity = array();
+
+    /**
+     * @var ObjectManager
+     */
+    protected $em;
 
     /**
      * @Route("/", name="admin")

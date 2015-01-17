@@ -86,7 +86,7 @@ class AdminController extends Controller
         if (!$request->query->has('sortField')) {
             $request->query->set('sortField', 'id');
         }
-        if (!$request->query->has('sortDirection') || !in_array(strtoupper($request->query->has('sortDirection')), array('ASC', 'DESC'))) {
+        if (!$request->query->has('sortDirection') || !in_array(strtoupper($request->query->get('sortDirection')), array('ASC', 'DESC'))) {
             $request->query->set('sortDirection', 'DESC');
         }
 

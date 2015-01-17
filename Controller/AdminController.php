@@ -475,7 +475,7 @@ class AdminController extends Controller
         ;
     }
 
-    protected function render404error($view, $parameters = array())
+    protected function render404error($view, array $parameters = array())
     {
         return $this->render($view, $parameters, new Response('', 404));
     }

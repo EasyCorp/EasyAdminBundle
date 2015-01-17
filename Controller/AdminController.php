@@ -67,17 +67,21 @@ class AdminController extends Controller
         $this->config = $this->container->getParameter('easy_admin.config');
 
         if (0 === count($this->config['entities'])) {
-            return $this->render('@EasyAdmin/error/no_entities.html.twig', array(), new Response('', 404));
+            return $this->render404error('@EasyAdmin/error/no_entities.html.twig');
         }
 
         if (!in_array($action = $request->query->get('action', 'list'), $this->allowedActions)) {
-            return $this->render('@EasyAdmin/error/forbidden_action.html.twig', array(
+            return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
                 'action' => $action,
                 'allowed_actions' => $this->allowedActions,
-            ), new Response('', 404));
+            ));
         }
 
         if (null !== $entityName = $request->query->get('entity')) {
+            if (!array_key_exists($entityName, $this->config['entities'])) {
+                return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
+            }
+
             $this->entity['name'] = $entityName;
             $this->entity['class'] = $this->config['entities'][$entityName]['class'];
             $this->entity['metadata'] = $this->getEntityMetadata($this->entity['class']);
@@ -454,7 +458,7 @@ class AdminController extends Controller
         return $form->getForm();
     }
 
-    private function getNameOfTheFirstConfiguredEntity()
+    protected function getNameOfTheFirstConfiguredEntity()
     {
         $entityNames = array_keys($this->config['entities']);
 
@@ -469,5 +473,10 @@ class AdminController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
+    }
+
+    protected function render404error($view, $parameters = array())
+    {
+        return $this->render($view, $parameters, new Response('', 404));
     }
 }

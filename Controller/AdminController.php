@@ -255,7 +255,7 @@ class AdminController extends Controller
     protected function getSearchableFields(array $entityFields)
     {
         $excludedFieldNames = array();
-        $excludedFieldTypes = array('association', 'binary', 'blob', 'date', 'datetime', 'datetimetz', 'time', 'json_array', 'object');
+        $excludedFieldTypes = array('association', 'binary', 'blob', 'date', 'datetime', 'datetimetz', 'guid', 'time', 'object');
 
         return $this->filterEntityFieldsBasedOnNameAndTypeBlackList($entityFields, $excludedFieldNames, $excludedFieldTypes);
     }
@@ -315,7 +315,7 @@ class AdminController extends Controller
         // empirical guess: listings with more than 8 fields look ugly
         $maxListFields = 8;
         $excludedFieldNames = array('slug', 'password', 'salt', 'updatedAt');
-        $excludedFieldTypes = array('binary', 'blob', 'guid', 'json_array', 'object', 'text');
+        $excludedFieldTypes = array('array', 'binary', 'blob', 'guid', 'json_array', 'object', 'simple_array', 'text');
 
         // if the entity has few fields, show them all
         if (count($fields) <= $maxListFields) {

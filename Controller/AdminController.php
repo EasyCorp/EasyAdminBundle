@@ -395,7 +395,7 @@ class AdminController extends Controller
             $query->orWhere("entity.$name LIKE :query")->setParameter('query', '%'.$searchQuery.'%');
         }
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($query));
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($query, false));
         $paginator->setMaxPerPage($maxPerPage);
         $paginator->setCurrentPage($page);
 

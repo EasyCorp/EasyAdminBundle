@@ -91,7 +91,7 @@
                                 <td class="actions">
                                     {% for action in config['list_actions'] %}
                                         <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, 'id') }) }}">
-                                            {{ action|humanize }}
+                                            {{ ('actions.' ~ action)|trans }}
                                         </a>
                                     {% endfor %}
                                 </td>

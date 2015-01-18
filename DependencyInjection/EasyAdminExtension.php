@@ -13,6 +13,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\Config\FileLocator;
 
 class EasyAdminExtension extends Extension
 {
@@ -25,6 +27,7 @@ class EasyAdminExtension extends Extension
 
     public function load(array $configs, ContainerBuilder $container)
     {
+        // process configuration parameters
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -32,6 +35,10 @@ class EasyAdminExtension extends Extension
         $options['entities'] = $this->processEntityConfiguration($options['entities']);
 
         $container->setParameter('easy_admin.config', $options);
+
+        // load bundle's services
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
     }
 
     protected function processEntityConfiguration(array $entitiesConfiguration)

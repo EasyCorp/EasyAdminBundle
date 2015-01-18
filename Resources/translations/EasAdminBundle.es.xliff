@@ -6,6 +6,10 @@
                 <source>header.close</source>
                 <target>Cerrar</target>
             </trans-unit>
+            <trans-unit id="header.logged_in_as">
+                <source>header.logged_in_as</source>
+                <target>Conectado como</target>
+            </trans-unit>
             <trans-unit id="entity.create">
                 <source>entity.create</source>
                 <target>Crear %entity%</target>

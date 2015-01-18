@@ -1,0 +1,30 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-17T16:11:16Z
+
+I rebased my branch on the master , tell me if there's anything that is not translated :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-17T18:10:29Z
+
+@Pierstoval thanks for working on this. If possible, I'd like you to make two changes:
+
+  * Maintain the original paginator page count (see https://github.com/javiereguiluz/EasyAdminBundle/pull/15/files#diff-3e95a69cd00f4e78f9ac9f5bcd24a249L5). In other words, maintain the `X-Y of Z` instead of using `X-Y / Z`. I know that it's boring to add the whole original text because it even contains HTML tags, but it feels better for end users.
+  * Remove the translation of the error pages. These pages are very preliminar, so I'm not confident enough with their content and how we display them. There is going to be a lot of changes about them.
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-17T18:57:15Z
+
+For the second point, after a few minutes thinking about it, it's really a good argument, because if people don't understand well english (and you can't even imagine the number of people that use Symfony and that don't speak english very well) , they'll probably google these messages, and for the best stackoverflow google links (or EasyAdminBundle issues :+1: ) in the results, they'd better google the original message.
+
+I'm gonna work on this tonight, you'll probably get one more commit tonight or tomorrow :smile:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-18T10:45:01Z
+
+Rebased and made the modifications :smile:

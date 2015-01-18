@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" target-language="fr" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Fermer</target>
+            </trans-unit>
+            <trans-unit id="entity.create">
+                <source>entity.create</source>
+                <target>Créer nouvel élément "%entity%"</target>
+            </trans-unit>
+            <trans-unit id="list.actions">
+                <source>list.actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            <trans-unit id="actions.edit">
+                <source>actions.edit</source>
+                <target>Éditer</target>
+            </trans-unit>
+            <trans-unit id="paginator.first">
+                <source>paginator.first</source>
+                <target>Premier</target>
+            </trans-unit>
+            <trans-unit id="paginator.previous">
+                <source>paginator.previous</source>
+                <target>Précédent</target>
+            </trans-unit>
+            <trans-unit id="paginator.next">
+                <source>paginator.next</source>
+                <target>Suivant</target>
+            </trans-unit>
+            <trans-unit id="paginator.last">
+                <source>paginator.last</source>
+                <target>Dernier</target>
+            </trans-unit>
+            <trans-unit id="paginator.counter">
+                <source>paginator.counter</source>
+                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> sur <strong>%results%</strong>]]></target>
+            </trans-unit>
+            <trans-unit id="entity.edit">
+                <source>entity.edit</source>
+                <target>Éditer</target>
+            </trans-unit>
+            <trans-unit id="entity.save_changes">
+                <source>entity.save_changes</source>
+                <target>Sauvegarder les modifications</target>
+            </trans-unit>
+            <trans-unit id="entity.delete">
+                <source>entity.delete</source>
+                <target>Supprimer</target>
+            </trans-unit>
+            <trans-unit id="link.back_to_listing">
+                <source>link.back_to_listing</source>
+                <target>Retour à la liste</target>
+            </trans-unit>
+            <trans-unit id="actions.list">
+                <source>actions.list</source>
+                <target>Lister</target>
+            </trans-unit>
+            <trans-unit id="actions.new">
+                <source>actions.new</source>
+                <target>Créer</target>
+            </trans-unit>
+            <trans-unit id="actions.show">
+                <source>actions.show</source>
+                <target>Voir</target>
+            </trans-unit>
+            <trans-unit id="actions.search">
+                <source>actions.search</source>
+                <target>Rechercher</target>
+            </trans-unit>
+            <trans-unit id="actions.delete">
+                <source>actions.delete</source>
+                <target>Supprimer</target>
+            </trans-unit>
+            <trans-unit id="list.results_found">
+                <source>list.results_found</source>
+                <target><![CDATA[{1} <strong>1</strong> résultat trouvé|]1,Inf] <strong>%count%</strong> résultats trouvés]]></target>
+            </trans-unit>
+            <trans-unit id="list.no_results">
+                <source>list.no_results</source>
+                <target>Aucun résultat trouvé</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -77,14 +76,14 @@ class AdminController extends Controller
             ));
         }
 
+        $this->em = $this->getDoctrine()->getManager();
+
         if (null !== $entityName = $request->query->get('entity')) {
             if (!array_key_exists($entityName, $this->config['entities'])) {
                 return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
             }
 
-            $this->entity['name'] = $entityName;
-            $this->entity['class'] = $this->config['entities'][$entityName]['class'];
-            $this->entity['metadata'] = $this->getEntityMetadata($this->entity['class']);
+            $this->entity = $this->getEntityMetadata($entityName);
         }
 
         if (!$request->query->has('sortField')) {
@@ -95,12 +94,11 @@ class AdminController extends Controller
         }
 
         $this->request = $request;
-        $this->em = $this->getDoctrine()->getManager();
     }
 
     public function listAction()
     {
-        $fields = $this->getFieldsForList($this->entity['metadata']->fieldMappings);
+        $fields = $this->getFieldsForList($this->entity['fieldMappings']);
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list_max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
         return $this->render('@EasyAdmin/list.html.twig', array(
@@ -117,7 +115,7 @@ class AdminController extends Controller
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
         }
 
-        $fields = $this->getFieldsForEdit($this->entity['metadata']->fieldMappings);
+        $fields = $this->getFieldsForEdit($this->entity['fieldMappings']);
         $editForm = $this->createEditForm($item, $fields);
         $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
 
@@ -144,7 +142,7 @@ class AdminController extends Controller
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
         }
 
-        $fields = $this->getFieldsForShow($this->entity['metadata']->fieldMappings);
+        $fields = $this->getFieldsForShow($this->entity['fieldMappings']);
         $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
 
         return $this->render('@EasyAdmin/show.html.twig', array(
@@ -161,7 +159,7 @@ class AdminController extends Controller
         $entityFullyQualifiedClassName = $this->entity['class'];
         $item = new $entityFullyQualifiedClassName();
 
-        $fields = $this->getFieldsForNew($this->entity['metadata']->fieldMappings);
+        $fields = $this->getFieldsForNew($this->entity['fieldMappings']);
         $newForm = $this->createNewForm($item, $fields);
 
         $newForm->handleRequest($this->request);
@@ -204,9 +202,9 @@ class AdminController extends Controller
 
     public function searchAction()
     {
-        $searchableFields = $this->getSearchableFields($this->entity['metadata']->fieldMappings);
+        $searchableFields = $this->getSearchableFields($this->entity['fieldMappings']);
         $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list_max_results']);
-        $fields = $this->getFieldsForSearch($this->entity['metadata']->fieldMappings);
+        $fields = $this->getFieldsForSearch($this->entity['fieldMappings']);
 
         return $this->render('@EasyAdmin/list.html.twig', array(
             'config'    => $this->config,
@@ -219,27 +217,44 @@ class AdminController extends Controller
     /**
      * Takes the FQCN of the Doctrine entity and returns all its configured metadata.
      */
-    protected function getEntityMetadata($entityClass)
+    protected function getEntityMetadata($entityName)
     {
-        $factory = new DisconnectedMetadataFactory($this->getDoctrine());
-        $metadata = $factory->getClassMetadata($entityClass)->getMetadata();
-        $metadata = $metadata[0];
+        $entityMetadata = array();
 
-        // add fields for relationships
-        $associationFieldMappings = array();
-        foreach ($metadata->associationMappings as $fieldName => $relation) {
-            if (ClassMetadataInfo::ONE_TO_MANY !== $relation['type']) {
-                $associationFieldMappings[$fieldName] = array(
+        $entityMetadata['name'] = $entityName;
+        $entityMetadata['class'] = $this->config['entities'][$entityName]['class'];
+
+        $doctrineMetadata = $this->em->getMetadataFactory()->getMetadataFor($entityMetadata['class']);
+
+        // TODO: Check if the entity performs any kind of inheritance: $doctrineMetadata->isInheritanceTypeNone()
+
+        if ('id' !== $doctrineMetadata->identifier[0]) {
+            throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it doesn't define a primary key called 'id'.", $entityMetadata['class']));
+        }
+
+        // add regular entity fields
+        foreach ($doctrineMetadata->fieldMappings as $fieldName => $fieldMetadata) {
+            // field names must be processed to avoid problems in Twig templates
+            $fieldName = str_replace('_', '', $fieldName);
+
+            $entityMetadata['fieldMappings'][$fieldName] = $fieldMetadata;
+        }
+
+        // add fields for entity associations (except many-to-many)
+        foreach ($doctrineMetadata->associationMappings as $fieldName => $associationMetadata) {
+            if (ClassMetadataInfo::MANY_TO_MANY !== $associationMetadata['type']) {
+                $entityMetadata['fieldMappings'][$fieldName] = array(
+                    'association'  => $associationMetadata['type'],
                     'fieldName'    => $fieldName,
+                    'fetch'        => $associationMetadata['fetch'],
+                    'isOwningSide' => $associationMetadata['isOwningSide'],
                     'type'         => 'association',
-                    'targetEntity' => $relation['targetEntity'],
+                    'targetEntity' => $associationMetadata['targetEntity'],
                 );
             }
         }
 
-        $metadata->fieldMappings = array_merge($metadata->fieldMappings, $associationFieldMappings);
-
-        return $metadata;
+        return $entityMetadata;
     }
 
     /**
@@ -408,10 +423,27 @@ class AdminController extends Controller
 
     protected function createEditForm($entity, array $entityFieldsMapping)
     {
-        $form = $this->createFormBuilder($entity);
+        $formTypeMap = array(
+            'boolean' => 'checkbox',
+            'datetime' => 'datetime',
+            'datetimetz' => 'datetime',
+            'text' => 'textarea',
+        );
+
+        $form = $this->createFormBuilder($entity, array(
+            'data_class' => $this->entity['class'],
+        ));
 
         foreach ($entityFieldsMapping as $name => $metadata) {
-            $form->add($name, null, array());
+            if ('association' === $metadata['type'] && !$metadata['isOwningSide']) {
+                continue;
+            }
+
+            $formFieldType = array_key_exists($metadata['type'], $formTypeMap)
+                ? $formTypeMap[$metadata['type']]
+                : null;
+
+            $form->add($name, $formFieldType, array());
         }
 
         return $form->getForm();
@@ -450,12 +482,7 @@ class AdminController extends Controller
 
     protected function createNewForm($entity, array $entityFieldsMapping)
     {
-        $form = $this->createFormBuilder($entity);
-        foreach ($entityFieldsMapping as $name => $metadata) {
-            $form->add($name, null, array());
-        }
-
-        return $form->getForm();
+        return $this->createEditForm($entity, $entityFieldsMapping);
     }
 
     protected function getNameOfTheFirstConfiguredEntity()

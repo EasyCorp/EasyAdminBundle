@@ -45,7 +45,7 @@
                         {% for field, metadata in fields %}
                             {% set isSortingField = metadata.fieldName == app.request.get('sortField') %}
 
-                            <th class="{{ isSortingField ? 'sorted' : '' }}">
+                            <th class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.type|lower }}">
                                 {% if isSortingField %}
                                     {% set sortDirection = ('DESC' == app.request.get('sortDirection')) ? 'ASC' : 'DESC' %}
                                     {% set request_attributes = request_attributes|merge({ sortField: metadata.fieldName }) %}
@@ -85,7 +85,7 @@
                             {% for field, metadata in fields %}
                                 {% set isSortingField = metadata.fieldName == app.request.get('sortField') %}
 
-                                <td class="{{ isSortingField ? 'sorted' : '' }}">
+                                <td class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.type|lower }}">
                                     {{ entity_field(item, field, metadata) }}
                                 </td>
                             {% endfor %}

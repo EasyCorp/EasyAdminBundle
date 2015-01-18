@@ -570,6 +570,11 @@ body.list table tbody td.sorted {
     border-color: #FFF;
 }
 
+body.list table thead th.boolean,
+body.list table tbody td.boolean {
+    text-align: center;
+}
+
 body.list .table thead tr th {
     border-bottom: 2px solid #DBD6DB;
 }

@@ -62,6 +62,11 @@ class EasyAdminExtension extends Extension
             $parts = explode('\\', $entityClass);
             $entityName = array_pop($parts);
 
+            // to avoid entity name collision, make sure that its name is unique
+            while (array_key_exists($entityName, $entities)) {
+                $entityName .= '_';
+            }
+
             $entities[$entityName] = array(
                 'label' => !is_numeric($key) ? $key : $entityName,
                 'name'  => $entityName,
@@ -78,6 +83,11 @@ class EasyAdminExtension extends Extension
         foreach ($config as $customEntityName => $entityConfiguration) {
             $parts = explode('\\', $entityConfiguration['class']);
             $realEntityName = array_pop($parts);
+
+            // to avoid entity name collision, make sure that its name is unique
+            while (array_key_exists($realEntityName, $entities)) {
+                $realEntityName .= '_';
+            }
 
             // copy the original entity to not loose any of its configuration
             $entities[$realEntityName] = $config[$customEntityName];

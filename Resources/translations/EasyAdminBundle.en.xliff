@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Close</target>
+            </trans-unit>
+            <trans-unit id="entity.create">
+                <source>entity.create</source>
+                <target>Create new %entity%</target>
+            </trans-unit>
+            <trans-unit id="list.actions">
+                <source>list.actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            <trans-unit id="list.no_results">
+                <source>list.no_results</source>
+                <target>No results found.</target>
+            </trans-unit>
+            <trans-unit id="entity.edit">
+                <source>entity.edit</source>
+                <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="entity.delete">
+                <source>entity.delete</source>
+                <target>Delete</target>
+            </trans-unit>
+            <trans-unit id="link.back_to_listing">
+                <source>link.back_to_listing</source>
+                <target>Back to listing</target>
+            </trans-unit>
+            <trans-unit id="entity.save_changes">
+                <source>entity.save_changes</source>
+                <target>Save changes</target>
+            </trans-unit>
+            <trans-unit id="paginator.first">
+                <source>paginator.first</source>
+                <target>First</target>
+            </trans-unit>
+            <trans-unit id="paginator.previous">
+                <source>paginator.previous</source>
+                <target>Previous</target>
+            </trans-unit>
+            <trans-unit id="paginator.next">
+                <source>paginator.next</source>
+                <target>Next</target>
+            </trans-unit>
+            <trans-unit id="paginator.last">
+                <source>paginator.last</source>
+                <target>Last</target>
+            </trans-unit>
+            <trans-unit id="paginator.counter">
+                <source>paginator.counter</source>
+                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>]]></target>
+            </trans-unit>
+            <trans-unit id="actions.list">
+                <source>actions.list</source>
+                <target>List</target>
+            </trans-unit>
+            <trans-unit id="actions.edit">
+                <source>actions.edit</source>
+                <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="actions.new">
+                <source>actions.new</source>
+                <target>New</target>
+            </trans-unit>
+            <trans-unit id="actions.show">
+                <source>actions.show</source>
+                <target>Show</target>
+            </trans-unit>
+            <trans-unit id="actions.search">
+                <source>actions.search</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="actions.delete">
+                <source>actions.delete</source>
+                <target>Delete</target>
+            </trans-unit>
+            <trans-unit id="list.results_found">
+                <source>list.results_found</source>
+                <target><![CDATA[{1} <strong>1</strong> result found|]1,Inf] <strong>%count%</strong> results found]]></target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

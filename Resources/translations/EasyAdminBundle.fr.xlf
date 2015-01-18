@@ -34,6 +34,10 @@
         <source>paginator.last</source>
         <target>Dernier</target>
       </trans-unit>
+      <trans-unit id="f3981b88fce3abc19c9204ffd52fb874" resname="paginator.counter">
+        <source>paginator.counter</source>
+        <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> sur <strong>%results%</strong>]]></target>
+      </trans-unit>
       <trans-unit id="f5655c6df0dc76f572fbd9715b92e276" resname="entity.edit">
         <source>entity.edit</source>
         <target>Éditer</target>
@@ -69,46 +73,6 @@
       <trans-unit id="f5ee7da631b579bfedb09148635dfa52" resname="actions.delete">
         <source>actions.delete</source>
         <target>Supprimer</target>
-      </trans-unit>
-      <trans-unit id="f3981b88fce3abc19c9204ffd52fb874" resname="errors.head_error">
-        <source>errors.head_error</source>
-        <target>Erreur</target>
-      </trans-unit>
-      <trans-unit id="38c5d164de721ef2beccdbaeab5a83b5" resname="errors.forbidden_actions">
-        <source>errors.forbidden_actions</source>
-        <target><![CDATA[<h1>Erreur</h1>
-<p class="lead">
-    L'action demandée <code>%action%</code> n'est pas autorisée.
-</p>
-
-<h2>Pour résoudre ce problème</h2>
-
-<ul>
-    <li>
-        Changez cette action pour l'une des actions autorisées suivantes :
-        <code>%allowed_actions%</code>
-    </li>
-    <li>
-        Si l'action est effectivement autorisée, soyez sûr qu'elle est bien
-        incluse dans l'attribut <code>$allowedActions</code> de votre configuration.
-    </li>
-</ul>]]></target>
-      </trans-unit>
-      <trans-unit id="5775cfd52a62619bbab665cd0fc71171" resname="errors.no_entities">
-        <source>errors.no_entities</source>
-        <target><![CDATA[<h1>Erreur de configuration</h1>
-<p class="lead">
-    Votre interface d'administration est vide car vous
-    n'avez pas configuré d'entité Doctrine à gérer dans
-    l'interface.
-</p>
-
-<h2>Pour résoudre ce problème</h2>
-
-<p>
-    Ouvrez le fichier <code>app/config/config.yml</code> et ajoutez la configuration
-    suivante, en remplaçant le nom des entités par celles de votre application :
-</p>]]></target>
       </trans-unit>
       <trans-unit id="81258756bbf8404446823a5bc9f961a8" resname="list.results_found">
         <source>list.results_found</source>

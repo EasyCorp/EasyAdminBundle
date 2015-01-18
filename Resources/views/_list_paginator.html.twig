@@ -3,7 +3,7 @@
     <div class="list-pagination">
         <div class="row">
             <div class="col-sm-2 hidden-xs" class="list-pagination-counter">
-                <strong>{{ paginator.currentPageOffsetStart }}</strong> - <strong>{{ paginator.currentPageOffsetEnd }}</strong> / <strong>{{ paginator.nbResults }}</strong>
+                {{ 'paginator.counter' | trans({"%start%": paginator.currentPageOffsetStart, "%end%": paginator.currentPageOffsetEnd, "%results%": paginator.nbResults}) | raw }}
             </div>
 
             <div class="col-xs-12 col-sm-10">

@@ -35,7 +35,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
     public function displayEntityField($entity, $fieldName, array $fieldMetadata)
     {
-        if ('__inaccessible__' === $value = $this->getEntityProperty($entity, $fieldName)) {
+        if ('__inaccessible_doctrine_property__' === $value = $this->getEntityProperty($entity, $fieldName)) {
             return '<span class="label label-danger" title="Method does not exist or property is not public">inaccessible</span>';
         }
 
@@ -44,6 +44,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
             if (null === $value) {
                 return '<span class="label">NULL</span>';
+            }
+
+            if ('id' === $fieldName) {
+                // return the ID value as is to avoid number formatting
+                return $value;
             }
 
             if (in_array($fieldType, array('date', 'datetime', 'datetimetz'))) {
@@ -119,7 +124,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             return $entity->{$property};
         }
 
-        return '__inaccessible__';
+        return '__inaccessible_doctrine_property__';
     }
 
     public function getName()

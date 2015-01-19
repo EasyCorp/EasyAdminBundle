@@ -113,7 +113,7 @@ class AdminController extends Controller
     /**
      * @return Response
      */
-    public function listAction()
+    protected function listAction()
     {
         $fields = $this->getFieldsForList($this->entity['fieldMappings']);
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list_max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
@@ -129,7 +129,7 @@ class AdminController extends Controller
     /**
      * @return RedirectResponse|Response
      */
-    public function editAction()
+    protected function editAction()
     {
         if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
@@ -159,7 +159,7 @@ class AdminController extends Controller
     /**
      * @return Response
      */
-    public function showAction()
+    protected function showAction()
     {
         if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
@@ -180,7 +180,7 @@ class AdminController extends Controller
     /**
      * @return RedirectResponse|Response
      */
-    public function newAction()
+    protected function newAction()
     {
         $entityFullyQualifiedClassName = $this->entity['class'];
         $item = new $entityFullyQualifiedClassName();
@@ -208,7 +208,7 @@ class AdminController extends Controller
     /**
      * @return RedirectResponse
      */
-    public function deleteAction()
+    protected function deleteAction()
     {
         if ('DELETE' !== $this->request->getMethod()) {
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
@@ -232,7 +232,7 @@ class AdminController extends Controller
     /**
      * @return Response
      */
-    public function searchAction()
+    protected function searchAction()
     {
         $searchableFields = $this->getSearchableFields($this->entity['fieldMappings']);
         $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list_max_results']);

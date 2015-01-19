@@ -84,11 +84,13 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
                 if ($value instanceof PersistentCollection) {
                     return sprintf('<span class="badge">%d</span>', count($value), $associatedEntityClassName);
-                } elseif (method_exists($value, 'getId')) {
-                    return sprintf('<a href="%s">%s</a>', $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId())), $value);
-                } else {
-                    return '';
                 }
+
+                if (method_exists($value, 'getId')) {
+                    return sprintf('<a href="%s">%s</a>', $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId())), $value);
+                }
+
+                return '';
             }
         } catch (\Exception $e) {
             return '';

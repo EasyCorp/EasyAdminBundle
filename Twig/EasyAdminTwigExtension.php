@@ -19,11 +19,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
     const DATE_FORMAT = 'F j, Y H:i';
     const TIME_FORMAT = 'H:i:s';
 
-    private $router;
+    private $urlGenerator;
 
-    public function __construct(UrlGeneratorInterface $router)
+    public function __construct(UrlGeneratorInterface $urlGenerator)
     {
-        $this->router = $router;
+        $this->urlGenerator = $urlGenerator;
     }
 
     public function getFunctions()
@@ -85,7 +85,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 if ($value instanceof PersistentCollection) {
                     return sprintf('<span class="badge">%d</span>', count($value), $associatedEntityClassName);
                 } elseif (method_exists($value, 'getId')) {
-                    return sprintf('<a href="%s">%s</a>', $this->router->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId())), $value);
+                    return sprintf('<a href="%s">%s</a>', $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId())), $value);
                 } else {
                     return '';
                 }

@@ -86,7 +86,7 @@
                 <source>list.results_found</source>
                 <target><![CDATA[{1} <strong>1</strong> result found|]1,Inf] <strong>%count%</strong> results found]]></target>
             </trans-unit>
-            <trans-unit id="ba521bf809a1e4caa44a5359dbe63d19" resname="list.search">
+            <trans-unit id="list.search">
                 <source>list.search</source>
                 <target>Search</target>
             </trans-unit>

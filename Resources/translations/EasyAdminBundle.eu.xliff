@@ -86,6 +86,10 @@
                 <source>list.results_found</source>
                 <target><![CDATA[{1} Emaitza <strong>1</strong> |]1,Inf] <strong>%count%</strong> emaitza]]></target>
             </trans-unit>
+            <trans-unit id="list.search">
+                <source>list.search</source>
+                <target>Bilatu</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

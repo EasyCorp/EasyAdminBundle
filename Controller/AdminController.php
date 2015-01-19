@@ -31,21 +31,11 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 
 /**
  * Class AdminController
- * @package JavierEguiluz\Bundle\EasyAdminBundle\Controller
  */
 class AdminController extends Controller
 {
-    /**
-     * @var array
-     */
     protected $allowedActions = array('list', 'edit', 'new', 'show', 'search', 'delete');
-    /**
-     * @var
-     */
     protected $config;
-    /**
-     * @var array
-     */
     protected $entity = array();
 
     /** @var Request */
@@ -118,8 +108,6 @@ class AdminController extends Controller
         }
 
         $this->request = $request;
-
-        return null;
     }
 
     /**
@@ -202,7 +190,7 @@ class AdminController extends Controller
 
         $newForm->handleRequest($this->request);
         if ($newForm->isValid()) {
-            $item = $this->prepareNewEntityForPersist($item);
+            $this->prepareNewEntityForPersist($item);
             $this->em->persist($item);
             $this->em->flush();
 
@@ -310,7 +298,7 @@ class AdminController extends Controller
      * Allows applications to modify the entity associated with the item being
      * edited before persisting it.
      *
-     * @param object $entity
+     * @param  object $entity
      * @return object
      */
     protected function prepareEditEntityForPersist($entity)
@@ -322,7 +310,7 @@ class AdminController extends Controller
      * Allows applications to modify the entity associated with the item being
      * created before persisting it.
      *
-     * @param object $entity
+     * @param  object $entity
      * @return object
      */
     protected function prepareNewEntityForPersist($entity)
@@ -624,7 +612,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @param string $entityName
+     * @param string  $entityName
      * @param integer $entityId
      *
      * @return Form

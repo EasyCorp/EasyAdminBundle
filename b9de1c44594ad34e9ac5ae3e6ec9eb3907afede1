@@ -1,0 +1,55 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-19T11:41:57Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by ikerib at 2015-01-19T14:16:57Z
+
+jur jur jur arrazoi. I´ll correct it now. I thought it was another thing. Sorry.
+
+---------------------------------------------------------------------------
+
+by ikerib at 2015-01-19T14:21:39Z
+
+It shoul be:
+If singular: "Emaitza 1"
+if plural: "99 emaitza"
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-19T14:24:40Z
+
+@ikerib you are right. To update your translation you only have to change the line 87 by:
+
+```xml
+<target><![CDATA[{1} Emaitza <strong>1</strong>|]1,Inf] <strong>%count%</strong> emaitza]]></target>
+```
+
+And then just do a `git push` again to update the pull request. Thanks!
+
+---------------------------------------------------------------------------
+
+by ikerib at 2015-01-19T14:25:41Z
+
+I should also change the file name from EasyAdminBundle.eus.xliff to EasyAdminBundle.eu.xliff ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-19T14:28:57Z
+
+Good catch! The language code used in the file name should be `eu` because Symfony uses the [ISO 639-1 standard](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-19T14:29:09Z
+
+:+1: for "eu" instead of "eus" :)
+
+---------------------------------------------------------------------------
+
+by ikerib at 2015-01-19T14:30:08Z
+
+done

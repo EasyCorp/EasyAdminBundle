@@ -86,6 +86,10 @@
                 <source>list.no_results</source>
                 <target>Aucun résultat trouvé</target>
             </trans-unit>
+            <trans-unit id="ba521bf809a1e4caa44a5359dbe63d19" resname="list.search">
+                <source>list.search</source>
+                <target>Rechercher</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

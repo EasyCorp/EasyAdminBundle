@@ -30,7 +30,7 @@
                     <div class="input-group">
                         <input type="hidden" name="action" value="search">
                         <input type="hidden" name="entity" value="{{ entity.name }}">
-                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="Search" value="{{ app.request.get('query')|default('') }}">
+                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search' | trans }}" value="{{ app.request.get('query')|default('') }}">
                     </div>
                 </form>
             </div>

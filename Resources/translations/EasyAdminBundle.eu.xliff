@@ -1,106 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" datatype="plaintext" original="file.ext">
+    <file source-language="en" target-language="eu" datatype="plaintext" original="file.ext">
         <body>
             <trans-unit id="header.close">
                 <source>header.close</source>
-                <target>Close</target>
+                <target>Itxi</target>
             </trans-unit>
             <trans-unit id="header.logged_in_as">
                 <source>header.logged_in_as</source>
-                <target>Logged in as</target>
+                <target>Konektatutako erabiltzailea</target>
             </trans-unit>
             <trans-unit id="entity.create">
                 <source>entity.create</source>
-                <target>Create new %entity%</target>
+                <target>%entity%-a sortu</target>
             </trans-unit>
             <trans-unit id="list.actions">
                 <source>list.actions</source>
-                <target>Actions</target>
+                <target>Akzioak</target>
             </trans-unit>
             <trans-unit id="list.no_results">
                 <source>list.no_results</source>
-                <target>No results found.</target>
+                <target>Ez da emaitzarik topatu.</target>
             </trans-unit>
             <trans-unit id="entity.edit">
                 <source>entity.edit</source>
-                <target>Edit</target>
+                <target>Aldatu</target>
             </trans-unit>
             <trans-unit id="entity.delete">
                 <source>entity.delete</source>
-                <target>Delete</target>
+                <target>Ezabatu</target>
             </trans-unit>
             <trans-unit id="link.back_to_listing">
                 <source>link.back_to_listing</source>
-                <target>Back to listing</target>
+                <target>Zerrendara itzuli</target>
             </trans-unit>
             <trans-unit id="entity.save_changes">
                 <source>entity.save_changes</source>
-                <target>Save changes</target>
+                <target>Aldaketak gorde</target>
             </trans-unit>
             <trans-unit id="paginator.first">
                 <source>paginator.first</source>
-                <target>First</target>
+                <target>Lehena</target>
             </trans-unit>
             <trans-unit id="paginator.previous">
                 <source>paginator.previous</source>
-                <target>Previous</target>
+                <target>Aurrekoa</target>
             </trans-unit>
             <trans-unit id="paginator.next">
                 <source>paginator.next</source>
-                <target>Next</target>
+                <target>Hurrengoa</target>
             </trans-unit>
             <trans-unit id="paginator.last">
                 <source>paginator.last</source>
-                <target>Last</target>
+                <target>Azkena</target>
             </trans-unit>
             <trans-unit id="paginator.counter">
                 <source>paginator.counter</source>
-                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>]]></target>
+                <target><![CDATA[<strong>%start%</strong>tik - <strong>%end%</strong>era <strong>%results%</strong>tik]]></target>
             </trans-unit>
             <trans-unit id="actions.cancel">
                 <source>actions.cancel</source>
-                <target>Cancel</target>
+                <target>Ezeztatu</target>
             </trans-unit>
             <trans-unit id="actions.list">
                 <source>actions.list</source>
-                <target>List</target>
+                <target>Zerrenda</target>
             </trans-unit>
             <trans-unit id="actions.edit">
                 <source>actions.edit</source>
-                <target>Edit</target>
+                <target>Aldatu</target>
             </trans-unit>
             <trans-unit id="actions.new">
                 <source>actions.new</source>
-                <target>New</target>
+                <target>Sortu</target>
             </trans-unit>
             <trans-unit id="actions.show">
                 <source>actions.show</source>
-                <target>Show</target>
+                <target>Ikusi</target>
             </trans-unit>
             <trans-unit id="actions.search">
                 <source>actions.search</source>
-                <target>Search</target>
+                <target>Bilatu</target>
             </trans-unit>
             <trans-unit id="actions.delete">
                 <source>actions.delete</source>
-                <target>Delete</target>
+                <target>Ezabatu</target>
             </trans-unit>
             <trans-unit id="list.results_found">
                 <source>list.results_found</source>
-                <target><![CDATA[{1} <strong>1</strong> result found|]1,Inf] <strong>%count%</strong> results found]]></target>
+                <target><![CDATA[{1} Emaitza <strong>1</strong> |]1,Inf] <strong>%count%</strong> emaitza]]></target>
             </trans-unit>
             <trans-unit id="list.search">
                 <source>list.search</source>
-                <target>Search</target>
+                <target>Bilatu</target>
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>Do you really want to delete this item?</target>
+                <target>Ziur zaude elementu hau ezabatu nahi duzula?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>There is no undo for this operation.</target>
+                <target>Ekintza hau ezin da desegin.</target>
             </trans-unit>
         </body>
     </file>

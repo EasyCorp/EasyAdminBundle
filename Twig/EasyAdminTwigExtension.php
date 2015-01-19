@@ -12,7 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\PersistentCollection;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class EasyAdminTwigExtension extends \Twig_Extension
 {
@@ -21,7 +21,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
     private $router;
 
-    public function __construct(Router $router)
+    public function __construct(UrlGeneratorInterface $router)
     {
         $this->router = $router;
     }

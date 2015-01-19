@@ -25,7 +25,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('site_name')
                     ->defaultValue('Easy Admin')
-                    ->info('The name displayed as the title of the administration zone (e.g. comapny name, project name).')
+                    ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
                 ->integerNode('list_max_results')
                     ->defaultValue(15)

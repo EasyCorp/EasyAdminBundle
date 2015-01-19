@@ -17,7 +17,10 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -26,20 +29,36 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 
+/**
+ * Class AdminController
+ * @package JavierEguiluz\Bundle\EasyAdminBundle\Controller
+ */
 class AdminController extends Controller
 {
+    /**
+     * @var array
+     */
     protected $allowedActions = array('list', 'edit', 'new', 'show', 'search', 'delete');
+    /**
+     * @var
+     */
     protected $config;
+    /**
+     * @var array
+     */
     protected $entity = array();
 
     /** @var Request */
     protected $request;
 
-    /** @var ObjectManager */
+    /** @var EntityManager */
     protected $em;
 
     /**
      * @Route("/", name="admin")
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
      */
     public function indexAction(Request $request)
     {
@@ -61,6 +80,11 @@ class AdminController extends Controller
         return $this->{$action.'Action'}();
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response|null
+     */
     protected function initialize(Request $request)
     {
         $this->config = $this->container->getParameter('easy_admin.config');
@@ -94,8 +118,13 @@ class AdminController extends Controller
         }
 
         $this->request = $request;
+
+        return null;
     }
 
+    /**
+     * @return Response
+     */
     public function listAction()
     {
         $fields = $this->getFieldsForList($this->entity['fieldMappings']);
@@ -109,6 +138,9 @@ class AdminController extends Controller
         ));
     }
 
+    /**
+     * @return RedirectResponse|Response
+     */
     public function editAction()
     {
         if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
@@ -121,7 +153,7 @@ class AdminController extends Controller
 
         $editForm->handleRequest($this->request);
         if ($editForm->isValid()) {
-            $item = $this->prepareEditEntityForPersist($item);
+            $this->prepareEditEntityForPersist($item);
             $this->em->flush();
 
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
@@ -136,6 +168,9 @@ class AdminController extends Controller
         ));
     }
 
+    /**
+     * @return Response
+     */
     public function showAction()
     {
         if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
@@ -154,6 +189,9 @@ class AdminController extends Controller
         ));
     }
 
+    /**
+     * @return RedirectResponse|Response
+     */
     public function newAction()
     {
         $entityFullyQualifiedClassName = $this->entity['class'];
@@ -179,9 +217,12 @@ class AdminController extends Controller
         ));
     }
 
+    /**
+     * @return RedirectResponse
+     */
     public function deleteAction()
     {
-        if ('DELETE' !== $this->request->query->getMethod()) {
+        if ('DELETE' !== $this->request->getMethod()) {
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
         }
 
@@ -200,6 +241,9 @@ class AdminController extends Controller
         return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
     }
 
+    /**
+     * @return Response
+     */
     public function searchAction()
     {
         $searchableFields = $this->getSearchableFields($this->entity['fieldMappings']);
@@ -216,6 +260,10 @@ class AdminController extends Controller
 
     /**
      * Takes the FQCN of the Doctrine entity and returns all its configured metadata.
+     *
+     * @param string $entityName Entity FQCN
+     *
+     * @return array
      */
     protected function getEntityMetadata($entityName)
     {
@@ -224,11 +272,12 @@ class AdminController extends Controller
         $entityMetadata['name'] = $entityName;
         $entityMetadata['class'] = $this->config['entities'][$entityName]['class'];
 
+        /** @var ClassMetadata $doctrineMetadata */
         $doctrineMetadata = $this->em->getMetadataFactory()->getMetadataFor($entityMetadata['class']);
 
         // TODO: Check if the entity performs any kind of inheritance: $doctrineMetadata->isInheritanceTypeNone()
 
-        if ('id' !== $doctrineMetadata->identifier[0]) {
+        if ('id' !== $doctrineMetadata->getSingleIdentifierFieldName()) {
             throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it doesn't define a primary key called 'id'.", $entityMetadata['class']));
         }
 
@@ -260,6 +309,9 @@ class AdminController extends Controller
     /**
      * Allows applications to modify the entity associated with the item being
      * edited before persisting it.
+     *
+     * @param object $entity
+     * @return object
      */
     protected function prepareEditEntityForPersist($entity)
     {
@@ -269,6 +321,9 @@ class AdminController extends Controller
     /**
      * Allows applications to modify the entity associated with the item being
      * created before persisting it.
+     *
+     * @param object $entity
+     * @return object
      */
     protected function prepareNewEntityForPersist($entity)
     {
@@ -277,6 +332,10 @@ class AdminController extends Controller
 
     /**
      * These are the entity fields on which the query is performed.
+     *
+     * @param array $entityFields
+     *
+     * @return array
      */
     protected function getSearchableFields(array $entityFields)
     {
@@ -288,6 +347,10 @@ class AdminController extends Controller
 
     /**
      * These are the entity fields displayed in the listings.
+     *
+     * @param array $entityFields
+     *
+     * @return array
      */
     protected function getFieldsForList(array $entityFields)
     {
@@ -300,6 +363,12 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     * @param array $fields
+     * @param array $whiteList
+     *
+     * @return array
+     */
     protected function filterEntityFieldsBasedOnWhitelist(array $fields, array $whiteList)
     {
         $filteredFields = array();
@@ -323,6 +392,13 @@ class AdminController extends Controller
         return $filteredFields;
     }
 
+    /**
+     * @param array $fields
+     * @param array $fieldNameBlackList
+     * @param array $fieldTypeBlackList
+     *
+     * @return array
+     */
     protected function filterEntityFieldsBasedOnNameAndTypeBlackList(array $fields, array $fieldNameBlackList, array $fieldTypeBlackList)
     {
         $filteredFields = array();
@@ -336,6 +412,11 @@ class AdminController extends Controller
         return $filteredFields;
     }
 
+    /**
+     * @param array $fields
+     *
+     * @return array
+     */
     protected function filterListFieldsBasedOnSmartGuesses(array $fields)
     {
         // empirical guess: listings with more than 8 fields look ugly
@@ -367,6 +448,10 @@ class AdminController extends Controller
 
     /**
      * These are the entity fields displayed in the 'show' action.
+     *
+     * @param array $entityFields
+     *
+     * @return array
      */
     protected function getFieldsForShow(array $entityFields)
     {
@@ -375,12 +460,25 @@ class AdminController extends Controller
 
     /**
      * These are the fields displayed in the search results listings
+     *
+     * @param array $entityFields
+     *
+     * @return array
      */
     protected function getFieldsForSearch(array $entityFields)
     {
         return $this->getFieldsForList($entityFields);
     }
 
+    /**
+     * @param string $entityClass
+     * @param int    $page
+     * @param int    $maxPerPage
+     * @param string $sortField
+     * @param string $sortDirection
+     *
+     * @return Pagerfanta
+     */
     protected function findAll($entityClass, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null)
     {
         $query = $this->em->createQueryBuilder()
@@ -403,6 +501,15 @@ class AdminController extends Controller
         return $paginator;
     }
 
+    /**
+     * @param string $entityClass
+     * @param string $searchQuery
+     * @param array  $searchableFields
+     * @param int    $page
+     * @param int    $maxPerPage
+     *
+     * @return Pagerfanta
+     */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
     {
         $query = $this->em->createQueryBuilder()
@@ -421,6 +528,12 @@ class AdminController extends Controller
         return $paginator;
     }
 
+    /**
+     * @param object $entity
+     * @param array  $entityFieldsMapping
+     *
+     * @return Form
+     */
     protected function createEditForm($entity, array $entityFieldsMapping)
     {
         $formTypeMap = array(
@@ -451,6 +564,10 @@ class AdminController extends Controller
 
     /**
      * These are the entity fields included in the form displayed for the 'edit' action.
+     *
+     * @param array $entityFields
+     *
+     * @return array
      */
     protected function getFieldsForEdit(array $entityFields)
     {
@@ -466,6 +583,11 @@ class AdminController extends Controller
         return $this->filterEntityFieldsBasedOnNameAndTypeBlackList($entityFields, $excludedFieldNames, $excludedFieldTypes);
     }
 
+    /**
+     * @param array $entityFields
+     *
+     * @return array
+     */
     protected function getFieldsForNew(array $entityFields)
     {
         $entityConfiguration = $this->config['entities'][$this->entity['name']];
@@ -480,11 +602,20 @@ class AdminController extends Controller
         return $this->filterEntityFieldsBasedOnNameAndTypeBlackList($entityFields, $excludedFieldNames, $excludedFieldTypes);
     }
 
+    /**
+     * @param object $entity
+     * @param array  $entityFieldsMapping
+     *
+     * @return Form
+     */
     protected function createNewForm($entity, array $entityFieldsMapping)
     {
         return $this->createEditForm($entity, $entityFieldsMapping);
     }
 
+    /**
+     * @return mixed
+     */
     protected function getNameOfTheFirstConfiguredEntity()
     {
         $entityNames = array_keys($this->config['entities']);
@@ -492,6 +623,12 @@ class AdminController extends Controller
         return $entityNames[0];
     }
 
+    /**
+     * @param string $entityName
+     * @param integer $entityId
+     *
+     * @return Form
+     */
     protected function createDeleteForm($entityName, $entityId)
     {
         return $this->createFormBuilder()
@@ -502,6 +639,12 @@ class AdminController extends Controller
         ;
     }
 
+    /**
+     * @param string $view
+     * @param array  $parameters
+     *
+     * @return Response
+     */
     protected function render404error($view, array $parameters = array())
     {
         return $this->render($view, $parameters, new Response('', 404));

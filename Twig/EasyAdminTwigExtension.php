@@ -118,13 +118,17 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
         }
 
-        // if no method exists, look for public properties
-        $propertyMetadata = new \ReflectionProperty($entity, $property);
-        if (property_exists($entity, $property) && $propertyMetadata->isPublic()) {
-            return $entity->{$property};
+        // if no method exists, look for a public property
+        if (!property_exists($entity, $property)) {
+            return '__inaccessible_doctrine_property__';
         }
 
-        return '__inaccessible_doctrine_property__';
+        $propertyMetadata = new \ReflectionProperty($entity, $property);
+        if (!$propertyMetadata->isPublic()) {
+            return '__inaccessible_doctrine_property__';
+        }
+
+        return $entity->{$property};
     }
 
     public function getName()

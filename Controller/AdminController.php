@@ -18,14 +18,13 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 
@@ -71,13 +70,18 @@ class AdminController extends Controller
     }
 
     /**
-     * @param Request $request
+     * Utility method which initializes the configuration of the entity on which
+     * the user is performing the action.
      *
+     * If everything goes right, it returns null. If there is any error, it
+     * returns a 404 error page using a Response object.
+     *
+     * @param  Request       $request
      * @return Response|null
      */
     protected function initialize(Request $request)
     {
-        $this->config = $this->container->getParameter('easy_admin.config');
+        $this->config = $this->container->getParameter('easyadmin.config');
 
         if (0 === count($this->config['entities'])) {
             return $this->render404error('@EasyAdmin/error/no_entities.html.twig');
@@ -97,7 +101,7 @@ class AdminController extends Controller
                 return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
             }
 
-            $this->entity = $this->getEntityMetadata($entityName);
+            $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
         }
 
         if (!$request->query->has('sortField')) {
@@ -111,11 +115,13 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a 'list' action on an entity.
+     *
      * @return Response
      */
     protected function listAction()
     {
-        $fields = $this->getFieldsForList($this->entity['fieldMappings']);
+        $fields = $this->entity['list']['fields'];
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list_max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
         return $this->render('@EasyAdmin/list.html.twig', array(
@@ -127,6 +133,8 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a 'edit' action on an entity.
+     *
      * @return RedirectResponse|Response
      */
     protected function editAction()
@@ -135,7 +143,7 @@ class AdminController extends Controller
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
         }
 
-        $fields = $this->getFieldsForEdit($this->entity['fieldMappings']);
+        $fields = $this->entity['edit']['fields'];
         $editForm = $this->createEditForm($item, $fields);
         $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
 
@@ -148,15 +156,18 @@ class AdminController extends Controller
         }
 
         return $this->render('@EasyAdmin/edit.html.twig', array(
-            'config' => $this->config,
-            'entity' => $this->entity,
-            'form'   => $editForm->createView(),
-            'item'   => $item,
-            'delete_form' => $deleteForm->createView(),
+            'config'        => $this->config,
+            'entity'        => $this->entity,
+            'form'          => $editForm->createView(),
+            'entity_fields' => $fields,
+            'item'          => $item,
+            'delete_form'   => $deleteForm->createView(),
         ));
     }
 
     /**
+     * The method that is executed when the user performs a 'show' action on an entity.
+     *
      * @return Response
      */
     protected function showAction()
@@ -165,7 +176,7 @@ class AdminController extends Controller
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
         }
 
-        $fields = $this->getFieldsForShow($this->entity['fieldMappings']);
+        $fields = $this->getFieldsForShow($this->entity['properties']);
         $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
 
         return $this->render('@EasyAdmin/show.html.twig', array(
@@ -178,6 +189,8 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a 'new' action on an entity.
+     *
      * @return RedirectResponse|Response
      */
     protected function newAction()
@@ -185,7 +198,7 @@ class AdminController extends Controller
         $entityFullyQualifiedClassName = $this->entity['class'];
         $item = new $entityFullyQualifiedClassName();
 
-        $fields = $this->getFieldsForNew($this->entity['fieldMappings']);
+        $fields = $fields = $this->entity['new']['fields'];
         $newForm = $this->createNewForm($item, $fields);
 
         $newForm->handleRequest($this->request);
@@ -198,14 +211,18 @@ class AdminController extends Controller
         }
 
         return $this->render('@EasyAdmin/new.html.twig', array(
-            'config' => $this->config,
-            'entity' => $this->entity,
-            'form'   => $newForm->createView(),
-            'item'   => $item,
+            'config'        => $this->config,
+            'entity'        => $this->entity,
+            'form'          => $newForm->createView(),
+            'entity_fields' => $fields,
+            'item'          => $item,
         ));
     }
 
     /**
+     * The method that is executed when the user performs a 'delete' action to
+     * remove any entity.
+     *
      * @return RedirectResponse
      */
     protected function deleteAction()
@@ -230,13 +247,14 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a query on an entity.
      * @return Response
      */
     protected function searchAction()
     {
-        $searchableFields = $this->getSearchableFields($this->entity['fieldMappings']);
+        $searchableFields = $this->entity['search']['fields'];
         $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list_max_results']);
-        $fields = $this->getFieldsForSearch($this->entity['fieldMappings']);
+        $fields = $this->entity['list']['fields'];
 
         return $this->render('@EasyAdmin/list.html.twig', array(
             'config'    => $this->config,
@@ -244,54 +262,6 @@ class AdminController extends Controller
             'paginator' => $paginator,
             'fields'    => $fields,
         ));
-    }
-
-    /**
-     * Takes the FQCN of the Doctrine entity and returns all its configured metadata.
-     *
-     * @param string $entityName Entity FQCN
-     *
-     * @return array
-     */
-    protected function getEntityMetadata($entityName)
-    {
-        $entityMetadata = array();
-
-        $entityMetadata['name'] = $entityName;
-        $entityMetadata['class'] = $this->config['entities'][$entityName]['class'];
-
-        /** @var ClassMetadata $doctrineMetadata */
-        $doctrineMetadata = $this->em->getMetadataFactory()->getMetadataFor($entityMetadata['class']);
-
-        // TODO: Check if the entity performs any kind of inheritance: $doctrineMetadata->isInheritanceTypeNone()
-
-        if ('id' !== $doctrineMetadata->getSingleIdentifierFieldName()) {
-            throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it doesn't define a primary key called 'id'.", $entityMetadata['class']));
-        }
-
-        // add regular entity fields
-        foreach ($doctrineMetadata->fieldMappings as $fieldName => $fieldMetadata) {
-            // field names must be processed to avoid problems in Twig templates
-            $fieldName = str_replace('_', '', $fieldName);
-
-            $entityMetadata['fieldMappings'][$fieldName] = $fieldMetadata;
-        }
-
-        // add fields for entity associations (except many-to-many)
-        foreach ($doctrineMetadata->associationMappings as $fieldName => $associationMetadata) {
-            if (ClassMetadataInfo::MANY_TO_MANY !== $associationMetadata['type']) {
-                $entityMetadata['fieldMappings'][$fieldName] = array(
-                    'association'  => $associationMetadata['type'],
-                    'fieldName'    => $fieldName,
-                    'fetch'        => $associationMetadata['fetch'],
-                    'isOwningSide' => $associationMetadata['isOwningSide'],
-                    'type'         => 'association',
-                    'targetEntity' => $associationMetadata['targetEntity'],
-                );
-            }
-        }
-
-        return $entityMetadata;
     }
 
     /**
@@ -319,122 +289,6 @@ class AdminController extends Controller
     }
 
     /**
-     * These are the entity fields on which the query is performed.
-     *
-     * @param array $entityFields
-     *
-     * @return array
-     */
-    protected function getSearchableFields(array $entityFields)
-    {
-        $excludedFieldNames = array();
-        $excludedFieldTypes = array('association', 'binary', 'blob', 'date', 'datetime', 'datetimetz', 'guid', 'time', 'object');
-
-        return $this->filterEntityFieldsBasedOnNameAndTypeBlackList($entityFields, $excludedFieldNames, $excludedFieldTypes);
-    }
-
-    /**
-     * These are the entity fields displayed in the listings.
-     *
-     * @param array $entityFields
-     *
-     * @return array
-     */
-    protected function getFieldsForList(array $entityFields)
-    {
-        $entityConfiguration = $this->config['entities'][$this->entity['name']];
-
-        if (array_key_exists('list', $entityConfiguration) && array_key_exists('fields', $entityConfiguration['list'])) {
-            return $this->filterEntityFieldsBasedOnWhitelist($entityFields, $entityConfiguration['list']['fields']);
-        } else {
-            return $this->filterListFieldsBasedOnSmartGuesses($entityFields);
-        }
-    }
-
-    /**
-     * @param array $fields
-     * @param array $whiteList
-     *
-     * @return array
-     */
-    protected function filterEntityFieldsBasedOnWhitelist(array $fields, array $whiteList)
-    {
-        $filteredFields = array();
-
-        foreach ($whiteList as $fieldName) {
-            if (array_key_exists($fieldName, $fields)) {
-                // these are the real fields defined in the Entity configuration
-                // just copy the mapping information provided by Doctrine
-                $filteredFields[$fieldName] = $fields[$fieldName];
-            } else {
-                // these fields aren't real entity properties but methods
-                // they are used to display 'virtual fields' based on
-                // entity methods (e.g. public function getFullName() { return $this->name.' '.$this->surname; } )
-                $filteredFields[$fieldName] = array(
-                    'fieldName' => $fieldName,
-                    'type'      => 'virtual',
-                );
-            }
-        }
-
-        return $filteredFields;
-    }
-
-    /**
-     * @param array $fields
-     * @param array $fieldNameBlackList
-     * @param array $fieldTypeBlackList
-     *
-     * @return array
-     */
-    protected function filterEntityFieldsBasedOnNameAndTypeBlackList(array $fields, array $fieldNameBlackList, array $fieldTypeBlackList)
-    {
-        $filteredFields = array();
-
-        foreach ($fields as $name => $metadata) {
-            if (!in_array($name, $fieldNameBlackList) && !in_array($metadata['type'], $fieldTypeBlackList)) {
-                $filteredFields[$name] = $fields[$name];
-            }
-        }
-
-        return $filteredFields;
-    }
-
-    /**
-     * @param array $fields
-     *
-     * @return array
-     */
-    protected function filterListFieldsBasedOnSmartGuesses(array $fields)
-    {
-        // empirical guess: listings with more than 8 fields look ugly
-        $maxListFields = 8;
-        $excludedFieldNames = array('slug', 'password', 'salt', 'updatedAt');
-        $excludedFieldTypes = array('array', 'binary', 'blob', 'guid', 'json_array', 'object', 'simple_array', 'text');
-
-        // if the entity has few fields, show them all
-        if (count($fields) <= $maxListFields) {
-            return $fields;
-        }
-
-        // if the entity has a lot of fields, try to guess which fields we can remove
-        $filteredFields = $fields;
-        foreach ($fields as $name => $metadata) {
-            if (in_array($name, $excludedFieldNames) || in_array($metadata['type'], $excludedFieldTypes)) {
-                unset($filteredFields[$name]);
-
-                // whenever a field is removed, check again if we are below the acceptable number of fields
-                if (count($filteredFields) <= $maxListFields) {
-                    return $filteredFields;
-                }
-            }
-        }
-
-        // if the entity has still a lot of remaining fields, just slice the last ones
-        return array_slice($filteredFields, 0, $maxListFields);
-    }
-
-    /**
      * These are the entity fields displayed in the 'show' action.
      *
      * @param array $entityFields
@@ -447,25 +301,16 @@ class AdminController extends Controller
     }
 
     /**
-     * These are the fields displayed in the search results listings
+     * Performs a database query to get all the records related to the given
+     * entity. It supports pagination and field sorting.
      *
-     * @param array $entityFields
-     *
-     * @return array
-     */
-    protected function getFieldsForSearch(array $entityFields)
-    {
-        return $this->getFieldsForList($entityFields);
-    }
-
-    /**
      * @param string $entityClass
      * @param int    $page
      * @param int    $maxPerPage
      * @param string $sortField
      * @param string $sortDirection
      *
-     * @return Pagerfanta
+     * @return Pagerfanta The paginated query results
      */
     protected function findAll($entityClass, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null)
     {
@@ -490,13 +335,16 @@ class AdminController extends Controller
     }
 
     /**
+     * Performs a database query based on the search query provided by the user.
+     * It supports pagination and field sorting.
+     *
      * @param string $entityClass
      * @param string $searchQuery
      * @param array  $searchableFields
      * @param int    $page
      * @param int    $maxPerPage
      *
-     * @return Pagerfanta
+     * @return Pagerfanta The paginated query results
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
     {
@@ -517,91 +365,58 @@ class AdminController extends Controller
     }
 
     /**
+     * Creates the form used to edit an entity.
+     *
      * @param object $entity
-     * @param array  $entityFieldsMapping
+     * @param array  $entityProperties
      *
      * @return Form
      */
-    protected function createEditForm($entity, array $entityFieldsMapping)
+    protected function createEditForm($entity, array $entityProperties)
     {
-        $formTypeMap = array(
-            'boolean' => 'checkbox',
-            'datetime' => 'datetime',
-            'datetimetz' => 'datetime',
-            'text' => 'textarea',
-        );
-
         $form = $this->createFormBuilder($entity, array(
             'data_class' => $this->entity['class'],
         ));
 
-        foreach ($entityFieldsMapping as $name => $metadata) {
-            if ('association' === $metadata['type'] && !$metadata['isOwningSide']) {
+        foreach ($entityProperties as $name => $metadata) {
+            $formFieldOptions = array();
+
+            if (array_key_exists('association', $metadata) && in_array($metadata['association'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
                 continue;
             }
 
-            $formFieldType = array_key_exists($metadata['type'], $formTypeMap)
-                ? $formTypeMap[$metadata['type']]
-                : null;
+            if ('collection' === $metadata['type']) {
+                $formFieldOptions = array(
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'delete_empty' => true,
+                );
+            }
 
-            $form->add($name, $formFieldType, array());
+            $form->add($name, $metadata['type'], $formFieldOptions);
         }
 
         return $form->getForm();
     }
 
     /**
-     * These are the entity fields included in the form displayed for the 'edit' action.
+     * Creates the form used to create an entity.
      *
-     * @param array $entityFields
-     *
-     * @return array
-     */
-    protected function getFieldsForEdit(array $entityFields)
-    {
-        $entityConfiguration = $this->config['entities'][$this->entity['name']];
-
-        if (array_key_exists('edit', $entityConfiguration) && array_key_exists('fields', $entityConfiguration['edit'])) {
-            return $this->filterEntityFieldsBasedOnWhitelist($entityFields, $entityConfiguration['edit']['fields']);
-        }
-
-        $excludedFieldNames = array('id');
-        $excludedFieldTypes = array('binary', 'blob', 'json_array', 'object');
-
-        return $this->filterEntityFieldsBasedOnNameAndTypeBlackList($entityFields, $excludedFieldNames, $excludedFieldTypes);
-    }
-
-    /**
-     * @param array $entityFields
-     *
-     * @return array
-     */
-    protected function getFieldsForNew(array $entityFields)
-    {
-        $entityConfiguration = $this->config['entities'][$this->entity['name']];
-
-        if (array_key_exists('new', $entityConfiguration) && array_key_exists('fields', $entityConfiguration['new'])) {
-            return $this->filterEntityFieldsBasedOnWhitelist($entityFields, $entityConfiguration['new']['fields']);
-        }
-
-        $excludedFieldNames = array('id');
-        $excludedFieldTypes = array();
-
-        return $this->filterEntityFieldsBasedOnNameAndTypeBlackList($entityFields, $excludedFieldNames, $excludedFieldTypes);
-    }
-
-    /**
      * @param object $entity
-     * @param array  $entityFieldsMapping
+     * @param array  $entityProperties
      *
      * @return Form
      */
-    protected function createNewForm($entity, array $entityFieldsMapping)
+    protected function createNewForm($entity, array $entityProperties)
     {
-        return $this->createEditForm($entity, $entityFieldsMapping);
+        return $this->createEditForm($entity, $entityProperties);
     }
 
     /**
+     * It returns the name of the first entity configured in the backend. It's
+     * mainly used to redirect the homepage of the backend to the listing of the
+     * first configured entity.
+     *
      * @return mixed
      */
     protected function getNameOfTheFirstConfiguredEntity()
@@ -612,6 +427,10 @@ class AdminController extends Controller
     }
 
     /**
+     * Creates the form used to delete an entity. It must be a form because
+     * the deletion of the entity are always performed with the 'DELETE' HTTP method,
+     * which requires a form to work in the current browsers.
+     *
      * @param string  $entityName
      * @param integer $entityId
      *
@@ -628,6 +447,8 @@ class AdminController extends Controller
     }
 
     /**
+     * Utility shortcut to render a template as a 404 error page.
+     *
      * @param string $view
      * @param array  $parameters
      *

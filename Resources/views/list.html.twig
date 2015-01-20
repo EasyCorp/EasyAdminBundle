@@ -43,17 +43,17 @@
                 <thead>
                     <tr>
                         {% for field, metadata in fields %}
-                            {% set isSortingField = metadata.fieldName == app.request.get('sortField') %}
+                            {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
                             <th class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.type|lower }}">
                                 {% if isSortingField %}
                                     {% set sortDirection = ('DESC' == app.request.get('sortDirection')) ? 'ASC' : 'DESC' %}
-                                    {% set request_attributes = request_attributes|merge({ sortField: metadata.fieldName }) %}
+                                    {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
                                 {% endif %}
 
                                 {# for now you cannot sort by virtual fields not directly mapped to entity attributes #}
-                                {% if metadata.type != 'virtual' %}
-                                    <a href="{{ path('admin', request_attributes|merge({ sortField: metadata.fieldName, sortDirection: sortDirection|default('DESC') })) }}">
+                                {% if not metadata.virtual|default(false) %}
+                                    <a href="{{ path('admin', request_attributes|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
                                         {% if isSortingField and sortDirection == 'DESC' %}
                                             <i class="fa fa-caret-up"></i>
                                         {% elseif isSortingField and sortDirection == 'ASC' %}
@@ -62,14 +62,20 @@
                                             <i class="fa fa-sort"></i>
                                         {% endif %}
 
-                                        {% if 'id' == metadata.fieldName %}
+                                        {% if metadata.label %}
+                                            {{ metadata.label }}
+                                        {% elseif 'id' == metadata.property %}
                                             ID
                                         {% else %}
                                             {{ field|humanize }}
                                         {% endif %}
                                     </a>
                                 {% else %}
-                                    <span>{{ field|humanize }}</span>
+                                    {% if metadata.label %}
+                                        <span>{{ metadata.label }}</span>
+                                    {% else %}
+                                        <span>{{ field|humanize }}</span>
+                                    {% endif %}
                                 {% endif %}
                             </th>
                         {% endfor %}
@@ -83,7 +89,7 @@
                     {% for item in paginator.currentPageResults %}
                         <tr>
                             {% for field, metadata in fields %}
-                                {% set isSortingField = metadata.fieldName == app.request.get('sortField') %}
+                                {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
                                 <td class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.type|lower }}">
                                     {{ entity_field(item, field, metadata) }}
@@ -92,7 +98,7 @@
                                 <td class="actions">
                                     {% for action in config['list_actions'] %}
                                         <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, 'id') }) }}">
-                                            {{ ('actions.'~action)|trans }}
+                                            {{ ('actions.' ~ action)|trans }}
                                         </a>
                                     {% endfor %}
                                 </td>

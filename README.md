@@ -11,7 +11,6 @@ with unprecedented simplicity.
   * **CRUD** operations on Doctrine entities (create, edit, list, delete).
   * Full-text **search**, **pagination** and column **sorting**.
   * Fully **responsive** design with four break points.
-  * **Lightweight** (less than 500 lines of code).
   * **Fast**, **simple** and **smart** where appropriate.
 
 **Requirements**
@@ -240,6 +239,31 @@ easy_admin:
 
 In the current version of EasyAdmin you cannot define custom actions.
 
+### Customize the Labels of the Columns Displayed in Listings
+
+By default, listing column labels are a "humanized" version of the original
+name of the related Doctrine entity property. If your property is called
+`published`, the column label will be `Published` and if your property is
+called `dateOfBirth`, the column label will be `Date of birth`.
+
+In case you want to define a custom label for one or all columns, just use the
+following expanded configuration:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: ['id', 'name', { property: 'email', label: 'Contact' }]
+    # ...
+```
+
+Instead of using a string to define the name of the property (e.g. `email`) you
+have to define a hash with the name of the property (`property: 'email'`) and
+the custom label you want to display (`label: 'Contact'`).
+
 ### Customize the Columns Displayed in Listings
 
 By default, the backend makes some "smart guesses" to decide which columns to
@@ -324,7 +348,7 @@ That's it. Reload your backend and you'll see the new virtual field displayed
 in the entity listing. The only current limitation of virtual fields is that
 you cannot reorder listings using these fields.
 
-### Customize the Fields Displayed in Forms
+### Customize which Fields are Displayed in Forms
 
 By default, the forms used to create and edit entities display all their
 properties. Customize any of these forms for any of your entities using the
@@ -341,6 +365,88 @@ easy_admin:
                 fields: ['firstName', 'secondName', 'phone', 'email', 'creditLimit']
     # ...
 ```
+
+### Customize the Order of the Fields Displayed in Forms
+
+By default, forms show their fields in the same order as they were defined in
+the associated entities. You could customize the fields order just by
+reordering the entity properties, but it's more convenient to just define the
+order using the `fields` option of the `new` and `edit` options:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            edit:
+                fields: ['firstName', 'secondName', 'phone', 'email']
+            new:
+                fields: ['firstName', 'secondName', 'phone', 'email']
+    # ...
+```
+
+### Customize the Fields Displayed in Forms
+
+By default, all form fields are displayed with the same visual style, they
+don't show any help message, and their label and field type are inferred from
+their associated Doctrine property.
+
+In case you want to customize any or all form fields, use the extended form
+field configuration showed below:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            edit:
+                fields: [
+                    'id',
+                    { property: 'email', type: 'email', label: 'Contact' },
+                    { property: 'code', type: 'number', label: 'Customer Code', class: 'input-lg' }
+                    { property: 'notes', help: 'Use this field to add private notes and comments about the client' }
+                    { property: 'zone', type: 'country' }
+                ]
+    # ...
+```
+
+These are the options that you can define for form fields:
+
+  * `property`: it's the name of the associated Doctrine entity property. It
+    can be a real property or a "virtual property" based on an entity method.
+    This is the only mandatory option.
+  * `type`: it's the type of form field that will be displayed. If you don't
+    specify a type, EasyAdmin will guess the best type for it. For now, you
+    can only use any of the valid [Symfony Form Types](http://symfony.com/doc/current/reference/forms/types.html).
+  * `label`: it's the title that will be displayed for the form field. The
+    default title is the "humanized" version of the property name.
+  * `help`: it's the help message that will be displayed below the form field.
+  * `class`: it's the CSS class that will be applied to the form field widget.
+    For example, to display a big input field, use the Bootstrap 3 class called
+    `input-lg`.
+
+Even if you can define different options for the fields used in the `new` and
+`edit` action, most of the times they will be exactly the same. If that's your
+case, define the options in the special `form` action instead of duplicating
+the `new` and `edit` configuration:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:  # <-- 'form' is applied to both 'new' and 'edit' actions
+                fields: [
+                    'id',
+                    { property: 'email', type: 'email', label: 'Contact' },
+                    ...
+                ]
+    # ...
+```
+
+If `new` or `edit` options are defined, they will always be used, regardless
+of the `form` option. In other words, `form` and `new`/`edit` are mutually
+exclusive options.
 
 ### Customize the Visual Design of the Backend
 
@@ -524,11 +630,64 @@ The example above is trivial, but your custom admin controller can be as
 complex as needed. In fact, you can override any of the original controller's
 methods to customize the backend as much as you need.
 
+### Advanced Customization of the Fields Displayed in Forms
+
+The previous sections showed how to tweak the fields displayed in the `edit`
+and `new` forms using some simple options. When the field customization is
+more  deep, you should override the `configureEditForm()` method in your own
+admin controller.
+
+In this example, the form of the `Event` entity is tweaked to change the
+regular `city` field by a `choice` form field with custom and limited choices:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
+use AppBundle\Entity\Event;
+
+class AdminController extends EasyAdminController
+{
+    /**
+     * @Route("/admin/", name="admin")
+     */
+    public function indexAction(Request $request)
+    {
+        return parent::indexAction($request);
+    }
+
+    public function createEditForm($entity, array $entityProperties)
+    {
+        $editForm = parent::createEditForm($entity, $entityProperties);
+
+        if ($entity instanceof Event) {
+            // the trick is to remove the default field and then
+            // add the customized field
+            $editForm->remove('city');
+            $editForm->add('city', 'choice', array('choices' => array(
+                'London', 'New York', 'Paris', 'Tokyo'
+            )));
+        }
+
+        return $editForm;
+    }
+}
+```
+
 ### Customize the Translation of the Backend Interface
 
-The first version of EasyAdmin is only available in English. But thanks to the
-generous Symfony community, the interface will probably be translated to lots
-of new languages very soon.
+The interface of the backend is pretty minimal, but it includes several text
+contents in the form of buttons, titles and links. These contents are displayed
+in the same language as the default locale configured in the Symfony
+application. The `locale` option value is usually configured in the
+`app/config/parameters.yml` file.
+
+The current version of EasyAdmin is translated into English (`en`), Spanish
+(`es`), French (`fr`), Dutch (`nl`) and Basque (`eu`). We're actively looking
+for more translations contributed by the community.
 
 ### Customize the Security of the Backend Interface
 
@@ -541,14 +700,179 @@ backend section of your application.
 In addition, when accessing a protected backend, EasyAdmin will display the
 name of user who is logged in the application.
 
-How to Collaborate in this Project
-----------------------------------
+Configuration Reference
+-----------------------
+
+Depending on the complexity and the customization of your backend, you can use
+different configuration formats.
+
+### Simple Configuration with No Custom Labels
+
+This is the simplest configuration and is best used to create a prototype in a
+few seconds. Just list the classes of the entities to manage in the backend:
+
+```yaml
+easy_admin:
+    entities:
+        - AppBundle\Entity\Customer
+        - AppBundle\Entity\Product
+```
+
+### Simple Configuration with Custom Labels
+
+This configuration format allows to set the labels displayed in the main menu
+of the backend. Just list the entities but use a text-based key for each
+entity:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:  AppBundle\Entity\Customer
+        Inventory: AppBundle\Entity\Product
+```
+
+### Advanced Configuration with no Field Configuration
+
+This configuration format allows to control which fields, and in which order,
+are shown in the listings and in the forms. Just use the `list`, `edit` and
+`new` options and define the fields to display in the `fields` option:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: ['id', 'name', 'email']
+        Inventory:
+            class: AppBundle\Entity\Product
+            list:
+                fields: ['id', 'code', 'description', 'price']
+            edit:
+                fields: ['code', 'description', 'price', 'category']
+            new:
+                fields: ['code', 'description', 'price', 'category']
+```
+
+If the `edit` and `new` configuration is the same, use instead the special
+`form` option, which will be applied to both of them:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: ['id', 'name', 'email']
+        Inventory:
+            class: AppBundle\Entity\Product
+            list:
+                fields: ['id', 'code', 'description', 'price']
+            form:
+                fields: ['code', 'description', 'price', 'category']
+```
+
+### Advanced Configuration with Custom Field Configuration
+
+This is the most advanced configuration format and it allows you to control the
+type, style, help message and label displayed for each field. Customize any
+field just by replacing its name with a hash with its properties:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: ['id', 'name', { property: 'email', label: 'Contact Info' }]
+        Inventory:
+            class: AppBundle\Entity\Product
+            list:
+                fields: ['id', 'code', 'description', 'price']
+            form:
+                fields: [
+                    { property: 'code', help: 'Alphanumeric characters only' },
+                    { property: 'description', type: 'textarea' },
+                    { property: 'price', type: 'number', class: 'input-lg' },
+                    { property: 'category', label: 'Commercial Category' }
+                ]
+```
+
+About this project
+------------------
+
+The main author of this bundle works for SensioLabs, the company behind the
+Symfony framework. However, this bundle is not promoted, endorsed or sponsored
+by SensioLabs in any way. **This is not the official Symfony admin generator**.
+
+### Our philosophy
+
+EasyAdmin is an open source project with a very **opinionated development**. We
+don't make decisions by committee and we're not afraid to refuse the feature
+requests proposed by our users.
+
+We are a very young project and therefore, our resources and community are
+still very limited. In order to survive as a project, we must focus on as few
+features as possible and we must keep the original vision of the project.
+
+These are some of our **development principles**:
+
+  * Developers and backend users are our priorities. We'll always prioritize
+    UX (user experience) and DX (developer experience) over code purity.
+  * Backend customization is balanced between configuration options and code.
+    We'll add new options when they are easy and make sense. Otherwise, we'll
+    provide code extension points.
+  * Features will only be added if they are useful for a majority of users and
+    they don't overcomplicate the application code.
+  * Documentation is more important than code. Everything must be documented
+    and documentation must be always up-to-date.
+
+### Our roadmap
+
+Our **short-term roadmap** of features that will be added soon is available in
+[the list of project issues](https://github.com/javiereguiluz/EasyAdminBundle/issues).
+
+**Long-term roadmap**
+
+These are the features that we'll implement in the future when we find a
+generic and simple way to do it:
+
+  * Complete Doctrine association support (all kinds of associations: one-to-
+    one, including self-referencing, one-to-many, many-to-one and many-to-many)
+  * Allow to configure the main color used in the backend (to match the
+    company's brand color)
+  * Nested main menu items (two-level only)
+  * Support for exporting the list or search results to CSV and/or Excel
+  * Full theme support (not just changing the main color of the backend)
+  * FOSUserBundle integration
+  * Form field grouping
+  * Custom actions for list/search records (in addition to the default `edit`
+    and `show` actions).
+
+**Features that we'll never implement**
+
+From time to time we review the list of features requested by users. This means
+that some of the following features may be included in EasyAdmin sometime in
+the future. However, it's safe to consider that they'll never be implemented:
+
+  * Support for Symfony-based applications built without the Symfony full-
+    stack framework (Silex, Laravel, custom Symfony developments, etc.)
+  * Support for anything different from Doctrine ORM (Propel, Doctrine ODM,
+    etc.)
+  * Support for fine-grained security control over entity actions (instead,
+    use Symfony's built-in security features, such as voters or ACLs).
+  * Dashboards for backend homepages (with widgets, charts, etc.)
+  * Breadcrumbs that show the hierarchical navigation to the given page.
+  * Batch actions to apply the same action to more than one list record
+    simultaneously.
+  * CMS-like features.
+  * Assetic or frontend-tools-based (gulp, grunt, bower) asset processing.
+  * Support for AngularJS or any other JavaScript-based client-side technology.
+
+### How to Collaborate in this Project
 
 **1.** Ideas, Feature Requests, Issues, Bug Reports and Comments (positive or
 negative) are more than welcome.
-
-Feature Requests will be accepted if they are useful for a majority of users,
-don't overcomplicate the code and prioritize the user and developer experience.
 
 **2.** Unsolicited Pull Requests are currently not accepted.
 
@@ -556,6 +880,22 @@ EasyAdmin is a very young project. In order to protect the original vision of
 the project, we don't accept unsolicited Pull Requests. This decision will of
 course be revised in the near term, once we fully realize how the project is
 being used and what do users expect from us.
+
+### Alternative Projects
+
+EasyAdmin deliberately discards the most complex and customized backends,
+focusing on the simplest 80% of the backend projects. In case you encounter an
+unavoidable limitation to develop your backend with EasyAdmin, consider using
+any of the following alternative admin generators:
+
+  * [AdmingeneratorGeneratorBundle](https://github.com/symfony2admingenerator/AdmingeneratorGeneratorBundle),
+    a project similar to EasyAdmin and based on YAML configuration files. It
+    provides support for Propel, Doctrine ORM and Doctrine ODM models.
+  * [SonataAdminBundle](https://github.com/sonata-project/SonataAdminBundle),
+    the most advanced and most customizable admin generator for Symfony
+    applications. There's nothing you can't do with Sonata.
+  * [ng-admin](https://github.com/marmelab/ng-admin), an AngularJS-based admin
+    generator compatible with any Symfony project that provides a RESTFul API.
 
 LEGAL DISCLAIMER
 ----------------

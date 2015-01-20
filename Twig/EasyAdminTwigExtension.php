@@ -29,21 +29,21 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'entity_field' => new \Twig_Function_Method($this, 'displayEntityField', array('is_safe' => array('html'))),
+            'entity_field' => new \Twig_Function_Method($this, 'displayEntityField'),
         );
     }
 
     public function displayEntityField($entity, $fieldName, array $fieldMetadata)
     {
         if ('__inaccessible_doctrine_property__' === $value = $this->getEntityProperty($entity, $fieldName)) {
-            return '<span class="label label-danger" title="Method does not exist or property is not public">inaccessible</span>';
+            return new \Twig_Markup('<span class="label label-danger" title="Method does not exist or property is not public">inaccessible</span>', 'UTF-8');
         }
 
         try {
             $fieldType = $fieldMetadata['type'];
 
             if (null === $value) {
-                return '<span class="label">NULL</span>';
+                return new \Twig_Markup('<span class="label">NULL</span>', 'UTF-8');
             }
 
             if ('id' === $fieldName) {
@@ -60,10 +60,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('boolean'))) {
-                return sprintf('<span class="label label-%s">%s</span>',
+                return new \Twig_Markup(sprintf('<span class="label label-%s">%s</span>',
                     true === $value ? 'success' : 'danger',
                     true === $value ? 'YES' : 'NO'
-                );
+                ), 'UTF-8');
             }
 
             if (in_array($fieldType, array('array', 'simple_array'))) {
@@ -83,12 +83,14 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 $associatedEntityClassName = end($associatedEntityClassParts);
 
                 if ($value instanceof PersistentCollection) {
-                    return sprintf('<span class="badge">%d</span>', count($value), $associatedEntityClassName);
-                } elseif (method_exists($value, 'getId')) {
-                    return sprintf('<a href="%s">%s</a>', $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId())), $value);
-                } else {
-                    return '';
+                    return new \Twig_Markup(sprintf('<span class="badge">%d</span>', count($value), $associatedEntityClassName), 'UTF-8');
                 }
+
+                if (method_exists($value, 'getId')) {
+                    return new \Twig_Markup(sprintf('<a href="%s">%s</a>', $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId())), $value), 'UTF-8');
+                }
+
+                return '';
             }
         } catch (\Exception $e) {
             return '';
@@ -118,13 +120,17 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
         }
 
-        // if no method exists, look for public properties
-        $propertyMetadata = new \ReflectionProperty($entity, $property);
-        if (property_exists($entity, $property) && $propertyMetadata->isPublic()) {
-            return $entity->{$property};
+        // if no method exists, look for a public property
+        if (!property_exists($entity, $property)) {
+            return '__inaccessible_doctrine_property__';
         }
 
-        return '__inaccessible_doctrine_property__';
+        $propertyMetadata = new \ReflectionProperty($entity, $property);
+        if (!$propertyMetadata->isPublic()) {
+            return '__inaccessible_doctrine_property__';
+        }
+
+        return $entity->{$property};
     }
 
     public function getName()

@@ -88,9 +88,9 @@
         </div>
     </div>
 
+    {% block body_javascript %}{% endblock %}
     {% for js_asset in config.assets.js %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
-    {% block body_javascript %}{% endblock %}
 </body>
 </html>

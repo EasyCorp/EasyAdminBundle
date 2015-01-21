@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-21T10:02:43Z
+
+@mmoreram thanks for working on this. Should we also add `twig` as a dependency? We use it for templates and we even include a Twig extension.
+
+---------------------------------------------------------------------------
+
+by mmoreram at 2015-01-21T10:09:37Z
+
+@javiereguiluz Absolutely. I'll update the branch before lunch! :+1:
+
+---------------------------------------------------------------------------
+
+by mmoreram at 2015-01-21T12:35:08Z
+
+ping @javiereguiluz Updated & Sorted.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-21T12:41:34Z
+
+:+1:

@@ -6,26 +6,69 @@
 {% block body_class 'admin edit ' ~ entity.name|lower %}
 
 {% block content_title %}
-    {{ 'entity.edit' | trans({'%label%': entity.name~' #'~item.id}) }}
+    {{ 'entity.edit' | trans({'%label%': entity.name ~ ' #' ~ item.id}) }}
 {% endblock %}
 
 {% block main %}
     {{ form_start(form, { attr: { id: 'edit-form', novalidate: 'novalidate' } }) }}
-        {{ form_widget(form) }}
+        <div id="form">
+            {% for field in form.children if field.vars.name != '_token' %}
+                <div class="form-group">
+                    {% if entity_fields[field.vars.name]['type'] == 'association' %}
+                        {{ entity_field(item, entity_fields[field.vars.name]['name'], entity_fields[field.vars.name]) }}
+                    {% else %}
+                        {% set field_label = entity_fields[field.vars.name]['label']|default(null) %}
+                        {{ form_label(field, field_label, { label_attr: { class: 'col-sm-2 control-label' } }) }}
 
-        <div class="form-group">
-            <div class="col-sm-10 col-sm-offset-2">
-                <button type="submit" class="btn">
-                    <i class="fa fa-save"></i> {{ 'entity.save_changes' | trans }}
-                </button>
+                        <div class="col-sm-10">
+                            {% set widget_attributes = { attr: { class: entity_fields[field.vars.name]['class']|default(null) } } %}
+                            {{ form_widget(field, widget_attributes) }}
 
-                <button type="button" onclick="document.getElementById('delete-form').submit()" class="btn btn-danger">
-                    <i class="fa fa-trash"></i> {{ 'entity.delete' | trans() }}
-                </button>
+                            {% if entity_fields[field.vars.name]['help'] is defined %}
+                                <span class="help-block">{{ entity_fields[field.vars.name]['help'] }}</span>
+                            {% endif %}
 
-                <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
-                    {{ 'link.back_to_listing' | trans }}
-                </a>
+                            {% if entity_fields[field.vars.name]['type'] == 'collection' %}
+                                {% set add_item_javascript %}
+                                    $(function() {
+                                        if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+                                        var collection = $('#form_{{ field.vars.name }}');
+                                        var numItems = collection.children('div.form-group').length;
+
+                                        var newItem = collection.attr('data-prototype')
+                                            .replace(/__name__label__/g, numItems)
+                                            .replace(/__name__/g, numItems)
+                                        ;
+
+                                        collection.append(newItem);
+                                    });
+                                {% endset %}
+                                <a href="#" onclick="{{ add_item_javascript|raw }}" class="{{ field|length > 0 ? 'pull-right' : '' }}">
+                                    <i class="fa fa-plus-square"></i>
+                                    {{ field|length == 0 ? 'Add a new item' : 'Add another item' }}
+                                </a>
+
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="form-group">
+                <div class="col-sm-10 col-sm-offset-2">
+                    <button type="submit" class="btn">
+                        <i class="fa fa-save"></i> {{ 'entity.save_changes' | trans }}
+                    </button>
+
+                    <button type="button" onclick="document.getElementById('delete-form').submit()" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> {{ 'entity.delete' | trans() }}
+                    </button>
+
+                    <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
+                        {{ 'link.back_to_listing' | trans }}
+                    </a>
+                </div>
             </div>
         </div>
     {{ form_end(form) }}

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="ru" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Закрыть</target>
+            </trans-unit>
+            <trans-unit id="header.logged_in_as">
+                <source>header.logged_in_as</source>
+                <target>Logged in as</target>
+            </trans-unit>
+            <trans-unit id="entity.create">
+                <source>entity.create</source>
+                <target>Создать новый %entity%</target>
+            </trans-unit>
+            <trans-unit id="list.actions">
+                <source>list.actions</source>
+                <target>Действия</target>
+            </trans-unit>
+            <trans-unit id="list.no_results">
+                <source>list.no_results</source>
+                <target>Ничего не найдено.</target>
+            </trans-unit>
+            <trans-unit id="entity.edit">
+                <source>entity.edit</source>
+                <target>Редактировать</target>
+            </trans-unit>
+            <trans-unit id="entity.delete">
+                <source>entity.delete</source>
+                <target>Удалить</target>
+            </trans-unit>
+            <trans-unit id="link.back_to_listing">
+                <source>link.back_to_listing</source>
+                <target>Вернуться к списку</target>
+            </trans-unit>
+            <trans-unit id="entity.save_changes">
+                <source>entity.save_changes</source>
+                <target>Сохранить изменения</target>
+            </trans-unit>
+            <trans-unit id="paginator.first">
+                <source>paginator.first</source>
+                <target>Первая</target>
+            </trans-unit>
+            <trans-unit id="paginator.previous">
+                <source>paginator.previous</source>
+                <target>Предыдущий</target>
+            </trans-unit>
+            <trans-unit id="paginator.next">
+                <source>paginator.next</source>
+                <target>Следующий</target>
+            </trans-unit>
+            <trans-unit id="paginator.last">
+                <source>paginator.last</source>
+                <target>Последняя</target>
+            </trans-unit>
+            <trans-unit id="paginator.counter">
+                <source>paginator.counter</source>
+                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> из <strong>%results%</strong>]]></target>
+            </trans-unit>
+            <trans-unit id="actions.list">
+                <source>actions.list</source>
+                <target>Список</target>
+            </trans-unit>
+            <trans-unit id="actions.edit">
+                <source>actions.edit</source>
+                <target>Редактировать</target>
+            </trans-unit>
+            <trans-unit id="actions.new">
+                <source>actions.new</source>
+                <target>Новый</target>
+            </trans-unit>
+            <trans-unit id="actions.show">
+                <source>actions.show</source>
+                <target>Показать</target>
+            </trans-unit>
+            <trans-unit id="actions.search">
+                <source>actions.search</source>
+                <target>Поиск</target>
+            </trans-unit>
+            <trans-unit id="actions.delete">
+                <source>actions.delete</source>
+                <target>Удалить</target>
+            </trans-unit>
+            <trans-unit id="list.results_found">
+                <source>list.results_found</source>
+                <target><![CDATA[{1} <strong>1</strong> запись найдена |{2,3,4} Всего <strong>%count%</strong> записи |[5,Inf] Всего <strong>%count%</strong> записей]]></target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

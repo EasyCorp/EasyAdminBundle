@@ -38,7 +38,7 @@ class EasyAdminExtension extends Extension
         $bundleConfiguration = $this->processConfiguration(new Configuration(), $configs);
 
         $backendConfiguration = array_replace($this->defaultBundleConfiguration, $bundleConfiguration);
-        $backendConfiguration['entities'] = $this->getEntityConfiguration($backendConfiguration['entities']);
+        $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
 
@@ -47,7 +47,15 @@ class EasyAdminExtension extends Extension
         $loader->load('services.xml');
     }
 
-    protected function getEntityConfiguration(array $entitiesConfiguration)
+    /**
+     * Processes, normalizes and initializes the configuration of the entities
+     * that are managed by the backend. Several configuration formats are allowed,
+     * so this method normalizes them all.
+     *
+     * @param  array $entitiesConfiguration
+     * @return array The full entity configuration
+     */
+    protected function getEntitiesConfiguration(array $entitiesConfiguration)
     {
         if (0 === count($entitiesConfiguration)) {
             return $entitiesConfiguration;
@@ -85,6 +93,9 @@ class EasyAdminExtension extends Extension
      *     entities:
      *         User:
      *             class: AppBundle\Entity\User
+     *
+     * @param  array $simpleConfig The entity configuration in one of the simplified formats
+     * @return array The normalized configuration
      */
     private function normalizeEntityConfiguration(array $simpleConfig)
     {
@@ -105,6 +116,13 @@ class EasyAdminExtension extends Extension
         return $normalizedConfig;
     }
 
+    /**
+     * Normalizes and initializes the configuration of the given entities to
+     * simplify the option processing of the other methods and functions.
+     *
+     * @param  array $entitiesConfiguration
+     * @return array The configured entities
+     */
     private function processEntitiesConfiguration(array $entitiesConfiguration)
     {
         $entities = array();
@@ -147,6 +165,10 @@ class EasyAdminExtension extends Extension
      * To avoid entity name conflicts when two different entities are called the
      * same, this method modifies the entity name if necessary to ensure that is
      * unique.
+     *
+     * @param  string $entityClass
+     * @param  array  $entityNames The list of names of all the managed entities
+     * @return string The name of the entity guaranteed to be unique in the application
      */
     private function getUniqueEntityName($entityClass, $entityNames)
     {
@@ -180,6 +202,11 @@ class EasyAdminExtension extends Extension
      * This method processes both formats to produce a common form field configuration
      * format. It also initializes and adds some default form field options to simplify
      * field configuration processing in other methods and templates.
+     *
+     * @param  array  $fieldsConfiguration
+     * @param  string $action
+     * @param  string $entityClass
+     * @return array  The configured entity fields
      */
     private function processFieldsConfiguration(array $fieldsConfiguration, $action, $entityClass)
     {

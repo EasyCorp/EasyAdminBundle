@@ -48,6 +48,14 @@ class Configurator
         $this->em = $em;
     }
 
+    /**
+     * Processes and returns the full configuration for the given entity name.
+     * This configuration includes all the information about the form fields
+     * and properties of the entity.
+     *
+     * @param  string $entityName
+     * @return array  The full entity configuration
+     */
     public function getEntityConfiguration($entityName)
     {
         // if the configuration has already been processed for the given entity, reuse it
@@ -76,11 +84,11 @@ class Configurator
     }
 
     /**
-     * Takes the FQCN of the Doctrine entity and returns all its properties metadata.
+     * Takes the FQCN of the entity and returns all the metadata of its properties
+     * introspected via Doctrine.
      *
-     * @param string $entityName Entity FQCN
-     *
-     * @return array
+     * @param  string $entityClass The fully qualified class name of the entity
+     * @return array  The entity properties metadata provided by Doctrine
      */
     private function getEntityPropertiesMetadata($entityClass)
     {
@@ -88,8 +96,6 @@ class Configurator
 
         /** @var ClassMetadata $entityMetadata */
         $entityMetadata = $this->em->getMetadataFactory()->getMetadataFor($entityClass);
-
-        // TODO: Check if the entity performs any kind of inheritance: !$entityMetadata->isInheritanceTypeNone()
 
         if ('id' !== $entityMetadata->getSingleIdentifierFieldName()) {
             throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it doesn't define a primary key called 'id'.", $entityClass));
@@ -120,6 +126,13 @@ class Configurator
         return $entityPropertiesMetadata;
     }
 
+    /**
+     * Returns the list of fields to show in the listings of this entity.
+     *
+     * @param  array $entityConfiguration
+     * @param  array $entityProperties
+     * @return array The list of fields to show and their metadata
+     */
     private function getFieldsForListAction(array $entityConfiguration, array $entityProperties)
     {
         $entityFields = array();
@@ -134,6 +147,14 @@ class Configurator
         return $this->filterListFieldsBasedOnSmartGuesses($entityFields);
     }
 
+    /**
+     * Returns the list of fields to show in the forms of this entity for the
+     * actions which display forms ('edit' and 'new').
+     *
+     * @param  array $entityConfiguration
+     * @param  array $entityProperties
+     * @return array The list of fields to show and their metadata
+     */
     protected function getFieldsForFormBasedActions($action, array $entityConfiguration, array $entityProperties)
     {
         $entityFields = array();
@@ -153,8 +174,8 @@ class Configurator
         }
 
         // for entities which don't define their field configuration, the field types
-        // are the types of the Doctrine entity property. In that case, replace Doctrine
-        // types by Form component types, to avoid errors when rendering the form
+        // are the types of the Doctrine entity property. To avoid errors when rendering
+        // the form, replace Doctrine types by Form component types
         foreach ($entityFields as $fieldName => $fieldConfiguration) {
             $fieldType = $fieldConfiguration['type'];
             $entityFields[$fieldName]['type'] = array_key_exists($fieldType, $this->doctrineTypeToFormTypeMap)
@@ -166,8 +187,10 @@ class Configurator
     }
 
     /**
-     * These are the entity fields on which the query is performed. For now these
-     * fields cannot be configured.
+     * Returns the list of entity fields on which the search query is performed.
+     *
+     * @param  array $entityFields
+     * @return array The list of fields to use for the search
      */
     private function getFieldsForSearchAction(array $entityFields)
     {
@@ -178,8 +201,11 @@ class Configurator
     }
 
     /**
-     * If the backend doesn't define any configuration for the fields of some entity,
-     * just create some basic field configuration based on the entity property metadata.
+     * If the backend configuration doesn't define any options for the fields of some entity,
+     * create some basic field configuration based on the entity property metadata.
+     *
+     * @param  array $entityProperties
+     * @return array The array of entity fields
      */
     private function createEntityFieldsFromEntityProperties($entityProperties)
     {
@@ -199,6 +225,16 @@ class Configurator
         return $entityFields;
     }
 
+    /**
+     * Combines the entity properties metadata with the entity fields configuration
+     * to produce the list of fields that should be displayed. It's used when the
+     * backend explicitly configures the list of fields to display in a listing or
+     * a form.
+     *
+     * @param  array $entityProperties
+     * @param  array $configuredFields
+     * @return array The list of fields to show and their configuration
+     */
     private function filterEntityFieldsBasedOnConfiguration(array $entityProperties, array $configuredFields)
     {
         $filteredFields = array();
@@ -231,11 +267,19 @@ class Configurator
         return $filteredFields;
     }
 
+    /**
+     * Guesses the best fields to display in a listing when the entity doesn't
+     * define any configuration. It does so limiting the number of fields to
+     * display and discarding several field types.
+     *
+     * @param  array $entityFields
+     * @return array The list of fields to display
+     */
     private function filterListFieldsBasedOnSmartGuesses(array $entityFields)
     {
         // empirical guess: listings with more than 8 fields look ugly
         $maxListFields = 8;
-        $excludedFieldNames = array('slug', 'password', 'salt', 'updatedAt', 'uuid');
+        $excludedFieldNames = array('password', 'salt', 'slug', 'updatedAt', 'uuid');
         $excludedFieldTypes = array('array', 'binary', 'blob', 'guid', 'json_array', 'object', 'simple_array', 'text');
 
         // if the entity has few fields, show them all
@@ -260,6 +304,15 @@ class Configurator
         return array_slice($filteredFields, 0, $maxListFields);
     }
 
+    /**
+     * Filters the given list of properties to remove the field types and field
+     * names passed as arguments.
+     *
+     * @param  array $entityFields
+     * @param  array $fieldNameBlackList
+     * @param  array $fieldTypeBlackList
+     * @return array The filtered list of files
+     */
     private function filterEntityFieldsBasedOnNameAndTypeBlackList(array $entityFields, array $fieldNameBlackList, array $fieldTypeBlackList)
     {
         $filteredFields = array();

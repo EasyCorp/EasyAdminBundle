@@ -70,8 +70,13 @@ class AdminController extends Controller
     }
 
     /**
-     * @param Request $request
+     * Utility method which initializes the configuration of the entity on which
+     * the user is performing the action.
      *
+     * If everything goes right, it returns null. If there is any error, it
+     * returns a 404 error page using a Response object.
+     *
+     * @param  Request       $request
      * @return Response|null
      */
     protected function initialize(Request $request)
@@ -110,6 +115,8 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a 'list' action on an entity.
+     *
      * @return Response
      */
     protected function listAction()
@@ -126,6 +133,8 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a 'edit' action on an entity.
+     *
      * @return RedirectResponse|Response
      */
     protected function editAction()
@@ -157,6 +166,8 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a 'show' action on an entity.
+     *
      * @return Response
      */
     protected function showAction()
@@ -178,6 +189,8 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a 'new' action on an entity.
+     *
      * @return RedirectResponse|Response
      */
     protected function newAction()
@@ -207,6 +220,9 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a 'delete' action to
+     * remove any entity.
+     *
      * @return RedirectResponse
      */
     protected function deleteAction()
@@ -231,6 +247,7 @@ class AdminController extends Controller
     }
 
     /**
+     * The method that is executed when the user performs a query on an entity.
      * @return Response
      */
     protected function searchAction()
@@ -284,13 +301,16 @@ class AdminController extends Controller
     }
 
     /**
+     * Performs a database query to get all the records related to the given
+     * entity. It supports pagination and field sorting.
+     *
      * @param string $entityClass
      * @param int    $page
      * @param int    $maxPerPage
      * @param string $sortField
      * @param string $sortDirection
      *
-     * @return Pagerfanta
+     * @return Pagerfanta The paginated query results
      */
     protected function findAll($entityClass, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null)
     {
@@ -315,13 +335,16 @@ class AdminController extends Controller
     }
 
     /**
+     * Performs a database query based on the search query provided by the user.
+     * It supports pagination and field sorting.
+     *
      * @param string $entityClass
      * @param string $searchQuery
      * @param array  $searchableFields
      * @param int    $page
      * @param int    $maxPerPage
      *
-     * @return Pagerfanta
+     * @return Pagerfanta The paginated query results
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
     {
@@ -342,6 +365,8 @@ class AdminController extends Controller
     }
 
     /**
+     * Creates the form used to edit an entity.
+     *
      * @param object $entity
      * @param array  $entityProperties
      *
@@ -375,6 +400,8 @@ class AdminController extends Controller
     }
 
     /**
+     * Creates the form used to create an entity.
+     *
      * @param object $entity
      * @param array  $entityProperties
      *
@@ -386,6 +413,10 @@ class AdminController extends Controller
     }
 
     /**
+     * It returns the name of the first entity configured in the backend. It's
+     * mainly used to redirect the homepage of the backend to the listing of the
+     * first configured entity.
+     *
      * @return mixed
      */
     protected function getNameOfTheFirstConfiguredEntity()
@@ -396,6 +427,10 @@ class AdminController extends Controller
     }
 
     /**
+     * Creates the form used to delete an entity. It must be a form because
+     * the deletion of the entity are always performed with the 'DELETE' HTTP method,
+     * which requires a form to work in the current browsers.
+     *
      * @param string  $entityName
      * @param integer $entityId
      *
@@ -412,6 +447,8 @@ class AdminController extends Controller
     }
 
     /**
+     * Utility shortcut to render a template as a 404 error page.
+     *
      * @param string $view
      * @param array  $parameters
      *

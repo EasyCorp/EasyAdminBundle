@@ -632,9 +632,15 @@ methods to customize the backend as much as you need.
 
 ### Customize the Translation of the Backend Interface
 
-The first version of EasyAdmin is only available in English. But thanks to the
-generous Symfony community, the interface will probably be translated to lots
-of new languages very soon.
+The interface of the backend is pretty minimal, but it includes several text
+contents in the form of buttons, titles and links. These contents are displayed
+in the same language as the default locale configured in the Symfony
+application. The `locale` option value is usually configured in the
+`app/config/parameters.yml` file.
+
+The current version of EasyAdmin is translated into English (`en`), Spanish
+(`es`), French (`fr`), Dutch (`nl`) and Basque (`eu`). We're actively looking
+for more translations contributed by the community.
 
 ### Customize the Security of the Backend Interface
 

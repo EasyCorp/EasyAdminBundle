@@ -241,7 +241,7 @@ In the current version of EasyAdmin you cannot define custom actions.
 
 ### Customize the Labels of the Columns Displayed in Listings
 
-By default, listing column labels are a "humanized" version of the original 
+By default, listing column labels are a "humanized" version of the original
 name of the related Doctrine entity property. If your property is called
 `published`, the column label will be `Published` and if your property is
 called `dateOfBirth`, the column label will be `Date of birth`.
@@ -387,11 +387,11 @@ easy_admin:
 
 ### Customize the Fields Displayed in Forms
 
-By default, all form fields are displayed with the same visual style, they 
-don't show any help message, and their label and field type are inferred from 
+By default, all form fields are displayed with the same visual style, they
+don't show any help message, and their label and field type are inferred from
 their associated Doctrine property.
 
-In case you want to customize any or all form fields, use the extended form 
+In case you want to customize any or all form fields, use the extended form
 field configuration showed below:
 
 ```yaml
@@ -412,7 +412,7 @@ easy_admin:
 
 These are the options that you can define for form fields:
 
-  * `property`: it's the name of the associated Doctrine entity property. It 
+  * `property`: it's the name of the associated Doctrine entity property. It
     can be a real property or a "virtual property" based on an entity method.
     This is the only mandatory option.
   * `type`: it's the type of form field that will be displayed. If you don't
@@ -630,6 +630,53 @@ The example above is trivial, but your custom admin controller can be as
 complex as needed. In fact, you can override any of the original controller's
 methods to customize the backend as much as you need.
 
+### Advanced Customization of the Fields Displayed in Forms
+
+The previous sections showed how to tweak the fields displayed in the `edit`
+and `new` forms using some simple options. When the field customization is
+more  deep, you should override the `configureEditForm()` method in your own
+admin controller.
+
+In this example, the form of the `Event` entity is tweaked to change the
+regular `city` field by a `choice` form field with custom and limited choices:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
+use AppBundle\Entity\Event;
+
+class AdminController extends EasyAdminController
+{
+    /**
+     * @Route("/admin/", name="admin")
+     */
+    public function indexAction(Request $request)
+    {
+        return parent::indexAction($request);
+    }
+
+    public function createEditForm($entity, array $entityProperties)
+    {
+        if ($entity instanceof Event) {
+            $editForm = parent::createEditForm($entity, $entityProperties);
+
+            // the trick is to remove the default field and then
+            // add the customized field
+            $editForm->remove('city');
+            $editForm->add('city', 'choice', array('choices' => array(
+                'London', 'New York', 'Paris', 'Tokyo'
+            )));
+
+            return $editForm;
+        }
+    }
+}
+```
+
 ### Customize the Translation of the Backend Interface
 
 The interface of the backend is pretty minimal, but it includes several text
@@ -653,22 +700,6 @@ backend section of your application.
 In addition, when accessing a protected backend, EasyAdmin will display the
 name of user who is logged in the application.
 
-How to Collaborate in this Project
-----------------------------------
-
-**1.** Ideas, Feature Requests, Issues, Bug Reports and Comments (positive or
-negative) are more than welcome.
-
-Feature Requests will be accepted if they are useful for a majority of users,
-don't overcomplicate the code and prioritize the user and developer experience.
-
-**2.** Unsolicited Pull Requests are currently not accepted.
-
-EasyAdmin is a very young project. In order to protect the original vision of
-the project, we don't accept unsolicited Pull Requests. This decision will of
-course be revised in the near term, once we fully realize how the project is
-being used and what do users expect from us.
-
 Configuration Reference
 -----------------------
 
@@ -689,8 +720,8 @@ easy_admin:
 
 ### Simple Configuration with Custom Labels
 
-This configuration format allows to set the labels displayed in the main menu 
-of the backend. Just list the entities but use a text-based key for each 
+This configuration format allows to set the labels displayed in the main menu
+of the backend. Just list the entities but use a text-based key for each
 entity:
 
 ```yaml
@@ -767,8 +798,28 @@ easy_admin:
                 ]
 ```
 
+How to Collaborate in this Project
+----------------------------------
+
+**1.** Ideas, Feature Requests, Issues, Bug Reports and Comments (positive or
+negative) are more than welcome.
+
+Feature Requests will be accepted if they are useful for a majority of users,
+don't overcomplicate the code and prioritize the user and developer experience.
+
+**2.** Unsolicited Pull Requests are currently not accepted.
+
+EasyAdmin is a very young project. In order to protect the original vision of
+the project, we don't accept unsolicited Pull Requests. This decision will of
+course be revised in the near term, once we fully realize how the project is
+being used and what do users expect from us.
+
 LEGAL DISCLAIMER
 ----------------
+
+The main author of this bundle works for SensioLabs, the company behind the
+Symfony framework. However, this bundle is not promoted, endorsed or sponsored
+by SensioLabs in any way. **This is not the official Symfony admin generator**.
 
 This software is published under the MIT License, which states that:
 

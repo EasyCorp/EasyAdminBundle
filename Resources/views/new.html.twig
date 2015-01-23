@@ -33,7 +33,7 @@
                                     $(function() {
                                         if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
-                                        var collection = $('#form_{{ field.vars.name }}');
+                                        var collection = $('#form_{{ field.vars.name|escape('js') }}');
                                         var numItems = collection.children('div.form-group').length;
 
                                         var newItem = collection.attr('data-prototype')

@@ -497,13 +497,14 @@ class AdminController extends EasyAdminController
         return parent::indexAction($request);
     }
 
-    public function prepareEditEntityForPersist($entity)
+    protected function prepareEditEntityForPersist($entity)
     {
         if ($entity instanceof Article) {
             return $this->updateSlug($entity);
         }
     }
-    public function prepareNewEntityForPersist($entity)
+    
+    protected function prepareNewEntityForPersist($entity)
     {
         if ($entity instanceof Article) {
             return $this->updateSlug($entity);

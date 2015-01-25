@@ -1,0 +1,123 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-22T11:36:06Z
+
+With the high number of possibilities, I'm wondering if we'd have to make some phpunit tests in order to test all correct/incorrect behaviors...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-22T11:46:20Z
+
+@Pierstoval you are right. We need something ... but not yet. First, we'll iterate a bit over the configuration and once we settle on something stable, let's create the tests.
+
+Related to this, in one of his great code reviews, @stof suggested that we could leverage the Config component features to do some sort of advanced configuration validation. He kindly offered himself to prepare something around this, so maybe we can take his word in the future and ask him to help us do something great with the Config component.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-22T11:59:54Z
+
++1 for the Config component, I saw that you just use the "VariableNode" , which is kinda "light" for this kind of behavior.
+
+Plus, I'd recommend to make tests the sooner we can, because this bundle will only grow up in time, and the bigger it is, the harder the test will be to develop... :astonished:
+
+Creating a "Config tester" is kinda hard, I looked at Fos, Sonata Project, Symfony and Doctrine repositories to see examples of configuration tests, many of them focus on the service definition, some of them look at the configuration, but they almost all have a different method... Putting confs in yaml and xml fixtures, putting them raw in the Test class, etc.
+
+I made a little "test tester" on my local repo, ~~I'll push it during the afternoon~~ you can see it [here](https://github.com/Pierstoval/EasyAdminBundle/tree/unit_tests), maybe @stof can be available to check if it's a good one to start with or not :)
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-01-22T12:49:16Z
+
+> Creating a "Config tester" is kinda hard, I looked at Fos, Sonata Project, Symfony and Doctrine repositories to see examples of configuration tests, many of them focus on the service definition, some of them look at the configuration, but they almost all have a different method... Putting confs in yaml and xml fixtures, putting them raw in the Test class, etc.
+
+You may want to take a look at the [matthiasnoback/symfony-config-test](https://github.com/matthiasnoback/SymfonyConfigTest) package by @matthiasnoback.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-22T13:27:35Z
+
+Thanks @xabbuh I'll check this out to make better config tests :+1:
+
+To come back to the subject, I've tested some config schemes, and I think that the `fields` array "prototype" is too restrictive.
+The `class` attribute only applies to the created widget (`input`, `select`, `textarea` ...) , but if I want to add a custom class to the `label`, it's actually impossible.
+
+IMO, we should find a solution to merge a `formField` attribute with usual form field definition we use in our `FormTypes` classes.
+For example, with my TranslationBundle:
+```yml
+easy_admin:
+    entities:
+        Translation:
+            class: Pierstoval\Bundle\TranslationBundle\Entity\Translation
+            form:
+                fields:
+                    - token
+                    - source
+                    - translation
+                    - { property: locale, label: "Langue", type: "choice", "help": "Choisissez une langue", class: "test" }
+                    - domain
+```
+
+The possible choices should be the `%locales%` parameter, parsed by the `PierstovalTranslationExtension` class. Actually, there is no way of defining it in EasyAdmin, so to handle the `new` and `edit` functions for the `Translation` Entity, I may need to create my own controller.
+
+It would be great if we had a `formField` attribute (or any possible name, like `formType` or whatever) to pass parameters like the ones I'd put in my FormType:
+```php
+$formBuilder->add('locale', 'choice', array('choices' => $locales));
+```
+
+This is my first issue, I may have some other in the future :)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-22T15:03:43Z
+
+I've got a really minor suggestion : You may need to rebase this branch with your master, at least to integrate #32 ;)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-22T19:57:23Z
+
+If someone else wants to review if this PR is working right before merging it, you only have to execute two commands to download this PR as a new branch:
+
+```bash
+# you may need to change 'origin' by 'upstream' depending on how you use Git
+$ git fetch -fu origin refs/pull/64/head:pr/64
+
+$ git checkout pr/64
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-23T08:51:34Z
+
+This PR adds support for adding collection items dynamically:
+
+![easyadmin-colecciones](https://cloud.githubusercontent.com/assets/73419/5871936/35f60d08-a2e5-11e4-9718-e22ee0a9f67a.gif)
+
+As this requires to execute some JavaScript code, it'd be great if you could test it to ensure that no JavaScript errors happen in your browser.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-23T09:02:58Z
+
+Awesome !! Didn't notice this one ! :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-23T15:19:33Z
+
+@Pierstoval regarding your issue about advanced customization of form fields, I'm not sure it's something we can do in config files. I'm updated the documentation in 7a41681 to show how to do what you asked for in the example of the `choice` field with custom values.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-23T15:38:43Z
+
+I looked at it, and it's GREAT, it really looks like Sonata's Admin class system, but inside a controller, so we have access to all the application & container, and can customize routes, which is really better :+1:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-24T19:53:35Z
+
+When this PR is merged and correctly set up, I may work on the `Configuration` class to allow this kind of validation directly from the builder.
+I prefer to wait before it's fully merged because you may make some modifications, and I want the feature to be fully designed before working on the future ;)
+
+As @MacFJA said in #43 , use the field name as key could improve really better the understandability of the configuration, so ... ;)

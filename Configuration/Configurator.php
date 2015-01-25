@@ -277,8 +277,8 @@ class Configurator
      */
     private function filterListFieldsBasedOnSmartGuesses(array $entityFields)
     {
-        // empirical guess: listings with more than 8 fields look ugly
-        $maxListFields = 8;
+        // empirical guess: listings with more than 7 fields look ugly
+        $maxListFields = 7;
         $excludedFieldNames = array('password', 'salt', 'slug', 'updatedAt', 'uuid');
         $excludedFieldTypes = array('array', 'binary', 'blob', 'guid', 'json_array', 'object', 'simple_array', 'text');
 

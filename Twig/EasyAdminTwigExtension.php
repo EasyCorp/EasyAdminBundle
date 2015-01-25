@@ -35,7 +35,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
     public function displayEntityField($entity, $fieldName, array $fieldMetadata)
     {
-        if ('__inaccessible_doctrine_property__' === $value = $this->getEntityProperty($entity, $fieldName)) {
+        $value = $this->getEntityProperty($entity, $fieldName);
+
+        if ('__inaccessible_doctrine_property__' === $value) {
             return new \Twig_Markup('<span class="label label-danger" title="Method does not exist or property is not public">inaccessible</span>', 'UTF-8');
         }
 
@@ -71,7 +73,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('string', 'text'))) {
-                return substr($value, 0, 128);
+                return strlen($value) > 64 ? substr($value, 0, 64).'...' : $value;
             }
 
             if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {

@@ -286,6 +286,11 @@ button.btn-danger {
     -o-transition: none;
     transition: none;
 }
+
+.form-group.field_checkbox label.control-label {
+    visibility: hidden;
+}
+
 .help-block {
     color: #797470;
 }

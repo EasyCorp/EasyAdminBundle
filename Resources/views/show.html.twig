@@ -1,6 +1,6 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
-{% trans_default_domain "EasyAdminBundle" %}
 
+{% trans_default_domain "EasyAdminBundle" %}
 {% block body_class 'admin show ' ~ entity.name|lower %}
 
 {% block content_title %}
@@ -40,8 +40,4 @@
     </div>
 
     {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
-{% endblock %}
-
-{% block body_javascript %}
-    <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
 {% endblock %}

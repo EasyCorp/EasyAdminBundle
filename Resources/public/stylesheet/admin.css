@@ -314,6 +314,20 @@ button.btn-danger {
     display: none;
 }
 
+/* Modal windows
+   ------------------------------------------------------------------------- */
+.modal-dialog .modal-content {
+    border-radius: 0;
+}
+.modal-dialog .modal-content .modal-body h4 {
+    font-size: 21px;
+    margin: .5em 0;
+}
+.modal-dialog .modal-footer {
+    background: #F3EFEB;
+    margin-top: 1.5em;
+}
+
 /* -------------------------------------------------------------------------
    LAYOUT
    ------------------------------------------------------------------------- */

@@ -58,6 +58,10 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> из <strong>%results%</strong>]]></target>
             </trans-unit>
+            <trans-unit id="actions.cancel">
+                <source>actions.cancel</source>
+                <target>Отклонить</target>
+            </trans-unit>
             <trans-unit id="actions.list">
                 <source>actions.list</source>
                 <target>Список</target>
@@ -85,6 +89,14 @@
             <trans-unit id="list.results_found">
                 <source>list.results_found</source>
                 <target><![CDATA[{1} <strong>1</strong> запись найдена |{2,3,4} Всего <strong>%count%</strong> записи |[5,Inf] Всего <strong>%count%</strong> записей]]></target>
+            </trans-unit>
+            <trans-unit id="delete_modal.title">
+                <source>delete_modal.title</source>
+                <target>Do you really want to delete this item?</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.content">
+                <source>delete_modal.content</source>
+                <target>There is no undo for this operation.</target>
             </trans-unit>
         </body>
     </file>

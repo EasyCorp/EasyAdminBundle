@@ -73,7 +73,8 @@ class Configurator
         $entityProperties = $this->getEntityPropertiesMetadata($entityClass);
         $entityConfiguration['properties'] = $entityProperties;
 
-        $entityConfiguration['list']['fields'] = $this->getFieldsForListAction($this->backendConfig['entities'][$entityName], $entityProperties);
+        $entityConfiguration['list']['fields'] = $this->getFieldsForAction('list', $this->backendConfig['entities'][$entityName], $entityProperties);
+        $entityConfiguration['show']['fields'] = $this->getFieldsForAction('show', $this->backendConfig['entities'][$entityName], $entityProperties);
         $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $this->backendConfig['entities'][$entityName], $entityProperties);
         $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedActions('new', $this->backendConfig['entities'][$entityName], $entityProperties);
         $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction($entityProperties);
@@ -127,19 +128,18 @@ class Configurator
     }
 
     /**
-     * Returns the list of fields to show in the listings of this entity.
+     * Returns the list of fields for an action of this entity.
      *
-     * @param  array $entityConfiguration
-     * @param  array $entityProperties
-     * @return array The list of fields to show and their metadata
+     * @param  string $action
+     * @param  array  $entityConfiguration
+     * @param  array  $entityProperties
+     * @return array  The list of fields to show and their metadata
      */
-    private function getFieldsForListAction(array $entityConfiguration, array $entityProperties)
+    private function getFieldsForAction($action, array $entityConfiguration, array $entityProperties)
     {
-        $entityFields = array();
-
-        // there is a custom configuration for 'list' fields
-        if (count($entityConfiguration['list']['fields']) > 0) {
-            return $this->filterEntityFieldsBasedOnConfiguration($entityProperties, $entityConfiguration['list']['fields']);
+        // there is a custom configuration for 'action' fields
+        if (count($entityConfiguration[$action]['fields']) > 0) {
+            return $this->filterEntityFieldsBasedOnConfiguration($entityProperties, $entityConfiguration[$action]['fields']);
         }
 
         $entityFields = $this->createEntityFieldsFromEntityProperties($entityProperties);

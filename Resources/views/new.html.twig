@@ -6,6 +6,7 @@
 
 {% block body_javascript %}
     {{ parent() }}
+
     <script src="{{ asset('bundles/easyadmin/javascript/jquery.are-you-sure.min.js') }}"></script>
     <script type="text/javascript">
         $(function() {
@@ -68,10 +69,6 @@
                 <div class="col-sm-10 col-sm-offset-2">
                     <button type="submit" class="btn">
                         <i class="fa fa-save"></i> {{ 'entity.save_changes' | trans }}
-                    </button>
-
-                    <button type="button" onclick="document.getElementById('delete-form').submit()" class="btn btn-danger">
-                        <i class="fa fa-trash"></i> {{ 'entity.delete' | trans() }}
                     </button>
 
                     <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">

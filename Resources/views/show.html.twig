@@ -3,6 +3,23 @@
 {% trans_default_domain "EasyAdminBundle" %}
 {% block body_class 'admin show ' ~ entity.name|lower %}
 
+{% block body_javascript %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function() {
+            $('#button-delete').on('click', function(e) {
+                e.preventDefault();
+
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .one('click', '#modal-delete-button', function (e) {
+                        $('#delete-form').trigger('submit');
+                    });
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block content_title %}
     {{ entity.name ~ ' #' ~ item.id }}
 {% endblock %}
@@ -28,7 +45,7 @@
                     <i class="fa fa-edit"></i> {{ 'entity.edit' | trans({"%entity%": entity.name}) }}
                 </a>
 
-                <button type="button" onclick="document.getElementById('delete-form').submit()" class="btn btn-danger">
+                <button type="button" id="button-delete" class="btn btn-danger">
                     <i class="fa fa-trash"></i> {{ 'entity.delete' | trans() }}
                 </button>
 
@@ -40,4 +57,23 @@
     </div>
 
     {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
+
+    <div id="modal-delete" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4>{{ 'delete_modal.title' | trans }}</h4>
+                    <p>{{ 'delete_modal.content' | trans }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn">
+                        {{ 'actions.cancel' | trans }}
+                    </button>
+                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                        <i class="fa fa-trash"></i> {{ 'entity.delete' | trans }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

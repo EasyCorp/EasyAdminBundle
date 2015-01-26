@@ -176,7 +176,7 @@ class AdminController extends Controller
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
         }
 
-        $fields = $this->getFieldsForShow($this->entity['properties']);
+        $fields = $this->entity['show']['fields'];
         $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
 
         return $this->render('@EasyAdmin/show.html.twig', array(
@@ -286,18 +286,6 @@ class AdminController extends Controller
     protected function prepareNewEntityForPersist($entity)
     {
         return $entity;
-    }
-
-    /**
-     * These are the entity fields displayed in the 'show' action.
-     *
-     * @param array $entityFields
-     *
-     * @return array
-     */
-    protected function getFieldsForShow(array $entityFields)
-    {
-        return $entityFields;
     }
 
     /**

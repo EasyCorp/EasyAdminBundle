@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-26T20:23:21Z
+
+Great :+1:
+
+The "Delete" action should also be implement~~ed~~able on the list, I think, with the same modal :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-26T20:55:48Z
+
+@Pierstoval yes, if the `Delete` action is included in a listing, it should display the same modal window. However, I prefer to not implement this feature for now.
+
+The reason is that in most real backends, deleting things is an extremely rare operation. There are even Doctrine extensions to implement *soft deletes* and never delete anything, not even when you want to delete something!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-26T21:01:13Z
+
+Indeed, the `SoftDeletable` Doctrine extension is simply AWESOME, and it totally replaces the `remove` method from the entity manager, which is really great to avoid loosing datas.
+
+However, I'm starting a new project soon which will store some definitions for something like a temporary thesaurus/dictionary/lexical index, and this back-end will certainly need to delete easily old datas that are not relevant anymore, and even if I use the `SoftDeletable` extension, it needs to delete many entities a bit faster than clicking on edit/delete/listing/edit/delete/listing etc.
+
+Why don't simply delete with an AJAX request made with the `DELETE` HTTP method ? :)

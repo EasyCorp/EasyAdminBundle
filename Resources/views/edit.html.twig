@@ -6,10 +6,20 @@
 
 {% block body_javascript %}
     {{ parent() }}
+
     <script src="{{ asset('bundles/easyadmin/javascript/jquery.are-you-sure.min.js') }}"></script>
     <script type="text/javascript">
         $(function() {
             $('#edit-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
+
+            $('#button-delete').on('click', function(e) {
+                e.preventDefault();
+
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .one('click', '#modal-delete-button', function (e) {
+                        $('#delete-form').trigger('submit');
+                    });
+            });
         });
     </script>
 {% endblock %}
@@ -70,8 +80,8 @@
                         <i class="fa fa-save"></i> {{ 'entity.save_changes' | trans }}
                     </button>
 
-                    <button type="button" onclick="document.getElementById('delete-form').submit()" class="btn btn-danger">
-                        <i class="fa fa-trash"></i> {{ 'entity.delete' | trans() }}
+                    <button type="button" id="button-delete" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> {{ 'entity.delete' | trans }}
                     </button>
 
                     <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
@@ -83,4 +93,24 @@
     {{ form_end(form) }}
 
     {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
+
+
+<div id="modal-delete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4>{{ 'delete_modal.title' | trans }}</h4>
+                <p>{{ 'delete_modal.content' | trans }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn">
+                    {{ 'actions.cancel' | trans }}
+                </button>
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                    <i class="fa fa-trash"></i> {{ 'entity.delete' | trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

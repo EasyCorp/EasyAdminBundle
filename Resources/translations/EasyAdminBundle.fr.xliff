@@ -58,6 +58,10 @@
                 <source>link.back_to_listing</source>
                 <target>Retour à la liste</target>
             </trans-unit>
+            <trans-unit id="actions.cancel">
+                <source>actions.cancel</source>
+                <target>Refuser</target>
+            </trans-unit>
             <trans-unit id="actions.list">
                 <source>actions.list</source>
                 <target>Lister</target>
@@ -89,6 +93,14 @@
             <trans-unit id="list.search">
                 <source>list.search</source>
                 <target>Rechercher</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.title">
+                <source>delete_modal.title</source>
+                <target>Do you really want to delete this item?</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.content">
+                <source>delete_modal.content</source>
+                <target>There is no undo for this operation.</target>
             </trans-unit>
         </body>
     </file>

@@ -493,6 +493,16 @@ easy_admin:
     # ...
 ```
 
+#### Unloading the Default JavaScript and Stylesheets
+
+Backend templates use Bootstrap CSS and jQuery frameworks to display their
+contents. In case you want to unload these files in addition to loading your
+own assets, override the value of the `head_stylesheets` and `body_javascripts`
+template blocks.
+
+To do so, you'll have to create your own templates and override default ones,
+as explained in the next section.
+
 ### Customize the Templates of the Backend
 
 In addition to loading your own stylesheets and scripts, you can also override

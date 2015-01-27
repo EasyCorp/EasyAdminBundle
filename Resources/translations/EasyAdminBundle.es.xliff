@@ -58,6 +58,10 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> de <strong>%results%</strong>]]></target>
             </trans-unit>
+            <trans-unit id="actions.cancel">
+                <source>actions.cancel</source>
+                <target>Cancelar</target>
+            </trans-unit>
             <trans-unit id="actions.list">
                 <source>actions.list</source>
                 <target>Listado</target>
@@ -89,6 +93,14 @@
             <trans-unit id="list.search">
                 <source>list.search</source>
                 <target>Buscar</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.title">
+                <source>delete_modal.title</source>
+                <target>¿Realmente quieres borrar este elemento?</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.content">
+                <source>delete_modal.content</source>
+                <target>Esta acción no se puede deshacer.</target>
             </trans-unit>
         </body>
     </file>

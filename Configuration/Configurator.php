@@ -12,6 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class Configurator
@@ -70,13 +71,17 @@ class Configurator
         $entityClass = $this->backendConfig['entities'][$entityName]['class'];
         $entityConfiguration['class'] = $entityClass;
 
-        $entityProperties = $this->getEntityPropertiesMetadata($entityClass);
+        $doctrineEntityMetadata = $this->em->getMetadataFactory()->getMetadataFor($entityClass);
+
+        $entityProperties = $this->getEntityPropertiesMetadata($doctrineEntityMetadata);
         $entityConfiguration['properties'] = $entityProperties;
+
+        $entityConfiguration['primary_key_field_name'] = $doctrineEntityMetadata->getSingleIdentifierFieldName();
 
         $entityConfiguration['list']['fields'] = $this->getFieldsForListAction($this->backendConfig['entities'][$entityName], $entityProperties);
         $entityConfiguration['show']['fields'] = $this->getFieldsForShowAction($this->backendConfig['entities'][$entityName], $entityProperties);
-        $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $this->backendConfig['entities'][$entityName], $entityProperties);
-        $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedActions('new', $this->backendConfig['entities'][$entityName], $entityProperties);
+        $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $this->backendConfig['entities'][$entityName], $entityProperties, $entityConfiguration['primary_key_field_name']);
+        $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedActions('new', $this->backendConfig['entities'][$entityName], $entityProperties, $entityConfiguration['primary_key_field_name']);
         $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction($entityProperties);
 
         $this->entitiesConfig[$entityName] = $entityConfiguration;
@@ -88,18 +93,15 @@ class Configurator
      * Takes the FQCN of the entity and returns all the metadata of its properties
      * introspected via Doctrine.
      *
-     * @param  string $entityClass The fully qualified class name of the entity
-     * @return array  The entity properties metadata provided by Doctrine
+     * @param  ClassMetadata $entityMetadata The entity metadata introspected via Doctrine
+     * @return array         The entity properties metadata provided by Doctrine
      */
-    private function getEntityPropertiesMetadata($entityClass)
+    private function getEntityPropertiesMetadata(ClassMetadata $entityMetadata)
     {
         $entityPropertiesMetadata = array();
 
-        /** @var ClassMetadata $entityMetadata */
-        $entityMetadata = $this->em->getMetadataFactory()->getMetadataFor($entityClass);
-
-        if ('id' !== $entityMetadata->getSingleIdentifierFieldName()) {
-            throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it doesn't define a primary key called 'id'.", $entityClass));
+        if ($entityMetadata->isIdentifierComposite) {
+            throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it contains a composite primary key.", $entityMetadata->name));
         }
 
         // introspect regular entity fields
@@ -173,11 +175,12 @@ class Configurator
      * Returns the list of fields to show in the forms of this entity for the
      * actions which display forms ('edit' and 'new').
      *
-     * @param  array $entityConfiguration
-     * @param  array $entityProperties
-     * @return array The list of fields to show and their metadata
+     * @param  array  $entityConfiguration
+     * @param  array  $entityProperties
+     * @param  string $primaryKeyFieldName
+     * @return array  The list of fields to show and their metadata
      */
-    protected function getFieldsForFormBasedActions($action, array $entityConfiguration, array $entityProperties)
+    protected function getFieldsForFormBasedActions($action, array $entityConfiguration, array $entityProperties, $primaryKeyFieldName)
     {
         $entityFields = array();
 
@@ -190,7 +193,7 @@ class Configurator
         } else {
             $entityFields = $this->createEntityFieldsFromEntityProperties($entityProperties);
 
-            $excludedFieldNames = array('id');
+            $excludedFieldNames = array($primaryKeyFieldName);
             $excludedFieldTypes = array('binary', 'blob', 'json_array', 'object');
             $entityFields = $this->filterEntityFieldsBasedOnNameAndTypeBlackList($entityFields, $excludedFieldNames, $excludedFieldTypes);
         }

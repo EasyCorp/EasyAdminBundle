@@ -92,7 +92,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                     return new \Twig_Markup(sprintf('<a href="%s">%s</a>', $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId())), $value), 'UTF-8');
                 }
 
-                return '';
+                return $value;
             }
         } catch (\Exception $e) {
             return '';

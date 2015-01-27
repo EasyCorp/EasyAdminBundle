@@ -104,11 +104,13 @@ class AdminController extends Controller
             $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
         }
 
-        if (!$request->query->has('sortField')) {
-            $request->query->set('sortField', 'id');
-        }
-        if (!$request->query->has('sortDirection') || !in_array(strtoupper($request->query->get('sortDirection')), array('ASC', 'DESC'))) {
-            $request->query->set('sortDirection', 'DESC');
+        if (null !== $entityName) {
+            if (!$request->query->has('sortField')) {
+                $request->query->set('sortField', $this->entity['primary_key_field_name']);
+            }
+            if (!$request->query->has('sortDirection') || !in_array(strtoupper($request->query->get('sortDirection')), array('ASC', 'DESC'))) {
+                $request->query->set('sortDirection', 'DESC');
+            }
         }
 
         $this->request = $request;

@@ -100,6 +100,8 @@ class EasyAdminExtension extends Extension
     private function normalizeEntityConfiguration(array $simpleConfig)
     {
         $normalizedConfig = array();
+
+        $entityNames = array();
         foreach ($simpleConfig as $entityName => $entityClass) {
             if (is_integer($entityName)) {
                 // the simplest configuration format defines no custom entity names,
@@ -108,7 +110,10 @@ class EasyAdminExtension extends Extension
                 $entityName = array_pop($entityClassParts);
             }
 
-            $normalizedConfig[$entityName] = array(
+            $uniqueEntityName = $this->getUniqueEntityName($entityClass, $entityNames);
+            $entityNames[] = $uniqueEntityName;
+
+            $normalizedConfig[$uniqueEntityName] = array(
                 'class' => $entityClass,
             );
         }
@@ -127,6 +132,7 @@ class EasyAdminExtension extends Extension
     {
         $entities = array();
 
+        $entityNames = array();
         foreach ($entitiesConfiguration as $entityName => $entityConfiguration) {
             // copy the original entity configuration to not loose any of its options
             $config = $entityConfiguration;
@@ -148,7 +154,9 @@ class EasyAdminExtension extends Extension
                 $config[$action]['fields'] = $this->processFieldsConfiguration($config[$action]['fields'], $action, $config['class']);
             }
 
-            $uniqueEntityName = $this->getUniqueEntityName($config['class'], array_keys($entitiesConfiguration));
+            $uniqueEntityName = $this->getUniqueEntityName($config['class'], $entityNames);
+            $entityNames[] = $uniqueEntityName;
+
             $config['name']  = $uniqueEntityName;
 
             $entities[$uniqueEntityName] = $config;
@@ -175,7 +183,7 @@ class EasyAdminExtension extends Extension
         $entityClassParts = explode('\\', $entityClass);
         $uniqueEntityName = array_pop($entityClassParts);
 
-        while (array_key_exists($uniqueEntityName, $entityNames)) {
+        while (in_array($uniqueEntityName, $entityNames)) {
             $uniqueEntityName .= '_';
         }
 

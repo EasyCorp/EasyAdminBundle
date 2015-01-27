@@ -47,7 +47,7 @@
 
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
-                <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, 'id') }) }}">
+                <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
                     <i class="fa fa-edit"></i> {{ 'entity.edit' | trans({"%entity%": entity.name}) }}
                 </a>
 

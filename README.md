@@ -15,9 +15,12 @@ with unprecedented simplicity.
 
 **Requirements**
 
-EasyAdmin is compatible with Symfony 2.3+ applications that use Doctrine ORM
-entities to define their model. These entities must include a simple primary
-key called `id` and `many-to-many` associations are not supported.
+  * Symfony 2.3+ applications (Silex not supported).
+  * Doctrine ORM entities (Doctrine ODM and Propel not supported).
+  * Entities with simple primary keys (composite keys not supported).
+  * All kinds of entity associations are supported, except `many-to-many`
+    associations.
+  * Inheritance between entities is not supported.
 
 Installation
 ------------

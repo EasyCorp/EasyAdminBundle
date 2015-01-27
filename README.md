@@ -799,8 +799,8 @@ easy_admin:
                 ]
 ```
 
-Tips and Tricks
----------------
+Advanced Techniques for Complex Backends
+----------------------------------------
 
 ### Better Organizing Backend Configuration
 
@@ -850,7 +850,7 @@ documentation about [Doctrine caching drivers](http://symfony.com/doc/current/re
 
 Note that the previous example configures metadata caching in `config_prod.yml`
 file, which is the configuration used for the production environment. It's not
-recommended to enable this cache in the development environment to aovid having
+recommended to enable this cache in the development environment to avoid having
 to clear APC cache or restart the web server whenever you make any change to
 your Doctrine entities.
 

@@ -74,6 +74,7 @@ class Configurator
         $entityConfiguration['properties'] = $entityProperties;
 
         $entityConfiguration['list']['fields'] = $this->getFieldsForListAction($this->backendConfig['entities'][$entityName], $entityProperties);
+        $entityConfiguration['show']['fields'] = $this->getFieldsForShowAction($this->backendConfig['entities'][$entityName], $entityProperties);
         $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $this->backendConfig['entities'][$entityName], $entityProperties);
         $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedActions('new', $this->backendConfig['entities'][$entityName], $entityProperties);
         $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction($entityProperties);
@@ -127,7 +128,7 @@ class Configurator
     }
 
     /**
-     * Returns the list of fields to show in the listings of this entity.
+     * Returns the list of fields to show in the 'list' action of this entity.
      *
      * @param  array $entityConfiguration
      * @param  array $entityProperties
@@ -145,6 +146,27 @@ class Configurator
         $entityFields = $this->createEntityFieldsFromEntityProperties($entityProperties);
 
         return $this->filterListFieldsBasedOnSmartGuesses($entityFields);
+    }
+
+    /**
+     * Returns the list of fields to show in the 'show' action of this entity.
+     *
+     * @param  array $entityConfiguration
+     * @param  array $entityProperties
+     * @return array The list of fields to show and their metadata
+     */
+    private function getFieldsForShowAction(array $entityConfiguration, array $entityProperties)
+    {
+        $entityFields = array();
+
+        // there is a custom configuration for 'show' fields
+        if (count($entityConfiguration['show']['fields']) > 0) {
+            return $this->filterEntityFieldsBasedOnConfiguration($entityProperties, $entityConfiguration['show']['fields']);
+        }
+
+        $entityFields = $this->createEntityFieldsFromEntityProperties($entityProperties);
+
+        return $entityFields;
     }
 
     /**

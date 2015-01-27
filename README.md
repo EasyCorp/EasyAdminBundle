@@ -293,7 +293,7 @@ in application errors**:
 # app/config/config.yml
 easy_admin:
     entities:
-        # this configuration IS NOT VALID. Use the configuration showed above
+        # THIS CONFIGURATION IS NOT VALID. Use the configuration showed above
         Customer: AppBundle\Entity\Customer
             list:
                 fields: ['id', 'firstName', 'lastName', 'phone', 'email']
@@ -347,6 +347,65 @@ class Customer
 That's it. Reload your backend and you'll see the new virtual field displayed
 in the entity listing. The only current limitation of virtual fields is that
 you cannot reorder listings using these fields.
+
+### Customize which Fields are Displayed in the Show Action
+
+By default, the `show` action displays all the entity fields and their
+values. Use the `fields` option under the `show` key to restrict the fields to
+display:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            show:
+                fields: ['id', 'firstName', 'secondName', 'phone', 'email']
+    # ...
+```
+
+### Customize the Order of the Fields Displayed in the Show Action
+
+By default, the `show` action displays the entity properties in the same order
+as they were defined in the associated entity class. You could customize the
+`show` action contents just by reordering the entity properties, but it's more
+convenient to just define the order using the `fields` option of the `show`
+option:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            show:
+                fields: ['id', 'phone', 'email', 'firstName', 'secondName']
+    # ...
+```
+
+### Customize the Labels of the Values Displayed in the Show Action
+
+By default, `show` action labels are a "humanized" version of the original
+name of the related Doctrine entity property. If your property is called
+`published`, the label will be `Published` and if your property is called
+`dateOfBirth`, the label will be `Date of birth`.
+
+In case you want to define a custom label for one or all properties, just use
+the following expanded configuration:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            show:
+                fields: ['id', 'name', { property: 'email', label: 'Contact' }]
+    # ...
+```
+
+Instead of using a string to define the name of the property (e.g. `email`) you
+have to define a hash with the name of the property (`property: 'email'`) and
+the custom label you want to display (`label: 'Contact'`).
 
 ### Customize which Fields are Displayed in Forms
 
@@ -619,7 +678,7 @@ class AdminController extends EasyAdminController
             return $this->updateSlug($entity);
         }
     }
-    
+   
     protected function prepareNewEntityForPersist($entity)
     {
         if ($entity instanceof Article) {

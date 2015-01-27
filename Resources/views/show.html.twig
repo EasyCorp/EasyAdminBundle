@@ -29,7 +29,13 @@
         {% for field, metadata in fields %}
             <div class="form-group">
                 <label class="col-sm-2 control-label">
-                    {{ metadata.fieldName|humanize }}
+                    {% if metadata.label %}
+                        {{ metadata.label }}
+                    {% elseif 'id' == metadata.property %}
+                        ID
+                    {% else %}
+                        {{ field|humanize }}
+                    {% endif %}
                 </label>
                 <div class="col-sm-10">
                     <div class="form-control {{ metadata.type|lower }}">

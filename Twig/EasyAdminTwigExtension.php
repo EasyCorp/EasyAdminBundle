@@ -48,6 +48,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return new \Twig_Markup('<span class="label">NULL</span>', 'UTF-8');
             }
 
+            // when a virtual field doesn't define it's type, consider it a string
+            // and limit its length to avoid visual issues with very long values
+            if (true === $fieldMetadata['virtual'] && null === $fieldType) {
+                return substr(strval($value), 0, 64);
+            }
+
             if ('id' === $fieldName) {
                 // return the ID value as is to avoid number formatting
                 return $value;
@@ -98,7 +104,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             return '';
         }
 
-        return strval($value);
+        return '';
     }
 
     /**

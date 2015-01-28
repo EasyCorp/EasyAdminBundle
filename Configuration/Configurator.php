@@ -80,8 +80,8 @@ class Configurator
 
         $entityConfiguration['list']['fields'] = $this->getFieldsForListAction($this->backendConfig['entities'][$entityName], $entityProperties);
         $entityConfiguration['show']['fields'] = $this->getFieldsForShowAction($this->backendConfig['entities'][$entityName], $entityProperties);
-        $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $this->backendConfig['entities'][$entityName], $entityProperties);
-        $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedActions('new', $this->backendConfig['entities'][$entityName], $entityProperties);
+        $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $this->backendConfig['entities'][$entityName], $entityProperties, $entityConfiguration['primary_key_field_name']);
+        $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedActions('new', $this->backendConfig['entities'][$entityName], $entityProperties, $entityConfiguration['primary_key_field_name']);
         $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction($entityProperties);
 
         $this->entitiesConfig[$entityName] = $entityConfiguration;

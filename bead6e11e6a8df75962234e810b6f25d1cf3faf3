@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-01-27T19:12:44Z
+
+Having tried this feature right away: :+1:
+
+Seems you only missed the `attribute(item, entity.primary_key_field_name)` [here](https://github.com/javiereguiluz/EasyAdminBundle/blob/arbitrary_primary_keys/Resources/views/show.html.twig#L7)
+
+Thank you !
+
+Hope I could be helpful on further requests :smiley:

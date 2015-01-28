@@ -60,7 +60,7 @@
             </trans-unit>
             <trans-unit id="actions.cancel">
                 <source>actions.cancel</source>
-                <target>Refuser</target>
+                <target>Annuler</target>
             </trans-unit>
             <trans-unit id="actions.list">
                 <source>actions.list</source>
@@ -96,11 +96,11 @@
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>Do you really want to delete this item?</target>
+                <target>Voulez-vous supprimer cet élément ?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>There is no undo for this operation.</target>
+                <target>Cette action est irréversible.</target>
             </trans-unit>
         </body>
     </file>

@@ -98,7 +98,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             return '';
         }
 
-        return '';
+        return strval($value);
     }
 
     /**

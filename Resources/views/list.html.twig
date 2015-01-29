@@ -15,7 +15,11 @@
         <div class="row">
             <div class="col-xs-12 col-sm-5">
                 {% if 'search' == app.request.get('action') %}
-                    <h1 class="title">{{ 'list.results_found' | transchoice(paginator.nbResults) | raw }}</h1>
+                    {% if paginator.nbResults > 0 %}
+                        <h1 class="title">{{ 'list.results_found' | transchoice(paginator.nbResults) | raw }}</h1>
+                    {% else %}
+                        <h1 class="title">{{ 'list.no_results' | trans | raw }}</h1>
+                    {% endif %}
                 {% else %}
                     <h1 class="title">{{ config['entities'][entity.name]['label'] }}</h1>
                 {% endif %}

@@ -304,10 +304,10 @@ easy_admin:
 
 #### Virtual Entity Fields
 
-Sometimes it's useful to modify the original entity properties before
-displaying them in the listings. For example, if your `Customer` entity
-defines `firstName` and `lastName` properties, you may want to just display
-a column called `Name` with both information. These are called `virtual fields`
+Sometimes, it's useful to include in listings values which are not entity
+properties. For example, if your `Customer` entity defines `firstName` and
+`lastName` properties, you may want to just display a column called `Name`
+with both information merged. These columns are called `virtual fields`
 because they don't really exist as real Doctrine entity fields.
 
 First, add this new virtual field to the entity configuration:
@@ -322,10 +322,12 @@ easy_admin:
     # ...
 ```
 
-If you reload your backend, you'll get an error because the `name` field does
-not match any of the entity's properties. To fix this issue, add a new public
+If you reload the backend, you'll see that the virtual field only displays
+`Inaccessible` as its value. The reason is that virtual field `name` does not
+match any of the entity's properties. To fix this issue, add a new public
 method in your entity called `getXxx()` or `xxx()`, where `xxx` is the name of
-the virtual field (in this case, `name`):
+the virtual field (in this case the field is called `name`, so the method must
+be called `getName()` or `name()`):
 
 ```php
 namespace AppBundle\Entity;
@@ -346,9 +348,40 @@ class Customer
 }
 ```
 
-That's it. Reload your backend and you'll see the new virtual field displayed
-in the entity listing. The only current limitation of virtual fields is that
-you cannot reorder listings using these fields.
+That's it. Reload your backend and now you'll see the real values of this
+virtual field. By default, virtual fields are displayed as text contents. If
+your virtual field is a *boolean* value or a date, define its time using the
+`type` option:
+
+```yaml
+# in this example, the virtual fields 'is_eligible' and 'last_contact' will
+# be considered strings, even if they return boolean and DateTime values
+# respectively
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: ['id', 'is_eligible', 'last_contact']
+    # ...
+
+# in this example, the virtual fields 'is_eligible' and 'last_contact' will
+# be displayed as a boolean and a DateTime value respectively
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: [
+                    'id',
+                    { property: 'is_eligible', type: 'boolean' },
+                    { property: 'last_contact', type: 'datetime' }
+                ]
+    # ...
+```
+
+The only current limitation of virtual fields is that you cannot reorder
+listings using these fields.
 
 ### Customize which Fields are Displayed in the Show Action
 

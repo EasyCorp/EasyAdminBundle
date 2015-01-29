@@ -354,7 +354,7 @@ your virtual field is a *boolean* value or a date, define its time using the
 `type` option:
 
 ```yaml
-# in this example, the virtual fields ' is_eligible' and 'last_contact' will
+# in this example, the virtual fields 'is_eligible' and 'last_contact' will
 # be considered strings, even if they return boolean and DateTime values
 # respectively
 easy_admin:
@@ -365,7 +365,7 @@ easy_admin:
                 fields: ['id', 'is_eligible', 'last_contact']
     # ...
 
-# in this example, the virtual fields ' is_eligible' and 'last_contact' will
+# in this example, the virtual fields 'is_eligible' and 'last_contact' will
 # be displayed as a boolean and a DateTime value respectively
 easy_admin:
     entities:

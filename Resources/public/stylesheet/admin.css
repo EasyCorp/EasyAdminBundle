@@ -287,11 +287,8 @@ button.btn-danger {
     transition: none;
 }
 
-.form-group.field_checkbox label.control-label {
-    visibility: hidden;
-}
-
-.help-block {
+.help-block,
+.has-error .help-block {
     color: #797470;
 }
 
@@ -303,15 +300,19 @@ button.btn-danger {
     border-color: #D44542;
     box-shadow: none;
 }
-.has-error .help-block {
+.has-error .error-block {
     color: #D44542;
     font-weight: bold;
+    padding-top: 5px;
 }
-.has-error .help-block ul {
-    margin: 0;
+.has-error .error-block .label-danger {
+    margin-right: 3px;
 }
-.has-error  .help-block .glyphicon {
-    display: none;
+.has-error .error-block ul {
+    margin: .5em 0 .5em 1.5em;
+}
+.has-error .error-block ul li {
+    margin-bottom: .5em;
 }
 
 /* Modal windows

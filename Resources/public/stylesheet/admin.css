@@ -915,8 +915,8 @@ body.error code {
         display: block;
         font-size: 16px;
         font-weight: 500;
-        line-height: 2.5;
-        padding: 0;
+        line-height: 1.8;
+        padding: 0.35em 0;
         text-align: left;
         -moz-transition: padding-left .1s ease-out 0s;
         -webkit-transition: padding-left .1s ease-out;

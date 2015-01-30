@@ -79,7 +79,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('string', 'text'))) {
-                return strlen($value) > 64 ? substr($value, 0, 64).'...' : $value;
+                return strlen($value) > 64 ? new \Twig_Markup(sprintf('<span title="%s">%s</span>',
+                    strlen($value) > 512 ? substr($value, 0, 512).'...' : $value,
+                    substr($value, 0, 64).'...'
+                ), 'UTF-8') : $value;
             }
 
             if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {

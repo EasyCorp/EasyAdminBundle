@@ -29,7 +29,14 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'entity_field' => new \Twig_Function_Method($this, 'displayEntityField'),
+            new \Twig_SimpleFunction('entity_field', array($this, 'displayEntityField')),
+        );
+    }
+
+    public function getFilters()
+    {
+        return array(
+            new \Twig_SimpleFilter('entity_field_truncate', array($this, 'entity_field_truncate_filter'), array('needs_environment' => true)),
         );
     }
 
@@ -51,7 +58,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             // when a virtual field doesn't define it's type, consider it a string
             // and limit its length to avoid visual issues with very long values
             if (true === $fieldMetadata['virtual'] && null === $fieldType) {
-                return substr(strval($value), 0, 64);
+                return strval($value);
             }
 
             if ('id' === $fieldName) {
@@ -79,7 +86,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('string', 'text'))) {
-                return strlen($value) > 64 ? substr($value, 0, 64).'...' : $value;
+                return $value;
             }
 
             if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {
@@ -139,6 +146,45 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         return $entity->{$property};
+    }
+
+    /*
+     * Copied from the official Text Twig extension.
+     *
+     * code: https://github.com/twigphp/Twig-extensions/blob/master/lib/Twig/Extensions/Extension/Text.php
+     * author: Henrik Bjornskov <hb@peytz.dk>
+     * copyright holder: (c) 2009 Fabien Potencier
+     */
+    public function entity_field_truncate_filter(\Twig_Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
+    {
+        if (function_exists('mb_get_info')) {
+            if (mb_strlen($value, $env->getCharset()) > $length) {
+                if ($preserve) {
+                    // If breakpoint is on the last word, return the value without separator.
+                    if (false === ($breakpoint = mb_strpos($value, ' ', $length, $env->getCharset()))) {
+                        return $value;
+                    }
+
+                    $length = $breakpoint;
+                }
+
+                return rtrim(mb_substr($value, 0, $length, $env->getCharset())) . $separator;
+            }
+
+            return $value;
+        }
+
+        if (strlen($value) > $length) {
+            if ($preserve) {
+                if (false !== ($breakpoint = strpos($value, ' ', $length))) {
+                    $length = $breakpoint;
+                }
+            }
+
+            return rtrim(substr($value, 0, $length)) . $separator;
+        }
+
+        return $value;
     }
 
     public function getName()

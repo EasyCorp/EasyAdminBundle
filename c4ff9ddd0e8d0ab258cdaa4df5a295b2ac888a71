@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-30T08:44:27Z
+
+Can't you squash all your commits ? It'll be dirty in the tree with 4 commits for such a little update :p
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-30T19:24:18Z
+
+@ikerib *eskerrik asko* ... and don't worry about the commit squashing. @Pierstoval is right ... but the tool I use to merge pull requests does this automatically, so there's nothing left to be done.

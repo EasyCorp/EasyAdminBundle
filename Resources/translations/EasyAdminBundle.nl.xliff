@@ -88,7 +88,7 @@
             </trans-unit>
             <trans-unit id="list.results_found">
                 <source>list.results_found</source>
-                <target><![CDATA[{1} <strong>1</strong> resultaat gevonden|]1,Inf] <strong>%count%</strong> resultaten gevonden]]></target>
+                <target><![CDATA[{0} Geen resultaten gevonden|{1} <strong>1</strong> resultaat gevonden|]1,Inf] <strong>%count%</strong> resultaten gevonden]]></target>
             </trans-unit>
             <trans-unit id="list.search">
                 <source>list.search</source>

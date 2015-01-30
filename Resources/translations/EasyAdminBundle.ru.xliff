@@ -1,106 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" datatype="plaintext" original="file.ext">
+    <file source-language="ru" datatype="plaintext" original="file.ext">
         <body>
             <trans-unit id="header.close">
                 <source>header.close</source>
-                <target>Cerrar</target>
+                <target>Закрыть</target>
             </trans-unit>
             <trans-unit id="header.logged_in_as">
                 <source>header.logged_in_as</source>
-                <target>Conectado como</target>
+                <target>Logged in as</target>
             </trans-unit>
             <trans-unit id="entity.create">
                 <source>entity.create</source>
-                <target>Crear %entity%</target>
+                <target>Создать новый %entity%</target>
             </trans-unit>
             <trans-unit id="list.actions">
                 <source>list.actions</source>
-                <target>Acciones</target>
+                <target>Действия</target>
             </trans-unit>
             <trans-unit id="list.no_results">
                 <source>list.no_results</source>
-                <target>No se han encontrado resultados.</target>
+                <target>Ничего не найдено.</target>
             </trans-unit>
             <trans-unit id="entity.edit">
                 <source>entity.edit</source>
-                <target>Modificar</target>
+                <target>Редактировать</target>
             </trans-unit>
             <trans-unit id="entity.delete">
                 <source>entity.delete</source>
-                <target>Borrar</target>
+                <target>Удалить</target>
             </trans-unit>
             <trans-unit id="link.back_to_listing">
                 <source>link.back_to_listing</source>
-                <target>Volver al listado</target>
+                <target>Вернуться к списку</target>
             </trans-unit>
             <trans-unit id="entity.save_changes">
                 <source>entity.save_changes</source>
-                <target>Guardar cambios</target>
+                <target>Сохранить изменения</target>
             </trans-unit>
             <trans-unit id="paginator.first">
                 <source>paginator.first</source>
-                <target>Primera</target>
+                <target>Первая</target>
             </trans-unit>
             <trans-unit id="paginator.previous">
                 <source>paginator.previous</source>
-                <target>Anterior</target>
+                <target>Предыдущий</target>
             </trans-unit>
             <trans-unit id="paginator.next">
                 <source>paginator.next</source>
-                <target>Siguiente</target>
+                <target>Следующий</target>
             </trans-unit>
             <trans-unit id="paginator.last">
                 <source>paginator.last</source>
-                <target>Última</target>
+                <target>Последняя</target>
             </trans-unit>
             <trans-unit id="paginator.counter">
                 <source>paginator.counter</source>
-                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> de <strong>%results%</strong>]]></target>
+                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> из <strong>%results%</strong>]]></target>
             </trans-unit>
             <trans-unit id="actions.cancel">
                 <source>actions.cancel</source>
-                <target>Cancelar</target>
+                <target>Отклонить</target>
             </trans-unit>
             <trans-unit id="actions.list">
                 <source>actions.list</source>
-                <target>Listado</target>
+                <target>Список</target>
             </trans-unit>
             <trans-unit id="actions.edit">
                 <source>actions.edit</source>
-                <target>Modificar</target>
+                <target>Редактировать</target>
             </trans-unit>
             <trans-unit id="actions.new">
                 <source>actions.new</source>
-                <target>Crear</target>
+                <target>Новый</target>
             </trans-unit>
             <trans-unit id="actions.show">
                 <source>actions.show</source>
-                <target>Ver</target>
+                <target>Показать</target>
             </trans-unit>
             <trans-unit id="actions.search">
                 <source>actions.search</source>
-                <target>Buscar</target>
+                <target>Поиск</target>
             </trans-unit>
             <trans-unit id="actions.delete">
                 <source>actions.delete</source>
-                <target>Borrar</target>
+                <target>Удалить</target>
             </trans-unit>
             <trans-unit id="list.results_found">
                 <source>list.results_found</source>
-                <target><![CDATA[{1} <strong>1</strong> resultado|]1,Inf] <strong>%count%</strong> resultados]]></target>
-            </trans-unit>
-            <trans-unit id="list.search">
-                <source>list.search</source>
-                <target>Buscar</target>
+                <target><![CDATA[{1} <strong>1</strong> запись найдена |{2,3,4} Всего <strong>%count%</strong> записи |[5,Inf] Всего <strong>%count%</strong> записей]]></target>
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>¿Realmente quieres borrar este elemento?</target>
+                <target>Do you really want to delete this item?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>Esta acción no se puede deshacer.</target>
+                <target>There is no undo for this operation.</target>
             </trans-unit>
         </body>
     </file>

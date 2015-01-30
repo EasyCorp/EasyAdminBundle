@@ -96,11 +96,11 @@
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>Do you really want to delete this item?</target>
+                <target>Ziur zaude elementu hau ezabatu nahi duzula?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>There is no undo for this operation.</target>
+                <target>Ekintza hau ezin da desegin.</target>
             </trans-unit>
         </body>
     </file>

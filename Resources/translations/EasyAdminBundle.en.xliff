@@ -102,6 +102,18 @@
                 <source>delete_modal.content</source>
                 <target>There is no undo for this operation.</target>
             </trans-unit>
+            <trans-unit id="list.search">
+                <source>list.search</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.title">
+                <source>delete_modal.title</source>
+                <target>Do you really want to delete this item?</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.content">
+                <source>delete_modal.content</source>
+                <target>There is no undo for this operation.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

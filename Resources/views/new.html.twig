@@ -71,7 +71,7 @@
                         <i class="fa fa-save"></i> {{ 'entity.save_changes' | trans }}
                     </button>
 
-                    <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
+                    <a class="btn btn-list btn-secondary" href="{{ entity_path(entity, 'list') }}">
                         {{ 'link.back_to_listing' | trans }}
                     </a>
                 </div>

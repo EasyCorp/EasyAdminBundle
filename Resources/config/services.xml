@@ -15,5 +15,10 @@
             <argument type="service" id="doctrine.orm.entity_manager"></argument>
         </service>
 
+        <service id="easyadmin.routing.easy_admin_loader" class="JavierEguiluz\Bundle\EasyAdminBundle\Routing\EasyAdminLoader">
+            <argument>%easyadmin.config%</argument>
+            <tag name="routing.loader" />
+        </service>
+
     </services>
 </container>

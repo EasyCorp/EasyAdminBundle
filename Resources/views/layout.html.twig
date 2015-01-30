@@ -30,7 +30,7 @@
         <div id="header" class="col-lg-2">
             <div id="header-contents" class="row">
                 <div id="header-logo" class="col-xs-6 col-md-2 col-lg-12">
-                    <a href="{{ path('admin') }}">{{ config.site_name|raw }}</a>
+                    <a href="{{ path('easy_admin_homepage') }}">{{ config.site_name|raw }}</a>
                 </div>
 
                 <div id="header-nav" class="col-xs-12 col-md-8 col-lg-12">
@@ -43,7 +43,7 @@
                     <ul id="header-menu">
                         {% for item in config.entities %}
                             <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
-                                <a href="{{ path('admin', { entity: item.name, action: 'list' }) }}">
+                                <a href="{{ entity_path(item, 'list') }}">
                                     {{ item.label }}
                                 </a>
                             </li>

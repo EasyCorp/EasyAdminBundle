@@ -92,7 +92,11 @@
                                 {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
                                 <td class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.type|lower }}">
-                                    {{ entity_field(item, field, metadata) }}
+                                    {% if metadata.type in ['array', 'json_array', 'simple_array', 'text'] %}
+                                        {{ entity_field(item, field, metadata)|entity_field_truncate }}
+                                    {% else %}
+                                        {{ entity_field(item, field, metadata) }}
+                                    {% endif %}
                                 </td>
                             {% endfor %}
                                 <td class="actions">

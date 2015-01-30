@@ -366,6 +366,13 @@ class AdminController extends Controller
      */
     protected function createEditForm($entity, array $entityProperties)
     {
+        $servicename = sprintf('form.type.%s', strtolower($this->entity['name']));
+
+		if($this->get('service_container')->has($servicename))
+		{
+			return $this->createForm( $this->get($servicename), $entity	);
+		}
+        
         $form = $this->createFormBuilder($entity, array(
             'data_class' => $this->entity['class'],
         ));

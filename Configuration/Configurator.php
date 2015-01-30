@@ -12,6 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -19,7 +20,7 @@ class Configurator
 {
     private $backendConfig = array();
     private $entitiesConfig = array();
-    private $em;
+    private $doctrineManager;
 
     private $doctrineTypeToFormTypeMap = array(
         'association' => null,
@@ -43,10 +44,10 @@ class Configurator
         'time' => 'time',
     );
 
-    public function __construct(array $backendConfig, ObjectManager $em)
+    public function __construct(array $backendConfig, ManagerRegistry $manager)
     {
         $this->backendConfig = $backendConfig;
-        $this->em = $em;
+        $this->doctrineManager = $manager;
     }
 
     /**
@@ -71,7 +72,8 @@ class Configurator
         $entityClass = $this->backendConfig['entities'][$entityName]['class'];
         $entityConfiguration['class'] = $entityClass;
 
-        $doctrineEntityMetadata = $this->em->getMetadataFactory()->getMetadataFor($entityClass);
+        $em = $this->doctrineManager->getManagerForClass($entityClass);
+        $doctrineEntityMetadata = $em->getMetadataFactory()->getMetadataFor($entityClass);
 
         $entityProperties = $this->getEntityPropertiesMetadata($doctrineEntityMetadata);
         $entityConfiguration['properties'] = $entityProperties;

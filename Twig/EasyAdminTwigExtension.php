@@ -56,7 +56,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             // when a virtual field doesn't define it's type, consider it a string
-            // and limit its length to avoid visual issues with very long values
             if (true === $fieldMetadata['virtual'] && null === $fieldType) {
                 return strval($value);
             }

@@ -4,17 +4,17 @@
 {% block body_class 'admin list ' ~ entity.name|lower %}
 
 {% block content %}
-{% if 'search' == app.request.get('action') %}
-    {% set request_attributes = { action: 'search', entity: entity.name, query: app.request.get('query')|default('') } %}
+{% if 'search' == app.request.attributes.get('action') %}
+    {% set request_attributes = { query: app.request.get('query')|default('') } %}
 {% else %}
-    {% set request_attributes = { action: 'list', entity: entity.name, sortDirection: app.request.get('sortDirection', 'DESC') } %}
+    {% set request_attributes = { sortDirection: app.request.get('sortDirection', 'DESC') } %}
 {% endif %}
 
 <div class="row">
     <div id="content-header" class="col-sm-12">
         <div class="row">
             <div class="col-xs-12 col-sm-5">
-                {% if 'search' == app.request.get('action') %}
+                {% if 'search' == app.request.attributes.get('action') %}
                     <h1 class="title">{{ 'list.results_found' | transchoice(paginator.nbResults) | raw }}</h1>
                 {% else %}
                     <h1 class="title">{{ config['entities'][entity.name]['label'] }}</h1>
@@ -22,14 +22,12 @@
             </div>
             <div class="col-xs-12 col-sm-7">
                 <div id="content-actions">
-                    <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
+                    <a class="btn" href="{{ entity_path(entity, 'new') }}">
                         {{ 'entity.create' | trans({"%entity%": entity.name}) }}
                     </a>
                 </div>
-                <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
+                <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ entity_path(entity, 'search') }}">
                     <div class="input-group">
-                        <input type="hidden" name="action" value="search">
-                        <input type="hidden" name="entity" value="{{ entity.name }}">
                         <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search' | trans }}" value="{{ app.request.get('query')|default('') }}">
                     </div>
                 </form>
@@ -53,7 +51,7 @@
 
                                 {# for now you cannot sort by virtual fields not directly mapped to entity attributes #}
                                 {% if not metadata.virtual|default(false) %}
-                                    <a href="{{ path('admin', request_attributes|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
+                                    <a href="{{ entity_path(entity, app.request.attributes.get('action'), request_attributes|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
                                         {% if isSortingField and sortDirection == 'DESC' %}
                                             <i class="fa fa-caret-up"></i>
                                         {% elseif isSortingField and sortDirection == 'ASC' %}
@@ -97,7 +95,7 @@
                             {% endfor %}
                                 <td class="actions">
                                     {% for action in config['list_actions'] %}
-                                        <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
+                                        <a href="{{ entity_path(entity, action, { id: attribute(item, entity.primary_key_field_name) }) }}">
                                             {{ ('actions.' ~ action)|trans }}
                                         </a>
                                     {% endfor %}

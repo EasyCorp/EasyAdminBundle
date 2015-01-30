@@ -47,7 +47,7 @@
 
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
-                <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
+                <a class="btn btn-edit" href="{{ entity_path(entity, 'edit',{ id: attribute(item, entity.primary_key_field_name) }) }}">
                     <i class="fa fa-edit"></i> {{ 'entity.edit' | trans({"%entity%": entity.name}) }}
                 </a>
 
@@ -55,7 +55,7 @@
                     <i class="fa fa-trash"></i> {{ 'entity.delete' | trans() }}
                 </button>
 
-                <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
+                <a class="btn btn-list btn-secondary" href="{{ entity_path(entity, 'list') }}">
                     {{ 'link.back_to_listing' | trans }}
                 </a>
             </div>

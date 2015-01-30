@@ -30,6 +30,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     {
         return array(
             'entity_field' => new \Twig_Function_Method($this, 'displayEntityField'),
+            'entity_path' => new \Twig_Function_Method($this, 'createPath'),
         );
     }
 
@@ -105,6 +106,13 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         return '';
+    }
+
+    public function createPath($entity, $action, array $parameters = array())
+    {
+        $route = 'easy_admin_' . strtolower($entity['name']) . '_' . $action;
+
+        return $this->urlGenerator->generate($route, $parameters);
     }
 
     /**

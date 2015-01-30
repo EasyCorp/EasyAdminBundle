@@ -24,7 +24,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 
@@ -42,32 +41,6 @@ class AdminController extends Controller
 
     /** @var EntityManager */
     protected $em;
-
-    /**
-     * @Route("/", name="admin")
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     */
-    public function indexAction(Request $request)
-    {
-        $result = $this->initialize($request);
-
-        // initialize() returns a Response object when an error occurs.
-        // This allows to display a detailed error message.
-        if ($result instanceof Response) {
-            return $result;
-        }
-
-        $action = $request->query->get('action', 'list');
-
-        // for now, the homepage redirects to the 'list' action of the first entity
-        if (null === $request->query->get('entity')) {
-            return $this->redirect($this->generateUrl('admin', array('action' => $action, 'entity' => $this->getNameOfTheFirstConfiguredEntity())));
-        }
-
-        return $this->{$action.'Action'}();
-    }
 
     /**
      * Utility method which initializes the configuration of the entity on which
@@ -96,7 +69,7 @@ class AdminController extends Controller
 
         $this->em = $this->getDoctrine()->getManager();
 
-        if (null !== $entityName = $request->query->get('entity')) {
+        if (null !== $entityName = $request->attributes->get('entity')) {
             if (!array_key_exists($entityName, $this->config['entities'])) {
                 return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
             }
@@ -121,10 +94,12 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function listAction()
+    public function listAction(Request $request, $page = 1)
     {
+        $this->initialize($request);
+
         $fields = $this->entity['list']['fields'];
-        $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list_max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
+        $paginator = $this->findAll($this->entity['class'], $page, $this->config['list_max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
         return $this->render('@EasyAdmin/list.html.twig', array(
             'config'    => $this->config,
@@ -139,22 +114,24 @@ class AdminController extends Controller
      *
      * @return RedirectResponse|Response
      */
-    protected function editAction()
+    public function editAction(Request $request, $id)
     {
-        if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
+        $this->initialize($request);
+
+        if (!$item = $this->em->getRepository($this->entity['class'])->find($id)) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
         }
 
         $fields = $this->entity['edit']['fields'];
         $editForm = $this->createEditForm($item, $fields);
-        $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
+        $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
         $editForm->handleRequest($this->request);
         if ($editForm->isValid()) {
             $this->prepareEditEntityForPersist($item);
             $this->em->flush();
 
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateEntityUrl($this->entity, 'list'));
         }
 
         return $this->render('@EasyAdmin/edit.html.twig', array(
@@ -172,14 +149,16 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function showAction()
+    public function showAction(Request $request, $id)
     {
-        if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
+        $this->initialize($request);
+
+        if (!$item = $this->em->getRepository($this->entity['class'])->find($id)) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
         }
 
         $fields = $this->entity['show']['fields'];
-        $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
+        $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
         return $this->render('@EasyAdmin/show.html.twig', array(
             'config' => $this->config,
@@ -195,8 +174,10 @@ class AdminController extends Controller
      *
      * @return RedirectResponse|Response
      */
-    protected function newAction()
+    public function newAction(Request $request)
     {
+        $this->initialize($request);
+
         $entityFullyQualifiedClassName = $this->entity['class'];
         $item = new $entityFullyQualifiedClassName();
 
@@ -209,7 +190,7 @@ class AdminController extends Controller
             $this->em->persist($item);
             $this->em->flush();
 
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateEntityUrl($this->entity, 'list'));
         }
 
         return $this->render('@EasyAdmin/new.html.twig', array(
@@ -227,17 +208,19 @@ class AdminController extends Controller
      *
      * @return RedirectResponse
      */
-    protected function deleteAction()
+    public function deleteAction(Request $request, $id)
     {
+        $this->initialize($request);
+
         if ('DELETE' !== $this->request->getMethod()) {
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateEntityUrl($this->entity, 'list'));
         }
 
-        $form = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
+        $form = $this->createDeleteForm($this->entity['name'], $id);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
+            if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
                 throw $this->createNotFoundException('The entity to be delete does not exist.');
             }
 
@@ -245,15 +228,17 @@ class AdminController extends Controller
             $this->em->flush();
         }
 
-        return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
+        return $this->redirect($this->generateEntityUrl($this->entity, 'list'));
     }
 
     /**
      * The method that is executed when the user performs a query on an entity.
      * @return Response
      */
-    protected function searchAction()
+    public function searchAction(Request $request)
     {
+        $this->initialize($request);
+
         $searchableFields = $this->entity['search']['fields'];
         $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list_max_results']);
         $fields = $this->entity['list']['fields'];
@@ -431,7 +416,7 @@ class AdminController extends Controller
     protected function createDeleteForm($entityName, $entityId)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin', array('action' => 'delete', 'entity' => $entityName, 'id' => $entityId)))
+            ->setAction($this->generateEntityUrl($this->entity, 'delete', array('id' => $entityId)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
@@ -449,5 +434,12 @@ class AdminController extends Controller
     protected function render404error($view, array $parameters = array())
     {
         return $this->render($view, $parameters, new Response('', 404));
+    }
+
+    private function generateEntityUrl($entity, $action, array $parameters = array())
+    {
+        $route = 'easy_admin_' . strtolower($entity['name']) . '_' . $action;
+
+        return $this->generateUrl($route, $parameters);
     }
 }

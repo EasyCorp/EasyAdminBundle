@@ -101,7 +101,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 }
 
                 if (method_exists($value, 'getId')) {
-                    return new \Twig_Markup(sprintf('<a href="%s">%s</a>', $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId())), $value), 'UTF-8');
+                    $associatedEntityUrl = $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId()));
+                    $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+                    $associatedEntityValue = strlen($value) > 64 ? substr($value, 0, 64).'...' : $value;
+
+                    return new \Twig_Markup(sprintf('<a href="%s">%s</a>', $associatedEntityUrl, $associatedEntityValue), 'UTF-8');
                 }
 
                 return $value;

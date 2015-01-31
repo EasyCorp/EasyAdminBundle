@@ -372,11 +372,10 @@ easy_admin:
         Customer:
             class: AppBundle\Entity\Customer
             list:
-                fields: [
-                    'id',
-                    { property: 'is_eligible', type: 'boolean' },
-                    { property: 'last_contact', type: 'datetime' }
-                ]
+                fields:
+                    - 'id'
+                    - { property: 'is_eligible', type: 'boolean' }
+                    - { property: 'last_contact', type: 'datetime' }
     # ...
 ```
 
@@ -494,12 +493,12 @@ easy_admin:
         Customer:
             class: AppBundle\Entity\Customer
             edit:
-                fields: [
-                    'id',
-                    { property: 'email', type: 'email', label: 'Contact' },
-                    { property: 'code', type: 'number', label: 'Customer Code', class: 'input-lg' }
-                    { property: 'notes', help: 'Use this field to add private notes and comments about the client' }
-                    { property: 'zone', type: 'country' }
+                fields:
+                    - 'id'
+                    - { property: 'email', type: 'email', label: 'Contact' }
+                    - { property: 'code', type: 'number', label: 'Customer Code', class: 'input-lg' }
+                    - { property: 'notes', help: 'Use this field to add private notes and comments about the client' }
+                    - { property: 'zone', type: 'country' }
                 ]
     # ...
 ```
@@ -530,11 +529,10 @@ easy_admin:
         Customer:
             class: AppBundle\Entity\Customer
             form:  # <-- 'form' is applied to both 'new' and 'edit' actions
-                fields: [
-                    'id',
-                    { property: 'email', type: 'email', label: 'Contact' },
+                fields:
+                    - 'id'
+                    - { property: 'email', type: 'email', label: 'Contact' }
                     ...
-                ]
     # ...
 ```
 
@@ -895,12 +893,11 @@ easy_admin:
             list:
                 fields: ['id', 'code', 'description', 'price']
             form:
-                fields: [
-                    { property: 'code', help: 'Alphanumeric characters only' },
-                    { property: 'description', type: 'textarea' },
-                    { property: 'price', type: 'number', class: 'input-lg' },
-                    { property: 'category', label: 'Commercial Category' }
-                ]
+                fields:
+                    - { property: 'code', help: 'Alphanumeric characters only' }
+                    - { property: 'description', type: 'textarea' }
+                    - { property: 'price', type: 'number', class: 'input-lg' }
+                    - { property: 'category', label: 'Commercial Category' }
 ```
 
 Advanced Techniques for Complex Backends

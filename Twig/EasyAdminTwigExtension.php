@@ -102,7 +102,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
                 if (method_exists($value, 'getId')) {
                     $associatedEntityUrl = $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId()));
+                    // escaping is done manually in order to include this content in a Twig_Markup object
                     $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+                    // ideally we'd use the 'entity_field_truncate_filter' method, but it's cumbersome to invoke it from here
                     $associatedEntityValue = strlen($value) > 64 ? substr($value, 0, 64).'...' : $value;
 
                     return new \Twig_Markup(sprintf('<a href="%s">%s</a>', $associatedEntityUrl, $associatedEntityValue), 'UTF-8');

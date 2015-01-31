@@ -1,0 +1,22 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-01-30T21:25:03Z
+
+:+1:
+
+Don't you think association types should be truncated as well, as we're using the `_toString()` method to display them, and cannot be sure about the length ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-30T21:56:04Z
+
+@ogizanagi good point! I've tried to fix that in c9b3058. What do you think?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-01-30T23:06:14Z
+
+@javiereguiluz : Pretty much the same as before about the truncate & other stuff in the extension :smile:
+But I guess there is no better solution at the moment, as we cannot use the new truncate filter if the the extension returns HTML content, and that the purpose of this PR isn't to uncouple the entities' fields access and the formatting.
+
+So :+1:

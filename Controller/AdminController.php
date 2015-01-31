@@ -94,8 +94,6 @@ class AdminController extends Controller
             ));
         }
 
-        $this->em = $this->getDoctrine()->getManager();
-
         if (null !== $entityName = $request->query->get('entity')) {
             if (!array_key_exists($entityName, $this->config['entities'])) {
                 return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
@@ -113,6 +111,7 @@ class AdminController extends Controller
             }
         }
 
+        $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
         $this->request = $request;
     }
 

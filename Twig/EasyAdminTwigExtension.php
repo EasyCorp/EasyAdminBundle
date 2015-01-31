@@ -173,7 +173,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                     $length = $breakpoint;
                 }
 
-                return rtrim(mb_substr($value, 0, $length, $env->getCharset())) . $separator;
+                return rtrim(mb_substr($value, 0, $length, $env->getCharset())).$separator;
             }
 
             return $value;
@@ -186,7 +186,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 }
             }
 
-            return rtrim(substr($value, 0, $length)) . $separator;
+            return rtrim(substr($value, 0, $length)).$separator;
         }
 
         return $value;

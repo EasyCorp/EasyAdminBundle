@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-01-30T11:56:44Z
+
+What did this look like before?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-01-30T13:09:08Z
+
+I don't know if it was a bug , but when testing, I had absolutely no message :interrobang:
+When checking out this PR the messages appear clearly.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-30T21:20:29Z
+
+@Pierstoval is right ... form errors were displayed at the beginning of the project, but then they got lost. When they worked, they looked like the following:
+
+![form_errors_before](https://cloud.githubusercontent.com/assets/73419/5983458/df4cdcea-a8cd-11e4-8e20-12a0d97f328a.png)
+
+Main differences:
+
+  * Errors displayed a icon, which uses glyphicon from Bootstrap. We don't load those icons and therefore, you see the error square.
+  * When there was more than 1 error, the list didn't show the bullet points.
+  * Help message was wrongly displayed as an error. In the `tags` field of the image, the second phrase is not an error, but a help message which normally is displayed in gray text ... but when there is a field error, the help message is displayed as an error.

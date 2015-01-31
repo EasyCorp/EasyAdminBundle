@@ -653,6 +653,7 @@ body.show .form-control {
     border: 0;
     border-radius: 0;
     box-shadow: none;
+    height: auto;
 }
 body.show .form-control.text {
     height: auto;

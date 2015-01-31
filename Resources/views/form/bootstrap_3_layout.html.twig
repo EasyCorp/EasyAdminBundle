@@ -163,13 +163,23 @@
     {% if parent_label_class is defined %}
         {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) %}
     {% endif %}
-    {% if label is empty %}
-        {% set label = name|humanize %}
+
+    {# Do no display the label if widget is not defined in order to prevent double label rendering #}
+    {% if widget is defined %}
+        {% if required %}
+            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
+        {% endif %}
+        {% if parent_label_class is defined %}
+            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) %}
+        {% endif %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+                {{ widget|raw }}
+                {{ label|trans({}, translation_domain) }}
+        </label>
     {% endif %}
-    <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-        {{ widget|default('')|raw }}
-        {{ label|trans({}, translation_domain) }}
-    </label>
 {% endblock checkbox_radio_label %}
 
 {# Rows #}
@@ -224,14 +234,19 @@
 
 {# Errors #}
 
-{% block form_errors -%}
-    {% if errors|length > 0 -%}
-    {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger">{% endif %}
-    <ul class="list-unstyled">
-        {%- for error in errors -%}
-            <li><span class="glyphicon glyphicon-exclamation-sign"></span> {{ error.message }}</li>
-        {%- endfor -%}
-    </ul>
-    {% if form.parent %}</span>{% else %}</div>{% endif %}
-    {%- endif %}
-{%- endblock form_errors %}
+{% block form_errors %}
+    {% if errors|length > 1 %}
+        <div class="error-block">
+            <span class="label label-danger">{{ errors|length }} ERRORS</span>
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% elseif errors|length == 1 %}
+        <div class="error-block">
+            <span class="label label-danger">ERROR</span> {{ errors|first.message }}
+        </div>
+    {% endif %}
+{% endblock form_errors %}

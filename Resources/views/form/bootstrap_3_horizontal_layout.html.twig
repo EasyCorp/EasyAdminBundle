@@ -26,7 +26,7 @@ col-sm-2
 
 {% block form_row -%}
 {% spaceless %}
-    <div class="form-group{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %}">
         {{ form_label(form) }}
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}
@@ -46,7 +46,7 @@ col-sm-2
 
 {% block checkbox_radio_row -%}
 {% spaceless %}
-    <div class="form-group{% if not valid %} has-error{% endif %}">
+    <div class="form-group {% if not valid %}has-error{% endif %}">
         <div class="{{ block('form_label_class') }}"></div>
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}

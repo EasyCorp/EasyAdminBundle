@@ -373,11 +373,11 @@ class AdminController extends Controller
 		if (isset($this->config['entities'][$entity_name]['form']))
 		{
 		    $servicename = $this->config['entities'][$entity_name]['form'];
-	    	if (!$this->container->has($servicename))
+	    	if ($this->container->has($servicename))
     		{
 			    return $this->createForm($this->get($servicename), $entity);
 		    }
-		    throw new \Exception(sprintf('missing service definitio %s for entity %s', $servicename, $entity_name));	
+		    throw new \Exception(sprintf('Missing service definition %s for entity %s', $servicename, $entity_name));	
 		}
 
         $form = $this->createFormBuilder($entity, array(

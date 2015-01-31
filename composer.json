@@ -22,6 +22,7 @@
         "sensio/framework-extra-bundle" : "~2.3|~3.0",
         "symfony/dependency-injection"  : "~2.3",
         "symfony/config"                : "~2.3",
+        "symfony/doctrine-bridge"       : "~2.3",
         "symfony/form"                  : "~2.3",
         "symfony/framework-bundle"      : "~2.3",
         "symfony/http-foundation"       : "~2.3",

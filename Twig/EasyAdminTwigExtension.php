@@ -36,7 +36,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('entity_field_truncate', array($this, 'entity_field_truncate_filter'), array('needs_environment' => true)),
+            new \Twig_SimpleFilter('truncate_entity_field', array($this, 'truncateEntityField'), array('needs_environment' => true)),
         );
     }
 
@@ -104,7 +104,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                     $associatedEntityUrl = $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId()));
                     // escaping is done manually in order to include this content in a Twig_Markup object
                     $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-                    // ideally we'd use the 'entity_field_truncate_filter' method, but it's cumbersome to invoke it from here
+                    // ideally we'd use the 'truncateEntityField' filter, but it's cumbersome to invoke it from here
                     $associatedEntityValue = strlen($value) > 64 ? substr($value, 0, 64).'...' : $value;
 
                     return new \Twig_Markup(sprintf('<a href="%s">%s</a>', $associatedEntityUrl, $associatedEntityValue), 'UTF-8');
@@ -160,7 +160,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * author: Henrik Bjornskov <hb@peytz.dk>
      * copyright holder: (c) 2009 Fabien Potencier
      */
-    public function entity_field_truncate_filter(\Twig_Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
+    public function truncateEntityField(\Twig_Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
     {
         if (function_exists('mb_get_info')) {
             if (mb_strlen($value, $env->getCharset()) > $length) {

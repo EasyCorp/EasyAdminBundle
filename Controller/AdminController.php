@@ -106,12 +106,14 @@ class AdminController extends Controller
             if (!$request->query->has('sortField')) {
                 $request->query->set('sortField', $this->entity['primary_key_field_name']);
             }
+
             if (!$request->query->has('sortDirection') || !in_array(strtoupper($request->query->get('sortDirection')), array('ASC', 'DESC'))) {
                 $request->query->set('sortDirection', 'DESC');
             }
+
+            $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
         }
 
-        $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
         $this->request = $request;
     }
 

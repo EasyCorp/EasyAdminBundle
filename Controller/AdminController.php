@@ -366,19 +366,18 @@ class AdminController extends Controller
      */
     protected function createEditForm($entity, array $entityProperties)
     {
-     	//check if in configuration exist parameter form for entity    	
-    	$entity_name = $this->entity['name'];
-		if (array_key_exists($entity_name, $this->config['entities']))
-		{
-			if (array_key_exists('form', $this->config['entities'][$entity_name]))
-			{
-				$servicename = $this->config['entities'][$entity_name]['form'];
-				if (!$this->get('service_container')->has($servicename))
-				{
-					return $this->createForm($this->get($servicename), $entity);
-				}
-			}
-		}
+     //extend form creation
+        $entity_name = $this->entity['name'];
+
+	if (isset($this->config['entities'][$entity_name]['form']))
+	{
+	    $servicename = $this->config['entities'][$entity_name]['form'];
+    	if ($this->container->has($servicename))
+    	{
+		    return $this->createForm($this->get($servicename), $entity);
+	    }
+	    throw new \Exception(sprintf('Missing service definition %s for entity %s', $servicename, $entity_name));	
+	}
         
         
         $form = $this->createFormBuilder($entity, array(

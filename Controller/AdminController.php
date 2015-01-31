@@ -369,9 +369,9 @@ class AdminController extends Controller
      //extend form creation
         $entity_name = $this->entity['name'];
 
-	if (isset($this->config['entities'][$entity_name]['form']))
+	if (isset($this->config['entities'][$entity_name]['form_service']))
 	{
-	    $servicename = $this->config['entities'][$entity_name]['form'];
+	    $servicename = $this->config['entities'][$entity_name]['form_service'];
     	if ($this->container->has($servicename))
     	{
 		    return $this->createForm($this->get($servicename), $entity);

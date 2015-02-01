@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
 class EasyAdminTwigExtension extends \Twig_Extension
 {
@@ -20,10 +21,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
     const TIME_FORMAT = 'H:i:s';
 
     private $urlGenerator;
+    private $configurator;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(UrlGeneratorInterface $urlGenerator, Configurator $configurator)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->configurator = $configurator;
     }
 
     public function getFunctions()
@@ -100,8 +103,16 @@ class EasyAdminTwigExtension extends \Twig_Extension
                     return new \Twig_Markup(sprintf('<span class="badge">%d</span>', count($value), $associatedEntityClassName), 'UTF-8');
                 }
 
-                if (method_exists($value, 'getId')) {
-                    $associatedEntityUrl = $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->getId()));
+                try {
+                    $associatedEntityPrimaryKey = $this->configurator->getEntityConfiguration($associatedEntityClassName)['primary_key_field_name'];
+                } catch (\Exception $e) {
+                    // if the entity isn't managed by EasyAdmin, don't link to it and just display its raw value
+                    return $value;
+                }
+
+                $primaryKeyGetter = 'get'.ucfirst($associatedEntityPrimaryKey);
+                if (method_exists($value, $primaryKeyGetter)) {
+                    $associatedEntityUrl = $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->$primaryKeyGetter()));
                     // escaping is done manually in order to include this content in a Twig_Markup object
                     $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
                     // ideally we'd use the 'truncateEntityField' method, but it's cumbersome to invoke it from here

@@ -266,6 +266,25 @@ Instead of using a string to define the name of the property (e.g. `email`) you
 have to define a hash with the name of the property (`property: 'email'`) and
 the custom label you want to display (`label: 'Contact'`).
 
+If your listings contain lots of properties and most of them define their own
+custom label, consider using the alternative YAML syntax for sequences to
+improve the legibility of your backend configuration. The following example is
+equivalent to the above example:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields:
+                    - 'id'
+                    - 'name'
+                    - { property: 'email', label: 'Contact' }
+    # ...
+```
+
 ### Customize the Columns Displayed in Listings
 
 By default, the backend makes some "smart guesses" to decide which columns to
@@ -505,7 +524,6 @@ easy_admin:
                     - { property: 'code', type: 'number', label: 'Customer Code', class: 'input-lg' }
                     - { property: 'notes', help: 'Use this field to add private notes and comments about the client' }
                     - { property: 'zone', type: 'country' }
-                ]
     # ...
 ```
 
@@ -538,7 +556,7 @@ easy_admin:
                 fields:
                     - 'id'
                     - { property: 'email', type: 'email', label: 'Contact' }
-                    ...
+                    # ...
     # ...
 ```
 
@@ -795,8 +813,9 @@ application. The `locale` option value is usually configured in the
 `app/config/parameters.yml` file.
 
 The current version of EasyAdmin is translated into English (`en`), Spanish
-(`es`), French (`fr`), Dutch (`nl`) and Basque (`eu`). We're actively looking
-for more translations contributed by the community.
+(`es`), French (`fr`), Russian (`ru`), Polish (`pl`), Dutch (`nl`) and Basque
+(`eu`). We're actively looking for more translations contributed by the
+community.
 
 ### Customize the Security of the Backend Interface
 

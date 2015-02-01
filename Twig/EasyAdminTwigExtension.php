@@ -106,7 +106,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 try {
                     $associatedEntityPrimaryKey = $this->configurator->getEntityConfiguration($associatedEntityClassName)['primary_key_field_name'];
                 } catch (\Exception $e) {
-                    // if the entity isn't managed by EasyAdmin, display raw value
+                    // if the entity isn't managed by EasyAdmin, don't link to it and just display its raw value
                     return $value;
                 }
 

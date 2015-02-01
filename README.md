@@ -460,6 +460,12 @@ easy_admin:
     # ...
 ```
 
+If any of the fields is an association with another entity, the form will
+display it as a `<select>` list. The values displayed in this list will be the
+values returned by the special `__toString()` method. Define this method in all
+your entities to avoid errors and to define the textual representation of the
+entity.
+
 ### Customize the Order of the Fields Displayed in Forms
 
 By default, forms show their fields in the same order as they were defined in

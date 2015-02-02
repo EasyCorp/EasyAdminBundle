@@ -401,6 +401,91 @@ easy_admin:
 The only current limitation of virtual fields is that you cannot reorder
 listings using these fields.
 
+### Customize the Format of the Dates and Numbers Displayed in Listings
+
+By default, these are the formats applied to date related fields (read the
+[date configuration options](http://php.net/manual/en/function.date.php) PHP
+manual page in case you don't know the meaning of these options):
+
+  * `date`: `Y-m-d`
+  * `time`:  `H:i:s`
+  * `datetime`: `F j, Y H:i`
+
+EasyAdmin lets you configure your own date formats in two ways: default formats
+for all fields of all entities and custom format for each entity field. The
+default formats are defined in the global `formats` option (define any or all
+the `date`, `time` and `datetime` options):
+
+```yaml
+easy_admin:
+    formats:
+        date:     'd/m/Y'
+        time:     'H:i'
+        datetime: 'd/m/Y H:i:s'
+    entities:
+        # ...
+```
+
+The value of the `format` option is directly applied to the `format()` method
+of the `DateTime` class, so you can use any of the
+[date configuration options](http://php.net/manual/en/function.date.php)
+defined by PHP.
+
+In order to define the date/time format explicitly for a given entity field,
+use the `format` option for that specific field:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields:
+                    - { property: 'dateOfBirth', format: 'j/n/Y' }
+                    # ...
+    # ...
+```
+
+Meanwhile, number related fields (`bigint`, `integer`, `smallint`, `decimal`,
+`float`) are displayed using the appropriate formatting for the locale of the
+Symfony application. Again, you can use the `format` option to explicitly set
+the format to use for numeric fields.
+
+Use the global `formats` option to apply the same formatting for all numeric
+values:
+
+```yaml
+easy_admin:
+    formats:
+        # ...
+        number: '%.2f'
+    entities:
+        # ...
+```
+
+In this case, the value of the `format` option is applied directly to the
+`sprintf()` function, so you can use any of its
+[format specifiers](http://php.net/manual/en/function.sprintf.php).
+
+In order to define the number format explicitly for a given entity field,
+use the `format` option for that specific field:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'serialNumber', format: '%010s' }
+                    - { property: 'margin', format: '%01.2f' }
+                    # ...
+    # ...
+```
+
+The `format` option of an entity field always overrides the value of the global
+`format` option.
+
 ### Customize which Fields are Displayed in the Show Action
 
 By default, the `show` action displays all the entity fields and their

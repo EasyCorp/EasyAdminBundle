@@ -26,10 +26,11 @@ class EasyAdminExtension extends Extension
     );
 
     private $defaultFieldConfiguration = array(
-        'class' => null,
-        'help'  => null,
-        'label' => null,
-        'type'  => null,
+        'class'  => null,
+        'help'   => null,
+        'label'  => null,
+        'type'   => null,
+        'format' => null,
     );
 
     public function load(array $configs, ContainerBuilder $container)

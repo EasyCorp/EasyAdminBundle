@@ -401,6 +401,53 @@ easy_admin:
 The only current limitation of virtual fields is that you cannot reorder
 listings using these fields.
 
+### Customize the Format of the Dates and Numbers Displayed in Listings
+
+By default, these are the formats applied to date related fields:
+
+  * `date`: `Y-m-d`
+  * `time`:  `H:i:s`
+  * `datetime`: `F j, Y H:i`
+
+Use the `format` option to set the date/time format explicitly for each field:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields:
+                    - { property: 'dateOfBirth', format: 'j/n/Y' }
+                    # ...
+    # ...
+```
+
+The value of the `format` option is directly applied to the `format()` method
+of the `DateTime` class, so you can use any of the
+[date configuration options](http://php.net/manual/en/function.date.php)
+defined by PHP.
+
+Meanwhile, number related fields (`bigint`, `integer`, `smallint`, `decimal`,
+`float`) are displayed using the appropriate formatting for the locale of the
+Symfony application. Again, you can use the `format` option to explicitly set
+the format to use for numeric fields. In this case, the value of the `format`
+option is applied directly to the `sprintf()` function, so you can use any of
+its [format specifiers](http://php.net/manual/en/function.sprintf.php).
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'serialNumber', format: '%010s' }
+                    - { property: 'margin', format: '%01.2f' }
+                    # ...
+    # ...
+```
+
 ### Customize which Fields are Displayed in the Show Action
 
 By default, the `show` action displays all the entity fields and their

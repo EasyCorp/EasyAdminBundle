@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ entity.name ~ ' #' ~ attribute(item, entity.primary_key_field_name) }}
+    {{ config['entities'][entity.name]['label'] ~ ' #' ~ attribute(item, entity.primary_key_field_name) }}
 {% endblock %}
 
 {% block main %}

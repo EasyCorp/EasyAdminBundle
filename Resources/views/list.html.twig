@@ -19,7 +19,7 @@
                         {% if 'search' == app.request.get('action') %}
                             {{ 'list.results_found' | transchoice(paginator.nbResults) | raw }}
                         {% else %}
-                            {{ config['entities'][entity.name]['label'] }}
+                            {{ entity.label }}
                         {% endif %}
                     {% endblock %}
                 </h1>

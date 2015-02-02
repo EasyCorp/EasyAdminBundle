@@ -69,11 +69,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('date', 'datetime', 'datetimetz'))) {
-                return $value->format(self::DATE_FORMAT);
+                return $value->format(isset($fieldMetadata['format']) ? $fieldMetadata['format'] : self::DATE_FORMAT);
             }
 
             if (in_array($fieldType, array('time'))) {
-                return $value->format(self::TIME_FORMAT);
+                return $value->format(isset($fieldMetadata['format']) ? $fieldMetadata['format'] : self::TIME_FORMAT);
             }
 
             if (in_array($fieldType, array('boolean'))) {

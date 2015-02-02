@@ -1,0 +1,15 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-01-29T22:00:57Z
+
+@ogizanagi thanks for your pull request. I know that it looks like a very simple feature, but I'm still thinking about it and testing it in my own backends.
+
+Regarding the documentation, don't worry because I'll add it myself once/if this feature is implemented. Thanks.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-02-02T21:27:37Z
+
+I was going to say no to this feature, but then I realized that configuring the date/number format is truly cumbersome. There is an open PR for fixing this problem (https://github.com/symfony/symfony/issues/13552) but it will take a while and 2.3 applications won't get it.
+
+So thanks @ogizanagi for sending this PR. I love the value that adds to the user just by changing two single lines of code!

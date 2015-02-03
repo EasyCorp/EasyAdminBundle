@@ -564,6 +564,93 @@ If `new` or `edit` options are defined, they will always be used, regardless
 of the `form` option. In other words, `form` and `new`/`edit` are mutually
 exclusive options.
 
+### Adding Custom Doctrine Types to Forms
+
+When your application defines custom Doctrine DBAL types and you use those
+types in the form fields, you must define a related custom form type to prevent
+errors. Imagine that your application defines a `UTCDateTime` type to convert
+the timezone of datetime values to UTC before saving them in the database:
+
+```php
+namespace AppBundle\Doctrine\DBAL\Types;
+
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\DateTimeType;
+
+class UTCDateTimeType extends DateTimeType
+{
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        // ...
+    }
+
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        // ...
+    }
+}
+```
+
+If you add that type in a form field as follows, you'll get an error message
+saying that the `utcdatetime` type couldn't be loaded:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields:
+                    - 'id'
+                    - { property: 'createdAt', type: 'utcdatetime' }
+                    # ...
+    # ...
+```
+
+The solution is to define a custom Form Type related to this custom Doctrine
+DBAL type. First, define a new service and tag it with `form.type`:
+
+```yaml
+# app/config/services.yml
+services:
+    form.type.utcdatetime:
+        class: AppBundle\Form\Type\UTCDateTimeType
+        tags:
+            - { name: form.type, alias: utcdatetime }
+```
+
+Then, define the `UTCDateTimeType` class:
+
+```php
+namespace AppBundle\Form\Type;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class UTCDateTimeType extends AbstractType
+{
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        // ...
+    }
+
+    public function getParent()
+    {
+        return 'datetime';
+    }
+
+    public function getName()
+    {
+        return 'utcdatetime';
+    }
+}
+```
+
+Now you can use the `utcdatetime` as the type of any form filed and everything
+will work as expected. Read the [How to Create a Custom Form Field Type](http://symfony.com/doc/current/cookbook/form/create_custom_field_type.html)
+article of the official Symfony documentation to learn more about how to define
+custom form types.
+
 ### Customize the Visual Design of the Backend
 
 The current version of EasyAdmin doesn't support the concept of themes, but you

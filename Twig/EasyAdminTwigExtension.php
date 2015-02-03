@@ -17,10 +17,6 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
 class EasyAdminTwigExtension extends \Twig_Extension
 {
-    const DATE_FORMAT = 'Y-m-d';
-    const TIME_FORMAT = 'H:i:s';
-    const DATETIME_FORMAT = 'F j, Y H:i';
-
     private $urlGenerator;
     private $configurator;
 
@@ -70,15 +66,15 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('date'))) {
-                return $value->format(isset($fieldMetadata['format']) ? $fieldMetadata['format'] : self::DATE_FORMAT);
+                return $value->format($fieldMetadata['format']);
             }
 
             if (in_array($fieldType, array('datetime', 'datetimetz'))) {
-                return $value->format(isset($fieldMetadata['format']) ? $fieldMetadata['format'] : self::DATETIME_FORMAT);
+                return $value->format($fieldMetadata['format']);
             }
 
             if (in_array($fieldType, array('time'))) {
-                return $value->format(isset($fieldMetadata['format']) ? $fieldMetadata['format'] : self::TIME_FORMAT);
+                return $value->format($fieldMetadata['format']);
             }
 
             if (in_array($fieldType, array('boolean'))) {

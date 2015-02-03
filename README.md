@@ -564,6 +564,34 @@ If `new` or `edit` options are defined, they will always be used, regardless
 of the `form` option. In other words, `form` and `new`/`edit` are mutually
 exclusive options.
 
+### Adding Custom Doctrine Types to Forms
+
+When your application defines custom Doctrine DBAL types, you must define a
+related custom form type before using them as form fields. Imagine that your
+application defines a `UTCDateTime` type to convert the timezone of datetime
+values to UTC before saving them in the database.
+
+If you add that type in a form field as follows, you'll get an error message
+saying that the `utcdatetime` type couldn't be loaded:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields:
+                    - { property: 'createdAt', type: 'utcdatetime' }
+                    # ...
+    # ...
+```
+
+This problem is solved defining a custom `utcdatetime` Form Type related to
+this custom Doctrine DBAL type. Read the
+[How to Create a Custom Form Field Type](http://symfony.com/doc/current/cookbook/form/create_custom_field_type.html)
+article of the official Symfony documentation to learn how to define custom
+form types.
+
 ### Customize the Visual Design of the Backend
 
 The current version of EasyAdmin doesn't support the concept of themes, but you

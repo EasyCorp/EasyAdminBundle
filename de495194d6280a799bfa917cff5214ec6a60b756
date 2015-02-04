@@ -1,0 +1,51 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-03T19:00:07Z
+
+I think it's a very common practice to define a form type for any DBAL custom types in our applications, as the most of the time, the main goal is to transform a simple scalar value from DB into a understandable type (Object) for our application. So, none of the build-in forms will suit, and we generally create a dedicated form type.
+
+Take the [BiplaneEnumBundle](https://github.com/yethee/BiplaneEnumBundle): it comes with a dedicated EnumType. Or my own small [DateIntervalBundle](https://github.com/ogizanagi/dateintervalbundle).
+The main issue is generally about the form type name, which is not always the same as the DBAL type's one.
+
+**My point is the following:** is it worth the heaviness of all those detailed examples, as the bundle is not meant to learn people how to use custom DBAL types and form types ? The documentation might be filled with similar concerns in the future if we're going this way.
+I was thinking about a simple warning, or at least, maybe, it should be explained in another file. (linked around the fact this bundle **does** support natively custom DBAL types).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-02-03T19:29:20Z
+
+As the documentation is becoming quite heavy, I think maybe we should split it into multiple files to just keep the "basic installation" in the README , and to add a "table of contents" with links to each documentation section.
+
+The section for custom Doctrine DBAL types suits perfectly to this kind of "advanced configuration" setup.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-02-03T21:24:59Z
+
+@Pierstoval yes, I'm going to split the documentation into chapters very soon. By the way, we have a nice ratio of 1.5 lines of doc per line of code (totals: 774 lines of code and 1,185 lines of documentation).
+
+@ogizanagi I see your point and I agree. In my opinion, this new documentation doesn't explain anything about creating types, but it just gives enough clues to help the reader. But after your comment I'm going to think again about this.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-02-04T07:49:31Z
+
+@javiereguiluz @ogizanagi Maybe we could add a link to the [official documentation about create form types as services](http://symfony.com/fr/doc/current/cookbook/form/create_custom_field_type.html) ?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-04T08:04:33Z
+
+@Pierstoval : @javiereguiluz already did it ^^ : https://github.com/javiereguiluz/EasyAdminBundle/commit/b97532d3051de61423d09f6220104b4e69b5338e#diff-04c6e90faac2675aa89e2176d2eec7d8R650
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-02-04T08:18:28Z
+
+Sorry, forget that I said something :p
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-02-04T18:49:39Z
+
+@ogizanagi @Pierstoval at the end I think that both of you are right, so I've drastically simplified the documentation of this feature in e56de8b. Thanks for your comments.

@@ -247,6 +247,19 @@ class Configurator
                 'label'    => null,
                 'virtual'  => false,
             ));
+
+            $fieldType = $propertyMetadata['type'];
+            // apply the 'date', 'time' or 'datetime' formats for the appropriate fields
+            if (in_array($fieldType, array('date', 'time', 'datetime', 'datetimetz'))) {
+                // make 'datetimetz' use the same format as 'datetime'
+                $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
+                $entityFields[$propertyName]['format'] = $this->backendConfig['formats'][$fieldType];
+            }
+
+            // apply the 'number' format for all the numeric fields
+            if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {
+                $entityFields[$propertyName]['format'] = isset($this->backendConfig['formats']['number']) ? $this->backendConfig['formats']['number'] : null;
+            }
         }
 
         return $entityFields;
@@ -284,6 +297,23 @@ class Configurator
                 }
             } else {
                 $filteredFields[$fieldName]['type'] = $fieldConfiguration['type'];
+            }
+
+            // if the field doesn't define its own configuration ...
+            if (null === $fieldConfiguration['format']) {
+                $fieldType = isset($entityProperties[$fieldName]) ? $entityProperties[$fieldName]['type'] : null;
+
+                // ... apply the 'date', 'time' or 'datetime' formats for the appropriate fields
+                if (in_array($fieldType, array('date', 'time', 'datetime', 'datetimetz'))) {
+                    // make 'datetimetz' use the same format as 'datetime'
+                    $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
+                    $filteredFields[$fieldName]['format'] = $this->backendConfig['formats'][$fieldType];
+                }
+
+                // ... apply the 'number' format for all the numeric fields
+                if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {
+                    $filteredFields[$fieldName]['format'] = isset($this->backendConfig['formats']['number']) ? $this->backendConfig['formats']['number'] : null;
+                }
             }
 
             $filteredFields[$fieldName]['label'] = array_key_exists('label', $fieldConfiguration) ? $fieldConfiguration['label'] : null;

@@ -21,6 +21,14 @@ class Configurator
     private $entitiesConfig = array();
     private $doctrineManager;
 
+    private $defaultFieldConfiguration = array(
+        'class'  => null,
+        'help'   => null,
+        'label'  => null,
+        'type'   => null,
+        'format' => null,
+    );
+
     private $doctrineTypeToFormTypeMap = array(
         'association' => null,
         'array' => 'collection',
@@ -189,9 +197,6 @@ class Configurator
         // there is a custom field configuration for this action
         if (count($entityConfiguration[$action]['fields']) > 0) {
             $entityFields = $this->filterEntityFieldsBasedOnConfiguration($entityProperties, $entityConfiguration[$action]['fields']);
-        // there is a custom field configuration for the common and special 'form' action
-        } elseif (count($entityConfiguration['form']['fields']) > 0) {
-            $entityFields = $this->filterEntityFieldsBasedOnConfiguration($entityProperties, $entityConfiguration['form']['fields']);
         } else {
             $entityFields = $this->createEntityFieldsFromEntityProperties($entityProperties);
 
@@ -382,4 +387,61 @@ class Configurator
 
         return $filteredFields;
     }
+
+        // /**
+    //  * Actions can define their fields using two different formats:
+    //  *
+    //  * # simple configuration
+    //  * easy_admin:
+    //  *     Client:
+    //  *         # ...
+    //  *         list:
+    //  *             fields: ['id', 'name', 'email']
+    //  *
+    //  * # extended configuration
+    //  * easy_admin:
+    //  *     Client:
+    //  *         # ...
+    //  *         list:
+    //  *             fields: ['id', 'name', { property: 'email', label: 'Contact' }]
+    //  *
+    //  * This method processes both formats to produce a common form field configuration
+    //  * format. It also initializes and adds some default form field options to simplify
+    //  * field configuration processing in other methods and templates.
+    //  *
+    //  * @param  array  $fieldsConfiguration
+    //  * @param  string $action
+    //  * @param  string $entityClass
+    //  * @return array  The configured entity fields
+    //  */
+    // private function processFieldsConfiguration(array $fieldsConfiguration, $action, $entityClass)
+    // {
+    //     $fields = array();
+
+    //     foreach ($fieldsConfiguration as $field) {
+    //         // simple configuration: field is just a string representing the entity property
+    //         if (is_string($field)) {
+    //             $fieldConfiguration = array(
+    //                 'property' => $field,
+    //             );
+    //         // extended configuration: field is an array that defines one or more options.
+    //         // related entity property is configured via the mandatory 'property' option.
+    //         } elseif (is_array($field)) {
+    //             if (!array_key_exists('property', $field)) {
+    //                 throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" action of the "%s" entity does not define the "property" option.', $action, $entityClass));
+    //             }
+
+    //             $fieldConfiguration = $field;
+    //         } else {
+    //             throw new \RuntimeException(sprintf('The values of the "fields" option for the "$s" action of the "%s" entity can only be strings or arrays.', $action, $entityClass));
+    //         }
+
+    //         $fieldConfiguration = array_replace($this->defaultFieldConfiguration, $fieldConfiguration);
+
+    //         $fieldName = $fieldConfiguration['property'];
+    //         $fields[$fieldName] = $fieldConfiguration;
+    //     }
+
+    //     return $fields;
+    // }
 }

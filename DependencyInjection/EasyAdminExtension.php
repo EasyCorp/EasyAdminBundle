@@ -18,14 +18,6 @@ use Symfony\Component\Config\FileLocator;
 
 class EasyAdminExtension extends Extension
 {
-    private $defaultFieldConfiguration = array(
-        'class'  => null,
-        'help'   => null,
-        'label'  => null,
-        'type'   => null,
-        'format' => null,
-    );
-
     public function load(array $configs, ContainerBuilder $container)
     {
         // process bundle's configuration parameters
@@ -53,13 +45,11 @@ class EasyAdminExtension extends Extension
             return $entitiesConfiguration;
         }
 
-        // if the entity configuration uses the shortcut syntax, normalize it before processing it
-        $entitiesConfigurationValues = array_values($entitiesConfiguration);
-        if (is_string($entitiesConfigurationValues[0])) {
-            $entitiesConfiguration = $this->normalizeEntityConfiguration($entitiesConfiguration);
-        }
+        $configuration = $this->normalizeEntitiesConfiguration($entitiesConfiguration);
+        $configuration = $this->processEntitiesConfiguration($configuration);
+        $configuration = $this->ensureThatEntityNamesAreUnique($configuration);
 
-        return $this->processEntitiesConfiguration($entitiesConfiguration);
+        return $configuration;
     }
 
     /**
@@ -86,31 +76,30 @@ class EasyAdminExtension extends Extension
      *         User:
      *             class: AppBundle\Entity\User
      *
-     * @param  array $simpleConfig The entity configuration in one of the simplified formats
+     * @param  array $simpleConfiguration The entity configuration in one of the simplified formats
      * @return array The normalized configuration
      */
-    private function normalizeEntityConfiguration(array $simpleConfig)
+    private function normalizeEntitiesConfiguration(array $entitiesConfiguration)
     {
-        $normalizedConfig = array();
+        $normalizedConfiguration = array();
 
-        $entityNames = array();
-        foreach ($simpleConfig as $entityName => $entityClass) {
+        foreach ($entitiesConfiguration as $entityName => $entityConfiguration) {
             if (is_integer($entityName)) {
                 // the simplest configuration format defines no custom entity names,
                 // so let's use the name of the entity class as its name
+                $entityClass = $entityConfiguration;
                 $entityClassParts = explode('\\', $entityClass);
-                $entityName = array_pop($entityClassParts);
+                $entityName = end($entityClassParts);
+
+                $normalizedConfiguration[$entityName] = array(
+                    'class' => $entityClass,
+                );
+            } else {
+                $normalizedConfiguration[$entityName] = $entityConfiguration;
             }
-
-            $uniqueEntityName = $this->getUniqueEntityName($entityClass, $entityNames);
-            $entityNames[] = $uniqueEntityName;
-
-            $normalizedConfig[$uniqueEntityName] = array(
-                'class' => $entityClass,
-            );
         }
 
-        return $normalizedConfig;
+        return $normalizedConfiguration;
     }
 
     /**
@@ -124,34 +113,35 @@ class EasyAdminExtension extends Extension
     {
         $entities = array();
 
-        $entityNames = array();
         foreach ($entitiesConfiguration as $entityName => $entityConfiguration) {
             // copy the original entity configuration to not loose any of its options
             $config = $entityConfiguration;
 
             // basic entity configuration
             $config['label'] = $entityName;
-            $config['class'] = $entityConfiguration['class'];
+            $config['name'] = $entityName;
 
             // configuration for the actions related to the entity ('list', 'edit', etc.)
-            foreach (array('edit', 'form', 'list', 'new', 'show') as $action) {
+            foreach (array('edit', 'list', 'new', 'show') as $action) {
                 // if needed, initialize options to simplify further configuration processing
-                if (!array_key_exists($action, $config)) {
+                if (!isset($config[$action])) {
                     $config[$action] = array('fields' => array());
                 }
-                if (!array_key_exists('fields', $config[$action])) {
+                if (!isset($config[$action]['fields'])) {
                     $config[$action]['fields'] = array();
                 }
 
-                $config[$action]['fields'] = $this->processFieldsConfiguration($config[$action]['fields'], $action, $config['class']);
+                // if the common 'form' config is defined, but not 'new' or 'edit'
+                // config, just copy the 'form' config into them to simplify the rest of the code
+                if (isset($config['form']['fields']) && !isset($config['edit']['fields'])) {
+                    $config['edit']['fields'] = $config['form']['fields'];
+                }
+                if (isset($config['form']['fields']) && !isset($config['new']['fields'])) {
+                    $config['new']['fields'] = $config['form']['fields'];
+                }
             }
 
-            $uniqueEntityName = $this->getUniqueEntityName($config['class'], $entityNames);
-            $entityNames[] = $uniqueEntityName;
-
-            $config['name']  = $uniqueEntityName;
-
-            $entities[$uniqueEntityName] = $config;
+            $entities[$entityName] = $config;
         }
 
         return $entities;
@@ -160,82 +150,29 @@ class EasyAdminExtension extends Extension
     /**
      * The name of the entity is used in the URLs of the application to define the
      * entity which should be used for each action. Obviously, the entity name
-     * must be unique in the application.
+     * must be unique in the application to identify entities unequivocally.
      *
-     * To avoid entity name conflicts when two different entities are called the
-     * same, this method modifies the entity name if necessary to ensure that is
-     * unique.
+     * This method ensures that all entity names are unique by adding some suffix
+     * to repeated names until they are unique.
      *
-     * @param  string $entityClass
-     * @param  array  $entityNames The list of names of all the managed entities
-     * @return string The name of the entity guaranteed to be unique in the application
+     * @param  array  $entitiesConfiguration
+     * @return array The entities configuration with unique entity names
      */
-    private function getUniqueEntityName($entityClass, $entityNames)
+    private function ensureThatEntityNamesAreUnique($entitiesConfiguration)
     {
-        $entityClassParts = explode('\\', $entityClass);
-        $uniqueEntityName = array_pop($entityClassParts);
+        $configuration = array();
+        $existingEntityNames = array();
 
-        while (in_array($uniqueEntityName, $entityNames)) {
-            $uniqueEntityName .= '_';
-        }
-
-        return $uniqueEntityName;
-    }
-
-    /**
-     * Actions can define their fields using two different formats:
-     *
-     * # simple configuration
-     * easy_admin:
-     *     Client:
-     *         # ...
-     *         list:
-     *             fields: ['id', 'name', 'email']
-     *
-     * # extended configuration
-     * easy_admin:
-     *     Client:
-     *         # ...
-     *         list:
-     *             fields: ['id', 'name', { property: 'email', label: 'Contact' }]
-     *
-     * This method processes both formats to produce a common form field configuration
-     * format. It also initializes and adds some default form field options to simplify
-     * field configuration processing in other methods and templates.
-     *
-     * @param  array  $fieldsConfiguration
-     * @param  string $action
-     * @param  string $entityClass
-     * @return array  The configured entity fields
-     */
-    private function processFieldsConfiguration(array $fieldsConfiguration, $action, $entityClass)
-    {
-        $fields = array();
-
-        foreach ($fieldsConfiguration as $field) {
-            // simple configuration: field is just a string representing the entity property
-            if (is_string($field)) {
-                $fieldConfiguration = array(
-                    'property' => $field,
-                );
-            // extended configuration: field is an array that defines one or more options.
-            // related entity property is configured via the mandatory 'property' option.
-            } elseif (is_array($field)) {
-                if (!array_key_exists('property', $field)) {
-                    throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" action of the "%s" entity does not define the "property" option.', $action, $entityClass));
-                }
-
-                $fieldConfiguration = $field;
-            } else {
-                throw new \RuntimeException(sprintf('The values of the "fields" option for the "$s" action of the "%s" entity can only be strings or arrays.', $action, $entityClass));
+        foreach ($entitiesConfiguration as $entityName => $entityConfiguration) {
+            while (in_array($entityName, $existingEntityNames)) {
+                $entityName .= '_';
             }
+            $existingEntityNames[] = $entityName;
 
-            $fieldConfiguration = array_replace($this->defaultFieldConfiguration, $fieldConfiguration);
-
-            $fieldName = $fieldConfiguration['property'];
-            $fields[$fieldName] = $fieldConfiguration;
+            $configuration[$entityName] = $entityConfiguration;
+            $configuration[$entityName]['name'] = $entityName;
         }
 
-        return $fields;
+        return $configuration;
     }
 }

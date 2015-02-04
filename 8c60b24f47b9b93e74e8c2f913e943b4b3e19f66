@@ -1,0 +1,59 @@
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-02-02T21:57:11Z
+
+What do you think about adding a possibility to configure the format globally instead of on a field-to-field basis?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-02-03T08:17:37Z
+
+@xabbuh Maybe we can think about creating a `globals` parameter that will be set to every single field , and that can be overriden on a field-to-field basis as you say, but maybe it's too much ?
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-02-03T09:03:01Z
+
+Well, what I see here is that if you start changing the format for one field, you'll likely want to change it for all fields.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-03T18:16:29Z
+
+I agree. IMO the constants in `EasyAdminTwigExtension ` should be replaced by those default format, and the `Configuration` class should be falling back to the current constants value if nothing or `null` is set as default:
+
+```yaml
+easy_admin:
+    default_formats:
+        date: d/m/Y
+        time: H:i
+        datetime: d/m/Y H:i
+```
+
+and :
+
+```yaml
+easy_admin:
+    default_formats:
+        date: ~ #Default (Y-m-d)
+        time: ~ #Default (H:i:s)
+        datetime: ~ #Default (F j, Y H:i)
+```
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-02-03T19:24:51Z
+
+Can't this behavior be directly set in the `Configuration` class ?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-03T19:27:06Z
+
+Exactly. Sorry, I meant the `Configuration` class. Not the `EasyAdminExtension`.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-02-03T21:20:30Z
+
+This PR has been updated and now you can configure date, time, datetime and number formats globally and locally. See c2f0453

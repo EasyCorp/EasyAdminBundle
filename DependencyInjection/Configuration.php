@@ -27,10 +27,18 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('Easy Admin')
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
+
                 ->integerNode('list_max_results')
                     ->defaultValue(15)
                     ->info('The maximum number of items to show on listing and search pages.')
                 ->end()
+
+                ->variableNode('list_actions')
+                    ->defaultValue(array('edit'))
+                    ->info('The actions to show for each item of listing and search pages. Only "edit" and "show" options are available.')
+                    ->example(array('edit', 'show'))
+                ->end()
+
                 ->arrayNode('assets')
                     ->performNoDeepMerging()
                     ->addDefaultsIfNotSet()
@@ -43,6 +51,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+
                 ->arrayNode('formats')
                     ->performNoDeepMerging()
                     ->addDefaultsIfNotSet()
@@ -53,14 +62,13 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('number')->end()
                     ->end()
                 ->end()
-                ->variableNode('list_actions')
-                    ->info('The actions to show for each item of listing and search pages. Only "edit" and "show" options are available.')
-                    ->example(array('edit', 'show'))
-                ->end()
+
                 ->variableNode('entities')
+                    ->defaultValue(array())
                     ->info('The list of entities to manage in the administration zone.')
                 ->end()
-            ->end();
+            ->end()
+        ;
 
         return $treeBuilder;
     }

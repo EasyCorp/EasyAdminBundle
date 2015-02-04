@@ -18,13 +18,6 @@ use Symfony\Component\Config\FileLocator;
 
 class EasyAdminExtension extends Extension
 {
-    private $defaultBundleConfiguration = array(
-        'site_name' => 'EasyAdmin',
-        'list_max_results' => 15,
-        'list_actions' => array('edit'),
-        'entities' => array(),
-    );
-
     private $defaultFieldConfiguration = array(
         'class'  => null,
         'help'   => null,
@@ -36,9 +29,7 @@ class EasyAdminExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         // process bundle's configuration parameters
-        $bundleConfiguration = $this->processConfiguration(new Configuration(), $configs);
-
-        $backendConfiguration = array_replace($this->defaultBundleConfiguration, $bundleConfiguration);
+        $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);

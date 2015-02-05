@@ -68,6 +68,7 @@ class Configurator
 
         $entityConfiguration['name'] = $entityName;
         $entityConfiguration['label'] = $this->backendConfig['entities'][$entityName]['label'];
+        $entityConfiguration['actions'] = $this->backendConfig['entities'][$entityName]['actions'];
 
         $entityClass = $this->backendConfig['entities'][$entityName]['class'];
         $entityConfiguration['class'] = $entityClass;

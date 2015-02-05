@@ -142,6 +142,8 @@ class EasyAdminExtension extends Extension
             $config['label'] = $entityName;
             $config['class'] = $entityConfiguration['class'];
 
+            $config['actions'] = isset($entityConfiguration['actions']) ? $entityConfiguration['actions'] : [];
+
             // configuration for the actions related to the entity ('list', 'edit', etc.)
             foreach (array('edit', 'form', 'list', 'new', 'show') as $action) {
                 // if needed, initialize options to simplify further configuration processing

@@ -109,6 +109,11 @@
                                             {{ ('actions.' ~ action)|trans }}
                                         </a>
                                     {% endfor %}
+                                    {% for action_name, action in entity.actions %}
+                                        <a href="{{ path(action.route, { id: attribute(item, entity.primary_key_field_name) }) }}">
+                                            {{ ('actions.' ~ action_name)|trans }}
+                                        </a>
+                                    {% endfor %}
                                 </td>
                         </tr>
                     {% else %}

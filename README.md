@@ -677,6 +677,34 @@ this custom Doctrine DBAL type. Read the
 article of the official Symfony documentation to learn how to define custom
 form types.
 
+### You can mix different configuration formats
+
+With entities names as keys :
+
+```yaml
+easy_admin:
+    entities:
+        Customer: AppBundle\Entity\Customer
+        Products:
+            class: AppBundle\Entity\Products
+            list_actions: [ show ]
+```
+
+Or with a classic array :
+
+```yaml
+easy_admin:
+    entities:
+        - AppBundle\Entity\Customer
+        -
+            class: AppBundle\Entity\Products
+            name: "Produits"
+            list_actions: [ show ]
+```
+
+If you define the entity with an array, the `class` attribute is mandatory, all
+the others are optional and automatically set based on the class name.
+
 ### Customize the Visual Design of the Backend
 
 The current version of EasyAdmin doesn't support the concept of themes, but you

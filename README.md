@@ -1038,6 +1038,27 @@ easy_admin:
                     - { property: 'category', label: 'Commercial Category' }
 ```
 
+### Combining Different Configuration Formats
+
+The previous configuration formats can also be combined. This is useful to use
+the default configuration when it's convenient and to customize it when needed:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:  AppBundle\Entity\Customer
+        Inventory:
+            class: AppBundle\Entity\Product
+            list:
+                fields: ['id', 'code', 'description', 'price']
+            form:
+                fields:
+                    - { property: 'code', help: 'Alphanumeric characters only' }
+                    - { property: 'description', type: 'textarea' }
+                    - { property: 'price', type: 'number', class: 'input-lg' }
+                    - { property: 'category', label: 'Commercial Category' }
+```
+
 Advanced Techniques for Complex Backends
 ----------------------------------------
 

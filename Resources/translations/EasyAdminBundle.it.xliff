@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" target-language="it" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Chiudi</target>
+            </trans-unit>
+            <trans-unit id="header.logged_in_as">
+                <source>header.logged_in_as</source>
+                <target>Connesso come</target>
+            </trans-unit>
+            <trans-unit id="entity.create">
+                <source>entity.create</source>
+                <target>Crea "%entity%"</target>
+            </trans-unit>
+            <trans-unit id="list.actions">
+                <source>list.actions</source>
+                <target>Azioni</target>
+            </trans-unit>
+            <trans-unit id="actions.edit">
+                <source>actions.edit</source>
+                <target>Modifica</target>
+            </trans-unit>
+            <trans-unit id="paginator.first">
+                <source>paginator.first</source>
+                <target>Prima</target>
+            </trans-unit>
+            <trans-unit id="paginator.previous">
+                <source>paginator.previous</source>
+                <target>Precedente</target>
+            </trans-unit>
+            <trans-unit id="paginator.next">
+                <source>paginator.next</source>
+                <target>Successiva</target>
+            </trans-unit>
+            <trans-unit id="paginator.last">
+                <source>paginator.last</source>
+                <target>Ultima</target>
+            </trans-unit>
+            <trans-unit id="paginator.counter">
+                <source>paginator.counter</source>
+                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> di <strong>%results%</strong>]]></target>
+            </trans-unit>
+            <trans-unit id="entity.edit">
+                <source>entity.edit</source>
+                <target>Modifica</target>
+            </trans-unit>
+            <trans-unit id="entity.save_changes">
+                <source>entity.save_changes</source>
+                <target>Salva modifiche</target>
+            </trans-unit>
+            <trans-unit id="entity.delete">
+                <source>entity.delete</source>
+                <target>Elimina</target>
+            </trans-unit>
+            <trans-unit id="link.back_to_listing">
+                <source>link.back_to_listing</source>
+                <target>Torna alla lista</target>
+            </trans-unit>
+            <trans-unit id="actions.cancel">
+                <source>actions.cancel</source>
+                <target>Annulla</target>
+            </trans-unit>
+            <trans-unit id="actions.list">
+                <source>actions.list</source>
+                <target>Lista</target>
+            </trans-unit>
+            <trans-unit id="actions.new">
+                <source>actions.new</source>
+                <target>Crea</target>
+            </trans-unit>
+            <trans-unit id="actions.show">
+                <source>actions.show</source>
+                <target>Vedi</target>
+            </trans-unit>
+            <trans-unit id="actions.search">
+                <source>actions.search</source>
+                <target>Cerca</target>
+            </trans-unit>
+            <trans-unit id="actions.delete">
+                <source>actions.delete</source>
+                <target>Elimina</target>
+            </trans-unit>
+            <trans-unit id="list.results_found">
+                <source>list.results_found</source>
+                <target><![CDATA[{0} Nessun risultato|{1} <strong>1</strong> risultato|]1,Inf] <strong>%count%</strong> risultati]]></target>
+            </trans-unit>
+            <trans-unit id="list.no_results">
+                <source>list.no_results</source>
+                <target>Nessun risultato</target>
+            </trans-unit>
+            <trans-unit id="list.search">
+                <source>list.search</source>
+                <target>Cerca</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.title">
+                <source>delete_modal.title</source>
+                <target>Eliminare questo elemento?</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.content">
+                <source>delete_modal.content</source>
+                <target>Questa azione è irreversibile.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

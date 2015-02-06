@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ entity.edit.title|default('edit.page_title')|trans({'%entity_name%': entity.name, '%entity_id%': attribute(item, entity.primary_key_field_name)}) }}
+    {{ entity.edit.title|default('edit.page_title')|trans({'%entity_name%': entity.label|trans, '%entity_id%': attribute(item, entity.primary_key_field_name)}) }}
 {% endblock %}
 
 {% block main %}

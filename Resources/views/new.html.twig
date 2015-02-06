@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ entity.new.title|default('new.page_title')|trans({'%entity_name%': entity.name}) }}
+    {{ entity.new.title|default('new.page_title')|trans({'%entity_name%': entity.label|trans}) }}
 {% endblock %}
 
 {% block main %}

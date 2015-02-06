@@ -93,8 +93,10 @@ class EasyAdminExtension extends Extension
             $entityClassParts = explode('\\', $entityConfiguration['class']);
             $entityName = end($entityClassParts);
 
+            //Check if translation key exists and use it as label
+            $entityConfiguration['label'] = isset($entityConfiguration['translation_key']) ? $entityConfiguration['translation_key'] : null;
             // config format #1 doesn't define custom labels: use the entity name as label
-            $entityConfiguration['label'] = is_integer($entityLabel) ? $entityName : $entityLabel;
+            if(null === $entityConfiguration['label']) $entityConfiguration['label'] = is_integer($entityLabel) ? $entityName : $entityLabel;
 
             $normalizedConfiguration[$entityName] = $entityConfiguration;
         }

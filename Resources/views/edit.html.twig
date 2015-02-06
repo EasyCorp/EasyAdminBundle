@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ 'entity.edit' | trans({'%label%': entity.name ~ ' #' ~ attribute(item, entity.primary_key_field_name)}) }}
+    {{ 'entity.edit' | trans({'%label%': entity.label|trans ~ ' #' ~ attribute(item, entity.primary_key_field_name)}) }}
 {% endblock %}
 
 {% block main %}

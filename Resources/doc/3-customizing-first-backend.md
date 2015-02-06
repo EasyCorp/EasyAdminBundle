@@ -101,6 +101,20 @@ easy_admin:
         'Inventory (2015)': AppBundle\Entity\Product
 ```
 
+You can also explicitly specify the labels:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customers: 
+            label: 'Active Clients'
+            class: AppBundle\Entity\Customer
+        Orders: 
+            label: 'Pending Orders'
+            class: AppBundle\Entity\Order
+```
+
 Customize the Translation of the Backend Interface
 --------------------------------------------------
 
@@ -112,6 +126,40 @@ application. The `locale` option value is usually configured in the
 
 The current version of EasyAdmin is translated into tens of languages and
 we're actively looking for more translations contributed by the community.
+
+Entities (names and properties) are fully translatable, using translation keys for any `label` key:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        app.customers: #implicit label
+            class: AppBundle\Entity\Customer
+        Orders: 
+            label: app.orders #explicit label
+            class: AppBundle\Entity\Order
+```
+
+or fields:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields:
+                    - 'id'
+                    - { property: 'firstname', label: app.orders.firstname }
+                    - { property: 'lastname', label: app.orders.firstname  }
+            form:
+                fields:
+                    - 'id'
+                    - { property: 'firstname', label: app.orders.firstname }
+                    - { property: 'lastname', label: app.orders.firstname  }                    
+        # ...
+```
 
 Customize the Security of the Backend Interface
 -----------------------------------------------

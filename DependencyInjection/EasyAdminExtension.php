@@ -144,6 +144,13 @@ class EasyAdminExtension extends Extension
 
             // configuration for the actions related to the entity ('list', 'edit', etc.)
             foreach (array('edit', 'form', 'list', 'new', 'show') as $action) {
+                
+                //add new configuration to entity
+                if (isset($config[$action]))
+				{
+					continue;
+				}
+                
                 // if needed, initialize options to simplify further configuration processing
                 if (!array_key_exists($action, $config)) {
                     $config[$action] = array('fields' => array());

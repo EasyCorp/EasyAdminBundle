@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Zaprite</target>
+            </trans-unit>
+            <trans-unit id="header.logged_in_as">
+                <source>header.logged_in_as</source>
+                <target>Prijavljeni kot</target>
+            </trans-unit>
+            <trans-unit id="entity.create">
+                <source>entity.create</source>
+                <target>Ustvarite novo %entity%</target>
+            </trans-unit>
+            <trans-unit id="list.actions">
+                <source>list.actions</source>
+                <target>Akcije</target>
+            </trans-unit>
+            <trans-unit id="list.no_results">
+                <source>list.no_results</source>
+                <target>Nobenih rezultatov ni najdenih.</target>
+            </trans-unit>
+            <trans-unit id="entity.edit">
+                <source>entity.edit</source>
+                <target>Uredite</target>
+            </trans-unit>
+            <trans-unit id="entity.delete">
+                <source>entity.delete</source>
+                <target>Izbrišite</target>
+            </trans-unit>
+            <trans-unit id="link.back_to_listing">
+                <source>link.back_to_listing</source>
+                <target>Nazaj na poslušanje</target>
+            </trans-unit>
+            <trans-unit id="entity.save_changes">
+                <source>entity.save_changes</source>
+                <target>Shranite spremembe</target>
+            </trans-unit>
+            <trans-unit id="paginator.first">
+                <source>paginator.first</source>
+                <target>Prva</target>
+            </trans-unit>
+            <trans-unit id="paginator.previous">
+                <source>paginator.previous</source>
+                <target>Prejšnja</target>
+            </trans-unit>
+            <trans-unit id="paginator.next">
+                <source>paginator.next</source>
+                <target>Naslednja</target>
+            </trans-unit>
+            <trans-unit id="paginator.last">
+                <source>paginator.last</source>
+                <target>Zadnja</target>
+            </trans-unit>
+            <trans-unit id="paginator.counter">
+                <source>paginator.counter</source>
+                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> od <strong>%results%</strong>]]></target>
+            </trans-unit>
+            <trans-unit id="actions.cancel">
+                <source>actions.cancel</source>
+                <target>Prekličite</target>
+            </trans-unit>
+            <trans-unit id="actions.list">
+                <source>actions.list</source>
+                <target>Seznam</target>
+            </trans-unit>
+            <trans-unit id="actions.edit">
+                <source>actions.edit</source>
+                <target>Urejanje</target>
+            </trans-unit>
+            <trans-unit id="actions.new">
+                <source>actions.new</source>
+                <target>Novo</target>
+            </trans-unit>
+            <trans-unit id="actions.show">
+                <source>actions.show</source>
+                <target>Prikažite</target>
+            </trans-unit>
+            <trans-unit id="actions.search">
+                <source>actions.search</source>
+                <target>Iskanje</target>
+            </trans-unit>
+            <trans-unit id="actions.delete">
+                <source>actions.delete</source>
+                <target>Izbrišite</target>
+            </trans-unit>
+            <trans-unit id="list.results_found">
+                <source>list.results_found</source>
+                <target><![CDATA[{0} Rezultati niso bili najdeni|{1} <strong>1</strong> rezultat najden|{2} <strong>%count%</strong> rezultata najdena|{3} <strong>%count%</strong> rezultati najdeni|[5,Inf] <strong>%count%</strong>rezultatov najdenih]]></target>
+            </trans-unit>
+            <trans-unit id="list.search">
+                <source>list.search</source>
+                <target>Iskanje</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.title">
+                <source>delete_modal.title</source>
+                <target>Ali res želite izbrisati ta element?</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.content">
+                <source>delete_modal.content</source>
+                <target>Razveljavitev za to operacijo ne obstaja.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

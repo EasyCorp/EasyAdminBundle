@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="header.logged_in_as">
                 <source>header.logged_in_as</source>
-                <target>Logged in as</target>
+                <target>Вы войшли как</target>
             </trans-unit>
             <trans-unit id="entity.create">
                 <source>entity.create</source>
@@ -92,11 +92,11 @@
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>Do you really want to delete this item?</target>
+                <target>Вы действительно хотите удалить этот объект?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>There is no undo for this operation.</target>
+                <target>Эту операцию нельзя будет отменить.</target>
             </trans-unit>
         </body>
     </file>

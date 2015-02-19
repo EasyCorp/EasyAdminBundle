@@ -138,7 +138,7 @@ class EasyAdminExtension extends Extension
                 }
 
                 if (count($config[$action]['fields']) > 0) {
-                    $config[$action]['fields'] = $this->normalizeFieldsConfiguration($config[$action]['fields'], $action, $entityConfiguration['class']);
+                    $config[$action]['fields'] = $this->normalizeFieldsConfiguration($config[$action]['fields'], $action, $entityConfiguration);
                 }
             }
 
@@ -199,10 +199,10 @@ class EasyAdminExtension extends Extension
      *
      * @param  array  $fieldsConfiguration
      * @param  string $action              The current action (this argument is needed to create good error messages)
-     * @param  string $entityClass         The class of the current entity (this argument is needed to create good error messages)
+     * @param  string $entityConfiguration The full configuration of the entity this field belongs to
      * @return array  The configured entity fields
      */
-    private function normalizeFieldsConfiguration(array $fieldsConfiguration, $action, $entityClass)
+    private function normalizeFieldsConfiguration(array $fieldsConfiguration, $action, $entityConfiguration)
     {
         $fields = array();
 
@@ -214,12 +214,20 @@ class EasyAdminExtension extends Extension
                 // Config format #1: field is an array that defines one or more
                 // options. check that the mandatory 'property' option is set
                 if (!array_key_exists('property', $field)) {
-                    throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" action of the "%s" entity does not define the "property" option.', $action, $entityClass));
+                    throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" action of the "%s" entity does not define the "property" option.', $action, $entityConfiguration['class']));
                 }
 
                 $fieldConfiguration = $field;
             } else {
-                throw new \RuntimeException(sprintf('The values of the "fields" option for the "$s" action of the "%s" entity can only be strings or arrays.', $action, $entityClass));
+                throw new \RuntimeException(sprintf('The values of the "fields" option for the "$s" action of the "%s" entity can only be strings or arrays.', $action, $entityConfiguration['class']));
+            }
+
+            // for 'image' type fields, if the entity defines an 'image_base_path'
+            // option, but the field does not, use the value defined by the entity
+            if (isset($fieldConfiguration['type']) && 'image' === $fieldConfiguration['type']) {
+                if (!isset($fieldConfiguration['base_path']) && isset($entityConfiguration['image_base_path'])) {
+                    $fieldConfiguration['base_path'] = $entityConfiguration['image_base_path'];
+                }
             }
 
             $fieldName = $fieldConfiguration['property'];

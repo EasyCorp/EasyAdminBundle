@@ -96,6 +96,14 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return isset($fieldMetadata['format']) ? sprintf($fieldMetadata['format'], $value) : number_format($value);
             }
 
+            if (in_array($fieldType, array('image'))) {
+                $imageUrl = isset($fieldMetadata['base_path'])
+                    ? rtrim($fieldMetadata['base_path'], '/').'/'.ltrim($value, '/')
+                    : '/'.ltrim($value, '/');
+
+                return new \Twig_Markup(sprintf('<img src="%s">', $imageUrl), 'UTF-8');
+            }
+
             if (in_array($fieldType, array('association'))) {
                 $associatedEntityClassParts = explode('\\', $fieldMetadata['targetEntity']);
                 $associatedEntityClassName = end($associatedEntityClassParts);

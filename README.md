@@ -486,6 +486,73 @@ easy_admin:
 The `format` option of an entity field always overrides the value of the global
 `format` option.
 
+### Display Images Field Types in Listings
+
+If some field stores the URL of an image, you can show the actual image in the
+listing instead of its URL. Just set the type of the field to `image`:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'photo', format: 'image' }
+                    # ...
+    # ...
+```
+
+The `photo` field will be displayed as a `<img>` HTML element whose `src`
+attribute is the value of the field. If you store relative paths, the image may
+not be displayed correctly. In those cases, define the `base_path` option to
+set the path to be prefixed to the image:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'photo', format: 'image', base_path: '/img/' }
+                    # ...
+    # ...
+```
+
+The value of the `base_path` can be a relative or absolute URL and even a
+Symfony parameter:
+
+```yaml
+# relative path
+- { property: 'photo', format: 'image', base_path: '/img/products/' }
+
+# absolute path pointing to an external host
+- { property: 'photo', format: 'image', base_path: 'http://static.acme.org/img/' }
+
+# Symfony container parameter
+- { property: 'photo', format: 'image', base_path: '%vich_uploader.mappings.product_image%' }
+```
+
+The image base path can also be set in the entity, to avoid repeating its
+value for different fields or different actions (`list`, `show`):
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            image_base_path: 'http://static.acme.org/img/'
+            list:
+                fields:
+                    - { property: 'photo', format: 'image' }
+                    # ...
+    # ...
+```
+
+The base paths defined for a field always have priority over the one defined
+for the entity.
+
 ### Customize which Fields are Displayed in the Show Action
 
 By default, the `show` action displays all the entity fields and their
@@ -544,6 +611,26 @@ easy_admin:
 Instead of using a string to define the name of the property (e.g. `email`) you
 have to define a hash with the name of the property (`property: 'email'`) and
 the custom label you want to display (`label: 'Contact'`).
+
+### Display Images Field Types in the Show Action
+
+If some field stores the URL of an image, you can show the actual image
+instead of its URL. Just set the type of the field to `image`:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            show:
+                fields:
+                    - { property: 'photo', format: 'image' }
+                    # ...
+    # ...
+```
+
+Read the previous *Display Images Field Types in Listings* section to know how
+to define the base path for images stored as relative URLs.
 
 ### Customize which Fields are Displayed in Forms
 

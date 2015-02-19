@@ -632,6 +632,11 @@ body.list .pagination > li i {
     padding: 0 3px;
 }
 
+body.list td.image img {
+    max-height: 50px;
+    max-width: 150px;
+}
+
 /* -------------------------------------------------------------------------
    NEW PAGE
    ------------------------------------------------------------------------- */
@@ -661,6 +666,10 @@ body.show .form-control.text {
     min-height: 34px;
     max-height: 250px;
     overflow-y: auto;
+}
+body.show .form-control.image {
+    max-height: 300px;
+    max-width: 100%;
 }
 
 /* -------------------------------------------------------------------------

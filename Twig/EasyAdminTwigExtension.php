@@ -99,7 +99,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             if (in_array($fieldType, array('image'))) {
                 $imageUrl = isset($fieldMetadata['base_path'])
                     ? rtrim($fieldMetadata['base_path'], '/').'/'.ltrim($value, '/')
-                    : $value;
+                    : '/'.ltrim($value, '/');
 
                 return new \Twig_Markup(sprintf('<img src="%s">', $imageUrl), 'UTF-8');
             }

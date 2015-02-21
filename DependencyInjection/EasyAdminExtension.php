@@ -199,7 +199,7 @@ class EasyAdminExtension extends Extension
      *
      * @param  array  $fieldsConfiguration
      * @param  string $action              The current action (this argument is needed to create good error messages)
-     * @param  array $entityConfiguration The full configuration of the entity this field belongs to
+     * @param  array  $entityConfiguration The full configuration of the entity this field belongs to
      * @return array  The configured entity fields
      */
     private function normalizeFieldsConfiguration(array $fieldsConfiguration, $action, array $entityConfiguration)

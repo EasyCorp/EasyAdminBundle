@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="header.logged_in_as">
                 <source>header.logged_in_as</source>
-                <target>Вы войшли как</target>
+                <target>Вы вошли как</target>
             </trans-unit>
             <trans-unit id="entity.create">
                 <source>entity.create</source>
@@ -44,11 +44,11 @@
             </trans-unit>
             <trans-unit id="paginator.previous">
                 <source>paginator.previous</source>
-                <target>Предыдущий</target>
+                <target>Предыдущая</target>
             </trans-unit>
             <trans-unit id="paginator.next">
                 <source>paginator.next</source>
-                <target>Следующий</target>
+                <target>Следующая</target>
             </trans-unit>
             <trans-unit id="paginator.last">
                 <source>paginator.last</source>

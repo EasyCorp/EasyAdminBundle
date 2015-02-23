@@ -97,6 +97,13 @@ class Configurator
         // default fields used when the action (list, edit, etc.) doesn't define its own fields
         $this->defaultEntityFields = $this->createFieldsFromEntityProperties($entityProperties);
 
+        // Add the actions for global and entity-specific actions (to allow creating custom actions)
+        if (isset($entityConfiguration['list_actions']) && !empty($entityConfiguration['list_actions'])) {
+            $entityConfiguration['list_actions'] = array_unique(array_merge($entityConfiguration['list_actions'], $this->backendConfig['list_actions']));
+        } else {
+            $entityConfiguration['list_actions'] = $this->backendConfig['list_actions'];
+        }
+
         $entityConfiguration['list']['fields'] = $this->getFieldsForListAction($entityConfiguration);
         $entityConfiguration['show']['fields'] = $this->getFieldsForShowAction($entityConfiguration);
         $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $entityConfiguration);

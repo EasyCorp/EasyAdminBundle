@@ -44,7 +44,7 @@
                         {% for item in config.entities %}
                             <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
                                 <a href="{{ path('admin', { entity: item.name, action: 'list' }) }}">
-                                    {{ item.label }}
+                                    {{ item.label | trans }}
                                 </a>
                             </li>
                         {% endfor %}

@@ -19,7 +19,7 @@
                         {% if 'search' == app.request.get('action') %}
                             {{ 'list.results_found' | transchoice(paginator.nbResults) | raw }}
                         {% else %}
-                            {{ entity.label }}
+                            {{ entity.label | trans }}
                         {% endif %}
                     {% endblock %}
                 </h1>

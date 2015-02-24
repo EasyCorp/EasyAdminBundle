@@ -382,8 +382,11 @@ class AdminController extends Controller
                 $formFieldOptions = array(
                     'allow_add' => true,
                     'allow_delete' => true,
-                    'delete_empty' => true,
                 );
+
+                if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
+                    $formFieldOptions['delete_empty'] = true;
+                }
             }
 
             $form->add($name, $metadata['type'], $formFieldOptions);

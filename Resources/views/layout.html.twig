@@ -93,7 +93,6 @@
     {% block body_javascript %}
         <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
         <script src="{{ asset('bundles/easyadmin/javascript/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('bundles/easyadmin/javascript/admin.js') }}"></script>
     {% endblock %}
     {% for js_asset in config.assets.js %}
         <script src="{{ asset(js_asset) }}"></script>

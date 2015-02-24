@@ -859,14 +859,12 @@ body.error code {
         padding-right: 25px;
         padding-top: 0;
         margin-bottom: 0;
-        overflow: visible;
+        overflow: hidden;
         height: 100%;
         top: 0;
         bottom: 0;
         position: fixed;
         width: 202px;
-        overflow-y: scroll;
-        overflow-x: hidden;
     }
     #header-contents {
         margin-right: -25px;
@@ -897,6 +895,8 @@ body.error code {
         padding-right: 0;
         padding: 0;
         margin: 0;
+        overflow-y: scroll;
+        overflow-x: hidden;
         width: 100%;
     }
     #header #header-menu {
@@ -905,7 +905,6 @@ body.error code {
         margin-left: 0;
         margin-right: 0;
         margin-top: 0;
-        max-height: 100%;
         padding: 0;
         list-style: none;
         width: 100%;
@@ -941,15 +940,17 @@ body.error code {
         text-decoration: none;
     }
     #header #header-security {
+        background: #302A2F;
         border-top: 1px solid #483D43;
         bottom: 0;
         color: #D5D2CA;
         font-size: 14px;
+        left: 0;
         margin-top: 1em;
         padding-bottom: 1em;
         padding-top: 1em;
-        position: absolute;
-        width: 100%;
+        position: fixed;
+        width: 202px;
     }
     #header #header-security p {
         line-height: 1.5;

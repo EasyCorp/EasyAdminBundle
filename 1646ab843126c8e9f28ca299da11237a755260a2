@@ -1,0 +1,69 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-02-24T20:51:41Z
+
+I love it :heart:  Thanks a lot @ogizanagi. You mention something about the scrollbar but it doesn't occur to me. In my case, the scrollbar correctly appears when needed and hides otherwise (I'm using Chrome):
+
+![sidebar-menun-resize-flex](https://cloud.githubusercontent.com/assets/73419/6358901/2c8da67e-bc6f-11e4-9151-95e34bd1d451.gif)
+
+Regarding the support for `flex` box model in browsers, these are the data provided by CanIUse.com:
+
+![flex-browser-support](https://cloud.githubusercontent.com/assets/73419/6358891/21dc258e-bc6f-11e4-9a71-140b512d806d.png)
+
+I think it's safe to use it.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-24T20:52:50Z
+
+I'm using chrome too, on Mac OS X. That's strange, I do not have the behavior you have, i.e the scrollbar disappearing when not in use.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-02-24T20:52:51Z
+
+Flex is the future of css scaffolding :) Thanks @ogizanagi for pushing innovative apps into this direction :+1:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-24T20:57:24Z
+
+@javiereguiluz : What did you select under System Preferences > General > Scrollbars ?
+I bet you've checked the 2nd option. :smile:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-02-24T21:03:31Z
+
+I've checked the first one:
+
+![general_settings_scrollbars](https://cloud.githubusercontent.com/assets/73419/6359103/eab4a0b6-bc70-11e4-8b9e-975c833e9015.png)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-24T21:05:40Z
+
+Me too...increasingly strange. Because I only get the same behavior as yours with the second option.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-02-24T21:07:28Z
+
+In [this StackOverflow question](http://stackoverflow.com/questions/14962468/flexbox-and-vertical-scroll-in-a-full-height-app-using-newer-flexbox-api) they mention to add `min-height: 0` to the element that should hide the scrollbars. Can you test this trick, please?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-24T21:11:00Z
+
+No effect.
+
+Anyway, I think I will not say anything wrong in the fact that, for most users, a property `overflow-y` set to `scroll` instead of `auto` will always show the scrollbar.
+The second issue not solved by this commit, and why I suggested js, was when there is too many items, the scrollbar is still displayed with my configuration.
+
+BTW, the look & feel of your scrollbar clearly shows that's your OS handling it, which I don't understand considering we have the same configuration for this particular option.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-02-24T21:20:28Z
+
+@ogizanagi thanks for your tests. I'm going to merge this PR as it is so people can test it more easily.

@@ -894,15 +894,10 @@ body.error code {
     #header #header-nav {
         flex: 1;
         height: 0;
-        margin-left: 0;
-        margin-right: 0;
-        padding-right: 0;
-        padding: 0;
         margin: 0;
         overflow-y: auto;
         overflow-x: hidden;
-        width: 100%;
-        margin-bottom: 66px;
+        padding: 0 0 1em;
     }
     #header #header-menu {
         display: block;
@@ -945,17 +940,11 @@ body.error code {
         text-decoration: none;
     }
     #header #header-security {
-        background: #302A2F;
         border-top: 1px solid #483D43;
-        bottom: 0;
         color: #D5D2CA;
         font-size: 14px;
-        left: 0;
-        margin-top: 1em;
         padding-bottom: 1em;
         padding-top: 1em;
-        position: fixed;
-        width: 202px;
     }
     #header #header-security p {
         line-height: 1.5;

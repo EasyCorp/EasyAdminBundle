@@ -54,14 +54,16 @@
                     </ul>
                 </div>
 
-                {% if app.user %}
-                    <div id="header-security" class="col-xs-12 col-md-2 col-lg-12">
-                        <p>
-                            <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as' | trans }}</span></small>
-                            {{ app.user.username|default('Unnamed User') }}
-                        </p>
-                    </div>
-                {% endif %}
+                <div id="header-footer">
+                    {% if app.user %}
+                        <div id="header-security" class="col-xs-12 col-md-2 col-lg-12">
+                            <p>
+                                <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as' | trans }}</span></small>
+                                {{ app.user.username|default('Unnamed User') }}
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 

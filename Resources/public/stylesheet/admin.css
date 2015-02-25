@@ -455,7 +455,7 @@ body:not(:target) #header-menu:target .header-nav-close a {
     z-index: -1;
 }
 
-#header #header-security {
+#header #header-footer {
     display: none;
 }
 
@@ -790,20 +790,20 @@ body.error code {
         overflow: visible;
         width: auto;
     }
-    #header #header-security {
+    #header #header-footer {
         color: #D5D2CA;
         display: block;
         font-size: 14px;
     }
-    #header #header-security p {
+    #header #header-footer p {
         line-height: 50px;
         margin: 0;
         text-align: right;
     }
-    #header #header-security p small span {
+    #header #header-footer p small span {
         display: none;
     }
-    #header #header-security p small i {
+    #header #header-footer p small i {
         font-size: 14px;
         padding-right: 3px;
     }
@@ -942,7 +942,7 @@ body.error code {
         padding-left: .5em;
         text-decoration: none;
     }
-    #header #header-security {
+    #header #header-footer {
         border-top: 1px solid #483D43;
         color: #D5D2CA;
         font-size: 14px;
@@ -952,18 +952,18 @@ body.error code {
         -webkit-transition: box-shadow 0.3s ease-out;
         transition: box-shadow 0.3s ease-out;
     }
-    #header #header-security.drop-shadow {
+    #header #header-footer.drop-shadow {
         box-shadow: rgba(0,0,0,0.8) 0 -1px 80px;
     }
-    #header #header-security p {
+    #header #header-footer p {
         line-height: 1.5;
         text-align: left;
     }
-    #header #header-security p small {
+    #header #header-footer p small {
         display: block;
         font-size: 11px;
     }
-    #header #header-security p small span {
+    #header #header-footer p small span {
         display: inline-block;
     }
 

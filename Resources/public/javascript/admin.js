@@ -1,18 +1,22 @@
 $(function () {
-    var hnav = document.getElementById('header-nav');
-    $(hnav).bind('scroll', dropSidemenuShadow);
-    $(window).bind('resize', function(){
-        dropSidemenuShadow.apply(hnav);
+    var mainMenu = document.getElementById('header-nav');
+
+    $(mainMenu).bind('scroll', mainMenuDropShadow);
+    $(window).bind('resize', function() {
+        mainMenuDropShadow.apply(mainMenu);
     });
-    dropSidemenuShadow.apply(hnav);
+
+    mainMenuDropShadow.apply(mainMenu);
 });
 
-function dropSidemenuShadow() {
-    var $hsec = $("#header-security");
-    if(this.scrollHeight === this.clientHeight) {
-        $hsec.removeClass('drop-shadow');
+function mainMenuDropShadow() {
+    var headerFooter = $("#header-footer");
+
+    if (this.scrollHeight === this.clientHeight) {
+        headerFooter.removeClass('drop-shadow');
         return;
     }
-    var scrollPurcent = 100 * this.scrollTop / this.scrollHeight / (1 - this.clientHeight / this.scrollHeight);
-    isNaN(scrollPurcent) || scrollPurcent >= 100 ? $hsec.removeClass('drop-shadow') : $hsec.addClass('drop-shadow');
+
+    var scrollPercent = 100 * this.scrollTop / this.scrollHeight / (1 - this.clientHeight / this.scrollHeight);
+    isNaN(scrollPercent) || scrollPercent >= 100 ? headerFooter.removeClass('drop-shadow') : headerFooter.addClass('drop-shadow');
 }

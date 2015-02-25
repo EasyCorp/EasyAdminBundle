@@ -897,6 +897,7 @@ body.error code {
         margin: 0;
         overflow: hidden;
         padding: 0 0 1em;
+        width: 222px;
     }
     #header #header-nav:hover {
         overflow-y: auto;
@@ -909,7 +910,7 @@ body.error code {
         margin-top: 0;
         padding: 0;
         list-style: none;
-        width: 100%;
+        width: 202px;
     }
     #header #header-menu li {
         border-bottom: 1px solid #2B2528;
@@ -947,6 +948,12 @@ body.error code {
         font-size: 14px;
         padding-bottom: 1em;
         padding-top: 1em;
+        -moz-transition: box-shadow 0.3s ease-out;
+        -webkit-transition: box-shadow 0.3s ease-out;
+        transition: box-shadow 0.3s ease-out;
+    }
+    #header #header-security.drop-shadow {
+        box-shadow: rgba(0,0,0,0.8) 0 -1px 80px;
     }
     #header #header-security p {
         line-height: 1.5;

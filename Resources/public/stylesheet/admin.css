@@ -859,8 +859,8 @@ body.error code {
         padding-right: 25px;
         padding-top: 0;
         margin-bottom: 0;
-        overflow: visible;
-        min-height: 100%;
+        overflow: hidden;
+        height: 100%;
         top: 0;
         bottom: 0;
         position: fixed;
@@ -869,6 +869,8 @@ body.error code {
     #header-contents {
         margin-right: -25px;
         min-height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     #header-logo {
         background: #242123;
@@ -890,12 +892,14 @@ body.error code {
         background: #D47843;
     }
     #header #header-nav {
-        margin-left: 0;
-        margin-right: 0;
-        padding-right: 0;
-        padding: 0;
+        flex: 1;
+        height: 0;
         margin: 0;
-        width: 100%;
+        overflow: hidden;
+        padding: 0 0 1em;
+    }
+    #header #header-nav:hover {
+        overflow-y: auto;
     }
     #header #header-menu {
         display: block;
@@ -903,7 +907,6 @@ body.error code {
         margin-left: 0;
         margin-right: 0;
         margin-top: 0;
-        max-height: 100%;
         padding: 0;
         list-style: none;
         width: 100%;
@@ -940,14 +943,10 @@ body.error code {
     }
     #header #header-security {
         border-top: 1px solid #483D43;
-        bottom: 0;
         color: #D5D2CA;
         font-size: 14px;
-        margin-top: 1em;
         padding-bottom: 1em;
         padding-top: 1em;
-        position: absolute;
-        width: 100%;
     }
     #header #header-security p {
         line-height: 1.5;

@@ -895,9 +895,11 @@ body.error code {
         flex: 1;
         height: 0;
         margin: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: hidden;
         padding: 0 0 1em;
+    }
+    #header #header-nav:hover {
+        overflow-y: auto;
     }
     #header #header-menu {
         display: block;

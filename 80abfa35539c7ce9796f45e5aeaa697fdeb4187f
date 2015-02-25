@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-25T00:39:48Z
+
+Second commit is about the "issue" always showing the scrollbar when too many items in the menu. Not a real issue, but this is disgraceful and not sexy as hell in a modern app. So let's hide the scrollbar when the cursor is not on the menu with some basic css. :bulb: Didn't even know why I was talking about js in previous PR -.-' ...
+
+It will also be trivial to completely hide the scrollbar using a width of 110% for `#header-nav:hover`. What do you think about it ?
+We might add a slight glowing/shadow effect on top of the `#header-security` (through js this time) as an indicator if there's some items to scroll, like in the theme I previously mentioned: http://bootstrapmaster.com/live/origin-ajax/#page-activity.html
+See the slight shadow when the scroll's end is not reached yet ?

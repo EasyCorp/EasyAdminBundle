@@ -25,6 +25,7 @@ class EasyAdminExtension extends Extension
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
+        $container->setParameter('easyadmin.locale', $backendConfiguration['locale']);
 
         // load bundle's services
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

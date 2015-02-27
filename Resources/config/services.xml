@@ -16,5 +16,10 @@
             <argument type="service" id="doctrine"></argument>
         </service>
 
+        <service id="easyadmin.listener.force_locale" class="JavierEguiluz\Bundle\EasyAdminBundle\Listener\ForceLocaleListener">
+            <argument>%easyadmin.locale%</argument>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
     </services>
 </container>

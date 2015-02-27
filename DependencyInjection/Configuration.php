@@ -28,6 +28,11 @@ class Configuration implements ConfigurationInterface
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
 
+                ->scalarNode('locale')
+                    ->defaultValue('%kernel.default_locale%')
+                    ->info('The locale to use for the admin interface.')
+                ->end()
+
                 ->integerNode('list_max_results')
                     ->defaultValue(15)
                     ->info('The maximum number of items to show on listing and search pages.')

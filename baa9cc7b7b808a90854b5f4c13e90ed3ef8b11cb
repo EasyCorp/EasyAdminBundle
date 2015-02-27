@@ -1,0 +1,22 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-02-26T21:11:19Z
+
+It's strange. I thought that problem was covered by this try...catch block of the Twig extension:
+
+```php
+try {
+    $associatedEntityConfig = $this->configurator->getEntityConfiguration($associatedEntityClassName);
+    $associatedEntityPrimaryKey = $associatedEntityConfig['primary_key_field_name'];
+} catch (\Exception $e) {
+    // if the entity isn't managed by EasyAdmin, don't link to it and just display its raw value
+    return $value;
+}
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-02-26T22:25:05Z
+
+@javiereguiluz : It's only a notice, not an Exception. That's why @Pierstoval transforms it to an proper Exception in order to catch it into the block you mentioned.
+I think this change is legit. :+1:  It will prevent bad usage of the `getEntityConfiguration` method in the future.

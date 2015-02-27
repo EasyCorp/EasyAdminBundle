@@ -215,6 +215,31 @@ easy_admin:
     # ...
 ```
 
+### Configure the Backend Language
+
+The EasyAdmin bundle and its interface are only intended to be used as a single-language backend. However, many translations are available.
+By default, the backend will translate its interface using the `kernel.default_locale` parameter which is generally set in your config.yml under the `framework` configuration:
+
+```yaml
+# app/config/config.yml
+framework:
+    #esi:             ~
+    translator:      { fallback: "%locale%" }
+    default_locale:   en # kernel.default_locale` is set here
+```
+
+Use the `locale` option to change this value only for EasyAdmin interface:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    locale: 'fr'
+    # ...
+```
+
+In case you have a LocaleListener setting the locale according to the user's browser language, or a `_locale` parameter, the EasyAdmin bundle registers a `kernel.request` listener, overriding the locale with the default or the EasyAdmin configured one.  
+If you want to use your own *LocaleListener* anyway, use a priority lower than **14**.
+
 ### Customize the Number of Items Displayed in Listings
 
 By default, listings display a maximum of `15` items. Define the
@@ -1274,6 +1299,7 @@ the future. However, it's safe to consider that they'll never be implemented:
   * CMS-like features.
   * Assetic or frontend-tools-based (gulp, grunt, bower) asset processing.
   * Support for AngularJS or any other JavaScript-based client-side technology.
+  * Multi-language backends.
 
 ### How to Collaborate in this Project
 

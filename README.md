@@ -10,7 +10,7 @@ with unprecedented simplicity.
 
   * **CRUD** operations on Doctrine entities (create, edit, list, delete).
   * Full-text **search**, **pagination** and column **sorting**.
-  * Fully **responsive** design with four break points.
+  * Fully **responsive** design (smartphones, tablets and desktops).
   * **Fast**, **simple** and **smart** where appropriate.
 
 **Requirements**
@@ -24,8 +24,8 @@ with unprecedented simplicity.
 Installation
 ------------
 
-In order to install EasyAdmin you have to edit two files and execute two
-console commands, as explained in the following steps.
+EasyAdmin installation requires you to edit two files and execute two console
+commands, as explained in the following steps.
 
 ### Step 1: Download the Bundle
 
@@ -43,7 +43,7 @@ of the Composer documentation.
 ### Step 2: Enable the Bundle
 
 Then, enable the bundle by adding the following line in the `app/AppKernel.php`
-file of your project:
+file of your Symfony application:
 
 ```php
 <?php
@@ -67,7 +67,7 @@ class AppKernel extends Kernel
 ### Step 3: Load the Routes of the Bundle
 
 Open your main routing configuration file (usually `app/config/routing.yml`)
-and add the following four lines at the very beginning of it:
+and copy the following four lines at the very beginning of it:
 
 ```yaml
 # app/config/routing.yml
@@ -81,9 +81,9 @@ easy_admin_bundle:
 
 ### Step 4: Prepare the Web Assets of the Bundle
 
-This bundles includes several CSS, JavaScript and font files used to display
-its interface. In order to add those files to your application, execute the
-following command:
+This bundles includes several CSS, JavaScript and font files which are used in
+the backend interface, Execute the following command to make those assets
+available in your Symfony application:
 
 ```cli
 php app/console assets:install --symlink
@@ -935,7 +935,7 @@ class AdminController extends EasyAdminController
             return $this->updateSlug($entity);
         }
     }
-   
+
     protected function prepareNewEntityForPersist($entity)
     {
         if ($entity instanceof Article) {

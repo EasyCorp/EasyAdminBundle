@@ -75,8 +75,9 @@ class Configurator
         }
 
         if (!isset($this->backendConfig['entities'][$entityName])) {
-            throw new \InvalidArgumentException('Entity "'.$entityName.'" is not managed by EasyAdmin.');
+            throw new \InvalidArgumentException(sprintf('Entity "%s" is not managed by EasyAdmin.', $entityName));
         }
+
         $entityConfiguration = $this->backendConfig['entities'][$entityName];
 
         $entityClass = $entityConfiguration['class'];

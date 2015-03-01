@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="entity.create">
                 <source>entity.create</source>
-                <target>Erstellen von %entity%</target>
+                <target>%entity% erstellen</target>
             </trans-unit>
             <trans-unit id="list.actions">
                 <source>list.actions</source>

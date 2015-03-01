@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="entity.create">
                 <source>entity.create</source>
-                <target>Erstelle %entity%</target>
+                <target>%entity% erstellen</target>
             </trans-unit>
             <trans-unit id="list.actions">
                 <source>list.actions</source>
@@ -96,7 +96,7 @@
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>Möchten Sie dieses Element wirklich löschen?</target>
+                <target>Soll das Element wirklich gelöscht werden?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>

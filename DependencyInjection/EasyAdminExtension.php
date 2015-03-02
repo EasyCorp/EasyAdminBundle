@@ -32,6 +32,7 @@ class EasyAdminExtension extends Extension
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
         $backendConfiguration = $this->processEntityActions($backendConfiguration);
+        $backendConfiguration['grouped_entities'] = $this->getGroupedEntities($backendConfiguration);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
 
@@ -342,6 +343,8 @@ class EasyAdminExtension extends Extension
                 }
             }
 
+            $config['group'] = isset($config['group']) ? $config['group'] : '_';
+
             $entities[$entityName] = $config;
         }
 
@@ -430,5 +433,28 @@ class EasyAdminExtension extends Extension
         }
 
         return $fields;
+    }
+
+    private function getGroupedEntities(array $config)
+    {
+        // Manage grouped entities to create 2-level tree
+        $groupedEntities = array();
+
+        $entities = $config['entities'];
+        foreach ($entities as $key => $entity) {
+            if (!isset($groupedEntities[$entity['group']])) {
+                $groupedEntities[$entity['group']] = array();
+            }
+            $groupedEntities[$entity['group']][] = $key;
+        }
+        // Sort by key
+        ksort($groupedEntities);
+
+        if (isset($groupedEntities['_'])) {
+            // Non-grouped entities will have the group "_", so we force these values to be prepended to the list
+            $groupedEntities = array('_' => $groupedEntities['_']) + $groupedEntities;
+        }
+
+        return array_merge($groupedEntities, isset($config['grouped_entities']) ? $config['grouped_entities'] : array());
     }
 }

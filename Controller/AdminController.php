@@ -117,6 +117,7 @@ class AdminController extends Controller
 
         $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
 
+
         $this->request = $request;
     }
 

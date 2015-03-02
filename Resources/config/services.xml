@@ -2,6 +2,11 @@
 <container xmlns="http://symfony.com/schema/dic/services"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="easyadmin.listener.config_injector.routes" type="collection">
+            <parameter>admin</parameter>
+        </parameter>
+    </parameters>
 
     <services>
 
@@ -19,6 +24,13 @@
 
         <service id="easyadmin.metadata_inspector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector" public="false">
             <argument type="service" id="doctrine"></argument>
+        </service>
+
+        <service id="easyadmin.listener.config_injector" class="JavierEguiluz\Bundle\EasyAdminBundle\Listener\ConfigInjectorListener">
+            <argument>%easyadmin.config%</argument>
+            <argument>%easyadmin.listener.config_injector.routes%</argument>
+            <argument type="service" id="twig"></argument>
+            <tag name="kernel.event_listener" event="kernel.request" method="injectConfig" />
         </service>
 
         <service id="easyadmin.property_reflector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector" public="false"></service>

@@ -57,3 +57,14 @@ your Doctrine entities.
 
 This simple metadata cache configuration can improve your backend performance
 between 20% and 30% depending on the complexity and number of your entities.
+
+Inject easyadmin config within your own routes
+-----------------------------
+
+Sometimes, it might be useful to retrieve easyadmin config from your own pages (e.g: you extend or rewrite the easyadmin main layout and need to list entities).  
+As the easyadmin config is available as a **Twig_Global** injected on `kernel.request`, you can override the default routes collection used to determine if it should be injected:
+
+```yaml
+parameters:
+    easyadmin.listener.config_injector.routes: [admin, acme_admin.my_entity_export]
+```

@@ -132,10 +132,11 @@ how to do it:
   * [Chapter 5 - Customizing the Show Action](Resources/doc/5-customizing-show-action.md)
   * [Chapter 6 - Customizing the Edit and New Actions](Resources/doc/6-customizing-new-edit-actions.md)
   * [Chapter 7 - Customizing the Search Action](Resources/doc/7-customizing-search-action.md)
-  * [Chapter 8 - Advanced Techniques for Complex Backends](Resources/doc/8-advanced-techniques.md)
-  * [Chapter 9 - Customizing the Visual Design of the Backend](Resources/doc/9-customizing-design.md)
-  * [Chapter 10 - Configuration Reference](Resources/doc/10-configuration-reference.md)
-  * [Chapter 11 - About this Project](Resources/doc/11-about-this-project.md)
+  * [Chapter 8 - Creating custom actions](Resources/doc/8-creating-custom-actions.md)
+  * [Chapter 9 - Advanced Techniques for Complex Backends](Resources/doc/9-advanced-techniques.md)
+  * [Chapter 10 - Customizing the Visual Design of the Backend](Resources/doc/10-customizing-design.md)
+  * [Chapter 11 - Configuration Reference](Resources/doc/11-configuration-reference.md)
+  * [Chapter 12 - About this Project](Resources/doc/12-about-this-project.md)
 
 LEGAL DISCLAIMER
 ----------------

@@ -25,8 +25,8 @@ with unprecedented simplicity.
 Installation
 ------------
 
-EasyAdmin installation requires you to edit two files and execute two console
-commands, as explained in the following steps.
+The EasyAdmin installation requires you to edit two files and execute two
+console commands, as explained in the following steps.
 
 ### Step 1: Download the Bundle
 
@@ -82,8 +82,8 @@ easy_admin_bundle:
 
 ### Step 4: Prepare the Web Assets of the Bundle
 
-This bundles includes several CSS, JavaScript and font files which are used in
-the backend interface, Execute the following command to make those assets
+This bundle includes several CSS, JavaScript and font files which are used in
+the backend interface. Execute the following command to make those assets
 available in your Symfony application:
 
 ```cli
@@ -95,7 +95,7 @@ That's it! Now everything is ready to create your first admin backend.
 Your First Backend
 ------------------
 
-Creating your first backend will take you around 30 seconds, because you just
+Creating your first backend will take you around 30 seconds because you just
 have to create a simple configuration file.
 
 Let's suppose that you already have defined in your Symfony application three
@@ -131,7 +131,7 @@ how to do it:
   * [Chapter 4 - Customizing the List Action](Resources/doc/4-customizing-list-action.md)
   * [Chapter 5 - Customizing the Show Action](Resources/doc/5-customizing-show-action.md)
   * [Chapter 6 - Customizing the Edit and New Actions](Resources/doc/6-customizing-new-edit-actions.md)
-  * [Chapter 7 - Customizing the Search Action](Resources/doc/Resources/doc/7-customizing-search-action.md)
+  * [Chapter 7 - Customizing the Search Action](Resources/doc/7-customizing-search-action.md)
   * [Chapter 8 - Advanced Techniques for Complex Backends](Resources/doc/8-advanced-techniques.md)
   * [Chapter 9 - Customizing the Visual Design of the Backend](Resources/doc/9-customizing-design.md)
   * [Chapter 10 - Configuration Reference](Resources/doc/10-configuration-reference.md)

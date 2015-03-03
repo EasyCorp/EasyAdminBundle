@@ -1,6 +1,23 @@
 Chapter 6. Customizing the New and Edit Actions
 ===============================================
 
+Customize the Title of the Page
+-------------------------------
+
+By default, the title of the `edit` page displays a very generic title (just
+the `Edit` word). Define the `title` option to set a custom page title:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            show:
+                title: 'Modify customer information'
+        # ...
+```
+
 Customize which Fields are Displayed
 ------------------------------------
 

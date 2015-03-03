@@ -18,6 +18,24 @@ easy_admin:
     # ...
 ```
 
+Customize the Title of the Page
+-------------------------------
+
+By default, the title of the `show` page displays the name of the entity and
+the value of the primary key field. Define the `title` option to set a custom
+page title:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            show:
+                title: 'Customer details'
+        # ...
+```
+
 Customize the Order of the Fields
 ---------------------------------
 

@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ 'entity.create' | trans({"%entity%": entity.name}) }}
+    {{ entity.new.title|default('entity.create')|trans({"%entity%": entity.name}) }}
 {% endblock %}
 
 {% block main %}

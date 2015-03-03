@@ -45,6 +45,42 @@ easy_admin:
 Refer to the [EasyAdmin Configuration Reference](10-configuration-reference.md)
 chapter to check out all the available configuration formats.
 
+Customize the Title of the Page
+-------------------------------
+
+By default, the title of the listing page just displays the name of the entity.
+Define the `title` option to set a custom page title:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                title: "Most recent customers"
+        # ...
+```
+
+Customize the Label of the Button to Create new Items
+-----------------------------------------------------
+
+Listing page includes a button in the top right part of the page to create new
+items of the same entity. By default, this button displays a generic label that
+includes the name of the entity. Define the `label` option of the `new` action
+to change this value:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            new:  # <-- change it in the 'new' action, not in the 'list' action
+                label: "Add Customer"
+        # ...
+```
+
 Customize the Number of Item Rows Displayed
 -------------------------------------------
 

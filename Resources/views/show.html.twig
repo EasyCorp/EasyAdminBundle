@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ entity.label ~ ' ' ~ attribute(item, entity.primary_key_field_name) }}
+    {{ entity.show.title|default(entity.label ~ ' ' ~ attribute(item, entity.primary_key_field_name))|trans }}
 {% endblock %}
 
 {% block main %}

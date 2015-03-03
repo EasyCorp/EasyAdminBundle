@@ -19,7 +19,7 @@
                         {% if 'search' == app.request.get('action') %}
                             {{ 'list.results_found' | transchoice(paginator.nbResults) | raw }}
                         {% else %}
-                            {{ entity.label }}
+                            {{ entity.list.title|default(entity.label)|trans }}
                         {% endif %}
                     {% endblock %}
                 </h1>
@@ -27,7 +27,7 @@
             <div class="col-xs-12 col-sm-7">
                 <div id="content-actions">
                     <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
-                        {{ 'entity.create' | trans({"%entity%": entity.name}) }}
+                        {{ entity.new.label|default('entity.create')|trans({"%entity%": entity.name}) }}
                     </a>
                 </div>
                 <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">

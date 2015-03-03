@@ -18,6 +18,45 @@ easy_admin:
     # ...
 ```
 
+Customize the Title of the Page
+-------------------------------
+
+By default, the title of the `show` page displays the name of the entity and
+the value of the primary key field. Define the `title` option to set a custom
+page title:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            show:
+                title: 'Customer details'
+        # ...
+```
+
+The `title` option can include any of the following two variables:
+
+  * `%entity_name%`, resolves to the class name of the current entity (e.g.
+    `Customer`, `Product`, `User`, etc.)
+  * `%entity_id%`, resolves to the value of the primary key of the entity being
+    displayed. Even if the option is called `entity_id`, it also works for
+    primary keys with names different from `id`.
+
+Beware that, in Symfony applications, YAML values enclosed with `%` and `%`
+have a special meaning. Use two consecutive `%` characters to avoid any issue:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            show:
+                title: 'Customer %%entity_id%% details'
+        # ...
+```
+
 Customize the Order of the Fields
 ---------------------------------
 

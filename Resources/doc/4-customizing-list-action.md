@@ -62,6 +62,24 @@ easy_admin:
         # ...
 ```
 
+The `title` option can include the following variable:
+
+  * `%entity_name%`, resolves to the class name of the current entity (e.g.
+    `Customer`, `Product`, `User`, etc.)
+
+Beware that, in Symfony applications, YAML values enclosed with `%` and `%`
+have a special meaning. Use two consecutive `%` characters to avoid any issue:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                title: '%%entity_name%% listing'
+        # ...
+```
+
 Customize the Label of the Button to Create new Items
 -----------------------------------------------------
 

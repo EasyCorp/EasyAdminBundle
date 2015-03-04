@@ -1,11 +1,69 @@
 Chapter 6. Customizing the New and Edit Actions
 ===============================================
 
+The `new` action is displayed when creating a new item of the given entity,
+whereas the `edit` action is displayed when editing any entity instance. Both
+actions are pretty similar, so most of the times you apply them the same
+customization.
+
+Instead of duplicating the configuration for both actions, you can define a new
+*virtual* `form` action with the common configuration:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:  # <-- 'form' is applied to both 'new' and 'edit' actions
+                fields:
+                    - 'id'
+                    - { property: 'email', type: 'email', label: 'Contact' }
+                    # ...
+    # ...
+```
+
+Any option defined in the `form` action will be copied into the `new` and
+`edit` actions. However, any option defined in the `edit` and `new` action
+overrides the corresponding `form` option. In other words, always use the
+`form` action to define the common configuration, and then define in the `new`
+and `edit` actions just the specific options you want to override:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields: ['id', 'name', 'email']
+                title:  'Add customer'
+            new:
+                fields: ['name', 'email']
+            edit:
+                title:  'Edit customer'
+    # ...
+```
+
+The above configuration is equivalent to the following:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            new:
+                fields: ['name', 'email']
+                title:  'Add customer'
+            edit:
+                fields: ['id', 'name', 'email']
+                title:  'Edit customer'
+    # ...
+```
+
 Customize the Title of the Page
 -------------------------------
 
-By default, the title of the `edit` page displays a very generic title (just
-the `Edit` word). Define the `title` option to set a custom page title:
+By default, the title of the `edit`/`new` pages displays a very generic title.
+Define the `title` option to set a custom page title:
 
 ```yaml
 # app/config/config.yml
@@ -13,8 +71,30 @@ easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
-            show:
+            form:
                 title: 'Modify customer information'
+        # ...
+```
+
+The `title` option can include any of the following two variables:
+
+  * `%entity_name%`, resolves to the class name of the current entity (e.g.
+    `Customer`, `Product`, `User`, etc.)
+  * `%entity_id%`, resolves to the value of the primary key of the entity being
+    edited. Obviously, this variable is not available for the title of the
+    `new` action. Even if the option is called `entity_id`, it also works for
+    primary keys with names different from `id`.
+
+Beware that, in Symfony applications, YAML values enclosed with `%` and `%`
+have a special meaning. Use two consecutive `%` characters to avoid any issue:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                title: 'Modify customer %%entity_id%% information'
         # ...
 ```
 
@@ -23,17 +103,15 @@ Customize which Fields are Displayed
 
 By default, the forms used to create and edit entities display all their
 properties. Customize any of these forms for any of your entities using the
-`new` and `edit` options:
+`fields` option:
 
 ```yaml
 easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
-            edit:
+            form:
                 fields: ['firstName', 'secondName', 'phone', 'email']
-            new:
-                fields: ['firstName', 'secondName', 'phone', 'email', 'creditLimit']
     # ...
 ```
 
@@ -49,16 +127,14 @@ Customize the Order of the Fields Displayed
 By default, forms show their fields in the same order as they were defined in
 the associated entities. You could customize the fields order just by
 reordering the entity properties, but it's more convenient to just define the
-order using the `fields` option of the `new` and `edit` options:
+order using the `fields` option:
 
 ```yaml
 easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
-            edit:
-                fields: ['firstName', 'secondName', 'phone', 'email']
-            new:
+            form:
                 fields: ['firstName', 'secondName', 'phone', 'email']
     # ...
 ```
@@ -78,7 +154,7 @@ easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
-            edit:
+            form:
                 fields:
                     - 'id'
                     - { property: 'email', type: 'email', label: 'Contact' }
@@ -102,31 +178,6 @@ These are the options that you can define for form fields:
   * `class`: it's the CSS class that will be applied to the form field widget.
     For example, to display a big input field, use the Bootstrap 3 class called
     `input-lg`.
-
-Apply the Same Customization to the New and Edit Forms
-------------------------------------------------------
-
-Even if you can define different options for the fields used in the `new` and
-`edit` action, most of the times they will be exactly the same. If that's your
-case, define the options in the special `form` action instead of duplicating
-the `new` and `edit` configuration:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            form:  # <-- 'form' is applied to both 'new' and 'edit' actions
-                fields:
-                    - 'id'
-                    - { property: 'email', type: 'email', label: 'Contact' }
-                    # ...
-    # ...
-```
-
-If `new` or `edit` options are defined, they will always be used, regardless
-of the `form` option. In other words, `form` and `new`/`edit` are mutually
-exclusive options.
 
 Add Custom Doctrine Types to Forms
 ----------------------------------

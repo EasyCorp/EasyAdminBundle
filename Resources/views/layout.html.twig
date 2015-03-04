@@ -8,7 +8,7 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <meta name="generator" content="EasyAdmin" />
 
-        <title>{% block page_title %}{{ block('content_title') }}{% endblock %}</title>
+        <title>{% block page_title %}{{ block('content_title')|striptags|raw }}{% endblock %}</title>
 
         {% block head_stylesheets %}
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}">

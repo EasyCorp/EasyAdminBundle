@@ -12,7 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\PersistentCollection;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
@@ -20,13 +19,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
 {
     private $urlGenerator;
     private $configurator;
-    private $requestStack;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, Configurator $configurator, RequestStack $requestStack)
+    public function __construct(UrlGeneratorInterface $urlGenerator, Configurator $configurator)
     {
         $this->urlGenerator = $urlGenerator;
         $this->configurator = $configurator;
-        $this->requestStack = $requestStack;
     }
 
     public function getFunctions()
@@ -50,11 +47,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
 		return $this->configurator->getBackendConfig();
 	}
 
-	public function getEntity()
+	public function getEntity($entityName)
 	{
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (null !== $entityName = $request->query->get('entity')) {
+        if (null !== $entityName) {
             if (!array_key_exists($entityName, $this->getEasyAdminConfig()['entities'])) {
                 return null;
             }

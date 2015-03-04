@@ -1,5 +1,5 @@
 {% trans_default_domain "EasyAdminBundle" %}
-{% set entity = easyadmin_entity() %}
+{% set entity = easyadmin_entity(app.request.query.get('entity')) %}
 <!DOCTYPE html>
 <html lang="en">
     <head>

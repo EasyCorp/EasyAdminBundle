@@ -76,8 +76,8 @@ easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
-            new:  # <-- change it in the 'new' action, not in the 'list' action
-                label: "Add Customer"
+            new:  # <-- define it in the 'new' action, not in the 'list' action
+                button_label: "Add Customer"
         # ...
 ```
 

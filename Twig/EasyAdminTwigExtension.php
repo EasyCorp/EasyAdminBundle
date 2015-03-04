@@ -30,6 +30,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('entity_field', array($this, 'displayEntityField')),
+            new \Twig_SimpleFunction('easyadmin_config', array($this, 'getEasyAdminConfig')),
         );
     }
 
@@ -39,6 +40,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
             new \Twig_SimpleFilter('truncate_entity_field', array($this, 'truncateEntityField'), array('needs_environment' => true)),
         );
     }
+
+	public function getEasyAdminConfig()
+	{
+		return $this->configurator->getBackendConfig();
+	}
 
     public function displayEntityField($entity, array $fieldMetadata)
     {

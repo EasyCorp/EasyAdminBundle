@@ -437,4 +437,9 @@ class Configurator
             ? $this->doctrineTypeToFormTypeMap[$doctrineType]
             : $doctrineType;
     }
+
+	public function getBackendConfig()
+	{
+		return $this->backendConfig;
+	}
 }

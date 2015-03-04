@@ -99,6 +99,21 @@ easy_admin:
         # ...
 ```
 
+Similarly to the page title, this label can also include the `%entity_name%`
+variable to display the class name of the current entity:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            new:
+                # use double %% to escape special YAML characters
+                button_label: "Add %%entity_name%%"
+        # ...
+```
+
 Customize the Number of Item Rows Displayed
 -------------------------------------------
 

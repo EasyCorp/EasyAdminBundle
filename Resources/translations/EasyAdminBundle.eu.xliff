@@ -1,43 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" target-language="eu" datatype="plaintext" original="file.ext">
+    <file source-language="en" target-language="eu" datatype="plaintext">
         <body>
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Itxi</target>
+            <!-- generic actions displayed on buttons and links -->
+            <trans-unit id="action.new">
+                <source>action.new</source>
+                <target>%entity_name%-a sortu</target>
             </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
-                <target>Konektatutako erabiltzailea</target>
+            <trans-unit id="action.show">
+                <source>action.show</source>
+                <target>Ikusi</target>
             </trans-unit>
-            <trans-unit id="entity.create">
-                <source>entity.create</source>
-                <target>%entity%-a sortu</target>
-            </trans-unit>
-            <trans-unit id="list.actions">
-                <source>list.actions</source>
-                <target>Akzioak</target>
-            </trans-unit>
-            <trans-unit id="list.no_results">
-                <source>list.no_results</source>
-                <target>Ez da emaitzarik topatu.</target>
-            </trans-unit>
-            <trans-unit id="entity.edit">
-                <source>entity.edit</source>
+            <trans-unit id="action.edit">
+                <source>action.edit</source>
                 <target>Aldatu</target>
             </trans-unit>
-            <trans-unit id="entity.delete">
-                <source>entity.delete</source>
+            <trans-unit id="action.search">
+                <source>action.search</source>
+                <target>Bilatu</target>
+            </trans-unit>
+            <trans-unit id="action.delete">
+                <source>action.delete</source>
                 <target>Ezabatu</target>
             </trans-unit>
-            <trans-unit id="link.back_to_listing">
-                <source>link.back_to_listing</source>
-                <target>Zerrendara itzuli</target>
-            </trans-unit>
-            <trans-unit id="entity.save_changes">
-                <source>entity.save_changes</source>
+            <trans-unit id="action.save_changes">
+                <source>action.save_changes</source>
                 <target>Aldaketak gorde</target>
             </trans-unit>
+            <trans-unit id="action.cancel">
+                <source>action.cancel</source>
+                <target>Ezeztatu</target>
+            </trans-unit>
+            <trans-unit id="action.back_to_listing">
+                <source>action.back_to_listing</source>
+                <target>Zerrendara itzuli</target>
+            </trans-unit>
+
+            <!-- page titles -->
+            <trans-unit id="new.page_title">
+                <source>new.page_title</source>
+                <target>%entity_name%-a sortu</target>
+            </trans-unit>
+            <trans-unit id="show.page_title">
+                <source>show.page_title</source>
+                <target>%entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="edit.page_title">
+                <source>edit.page_title</source>
+                <target>%entity_name% (#%entity_id%) aldatu</target>
+            </trans-unit>
+            <trans-unit id="list.page_title">
+                <source>list.page_title</source>
+                <target>%entity_name%</target>
+            </trans-unit>
+            <trans-unit id="search.page_title">
+                <source>search.page_title</source>
+                <target><![CDATA[{0} Ez da emaitzarik topatu|{1} Emaitza <strong>1</strong> |]1,Inf] <strong>%count%</strong> emaitza]]></target>
+            </trans-unit>
+
+            <!-- 'search' action -->
+            <trans-unit id="search.no_results">
+                <source>search.no_results</source>
+                <target>Ez da emaitzarik topatu.</target>
+            </trans-unit>
+
+            <!-- 'list' action -->
+            <trans-unit id="list.row_actions">
+                <source>list.row_actions</source>
+                <target>Akzioak</target>
+            </trans-unit>
+            <trans-unit id="list.search_placeholder">
+                <source>list.search_placeholder</source>
+                <target>Bilatu</target>
+            </trans-unit>
+
+            <!-- paginator -->
             <trans-unit id="paginator.first">
                 <source>paginator.first</source>
                 <target>Lehena</target>
@@ -58,41 +95,15 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong>tik - <strong>%end%</strong>era <strong>%results%</strong>tik]]></target>
             </trans-unit>
-            <trans-unit id="actions.cancel">
-                <source>actions.cancel</source>
-                <target>Ezeztatu</target>
+
+            <!-- misc. elements -->
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Itxi</target>
             </trans-unit>
-            <trans-unit id="actions.list">
-                <source>actions.list</source>
-                <target>Zerrenda</target>
-            </trans-unit>
-            <trans-unit id="actions.edit">
-                <source>actions.edit</source>
-                <target>Aldatu</target>
-            </trans-unit>
-            <trans-unit id="actions.new">
-                <source>actions.new</source>
-                <target>Sortu</target>
-            </trans-unit>
-            <trans-unit id="actions.show">
-                <source>actions.show</source>
-                <target>Ikusi</target>
-            </trans-unit>
-            <trans-unit id="actions.search">
-                <source>actions.search</source>
-                <target>Bilatu</target>
-            </trans-unit>
-            <trans-unit id="actions.delete">
-                <source>actions.delete</source>
-                <target>Ezabatu</target>
-            </trans-unit>
-            <trans-unit id="list.results_found">
-                <source>list.results_found</source>
-                <target><![CDATA[{0} Ez da emaitzarik topatu|{1} Emaitza <strong>1</strong> |]1,Inf] <strong>%count%</strong> emaitza]]></target>
-            </trans-unit>
-            <trans-unit id="list.search">
-                <source>list.search</source>
-                <target>Bilatu</target>
+            <trans-unit id="header.logged_in_as">
+                <source>header.logged_in_as</source>
+                <target>Konektatutako erabiltzailea</target>
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>

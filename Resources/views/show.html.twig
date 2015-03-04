@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ entity.show.title|default('actions.show')|trans({'%entity_name%': entity.name, '%entity_id%': attribute(item, entity.primary_key_field_name)}) }}
+    {{ entity.show.title|default('show.page_title')|trans({'%entity_name%': entity.name, '%entity_id%': attribute(item, entity.primary_key_field_name)}) }}
 {% endblock %}
 
 {% block main %}
@@ -52,15 +52,15 @@
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
                 <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
-                    <i class="fa fa-edit"></i> {{ 'entity.edit' | trans({"%entity%": entity.name}) }}
+                    <i class="fa fa-edit"></i> {{ 'action.edit'|trans }}
                 </a>
 
                 <button type="button" id="button-delete" class="btn btn-danger">
-                    <i class="fa fa-trash"></i> {{ 'entity.delete' | trans() }}
+                    <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
                 </button>
 
                 <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
-                    {{- 'link.back_to_listing' | trans -}}
+                    {{- 'action.back_to_listing'|trans -}}
                 </a>
             </div>
         </div>
@@ -72,15 +72,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h4>{{ 'delete_modal.title' | trans }}</h4>
-                    <p>{{ 'delete_modal.content' | trans }}</p>
+                    <h4>{{ 'delete_modal.title'|trans }}</h4>
+                    <p>{{ 'delete_modal.content'|trans }}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn">
-                        {{ 'actions.cancel' | trans }}
+                        {{ 'action.cancel'|trans }}
                     </button>
                     <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
-                        <i class="fa fa-trash"></i> {{ 'entity.delete' | trans }}
+                        <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
                     </button>
                 </div>
             </div>

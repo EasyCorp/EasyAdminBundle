@@ -5,9 +5,9 @@
 
 {% block content_title %}
     {% if 'search' == app.request.get('action') %}
-        {{ 'list.results_found'|transchoice(paginator.nbResults)|raw }}
+        {{ 'search.page_title'|transchoice(paginator.nbResults)|raw }}
     {% else %}
-        {{ entity.list.title|default(entity.label)|trans({'%entity_name%': entity.name}) }}
+        {{ entity.list.title|default('list.page_title')|trans({'%entity_name%': entity.name}) }}
     {% endif %}
 {% endblock %}
 
@@ -27,14 +27,14 @@
             <div class="col-xs-12 col-sm-7">
                 <div id="content-actions">
                     <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
-                        {{ entity.new.button_label|default('entity.create')|trans({"%entity%": entity.name}) }}
+                        {{ entity.new.button_label|default('action.new')|trans({'%entity_name%': entity.name}) }}
                     </a>
                 </div>
                 <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
                     <div class="input-group">
                         <input type="hidden" name="action" value="search">
                         <input type="hidden" name="entity" value="{{ entity.name }}">
-                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search' | trans }}" value="{{ app.request.get('query')|default('') }}">
+                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search_placeholder'|trans }}" value="{{ app.request.get('query')|default('') }}">
                     </div>
                 </form>
             </div>
@@ -84,7 +84,7 @@
                             </th>
                         {% endfor %}
                             <th>
-                                <span>{{ 'list.actions' | trans }}</span>
+                                <span>{{ 'list.row_actions'|trans }}</span>
                             </th>
                     </tr>
                 </thead>
@@ -106,14 +106,14 @@
                                 <td class="actions">
                                     {% for action in config['list_actions'] %}
                                         <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
-                                            {{- ('actions.' ~ action)|trans -}}
+                                            {{- ('action.' ~ action)|trans -}}
                                         </a>
                                     {% endfor %}
                                 </td>
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="{{ fields|length + 1 }}">{{ 'list.no_results' | trans }}</td>
+                            <td colspan="{{ fields|length + 1 }}">{{ 'search.no_results'|trans }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

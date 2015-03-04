@@ -129,7 +129,6 @@ class AdminController extends Controller
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list_max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
         return $this->render('@EasyAdmin/list.html.twig', array(
-            'entity'    => $this->entity,
             'paginator' => $paginator,
             'fields'    => $fields,
         ));
@@ -159,7 +158,6 @@ class AdminController extends Controller
         }
 
         return $this->render('@EasyAdmin/edit.html.twig', array(
-            'entity'        => $this->entity,
             'form'          => $editForm->createView(),
             'entity_fields' => $fields,
             'item'          => $item,
@@ -182,7 +180,6 @@ class AdminController extends Controller
         $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
 
         return $this->render('@EasyAdmin/show.html.twig', array(
-            'entity' => $this->entity,
             'item'   => $item,
             'fields' => $fields,
             'delete_form' => $deleteForm->createView(),
@@ -212,7 +209,6 @@ class AdminController extends Controller
         }
 
         return $this->render('@EasyAdmin/new.html.twig', array(
-            'entity'        => $this->entity,
             'form'          => $newForm->createView(),
             'entity_fields' => $fields,
             'item'          => $item,
@@ -257,7 +253,6 @@ class AdminController extends Controller
         $fields = $this->entity['list']['fields'];
 
         return $this->render('@EasyAdmin/list.html.twig', array(
-            'entity'    => $this->entity,
             'paginator' => $paginator,
             'fields'    => $fields,
         ));

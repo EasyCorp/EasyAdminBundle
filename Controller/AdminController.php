@@ -20,6 +20,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +34,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
  */
 class AdminController extends Controller
 {
-    protected $allowedActions = array('list', 'edit', 'new', 'show', 'search', 'delete');
+    protected $allowedActions = array('list', 'edit', 'new', 'show', 'search', 'delete', 'toggle');
     protected $config;
     protected $entity = array();
 
@@ -265,6 +266,52 @@ class AdminController extends Controller
             'paginator' => $paginator,
             'fields'    => $fields,
         ));
+    }
+
+    protected function toggleAction()
+    {
+        if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
+            throw new \Exception('The entity does not exist.');
+        }
+
+        $propertyName = $this->request->query->get('property');
+        if (!isset($this->entity['properties'][$propertyName])
+            || 'boolean' != $this->entity['properties'][$propertyName]['type']) {
+            throw new \Exception(sprintf('The "%s" property is not boolean.', $propertyName));
+        }
+
+        // get the current property value
+        $getter = 'get'.ucfirst($propertyName);
+        $isser = 'is'.ucfirst($propertyName);
+
+        if (method_exists($entity, $getter)) {
+            $value = $entity->{$getter}();
+        } elseif (method_exists($entity, $isser)) {
+            $value = $entity->{$isser}();
+        } elseif (property_exists($entity, $propertyName)) {
+            $value = $entity->{$propertyName};
+        } else {
+            throw new \Exception(sprintf('It\'s not possible to get the current value of the "%s" boolean property of the "%s" entity.', $propertyName, $this->entity['name']));
+        }
+
+        // toggle the property value
+        $newValue = !$value;
+        $setter = 'set'.ucfirst($propertyName);
+        $isser = 'setIs'.ucfirst($propertyName);
+
+        if (method_exists($entity, $setter)) {
+            $entity->{$setter}($newValue);
+        } elseif (method_exists($entity, $isser)) {
+            $entity->{$isser}($newValue);
+        } elseif (property_exists($entity, $propertyName)) {
+            $entity->{$propertyName} = $newValue;
+        } else {
+            throw new \Exception(sprintf('It\'s not possible to toggle the value of the "%s" boolean property of the "%s" entity.', $propertyName, $this->entity['name']));
+        }
+
+        $this->em->flush();
+
+        return new Response(true === $newValue ? 'on' : 'off');
     }
 
     /**

@@ -202,18 +202,61 @@ ul.pager .next {
 
 /* Labels
    ------------------------------------------------------------------------- */
-span.label {
+.label {
     background: #222;
     color: #FFF;
     font-size: 11px;
     padding: 2px 4px;
     text-transform: uppercase;
 }
-span.label-success {
+.label-success {
     background: #00994D;
 }
-span.label-danger {
+.label-warning {
+    background: #FFFF61;
+    color: #222;
+}
+.label-danger {
     background: #D44542;
+}
+
+/* Switches / toggles
+   ------------------------------------------------------------------------- */
+.boolean .btn {
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.boolean .toggle.btn-success {
+    border-color: #398439;
+    background: #00994D;
+}
+.boolean .toggle.btn-danger {
+    border-color: #AC2925;
+    background: #D0322F;
+}
+.boolean .btn-success .toggle-handle {
+    box-shadow: -2px 0 1px #008040;
+}
+.boolean .btn-danger .toggle-handle {
+    box-shadow: 2px 0 1px #BB2D2A;
+}
+.boolean .toggle .toggle-on {
+    background: #00994D;
+}
+.boolean .toggle .toggle-off {
+    background: #D0322F;
+}
+.boolean .toggle-group label {
+    padding-top: 2px;
+}
+.boolean .toggle.btn-xs {
+    width: 44px;
+}
+.boolean .toggle.btn-xs .toggle-handle {
+    height: 18px;
+    margin-top: 1px;
+    margin-right: 5px;
 }
 
 /* Badges

@@ -1,43 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="cs" target-language="cs" datatype="plaintext" original="file.ext">
+    <file source-language="en" target-language="cs" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Zavřít</target>
+            <!-- generic actions displayed on buttons and links -->
+            <trans-unit id="action.new">
+                <source>action.new</source>
+                <target>Vytvořit %entity_name%</target>
             </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
-                <target>Přihlášen jako</target>
+            <trans-unit id="action.show">
+                <source>action.show</source>
+                <target>Zobrazit</target>
             </trans-unit>
-            <trans-unit id="entity.create">
-                <source>entity.create</source>
-                <target>Vytvořit %entity%</target>
-            </trans-unit>
-            <trans-unit id="list.actions">
-                <source>list.actions</source>
-                <target>Akce</target>
-            </trans-unit>
-            <trans-unit id="list.no_results">
-                <source>list.no_results</source>
-                <target>Žádné položky.</target>
-            </trans-unit>
-            <trans-unit id="entity.edit">
-                <source>entity.edit</source>
+            <trans-unit id="action.edit">
+                <source>action.edit</source>
                 <target>Editace</target>
             </trans-unit>
-            <trans-unit id="entity.delete">
-                <source>entity.delete</source>
+            <trans-unit id="action.search">
+                <source>action.search</source>
+                <target>Hledat</target>
+            </trans-unit>
+            <trans-unit id="action.delete">
+                <source>action.delete</source>
                 <target>Smazat</target>
             </trans-unit>
-            <trans-unit id="link.back_to_listing">
-                <source>link.back_to_listing</source>
-                <target>Zpět na výpis</target>
-            </trans-unit>
-            <trans-unit id="entity.save_changes">
-                <source>entity.save_changes</source>
+            <trans-unit id="action.save_changes">
+                <source>action.save_changes</source>
                 <target>Uložit změny</target>
             </trans-unit>
+            <trans-unit id="action.cancel">
+                <source>action.cancel</source>
+                <target>Zrušit</target>
+            </trans-unit>
+            <trans-unit id="action.back_to_listing">
+                <source>action.back_to_listing</source>
+                <target>Zpět na výpis</target>
+            </trans-unit>
+
+            <!-- page titles -->
+            <trans-unit id="new.page_title">
+                <source>new.page_title</source>
+                <target>Vytvořit %entity_name%</target>
+            </trans-unit>
+            <trans-unit id="show.page_title">
+                <source>show.page_title</source>
+                <target>%entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="edit.page_title">
+                <source>edit.page_title</source>
+                <target>Edit %entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="list.page_title">
+                <source>list.page_title</source>
+                <target>%entity_name%</target>
+            </trans-unit>
+            <trans-unit id="search.page_title">
+                <source>search.page_title</source>
+                <target><![CDATA[{0} Žádné položky nebyly nalezeny|{1} <strong>1</strong> položka nalezena|]1,Inf] <strong>%count%</strong> položek nalezeno]]></target>
+            </trans-unit>
+
+            <!-- 'search' action -->
+            <trans-unit id="search.no_results">
+                <source>search.no_results</source>
+                <target>Žádné položky.</target>
+            </trans-unit>
+
+            <!-- 'list' action -->
+            <trans-unit id="list.row_actions">
+                <source>list.row_actions</source>
+                <target>Akce</target>
+            </trans-unit>
+            <trans-unit id="list.search_placeholder">
+                <source>list.search_placeholder</source>
+                <target>Hledat</target>
+            </trans-unit>
+
+            <!-- paginator -->
             <trans-unit id="paginator.first">
                 <source>paginator.first</source>
                 <target>První</target>
@@ -58,41 +95,15 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> z <strong>%results%</strong>]]></target>
             </trans-unit>
-            <trans-unit id="actions.cancel">
-                <source>actions.cancel</source>
-                <target>Zrušit</target>
+
+            <!-- misc. elements -->
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Zavřít</target>
             </trans-unit>
-            <trans-unit id="actions.list">
-                <source>actions.list</source>
-                <target>Výpis</target>
-            </trans-unit>
-            <trans-unit id="actions.edit">
-                <source>actions.edit</source>
-                <target>Editovat</target>
-            </trans-unit>
-            <trans-unit id="actions.new">
-                <source>actions.new</source>
-                <target>Nový</target>
-            </trans-unit>
-            <trans-unit id="actions.show">
-                <source>actions.show</source>
-                <target>Zobrazit</target>
-            </trans-unit>
-            <trans-unit id="actions.search">
-                <source>actions.search</source>
-                <target>Hledat</target>
-            </trans-unit>
-            <trans-unit id="actions.delete">
-                <source>actions.delete</source>
-                <target>Smazat</target>
-            </trans-unit>
-            <trans-unit id="list.results_found">
-                <source>list.results_found</source>
-                <target><![CDATA[{0} Žádné položky nebyly nalezeny|{1} <strong>1</strong> položka nalezena|]1,Inf] <strong>%count%</strong> položek nalezeno]]></target>
-            </trans-unit>
-            <trans-unit id="list.search">
-                <source>list.search</source>
-                <target>Hledat</target>
+            <trans-unit id="header.logged_in_as">
+                <source>header.logged_in_as</source>
+                <target>Přihlášen jako</target>
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>

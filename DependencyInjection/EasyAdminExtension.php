@@ -117,13 +117,11 @@ class EasyAdminExtension extends Extension
             // copy the original entity configuration to not lose any of its options
             $config = $entityConfiguration;
 
-            // if the common 'form' config is defined, and 'new' or 'edit' config are
-            // undefined, just copy the 'form' config into them to simplify the rest of the code
-            if (isset($config['form']['fields']) && !isset($config['edit']['fields'])) {
-                $config['edit']['fields'] = $config['form']['fields'];
-            }
-            if (isset($config['form']['fields']) && !isset($config['new']['fields'])) {
-                $config['new']['fields'] = $config['form']['fields'];
+            // if the common 'form' config is defined, use its options to complete
+            // the configuration for the 'new' and 'edit' actions
+            if (isset($config['form'])) {
+                $config['new'] = isset($config['new']) ? array_replace($config['form'], $config['new']) : $config['form'];
+                $config['edit'] = isset($config['edit']) ? array_replace($config['form'], $config['edit']) : $config['form'];
             }
 
             // configuration for the actions related to the entity ('list', 'edit', etc.)

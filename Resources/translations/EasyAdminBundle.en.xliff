@@ -1,43 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" datatype="plaintext" original="file.ext">
+    <file source-language="en" target-language="en" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Close</target>
+            <!-- generic actions displayed on buttons and links -->
+            <trans-unit id="action.new">
+                <source>action.new</source>
+                <target>New %entity_name%</target>
             </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
-                <target>Logged in as</target>
+            <trans-unit id="action.show">
+                <source>action.show</source>
+                <target>Show</target>
             </trans-unit>
-            <trans-unit id="entity.create">
-                <source>entity.create</source>
-                <target>Create new %entity%</target>
-            </trans-unit>
-            <trans-unit id="list.actions">
-                <source>list.actions</source>
-                <target>Actions</target>
-            </trans-unit>
-            <trans-unit id="list.no_results">
-                <source>list.no_results</source>
-                <target>No results found.</target>
-            </trans-unit>
-            <trans-unit id="entity.edit">
-                <source>entity.edit</source>
+            <trans-unit id="action.edit">
+                <source>action.edit</source>
                 <target>Edit</target>
             </trans-unit>
-            <trans-unit id="entity.delete">
-                <source>entity.delete</source>
+            <trans-unit id="action.search">
+                <source>action.search</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="action.delete">
+                <source>action.delete</source>
                 <target>Delete</target>
             </trans-unit>
-            <trans-unit id="link.back_to_listing">
-                <source>link.back_to_listing</source>
-                <target>Back to listing</target>
-            </trans-unit>
-            <trans-unit id="entity.save_changes">
-                <source>entity.save_changes</source>
+            <trans-unit id="action.save_changes">
+                <source>action.save_changes</source>
                 <target>Save changes</target>
             </trans-unit>
+            <trans-unit id="action.cancel">
+                <source>action.cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="action.back_to_listing">
+                <source>action.back_to_listing</source>
+                <target>Back to listing</target>
+            </trans-unit>
+
+            <!-- page titles -->
+            <trans-unit id="new.page_title">
+                <source>new.page_title</source>
+                <target>Create %entity_name%</target>
+            </trans-unit>
+            <trans-unit id="show.page_title">
+                <source>show.page_title</source>
+                <target>%entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="edit.page_title">
+                <source>edit.page_title</source>
+                <target>Edit %entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="list.page_title">
+                <source>list.page_title</source>
+                <target>%entity_name%</target>
+            </trans-unit>
+            <trans-unit id="search.page_title">
+                <source>search.page_title</source>
+                <target><![CDATA[{0} No results found|{1} <strong>1</strong> result found|]1,Inf] <strong>%count%</strong> results found]]></target>
+            </trans-unit>
+
+            <!-- 'search' action -->
+            <trans-unit id="search.no_results">
+                <source>search.no_results</source>
+                <target>No results found.</target>
+            </trans-unit>
+
+            <!-- 'list' action -->
+            <trans-unit id="list.row_actions">
+                <source>list.row_actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            <trans-unit id="list.search_placeholder">
+                <source>list.search_placeholder</source>
+                <target>Search</target>
+            </trans-unit>
+
+            <!-- paginator -->
             <trans-unit id="paginator.first">
                 <source>paginator.first</source>
                 <target>First</target>
@@ -58,41 +95,15 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>]]></target>
             </trans-unit>
-            <trans-unit id="actions.cancel">
-                <source>actions.cancel</source>
-                <target>Cancel</target>
+
+            <!-- misc. elements -->
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Close</target>
             </trans-unit>
-            <trans-unit id="actions.list">
-                <source>actions.list</source>
-                <target>List</target>
-            </trans-unit>
-            <trans-unit id="actions.edit">
-                <source>actions.edit</source>
-                <target>Edit</target>
-            </trans-unit>
-            <trans-unit id="actions.new">
-                <source>actions.new</source>
-                <target>New</target>
-            </trans-unit>
-            <trans-unit id="actions.show">
-                <source>actions.show</source>
-                <target>Show</target>
-            </trans-unit>
-            <trans-unit id="actions.search">
-                <source>actions.search</source>
-                <target>Search</target>
-            </trans-unit>
-            <trans-unit id="actions.delete">
-                <source>actions.delete</source>
-                <target>Delete</target>
-            </trans-unit>
-            <trans-unit id="list.results_found">
-                <source>list.results_found</source>
-                <target><![CDATA[{0} No results found|{1} <strong>1</strong> result found|]1,Inf] <strong>%count%</strong> results found]]></target>
-            </trans-unit>
-            <trans-unit id="list.search">
-                <source>list.search</source>
-                <target>Search</target>
+            <trans-unit id="header.logged_in_as">
+                <source>header.logged_in_as</source>
+                <target>Logged in as</target>
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>

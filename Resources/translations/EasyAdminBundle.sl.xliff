@@ -1,43 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" datatype="plaintext" original="file.ext">
+    <file source-language="en" target-language="sl" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Zaprite</target>
+            <!-- generic actions displayed on buttons and links -->
+            <trans-unit id="action.new">
+                <source>action.new</source>
+                <target>Novo %entity_name%</target>
             </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
-                <target>Prijavljeni kot</target>
+            <trans-unit id="action.show">
+                <source>action.show</source>
+                <target>Prikažite</target>
             </trans-unit>
-            <trans-unit id="entity.create">
-                <source>entity.create</source>
-                <target>Ustvarite novo %entity%</target>
+            <trans-unit id="action.edit">
+                <source>action.edit</source>
+                <target>Urejanje</target>
             </trans-unit>
-            <trans-unit id="list.actions">
-                <source>list.actions</source>
-                <target>Akcije</target>
+            <trans-unit id="action.search">
+                <source>action.search</source>
+                <target>Iskanje</target>
             </trans-unit>
-            <trans-unit id="list.no_results">
-                <source>list.no_results</source>
-                <target>Nobenih rezultatov ni najdenih.</target>
-            </trans-unit>
-            <trans-unit id="entity.edit">
-                <source>entity.edit</source>
-                <target>Uredite</target>
-            </trans-unit>
-            <trans-unit id="entity.delete">
-                <source>entity.delete</source>
+            <trans-unit id="action.delete">
+                <source>action.delete</source>
                 <target>Izbrišite</target>
             </trans-unit>
-            <trans-unit id="link.back_to_listing">
-                <source>link.back_to_listing</source>
-                <target>Nazaj na poslušanje</target>
-            </trans-unit>
-            <trans-unit id="entity.save_changes">
-                <source>entity.save_changes</source>
+            <trans-unit id="action.save_changes">
+                <source>action.save_changes</source>
                 <target>Shranite spremembe</target>
             </trans-unit>
+            <trans-unit id="action.cancel">
+                <source>action.cancel</source>
+                <target>Prekličite</target>
+            </trans-unit>
+            <trans-unit id="action.back_to_listing">
+                <source>action.back_to_listing</source>
+                <target>Nazaj na poslušanje</target>
+            </trans-unit>
+
+            <!-- page titles -->
+            <trans-unit id="new.page_title">
+                <source>new.page_title</source>
+                <target>Ustvarite novo %entity_name%</target>
+            </trans-unit>
+            <trans-unit id="show.page_title">
+                <source>show.page_title</source>
+                <target>%entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="edit.page_title">
+                <source>edit.page_title</source>
+                <target>%entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="list.page_title">
+                <source>list.page_title</source>
+                <target>%entity_name%</target>
+            </trans-unit>
+            <trans-unit id="search.page_title">
+                <source>search.page_title</source>
+                <target><![CDATA[{0} Rezultati niso bili najdeni|{1} <strong>1</strong> rezultat najden|{2} <strong>%count%</strong> rezultata najdena|{3} <strong>%count%</strong> rezultati najdeni|[5,Inf] <strong>%count%</strong>rezultatov najdenih]]></target>
+            </trans-unit>
+
+            <!-- 'search' action -->
+            <trans-unit id="search.no_results">
+                <source>search.no_results</source>
+                <target>Nobenih rezultatov ni najdenih.</target>
+            </trans-unit>
+
+            <!-- 'list' action -->
+            <trans-unit id="list.row_actions">
+                <source>list.row_actions</source>
+                <target>Akcije</target>
+            </trans-unit>
+            <trans-unit id="list.search_placeholder">
+                <source>list.search_placeholder</source>
+                <target>Iskanje</target>
+            </trans-unit>
+
+            <!-- paginator -->
             <trans-unit id="paginator.first">
                 <source>paginator.first</source>
                 <target>Prva</target>
@@ -58,41 +95,15 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> od <strong>%results%</strong>]]></target>
             </trans-unit>
-            <trans-unit id="actions.cancel">
-                <source>actions.cancel</source>
-                <target>Prekličite</target>
+
+            <!-- misc. elements -->
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Zaprite</target>
             </trans-unit>
-            <trans-unit id="actions.list">
-                <source>actions.list</source>
-                <target>Seznam</target>
-            </trans-unit>
-            <trans-unit id="actions.edit">
-                <source>actions.edit</source>
-                <target>Urejanje</target>
-            </trans-unit>
-            <trans-unit id="actions.new">
-                <source>actions.new</source>
-                <target>Novo</target>
-            </trans-unit>
-            <trans-unit id="actions.show">
-                <source>actions.show</source>
-                <target>Prikažite</target>
-            </trans-unit>
-            <trans-unit id="actions.search">
-                <source>actions.search</source>
-                <target>Iskanje</target>
-            </trans-unit>
-            <trans-unit id="actions.delete">
-                <source>actions.delete</source>
-                <target>Izbrišite</target>
-            </trans-unit>
-            <trans-unit id="list.results_found">
-                <source>list.results_found</source>
-                <target><![CDATA[{0} Rezultati niso bili najdeni|{1} <strong>1</strong> rezultat najden|{2} <strong>%count%</strong> rezultata najdena|{3} <strong>%count%</strong> rezultati najdeni|[5,Inf] <strong>%count%</strong>rezultatov najdenih]]></target>
-            </trans-unit>
-            <trans-unit id="list.search">
-                <source>list.search</source>
-                <target>Iskanje</target>
+            <trans-unit id="header.logged_in_as">
+                <source>header.logged_in_as</source>
+                <target>Prijavljeni kot</target>
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>

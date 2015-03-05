@@ -27,7 +27,7 @@
             <div class="col-xs-12 col-sm-7">
                 <div id="content-actions">
                     <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
-                        {{ entity.new.button_label|default('action.new')|trans({'%entity_name%': entity.name}) }}
+                        {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.name}) }}
                     </a>
                 </div>
                 <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">

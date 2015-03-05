@@ -2,26 +2,79 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
     <file source-language="en" target-language="it" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Chiudi</target>
+            <!-- generic actions displayed on buttons and links -->
+            <trans-unit id="action.new">
+                <source>action.new</source>
+                <target>Crea %entity_name%</target>
             </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
-                <target>Connesso come</target>
+            <trans-unit id="action.show">
+                <source>action.show</source>
+                <target>Vedi</target>
             </trans-unit>
-            <trans-unit id="entity.create">
-                <source>entity.create</source>
-                <target>Crea "%entity%"</target>
-            </trans-unit>
-            <trans-unit id="list.actions">
-                <source>list.actions</source>
-                <target>Azioni</target>
-            </trans-unit>
-            <trans-unit id="actions.edit">
-                <source>actions.edit</source>
+            <trans-unit id="action.edit">
+                <source>action.edit</source>
                 <target>Modifica</target>
             </trans-unit>
+            <trans-unit id="action.search">
+                <source>action.search</source>
+                <target>Cerca</target>
+            </trans-unit>
+            <trans-unit id="action.delete">
+                <source>action.delete</source>
+                <target>Elimina</target>
+            </trans-unit>
+            <trans-unit id="action.save_changes">
+                <source>action.save_changes</source>
+                <target>Salva modifiche</target>
+            </trans-unit>
+            <trans-unit id="action.cancel">
+                <source>action.cancel</source>
+                <target>Annulla</target>
+            </trans-unit>
+            <trans-unit id="action.back_to_listing">
+                <source>action.back_to_listing</source>
+                <target>Torna alla lista</target>
+            </trans-unit>
+
+            <!-- page titles -->
+            <trans-unit id="new.page_title">
+                <source>new.page_title</source>
+                <target>Crea new %entity_name%</target>
+            </trans-unit>
+            <trans-unit id="show.page_title">
+                <source>show.page_title</source>
+                <target>%entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="edit.page_title">
+                <source>edit.page_title</source>
+                <target>%entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="list.page_title">
+                <source>list.page_title</source>
+                <target>%entity_name%</target>
+            </trans-unit>
+            <trans-unit id="search.page_title">
+                <source>search.page_title</source>
+                <target><![CDATA[{0} Nessun risultato|{1} <strong>1</strong> risultato|]1,Inf] <strong>%count%</strong> risultati]]></target>
+            </trans-unit>
+
+            <!-- 'search' action -->
+            <trans-unit id="search.no_results">
+                <source>search.no_results</source>
+                <target>Nessun risultato</target>
+            </trans-unit>
+
+            <!-- 'list' action -->
+            <trans-unit id="list.row_actions">
+                <source>list.row_actions</source>
+                <target>Azioni</target>
+            </trans-unit>
+            <trans-unit id="list.search_placeholder">
+                <source>list.search_placeholder</source>
+                <target>Cerca</target>
+            </trans-unit>
+
+            <!-- paginator -->
             <trans-unit id="paginator.first">
                 <source>paginator.first</source>
                 <target>Prima</target>
@@ -42,57 +95,15 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> di <strong>%results%</strong>]]></target>
             </trans-unit>
-            <trans-unit id="entity.edit">
-                <source>entity.edit</source>
-                <target>Modifica</target>
+
+            <!-- misc. elements -->
+            <trans-unit id="header.close">
+                <source>header.close</source>
+                <target>Chiudi</target>
             </trans-unit>
-            <trans-unit id="entity.save_changes">
-                <source>entity.save_changes</source>
-                <target>Salva modifiche</target>
-            </trans-unit>
-            <trans-unit id="entity.delete">
-                <source>entity.delete</source>
-                <target>Elimina</target>
-            </trans-unit>
-            <trans-unit id="link.back_to_listing">
-                <source>link.back_to_listing</source>
-                <target>Torna alla lista</target>
-            </trans-unit>
-            <trans-unit id="actions.cancel">
-                <source>actions.cancel</source>
-                <target>Annulla</target>
-            </trans-unit>
-            <trans-unit id="actions.list">
-                <source>actions.list</source>
-                <target>Lista</target>
-            </trans-unit>
-            <trans-unit id="actions.new">
-                <source>actions.new</source>
-                <target>Crea</target>
-            </trans-unit>
-            <trans-unit id="actions.show">
-                <source>actions.show</source>
-                <target>Vedi</target>
-            </trans-unit>
-            <trans-unit id="actions.search">
-                <source>actions.search</source>
-                <target>Cerca</target>
-            </trans-unit>
-            <trans-unit id="actions.delete">
-                <source>actions.delete</source>
-                <target>Elimina</target>
-            </trans-unit>
-            <trans-unit id="list.results_found">
-                <source>list.results_found</source>
-                <target><![CDATA[{0} Nessun risultato|{1} <strong>1</strong> risultato|]1,Inf] <strong>%count%</strong> risultati]]></target>
-            </trans-unit>
-            <trans-unit id="list.no_results">
-                <source>list.no_results</source>
-                <target>Nessun risultato</target>
-            </trans-unit>
-            <trans-unit id="list.search">
-                <source>list.search</source>
-                <target>Cerca</target>
+            <trans-unit id="header.logged_in_as">
+                <source>header.logged_in_as</source>
+                <target>Connesso come</target>
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>

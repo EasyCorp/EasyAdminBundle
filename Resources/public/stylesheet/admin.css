@@ -202,17 +202,21 @@ ul.pager .next {
 
 /* Labels
    ------------------------------------------------------------------------- */
-span.label {
+.label {
     background: #222;
     color: #FFF;
     font-size: 11px;
     padding: 2px 4px;
     text-transform: uppercase;
 }
-span.label-success {
+.label-success {
     background: #00994D;
 }
-span.label-danger {
+.label-warning {
+    background: #FFFF61;
+    color: #222;
+}
+.label-danger {
     background: #D44542;
 }
 

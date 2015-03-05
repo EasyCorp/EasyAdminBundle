@@ -49,7 +49,7 @@
                         {% for field, metadata in fields %}
                             {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
-                            <th class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.type|lower }}">
+                            <th data-property-name="{{ metadata.property }}" class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.virtual|default(false) ? 'virtual' : '' }} {{ metadata.type|lower }}">
                                 {% if isSortingField %}
                                     {% set sortDirection = ('DESC' == app.request.get('sortDirection')) ? 'ASC' : 'DESC' %}
                                     {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
@@ -91,7 +91,7 @@
 
                 <tbody>
                     {% for item in paginator.currentPageResults %}
-                        <tr>
+                        <tr data-id="{{ attribute(item, entity.primary_key_field_name) }}">
                             {% for field, metadata in fields %}
                                 {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
@@ -123,4 +123,51 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function() {
+            var nonVirtualBooleanColumns = $("table th.boolean:not(.virtual)");
+            nonVirtualBooleanColumns.each(function() {
+                var columnIndex = $(this).index() + 1;
+                var propertyName = $(this).data('property-name');
+
+                $("table tr td:nth-child(" + columnIndex + ")").each(function() {
+                    $(this).hover(function() {
+                        $(this).children("span.label").css("cursor", "pointer")
+                    });
+
+                    $(this).on("click", function (e) {
+                        var htmlElement = $(this).children("span.label");
+                        var value = ('YES' == htmlElement.html()) ? true : false;
+                        var newValue = !value;
+                        var newValueLabel = newValue ? 'YES' : 'NO';
+                        var oldCssClass = value ? 'label-success' : 'label-danger';
+                        var newCssClass = newValue ? 'label-success' : 'label-danger';
+
+                        var toggleUrl = "{{ path('admin', { action: 'toggle', entity: entity.name })|raw }}"
+                                      + "&property=" + propertyName
+                                      + "&id=" + $(this).parent('tr').data('id');
+
+                        var toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
+
+                        toggleRequest.done(function(result) {
+                            $(htmlElement).removeClass(oldCssClass);
+                            $(htmlElement).addClass(newCssClass);
+                            $(htmlElement).html(newValueLabel);
+                        });
+
+                        toggleRequest.fail(function(result) {
+                            $(htmlElement).removeClass(oldCssClass);
+                            $(htmlElement).addClass("label-warning");
+                            $(htmlElement).html("ERROR");
+                        });
+                    });
+                });
+            });
+        });
+    </script>
 {% endblock %}

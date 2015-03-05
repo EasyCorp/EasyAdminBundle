@@ -1,0 +1,47 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-03T21:57:59Z
+
+Using `label` is good for a field, `title` is more for a page.
+
+I think the key should be "standard", for example if we want to set up custom actions different than actual ones (like "dashboard" or "statistics"), so they also should implement a `title` and `submit_label` option, I think.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-03T22:24:02Z
+
+> How can we add support to include variables as part of the title/label? What if the title wants to display the id or the title of the associated entity?
+
+As you just did in https://github.com/javiereguiluz/EasyAdminBundle/blob/titles_and_labels/Resources/views/edit.html.twig#L28 and everywhere ? Seems legit to benefit from the use of the translation component & placeholders.
+
+> The trans filter is applied to all titles. Is this enough to provide full translation support? (this question is specially directed to @ogizanagi who raised this question in another issue).
+
+:innocent: Of course
+
+> The label to create new entities is customized via the label option of the new action. I don't like the label name because it's too generic and it can be confused with title. I thought about button_label in new action or new_button_label in list action.
+
+`btn_label`, `control_label`, `action_label`, `short_action_label`, `short_action_name` ?
+
+I agree with @Pierstoval about the "standardization" of the actions configurations, so IMO `new_button_label ` could not be suitable.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-04T07:06:15Z
+
+A default translation id might be better:
+
+```yml
+edit:
+    title: action.{actionName}.title
+    button_label: action.{actionName}.button_label
+```
+
+This sounds good, it works like the `action.{actionName}` token when you create a custom action, and it's easier to translate.
+
+What do you think ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-05T08:06:00Z
+
+I've just uploaded the new translation files and made some minor tweaks. I think this is now ready to be merged.

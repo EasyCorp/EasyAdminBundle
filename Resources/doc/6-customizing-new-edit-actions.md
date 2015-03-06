@@ -166,19 +166,19 @@ easy_admin:
 
 These are the options that you can define for form fields:
 
-  * `property`: it's the name of the associated Doctrine entity property. It
-    can be a real property or a "virtual property" based on an entity method.
-    This is the only mandatory option.
-  * `type`: it's the doctrine type of the field that will be displayed.
-    It will be converted internally into the [corresponding form type](../../Configuration/Configurator.php#L34) 
-    (from available [Symfony Form Types](http://symfony.com/doc/current/reference/forms/types.html)). 
-    If you don't specify a type, EasyAdmin will guess the best type for it. 
-  * `label`: it's the title that will be displayed for the form field. The
-    default title is the "humanized" version of the property name.
-  * `help`: it's the help message that will be displayed below the form field.
-  * `class`: it's the CSS class that will be applied to the form field widget.
-    For example, to display a big input field, use the Bootstrap 3 class called
-    `input-lg`.
+  * `property` (mandatory): the name of the related Doctrine entity property.
+    It can be a real property or a "virtual property" based on an entity
+    method. This is the only mandatory option.
+  * `type` (optional): the [Symfony Form Type](http://symfony.com/doc/current/reference/forms/types.html)
+    used to render the field. If you don't specify a type, EasyAdmin will
+    guess the best type for it.
+  * `label` (optional): the title that will be displayed for the form field.
+    The default title is the "humanized" version of the property name.
+  * `help` (optional): the help message that will be displayed below the
+    form field.
+  * `class` (optional): the CSS class that will be applied to the form field
+    widget. For example, to display a big input field, use the Bootstrap 3
+    class called `input-lg`.
 
 Add Custom Doctrine Types to Forms
 ----------------------------------

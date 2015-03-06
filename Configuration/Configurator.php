@@ -200,14 +200,18 @@ class Configurator
             $entityFields = $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
         }
 
-        // to avoid errors when rendering the form, transform Doctrine types to Form component types
+        // if the user has defined the 'type' for the field, use it. otherwise,
+        // guess the best form type for the Doctrine type associated with the field
         foreach ($entityFields as $fieldName => $fieldConfiguration) {
-            $fieldType = $fieldConfiguration['type'];
+            if (!isset($entityConfiguration[$action]['fields'][$fieldName]['type'])) {
+                $fieldType = $fieldConfiguration['type'];
 
-            // don't change this array_key_exists() by isset() because the resulting type can be null
-            $entityFields[$fieldName]['type'] = array_key_exists($fieldType, $this->doctrineTypeToFormTypeMap)
-                ? $this->doctrineTypeToFormTypeMap[$fieldType]
-                : $fieldType;
+                // don't change this array_key_exists() by isset() because the Doctrine
+                // type map can return 'null' values that shouldn't be ignored
+                $entityFields[$fieldName]['type'] = array_key_exists($fieldType, $this->doctrineTypeToFormTypeMap)
+                    ? $this->doctrineTypeToFormTypeMap[$fieldType]
+                    : 'text';
+            }
         }
 
         return $entityFields;

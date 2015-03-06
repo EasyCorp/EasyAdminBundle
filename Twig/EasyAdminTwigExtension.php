@@ -42,9 +42,23 @@ class EasyAdminTwigExtension extends \Twig_Extension
         );
     }
 
-	public function getEasyAdminConfig()
+	public function getEasyAdminConfig($path = null)
 	{
-		return $this->configurator->getBackendConfig();
+		$config = $this->configurator->getBackendConfig();
+
+		if (!empty($path)) {
+			$parts = explode('.', $path);
+
+			foreach ($parts as $part) {
+				if(!isset($config[$part])) {
+					$config = null;
+					break;
+				}
+				$config = $config[$part];
+			}
+		}
+
+		return $config;
 	}
 
 	public function getEntity($entityName)

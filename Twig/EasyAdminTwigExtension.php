@@ -63,10 +63,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
 	public function getEntity($entityName)
 	{
-		$config = $this->getEasyAdminConfig();
-        return isset($config['entities'][$entityName])
-	        ? $this->configurator->getEntityConfiguration($entityName)
-	        : null;
+		return null !== $this->getEasyAdminConfig('entities.'.$entityName)
+			? $this->configurator->getEntityConfiguration($entityName)
+			: null;
 	}
 
     public function displayEntityField($entity, array $fieldMetadata)

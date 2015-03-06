@@ -275,6 +275,10 @@ class AdminController extends Controller
         }
 
         $propertyName = $this->request->query->get('property');
+        if (!isset($this->entity['properties'][$propertyName])
+            || 'boolean' != $this->entity['properties'][$propertyName]['type']) {
+            throw new \Exception(sprintf('The "%s" property is not boolean.', $propertyName));
+        }
 
         // get the current property value
         $getter = 'get'.ucfirst($propertyName);
@@ -307,7 +311,7 @@ class AdminController extends Controller
 
         $this->em->flush();
 
-        return new JsonResponse(array('success' => true));
+        return new Response(true === $newValue ? 'on' : 'off');
     }
 
     /**

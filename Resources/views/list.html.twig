@@ -3,6 +3,11 @@
 {% trans_default_domain "EasyAdminBundle" %}
 {% block body_class 'admin list ' ~ entity.name|lower %}
 
+{% block head_stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap-toggle.min.css') }}">
+{% endblock %}
+
 {% block content_title %}
     {% if 'search' == app.request.get('action') %}
         {{ 'search.page_title'|transchoice(paginator.nbResults)|raw }}
@@ -128,44 +133,37 @@
 {% block body_javascript %}
     {{ parent() }}
 
+    <script src="{{ asset('bundles/easyadmin/javascript/bootstrap-toggle.min.js') }}"></script>
+
     <script type="text/javascript">
         $(function() {
-            var nonVirtualBooleanColumns = $("table th.boolean:not(.virtual)");
-            nonVirtualBooleanColumns.each(function() {
-                var columnIndex = $(this).index() + 1;
-                var propertyName = $(this).data('property-name');
+            $('#main table .boolean .toggle input[type="checkbox"]').change(function() {
+                var toggle = $(this);
+                var newValue = toggle.prop('checked');
+                var oldValue = !newValue;
 
-                $("table tr td:nth-child(" + columnIndex + ")").each(function() {
-                    $(this).hover(function() {
-                        $(this).children("span.label").css("cursor", "pointer")
-                    });
+                var columnIndex = $(this).closest('td').index() + 1;
+                var propertyName = $('table th.boolean:nth-child(' + columnIndex + ')').data('property-name');
 
-                    $(this).on("click", function (e) {
-                        var htmlElement = $(this).children("span.label");
-                        var value = ('YES' == htmlElement.html()) ? true : false;
-                        var newValue = !value;
-                        var newValueLabel = newValue ? 'YES' : 'NO';
-                        var oldCssClass = value ? 'label-success' : 'label-danger';
-                        var newCssClass = newValue ? 'label-success' : 'label-danger';
+                var toggleUrl = "{{ path('admin', { action: 'toggle', entity: entity.name })|raw }}"
+                              + "&property=" + propertyName
+                              + "&id=" + $(this).closest('tr').data('id');
 
-                        var toggleUrl = "{{ path('admin', { action: 'toggle', entity: entity.name })|raw }}"
-                                      + "&property=" + propertyName
-                                      + "&id=" + $(this).parent('tr').data('id');
+                var toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
 
-                        var toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
+                toggleRequest.done(function(result) {
+                    // protection against race conditions: if the persisted value
+                    // doesn't match the new value, change it to avoid confusions
+                    var persistedValue = ('on' == result) ? true : false;
+                    if (persistedValue != newValue) {
+                        toggle.bootstrapToggle(persistedValue == true ? 'on' : 'off');
+                    }
+                });
 
-                        toggleRequest.done(function(result) {
-                            $(htmlElement).removeClass(oldCssClass);
-                            $(htmlElement).addClass(newCssClass);
-                            $(htmlElement).html(newValueLabel);
-                        });
-
-                        toggleRequest.fail(function(result) {
-                            $(htmlElement).removeClass(oldCssClass);
-                            $(htmlElement).addClass("label-warning");
-                            $(htmlElement).html("ERROR");
-                        });
-                    });
+                toggleRequest.fail(function(result) {
+                    // in case of error, restore the original value and disable the toggle
+                    toggle.bootstrapToggle(oldValue == true ? 'on' : 'off');
+                    toggle.bootstrapToggle('disable');
                 });
             });
         });

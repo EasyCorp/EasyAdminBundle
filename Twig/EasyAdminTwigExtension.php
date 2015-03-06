@@ -78,9 +78,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('boolean'))) {
-                return new \Twig_Markup(sprintf('<span class="label label-%s">%s</span>',
-                    true === $value ? 'success' : 'danger',
-                    true === $value ? 'YES' : 'NO'
+                return new \Twig_Markup(sprintf('<input type="checkbox" %s data-toggle="toggle" data-size="mini" data-onstyle="success" data-offstyle="danger" data-on="YES" data-off="NO">',
+                    true === $value ? 'checked' : ''
                 ), 'UTF-8');
             }
 

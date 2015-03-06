@@ -76,9 +76,10 @@ These are the options that you can define for form fields:
   * `property`: it's the name of the associated Doctrine entity property. It
     can be a real property or a "virtual property" based on an entity method.
     This is the only mandatory option.
-  * `type`: it's the type of form field that will be displayed. If you don't
-    specify a type, EasyAdmin will guess the best type for it. For now, you
-    can only use any of the valid [Symfony Form Types](http://symfony.com/doc/current/reference/forms/types.html).
+  * `type`: it's the doctrine type of the field that will be displayed.
+    It will be converted internally into the [corresponding form type](../../Configuration/Configurator.php#L34) 
+    (from available [Symfony Form Types](http://symfony.com/doc/current/reference/forms/types.html)). 
+    If you don't specify a type, EasyAdmin will guess the best type for it. 
   * `label`: it's the title that will be displayed for the form field. The
     default title is the "humanized" version of the property name.
   * `help`: it's the help message that will be displayed below the form field.

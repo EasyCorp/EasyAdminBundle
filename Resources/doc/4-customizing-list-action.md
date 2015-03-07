@@ -207,8 +207,8 @@ class Customer
 
 That's it. Reload your backend and now you'll see the right values of this
 virtual field. By default, virtual fields are displayed as text contents. If
-your virtual field is a *boolean* value or a date, define its type using the
-`type` option:
+your virtual field is a *boolean* value or a date, use the `type` option to
+set a more appropriate form field to render them:
 
 ```yaml
 # in this example, the virtual fields 'is_eligible' and 'last_contact' will

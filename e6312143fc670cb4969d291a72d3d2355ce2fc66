@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-07T11:43:50Z
+
+It would be great to apply this very same idea for the main menu labels rendered in the `layout.html.twig`. @ogizanagi what do you think?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-07T11:45:01Z
+
+Actually, it already does: https://github.com/ogizanagi/EasyAdminBundle/blob/eca776fa8047b838eca247ee53872362de38dfd7/Resources/views/layout.html.twig#L47
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-07T11:55:45Z
+
+@ogizanagi you are right! I totally overlooked that change :(

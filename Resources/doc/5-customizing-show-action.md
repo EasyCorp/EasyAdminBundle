@@ -127,3 +127,33 @@ easy_admin:
 Refer to the *Display Images Field Types* section of the
 [Customizing the List Action](4-customizing-list-action.md) chapter to know how
 to define the base path for images stored as relative URLs.
+
+Customize Fields Appearance
+---------------------------
+
+By default, all fields are displayed using the most appropriate format
+according to their Doctrine type. Use the `type` option to explicitly set how
+the field should be displayed:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            show:
+                fields:
+                    - { property: '...', type: '...' }
+                    # ...
+    # ...
+```
+
+These are the supported types:
+
+  * All the Doctrine data types:
+    * Dates: `date`, `datetime`, `datetimetz`, `time`
+    * Logical: `boolean`
+    * Arrays: `array`, `simple_array`
+    * Text: `string`, `text`
+    * Numeric: `bigint`, `integer`, `smallint`, `decimal`, `float`
+  * `image`, custom type defined by EasyAdmin which displays images inlined in
+    the entity show page. Read the previous sections for more details.

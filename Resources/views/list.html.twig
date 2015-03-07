@@ -54,7 +54,7 @@
                         {% for field, metadata in fields %}
                             {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
-                            <th data-property-name="{{ metadata.property }}" class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.virtual|default(false) ? 'virtual' : '' }} {{ metadata.type|lower }}">
+                            <th data-property-name="{{ metadata.property }}" class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.virtual|default(false) ? 'virtual' : '' }} {{ metadata.dataType|lower }}">
                                 {% if isSortingField %}
                                     {% set sortDirection = ('DESC' == app.request.get('sortDirection')) ? 'ASC' : 'DESC' %}
                                     {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
@@ -100,7 +100,7 @@
                             {% for field, metadata in fields %}
                                 {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
-                                <td class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.type|lower }}">
+                                <td class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.dataType|lower }}">
                                     {% if metadata.type in ['array', 'json_array', 'simple_array', 'text'] %}
                                         {{ entity_field(item, metadata)|truncate_entity_field }}
                                     {% else %}

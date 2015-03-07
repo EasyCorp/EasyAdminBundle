@@ -402,8 +402,42 @@ easy_admin:
     # ...
 ```
 
-Display Images Field Types
---------------------------
+Customize Boolean Values
+------------------------
+
+By default, boolean values are displayed in listings as toggable flip switches:
+
+![Advanced boolean fields](images/easyadmin-boolean-field-toggle.gif)
+
+When you change the value of any boolean field, EasyAdmin will make an Ajax
+request in the background to actually change that value in the database. If
+something goes wrong, the switch will automatically return to its original
+value and it will also be disabled until the page is refreshed to avoid further
+issues:
+
+![Boolean field behavior when an error happens](images/easyadmin-boolean-field-toggle-error.gif)
+
+In case you want to disable this behavior, use `boolean` as the property type:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'hasStock', type: 'boolean' }
+                    # ...
+    # ...
+```
+
+Now the boolean value will be rendered as a simple label and its value cannot
+be modified:
+
+![Boolean field displayed as a label](images/easyadmin-boolean-field-label.png)
+
+Display Image Field Types
+-------------------------
 
 If some field stores the URL of an image, you can show the actual image in the
 listing instead of its URL. Just set the type of the field to `image`:
@@ -415,7 +449,7 @@ easy_admin:
             class: AppBundle\Entity\Product
             list:
                 fields:
-                    - { property: 'photo', format: 'image' }
+                    - { property: 'photo', type: 'image' }
                     # ...
     # ...
 ```
@@ -432,7 +466,7 @@ easy_admin:
             class: AppBundle\Entity\Product
             list:
                 fields:
-                    - { property: 'photo', format: 'image', base_path: '/img/' }
+                    - { property: 'photo', type: 'image', base_path: '/img/' }
                     # ...
     # ...
 ```
@@ -442,13 +476,13 @@ Symfony parameter:
 
 ```yaml
 # relative path
-- { property: 'photo', format: 'image', base_path: '/img/products/' }
+- { property: 'photo', type: 'image', base_path: '/img/products/' }
 
 # absolute path pointing to an external host
-- { property: 'photo', format: 'image', base_path: 'http://static.acme.org/img/' }
+- { property: 'photo', type: 'image', base_path: 'http://static.acme.org/img/' }
 
 # Symfony container parameter
-- { property: 'photo', format: 'image', base_path: '%vich_uploader.mappings.product_image%' }
+- { property: 'photo', type: 'image', base_path: '%vich_uploader.mappings.product_image%' }
 ```
 
 The image base path can also be set in the entity, to avoid repeating its
@@ -462,10 +496,42 @@ easy_admin:
             image_base_path: 'http://static.acme.org/img/'
             list:
                 fields:
-                    - { property: 'photo', format: 'image' }
+                    - { property: 'photo', type: 'image' }
                     # ...
     # ...
 ```
 
 The base paths defined for a field always have priority over the one defined
 for the entity.
+
+Customize Fields Appearance
+---------------------------
+
+By default, all fields are displayed using the most appropriate format
+according to their Doctrine type. Use the `type` option to explicitly set how
+the field should be displayed:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: '...', type: '...' }
+                    # ...
+    # ...
+```
+
+These are the supported types:
+
+  * All the Doctrine data types:
+    * Dates: `date`, `datetime`, `datetimetz`, `time`
+    * Logical: `boolean`
+    * Arrays: `array`, `simple_array`
+    * Text: `string`, `text`
+    * Numeric: `bigint`, `integer`, `smallint`, `decimal`, `float`
+  * `image`, custom type defined by EasyAdmin which displays images inlined in
+    the entity listings. Read the previous sections for more details.
+  * `toggle`, custom type defined by EasyAdmin which displays a boolean value
+    as a toggable flip switch. Read the previous sections for more details.

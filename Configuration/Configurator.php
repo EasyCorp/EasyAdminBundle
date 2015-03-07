@@ -25,17 +25,18 @@ class Configurator
     private $defaultEntityFields = array();
 
     private $defaultEntityFieldConfiguration = array(
-        'class'   => null,   // CSS class/classes
-        'format'  => null,   // date/time/datetime/number format
-        'help'    => null,   // form field help message
-        'label'   => null,   // form field label (if 'null', autogenerate it)
-        'type'    => null,   // form field type (text, date, integer, boolean, ...)
-        'virtual' => false,  // is a virtual field or a real entity property?
+        'class'    => null,   // CSS class/classes
+        'format'   => null,   // date/time/datetime/number format
+        'help'     => null,   // form field help message
+        'label'    => null,   // form field label (if 'null', autogenerate it)
+        'type'     => null,   // form field type (text, date, number, choice, ...)
+        'dataType' => null,   // Doctrine property data type (text, date, integer, boolean, ...)
+        'virtual'  => false,  // is a virtual field or a real entity property?
     );
 
     private $doctrineTypeToFormTypeMap = array(
-        'association' => null,
         'array' => 'collection',
+        'association' => null,
         'bigint' => 'text',
         'blob' => 'textarea',
         'boolean' => 'checkbox',
@@ -92,7 +93,7 @@ class Configurator
         $entityProperties = $this->getEntityPropertiesMetadata($doctrineEntityMetadata);
         $entityConfiguration['properties'] = $entityProperties;
 
-        // these default fields are used when the action (list, edit, etc.) doesn't define its fields
+        // default fields used when the action (list, edit, etc.) doesn't define its own fields
         $this->defaultEntityFields = $this->createEntityFieldsFromEntityProperties($entityProperties);
 
         $entityConfiguration['list']['fields'] = $this->getFieldsForListAction($entityConfiguration);
@@ -109,8 +110,8 @@ class Configurator
     }
 
     /**
-     * Takes the FQCN of the entity and returns all the metadata of its properties
-     * introspected via Doctrine.
+     * Takes the entity metadata introspected via Doctrine and completes its
+     * contents to simplify data processing for the rest of the application.
      *
      * @param  ClassMetadata $entityMetadata The entity metadata introspected via Doctrine
      * @return array         The entity properties metadata provided by Doctrine
@@ -125,6 +126,8 @@ class Configurator
 
         // introspect regular entity fields
         foreach ($entityMetadata->fieldMappings as $fieldName => $fieldMetadata) {
+            $fieldMetadata['dataType'] = $fieldMetadata['type'];
+
             // field names are tweaked this way to simplify Twig templates and extensions
             $fieldName = str_replace('_', '', $fieldName);
 
@@ -138,6 +141,7 @@ class Configurator
                 $fieldName = str_replace('_', '', $fieldName);
 
                 $entityPropertiesMetadata[$fieldName] = array(
+                    'dataType'        => 'association',
                     'type'            => 'association',
                     'associationType' => $associationMetadata['type'],
                     'fieldName'       => $fieldName,
@@ -147,7 +151,6 @@ class Configurator
                 );
             }
         }
-
         return $entityPropertiesMetadata;
     }
 
@@ -248,11 +251,11 @@ class Configurator
         $entityFields = array();
 
         foreach ($entityProperties as $propertyName => $propertyMetadata) {
-            $entityFields[$propertyName] = array_replace($this->defaultEntityFieldConfiguration, $propertyMetadata);
-            $entityFields[$propertyName]['property'] = $propertyName;
+            $metadata = array_replace($this->defaultEntityFieldConfiguration, $propertyMetadata);
+            $metadata['property'] = $propertyName;
+            $metadata['format'] = $this->getFieldFormat($metadata['dataType']);
 
-            $fieldType = $propertyMetadata['type'];
-            $entityFields[$propertyName]['format'] = $this->getFieldFormat($fieldType);
+            $entityFields[$propertyName] = $metadata;
         }
 
         return $entityFields;
@@ -347,6 +350,19 @@ class Configurator
                     $entityConfiguration['properties'][$fieldName],
                     $fieldConfiguration
                 );
+            }
+
+            // for the 'list' and 'show' actions, the 'type' field configuration
+            // corresponds to the 'dataType' option, so we copy its value
+            if (in_array($action, array('list', 'show'))) {
+                $normalizedConfiguration['dataType'] = 'toggle' === $normalizedConfiguration['type']
+                    ? 'boolean'
+                    : $normalizedConfiguration['type'];
+            }
+
+            // for the 'list' action, 'boolean' properties are displayed as toggleable flip switches
+            if ('list' === $action && 'boolean' === $normalizedConfiguration['dataType'] && !isset($fieldConfiguration['type'])) {
+                $normalizedConfiguration['type'] = 'toggle';
             }
 
             if (null === $normalizedConfiguration['format']) {

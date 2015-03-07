@@ -219,6 +219,12 @@ ul.pager .next {
 .label-danger {
     background: #D44542;
 }
+.label-empty {
+    background: transparent;
+    border: 2px dotted #756672;
+    border-radius: 4px;
+    color: #222;
+}
 
 /* Switches / toggles
    ------------------------------------------------------------------------- */
@@ -686,12 +692,18 @@ body.list td.image img {
 body.new form textarea {
     min-height: 250px;
 }
+body.new form .form-inline select + select {
+    margin-left: .5em;
+}
 
 /* -------------------------------------------------------------------------
    EDIT PAGE
    ------------------------------------------------------------------------- */
 body.edit form textarea {
     min-height: 250px;
+}
+body.edit form .form-inline select + select {
+    margin-left: .5em;
 }
 
 /* -------------------------------------------------------------------------

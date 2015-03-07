@@ -30,7 +30,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">
                     {% if metadata.label %}
-                        {{ metadata.label }}
+                        {{ metadata.label|trans }}
                     {% elseif 'id' == metadata.property %}
                         ID
                     {% else %}

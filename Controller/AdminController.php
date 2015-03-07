@@ -268,6 +268,10 @@ class AdminController extends Controller
         ));
     }
 
+    /**
+     * Changes the value of a boolean entity property. This method is used for
+     * the boolean toggle switches displayed in the backend.
+     */
     protected function toggleAction()
     {
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
@@ -281,17 +285,11 @@ class AdminController extends Controller
             throw new \Exception(sprintf('The "%s" property is not boolean.', $propertyName));
         }
 
-        if (!$propertyMetadata['canBeGet']) {
-            throw new \Exception(sprintf('It\'s not possible to get the current value of the "%s" boolean property of the "%s" entity.', $propertyName, $this->entity['name']));
-        }
-
-        $oldValue = (null !== $getter = $propertyMetadata['getter']) ? $entity->{$getter}() : $entity->{$propertyName};
-        $newValue = !$oldValue;
-
         if (!$propertyMetadata['canBeSet']) {
             throw new \Exception(sprintf('It\'s not possible to toggle the value of the "%s" boolean property of the "%s" entity.', $propertyName, $this->entity['name']));
         }
 
+        $newValue = $this->request->query->getBoolean('newValue');
         if (null !== $setter = $propertyMetadata['setter']) {
             $entity->{$setter}($newValue);
         } else {
@@ -300,7 +298,7 @@ class AdminController extends Controller
 
         $this->em->flush();
 
-        return new Response(true === $newValue ? 'on' : 'off');
+        return new Response((string) $newValue);
     }
 
     /**

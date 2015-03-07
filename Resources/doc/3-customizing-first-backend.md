@@ -101,7 +101,7 @@ easy_admin:
         'Inventory (2015)': AppBundle\Entity\Product
 ```
 
-You can also explicitly specify the labels:
+You can also explicitly define the entity label using the `label` option:
 
 ```yaml
 # app/config/config.yml
@@ -118,48 +118,33 @@ easy_admin:
 Customize the Translation of the Backend Interface
 --------------------------------------------------
 
-The interface of the backend is pretty minimal, but it includes several text
-contents in the form of buttons, titles and links. These contents are displayed
-in the same language as the default locale configured in the Symfony
-application. The `locale` option value is usually configured in the
-`app/config/parameters.yml` file.
+The backend uses the same language as the underlying Symfony application, which
+is usually configured in the `locale` option of the `app/config/parameters.yml`
+file. The current version of EasyAdmin supports tens of languages and we're
+actively looking for more translations contributed by the community.
 
-The current version of EasyAdmin is translated into tens of languages and
-we're actively looking for more translations contributed by the community.
+Customize the Translation of the Main Menu Items
+------------------------------------------------
 
-Entities (names and properties) are fully translatable, using translation keys for any `label` key:
+In addition to the built-in backend elements, you may need to translate the
+names of your entities, because they are displayed in the main menu. To do so,
+use translation keys instead of contents in the configuration file:
 
 ```yaml
 # app/config/config.yml
 easy_admin:
     entities:
-        app.customers: #implicit label
+        app.customers:
             class: AppBundle\Entity\Customer
         Orders: 
-            label: app.orders #explicit label
+            label: app.orders
             class: AppBundle\Entity\Order
 ```
 
-or fields:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields:
-                    - 'id'
-                    - { property: 'firstname', label: app.orders.firstname }
-                    - { property: 'lastname', label: app.orders.firstname  }
-            form:
-                fields:
-                    - 'id'
-                    - { property: 'firstname', label: app.orders.firstname }
-                    - { property: 'lastname', label: app.orders.firstname  }                    
-        # ...
-```
+The `app.customers` and `app.orders` values are not the real entity names but
+the translation keys. If your application includes a translation file which
+defines the value of those keys for the selected language, you'll see the main
+menu items translated.
 
 Customize the Security of the Backend Interface
 -----------------------------------------------

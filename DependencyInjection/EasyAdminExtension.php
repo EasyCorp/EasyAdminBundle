@@ -77,6 +77,13 @@ class EasyAdminExtension extends Extension
      *         User:
      *             class: AppBundle\Entity\User
      *
+     * # Config format #3 can optionally define a custom entity label
+     * easy_admin:
+     *     entities:
+     *         User:
+     *             class: AppBundle\Entity\User
+     *             label: 'Clients'
+     *
      * @param  array $entitiesConfiguration The entity configuration in one of the simplified formats
      * @return array The normalized configuration
      */
@@ -93,10 +100,14 @@ class EasyAdminExtension extends Extension
             $entityClassParts = explode('\\', $entityConfiguration['class']);
             $entityName = end($entityClassParts);
 
-	        //Check if explicit label exists and use it
-	        $entityConfiguration['label'] = isset($entityConfiguration['label']) ? $entityConfiguration['label'] : null;
-            // config format #1 doesn't define custom labels: use the entity name as label
-            if(null === $entityConfiguration['label']) $entityConfiguration['label'] = is_integer($entityLabel) ? $entityName : $entityLabel;
+            # if config format #3 defines the 'label' option, use its value.
+            # otherwise, infer the entity label from its configuration.
+            if (!isset($entityConfiguration['label'])) {
+                // config format #1 doesn't define any entity label because configuration is
+                // just a plain numeric array (the label is the integer key of that array).
+                // In that case, use the entity class name as its label
+                $entityConfiguration['label'] = is_integer($entityLabel) ? $entityName : $entityLabel;
+            }
 
             $normalizedConfiguration[$entityName] = $entityConfiguration;
         }

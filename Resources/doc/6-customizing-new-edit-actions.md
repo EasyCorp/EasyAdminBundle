@@ -180,6 +180,10 @@ These are the options that you can define for form fields:
     widget. For example, to display a big input field, use the Bootstrap 3
     class called `input-lg`.
 
+### Translate Form Field Labels
+
+Read *"Translate Column Labels"* section of the [chapter 4](4-customizing-list-action.md).
+
 Add Custom Doctrine Types to Forms
 ----------------------------------
 

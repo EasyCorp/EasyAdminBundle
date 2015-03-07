@@ -284,6 +284,38 @@ easy_admin:
     # ...
 ```
 
+### Translate Column Labels
+
+In order to translate the column labels to the application language, use
+translation keys instead of contents for the `label` option:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields:
+                    - 'id'
+                    - { property: 'firstname', label: 'app.orders.firstname' }
+                    - { property: 'lastname', label: 'app.orders.firstname' }
+            form:
+                fields:
+                    - 'id'
+                    - { property: 'firstname', label: 'app.orders.firstname' }
+                    - { property: 'lastname', label: 'app.orders.firstname' }
+        # ...
+```
+
+Now, instead of displaying the label content, EasyAdmin will look for any
+translation file available in the application which defines the value of those
+keys for the current language.
+
+If there is no translation available, it will try to look for those values for
+the default application language. In case no translation is available, the key
+will be displayed so you can easily spot any missing translation.
+
 Customize the Format of the Dates and Numbers
 ---------------------------------------------
 

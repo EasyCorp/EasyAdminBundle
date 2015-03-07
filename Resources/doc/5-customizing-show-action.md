@@ -102,6 +102,10 @@ Instead of using a string to define the name of the property (e.g. `email`) you
 have to define a hash with the name of the property (`property: 'email'`) and
 the custom label you want to display (`label: 'Contact'`).
 
+### Translate Labels
+
+Read *"Translate Column Labels"* section of the [chapter 4](4-customizing-list-action.md).
+
 Display Images Field Types
 --------------------------
 

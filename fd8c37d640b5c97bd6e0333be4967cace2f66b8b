@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T22:07:20Z
+
+Has this `$doctrineTypeToFormTypeMap` a real utility or can we get rid of this, using the **DoctrineOrmTypeGuesser** when building the form ? (see my comment in https://github.com/javiereguiluz/EasyAdminBundle/pull/157#issuecomment-77642999)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-06T22:13:03Z
+
+I see at least 3 quick benefits of our pragmatic solution:
+
+  * This is just a simple array, instead of a 200-lines class.
+  * The guesser class looks up again the metadata of the entity, which is pretty slow (and unnecessary in our case)
+  * The class is less complete than our array. We support types such as `simple_array`, `json_array` and `object`.
+
+Regarding the drawbacks of our solution:
+
+  * We need to maintain it, instead of relying on Symfony. This is not a problem because this array probably won't change ever.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T22:31:59Z
+
+Ok, I see your point. Thanks for the explanation.
+Then, :+1:

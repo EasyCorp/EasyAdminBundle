@@ -1,0 +1,115 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-05T22:27:31Z
+
+It will require another js library, but what do you think of a real switch control like [Bootstrap Switch](http://www.bootstrap-switch.org/) or [Bootstrap Toggle](http://www.bootstraptoggle.com/) ? (For the error handling, it's really simple to add a switch-back behavior)
+I do not find labels acting as controls very intuitive, and you cannot visually make the difference between virtual property and switchable fields.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-06T09:16:54Z
+
+@ogizanagi about using a proper switch control, my answer may surprise you: I find most of those controls incredible unintuitive. If we implemente something like that, it would look like the following:
+
+![boolean_toggle](https://cloud.githubusercontent.com/assets/73419/6522820/c247ef68-c3e9-11e4-8914-7c22c65f3d5c.png)
+
+However, I'm still not convinced of this change.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-06T09:37:50Z
+
+I find this much more intuitive than the actual behavior, a switch design is much more valuable in UX terms IMO.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T09:46:02Z
+
+@javiereguiluz : Your solution is quite good as well. At least this looks like a control and not only a textual element.
+As @Pierstoval said, relying on a simple label for a control is very poor and unintuitive in UX terms.
+
+The [buttons checkboxes/radios](http://getbootstrap.com/javascript/#buttons-checkbox-radio) from Bootstrap should simply do the job too.
+
+---------------------------------------------------------------------------
+
+by sr972 at 2015-03-06T09:48:40Z
+
+TBH, i'm totally against this kind of change.
+
+I'm just using checkboxes to display if a boolean value is set or not (e.g. with fontawesome and so on if given in project).
+
+But imho it's a to big risk to make bools switchable that easy in an overview w/o getting a feedback or a question if i want to save this change. One little click and your app may be screwed or accounts blocked and so on. Just thinking about one of my closed source projects and if i would use EasyAdmin in it, if i would do 1 wrong click on 1 bool value, hundreds of devices would just stop working until manual interaction on the device.
+
+I think you should make it at least not default. Let's make it an optional per field. An what about the security/rights to do this action? Could it be passed to? For example that the project lead could do this in the overview but not another person working with it?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T09:55:12Z
+
+@sr972 : The EasyAdmin bundle has nothing to do with rights, and IMO should keep it that way. I guess you can easily protect the action by checking the user's roles, overriding the `AdminController::initialize` method or using a request/controller listener or even directly in a voter.
+
+What about a modal to confirm the action, or a banner advertising about the ongoing changes, and a button to submit all of them ?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-06T10:06:28Z
+
+@sr972 marks a point on security issues. I haven't thought about it, but after looking at the code, you're creating a new `toggle` action, which adds to the back-end complexity.
+
+For the security issues, I think we should implement something, event a light feature, because security is prominent in many many back-ends, especially big ones. I will personally need this feature very much, (as well as custom actions, homepage and 2-level grouping) because one of my apps is divided into 3 apps : a "game", a "map" and a "portal" system, which will all have their own entities to manage. Plus, I'll need a special security "firewall" for some other roles, because some people will only have the rights to manage translations.
+
+And even if "toggling" boolean values in the list is cool, it sounds more "gadget" (in french terms) than important features.
+
+In fact, that's why I think that focusing on the roadmap might be preponderant. And as I said, I think that a `toggle` action for such a "little" feature is maybe too much.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T10:12:20Z
+
+@Pierstoval : Good point.
+Do you have something in mind talking about security as a very light feature ? That's one of the reasons I'm in favor of decoupling every custom and build-in actions in the code in my vision of custom actions (which should not be different at all from build-in ones, IMO).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-06T10:43:10Z
+
+@ogizanagi Yup I got one: propose the user to use a different routing resource to allow him to put his backend under the `access_control` security component. I made a basic workaround for this in my [URLS](https://github.com/javiereguiluz/EasyAdminBundle/compare/master...Pierstoval:urls?expand=1) branch.
+I rebased it many times (I always rebase my work on master) so it should fit to the `master` branch with no BC break, I think.
+
+The goal is to propose the user to change its routing resource to the `routing_pretty` file, so the admin route becomes `/{entity}/{action}/{id}` , which is handle-able by the `access_control` component like this:
+
+There's a discussion about this in #56, I had no answer from javier for now so I'm still waiting for it, but if we're looking for an easy way of handling security, this kind of feature sounds the lightest one, because it doesn't change the way the back-end works (because I re-set query string attributes in the controller, from the route ones, if they're set, and I force the `list` action if it's not set, so it's just one more redirection, which has no impact for the homepage)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-06T21:04:15Z
+
+I've listened to you and I've changed my mind. This feature now uses the bootstrap-toggle project and the results are better than expected.
+
+**1) Normal behavior**
+
+![cool_toggle_1](https://cloud.githubusercontent.com/assets/73419/6536265/6f0c4840-c44c-11e4-84cc-9b5e20b953cb.gif)
+
+**2) An error occurred**
+
+We restore the original value and disable the toggle momentarily to avoid further issues.
+
+![cool_toggle_2](https://cloud.githubusercontent.com/assets/73419/6536277/888f5370-c44c-11e4-8e96-b59bba8de36e.gif)
+
+**3) Race condition: two people change the same value at the same time and with different values**
+
+We always check the value which was persisted. If there is a mismatch, we automatically flip the toggle to always reflect the latest persisted value:
+
+![cool_toggle_3](https://cloud.githubusercontent.com/assets/73419/6536290/a60c5c4a-c44c-11e4-80bd-094a7b448001.gif)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T21:22:57Z
+
+:+1: This is great
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-07T09:09:13Z
+
+I'm going to merge this as it is now. However, I'm not ignoring your comments about security and I thank you all for raising concerns. We'll work on that later.

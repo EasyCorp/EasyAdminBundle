@@ -102,9 +102,9 @@
 
                                 <td class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.type|lower }}">
                                     {% if metadata.type in ['array', 'json_array', 'simple_array', 'text'] %}
-                                        {{ entity_field(item, field, metadata)|truncate_entity_field }}
+                                        {{ entity_field(item, metadata)|truncate_entity_field }}
                                     {% else %}
-                                        {{ entity_field(item, field, metadata) }}
+                                        {{ entity_field(item, metadata) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}

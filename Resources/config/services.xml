@@ -14,7 +14,10 @@
         <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
             <argument>%easyadmin.config%</argument>
             <argument type="service" id="doctrine"></argument>
+            <argument type="service" id="easyadmin.property_reflector"></argument>
         </service>
+
+        <service id="easyadmin.property_reflector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector" public="false"></service>
 
     </services>
 </container>

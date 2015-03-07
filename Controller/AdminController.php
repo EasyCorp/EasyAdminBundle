@@ -275,38 +275,27 @@ class AdminController extends Controller
         }
 
         $propertyName = $this->request->query->get('property');
-        if (!isset($this->entity['properties'][$propertyName])
-            || 'boolean' != $this->entity['properties'][$propertyName]['type']) {
+        $propertyMetadata = $this->entity['list']['fields'][$propertyName];
+
+        if (!isset($this->entity['list']['fields'][$propertyName]) || 'boolean' != $propertyMetadata['type']) {
             throw new \Exception(sprintf('The "%s" property is not boolean.', $propertyName));
         }
 
-        // get the current property value
-        $getter = 'get'.ucfirst($propertyName);
-        $isser = 'is'.ucfirst($propertyName);
-
-        if (method_exists($entity, $getter)) {
-            $value = $entity->{$getter}();
-        } elseif (method_exists($entity, $isser)) {
-            $value = $entity->{$isser}();
-        } elseif (property_exists($entity, $propertyName)) {
-            $value = $entity->{$propertyName};
-        } else {
+        if (!$propertyMetadata['canBeGet']) {
             throw new \Exception(sprintf('It\'s not possible to get the current value of the "%s" boolean property of the "%s" entity.', $propertyName, $this->entity['name']));
         }
 
-        // toggle the property value
-        $newValue = !$value;
-        $setter = 'set'.ucfirst($propertyName);
-        $isser = 'setIs'.ucfirst($propertyName);
+        $oldValue = (null !== $getter = $propertyMetadata['getter']) ? $entity->{$getter}() : $entity->{$propertyName};
+        $newValue = !$oldValue;
 
-        if (method_exists($entity, $setter)) {
-            $entity->{$setter}($newValue);
-        } elseif (method_exists($entity, $isser)) {
-            $entity->{$isser}($newValue);
-        } elseif (property_exists($entity, $propertyName)) {
-            $entity->{$propertyName} = $newValue;
-        } else {
+        if (!$propertyMetadata['canBeSet']) {
             throw new \Exception(sprintf('It\'s not possible to toggle the value of the "%s" boolean property of the "%s" entity.', $propertyName, $this->entity['name']));
+        }
+
+        if (null !== $setter = $propertyMetadata['setter']) {
+            $entity->{$setter}($newValue);
+        } else {
+            $entity->{$propertyName} = $newValue;
         }
 
         $this->em->flush();

@@ -40,13 +40,14 @@ class EasyAdminTwigExtension extends \Twig_Extension
         );
     }
 
-    public function displayEntityField($entity, $fieldName, array $fieldMetadata)
+    public function displayEntityField($entity, array $fieldMetadata)
     {
-        $value = $this->getEntityProperty($entity, $fieldName);
-
-        if ('__inaccessible_doctrine_property__' === $value) {
-            return new \Twig_Markup('<span class="label label-danger" title="Method does not exist or property is not public">inaccessible</span>', 'UTF-8');
+        if (!$fieldMetadata['canBeGet']) {
+            return new \Twig_Markup('<span class="label label-danger" title="Getter method does not exist or property is not public">inaccessible</span>', 'UTF-8');
         }
+
+        $fieldName = $fieldMetadata['property'];
+        $value = (null !== $getter = $fieldMetadata['getter']) ? $entity->{$getter}() : $entity->{$fieldName};
 
         try {
             $fieldType = $fieldMetadata['type'];
@@ -137,40 +138,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         return '';
-    }
-
-    /**
-     * It looks for any entity method able to get the value of the given property.
-     * First it looks for the methods: getProperty(), isProperty(), property() and hasProperty()
-     * Then, it looks if 'property' exists as an accessible property in the entity.
-     */
-    private function getEntityProperty($entity, $property)
-    {
-        // first, look for common method names
-        $fieldGetterMethods = array(
-            'get'.ucfirst($property),
-            'is'.ucfirst($property),
-            $property,
-            'has'.ucfirst($property),
-        );
-
-        foreach ($fieldGetterMethods as $method) {
-            if (method_exists($entity, $method)) {
-                return $entity->{$method}();
-            }
-        }
-
-        // if no method exists, look for a public property
-        if (!property_exists($entity, $property)) {
-            return '__inaccessible_doctrine_property__';
-        }
-
-        $propertyMetadata = new \ReflectionProperty($entity, $property);
-        if (!$propertyMetadata->isPublic()) {
-            return '__inaccessible_doctrine_property__';
-        }
-
-        return $entity->{$property};
     }
 
     /*

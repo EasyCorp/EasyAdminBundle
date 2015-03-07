@@ -200,8 +200,8 @@ class Configurator
             $entityFields = $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
         }
 
-        // if the user has defined the 'type' for the field, use it. otherwise,
-        // guess the best form type for the Doctrine type associated with the field
+        // if the user has defined the 'type' for the field, use it. Otherwise,
+        // guess the best form type using the Doctrine type associated with the field
         foreach ($entityFields as $fieldName => $fieldConfiguration) {
             if (!isset($entityConfiguration[$action]['fields'][$fieldName]['type'])) {
                 $fieldType = $fieldConfiguration['type'];

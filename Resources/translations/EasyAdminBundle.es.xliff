@@ -9,7 +9,7 @@
             </trans-unit>
             <trans-unit id="action.show">
                 <source>action.show</source>
-                <target>Show</target>
+                <target>Ver</target>
             </trans-unit>
             <trans-unit id="action.edit">
                 <source>action.edit</source>

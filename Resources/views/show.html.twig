@@ -40,9 +40,9 @@
                 <div class="col-sm-10">
                     <div class="form-control {{ metadata.type|lower }}">
                         {% if metadata.type in ['text'] %}
-                            {{ entity_field(item, field, metadata)|nl2br }}
+                            {{ entity_field(item, metadata)|nl2br }}
                         {% else %}
-                            {{ entity_field(item, field, metadata) }}
+                            {{ entity_field(item, metadata) }}
                         {% endif %}
                     </div>
                 </div>

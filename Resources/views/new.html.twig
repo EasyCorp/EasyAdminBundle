@@ -25,7 +25,7 @@
             {% for field in form.children if field.vars.name != '_token' %}
                 <div class="form-group field_{{ entity_fields[field.vars.name]['type']|lower|default('default') }} {% if not field.vars.valid %}has-error{% endif %}">
                     {% if entity_fields[field.vars.name]['type'] == 'association' %}
-                        {{ entity_field(item, entity_fields[field.vars.name]['name'], entity_fields[field.vars.name]) }}
+                        {{ entity_field(item, entity_fields[field.vars.name]) }}
                     {% else %}
                         {% set field_label = entity_fields[field.vars.name]['label']|default(null) %}
                         {{ form_label(field, field_label, { label_attr: { class: 'col-sm-2 control-label' } }) }}

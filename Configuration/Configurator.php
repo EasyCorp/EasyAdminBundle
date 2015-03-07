@@ -14,12 +14,14 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
 
 class Configurator
 {
     private $backendConfig = array();
     private $entitiesConfig = array();
     private $doctrineManager;
+    private $reflector;
     private $defaultEntityFields = array();
 
     private $defaultEntityFieldConfiguration = array(
@@ -53,10 +55,11 @@ class Configurator
         'time' => 'time',
     );
 
-    public function __construct(array $backendConfig, ManagerRegistry $manager)
+    public function __construct(array $backendConfig, ManagerRegistry $manager, ClassPropertyReflector $reflector)
     {
         $this->backendConfig = $backendConfig;
         $this->doctrineManager = $manager;
+        $this->reflector = $reflector;
     }
 
     /**
@@ -97,6 +100,8 @@ class Configurator
         $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $entityConfiguration);
         $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedActions('new', $entityConfiguration);
         $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction($entityConfiguration);
+
+        $entityConfiguration = $this->introspectGettersAndSetters($entityConfiguration);
 
         $this->entitiesConfig[$entityName] = $entityConfiguration;
 
@@ -373,5 +378,38 @@ class Configurator
         if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {
             return isset($this->backendConfig['formats']['number']) ? $this->backendConfig['formats']['number'] : null;
         }
+    }
+
+    /**
+     * Introspects the getters and setters for the fields used by all actions.
+     * This preprocessing saves a lot of further processing when accessing or
+     * setting the value of the entity properties.
+     *
+     * @param  array $entityConfiguration
+     * @return array
+     */
+    private function introspectGettersAndSetters($entityConfiguration)
+    {
+        foreach (array('new', 'edit', 'list', 'show', 'search') as $action) {
+            $fieldsConfiguration = $entityConfiguration[$action]['fields'];
+
+            foreach ($fieldsConfiguration as $fieldName => $fieldConfiguration) {
+                $getter = $this->reflector->getGetter($entityConfiguration['class'], $fieldName);
+                $fieldConfiguration['getter'] = $getter;
+
+                $setter = $this->reflector->getSetter($entityConfiguration['class'], $fieldName);
+                $fieldConfiguration['setter'] = $setter;
+
+                $isPublic = $this->reflector->isPublic($entityConfiguration['class'], $fieldName);
+                $fieldConfiguration['isPublic'] = $isPublic;
+
+                $fieldConfiguration['canBeGet'] = $getter || $isPublic;
+                $fieldConfiguration['canBeSet'] = $setter || $isPublic;
+
+                $entityConfiguration[$action]['fields'][$fieldName] = $fieldConfiguration;
+            }
+        }
+
+        return $entityConfiguration;
     }
 }

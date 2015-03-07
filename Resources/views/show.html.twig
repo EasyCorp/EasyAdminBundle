@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ entity.show.title|default('show.page_title')|trans({'%entity_name%': entity.name, '%entity_id%': attribute(item, entity.primary_key_field_name)}) }}
+    {{ entity.show.title|default('show.page_title')|trans({'%entity_name%': entity.label|trans, '%entity_id%': attribute(item, entity.primary_key_field_name)}) }}
 {% endblock %}
 
 {% block main %}
@@ -30,7 +30,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">
                     {% if metadata.label %}
-                        {{ metadata.label }}
+                        {{ metadata.label|trans }}
                     {% elseif 'id' == metadata.property %}
                         ID
                     {% else %}

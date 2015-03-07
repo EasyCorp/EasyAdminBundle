@@ -12,7 +12,7 @@
     {% if 'search' == app.request.get('action') %}
         {{ 'search.page_title'|transchoice(paginator.nbResults)|raw }}
     {% else %}
-        {{ entity.list.title|default('list.page_title')|trans({'%entity_name%': entity.name}) }}
+        {{ entity.list.title|default('list.page_title')|trans({'%entity_name%': entity.label|trans}) }}
     {% endif %}
 {% endblock %}
 
@@ -32,7 +32,7 @@
             <div class="col-xs-12 col-sm-7">
                 <div id="content-actions">
                     <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
-                        {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.name}) }}
+                        {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
                     </a>
                 </div>
                 <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
@@ -72,7 +72,7 @@
                                         {% endif %}
 
                                         {% if metadata.label %}
-                                            {{ metadata.label }}
+                                            {{ metadata.label|trans }}
                                         {% elseif 'id' == metadata.property %}
                                             ID
                                         {% else %}

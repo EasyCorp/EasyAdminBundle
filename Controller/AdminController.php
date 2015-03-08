@@ -491,6 +491,11 @@ class AdminController extends Controller
         return $this->render($view, $parameters, new Response('', 404));
     }
 
+    /**
+     * Internal method that filters the actions received
+     *
+     * @param array $configActions
+     */
     private function setAllowedActions(array $configActions)
     {
         $validActions = array('list', 'edit', 'new', 'show', 'search', 'delete');

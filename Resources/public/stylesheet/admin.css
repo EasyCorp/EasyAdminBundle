@@ -228,38 +228,38 @@ ul.pager .next {
 
 /* Switches / toggles
    ------------------------------------------------------------------------- */
-.boolean .btn {
+.toggle .btn {
     border-radius: 3px;
     font-size: 11px;
     font-weight: bold;
 }
-.boolean .toggle.btn-success {
+.toggle .toggle.btn-success {
     border-color: #398439;
     background: #00994D;
 }
-.boolean .toggle.btn-danger {
+.toggle .toggle.btn-danger {
     border-color: #AC2925;
     background: #D0322F;
 }
-.boolean .btn-success .toggle-handle {
+.toggle .btn-success .toggle-handle {
     box-shadow: -2px 0 1px #008040;
 }
-.boolean .btn-danger .toggle-handle {
+.toggle .btn-danger .toggle-handle {
     box-shadow: 2px 0 1px #BB2D2A;
 }
-.boolean .toggle .toggle-on {
+.toggle .toggle .toggle-on {
     background: #00994D;
 }
-.boolean .toggle .toggle-off {
+.toggle .toggle .toggle-off {
     background: #D0322F;
 }
-.boolean .toggle-group label {
+.toggle .toggle-group label {
     padding-top: 2px;
 }
-.boolean .toggle.btn-xs {
+.toggle .toggle.btn-xs {
     width: 44px;
 }
-.boolean .toggle.btn-xs .toggle-handle {
+.toggle .toggle.btn-xs .toggle-handle {
     height: 18px;
     margin-top: 1px;
     margin-right: 5px;
@@ -640,7 +640,9 @@ body.list table tbody td.sorted {
 }
 
 body.list table thead th.boolean,
-body.list table tbody td.boolean {
+body.list table tbody td.boolean,
+body.list table thead th.toggle,
+body.list table tbody td.toggle {
     text-align: center;
 }
 

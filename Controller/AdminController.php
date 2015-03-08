@@ -281,8 +281,8 @@ class AdminController extends Controller
         $propertyName = $this->request->query->get('property');
         $propertyMetadata = $this->entity['list']['fields'][$propertyName];
 
-        if (!isset($this->entity['list']['fields'][$propertyName]) || 'boolean' != $propertyMetadata['dataType']) {
-            throw new \Exception(sprintf('The "%s" property is not boolean.', $propertyName));
+        if (!isset($this->entity['list']['fields'][$propertyName]) || 'toggle' != $propertyMetadata['dataType']) {
+            throw new \Exception(sprintf('The "%s" property is not a switchable toggle.', $propertyName));
         }
 
         if (!$propertyMetadata['canBeSet']) {

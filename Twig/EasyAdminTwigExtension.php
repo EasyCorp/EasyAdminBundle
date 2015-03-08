@@ -78,7 +78,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $value->format($fieldMetadata['format']);
             }
 
-            if (in_array($fieldType, array('boolean')) && 'toggle' === $fieldMetadata['type']) {
+            if (in_array($fieldType, array('toggle'))) {
                 return new \Twig_Markup(sprintf('<input type="checkbox" %s data-toggle="toggle" data-size="mini" data-onstyle="success" data-offstyle="danger" data-on="YES" data-off="NO">',
                     true === $value ? 'checked' : ''
                 ), 'UTF-8');

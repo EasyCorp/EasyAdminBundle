@@ -355,14 +355,13 @@ class Configurator
             // for the 'list' and 'show' actions, the 'type' field configuration
             // corresponds to the 'dataType' option, so we copy its value
             if (in_array($action, array('list', 'show'))) {
-                $normalizedConfiguration['dataType'] = 'toggle' === $normalizedConfiguration['type']
-                    ? 'boolean'
-                    : $normalizedConfiguration['type'];
+                $normalizedConfiguration['dataType'] = $normalizedConfiguration['type'];
             }
 
             // for the 'list' action, 'boolean' properties are displayed as toggleable flip switches
+            // unless its type is explicitly configured
             if ('list' === $action && 'boolean' === $normalizedConfiguration['dataType'] && !isset($fieldConfiguration['type'])) {
-                $normalizedConfiguration['type'] = 'toggle';
+                $normalizedConfiguration['dataType'] = 'toggle';
             }
 
             if (null === $normalizedConfiguration['format']) {

@@ -137,13 +137,13 @@
 
     <script type="text/javascript">
         $(function() {
-            $('#main table .boolean .toggle input[type="checkbox"]').change(function() {
+            $('#main table .toggle input[type="checkbox"]').change(function() {
                 var toggle = $(this);
                 var newValue = toggle.prop('checked');
                 var oldValue = !newValue;
 
                 var columnIndex = $(this).closest('td').index() + 1;
-                var propertyName = $('table th.boolean:nth-child(' + columnIndex + ')').data('property-name');
+                var propertyName = $('table th.toggle:nth-child(' + columnIndex + ')').data('property-name');
 
                 var toggleUrl = "{{ path('admin', { action: 'toggle', entity: entity.name })|raw }}"
                               + "&id=" + $(this).closest('tr').data('id')

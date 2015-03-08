@@ -29,7 +29,7 @@ class Configurator
         'format'    => null,   // date/time/datetime/number format
         'help'      => null,   // form field help message
         'label'     => null,   // form field label (if 'null', autogenerate it)
-        'type'      => null,   // multi-purpose variable used by both dataType and fieldType
+        'type'      => null,   // temporary variable used by both 'dataType' and 'fieldType'
         'fieldType' => null,   // Symfony form field type (text, date, number, choice, ...)
         'dataType'  => null,   // Doctrine property data type (text, date, integer, boolean, ...)
         'virtual'   => false,  // is a virtual field or a real entity property?
@@ -95,7 +95,7 @@ class Configurator
         $entityConfiguration['properties'] = $entityProperties;
 
         // default fields used when the action (list, edit, etc.) doesn't define its own fields
-        $this->defaultEntityFields = $this->createEntityFieldsFromEntityProperties($entityProperties);
+        $this->defaultEntityFields = $this->createFieldsFromEntityProperties($entityProperties);
 
         $entityConfiguration['list']['fields'] = $this->getFieldsForListAction($entityConfiguration);
         $entityConfiguration['show']['fields'] = $this->getFieldsForShowAction($entityConfiguration);
@@ -127,9 +127,6 @@ class Configurator
 
         // introspect regular entity fields
         foreach ($entityMetadata->fieldMappings as $fieldName => $fieldMetadata) {
-            $fieldMetadata['dataType'] = $fieldMetadata['type'];
-            $fieldMetadata['fieldType'] = $fieldMetadata['type'];
-
             // field names are tweaked this way to simplify Twig templates and extensions
             $fieldName = str_replace('_', '', $fieldName);
 
@@ -144,8 +141,6 @@ class Configurator
 
                 $entityPropertiesMetadata[$fieldName] = array(
                     'type'            => 'association',
-                    'dataType'        => 'association',
-                    'fieldType'       => 'association',
                     'associationType' => $associationMetadata['type'],
                     'fieldName'       => $fieldName,
                     'fetch'           => $associationMetadata['fetch'],
@@ -211,20 +206,6 @@ class Configurator
             $entityFields = $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
         }
 
-        // if the user has defined the 'type' for the field, use it. Otherwise,
-        // guess the best form type using the Doctrine type associated with the field
-        foreach ($entityFields as $fieldName => $fieldConfiguration) {
-            if (!isset($entityConfiguration[$action]['fields'][$fieldName]['type'])) {
-                $fieldType = $fieldConfiguration['type'];
-
-                // don't change this array_key_exists() by isset() because the Doctrine
-                // type map can return 'null' values that shouldn't be ignored
-                $entityFields[$fieldName]['fieldType'] = array_key_exists($fieldType, $this->doctrineTypeToFormTypeMap)
-                    ? $this->doctrineTypeToFormTypeMap[$fieldType]
-                    : 'text';
-            }
-        }
-
         return $entityFields;
     }
 
@@ -247,21 +228,23 @@ class Configurator
      * create some basic field configuration based on the entity's Doctrine metadata.
      *
      * @param  array $entityProperties
-     * @return array The array of entity fields
+     * @return array The array of fields
      */
-    private function createEntityFieldsFromEntityProperties($entityProperties)
+    private function createFieldsFromEntityProperties($entityProperties)
     {
-        $entityFields = array();
+        $fields = array();
 
         foreach ($entityProperties as $propertyName => $propertyMetadata) {
             $metadata = array_replace($this->defaultEntityFieldConfiguration, $propertyMetadata);
             $metadata['property'] = $propertyName;
-            $metadata['format'] = $this->getFieldFormat($metadata['dataType']);
+            $metadata['dataType'] = $propertyMetadata['type'];
+            $metadata['fieldType'] = $this->getFormTypeFromDoctrineType($propertyMetadata['type']);
+            $metadata['format'] = $this->getFieldFormat($propertyMetadata['type']);
 
-            $entityFields[$propertyName] = $metadata;
+            $fields[$propertyName] = $metadata;
         }
 
-        return $entityFields;
+        return $fields;
     }
 
     /**
@@ -355,19 +338,26 @@ class Configurator
                 );
             }
 
-            // for the 'list' and 'show' actions, the 'type' field configuration
-            // corresponds to the 'dataType' option, so we copy its value
+            // 'list' and 'show' actions: use the value of the 'type' option as
+            // the 'dataType' option because the previous code has already
+            // prioritized end-user preferences over Doctrine and default values
             if (in_array($action, array('list', 'show'))) {
                 $normalizedConfiguration['dataType'] = $normalizedConfiguration['type'];
             }
-            // for the 'new' and 'edit' actions, the 'type' field configuration
-            // corresponds to the 'fieldType' option, so we copy its value
-            if (in_array($action, array('list', 'show'))) {
-                $normalizedConfiguration['fieldType'] = $normalizedConfiguration['type'];
+
+            // 'new' and 'edit' actions: if the user has defined the 'type' option
+            // for the field, use it as 'fieldType. Otherwise, infer the best field
+            // type using the property data type.
+            if (in_array($action, array('edit', 'new'))) {
+                if (isset($fieldConfiguration['type'])) {
+                    $normalizedConfiguration['fieldType'] = $fieldConfiguration['type'];
+                } else {
+                    $normalizedConfiguration['fieldType'] = $this->getFormTypeFromDoctrineType($normalizedConfiguration['type']);
+                }
             }
 
-            // for the 'list' action, 'boolean' properties are displayed as toggleable flip switches
-            // unless its type is explicitly configured
+            // special case for the 'list' action: 'boolean' properties are displayed
+            // as toggleable flip switches unless end-user configures their type explicitly
             if ('list' === $action && 'boolean' === $normalizedConfiguration['dataType'] && !isset($fieldConfiguration['type'])) {
                 $normalizedConfiguration['dataType'] = 'toggle';
             }
@@ -434,5 +424,19 @@ class Configurator
         }
 
         return $entityConfiguration;
+    }
+
+    /**
+     * Returns the most appropriate Symfony Form type for the given Doctrine type.
+     * @param  string $doctrineType
+     * @return string
+     */
+    private function getFormTypeFromDoctrineType($doctrineType)
+    {
+        // don't change this array_key_exists() by isset() because the Doctrine
+        // type map can return 'null' values that shouldn't be ignored
+        return array_key_exists($doctrineType, $this->doctrineTypeToFormTypeMap)
+            ? $this->doctrineTypeToFormTypeMap[$doctrineType]
+            : 'text';
     }
 }

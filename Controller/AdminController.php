@@ -264,10 +264,11 @@ class AdminController extends Controller
         $fields = $this->entity['list']['fields'];
 
         return $this->render('@EasyAdmin/list.html.twig', array(
-            'config'    => $this->config,
-            'entity'    => $this->entity,
-            'paginator' => $paginator,
-            'fields'    => $fields,
+            'config'          => $this->config,
+            'entity'          => $this->entity,
+            'paginator'       => $paginator,
+            'fields'          => $fields,
+            'allowed_actions' => $this->allowedActions,
         ));
     }
 

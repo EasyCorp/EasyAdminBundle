@@ -281,8 +281,8 @@ class AdminController extends Controller
         $propertyName = $this->request->query->get('property');
         $propertyMetadata = $this->entity['list']['fields'][$propertyName];
 
-        if (!isset($this->entity['list']['fields'][$propertyName]) || 'boolean' != $propertyMetadata['type']) {
-            throw new \Exception(sprintf('The "%s" property is not boolean.', $propertyName));
+        if (!isset($this->entity['list']['fields'][$propertyName]) || 'toggle' != $propertyMetadata['dataType']) {
+            throw new \Exception(sprintf('The "%s" property is not a switchable toggle.', $propertyName));
         }
 
         if (!$propertyMetadata['canBeSet']) {
@@ -408,22 +408,19 @@ class AdminController extends Controller
         foreach ($entityProperties as $name => $metadata) {
             $formFieldOptions = array();
 
-            if (array_key_exists('association', $metadata) && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
+            if ('association' === $metadata['fieldType'] && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
                 continue;
             }
 
-            if ('collection' === $metadata['type']) {
-                $formFieldOptions = array(
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                );
+            if ('collection' === $metadata['fieldType']) {
+                $formFieldOptions = array('allow_add' => true, 'allow_delete' => true);
 
                 if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
                     $formFieldOptions['delete_empty'] = true;
                 }
             }
 
-            $form->add($name, $metadata['type'], $formFieldOptions);
+            $form->add($name, $metadata['fieldType'], $formFieldOptions);
         }
 
         return $form->getForm();

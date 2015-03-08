@@ -33,13 +33,13 @@
         <div id="form">
             {% for field in form.children if field.vars.name != '_token' %}
                 <div class="form-group {% if not field.vars.valid %}has-error{% endif %}">
-                    {% if entity_fields[field.vars.name]['type'] == 'association' %}
+                    {% if entity_fields[field.vars.name]['fieldType'] == 'association' %}
                         {{ entity_field(item, entity_fields[field.vars.name]) }}
                     {% else %}
                         {% set field_label = entity_fields[field.vars.name]['label']|default(null) %}
                         {{ form_label(field, field_label|trans, { label_attr: { class: 'col-sm-2 control-label' } }) }}
 
-                        <div class="col-sm-10 {% if entity_fields[field.vars.name]['type'] == 'checkbox' %}col-sm-offset-2{% endif %}">
+                        <div class="col-sm-10 {% if entity_fields[field.vars.name]['fieldType'] == 'checkbox' %}col-sm-offset-2{% endif %}">
                             {% set widget_attributes = { attr: { class: entity_fields[field.vars.name]['class']|default(null) } } %}
                             {{ form_widget(field, widget_attributes) }}
                             {{ form_errors(field) }}
@@ -48,7 +48,7 @@
                                 <span class="help-block">{{ entity_fields[field.vars.name]['help'] }}</span>
                             {% endif %}
 
-                            {% if entity_fields[field.vars.name]['type'] == 'collection' %}
+                            {% if entity_fields[field.vars.name]['fieldType'] == 'collection' %}
                                 {% set add_item_javascript %}
                                     $(function() {
                                         if(event.preventDefault) event.preventDefault(); else event.returnValue = false;

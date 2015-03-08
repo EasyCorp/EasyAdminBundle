@@ -50,7 +50,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
         $value = (null !== $getter = $fieldMetadata['getter']) ? $entity->{$getter}() : $entity->{$fieldName};
 
         try {
-            $fieldType = $fieldMetadata['type'];
+            $fieldType = $fieldMetadata['dataType'];
 
             if (null === $value) {
                 return new \Twig_Markup('<span class="label">NULL</span>', 'UTF-8');
@@ -78,18 +78,27 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $value->format($fieldMetadata['format']);
             }
 
-            if (in_array($fieldType, array('boolean'))) {
+            if (in_array($fieldType, array('toggle'))) {
                 return new \Twig_Markup(sprintf('<input type="checkbox" %s data-toggle="toggle" data-size="mini" data-onstyle="success" data-offstyle="danger" data-on="YES" data-off="NO">',
                     true === $value ? 'checked' : ''
                 ), 'UTF-8');
             }
 
+            if (in_array($fieldType, array('boolean'))) {
+                return new \Twig_Markup(sprintf('<span class="label label-%s">%s</span>',
+                    true === $value ? 'success' : 'danger',
+                    true === $value ? 'YES' : 'NO'
+                ), 'UTF-8');
+            }
+
             if (in_array($fieldType, array('array', 'simple_array'))) {
-                return implode(', ', $value);
+                return empty($value)
+                    ? new \Twig_Markup('<span class="label label-empty">EMPTY</span>', 'UTF-8')
+                    : implode(', ', $value);
             }
 
             if (in_array($fieldType, array('string', 'text'))) {
-                return $value;
+                return (string) $value;
             }
 
             if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {
@@ -110,12 +119,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('association'))) {
+                if ($value instanceof PersistentCollection) {
+                    return new \Twig_Markup(sprintf('<span class="badge">%d</span>', count($value)), 'UTF-8');
+                }
+
                 $associatedEntityClassParts = explode('\\', $fieldMetadata['targetEntity']);
                 $associatedEntityClassName = end($associatedEntityClassParts);
-
-                if ($value instanceof PersistentCollection) {
-                    return new \Twig_Markup(sprintf('<span class="badge">%d</span>', count($value), $associatedEntityClassName), 'UTF-8');
-                }
 
                 try {
                     $associatedEntityConfig = $this->configurator->getEntityConfiguration($associatedEntityClassName);
@@ -128,7 +137,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 $primaryKeyGetter = 'get'.ucfirst($associatedEntityPrimaryKey);
                 if (method_exists($value, $primaryKeyGetter)) {
                     $associatedEntityUrl = $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->$primaryKeyGetter()));
-                    // escaping is done manually in order to include this content in a Twig_Markup object
+                    // escaping is done manually in order to include this content inside a Twig_Markup object
                     $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
                     // ideally we'd use the 'truncateEntityField' method, but it's cumbersome to invoke it from here
                     $associatedEntityValue = strlen($value) > 64 ? substr($value, 0, 64).'...' : $value;

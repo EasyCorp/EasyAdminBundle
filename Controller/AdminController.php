@@ -412,7 +412,7 @@ class AdminController extends Controller
                 continue;
             }
 
-            if ('collection' === $metadata['type']) {
+            if ('collection' === $metadata['fieldType']) {
                 $formFieldOptions = array('allow_add' => true, 'allow_delete' => true);
 
                 if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
@@ -420,7 +420,7 @@ class AdminController extends Controller
                 }
             }
 
-            $form->add($name, $metadata['type'], $formFieldOptions);
+            $form->add($name, $metadata['fieldType'], $formFieldOptions);
         }
 
         return $form->getForm();

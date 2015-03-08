@@ -492,7 +492,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Internal method that filters the actions received
+     * Internal method that filters the actions received before setting them.
      *
      * @param array $configActions
      */

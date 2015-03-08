@@ -97,9 +97,14 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('image'))) {
-                $imageUrl = isset($fieldMetadata['base_path'])
-                    ? rtrim($fieldMetadata['base_path'], '/').'/'.ltrim($value, '/')
-                    : '/'.ltrim($value, '/');
+
+	            if(1 === preg_match('#^(http[s]?|\/\/).*#i', $value)) {
+		            $imageUrl = $value;
+	            } else  {
+		            $imageUrl = isset($fieldMetadata['base_path'])
+			            ? rtrim($fieldMetadata['base_path'], '/').'/'.ltrim($value, '/')
+			            : '/'.ltrim($value, '/');
+	            }
 
                 return new \Twig_Markup(sprintf('<img src="%s">', $imageUrl), 'UTF-8');
             }

@@ -428,6 +428,7 @@ class Configurator
 
     /**
      * Returns the most appropriate Symfony Form type for the given Doctrine type.
+     *
      * @param  string $doctrineType
      * @return string
      */
@@ -437,6 +438,6 @@ class Configurator
         // type map can return 'null' values that shouldn't be ignored
         return array_key_exists($doctrineType, $this->doctrineTypeToFormTypeMap)
             ? $this->doctrineTypeToFormTypeMap[$doctrineType]
-            : 'text';
+            : $doctrineType;
     }
 }

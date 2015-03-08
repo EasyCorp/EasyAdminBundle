@@ -1,0 +1,117 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-08T00:44:33Z
+
+What do you think about using `type` for Doctrine type & `form_type` for the form field type ?
+I'd rather have in mind the Doctrine type first, which is closer of the real type than the form type which can be almost anything. This makes more sense to me.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-08T08:36:16Z
+
+@ogizanagi I don't know if you refer to the name of the options used by the user, the name of the variables we use internally or both. Let me explain it.
+
+**For end-users** I don't want to introduce more variables to avoid confusion. I think it's intuitive to always use the same `type` option and expect different results because pages are drastically different. If I'm on `list` page, the `type` is how the data is rendered, but if I'm in a `form` action, I understand that `type` is the field widget used to manipulate the value.
+
+**For internal variables** your proposal would be almost the same as we have, because `form_type` is intuitive, but now the previously intuitive `dataType` variable is now called `type`. However, your comment have made me think about this: what if we solve this confusion for once and for all and use two distinct variables: `dataType` and `fieldType`? I think both are intuitive to understand and would improve code readability.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-08T10:48:56Z
+
+Also, we should be careful when adding new "types" , because if we have EasyAdmin types like "toggle" or "image", we must not forget that many complex apps have their own new form fields types, as well as imported libraries (doctrine extensions IIRC, sonata bundles, etc.)
+
+This is why it's important to force the user to distinguish between what is a `show_type` and what is a `form_type` , because they really do not behave the same way.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-08T11:26:36Z
+
+@javiereguiluz : Yes, I was talking about internal variables. You can change both names, indeed.
+My point was simply about the fact that when I think about the configuration & metadata of a property, it feels more natural to think about a variable called `type`as the real type (not really the Doctrine type, but closer), than the form type.
+
+On another side, about the options seen by end users, I agree with @Pierstoval about the confusion it brings to them. The `format` option was so bad after all.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-08T11:36:09Z
+
+`format` should be used for string/date/number formatting, shouldn't it?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-08T11:39:52Z
+
+Right. We might find another name, like `widget` or whatever.
+
+```yaml
+fields:
+    # displayed as a toggle
+    - 'boolean_property_1'
+    # displayed as a toggle
+    - { property: 'boolean_property_1', widget: 'toggle' }
+    # displayed as a regular label
+    - { property: 'boolean_property_1', widget: 'boolean' }
+    # displayed as a regular label
+    - { property: 'boolean_property_1', widget: null }
+    # displayed as an image
+    - { property: 'image_property', widget: 'image' }
+   #...
+```
+
+But that's against the Javier's thoughts about not introducing more options for this.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-08T11:54:51Z
+
+:+1: This idea is great ! The widget is nothing but a view part, we can then use an `include` or any twig feature to have one view/block specific to each widget, as well as any twig "theme"
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-08T12:17:51Z
+
+I think I explained myself bad and I think we're overcomplicating everything. Let's start this discussion over.
+
+-----
+
+I propose to keep using a single `type` option in the backend configuration file, but fix its internal behavior to match what the end-user expect.
+
+## `list` and `show` actions
+
+99% of the times, the end-user doesn't need this `type` option because values are displayed according to their Doctrine types.
+
+We provide some cool things to make developer's life easier:
+
+  * Do you want to display an image in the listing? Use the special `image` type for the property storing the URL of the image.
+  * We show cool toggles for boolean values. You don't like this? Use `boolean` as the `type` of the property.
+  * Do you have a virtual field? We'll display it as `text` because there is no way to guess its type. But if you use `type` option, you can set its type explicitly: `date`, `toggle`, `image`, etc.
+
+## `new` and `edit` actions
+
+By default, fields are displayed with the most appropriate widget for its type (according to the Symfony Form component).
+
+If you don't like some widget, use the `type` option to set the widget used to render the property in the form. For now you can only use the official Symfony Form field types and your own custom types (if defined as services and available in the application).
+
+## Summary
+
+When displaying things, the `type` option means the type of data to display. When editing things, the `type` option means how do you want to edit that thing.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-08T12:23:36Z
+
+Nice :+1:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-08T12:25:59Z
+
+Explained like this, everything makes sense. Sorry for the misunderstanding/confusion.
+:+1:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-08T12:26:37Z
+
+Our brains are constantly exploding with ideas, I think we're forgetting that "EasyAdminBundle" is called "Easy" :D

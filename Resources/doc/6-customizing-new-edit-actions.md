@@ -184,7 +184,7 @@ These are the options that you can define for form fields:
 
 Read *"Translate Column Labels"* section of the [chapter 4](4-customizing-list-action.md).
 
-Add Custom Doctrine Types to Forms
+Use Custom Doctrine Types in Forms
 ----------------------------------
 
 When your application defines custom Doctrine DBAL types, you must define a

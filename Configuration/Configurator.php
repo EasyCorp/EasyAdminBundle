@@ -29,7 +29,7 @@ class Configurator
         'format'    => null,   // date/time/datetime/number format
         'help'      => null,   // form field help message
         'label'     => null,   // form field label (if 'null', autogenerate it)
-        'type'      => null,   // temporary variable used by both 'dataType' and 'fieldType'
+        'type'      => null,   // it holds 'dataType' for list/show and 'fieldType' for new/edit
         'fieldType' => null,   // Symfony form field type (text, date, number, choice, ...)
         'dataType'  => null,   // Doctrine property data type (text, date, integer, boolean, ...)
         'virtual'   => false,  // is a virtual field or a real entity property?

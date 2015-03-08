@@ -405,15 +405,14 @@ easy_admin:
 Customize Boolean Values
 ------------------------
 
-By default, boolean values are displayed in listings as toggable flip switches:
+By default, boolean values are displayed in listings as flip switches:
 
 ![Advanced boolean fields](images/easyadmin-boolean-field-toggle.gif)
 
 When you change the value of any boolean field, EasyAdmin will make an Ajax
-request in the background to actually change that value in the database. If
-something goes wrong, the switch will automatically return to its original
-value and it will also be disabled until the page is refreshed to avoid further
-issues:
+request to actually change that value in the database. If something goes
+wrong, the switch will automatically return to its original value and it will
+also be disabled until the page is refreshed to avoid further issues:
 
 ![Boolean field behavior when an error happens](images/easyadmin-boolean-field-toggle-error.gif)
 
@@ -534,4 +533,4 @@ These are the supported types:
   * `image`, custom type defined by EasyAdmin which displays images inlined in
     the entity listings. Read the previous sections for more details.
   * `toggle`, custom type defined by EasyAdmin which displays a boolean value
-    as a toggable flip switch. Read the previous sections for more details.
+    as a flip switch. Read the previous sections for more details.

@@ -33,6 +33,12 @@ class Configuration implements ConfigurationInterface
                     ->info('The maximum number of items to show on listing and search pages.')
                 ->end()
 
+                ->variableNode('actions')
+                    ->defaultValue(array('edit', 'new', 'show', 'search', 'delete'))
+                    ->info('The actions enabled on the admin. The "list" action is mandatory and always available.')
+                    ->example(array('edit', 'search'))
+                ->end()
+
                 ->variableNode('list_actions')
                     ->defaultValue(array('edit'))
                     ->info('The actions to show for each item of listing and search pages. Only "edit" and "show" options are available.')

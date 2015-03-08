@@ -491,10 +491,10 @@ class AdminController extends Controller
         return $this->render($view, $parameters, new Response('', 404));
     }
 
-    private function setAllowedActions(array $configAllowedActions)
+    private function setAllowedActions(array $configActions)
     {
-        $valid_actions = array('list', 'edit', 'new', 'show', 'search', 'delete');
+        $validActions = array('list', 'edit', 'new', 'show', 'search', 'delete');
 
-        $this->allowedActions = array_unique(array_merge(array('list'), array_intersect($valid_actions, $configAllowedActions)));
+        $this->allowedActions = array_unique(array_merge(array('list'), array_intersect($validActions, $configActions)));
     }
 }

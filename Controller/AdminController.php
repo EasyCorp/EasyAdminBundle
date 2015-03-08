@@ -186,11 +186,12 @@ class AdminController extends Controller
         $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
 
         return $this->render('@EasyAdmin/show.html.twig', array(
-            'config' => $this->config,
-            'entity' => $this->entity,
-            'item'   => $item,
-            'fields' => $fields,
-            'delete_form' => $deleteForm->createView(),
+            'config'          => $this->config,
+            'entity'          => $this->entity,
+            'item'            => $item,
+            'fields'          => $fields,
+            'delete_form'     => $deleteForm->createView(),
+            'allowed_actions' => $this->allowedActions,
         ));
     }
 

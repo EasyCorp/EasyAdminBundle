@@ -30,18 +30,22 @@
                 <h1 class="title">{{ block('content_title') }}</h1>
             </div>
             <div class="col-xs-12 col-sm-7">
+                {% if 'new' in allowed_actions %}
                 <div id="content-actions">
                     <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
-                        {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
+                        {{ 'entity.create' | trans({"%entity%": entity.name}) }}
                     </a>
                 </div>
+                {% endif %}
+                {% if 'search' in allowed_actions %}
                 <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
                     <div class="input-group">
                         <input type="hidden" name="action" value="search">
                         <input type="hidden" name="entity" value="{{ entity.name }}">
-                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search_placeholder'|trans }}" value="{{ app.request.get('query')|default('') }}">
+                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search' | trans }}" value="{{ app.request.get('query')|default('') }}">
                     </div>
                 </form>
+                {% endif %}
             </div>
         </div>
     </div>

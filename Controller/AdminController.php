@@ -20,7 +20,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +33,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
  */
 class AdminController extends Controller
 {
-    protected $allowedActions = array('list', 'edit', 'new', 'show', 'search', 'delete', 'toggle');
+    protected $allowedActions = array();
     protected $config;
     protected $entity = array();
 
@@ -88,6 +87,8 @@ class AdminController extends Controller
             return $this->render404error('@EasyAdmin/error/no_entities.html.twig');
         }
 
+        $this->setAllowedActions($this->config['actions']);
+
         if (!in_array($action = $request->query->get('action', 'list'), $this->allowedActions)) {
             return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
                 'action' => $action,
@@ -129,10 +130,11 @@ class AdminController extends Controller
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list_max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
         return $this->render('@EasyAdmin/list.html.twig', array(
-            'config'    => $this->config,
-            'entity'    => $this->entity,
-            'paginator' => $paginator,
-            'fields'    => $fields,
+            'config'          => $this->config,
+            'entity'          => $this->entity,
+            'paginator'       => $paginator,
+            'fields'          => $fields,
+            'allowed_actions' => $this->allowedActions,
         ));
     }
 
@@ -484,5 +486,12 @@ class AdminController extends Controller
     protected function render404error($view, array $parameters = array())
     {
         return $this->render($view, $parameters, new Response('', 404));
+    }
+
+    private function setAllowedActions(array $configAllowedActions)
+    {
+        $valid_actions = array('list', 'edit', 'new', 'show', 'search', 'delete');
+
+        $this->allowedActions = array_unique(array_merge(array('list'), array_intersect($valid_actions, $configAllowedActions)));
     }
 }

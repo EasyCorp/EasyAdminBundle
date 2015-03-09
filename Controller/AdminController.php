@@ -256,7 +256,7 @@ class AdminController extends Controller
      */
     protected function searchAction()
     {
-        $searchableFields = $this->entity['search']['fields'];
+        $searchableFields = $this->getSearchFields();
         $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list_max_results']);
         $fields = $this->entity['list']['fields'];
 
@@ -451,6 +451,24 @@ class AdminController extends Controller
         $entityNames = array_keys($this->config['entities']);
 
         return $entityNames[0];
+    }
+
+    /**
+     * It returns fields used for search (String types)
+     *
+     * @return mixed
+     */
+    protected function getSearchFields()
+    {
+        $fields = [];
+        foreach ($this->entity['search']['fields'] as $key => $field) {
+            if (!in_array($field['type'], ['string', 'text', 'guid'])) {
+                continue;
+            }
+            $fields[$key] = $field;
+        }
+
+        return $fields;
     }
 
     /**

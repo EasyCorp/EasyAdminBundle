@@ -1,0 +1,10 @@
+# TEST
+# 'edit' option is correctly processed
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            edit:
+                fields: ['field1', 'field2']

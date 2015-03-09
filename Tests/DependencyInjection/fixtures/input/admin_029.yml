@@ -1,0 +1,11 @@
+# TEST
+# combining configuration formats #2 and #3 using entities with same names
+# and labels which include special YAML characters
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        'Custom #Entity ~ Label': AppBundle\Entity\TestEntity
+        AnotherTestEntity:
+            class: AppBundle\AnotherNamespace\Entity\TestEntity
+            label: 'Another Custom #Entity ~ Label'

@@ -1,0 +1,10 @@
+# TEST
+# 'new' option is correctly processed
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            new:
+                fields: ['field1', 'field2']

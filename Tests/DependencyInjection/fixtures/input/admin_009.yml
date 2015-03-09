@@ -1,0 +1,8 @@
+# TEST
+# configuration format #3: entity label matches entity name
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity

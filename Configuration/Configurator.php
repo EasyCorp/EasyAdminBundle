@@ -11,9 +11,9 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
-use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
 
 class Configurator
@@ -57,10 +57,10 @@ class Configurator
         'time' => 'time',
     );
 
-    public function __construct(array $backendConfig, ManagerRegistry $manager, ClassPropertyReflector $reflector)
+    public function __construct(array $backendConfig, EntityMetadataInspector $inspector, ClassPropertyReflector $reflector)
     {
         $this->backendConfig = $backendConfig;
-        $this->doctrineManager = $manager;
+        $this->inspector = $inspector;
         $this->reflector = $reflector;
     }
 
@@ -84,14 +84,11 @@ class Configurator
         }
 
         $entityConfiguration = $this->backendConfig['entities'][$entityName];
+        $entityMetadata = $this->inspector->getEntityMetadata($entityConfiguration['class']);
 
-        $entityClass = $entityConfiguration['class'];
-        $em = $this->doctrineManager->getManagerForClass($entityClass);
-        $doctrineEntityMetadata = $em->getMetadataFactory()->getMetadataFor($entityClass);
+        $entityConfiguration['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
 
-        $entityConfiguration['primary_key_field_name'] = $doctrineEntityMetadata->getSingleIdentifierFieldName();
-
-        $entityProperties = $this->getEntityPropertiesMetadata($doctrineEntityMetadata);
+        $entityProperties = $this->processEntityPropertiesMetadata($entityMetadata);
         $entityConfiguration['properties'] = $entityProperties;
 
         // default fields used when the action (list, edit, etc.) doesn't define its own fields
@@ -117,7 +114,7 @@ class Configurator
      * @param  ClassMetadata $entityMetadata The entity metadata introspected via Doctrine
      * @return array         The entity properties metadata provided by Doctrine
      */
-    private function getEntityPropertiesMetadata(ClassMetadata $entityMetadata)
+    private function processEntityPropertiesMetadata(ClassMetadata $entityMetadata)
     {
         $entityPropertiesMetadata = array();
 

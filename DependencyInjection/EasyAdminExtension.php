@@ -47,7 +47,6 @@ class EasyAdminExtension extends Extension
 
         $configuration = $this->normalizeEntitiesConfiguration($entitiesConfiguration);
         $configuration = $this->processEntitiesConfiguration($configuration);
-        //$configuration = $this->ensureThatEntityNamesAreUnique($configuration);
 
         return $configuration;
     }

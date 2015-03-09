@@ -39,7 +39,7 @@ class EasyAdminExtension extends Extension
      * @param  array $entitiesConfiguration
      * @return array The full entity configuration
      */
-    protected function getEntitiesConfiguration(array $entitiesConfiguration)
+    public function getEntitiesConfiguration(array $entitiesConfiguration)
     {
         if (0 === count($entitiesConfiguration)) {
             return $entitiesConfiguration;
@@ -47,7 +47,7 @@ class EasyAdminExtension extends Extension
 
         $configuration = $this->normalizeEntitiesConfiguration($entitiesConfiguration);
         $configuration = $this->processEntitiesConfiguration($configuration);
-        $configuration = $this->ensureThatEntityNamesAreUnique($configuration);
+        //$configuration = $this->ensureThatEntityNamesAreUnique($configuration);
 
         return $configuration;
     }
@@ -98,7 +98,7 @@ class EasyAdminExtension extends Extension
             }
 
             $entityClassParts = explode('\\', $entityConfiguration['class']);
-            $entityName = end($entityClassParts);
+            $entityClassName = end($entityClassParts);
 
             # if config format #3 defines the 'label' option, use its value.
             # otherwise, infer the entity label from its configuration.
@@ -106,8 +106,11 @@ class EasyAdminExtension extends Extension
                 // config format #1 doesn't define any entity label because configuration is
                 // just a plain numeric array (the label is the integer key of that array).
                 // In that case, use the entity class name as its label
-                $entityConfiguration['label'] = is_integer($entityLabel) ? $entityName : $entityLabel;
+                $entityConfiguration['label'] = is_integer($entityLabel) ? $entityClassName : $entityLabel;
             }
+
+            $entityName = $this->getUniqueEntityName($entityClassName, array_keys($normalizedConfiguration));
+            $entityConfiguration['name'] = $entityName;
 
             $normalizedConfiguration[$entityName] = $entityConfiguration;
         }
@@ -170,22 +173,15 @@ class EasyAdminExtension extends Extension
      * @param  array $entitiesConfiguration
      * @return array The entities configuration with unique entity names
      */
-    private function ensureThatEntityNamesAreUnique($entitiesConfiguration)
+    private function getUniqueEntityName($entityName, $existingEntityNames)
     {
-        $configuration = array();
-        $existingEntityNames = array();
+        $uniqueName = $entityName;
 
-        foreach ($entitiesConfiguration as $entityName => $entityConfiguration) {
-            while (in_array($entityName, $existingEntityNames)) {
-                $entityName .= '_';
-            }
-            $existingEntityNames[] = $entityName;
-
-            $configuration[$entityName] = $entityConfiguration;
-            $configuration[$entityName]['name'] = $entityName;
+        while (in_array($uniqueName, $existingEntityNames)) {
+            $uniqueName .= '_';
         }
 
-        return $configuration;
+        return $uniqueName;
     }
 
     /**

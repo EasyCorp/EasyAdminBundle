@@ -1,0 +1,8 @@
+# TEST
+# configuration format #2 with custom entity label that doesn't match entity name
+# and which contains special YAML characters
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        'Custom #Entity ~ Label': AppBundle\Entity\TestEntity

@@ -15,3 +15,6 @@ matrix:
   allow_failures:
     - php: hhvm
     - php: nightly
+
+install: composer install
+

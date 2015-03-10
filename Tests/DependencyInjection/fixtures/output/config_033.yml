@@ -1,0 +1,8 @@
+TestEntity:
+    class: AppBundle\Entity\TestEntity
+    edit: { fields: { field1: { property: field1 }, field2: { property: field2 } } }
+    label: TestEntity
+    name: TestEntity
+    list: { fields: [] }
+    new: { fields: [] }
+    show: { fields: [] }

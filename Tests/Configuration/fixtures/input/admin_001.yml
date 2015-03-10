@@ -1,0 +1,3 @@
+easy_admin:
+    entities:
+        - AppBundle\Entity\TestEntity

@@ -1,0 +1,9 @@
+TestEntity:
+    class: AppBundle\Entity\TestEntity
+    form: { fields: [field1, field2], custom_option: 'custom value' }
+    new: { fields: { field3: { property: field3 }, field4: { property: field4 } }, custom_option: 'custom value' }
+    label: TestEntity
+    name: TestEntity
+    edit: { fields: { field1: { property: field1 }, field2: { property: field2 } }, custom_option: 'custom value' }
+    list: { fields: [] }
+    show: { fields: [] }

@@ -1,0 +1,16 @@
+TestEntity:
+    class: AppBundle\Entity\TestEntity
+    label: TestEntity
+    name: TestEntity
+    edit: { fields: [] }
+    list: { fields: [] }
+    new: { fields: [] }
+    show: { fields: [] }
+AnotherTestEntity:
+    class: AppBundle\AnotherNamespace\Entity\AnotherTestEntity
+    label: AnotherTestEntity
+    name: AnotherTestEntity
+    edit: { fields: [] }
+    list: { fields: [] }
+    new: { fields: [] }
+    show: { fields: [] }

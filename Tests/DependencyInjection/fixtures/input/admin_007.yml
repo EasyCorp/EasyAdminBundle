@@ -1,0 +1,9 @@
+# TEST
+# configuration format #2: two different entities with the same label
+# (the first defined entity wins)
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity: AppBundle\Entity\TestEntity
+        TestEntity: AppBundle\OtherNamespace\Entity\TestEntity

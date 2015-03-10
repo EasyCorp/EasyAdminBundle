@@ -1,0 +1,13 @@
+# TEST
+# configuration format #3 expanded, with two different entities using
+# different names and same custom labels
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            label: EntityCustomLabel
+        AnotherTestEntity:
+            class: AppBundle\AnotherNamespace\Entity\TestEntity
+            label: EntityCustomLabel

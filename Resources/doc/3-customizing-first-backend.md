@@ -107,10 +107,10 @@ You can also explicitly define the entity label using the `label` option:
 # app/config/config.yml
 easy_admin:
     entities:
-        Customers: 
+        Customers:
             label: 'Active Clients'
             class: AppBundle\Entity\Customer
-        Orders: 
+        Orders:
             label: 'Pending Orders'
             class: AppBundle\Entity\Order
 ```
@@ -136,7 +136,7 @@ easy_admin:
     entities:
         app.customers:
             class: AppBundle\Entity\Customer
-        Orders: 
+        Orders:
             label: app.orders
             class: AppBundle\Entity\Order
 ```
@@ -157,3 +157,23 @@ backend section of your application.
 
 In addition, when accessing a protected backend, EasyAdmin will display the
 name of user who is logged in the application.
+
+Customize the available actions in the Backend
+----------------------------------------------
+
+Some actions can be done on the entities managed by the EasyAdmin, but you may
+need to restrict them so the user just can do some of them, e.g. be able to
+list, search and show an entity but not add, edit or delete them.
+
+That is managed by the `actions` config key, that will expect the list of the
+actions that will be allowed, from the following list:
+    `list`, `edit`, `new`, `show`, `search` and `delete`.
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    actions: ['show', 'search']
+```
+
+(Note that the `list` action will _always_ be available)
+

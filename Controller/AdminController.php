@@ -19,8 +19,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +34,6 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
  */
 class AdminController extends Controller
 {
-    protected $allowedActions = array('list', 'edit', 'new', 'show', 'search', 'delete', 'toggle');
     protected $config;
     protected $entity = array();
 
@@ -43,6 +42,9 @@ class AdminController extends Controller
 
     /** @var EntityManager */
     protected $em;
+
+    /** @var Configurator */
+    protected $configurator;
 
     /**
      * @Route("/", name="admin")
@@ -82,25 +84,29 @@ class AdminController extends Controller
      */
     protected function initialize(Request $request)
     {
-        $this->config = $this->container->getParameter('easyadmin.config');
+        $this->configurator = $this->container->get('easyadmin.configurator');
 
-        if (0 === count($this->config['entities'])) {
+        $this->config = $this->configurator->getBackendConfiguration();
+
+        if (empty($this->configurator->getEntities())) {
             return $this->render404error('@EasyAdmin/error/no_entities.html.twig');
         }
 
-        if (!in_array($action = $request->query->get('action', 'list'), $this->allowedActions)) {
-            return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
-                'action' => $action,
-                'allowed_actions' => $this->allowedActions,
-            ));
-        }
-
-        if (null !== $entityName = $request->query->get('entity')) {
+        $entityName = $request->query->get('entity');
+        if (null !== $entityName) {
             if (!array_key_exists($entityName, $this->config['entities'])) {
                 return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
             }
 
-            $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
+            $this->entity = $this->configurator->getEntityConfiguration($entityName);
+        }
+
+        $action = $request->query->get('action', 'list');
+        if (!$this->configurator->isActionAllowed($action, $entityName)) {
+            return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
+                'action' => $action,
+                'allowed_actions' => [], // $this->config['allowed_actions'],
+            ));
         }
 
         if (null !== $entityName) {
@@ -129,10 +135,10 @@ class AdminController extends Controller
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list_max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
         return $this->render('@EasyAdmin/list.html.twig', array(
-            'config'    => $this->config,
-            'entity'    => $this->entity,
-            'paginator' => $paginator,
-            'fields'    => $fields,
+            'config'          => $this->config,
+            'entity'          => $this->entity,
+            'paginator'       => $paginator,
+            'fields'          => $fields,
         ));
     }
 
@@ -184,11 +190,11 @@ class AdminController extends Controller
         $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
 
         return $this->render('@EasyAdmin/show.html.twig', array(
-            'config' => $this->config,
-            'entity' => $this->entity,
-            'item'   => $item,
-            'fields' => $fields,
-            'delete_form' => $deleteForm->createView(),
+            'config'          => $this->config,
+            'entity'          => $this->entity,
+            'item'            => $item,
+            'fields'          => $fields,
+            'delete_form'     => $deleteForm->createView(),
         ));
     }
 
@@ -261,10 +267,10 @@ class AdminController extends Controller
         $fields = $this->entity['list']['fields'];
 
         return $this->render('@EasyAdmin/list.html.twig', array(
-            'config'    => $this->config,
-            'entity'    => $this->entity,
-            'paginator' => $paginator,
-            'fields'    => $fields,
+            'config'          => $this->config,
+            'entity'          => $this->entity,
+            'paginator'       => $paginator,
+            'fields'          => $fields,
         ));
     }
 
@@ -485,4 +491,5 @@ class AdminController extends Controller
     {
         return $this->render($view, $parameters, new Response('', 404));
     }
+
 }

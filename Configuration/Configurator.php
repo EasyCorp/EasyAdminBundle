@@ -64,6 +64,60 @@ class Configurator
         $this->reflector = $reflector;
     }
 
+    public function getBackendConfiguration()
+    {
+        if (!isset($this->backendConfig['allowed_actions'])) {
+            $this->backendConfig['allowed_actions'] = $this->processAllowedActions($this->backendConfig['actions']);
+        }
+
+        return $this->backendConfig;
+    }
+
+    public function isActionAllowed($action, $entityName = null)
+    {
+        $allowed = false;
+
+        if ($entityName !== null) {
+            $allowed = $this->areActionsDefinedInEntity($entityName) ?
+                $this->isActionAllowedInEntity($action, $entityName) :
+                $this->isActionAllowedInBackend($action);
+        } else {
+            $allowed = $this->isActionAllowedInBackend($action);
+        }
+
+        return $allowed;
+    }
+
+    public function getEntities()
+    {
+        $backendConfig = $this->getBackendConfiguration();
+
+        return !empty($backendConfig['entities']) ? $backendConfig['entities'] : array();
+    }
+
+    private function areActionsDefinedInEntity($entityName)
+    {
+        $entityConfig = $this->getEntityConfiguration($entityName);
+
+        return count($entityConfig['actions']) > 1;
+    }
+
+    private function isActionAllowedInEntity($action, $entityName)
+    {
+        $entityConfig = $this->getEntityConfiguration($entityName);
+
+        return (empty($entityConfig['actions'])) ?
+            false : in_array($action, $entityConfig['actions']);
+    }
+
+    private function isActionAllowedInBackend($action)
+    {
+        $backendConfig = $this->getBackendConfiguration();
+
+        return (empty($backendConfig['allowed_actions']) || !in_array($action, $backendConfig['allowed_actions'])) ?
+            false : true;
+    }
+
     /**
      * Processes and returns the full configuration for the given entity name.
      * This configuration includes all the information about the form fields
@@ -93,6 +147,10 @@ class Configurator
 
         // default fields used when the action (list, edit, etc.) doesn't define its own fields
         $this->defaultEntityFields = $this->createFieldsFromEntityProperties($entityProperties);
+
+        $entityConfiguration['actions'] = $this->processAllowedActions(empty($entityConfiguration['actions']) ?
+            [] : $entityConfiguration['actions']
+        );
 
         $entityConfiguration['list']['fields'] = $this->getFieldsForListAction($entityConfiguration);
         $entityConfiguration['show']['fields'] = $this->getFieldsForShowAction($entityConfiguration);
@@ -436,5 +494,18 @@ class Configurator
         return array_key_exists($doctrineType, $this->doctrineTypeToFormTypeMap)
             ? $this->doctrineTypeToFormTypeMap[$doctrineType]
             : $doctrineType;
+    }
+
+    /**
+     * Internal method that filters the actions received before setting them.
+     *
+     * @param array $configActions
+     * @return array
+     */
+    private function processAllowedActions(array $configActions)
+    {
+        $validActions = array('list', 'edit', 'new', 'show', 'search', 'delete');
+
+        return array_unique(array_merge(array('list'), array_intersect($validActions, $configActions)));
     }
 }

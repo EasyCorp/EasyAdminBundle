@@ -30,18 +30,22 @@
                 <h1 class="title">{{ block('content_title') }}</h1>
             </div>
             <div class="col-xs-12 col-sm-7">
-                <div id="content-actions">
-                    <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
-                        {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
-                    </a>
-                </div>
-                <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
-                    <div class="input-group">
-                        <input type="hidden" name="action" value="search">
-                        <input type="hidden" name="entity" value="{{ entity.name }}">
-                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search_placeholder'|trans }}" value="{{ app.request.get('query')|default('') }}">
+                {% if is_allowed('new', entity) %}
+                    <div id="content-actions">
+                        <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
+                            {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
+                        </a>
                     </div>
-                </form>
+                {% endif %}
+                {% if is_allowed('search', entity) %}
+                    <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
+                        <div class="input-group">
+                            <input type="hidden" name="action" value="search">
+                            <input type="hidden" name="entity" value="{{ entity.name }}">
+                            <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search_placeholder'|trans }}" value="{{ app.request.get('query')|default('') }}">
+                        </div>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>

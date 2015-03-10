@@ -34,7 +34,6 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
  */
 class AdminController extends Controller
 {
-    protected $allowedActions = array();
     protected $config;
     protected $entity = array();
 

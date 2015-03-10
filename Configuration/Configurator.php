@@ -20,7 +20,6 @@ class Configurator
 {
     private $backendConfig = array();
     private $entitiesConfig = array();
-    private $doctrineManager;
     private $reflector;
     private $defaultEntityFields = array();
 
@@ -98,7 +97,7 @@ class Configurator
         $entityConfiguration['show']['fields'] = $this->getFieldsForShowAction($entityConfiguration);
         $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $entityConfiguration);
         $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedActions('new', $entityConfiguration);
-        $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction($entityConfiguration);
+        $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction();
 
         $entityConfiguration = $this->introspectGettersAndSetters($entityConfiguration);
 
@@ -157,8 +156,6 @@ class Configurator
      */
     private function getFieldsForListAction(array $entityConfiguration)
     {
-        $entityFields = array();
-
         // there is a custom configuration for 'list' fields
         if (count($entityConfiguration['list']['fields']) > 0) {
             return $this->normalizeFieldsConfiguration('list', $entityConfiguration);
@@ -209,10 +206,9 @@ class Configurator
     /**
      * Returns the list of entity fields on which the search query is performed.
      *
-     * @param  array $entityConfiguration
      * @return array The list of fields to use for the search
      */
-    private function getFieldsForSearchAction(array $entityConfiguration)
+    private function getFieldsForSearchAction()
     {
         $excludedFieldNames = array();
         $excludedFieldTypes = array('association', 'binary', 'blob', 'date', 'datetime', 'datetimetz', 'guid', 'time', 'object');

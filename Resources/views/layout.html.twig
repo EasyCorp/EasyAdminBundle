@@ -40,7 +40,9 @@
                         </a>
                     </div>
 
+                    {% block navigation %}
                     <ul id="header-menu">
+                        {% block navigation_items %}
                         {% for item in config.entities %}
                             <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
                                 <a href="{{ path('admin', { entity: item.name, action: 'list' }) }}">
@@ -51,10 +53,13 @@
                             <li class="visible-xs visible-sm header-nav-close">
                                 <a href="#header">{{ 'header.close'|trans }}</a>
                             </li>
+                        {% endblock %}
                     </ul>
+                    {% endblock %}
                 </div>
 
                 <div id="header-footer">
+                {% block header_footer %}
                     {% if app.user %}
                         <div id="header-security" class="col-xs-12 col-md-2 col-lg-12">
                             <p>
@@ -63,6 +68,7 @@
                             </p>
                         </div>
                     {% endif %}
+                {% endblock %}
                 </div>
             </div>
         </div>

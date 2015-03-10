@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-10T08:23:35Z
+
+:+1: Great!
+
+When you're finished with it I can work on some more tests to maximize code coverage (plus, it's easy, because there's only some files to add :+1: ) (edit: we're at 53.52% coverage for the extension)
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-03-10T15:09:12Z
+
+@javiereguiluz You should probably enable the "Build only if .travis.yml is present" option on Travis to not let other pull requests fail that don't include the changes from this PR.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-10T15:20:26Z
+
+@xabbuh I didn't know that configuration option. I've just enabled it. Thanks!

@@ -30,14 +30,14 @@
                 <h1 class="title">{{ block('content_title') }}</h1>
             </div>
             <div class="col-xs-12 col-sm-7">
-                {% if 'new' in allowed_actions %}
+                {% if is_allowed('new', entity) %}
                     <div id="content-actions">
                         <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
                             {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
                         </a>
                     </div>
                 {% endif %}
-                {% if 'search' in allowed_actions %}
+                {% if is_allowed('search', entity) %}
                     <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
                         <div class="input-group">
                             <input type="hidden" name="action" value="search">

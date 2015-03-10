@@ -30,6 +30,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('entity_field', array($this, 'displayEntityField')),
+            new \Twig_SimpleFunction('is_allowed', array($this, 'isActionAllowed')),
         );
     }
 
@@ -191,6 +192,13 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         return $value;
+    }
+
+    public function isActionAllowed($action, $entity = null)
+    {
+        $entityName = isset($entity['name']) ? $entity['name'] : null;
+
+        return $this->configurator->isActionAllowed($action, $entityName);
     }
 
     public function getName()

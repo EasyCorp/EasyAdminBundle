@@ -29,7 +29,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('entity_field', array($this, 'displayEntityField')),
+            new \Twig_SimpleFunction('easyadmin_render_field', array($this, 'renderEntityField')),
             new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
             new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
         );
@@ -38,7 +38,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('truncate_entity_field', array($this, 'truncateEntityField'), array('needs_environment' => true)),
+            new \Twig_SimpleFilter('easyadmin_truncate', array($this, 'truncateText'), array('needs_environment' => true)),
         );
     }
 
@@ -82,7 +82,17 @@ class EasyAdminTwigExtension extends \Twig_Extension
             : null;
     }
 
-    public function displayEntityField($entity, array $fieldMetadata)
+    /**
+     * Renders the value stored in a property/field of the given entity. This
+     * function contains a lot of code protections to avoid errors when the
+     * property doesn't exist or its value is not accessible. This ensures that
+     * the function never generates a warning or error message when calling it.
+     *
+     * @param  array $entity
+     * @param  array  $fieldMetadata
+     * @return mixed
+     */
+    public function renderEntityField($entity, array $fieldMetadata)
     {
         if (!$fieldMetadata['canBeGet']) {
             return new \Twig_Markup('<span class="label label-danger" title="Getter method does not exist or property is not public">inaccessible</span>', 'UTF-8');
@@ -203,7 +213,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * author: Henrik Bjornskov <hb@peytz.dk>
      * copyright holder: (c) 2009 Fabien Potencier
      */
-    public function truncateEntityField(\Twig_Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
+    public function truncateText(\Twig_Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
     {
         if (function_exists('mb_get_info')) {
             if (mb_strlen($value, $env->getCharset()) > $length) {

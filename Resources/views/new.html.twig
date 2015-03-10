@@ -15,7 +15,7 @@
                 {% set _field_configuration = entity_fields[field.vars.name] %}
                 <div class="form-group field_{{ _field_configuration['fieldType']|lower|default('default') }} {% if not field.vars.valid %}has-error{% endif %}">
                     {% if _field_configuration['fieldType'] == 'association' %}
-                        {{ entity_field(item, _field_configuration) }}
+                        {{ easyadmin_render_field(item, _field_configuration) }}
                     {% else %}
                         {% set field_label = _field_configuration['label']|default(null) %}
                         {{ form_label(field, field_label|trans, { label_attr: { class: 'col-sm-2 control-label' } }) }}

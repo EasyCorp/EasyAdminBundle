@@ -76,24 +76,24 @@
     {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
 
 
-<div id="modal-delete" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h4>{{ 'delete_modal.title'|trans }}</h4>
-                <p>{{ 'delete_modal.content'|trans }}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn">
-                    {{ 'action.cancel'|trans }}
-                </button>
-                <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
-                    <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
-                </button>
+    <div id="modal-delete" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4>{{ 'delete_modal.title'|trans }}</h4>
+                    <p>{{ 'delete_modal.content'|trans }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn">
+                        {{ 'action.cancel'|trans }}
+                    </button>
+                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                        <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block body_javascript %}

@@ -46,7 +46,7 @@
                         {% for item in config.entities %}
                             <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
                                 <a href="{{ path('admin', { entity: item.name, action: 'list' }) }}">
-                                    {{ item.label|trans }}
+                                    {{- item.label|trans -}}
                                 </a>
                             </li>
                         {% endfor %}
@@ -106,5 +106,6 @@
     {% for js_asset in config.assets.js %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
-</body>
+
+    </body>
 </html>

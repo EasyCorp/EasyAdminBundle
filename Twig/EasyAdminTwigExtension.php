@@ -42,31 +42,31 @@ class EasyAdminTwigExtension extends \Twig_Extension
         );
     }
 
-	public function getEasyAdminConfig($path = null)
-	{
-		$config = $this->configurator->getBackendConfig();
+    public function getEasyAdminConfig($path = null)
+    {
+        $config = $this->configurator->getBackendConfig();
 
-		if (!empty($path)) {
-			$parts = explode('.', $path);
+        if (!empty($path)) {
+            $parts = explode('.', $path);
 
-			foreach ($parts as $part) {
-				if(!isset($config[$part])) {
-					$config = null;
-					break;
-				}
-				$config = $config[$part];
-			}
-		}
+            foreach ($parts as $part) {
+                if (!isset($config[$part])) {
+                    $config = null;
+                    break;
+                }
+                $config = $config[$part];
+            }
+        }
 
-		return $config;
-	}
+        return $config;
+    }
 
-	public function getEntity($entityName)
-	{
-		return null !== $this->getEasyAdminConfig('entities.'.$entityName)
-			? $this->configurator->getEntityConfiguration($entityName)
-			: null;
-	}
+    public function getEntity($entityName)
+    {
+        return null !== $this->getEasyAdminConfig('entities.' . $entityName)
+            ? $this->configurator->getEntityConfiguration($entityName)
+            : null;
+    }
 
     public function displayEntityField($entity, array $fieldMetadata)
     {

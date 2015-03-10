@@ -438,8 +438,8 @@ class Configurator
             : $doctrineType;
     }
 
-	public function getBackendConfig()
-	{
-		return $this->backendConfig;
-	}
+    public function getBackendConfig()
+    {
+        return $this->backendConfig;
+    }
 }

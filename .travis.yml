@@ -8,9 +8,6 @@ php:
   - hhvm
   - nightly
 
-env:
-  - SYMFONY_VERSION=2.6.*
-
 matrix:
   allow_failures:
     - php: hhvm

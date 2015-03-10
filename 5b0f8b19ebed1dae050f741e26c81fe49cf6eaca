@@ -1,0 +1,242 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-03T06:58:23Z
+
+I think it's better to keep the use of the configurator, in fact I'd probably use a function, or set the configurator as global directly from the Twig Extension.
+
+Overriding in a such way sounds a bit heavy to me, and I think that the 2 best solutions are functions and parameters injection.
+In fact, as you can see [here](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/DependencyInjection/EasyAdminExtension.php#L27), the config is still available as a parameter, so you can always get it with a simple `$this->container->getParameter('easyadmin.config');` in your controller, and inject it manually into your views. And if you need more, using the `Configurator` with a `$this->container->get('easyadmin.configurator');` is also easy.
+
+IMO there's no need for more injection, because we already have 2 great ways of doing it, and adding twig globals/functions would only add a heavy brick on a stable wall. Plus, it may not be compatible with future versions of the bundle.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-03T07:47:56Z
+
+> Plus, it may not be compatible with future versions of the bundle.
+
+Could you precise your thought ?
+
+I agree with you concerning the twig function instead. Here, I avoided doing that, at least for now, in order to keep the views intact.
+The current twig extension seems a particularly good place, as it already has a dependency on the Configurator... If only the easyadmin config was exposed publicly in it.
+
+Talking about compatibility, what do you think of the current route name ? Or even the config parameter in views if we do "injection" ?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-03T08:07:10Z
+
+For "future" enhancements, I mean that the configuration format may change in the future, as well as the `Configurator` service, so having a dedicated implementation for config injection might need to refactor it if we change the configuration format. I'm not talking about huge BC break ;)
+
+> The current twig extension seems a particularly good place, as it already has a dependency on the Configurator... If only the easyadmin config was exposed publicly in it.
+
+For this, we can simply add the config var as dependency in the extension declaration:
+
+```yaml
+# Resources/config/services.xml
+        <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
+            <argument type="service" id="router"></argument>
+            <argument type="service" id="easyadmin.configurator"></argument>
++           <argument>%easyadmin.config%</argument>
+            <tag name="twig.extension" />
+        </service>
+```
+
+And voilà, you have the config in the twig extension :)
+
+But that said, I don't think it's convenient to implement the same feature twice, so I'd personally rely on `$container->getParameter('easyadmin.config');` and `$container->get('easyadmin.configurator');` for it.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-03T08:25:27Z
+
+> For "future" enhancements, I mean that the configuration format may change in the future, as well as the Configurator service, so having a dedicated implementation for config injection might need to refactor it if we change the configuration format.
+
+Right. But we'll have the same problem anyway, relying on the container to retrieve it.
+
+> For this, we can simply add the config var as dependency in the extension
+
+Of course, but it feels kind of redundant as we already have the Configurator injected.
+
+> I'd personally rely on $container->getParameter('easyadmin.config');
+
+Yup, but it's indeed boring to get it from container and pass it to the view in every controller action using the same main layout for example.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-03T09:55:11Z
+
+Yup, I agree that relying on the container might sound boring, but in fact, it has the best representation of a static frozen configuration, so injecting it in twig globals would just do exactly the same.
+
+That's why using functions sounds to be a good solution to me, because you would only use the actual configuration. If you inject it in globals, there is still a way to override it, which can be treacherous, whereas twig functions would only allow "get"-like methods, which is the best.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-03T21:59:04Z
+
+I'm pretty divided with this proposal. Both sides have good arguments. I'm slightly in favor of injecting these two global variables, but I'm still not sure about that. In any case, if we do it, we'd inject them always, without the need to use the listener.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-03T22:09:56Z
+
+@javiereguiluz : If we inject it everywhere, we need to change its names for something less generic, in order to avoid overriding other globals set by third-party bundles or by the developper itself. My thoughts are the same for the easyadmin only route for now: `admin`.
+
+I used Twig_Globals injection for the purpose of this PR, in order to show you something and open the debate, avoiding changing the vars names or views. But as @Pierstoval concluded, making those variables "gettable" with Twig_Functions is certainly the best compromise we could get. As a bonus, it will prevent any smash-up.
+
+What do you think ? Should I rebase this PR according to this idea ?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-04T07:00:03Z
+
+I think twig functions are the best solution, even if we finish with something like this :
+
+```twig
+{{ easyadmin_config().entities.Post.label }}
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-04T10:17:33Z
+
+I reverted the d2e5897 (will be rebased when we're done) approach and introduce 2 new commits:
+
+- Consult  019a2f8 for the new approach about config:
+    - Configurator now provides a getter to retrieve `backendconfig` but you might prefer explicitly injecting the `easyadmin.config` parameter ?
+    - Maybe the extension shouldn't allow to access directly the config, but instead providing more functions in order to retrieve js, css, entity, list_actions, ... which the **Configurator** should expose more explicitly ? But that's another story.
+
+- Consult  a260d00 for the new approach about entity:
+   - I'm not convinced by this implementation. A dedicated service might be better in order to avoid code duplication with the controller, allowing to get the entityName from request, then, the entity configuration. Which I didn't split here, as it has nothing to do with the TwigExtension.
+   - I only set globally the entity for every template extending the layout https://github.com/ogizanagi/EasyAdminBundle/blob/a260d0096588a53e2f19217fe454c1271b7b59ef/Resources/views/layout.html.twig#L2 in order to keep this change simple and call the Twig_Function only once. But this might be done the same way on each children template instead.
+
+What do you think ?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-04T10:26:53Z
+
+I think the implementation in 019a2f8 is great and functional, and for getters, we might just use a "recursive"-like getter by dot syntax, with something like this:
+
+```twig
+{{ easyadmin_config('assets.css') }}
+{# Returns the equivalent of $backendConfig['assets']['css'] #}
+```
+
+For a260d00 I think it's simple enough, but maybe we should add a security verification to return the entity configuration only in 2 specific cases:
+* An `$entity` argument is passed
+* If no `$entity` argument is passed, we check in the request that the current controller extends the `AdminController`, if so, we get the entity from the request, to avoid any query string injection.
+
+What do you think?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-04T10:31:38Z
+
+Last commit ( 5caec6e) is the same as previous one:  a260d00, but without requiring uselessly the request_stack service.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-04T10:36:03Z
+
+Great ! Love this one :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-04T10:36:54Z
+
+@Pierstoval :
+> For a260d00 I think it's simple enough, but maybe we should add a security verification to return the entity configuration only in 2 specific cases:
+- An $entity argument is passed
+- If no $entity argument is passed, we check in the request that the current controller extends the AdminController, if so, we get the entity from the request, to avoid any query string injection.
+
+I didn't get the purpose of your suggestion. What would be the workable injections ?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-04T10:38:38Z
+
+I don't know, in fact, I have no specific case in mind, I'm just obsessed by avoiding all possible GPCF injection in any way :joy_cat:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T01:34:44Z
+
+@Pierstoval : What do you think of the implementation of your suggestion in  3ba5219 ? Does it match what you had in mind ?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-06T07:02:05Z
+
+Awesome ! This is exactly what I had in mind :smile: :+1:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T19:00:36Z
+
+Drastically simplified the getEntity method code in the Twig_Extension.
+What do you think @javiereguiluz ? Does this approach looks better than d2e5897 to you ? Is there anything to do about the concerns exposed in https://github.com/javiereguiluz/EasyAdminBundle/pull/152#issuecomment-77129930 ?
+
+If this seems good to you, I can fully remove the first commits and prepare this for merging.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-06T19:14:16Z
+
+It seems good!
+
+What do you think about adding a "has-er" to the extension? Something like `configHasEntity`? It's just an idea, I don't know if it can have a bunch or uses or not...
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T19:26:00Z
+
+Now that we have a proper Extension to retrieve the easy admin configuration, I think that there is nothing harmful using it. A "has-er" could improve the developers experience with the bundle if they extend or recreate their own templates for the admin. But prior to that, I think the "theming" abilities for this bundle should be reviewed in another issue/PR.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-06T19:29:16Z
+
+I'm also thinking about implementing security options right inside this "has-er", to avoid getting the whole entity config whereas the user doesn't have the proper role to see the entity in the menu...
+As security is not handled in EasyAdmin, of course I'm thinking about overriding it to allow menu customization, but anyway, it seems legit to propose such a feature, what do you think?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T19:38:24Z
+
+Hmmm, I understand what you're thinking about to do with this "has-er", but I do not get how it will help you for the menu, at least on the EasyAdmin side.
+I mean, in https://github.com/ogizanagi/EasyAdminBundle/blob/inject_globals/Resources/views/layout.html.twig#L45, we only iterate over the entities list in the config. There is no reason for using the "has-er" here unless the EasyAdminBundle explicitly want to handle security features. So you will have to rewrite the main layout and use your own Extension with the "has-er" anyway. The call will not be handled by EasyAdmin. :confused:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-06T19:43:54Z
+
+You'll just have to use the bundle inheritance system to rewrite the extension. In fact, I was thinking about extending the configurator in my own AdminBundle (which extends EasyAdminBundle) where I'd simply override some parts just to setup security. And a "has-er" has its place in this kind of "world", because I intended to remove entities in the config depending on the current user permissions :)
+So the entities list would remain the same, but the configuration would return an empty element if we try to check the entity's existence.
+If the entity is not here => no right to see it. As simple as that :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-06T19:47:31Z
+
+Oh. In fact I thought you were talking about a "has-er" in the TwigExtension, which led me to think you were planning to use it in views in order to hide items the user should not access.
+Ok, this makes more sense.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-10T21:36:03Z
+
+Just rebased this on last changes, awaiting for review & your thoughts about the way we should handle it.
+If it does comply to your thoughts, it's no more a WIP and could be prepared for merge (squash & removal, previous commits were only kept for history purposes about the different approaches).
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-10T21:44:28Z
+
+@Pierstoval : Done. Thanks for the observation.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-10T22:00:31Z
+
+@ogizanagi thank you for working on this. I really like this PR and I'm gonna merge it right now. @Pierstoval thanks to you also for the discussion and for providing ideas and feedback.

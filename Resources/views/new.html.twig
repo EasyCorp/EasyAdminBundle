@@ -4,17 +4,6 @@
 {% form_theme form '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig' %}
 {% block body_class 'admin new ' ~ entity.name|lower %}
 
-{% block body_javascript %}
-    {{ parent() }}
-
-    <script src="{{ asset('bundles/easyadmin/javascript/jquery.are-you-sure.min.js') }}"></script>
-    <script type="text/javascript">
-        $(function() {
-            $('#new-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
-        });
-    </script>
-{% endblock %}
-
 {% block content_title %}
     {{ entity.new.title|default('new.page_title')|trans({'%entity_name%': entity.label|trans}) }}
 {% endblock %}
@@ -80,4 +69,15 @@
             </div>
         </div>
     {{ form_end(form) }}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.are-you-sure.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#new-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
+        });
+    </script>
 {% endblock %}

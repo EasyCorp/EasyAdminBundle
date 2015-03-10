@@ -3,23 +3,6 @@
 {% trans_default_domain "EasyAdminBundle" %}
 {% block body_class 'admin show ' ~ entity.name|lower %}
 
-{% block body_javascript %}
-    {{ parent() }}
-
-    <script type="text/javascript">
-        $(function() {
-            $('#button-delete').on('click', function(e) {
-                e.preventDefault();
-
-                $('#modal-delete').modal({ backdrop: true, keyboard: true })
-                    .one('click', '#modal-delete-button', function (e) {
-                        $('#delete-form').trigger('submit');
-                    });
-            });
-        });
-    </script>
-{% endblock %}
-
 {% block content_title %}
     {{ entity.show.title|default('show.page_title')|trans({'%entity_name%': entity.label|trans, '%entity_id%': attribute(item, entity.primary_key_field_name)}) }}
 {% endblock %}
@@ -86,4 +69,21 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function() {
+            $('#button-delete').on('click', function(e) {
+                e.preventDefault();
+
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .one('click', '#modal-delete-button', function (e) {
+                        $('#delete-form').trigger('submit');
+                    });
+            });
+        });
+    </script>
 {% endblock %}

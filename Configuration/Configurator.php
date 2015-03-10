@@ -438,6 +438,11 @@ class Configurator
             : $doctrineType;
     }
 
+    /**
+     * Exposes the backend configuration to any external method that needs it.
+     *
+     * @return array
+     */
     public function getBackendConfig()
     {
         return $this->backendConfig;

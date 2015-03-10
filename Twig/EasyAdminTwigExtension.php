@@ -30,8 +30,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('entity_field', array($this, 'displayEntityField')),
-            new \Twig_SimpleFunction('easyadmin_config', array($this, 'getEasyAdminConfig')),
-            new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntity')),
+            new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
+            new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
         );
     }
 
@@ -42,12 +42,20 @@ class EasyAdminTwigExtension extends \Twig_Extension
         );
     }
 
-    public function getEasyAdminConfig($path = null)
+    /**
+     * Returns the entire backend configuration or the value corresponding to
+     * the provided key. The dots of the key are automatically transformed into
+     * nested keys. Example: 'assets.css' => $config['assets']['css']
+     *
+     * @param  string|null $key
+     * @return mixed
+     */
+    public function getBackendConfiguration($key = null)
     {
         $config = $this->configurator->getBackendConfig();
 
-        if (!empty($path)) {
-            $parts = explode('.', $path);
+        if (!empty($key)) {
+            $parts = explode('.', $key);
 
             foreach ($parts as $part) {
                 if (!isset($config[$part])) {
@@ -61,9 +69,15 @@ class EasyAdminTwigExtension extends \Twig_Extension
         return $config;
     }
 
-    public function getEntity($entityName)
+    /**
+     * Returns the entire configuration of the given entity.
+     *
+     * @param  string $entityName
+     * @return array|null
+     */
+    public function getEntityConfiguration($entityName)
     {
-        return null !== $this->getEasyAdminConfig('entities.' . $entityName)
+        return null !== $this->getBackendConfiguration('entities.'.$entityName)
             ? $this->configurator->getEntityConfiguration($entityName)
             : null;
     }

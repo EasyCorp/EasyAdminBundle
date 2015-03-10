@@ -1,0 +1,16 @@
+TestEntity:
+    class: AppBundle\Entity\TestEntity
+    label: EntityCustomLabel
+    name: TestEntity
+    edit: { fields: [] }
+    list: { fields: [] }
+    new: { fields: [] }
+    show: { fields: [] }
+TestEntity_:
+    class: AppBundle\AnotherNamespace\Entity\TestEntity
+    label: EntityCustomLabel
+    name: TestEntity_
+    edit: { fields: [] }
+    list: { fields: [] }
+    new: { fields: [] }
+    show: { fields: [] }

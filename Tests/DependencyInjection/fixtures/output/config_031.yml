@@ -1,0 +1,10 @@
+TestEntity:
+    class: AppBundle\Entity\TestEntity
+    custom_option_1: 'custom value 1'
+    custom_option_2: ['custom value 2-1', 'custom value 2-2']
+    label: TestEntity
+    name: TestEntity
+    edit: { fields: [] }
+    list: { fields: [] }
+    new: { fields: [] }
+    show: { fields: [] }

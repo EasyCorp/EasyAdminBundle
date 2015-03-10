@@ -1,0 +1,8 @@
+TestEntity:
+    class: AppBundle\Entity\TestEntity
+    list: { fields: { field1: { property: field1, type: image, base_path: /field_img/ } } }
+    label: TestEntity
+    name: TestEntity
+    edit: { fields: [] }
+    new: { fields: [] }
+    show: { fields: [] }

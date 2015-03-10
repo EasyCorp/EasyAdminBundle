@@ -1,0 +1,12 @@
+# TEST
+# 'new', 'edit', 'list' and 'show' options are correctly initialized
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            new:  ~
+            edit: ~
+            list: ~
+            show: ~

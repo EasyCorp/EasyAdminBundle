@@ -225,7 +225,7 @@ class EasyAdminExtension extends Extension
 
                 $fieldConfiguration = $field;
             } else {
-                throw new \RuntimeException(sprintf('The values of the "fields" option for the "$s" action of the "%s" entity can only be strings or arrays.', $action, $entityConfiguration['class']));
+                throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" action of the "%s" entity can only be strings or arrays.', $action, $entityConfiguration['class']));
             }
 
             // for 'image' type fields, if the entity defines an 'image_base_path'

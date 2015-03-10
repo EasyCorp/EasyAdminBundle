@@ -1,0 +1,67 @@
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-03-10T19:06:37Z
+
+@javiereguiluz Sorry, I forgot this change in #174.
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-03-10T19:23:54Z
+
+By the way, do you plan to run builds against different Symfony versions?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-10T19:29:19Z
+
+Thanks again for teaching me cool things about Travis.
+
+I definitely would like to test against different Symfony versions, specially 2.3, which I don't use it but it's supposedly supported. But I don't know how to properly do it. Could you please help me with this? Thanks!
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-03-10T19:32:04Z
+
+Sure, would you prefer a different PR or should I update here?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-10T19:33:07Z
+
+Maybe we can do it here to group all the Travis stuff in a single PR.
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-03-10T19:45:00Z
+
+I pushed another commit. Let's wait for the Travis build to see if I made any mistakes.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-10T20:13:27Z
+
+Your method sounds a bit strange, why don't take example on [FOSRestBundle](https://github.com/FriendsOfSymfony/FOSRest/blob/master/.travis.yml)'s travis file just by setting up env vars ?
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-03-10T20:31:29Z
+
+@Pierstoval That approach ends up with a lot of more builds because each Symfony version would be used with each PHP version which would mean 28 builds (instead of 10).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-10T20:32:11Z
+
+Yup but you would then cover all possibilities, which is better, isn't it?
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-03-10T20:35:50Z
+
+Honestly, I don't think it's worth it. You have to find a good balance between what you can do and what is good practice. The more jobs you generate the longer the build takes (in this case imho without adding much value).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-10T21:02:20Z
+
+@Pierstoval in this case I agree with @xabbuh: I think that 28 builds would be too much. And the good thing is that if in the future we face problems with some specific Symfony versions + PHP combination, we can easily add a new build to the list.

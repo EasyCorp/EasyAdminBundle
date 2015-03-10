@@ -26,5 +26,10 @@ EasyAdmin is a project originally published by [Javier Eguiluz](https://github.c
   * [Piotr Kędra](https://github.com/kedrap)
   * [Konstantin](https://github.com/KonstantinKuklin)
   * [Peter Kokot](https://github.com/peterkokot)
+  * [Borislav Manolov](https://github.com/bmanolov)
+  * [sr972](https://github.com/sr972)
+  * [Jesús Díez](https://github.com/jesusdiez)
+  * [Antonio de Lucas](https://github.com/antoniojlm84)
+  * [Everton Júnior](https://github.com/ej-kun)
 
 If you have contributed somehow to this project and I've forgotten to mention you, please ping me.

@@ -1,5 +1,7 @@
 language: php
 
+sudo: false
+
 php:
   - 5.3
   - 5.4
@@ -15,4 +17,3 @@ matrix:
     - php: nightly
 
 install: composer install
-

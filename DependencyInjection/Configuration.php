@@ -22,6 +22,34 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('easy_admin');
 
         $rootNode
+            // 'list_actions' and 'max_results' global options are deprecated since 1.0.8
+            // and they are replaced by 'actions' and 'max_results' options under the 'list' key
+            ->validate()
+                ->ifTrue(function ($v) { return isset($v['list_max_results']); })
+                ->then(function ($v) {
+                    if (!isset($v['list'])) {
+                        $v['list'] = array();
+                    }
+
+                    $v['list']['max_results'] = $v['list_max_results'];
+                    unset($v['list_max_results']);
+
+                    return $v;
+                })
+            ->end()
+            ->validate()
+                ->ifTrue(function ($v) { return isset($v['list_actions']); })
+                ->then(function ($v) {
+                    if (!isset($v['list'])) {
+                        $v['list'] = array();
+                    }
+
+                    $v['list']['actions'] = $v['list_actions'];
+                    unset($v['list_actions']);
+
+                    return $v;
+                })
+            ->end()
             ->children()
                 ->scalarNode('site_name')
                     ->defaultValue('Easy Admin')
@@ -29,14 +57,28 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->integerNode('list_max_results')
-                    ->defaultValue(15)
-                    ->info('The maximum number of items to show on listing and search pages.')
+                    ->defaultNull()
+                    ->info('DEPRECATED: use "max_results" option under the "list" key.')
                 ->end()
 
                 ->variableNode('list_actions')
-                    ->defaultValue(array('edit'))
-                    ->info('The actions to show for each item of listing and search pages. Only "edit" and "show" options are available.')
-                    ->example(array('edit', 'show'))
+                    ->defaultNull()
+                    ->info('DEPRECATED: use "actions" option under the "list" key.')
+                ->end()
+
+                ->arrayNode('list')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->integerNode('max_results')
+                            ->defaultValue(15)
+                            ->info('The maximum number of items to show on listing and search pages.')
+                        ->end()
+                        ->variableNode('actions')
+                            ->defaultValue(array('edit', 'new'))
+                            ->info('The actions to show for each item of listing and search pages. Possible values: "edit", "show" and "new".')
+                            ->example(array('edit', 'show'))
+                        ->end()
+                    ->end()
                 ->end()
 
                 ->arrayNode('assets')

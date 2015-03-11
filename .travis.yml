@@ -29,7 +29,7 @@ matrix:
     - php: nightly
 
 before_install:
-  - if [ "$deps" = "low"]; then composer update --prefer-lowest; fi
-  - if [ "$SYMFONY_VERSION" != ""]; then composer require --dev symfony/symfony:$SYMFONY_VERSION; fi
+  - if [ "$deps" = "low" ]; then composer update --prefer-lowest; fi
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev symfony/symfony:$SYMFONY_VERSION; fi
 
 install: composer install

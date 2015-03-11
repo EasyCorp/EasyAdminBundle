@@ -19,7 +19,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
     {
         $this->extension = new EasyAdminExtension();
 
-        $entityMetadataStub = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadataInfo')->disableOriginalConstructor()->getMock();
+        $entityMetadataStub = $this->getMock('Doctrine\ORM\Mapping\ClassMetadata');
         $entityMetadataStub->method('getSingleIdentifierFieldName')->willReturn(array('id'));
 
         $inspectorStub = $this->getMockBuilder('JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector')->disableOriginalConstructor()->getMock();
@@ -35,8 +35,6 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetEntityConfiguration($inputFixtureFilepath, $outputFixtureFilepath)
     {
-        $this->markTestSkipped('Skip test until we can find the solution for the following error: "Argument 1 passed to EasyAdminBundle\Configuration\Configurator::processEntityPropertiesMetadata() must be an instance of Doctrine\ORM\Mapping\ClassMetadata, instance of Mock_ClassMetadataInfo_2057af3e given');
-
         $backendConfig = Yaml::parse($inputFixtureFilepath);
         $backendConfig['easy_admin']['entities'] = $this->extension->getEntitiesConfiguration($backendConfig['easy_admin']['entities']);
         $configurator = new Configurator($backendConfig['easy_admin'], $this->inspector, $this->reflector);

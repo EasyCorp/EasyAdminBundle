@@ -17,7 +17,7 @@
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/admin.css') }}">
         {% endblock %}
 
-        {% for css_asset in easyadmin_config('asset.css') %}
+        {% for css_asset in easyadmin_config('assets.css') %}
             <link rel="stylesheet" href="{{ asset(css_asset) }}">
         {% endfor %}
 

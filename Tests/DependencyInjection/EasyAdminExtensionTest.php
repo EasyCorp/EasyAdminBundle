@@ -19,7 +19,7 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetEntitiesConfiguration($inputFixtureFilepath, $outputFixtureFilepath)
     {
-        $backendConfig = Yaml::parse($inputFixtureFilepath);
+        $backendConfig = Yaml::parse(file_get_contents($inputFixtureFilepath));
         $configuration = $this->extension->getEntitiesConfiguration($backendConfig['easy_admin']['entities']);
         // Yaml component dumps empty arrays as hashes, fix it to increase configuration readability
         $yamlConfiguration = str_replace('{  }', '[]', Yaml::dump($configuration));

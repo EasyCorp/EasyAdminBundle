@@ -37,7 +37,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
     {
         $this->markTestSkipped('Skip test until we can find the solution for the following error: "Argument 1 passed to EasyAdminBundle\Configuration\Configurator::processEntityPropertiesMetadata() must be an instance of Doctrine\ORM\Mapping\ClassMetadata, instance of Mock_ClassMetadataInfo_2057af3e given');
 
-        $backendConfig = Yaml::parse($inputFixtureFilepath);
+        $backendConfig = Yaml::parse(file_get_contents($inputFixtureFilepath));
         $backendConfig['easy_admin']['entities'] = $this->extension->getEntitiesConfiguration($backendConfig['easy_admin']['entities']);
         $configurator = new Configurator($backendConfig['easy_admin'], $this->inspector, $this->reflector);
         $configuration = $configurator->getEntityConfiguration('TestEntity');

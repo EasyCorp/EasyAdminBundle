@@ -125,7 +125,7 @@ class AdminController extends Controller
     protected function listAction()
     {
         $fields = $this->entity['list']['fields'];
-        $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list_max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
+        $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
         return $this->render('@EasyAdmin/list.html.twig', array(
             'paginator' => $paginator,
@@ -248,7 +248,7 @@ class AdminController extends Controller
     protected function searchAction()
     {
         $searchableFields = $this->entity['search']['fields'];
-        $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list_max_results']);
+        $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list']['max_results']);
         $fields = $this->entity['list']['fields'];
 
         return $this->render('@EasyAdmin/list.html.twig', array(

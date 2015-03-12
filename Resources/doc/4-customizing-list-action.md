@@ -118,25 +118,28 @@ Customize the Number of Item Rows Displayed
 -------------------------------------------
 
 By default, listings display a maximum of `15` rows. Define the
-`list_max_results` option to change this value:
+`max_results` option under the `list` key to change this value:
 
 ```yaml
 # app/config/config.yml
 easy_admin:
-    list_max_results: 30
+    list:
+        max_results: 30
     # ...
 ```
 
-Customize the Actions Displayed for Each Item
----------------------------------------------
+Customize the Actions Displayed for Listings
+--------------------------------------------
 
-By default, listings just display the `Edit` action for each item. If you also
-want to add the popular `Show` action, define the `list_actions` option:
+By default, listings display the `edit` action for each item and the global
+`new` button to create a new item. If you also want to add the popular `show`
+action, define the `actions` option under the `list` key:
 
 ```yaml
 # app/config/config.yml
 easy_admin:
-    list_actions: ['edit', 'show']
+    list:
+        actions: ['edit', 'show', 'new']
     # ...
 ```
 

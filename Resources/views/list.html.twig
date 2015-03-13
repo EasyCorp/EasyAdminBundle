@@ -62,8 +62,17 @@
                                     {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
                                 {% endif %}
 
-                                {# for now you cannot sort by virtual fields not directly mapped to entity attributes #}
-                                {% if not metadata.virtual|default(false) %}
+                                {# virtual fields and associations different from one-to-one cannot be sorted
+                                   '2' is the magic number referring to the one-to-one Doctrine constant #}
+                                {% if metadata.virtual|default(false)
+                                    or (metadata.type == 'association' and metadata.associationType|default(0) != 2)
+                                %}
+                                    {% if metadata.label %}
+                                        <span>{{ metadata.label }}</span>
+                                    {% else %}
+                                        <span>{{ field|humanize }}</span>
+                                    {% endif %}
+                                {% else %}
                                     <a href="{{ path('admin', request_attributes|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
                                         {% if isSortingField and sortDirection == 'DESC' %}
                                             <i class="fa fa-caret-up"></i>
@@ -81,12 +90,7 @@
                                             {{ field|humanize }}
                                         {% endif %}
                                     </a>
-                                {% else %}
-                                    {% if metadata.label %}
-                                        <span>{{ metadata.label }}</span>
-                                    {% else %}
-                                        <span>{{ field|humanize }}</span>
-                                    {% endif %}
+
                                 {% endif %}
                             </th>
                         {% endfor %}

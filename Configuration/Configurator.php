@@ -32,6 +32,7 @@ class Configurator
         'fieldType' => null,   // Symfony form field type (text, date, number, choice, ...)
         'dataType'  => null,   // Doctrine property data type (text, date, integer, boolean, ...)
         'virtual'   => false,  // is a virtual field or a real entity property?
+        'sortable'  => true,   // listings can be sorted according to the value of this field
     );
 
     private $doctrineTypeToFormTypeMap = array(
@@ -145,6 +146,7 @@ class Configurator
                 );
             }
         }
+
         return $entityPropertiesMetadata;
     }
 
@@ -329,6 +331,13 @@ class Configurator
                     $entityConfiguration['properties'][$fieldName],
                     $fieldConfiguration
                 );
+            }
+
+            // virtual fields and associations different from *-to-one cannot be sorted in listings
+            $isToManyAssociation = 'association' === $normalizedConfiguration['type']
+                && in_array($normalizedConfiguration['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY));
+            if (true === $normalizedConfiguration['virtual'] || $isToManyAssociation) {
+                $normalizedConfiguration['sortable'] = false;
             }
 
             // 'list' and 'show' actions: use the value of the 'type' option as

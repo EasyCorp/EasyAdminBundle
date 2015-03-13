@@ -62,8 +62,7 @@
                                     {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
                                 {% endif %}
 
-                                {# for now you cannot sort by virtual fields not directly mapped to entity attributes #}
-                                {% if not metadata.virtual|default(false) %}
+                                {% if metadata.sortable %}
                                     <a href="{{ path('admin', request_attributes|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
                                         {% if isSortingField and sortDirection == 'DESC' %}
                                             <i class="fa fa-caret-up"></i>

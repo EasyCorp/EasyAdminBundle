@@ -62,16 +62,7 @@
                                     {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
                                 {% endif %}
 
-                                {# virtual fields and associations different from *-to-one cannot be sorted #}
-                                {% if metadata.virtual|default(false)
-                                    or (metadata.type == 'association' and metadata.associationType|default(0) in [constant('Doctrine\\ORM\\Mapping\\ClassMetadataInfo::ONE_TO_MANY'), constant('Doctrine\\ORM\\Mapping\\ClassMetadataInfo::MANY_TO_MANY')])
-                                %}
-                                    {% if metadata.label %}
-                                        <span>{{ metadata.label }}</span>
-                                    {% else %}
-                                        <span>{{ field|humanize }}</span>
-                                    {% endif %}
-                                {% else %}
+                                {% if metadata.sortable %}
                                     <a href="{{ path('admin', request_attributes|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
                                         {% if isSortingField and sortDirection == 'DESC' %}
                                             <i class="fa fa-caret-up"></i>
@@ -89,7 +80,12 @@
                                             {{ field|humanize }}
                                         {% endif %}
                                     </a>
-
+                                {% else %}
+                                    {% if metadata.label %}
+                                        <span>{{ metadata.label }}</span>
+                                    {% else %}
+                                        <span>{{ field|humanize }}</span>
+                                    {% endif %}
                                 {% endif %}
                             </th>
                         {% endfor %}

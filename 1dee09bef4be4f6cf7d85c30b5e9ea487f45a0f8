@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-13T18:55:13Z
+
+Using the Doctrine constants in the template looked ugly, so I moved everything to the PHP code. Let me know what you think.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-13T18:58:31Z
+
+Seems legit, as we could imagine introducing later a way to disable sorting for specific entitties' fields from list configuration.

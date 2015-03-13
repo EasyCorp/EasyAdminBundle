@@ -62,10 +62,9 @@
                                     {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
                                 {% endif %}
 
-                                {# virtual fields and associations different from one-to-one cannot be sorted
-                                   '2' is the magic number referring to the one-to-one Doctrine constant #}
+                                {# virtual fields and associations different from *-to-one cannot be sorted #}
                                 {% if metadata.virtual|default(false)
-                                    or (metadata.type == 'association' and metadata.associationType|default(0) != 2)
+                                    or (metadata.type == 'association' and metadata.associationType|default(0) in [constant('Doctrine\\ORM\\Mapping\\ClassMetadataInfo::ONE_TO_MANY'), constant('Doctrine\\ORM\\Mapping\\ClassMetadataInfo::MANY_TO_MANY')])
                                 %}
                                     {% if metadata.label %}
                                         <span>{{ metadata.label }}</span>

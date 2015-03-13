@@ -336,7 +336,7 @@ class Configurator
             // virtual fields and associations different from *-to-one cannot be sorted in listings
             $isToManyAssociation = 'association' === $normalizedConfiguration['type']
                 && in_array($normalizedConfiguration['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY));
-            if (true == $normalizedConfiguration['virtual'] || $isToManyAssociation) {
+            if (true === $normalizedConfiguration['virtual'] || $isToManyAssociation) {
                 $normalizedConfiguration['sortable'] = false;
             }
 

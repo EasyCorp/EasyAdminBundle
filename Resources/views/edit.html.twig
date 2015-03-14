@@ -61,9 +61,11 @@
                         <i class="fa fa-save"></i> {{ 'action.save_changes'|trans }}
                     </button>
 
-                    <button type="button" id="button-delete" class="btn btn-danger">
-                        <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
-                    </button>
+                    {% if easyadmin_action_is_enabled('delete', entity.name) %}
+                        <button type="button" id="button-delete" class="btn btn-danger">
+                            <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
+                        </button>
+                    {% endif %}
 
                     <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
                         {{- 'action.back_to_listing'|trans -}}

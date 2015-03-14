@@ -30,26 +30,31 @@
                 <h1 class="title">{{ block('content_title') }}</h1>
             </div>
             <div class="col-xs-12 col-sm-7">
-                <div id="content-actions">
-                    {% if 'new' in easyadmin_config('list.actions') %}
-                        <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
-                            {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
-                        </a>
-                    {% endif %}
-                </div>
-                <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
-                    <div class="input-group">
-                        <input type="hidden" name="action" value="search">
-                        <input type="hidden" name="entity" value="{{ entity.name }}">
-                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search_placeholder'|trans }}" value="{{ app.request.get('query')|default('') }}">
+                {% if easyadmin_action_is_enabled('new', entity.name) %}
+                    <div id="content-actions">
+                            <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
+                                {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
+                            </a>
                     </div>
-                </form>
+                {% endif %}
+
+                {% if easyadmin_action_is_enabled('search', entity.name) %}
+                    <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
+                        <div class="input-group">
+                            <input type="hidden" name="action" value="search">
+                            <input type="hidden" name="entity" value="{{ entity.name }}">
+                            <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search_placeholder'|trans }}" value="{{ app.request.get('query')|default('') }}">
+                        </div>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <div id="main" class="col-sm-12">
         <div>
+            {% set _list_item_actions = easyadmin_list_item_actions(entity.name) %}
+
             <table class="table">
                 <thead>
                     <tr>
@@ -89,9 +94,11 @@
                                 {% endif %}
                             </th>
                         {% endfor %}
+                        {% if _list_item_actions|length > 0 %}
                             <th>
                                 <span>{{ 'list.row_actions'|trans }}</span>
                             </th>
+                        {% endif %}
                     </tr>
                 </thead>
 
@@ -109,17 +116,21 @@
                                     {% endif %}
                                 </td>
                             {% endfor %}
+                            {% if _list_item_actions|length > 0 %}
                                 <td class="actions">
-                                    {% for action in easyadmin_config('list.actions') if action != 'new' %}
+                                    {% for action in _list_item_actions %}
                                         <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
                                             {{- ('action.' ~ action)|trans -}}
                                         </a>
                                     {% endfor %}
                                 </td>
+                            {% endif %}
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="{{ fields|length + 1 }}">{{ 'search.no_results'|trans }}</td>
+                            <td colspan="{{ _list_item_actions|length > 0 ? fields|length + 1 : fields|length }}">
+                                {{ 'search.no_results'|trans }}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -146,7 +157,7 @@
                 var columnIndex = $(this).closest('td').index() + 1;
                 var propertyName = $('table th.toggle:nth-child(' + columnIndex + ')').data('property-name');
 
-                var toggleUrl = "{{ path('admin', { action: 'toggle', entity: entity.name })|raw }}"
+                var toggleUrl = "{{ path('admin', { action: 'edit', entity: entity.name })|raw }}"
                               + "&id=" + $(this).closest('tr').data('id')
                               + "&property=" + propertyName
                               + "&newValue=" + newValue.toString();

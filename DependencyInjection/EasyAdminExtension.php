@@ -45,6 +45,7 @@ class EasyAdminExtension extends Extension
             $actions = array('delete', 'edit', 'new', 'search', 'show');
         }
 
+        // 'list' action is mandatory for all entities
         if (!in_array('list', $actions)) {
             $actions[] = 'list';
         }

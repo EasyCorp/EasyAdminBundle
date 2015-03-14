@@ -34,13 +34,17 @@
 
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
-                <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
-                    <i class="fa fa-edit"></i> {{ 'action.edit'|trans }}
-                </a>
+                {% if 'edit' in easyadmin_config('actions') %}
+                    <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
+                        <i class="fa fa-edit"></i> {{ 'action.edit'|trans }}
+                    </a>
+                {% endif %}
 
-                <button type="button" id="button-delete" class="btn btn-danger">
-                    <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
-                </button>
+                {% if 'delete' in easyadmin_config('actions') %}
+                    <button type="button" id="button-delete" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
+                    </button>
+                {% endif %}
 
                 <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
                     {{- 'action.back_to_listing'|trans -}}

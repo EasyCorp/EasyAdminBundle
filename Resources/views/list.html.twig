@@ -30,20 +30,23 @@
                 <h1 class="title">{{ block('content_title') }}</h1>
             </div>
             <div class="col-xs-12 col-sm-7">
-                <div id="content-actions">
-                    {% if 'new' in easyadmin_config('list.actions') %}
-                        <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
-                            {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
-                        </a>
-                    {% endif %}
-                </div>
-                <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
-                    <div class="input-group">
-                        <input type="hidden" name="action" value="search">
-                        <input type="hidden" name="entity" value="{{ entity.name }}">
-                        <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search_placeholder'|trans }}" value="{{ app.request.get('query')|default('') }}">
+                {% if 'new' in easyadmin_config('actions') %}
+                    <div id="content-actions">
+                            <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
+                                {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
+                            </a>
                     </div>
-                </form>
+                {% endif %}
+
+                {% if 'search' in easyadmin_config('actions') %}
+                    <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
+                        <div class="input-group">
+                            <input type="hidden" name="action" value="search">
+                            <input type="hidden" name="entity" value="{{ entity.name }}">
+                            <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search_placeholder'|trans }}" value="{{ app.request.get('query')|default('') }}">
+                        </div>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -110,7 +113,7 @@
                                 </td>
                             {% endfor %}
                                 <td class="actions">
-                                    {% for action in easyadmin_config('list.actions') if action != 'new' %}
+                                    {% for action in easyadmin_config('actions') if not (action in ['delete', 'list', 'new', 'search']) %}
                                         <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
                                             {{- ('action.' ~ action)|trans -}}
                                         </a>

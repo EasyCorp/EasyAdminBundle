@@ -23,7 +23,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             // 'list_actions' and 'max_results' global options are deprecated since 1.0.8
-            // and they are replaced by 'actions' and 'max_results' options under the 'list' key
+            // and they are replaced by 'actions' and 'list -> max_results' options
             ->validate()
                 ->ifTrue(function ($v) { return isset($v['list_max_results']); })
                 ->then(function ($v) {
@@ -40,11 +40,7 @@ class Configuration implements ConfigurationInterface
             ->validate()
                 ->ifTrue(function ($v) { return isset($v['list_actions']); })
                 ->then(function ($v) {
-                    if (!isset($v['list'])) {
-                        $v['list'] = array();
-                    }
-
-                    $v['list']['actions'] = $v['list_actions'];
+                    $v['actions'] = $v['list_actions'];
                     unset($v['list_actions']);
 
                     return $v;
@@ -56,14 +52,23 @@ class Configuration implements ConfigurationInterface
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
 
-                ->integerNode('list_max_results')
-                    ->defaultNull()
-                    ->info('DEPRECATED: use "max_results" option under the "list" key.')
-                ->end()
-
                 ->variableNode('list_actions')
                     ->defaultNull()
-                    ->info('DEPRECATED: use "actions" option under the "list" key.')
+                    ->info('DEPRECATED: use the global "actions" option.')
+                ->end()
+
+                ->arrayNode('actions')
+                    ->prototype('scalar')->end()
+                    ->validate()
+                        ->ifTrue(function ($v) { return !is_array($v); })
+                        ->thenInvalid('Entity actions must be defined in a YAML array.')
+                    ->end()
+                    ->info('The list of actions enabled by default for all entities.')
+                ->end()
+
+                ->integerNode('list_max_results')
+                    ->defaultNull()
+                    ->info('DEPRECATED: use "max_results" option under the "list" global key.')
                 ->end()
 
                 ->arrayNode('list')
@@ -72,11 +77,6 @@ class Configuration implements ConfigurationInterface
                         ->integerNode('max_results')
                             ->defaultValue(15)
                             ->info('The maximum number of items to show on listing and search pages.')
-                        ->end()
-                        ->variableNode('actions')
-                            ->defaultValue(array('edit', 'new'))
-                            ->info('The actions to show for each item of listing and search pages. Possible values: "edit", "show" and "new".')
-                            ->example(array('edit', 'show'))
                         ->end()
                     ->end()
                 ->end()

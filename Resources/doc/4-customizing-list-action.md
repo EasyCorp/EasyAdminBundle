@@ -128,23 +128,6 @@ easy_admin:
     # ...
 ```
 
-Customize the Actions Displayed for Listings
---------------------------------------------
-
-By default, listings display the `edit` action for each item and the global
-`new` button to create a new item. If you also want to add the popular `show`
-action, define the `actions` option under the `list` key:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    list:
-        actions: ['edit', 'show', 'new']
-    # ...
-```
-
-In the current version of EasyAdmin you cannot define custom actions.
-
 Customize the Columns Displayed
 -------------------------------
 

@@ -22,6 +22,7 @@ class EasyAdminExtension extends Extension
     {
         // process bundle's configuration parameters
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
+        $backendConfiguration['actions'] =  $this->getBackendActions($backendConfiguration['actions']);
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
@@ -29,6 +30,26 @@ class EasyAdminExtension extends Extension
         // load bundle's services
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+    }
+
+    /**
+     * Processes backend actions configuration to ensure that its value is correct.
+     * @param  array $configuredActions
+     * @return array
+     */
+    public function getBackendActions($configuredActions)
+    {
+        $actions = $configuredActions;
+
+        if (null === $actions) {
+            $actions = array('delete', 'edit', 'new', 'search', 'show');
+        }
+
+        if (!in_array('list', $actions)) {
+            $actions[] = 'list';
+        }
+
+        return $actions;
     }
 
     /**

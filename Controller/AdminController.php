@@ -87,19 +87,29 @@ class AdminController extends Controller
             return $this->render404error('@EasyAdmin/error/no_entities.html.twig');
         }
 
-        if (!in_array($action = $request->query->get('action', 'list'), $this->allowedActions)) {
-            return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
-                'action' => $action,
-                'allowed_actions' => $this->allowedActions,
-            ));
-        }
-
         if (null !== $entityName = $request->query->get('entity')) {
             if (!array_key_exists($entityName, $this->config['entities'])) {
                 return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
             }
 
             $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
+
+            // Add the global and entity's actions to the allowed actions
+            $this->allowedActions = array_unique(array_merge($this->allowedActions, $this->config['list_actions'], $this->entity['list_actions']));
+
+            // Add the entity's actions to the ones shown on the list
+            $this->config['list_actions'] = array_unique(array_merge($this->config['list_actions'], $this->entity['list_actions']));
+        } else {
+            // Add the global actions to the allowed actions
+            $this->allowedActions = array_unique(array_merge($this->allowedActions, $this->config['list_actions']));
+        }
+
+
+        if (!in_array($action = $request->query->get('action', 'list'), $this->allowedActions)) {
+            return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
+                'action' => $action,
+                'allowed_actions' => $this->allowedActions,
+            ));
         }
 
         if (null !== $entityName) {

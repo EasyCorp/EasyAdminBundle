@@ -132,6 +132,22 @@ easy_admin:
     # ...
 ```
 
+The global `actions` option is applied to all entities. However, you can also
+define the `actions` option for each entity to override that global option:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    actions: ['show', 'search']
+    entities:
+        Customers:
+            actions: ['delete', 'edit', 'show']
+            class: AppBundle\Entity\Customer
+        Orders:
+            actions: ['edit', 'show', 'search', 'new']
+            class: AppBundle\Entity\Order
+```
+
 In the current version of EasyAdmin you cannot define custom actions.
 
 Customize the Translation of the Backend Interface

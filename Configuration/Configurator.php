@@ -84,8 +84,10 @@ class Configurator
         }
 
         $entityConfiguration = $this->backendConfig['entities'][$entityName];
-        $entityMetadata = $this->inspector->getEntityMetadata($entityConfiguration['class']);
 
+        $entityConfiguration['actions'] = $this->getEntityActions($entityName);
+
+        $entityMetadata = $this->inspector->getEntityMetadata($entityConfiguration['class']);
         $entityConfiguration['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
 
         $entityProperties = $this->processEntityPropertiesMetadata($entityMetadata);
@@ -105,6 +107,30 @@ class Configurator
         $this->entitiesConfig[$entityName] = $entityConfiguration;
 
         return $entityConfiguration;
+    }
+
+    /**
+     * Returns the enabled actions for the given entity.
+     *
+     * @param  string $entityName
+     * @return array
+     */
+    public function getEntityActions($entityName)
+    {
+        $actions = isset($this->backendConfig['entities'][$entityName]['actions'])
+            ? $this->backendConfig['entities'][$entityName]['actions']
+            : null;
+
+        if (null === $actions) {
+            $actions = array('delete', 'edit', 'new', 'search', 'show');
+        }
+
+        // 'list' action is mandatory for all entities
+        if (!in_array('list', $actions)) {
+            $actions[] = 'list';
+        }
+
+        return $actions;
     }
 
     /**

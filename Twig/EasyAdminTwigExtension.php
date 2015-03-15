@@ -32,6 +32,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
             new \Twig_SimpleFunction('easyadmin_render_field', array($this, 'renderEntityField')),
             new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
             new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
+            new \Twig_SimpleFunction('easyadmin_action_is_enabled', array($this, 'isActionEnabled')),
+            new \Twig_SimpleFunction('easyadmin_list_item_actions', array($this, 'getActionsForListingItems')),
         );
     }
 
@@ -204,6 +206,34 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         return '';
+    }
+
+    /**
+     * Checks whether the given 'action' is enabled for the given 'entity'.
+     *
+     * @param  string  $action
+     * @param  string  $entityName
+     * @return boolean
+     */
+    public function isActionEnabled($action, $entityName)
+    {
+        $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
+
+        return in_array($action, $entityConfiguration['actions']);
+    }
+
+    /**
+     * Returns the actions configured for each item displayed in the 'list' action.
+     *
+     * @param  string $entityName
+     * @return array
+     */
+    public function getActionsForListingItems($entityName)
+    {
+        $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
+        $excludedActions = array('delete', 'list', 'new', 'search');
+
+        return array_diff($entityConfiguration['actions'], $excludedActions);
     }
 
     /*

@@ -34,13 +34,13 @@
 
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
-                {% if 'edit' in easyadmin_config('actions') %}
+                {% if easyadmin_action_is_enabled('edit', entity.name) %}
                     <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
                         <i class="fa fa-edit"></i> {{ 'action.edit'|trans }}
                     </a>
                 {% endif %}
 
-                {% if 'delete' in easyadmin_config('actions') %}
+                {% if easyadmin_action_is_enabled('delete', entity.name) %}
                     <button type="button" id="button-delete" class="btn btn-danger">
                         <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
                     </button>

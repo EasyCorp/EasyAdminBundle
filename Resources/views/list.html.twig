@@ -30,7 +30,7 @@
                 <h1 class="title">{{ block('content_title') }}</h1>
             </div>
             <div class="col-xs-12 col-sm-7">
-                {% if 'new' in easyadmin_config('actions') %}
+                {% if easyadmin_action_is_enabled('new', entity.name) %}
                     <div id="content-actions">
                             <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
                                 {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
@@ -38,7 +38,7 @@
                     </div>
                 {% endif %}
 
-                {% if 'search' in easyadmin_config('actions') %}
+                {% if easyadmin_action_is_enabled('search', entity.name) %}
                     <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
                         <div class="input-group">
                             <input type="hidden" name="action" value="search">
@@ -113,7 +113,7 @@
                                 </td>
                             {% endfor %}
                                 <td class="actions">
-                                    {% for action in easyadmin_config('actions') if not (action in ['delete', 'list', 'new', 'search']) %}
+                                    {% for action in easyadmin_list_item_actions(entity.name) %}
                                         <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
                                             {{- ('action.' ~ action)|trans -}}
                                         </a>

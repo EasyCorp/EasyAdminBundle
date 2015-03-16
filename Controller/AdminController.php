@@ -263,6 +263,10 @@ class AdminController extends Controller
      */
     protected function toggleAction()
     {
+        if (!in_array('edit', $this->entity['actions'])) {
+            throw new \Exception('This entity doesn\'t allow to edit its fields.');
+        }
+
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw new \Exception('The entity does not exist.');
         }

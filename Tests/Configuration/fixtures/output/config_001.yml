@@ -9,6 +9,13 @@ new:
     fields: []
 show:
     fields: []
+actions:
+    - delete
+    - edit
+    - new
+    - search
+    - show
+    - list
 primary_key_field_name:
     - id
 properties: []

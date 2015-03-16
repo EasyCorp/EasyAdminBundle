@@ -86,13 +86,17 @@ class AdminController extends Controller
             return $this->render404error('@EasyAdmin/error/no_entities.html.twig');
         }
 
-        if (null !== $entityName = $request->query->get('entity')) {
-            if (!array_key_exists($entityName, $this->config['entities'])) {
-                return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
-            }
-
-            $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
+        // this condition happens when accessing the backend homepage, which
+        // then redirects to the 'list' action of the first configured entity
+        if (null === $entityName = $request->query->get('entity')) {
+            return;
         }
+
+        if (!array_key_exists($entityName, $this->config['entities'])) {
+            return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
+        }
+
+        $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
 
         if (!in_array($action = $request->query->get('action', 'list'), $this->entity['actions'])) {
             return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
@@ -101,17 +105,15 @@ class AdminController extends Controller
             ));
         }
 
-        if (null !== $entityName) {
-            if (!$request->query->has('sortField')) {
-                $request->query->set('sortField', $this->entity['primary_key_field_name']);
-            }
-
-            if (!$request->query->has('sortDirection') || !in_array(strtoupper($request->query->get('sortDirection')), array('ASC', 'DESC'))) {
-                $request->query->set('sortDirection', 'DESC');
-            }
-
-            $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
+        if (!$request->query->has('sortField')) {
+            $request->query->set('sortField', $this->entity['primary_key_field_name']);
         }
+
+        if (!$request->query->has('sortDirection') || !in_array(strtoupper($request->query->get('sortDirection')), array('ASC', 'DESC'))) {
+            $request->query->set('sortDirection', 'DESC');
+        }
+
+        $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
 
         $this->request = $request;
     }

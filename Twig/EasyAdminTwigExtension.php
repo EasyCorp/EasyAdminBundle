@@ -231,7 +231,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getActionsForListingItems($entityName)
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
-        $excludedActions = array('easyadminAjaxEdit', 'delete', 'list', 'new', 'search');
+        $excludedActions = array('delete', 'list', 'new', 'search');
 
         return array_diff($entityConfiguration['actions'], $excludedActions);
     }

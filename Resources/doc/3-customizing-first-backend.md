@@ -126,14 +126,14 @@ global ``actions`` option to set the actions available in your backend:
 ```yaml
 # app/config/config.yml
 easy_admin:
-    # this option makes the backend a read-only application: you cannot
-    # create, delete or modify entities
+    # this option turns the backend into a read-only application:
+    # you cannot create, delete or modify entities
     actions: ['show', 'search']
     # ...
 ```
 
-The global `actions` option is applied to all entities. However, you can also
-define the `actions` option for each entity to override that global option:
+The global `actions` option is applied to all entities. However, entities can
+also define their own `actions` option to override the global option:
 
 ```yaml
 # app/config/config.yml

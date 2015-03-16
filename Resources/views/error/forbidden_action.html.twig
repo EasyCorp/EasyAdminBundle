@@ -38,11 +38,11 @@
                     <ul>
                         <li>
                             Change this action for one of the following allowed actions:
-                            <code>{{ allowed_actions|join('</code>, <code>')|raw }}</code>
+                            <code>{{ enabled_actions|join('</code>, <code>')|raw }}</code>
                         </li>
                         <li>
                             If the action name is correct, make sure it's included in
-                            the <code>$allowedActions</code> property of your backend.
+                            the <code>actions</code> option of your entity configuration.
                         </li>
                     </ul>
                 </div>

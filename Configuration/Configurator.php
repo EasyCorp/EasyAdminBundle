@@ -130,6 +130,11 @@ class Configurator
             $actions[] = 'list';
         }
 
+        // 'easyadminAjaxEdit' is a private action used for boolean flip switches
+        if (!in_array('easyadminAjaxEdit', $actions)) {
+            $actions[] = 'easyadminAjaxEdit';
+        }
+
         return $actions;
     }
 

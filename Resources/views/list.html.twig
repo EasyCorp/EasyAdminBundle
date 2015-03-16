@@ -157,7 +157,7 @@
                 var columnIndex = $(this).closest('td').index() + 1;
                 var propertyName = $('table th.toggle:nth-child(' + columnIndex + ')').data('property-name');
 
-                var toggleUrl = "{{ path('admin', { action: 'easyadminAjaxEdit', entity: entity.name })|raw }}"
+                var toggleUrl = "{{ path('admin', { action: 'edit', entity: entity.name })|raw }}"
                               + "&id=" + $(this).closest('tr').data('id')
                               + "&property=" + propertyName
                               + "&newValue=" + newValue.toString();

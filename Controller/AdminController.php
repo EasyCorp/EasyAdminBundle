@@ -139,6 +139,10 @@ class AdminController extends Controller
      */
     protected function editAction()
     {
+        if ($this->request->isXmlHttpRequest()) {
+            return $this->ajaxEdit();
+        }
+
         if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
         }
@@ -261,7 +265,7 @@ class AdminController extends Controller
      * changing the value of boolean properties when the user clicks on the
      * flip switched displayed for boolean values in the 'list' action.
      */
-    protected function easyadminAjaxEditAction()
+    protected function ajaxEdit()
     {
         if (!in_array('edit', $this->entity['actions'])) {
             throw new \Exception('This entity doesn\'t allow to edit its fields.');

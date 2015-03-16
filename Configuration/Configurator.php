@@ -130,11 +130,6 @@ class Configurator
             $actions[] = 'list';
         }
 
-        // 'easyadminAjaxEdit' is a private action used for boolean flip switches
-        if (!in_array('easyadminAjaxEdit', $actions)) {
-            $actions[] = 'easyadminAjaxEdit';
-        }
-
         return $actions;
     }
 
@@ -392,7 +387,7 @@ class Configurator
             // special case for the 'list' action: 'boolean' properties are displayed
             // as toggleable flip switches when certain conditions are met
             if ('list' === $action && 'boolean' === $normalizedConfiguration['dataType']) {
-                // conditions: 1) the end-user hasn't configures the field type explicitly
+                // conditions: 1) the end-user hasn't configured the field type explicitly
                 // 2) the 'edit' action is allowed for this entity
                 if(!isset($fieldConfiguration['type']) && in_array('edit', $entityConfiguration['actions'])) {
                     $normalizedConfiguration['dataType'] = 'toggle';

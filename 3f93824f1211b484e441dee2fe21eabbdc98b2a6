@@ -1,0 +1,104 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-14T12:59:58Z
+
+In this whole PR I see many calls to `{% if 'edit' in easyadmin_config('actions') %}`
+
+What if we provide a new twig function like `easyadmin_action_exists('edit')` instead ? It would permit then to propose the use of a second argument `entity` which, if specified, will search in the entity configuration (search by key index for faster check) if the specified action exists ?
+
+We could also name it `easyadmin_action_allowed`, then in the future we can add some security checks with the current logged user, just an idea :)
+
+---------------------------------------------------------------------------
+
+by jesusdiez at 2015-03-14T21:07:53Z
+
+@javiereguiluz, I don't know if you were able to take a look in the later changes I did on the #168, after receiving some feedback from @Pierstoval:
+
+https://github.com/jesusdiez/EasyAdminBundle/commit/ec6e3037f77aa0c5143d1b010eebe9201b4db58c enables the per-entity actions and move the configuration logic control to the `Configuration` class, and the rendering to the `Twig` function. That code may be a good base to add some of the extra points you described on the PR.
+
+IMHO, the weakest point of that code is the management of the `list` action (that always should be enabled) and some trashy tricks used to do so. The overriding of the "global" actions it's a little bit weird too, as it uses the general setup if not specific one is defined in the entity and that may not be the desired behavior on every scenario.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-15T21:38:54Z
+
+@jesusdiez thanks for the reference. I've just updated everything to allow action configuration per entity.
+
+@Pierstoval I agree with you about creating new Twig functions. You can check out them in 248e1a0. And I also agree that the name should be compatible with some sort of security system (although that is something reserved for the very far future).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-16T09:11:48Z
+
+I was looking at your implementation of the `easyadmin_list_item_actions` function method, and I started thinking about something: actions remind me of annotations, let me explain why:
+
+An action can be executed on a global scale (search, dashboard, statistics), on an entity scale (list, search) and on an object scale (edit, new, delete).
+
+When setting up actions, why couldn't we provide a "mapping" of our actions, exactly the same way we do with our entities ? We define an action with its id (edit, new, list...) , and we define the scope(s) on which it becomes available.
+
+I think that @ogizanagi proposed something quite similar some time ago, but it's [this method](https://github.com/javiereguiluz/EasyAdminBundle/commit/248e1a059740cea613453e5cb1dd59f59da42424#diff-0c199003d2370f3ea2800f894b951396R236) that made me thought about it. You exclude actions from you research. What if I want my custom action to also be excluded from this list ?
+
+This way, we can easily move our entity system with a "back-end instance" system.
+What I mean with "back-end instance" is a simple menu to the left, that corresponds to some configuration. The basic conf is an entity (as we do right now), so any `backend_type` parameter would be equal to `entity`, but if we want to define a back-end homepage with a dashboard, we define a new backend instance in which the `backend_type` is a `controller` shorthand or `render_template` with twig view, etc.
+
+What do you think ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-16T11:04:43Z
+
+@Pierstoval I find your proposal too complex and a bit out of the current scope of the bundle. You certainly are right about taking into account things like *"how do I exclude a custom action from the list"*. But that's very easy to control:
+
+```yaml
+easy_admin:
+    actions: [..., ...]  # <-- displayed in all listings
+    entities:
+        MyEntity:
+            actions: [..., ...]  # <-- displayed in this entity listing
+```
+
+So the answer to your question is: don't include that custom action in the global `actions` option ... or define the `actions` option for the entity which you don't want to see that custom action.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-16T11:24:50Z
+
+What I meant in my proposal is to setup things like this:
+
+```yaml
+easy_admin:
+    actions:
+        edit: { type: controller, resource: EasyAdmin:Admin:edit }
+        custom: { type: controller, resource: AppBundle:Admin:custom }
+    entities:
+        Post:
+            available_actions: [ 'edit', 'custom' ]
+```
+
+Do you see it ?
+
+And by default, if you don't specify anything in the `actions` "global" param, the result would be
+`{ type: controller, resource: EasyAdmin:Admin:%action_id% } `, for example:
+
+```yaml
+easy_admin:
+    actions:
+        another: ~ # this form
+    actions: [ 'another' ] # or this form
+```
+Will result in this:
+
+```yaml
+easy_admin:
+    actions:
+        another: { type: controller, resource: EasyAdmin:Admin:another }
+```
+This allows overridance of the actions in a much more "configurable" way, instead of doing it entirely inside the controller which will totally extend the `AdminController`
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-16T17:20:57Z
+
+@Pierstoval let's talk about that in the PR which will follow this PR. Then we'll add custom actions and we'll have to talk about things like these. The current PR is the previous needed step to add custom actions feature.
+
+This PR is now finished and ready for the final review. Thanks.

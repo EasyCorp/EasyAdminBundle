@@ -33,7 +33,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
             new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
             new \Twig_SimpleFunction('easyadmin_action_is_enabled', array($this, 'isActionEnabled')),
-            new \Twig_SimpleFunction('easyadmin_list_item_actions', array($this, 'getActionsForListingItems')),
+            new \Twig_SimpleFunction('easyadmin_list_item_actions', array($this, 'getActionsForListItem')),
         );
     }
 
@@ -228,7 +228,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * @param  string $entityName
      * @return array
      */
-    public function getActionsForListingItems($entityName)
+    public function getActionsForListItem($entityName)
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
         $excludedActions = array('delete', 'list', 'new', 'search');

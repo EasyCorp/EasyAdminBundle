@@ -128,23 +128,6 @@ easy_admin:
     # ...
 ```
 
-Customize the Actions Displayed for Listings
---------------------------------------------
-
-By default, listings display the `edit` action for each item and the global
-`new` button to create a new item. If you also want to add the popular `show`
-action, define the `actions` option under the `list` key:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    list:
-        actions: ['edit', 'show', 'new']
-    # ...
-```
-
-In the current version of EasyAdmin you cannot define custom actions.
-
 Customize the Columns Displayed
 -------------------------------
 
@@ -408,7 +391,8 @@ easy_admin:
 Customize Boolean Values
 ------------------------
 
-By default, boolean values are displayed in listings as flip switches:
+By default, when the `edit` action is enabled for the entity, its boolean
+values are displayed in listings as flip switches:
 
 ![Advanced boolean fields](images/easyadmin-boolean-field-toggle.gif)
 
@@ -437,6 +421,9 @@ Now the boolean value will be rendered as a simple label and its value cannot
 be modified:
 
 ![Boolean field displayed as a label](images/easyadmin-boolean-field-label.png)
+
+These non-editable labels are also displayed when the `edit` action is not
+enabled for the entity (see the `actions` option in [Chapter 3](3-customizing-first-backend.md)).
 
 Display Image Field Types
 -------------------------

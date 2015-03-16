@@ -84,8 +84,10 @@ class Configurator
         }
 
         $entityConfiguration = $this->backendConfig['entities'][$entityName];
-        $entityMetadata = $this->inspector->getEntityMetadata($entityConfiguration['class']);
 
+        $entityConfiguration['actions'] = $this->getEntityActions($entityName);
+
+        $entityMetadata = $this->inspector->getEntityMetadata($entityConfiguration['class']);
         $entityConfiguration['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
 
         $entityProperties = $this->processEntityPropertiesMetadata($entityMetadata);
@@ -105,6 +107,30 @@ class Configurator
         $this->entitiesConfig[$entityName] = $entityConfiguration;
 
         return $entityConfiguration;
+    }
+
+    /**
+     * Returns the enabled actions for the given entity.
+     *
+     * @param  string $entityName
+     * @return string[]
+     */
+    private function getEntityActions($entityName)
+    {
+        $actions = isset($this->backendConfig['entities'][$entityName]['actions'])
+            ? $this->backendConfig['entities'][$entityName]['actions']
+            : null;
+
+        if (null === $actions) {
+            $actions = array('delete', 'edit', 'new', 'search', 'show');
+        }
+
+        // 'list' action is mandatory for all entities
+        if (!in_array('list', $actions)) {
+            $actions[] = 'list';
+        }
+
+        return $actions;
     }
 
     /**
@@ -359,9 +385,13 @@ class Configurator
             }
 
             // special case for the 'list' action: 'boolean' properties are displayed
-            // as toggleable flip switches unless end-user configures their type explicitly
-            if ('list' === $action && 'boolean' === $normalizedConfiguration['dataType'] && !isset($fieldConfiguration['type'])) {
-                $normalizedConfiguration['dataType'] = 'toggle';
+            // as toggleable flip switches when certain conditions are met
+            if ('list' === $action && 'boolean' === $normalizedConfiguration['dataType']) {
+                // conditions: 1) the end-user hasn't configured the field type explicitly
+                // 2) the 'edit' action is allowed for this entity
+                if(!isset($fieldConfiguration['type']) && in_array('edit', $entityConfiguration['actions'])) {
+                    $normalizedConfiguration['dataType'] = 'toggle';
+                }
             }
 
             if (null === $normalizedConfiguration['format']) {

@@ -33,7 +33,6 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
  */
 class AdminController extends Controller
 {
-    protected $allowedActions = array('list', 'edit', 'new', 'show', 'search', 'delete', 'toggle');
     protected $config;
     protected $entity = array();
 
@@ -87,19 +86,19 @@ class AdminController extends Controller
             return $this->render404error('@EasyAdmin/error/no_entities.html.twig');
         }
 
-        if (!in_array($action = $request->query->get('action', 'list'), $this->allowedActions)) {
-            return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
-                'action' => $action,
-                'allowed_actions' => $this->allowedActions,
-            ));
-        }
-
         if (null !== $entityName = $request->query->get('entity')) {
             if (!array_key_exists($entityName, $this->config['entities'])) {
                 return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
             }
 
             $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
+        }
+
+        if (!in_array($action = $request->query->get('action', 'list'), $this->entity['actions'])) {
+            return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
+                'action' => $action,
+                'enabled_actions' => $this->entity['actions'],
+            ));
         }
 
         if (null !== $entityName) {
@@ -140,6 +139,10 @@ class AdminController extends Controller
      */
     protected function editAction()
     {
+        if ($this->request->isXmlHttpRequest()) {
+            return $this->ajaxEdit();
+        }
+
         if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
         }
@@ -258,11 +261,16 @@ class AdminController extends Controller
     }
 
     /**
-     * Changes the value of a boolean entity property. This method is used for
-     * the boolean toggle switches displayed in the backend.
+     * Modifies the entity properties via an Ajax call. Currently it's used for
+     * changing the value of boolean properties when the user clicks on the
+     * flip switched displayed for boolean values in the 'list' action.
      */
-    protected function toggleAction()
+    protected function ajaxEdit()
     {
+        if (!in_array('edit', $this->entity['actions'])) {
+            throw new \Exception('This entity doesn\'t allow to edit its fields.');
+        }
+
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw new \Exception('The entity does not exist.');
         }

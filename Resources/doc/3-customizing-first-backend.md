@@ -115,6 +115,41 @@ easy_admin:
             class: AppBundle\Entity\Order
 ```
 
+Customize the Actions Displayed for each Entity
+-----------------------------------------------
+
+The backend provides six different actions for each entity: ``delete``,
+``edit``, ``list``, ``new``, ``search`` and ``show``. The ``list`` action is
+mandatory for all entities, but the rest of the actions can be disabled. Use
+the global ``actions`` option to set the available actions in your backend:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    # this option turns the backend into a read-only application:
+    # you cannot create, delete or modify entities
+    actions: ['show', 'search']
+    # ...
+```
+
+The global `actions` option is applied to all entities. However, entities can
+also define their own `actions` option to override the global option:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    actions: ['show', 'search']
+    entities:
+        Customers:
+            actions: ['delete', 'edit', 'show']
+            class: AppBundle\Entity\Customer
+        Orders:
+            actions: ['edit', 'show', 'search', 'new']
+            class: AppBundle\Entity\Order
+```
+
+In the current version of EasyAdmin you cannot define custom actions.
+
 Customize the Translation of the Backend Interface
 --------------------------------------------------
 

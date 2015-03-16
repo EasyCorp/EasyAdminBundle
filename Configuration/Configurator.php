@@ -113,9 +113,9 @@ class Configurator
      * Returns the enabled actions for the given entity.
      *
      * @param  string $entityName
-     * @return array
+     * @return string[]
      */
-    public function getEntityActions($entityName)
+    private function getEntityActions($entityName)
     {
         $actions = isset($this->backendConfig['entities'][$entityName]['actions'])
             ? $this->backendConfig['entities'][$entityName]['actions']

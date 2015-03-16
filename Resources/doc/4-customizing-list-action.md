@@ -423,8 +423,7 @@ be modified:
 ![Boolean field displayed as a label](images/easyadmin-boolean-field-label.png)
 
 These non-editable labels are also displayed when the `edit` action is not
-enabled for the entity (see the `actions` option in the
-[Chapter 3](3-customizing-first-backend.md)).
+enabled for the entity (see the `actions` option in [Chapter 3](3-customizing-first-backend.md)).
 
 Display Image Field Types
 -------------------------

@@ -115,13 +115,13 @@ easy_admin:
             class: AppBundle\Entity\Order
 ```
 
-Customize the Actions Displayed for Each Entity
+Customize the Actions Displayed for each Entity
 -----------------------------------------------
 
 The backend provides six different actions for each entity: ``delete``,
 ``edit``, ``list``, ``new``, ``search`` and ``show``. The ``list`` action is
-mandatory for all entities, but the rest of actions can be disabled. Use the
-global ``actions`` option to set the actions available in your backend:
+mandatory for all entities, but the rest of the actions can be disabled. Use
+the global ``actions`` option to set the available actions in your backend:
 
 ```yaml
 # app/config/config.yml

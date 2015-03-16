@@ -59,10 +59,6 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('actions')
                     ->prototype('scalar')->end()
-                    ->validate()
-                        ->ifTrue(function ($v) { return !is_array($v); })
-                        ->thenInvalid('Entity actions must be defined in a YAML array.')
-                    ->end()
                     ->info('The list of actions enabled by default for all entities.')
                 ->end()
 

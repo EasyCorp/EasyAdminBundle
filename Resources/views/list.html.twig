@@ -53,6 +53,8 @@
 
     <div id="main" class="col-sm-12">
         <div>
+            {% set _entity_list_actions = easyadmin_list_item_actions(entity.name) %}
+
             <table class="table">
                 <thead>
                     <tr>
@@ -92,9 +94,11 @@
                                 {% endif %}
                             </th>
                         {% endfor %}
+                        {% if _entity_list_actions|length > 0 %}
                             <th>
                                 <span>{{ 'list.row_actions'|trans }}</span>
                             </th>
+                        {% endif %}
                     </tr>
                 </thead>
 
@@ -112,17 +116,21 @@
                                     {% endif %}
                                 </td>
                             {% endfor %}
+                            {% if _entity_list_actions|length > 0 %}
                                 <td class="actions">
-                                    {% for action in easyadmin_list_item_actions(entity.name) %}
+                                    {% for action in _entity_list_actions %}
                                         <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
                                             {{- ('action.' ~ action)|trans -}}
                                         </a>
                                     {% endfor %}
                                 </td>
+                            {% endif %}
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="{{ fields|length + 1 }}">{{ 'search.no_results'|trans }}</td>
+                            <td colspan="{{ _entity_list_actions|length > 0 ? fields|length + 1 : fields|length }}">
+                                {{ 'search.no_results'|trans }}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

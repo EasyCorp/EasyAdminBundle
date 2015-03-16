@@ -19,7 +19,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
     {
         $this->extension = new EasyAdminExtension();
 
-        $entityMetadataStub = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadataInfo')->disableOriginalConstructor()->getMock();
+        $entityMetadataStub = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')->disableOriginalConstructor()->getMock();
         $entityMetadataStub->method('getSingleIdentifierFieldName')->willReturn(array('id'));
 
         $inspectorStub = $this->getMockBuilder('JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector')->disableOriginalConstructor()->getMock();
@@ -35,8 +35,6 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetEntityConfiguration($inputFixtureFilepath, $outputFixtureFilepath)
     {
-        $this->markTestSkipped('Skip test until we can find the solution for the following error: "Argument 1 passed to EasyAdminBundle\Configuration\Configurator::processEntityPropertiesMetadata() must be an instance of Doctrine\ORM\Mapping\ClassMetadata, instance of Mock_ClassMetadataInfo_2057af3e given');
-
         $backendConfig = Yaml::parse(file_get_contents($inputFixtureFilepath));
         $backendConfig['easy_admin']['entities'] = $this->extension->getEntitiesConfiguration($backendConfig['easy_admin']['entities']);
         $configurator = new Configurator($backendConfig['easy_admin'], $this->inspector, $this->reflector);
@@ -67,10 +65,21 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Entity "TestEntity" is not managed by EasyAdmin.
      */
-    public function testAccessingAnUnmanagedEntity()
+    public function testEmptyConfiguration()
     {
-        $backendConfig = array('easy_admin' => array('entities' => array()));
+        $backendConfig = array('easy_admin' => null);
         $configurator = new Configurator($backendConfig, $this->inspector, $this->reflector);
         $configuration = $configurator->getEntityConfiguration('TestEntity');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Entity "UnmanagedEntity" is not managed by EasyAdmin.
+     */
+    public function testAccessingAnUnmanagedEntity()
+    {
+        $backendConfig = array('easy_admin' => array('entities' => array('AppBundle\\Entity\\TestEntity')));
+        $configurator = new Configurator($backendConfig, $this->inspector, $this->reflector);
+        $configuration = $configurator->getEntityConfiguration('UnmanagedEntity');
     }
 }

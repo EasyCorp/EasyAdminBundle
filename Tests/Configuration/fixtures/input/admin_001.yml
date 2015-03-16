@@ -1,3 +1,7 @@
+# TEST
+# simplest configuration possible with just one entity
+
+# CONFIGURATION
 easy_admin:
     entities:
         - AppBundle\Entity\TestEntity

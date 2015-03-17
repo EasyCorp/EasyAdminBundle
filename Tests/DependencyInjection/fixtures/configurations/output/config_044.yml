@@ -1,0 +1,19 @@
+easy_admin:
+    site_name: 'Easy Admin'
+    list:
+        actions: {  }
+        max_results: 15
+    edit:
+        actions: {  }
+    new:
+        actions: {  }
+    show:
+        actions: {  }
+    assets:
+        css: {  }
+        js: {  }
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'
+    entities: {  }

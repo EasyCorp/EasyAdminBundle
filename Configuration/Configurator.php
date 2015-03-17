@@ -24,15 +24,15 @@ class Configurator
     private $defaultEntityFields = array();
 
     private $defaultEntityFieldConfiguration = array(
-        'class'     => null,   // CSS class/classes
-        'format'    => null,   // date/time/datetime/number format
-        'help'      => null,   // form field help message
-        'label'     => null,   // form field label (if 'null', autogenerate it)
-        'type'      => null,   // it holds 'dataType' for list/show and 'fieldType' for new/edit
-        'fieldType' => null,   // Symfony form field type (text, date, number, choice, ...)
-        'dataType'  => null,   // Doctrine property data type (text, date, integer, boolean, ...)
-        'virtual'   => false,  // is a virtual field or a real entity property?
-        'sortable'  => true,   // listings can be sorted according to the value of this field
+        'class'     => null,  // CSS class or classes applied to form field
+        'format'    => null,  // date/time/datetime/number format applied to form field value
+        'help'      => null,  // form field help message
+        'label'     => null,  // form field label (if 'null', autogenerate it)
+        'type'      => null,  // its value matches the value of 'dataType' for list/show and the value of 'fieldType' for new/edit
+        'fieldType' => null,  // Symfony form field type (text, date, number, choice, ...) used to display the field
+        'dataType'  => null,  // Data type (text, date, integer, boolean, ...) of the Doctrine property associated with the field
+        'virtual'   => false, // is a virtual field or a real Doctrine entity property?
+        'sortable'  => true,  // listings can be sorted according to the values of this field
     );
 
     private $doctrineTypeToFormTypeMap = array(
@@ -85,21 +85,19 @@ class Configurator
 
         $entityConfiguration = $this->backendConfig['entities'][$entityName];
 
-        $entityConfiguration['actions'] = $this->getEntityActions($entityName);
-
         $entityMetadata = $this->inspector->getEntityMetadata($entityConfiguration['class']);
         $entityConfiguration['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
 
         $entityProperties = $this->processEntityPropertiesMetadata($entityMetadata);
         $entityConfiguration['properties'] = $entityProperties;
 
-        // default fields used when the action (list, edit, etc.) doesn't define its own fields
+        // default fields used when the view (list, edit, etc.) doesn't define its own fields
         $this->defaultEntityFields = $this->createFieldsFromEntityProperties($entityProperties);
 
-        $entityConfiguration['list']['fields'] = $this->getFieldsForListAction($entityConfiguration);
-        $entityConfiguration['show']['fields'] = $this->getFieldsForShowAction($entityConfiguration);
-        $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedActions('edit', $entityConfiguration);
-        $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedActions('new', $entityConfiguration);
+        $entityConfiguration['list']['fields'] = $this->getFieldsForListView($entityConfiguration);
+        $entityConfiguration['show']['fields'] = $this->getFieldsForShowView($entityConfiguration);
+        $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedViews('edit', $entityConfiguration);
+        $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedViews('new', $entityConfiguration);
         $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction();
 
         $entityConfiguration = $this->introspectGettersAndSetters($entityConfiguration);
@@ -107,30 +105,6 @@ class Configurator
         $this->entitiesConfig[$entityName] = $entityConfiguration;
 
         return $entityConfiguration;
-    }
-
-    /**
-     * Returns the enabled actions for the given entity.
-     *
-     * @param  string $entityName
-     * @return string[]
-     */
-    private function getEntityActions($entityName)
-    {
-        $actions = isset($this->backendConfig['entities'][$entityName]['actions'])
-            ? $this->backendConfig['entities'][$entityName]['actions']
-            : null;
-
-        if (null === $actions) {
-            $actions = array('delete', 'edit', 'new', 'search', 'show');
-        }
-
-        // 'list' action is mandatory for all entities
-        if (!in_array('list', $actions)) {
-            $actions[] = 'list';
-        }
-
-        return $actions;
     }
 
     /**
@@ -177,12 +151,12 @@ class Configurator
     }
 
     /**
-     * Returns the list of fields to show in the 'list' action of this entity.
+     * Returns the list of fields to show in the 'list' view of this entity.
      *
      * @param  array $entityConfiguration
      * @return array The list of fields to show and their metadata
      */
-    private function getFieldsForListAction(array $entityConfiguration)
+    private function getFieldsForListView(array $entityConfiguration)
     {
         // there is a custom configuration for 'list' fields
         if (count($entityConfiguration['list']['fields']) > 0) {
@@ -193,12 +167,12 @@ class Configurator
     }
 
     /**
-     * Returns the list of fields to show in the 'show' action of this entity.
+     * Returns the list of fields to show in the 'show' view of this entity.
      *
      * @param  array $entityConfiguration
      * @return array The list of fields to show and their metadata
      */
-    private function getFieldsForShowAction(array $entityConfiguration)
+    private function getFieldsForShowView(array $entityConfiguration)
     {
         // there is a custom configuration for 'show' fields
         if (count($entityConfiguration['show']['fields']) > 0) {
@@ -210,18 +184,18 @@ class Configurator
 
     /**
      * Returns the list of fields to show in the forms of this entity for the
-     * actions which display forms ('edit' and 'new').
+     * views which display forms ('edit' and 'new').
      *
      * @param  array $entityConfiguration
      * @return array The list of fields to show and their metadata
      */
-    protected function getFieldsForFormBasedActions($action, array $entityConfiguration)
+    protected function getFieldsForFormBasedViews($view, array $entityConfiguration)
     {
         $entityFields = array();
 
-        // there is a custom field configuration for this action
-        if (count($entityConfiguration[$action]['fields']) > 0) {
-            $entityFields = $this->normalizeFieldsConfiguration($action, $entityConfiguration);
+        // there is a custom field configuration for this view
+        if (count($entityConfiguration[$view]['fields']) > 0) {
+            $entityFields = $this->normalizeFieldsConfiguration($view, $entityConfiguration);
         } else {
             $excludedFieldNames = array($entityConfiguration['primary_key_field_name']);
             $excludedFieldTypes = array('binary', 'blob', 'json_array', 'object');
@@ -327,18 +301,17 @@ class Configurator
     }
 
     /**
-     * This method takes the default field configuration, the Doctrine's entity
-     * metadata and the configured field options to merge and process them all
-     * and generate the final and complete field configuration.
+     * Merges all the information about the fields associated with the given view
+     * to return the complete set of normalized field configuration.
      *
-     * @param  string $action
+     * @param  string $view
      * @param  array  $entityConfiguration
      * @return array  The complete field configuration
      */
-    private function normalizeFieldsConfiguration($action, $entityConfiguration)
+    private function normalizeFieldsConfiguration($view, $entityConfiguration)
     {
         $configuration = array();
-        $fieldsConfiguration = $entityConfiguration[$action]['fields'];
+        $fieldsConfiguration = $entityConfiguration[$view]['fields'];
 
         foreach ($fieldsConfiguration as $fieldName => $fieldConfiguration) {
             if (!array_key_exists($fieldName, $entityConfiguration['properties'])) {
@@ -366,17 +339,17 @@ class Configurator
                 $normalizedConfiguration['sortable'] = false;
             }
 
-            // 'list' and 'show' actions: use the value of the 'type' option as
+            // 'list' and 'show' views: use the value of the 'type' option as
             // the 'dataType' option because the previous code has already
             // prioritized end-user preferences over Doctrine and default values
-            if (in_array($action, array('list', 'show'))) {
+            if (in_array($view, array('list', 'show'))) {
                 $normalizedConfiguration['dataType'] = $normalizedConfiguration['type'];
             }
 
-            // 'new' and 'edit' actions: if the user has defined the 'type' option
-            // for the field, use it as 'fieldType. Otherwise, infer the best field
+            // 'new' and 'edit' views: if the user has defined the 'type' option
+            // for the field, use it as 'fieldType'. Otherwise, infer the best field
             // type using the property data type.
-            if (in_array($action, array('edit', 'new'))) {
+            if (in_array($view, array('edit', 'new'))) {
                 if (isset($fieldConfiguration['type'])) {
                     $normalizedConfiguration['fieldType'] = $fieldConfiguration['type'];
                 } else {
@@ -384,12 +357,12 @@ class Configurator
                 }
             }
 
-            // special case for the 'list' action: 'boolean' properties are displayed
+            // special case for the 'list' view: 'boolean' properties are displayed
             // as toggleable flip switches when certain conditions are met
-            if ('list' === $action && 'boolean' === $normalizedConfiguration['dataType']) {
+            if ('list' === $view && 'boolean' === $normalizedConfiguration['dataType']) {
                 // conditions: 1) the end-user hasn't configured the field type explicitly
-                // 2) the 'edit' action is allowed for this entity
-                if(!isset($fieldConfiguration['type']) && in_array('edit', $entityConfiguration['actions'])) {
+                // 2) the 'edit' action is allowed for the 'list' view of this entity
+                if(!isset($fieldConfiguration['type']) && array_key_exists('edit', $entityConfiguration['list']['actions'])) {
                     $normalizedConfiguration['dataType'] = 'toggle';
                 }
             }
@@ -426,7 +399,7 @@ class Configurator
     }
 
     /**
-     * Introspects the getters and setters for the fields used by all actions.
+     * Introspects the getters and setters for the fields used by all views.
      * This preprocessing saves a lot of further processing when accessing or
      * setting the value of the entity properties.
      *
@@ -435,8 +408,8 @@ class Configurator
      */
     private function introspectGettersAndSetters($entityConfiguration)
     {
-        foreach (array('new', 'edit', 'list', 'show', 'search') as $action) {
-            $fieldsConfiguration = $entityConfiguration[$action]['fields'];
+        foreach (array('new', 'edit', 'list', 'show', 'search') as $view) {
+            $fieldsConfiguration = $entityConfiguration[$view]['fields'];
 
             foreach ($fieldsConfiguration as $fieldName => $fieldConfiguration) {
                 $getter = $this->reflector->getGetter($entityConfiguration['class'], $fieldName);
@@ -451,7 +424,7 @@ class Configurator
                 $fieldConfiguration['canBeGet'] = $getter || $isPublic;
                 $fieldConfiguration['canBeSet'] = $setter || $isPublic;
 
-                $entityConfiguration[$action]['fields'][$fieldName] = $fieldConfiguration;
+                $entityConfiguration[$view]['fields'][$fieldName] = $fieldConfiguration;
             }
         }
 
@@ -467,7 +440,7 @@ class Configurator
     private function getFormTypeFromDoctrineType($doctrineType)
     {
         // don't change this array_key_exists() by isset() because the Doctrine
-        // type map can return 'null' values that shouldn't be ignored
+        // type map can return 'null' values that should be treated like that
         return array_key_exists($doctrineType, $this->doctrineTypeToFormTypeMap)
             ? $this->doctrineTypeToFormTypeMap[$doctrineType]
             : $doctrineType;

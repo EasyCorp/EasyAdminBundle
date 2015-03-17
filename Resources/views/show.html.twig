@@ -1,10 +1,14 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 
+{% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
+
 {% trans_default_domain "EasyAdminBundle" %}
-{% block body_class 'admin show ' ~ entity.name|lower %}
+{% set _trans_parameters = { '%entity_name%': _entity.label|trans, '%entity_id%': attribute(item, _entity.primary_key_field_name) } %}
+
+{% block body_class 'admin show ' ~ _entity.name|lower %}
 
 {% block content_title %}
-    {{ entity.show.title|default('show.page_title')|trans({'%entity_name%': entity.label|trans, '%entity_id%': attribute(item, entity.primary_key_field_name)}) }}
+    {{ entity.show.title|default('show.page_title')|trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}
@@ -23,9 +27,9 @@
                 <div class="col-sm-10">
                     <div class="form-control {{ metadata.type|lower }}">
                         {% if metadata.type in ['text'] %}
-                            {{ easyadmin_render_field(item, metadata)|nl2br }}
+                            {{ easyadmin_render_field_for_show_view(item, metadata)|nl2br }}
                         {% else %}
-                            {{ easyadmin_render_field(item, metadata) }}
+                            {{ easyadmin_render_field_for_show_view(item, metadata) }}
                         {% endif %}
                     </div>
                 </div>
@@ -34,21 +38,36 @@
 
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
-                {% if easyadmin_action_is_enabled('edit', entity.name) %}
-                    <a class="btn btn-edit" href="{{ path('admin', { action: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
-                        <i class="fa fa-edit"></i> {{ 'action.edit'|trans }}
-                    </a>
-                {% endif %}
+                {% set _show_actions = easyadmin_get_actions_for_show_item(_entity.name) %}
+                {% for _action in _show_actions %}
+                    {% if 'method' == _action.type %}
+                        {% set _action_href = path('admin', { action: _action.name, view: 'edit', entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
+                    {% elseif 'route' == _action.type %}
+                        {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
+                    {% endif %}
 
-                {% if easyadmin_action_is_enabled('delete', entity.name) %}
-                    <button type="button" id="button-delete" class="btn btn-danger">
-                        <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
+                    <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
+                        {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                        {{ _action.label|trans(_trans_parameters) }}
+                    </a>
+                {% endfor %}
+
+                {% if easyadmin_action_is_enabled_for_show_view('delete', _entity.name) %}
+                    {% set _action = easyadmin_get_action_for_show_view('delete', _entity.name) %}
+                    <button type="button" id="button-delete" class="btn {{ _action.class|default('btn-danger') }}">
+                        {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                        {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
                     </button>
                 {% endif %}
 
-                <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
-                    {{- 'action.back_to_listing'|trans -}}
-                </a>
+                {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
+                {% if easyadmin_action_is_enabled_for_show_view('list', _entity.name) %}
+                    {% set _action = easyadmin_get_action_for_show_view('list', _entity.name) %}
+                    <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: _entity.name, action: _action.name, view: 'show' }) ) }}">{% spaceless %}
+                        {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                        {{ _action.label|default('action.list')|trans(_trans_parameters) }}
+                    {% endspaceless %}</a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -59,16 +78,21 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h4>{{ 'delete_modal.title'|trans }}</h4>
-                    <p>{{ 'delete_modal.content'|trans }}</p>
+                    <h4>{{ 'delete_modal.title'|trans(_trans_parameters) }}</h4>
+                    <p>{{ 'delete_modal.content'|trans(_trans_parameters) }}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn">
-                        {{ 'action.cancel'|trans }}
+                        {{ 'action.cancel'|trans(_trans_parameters) }}
                     </button>
-                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
-                        <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
-                    </button>
+
+                    {% if easyadmin_action_is_enabled_for_show_view('delete', _entity.name) %}
+                        {% set _action = easyadmin_get_action_for_show_view('delete', _entity.name) %}
+                        <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                            {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
+                        </button>
+                    {% endif %}
                 </div>
             </div>
         </div>

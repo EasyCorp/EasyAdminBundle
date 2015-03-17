@@ -1,0 +1,24 @@
+easy_admin:
+    list:
+        max_results: 100
+        actions:
+            - custom_action
+            - '-show'
+            -
+                action: edit
+                label: 'Custom Label'
+    site_name: 'Easy Admin'
+    edit:
+        actions: {  }
+    new:
+        actions: {  }
+    show:
+        actions: {  }
+    assets:
+        css: {  }
+        js: {  }
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'
+    entities: {  }

@@ -1,0 +1,125 @@
+easy_admin:
+    list:
+        actions:
+            -
+                name: edit
+                icon: custom-edit-icon
+                class: custom-edit-class
+                label: custom-edit-label
+                type: route
+        max_results: 15
+    edit:
+        actions:
+            -
+                name: delete
+                icon: custom-delete-icon
+                class: custom-delete-class
+                label: custom-delete-label
+                type: route
+    show:
+        actions:
+            -
+                name: list
+                icon: custom-list-icon
+                class: custom-list-class
+                label: custom-list-label
+                type: route
+    new:
+        actions:
+            -
+                name: list
+                icon: custom-list-icon
+                class: custom-list-class
+                label: custom-list-label
+                type: route
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            label: TestEntity
+            name: TestEntity
+            edit:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: route
+                        label: custom-delete-label
+                        class: custom-delete-class
+                        icon: custom-delete-icon
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            list:
+                fields: {  }
+                actions:
+                    show:
+                        name: show
+                        type: method
+                        label: action.show
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: route
+                        label: custom-edit-label
+                        class: custom-edit-class
+                        icon: custom-edit-icon
+                    search:
+                        name: search
+                        type: method
+                        label: action.search
+                        class: ''
+                        icon: null
+                    new:
+                        name: new
+                        type: method
+                        label: action.new
+                        class: ''
+                        icon: null
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            new:
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: route
+                        label: custom-list-label
+                        class: custom-list-class
+                        icon: custom-list-icon
+            show:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: route
+                        label: custom-list-label
+                        class: custom-list-class
+                        icon: custom-list-icon
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: edit
+    site_name: 'Easy Admin'
+    assets:
+        css: {  }
+        js: {  }
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'

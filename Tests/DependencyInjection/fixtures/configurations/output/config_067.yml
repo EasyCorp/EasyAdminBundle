@@ -1,0 +1,20 @@
+easy_admin:
+    formats:
+        date: 'j F Y'
+        time: 'H:i A'
+        datetime: 'd/m/Y H:i:s'
+        number: '%6.2f'
+    site_name: 'Easy Admin'
+    list:
+        actions: {  }
+        max_results: 15
+    edit:
+        actions: {  }
+    new:
+        actions: {  }
+    show:
+        actions: {  }
+    assets:
+        css: {  }
+        js: {  }
+    entities: {  }

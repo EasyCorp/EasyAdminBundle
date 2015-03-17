@@ -29,11 +29,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('easyadmin_render_field', array($this, 'renderEntityField')),
+            new \Twig_SimpleFunction('easyadmin_render_field_for_*_view', array($this, 'renderEntityField')),
             new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
             new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_action_is_enabled', array($this, 'isActionEnabled')),
-            new \Twig_SimpleFunction('easyadmin_list_item_actions', array($this, 'getActionsForListItem')),
+            new \Twig_SimpleFunction('easyadmin_action_is_enabled_for_*_view', array($this, 'isActionEnabled')),
+            new \Twig_SimpleFunction('easyadmin_get_action_for_*_view', array($this, 'getActionConfiguration')),
+            new \Twig_SimpleFunction('easyadmin_get_actions_for_*_item', array($this, 'getActionsForItem')),
         );
     }
 
@@ -94,7 +95,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * @param  array  $fieldMetadata
      * @return mixed
      */
-    public function renderEntityField($entity, array $fieldMetadata)
+    public function renderEntityField($view, $entity, array $fieldMetadata)
     {
         if (!$fieldMetadata['canBeGet']) {
             return new \Twig_Markup('<span class="label label-danger" title="Getter method does not exist or property is not public">inaccessible</span>', 'UTF-8');
@@ -190,7 +191,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
                 $primaryKeyGetter = 'get'.ucfirst($associatedEntityPrimaryKey);
                 if (method_exists($value, $primaryKeyGetter)) {
-                    $associatedEntityUrl = $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'id' => $value->$primaryKeyGetter()));
+                    $associatedEntityUrl = $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'view' => $view, 'id' => $value->$primaryKeyGetter()));
                     // escaping is done manually in order to include this content inside a Twig_Markup object
                     $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
                     // ideally we'd use the 'truncateEntityField' method, but it's cumbersome to invoke it from here
@@ -215,25 +216,57 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * @param  string  $entityName
      * @return boolean
      */
-    public function isActionEnabled($action, $entityName)
+    public function isActionEnabled($view, $action, $entityName)
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
 
-        return in_array($action, $entityConfiguration['actions']);
+        return array_key_exists($action, $entityConfiguration[$view]['actions']);
     }
 
     /**
-     * Returns the actions configured for each item displayed in the 'list' action.
+     * Checks whether the given 'action' is enabled for the given 'entity'.
+     *
+     * @param  string  $action
+     * @param  string  $entityName
+     * @return boolean
+     */
+    public function getActionConfiguration($view, $action, $entityName)
+    {
+        $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
+
+        return isset($entityConfiguration[$view]['actions'][$action])
+            ? $entityConfiguration[$view]['actions'][$action]
+            : array();
+    }
+
+    /**
+     * Returns the actions configured for each item displayed in the given view.
+     * This method is needed because some actions are displayed globally for the
+     * entire view (e.g. 'new' action in 'list' view) and other default actions
+     * are treated in a special way (e.g. 'delete' action in 'edit'/'show' views)
      *
      * @param  string $entityName
      * @return array
      */
-    public function getActionsForListItem($entityName)
+    public function getActionsForItem($view, $entityName)
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
-        $excludedActions = array('delete', 'list', 'new', 'search');
+        $viewActions = $entityConfiguration[$view]['actions'];
 
-        return array_diff($entityConfiguration['actions'], $excludedActions);
+        // Each view displays some actions in special ways (e.g. the 'new' button
+        // in the 'list' view). Those special actions shouldn't be displayed for
+        // each item as a regular action.
+        $actionsExcludedForItems = array(
+            'list' => array('delete', 'list', 'new', 'search'),
+            'edit' => array('list', 'delete'),
+            'new'  => array('list'),
+            'show' => array('list', 'delete'),
+        );
+        $excludedActions = $actionsExcludedForItems[$view];
+
+        return array_filter($viewActions, function($action) use ($excludedActions) {
+            return !in_array($action['name'], $excludedActions);
+        });
     }
 
     /*

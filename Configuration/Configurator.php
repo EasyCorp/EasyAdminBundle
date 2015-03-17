@@ -117,20 +117,41 @@ class Configurator
      */
     private function getEntityActions($entityName)
     {
-        $actions = isset($this->backendConfig['entities'][$entityName]['actions'])
+        $defaultActions = array('delete', 'edit', 'new', 'search', 'show', 'list');
+        $globalActions = isset($this->backendConfig['actions']) ? $this->backendConfig['actions'] : $defaultActions;
+        $entityActions = isset($this->backendConfig['entities'][$entityName]['actions'])
             ? $this->backendConfig['entities'][$entityName]['actions']
-            : null;
+            : array();
 
-        if (null === $actions) {
-            $actions = array('delete', 'edit', 'new', 'search', 'show');
+        $actions = array_merge($globalActions, $entityActions);
+
+        // if the action name is preffixed with '-', remove that action
+        // e.g. '-search' removes both '-search' and 'search' (if present)
+        $removedActions = array();
+        foreach ($actions as $action) {
+            if ('-' === $action{0}) {
+                $removedActions[] = $action;
+                $removedActions[] = substr($action, 1);
+            }
         }
+
+        $actions = array_diff($actions, $removedActions);
 
         // 'list' action is mandatory for all entities
         if (!in_array('list', $actions)) {
             $actions[] = 'list';
         }
 
-        return $actions;
+        $normalizedActions = array();
+        foreach ($actions as $actionName) {
+            $normalizedActions[$actionName] = array(
+                'type' => 'method',
+                'method' => $actionName,
+                'label' => in_array($actionName, $defaultActions) ? 'action.'.$actionName : $actionName,
+            );
+        }
+
+        return $normalizedActions;
     }
 
     /**

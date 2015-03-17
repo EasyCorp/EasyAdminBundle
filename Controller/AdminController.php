@@ -98,7 +98,7 @@ class AdminController extends Controller
 
         $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
 
-        if (!in_array($action = $request->query->get('action', 'list'), $this->entity['actions'])) {
+        if (!array_key_exists($action = $request->query->get('action', 'list'), $this->entity['actions'])) {
             return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
                 'action' => $action,
                 'enabled_actions' => $this->entity['actions'],

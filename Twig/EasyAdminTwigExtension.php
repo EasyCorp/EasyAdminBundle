@@ -219,7 +219,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
 
-        return in_array($action, $entityConfiguration['actions']);
+        return array_key_exists($action, $entityConfiguration['actions']);
     }
 
     /**
@@ -233,7 +233,14 @@ class EasyAdminTwigExtension extends \Twig_Extension
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
         $excludedActions = array('delete', 'list', 'new', 'search');
 
-        return array_diff($entityConfiguration['actions'], $excludedActions);
+        $listActions = array();
+        foreach ($entityConfiguration['actions'] as $actionName => $actionConfiguration) {
+            if (!in_array($actionName, $excludedActions)) {
+                $listActions[$actionName] = $actionConfiguration;
+            }
+        }
+
+        return $listActions;
     }
 
     /*

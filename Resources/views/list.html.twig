@@ -119,9 +119,15 @@
                             {% if _list_item_actions|length > 0 %}
                                 <td class="actions">
                                     {% for action in _list_item_actions %}
-                                        <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
-                                            {{- ('action.' ~ action)|trans -}}
-                                        </a>
+                                        {% if 'method' == action.type %}
+                                            <a href="{{ path('admin', { action: action.method, entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
+                                                {{- action.label|trans -}}
+                                            </a>
+                                        {% elseif 'route' == action.type %}
+                                            <a href="{{ path(action.route, { entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
+                                                {{- action.label|trans -}}
+                                            </a>
+                                        {% endif %}
                                     {% endfor %}
                                 </td>
                             {% endif %}

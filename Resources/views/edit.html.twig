@@ -20,7 +20,7 @@
                         {{ form_label(field, field_label|trans, { label_attr: { class: 'col-sm-2 control-label' } }) }}
 
                         <div class="col-sm-10 {% if entity_fields[field.vars.name]['fieldType'] == 'checkbox' %}col-sm-offset-2{% endif %}">
-                            {% set widget_attributes = { attr: { class: entity_fields[field.vars.name]['class']|default(null) } } %}
+                            {% set widget_attributes = { attr: { class: entity_fields[field.vars.name]['class']|default(null) }, label: entity_fields[field.vars.name]['label']|trans } %}
                             {{ form_widget(field, widget_attributes) }}
                             {{ form_errors(field) }}
 

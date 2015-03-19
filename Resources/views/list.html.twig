@@ -87,7 +87,7 @@
                                     </a>
                                 {% else %}
                                     {% if metadata.label %}
-                                        <span>{{ metadata.label }}</span>
+                                        <span>{{ metadata.label|trans }}</span>
                                     {% else %}
                                         <span>{{ field|humanize }}</span>
                                     {% endif %}

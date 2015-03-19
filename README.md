@@ -128,7 +128,15 @@ Without any further configuration, EasyAdmin guesses the best settings to make
 your admin backend look "good enough". This may be acceptable for simple
 backends and rapid prototypes, but most of the times, you need to customize
 some parts of the backend. Keep reading the rest of the documentation to learn
-how to do it:
+how to do it.
+
+-----
+
+**NOTE**: you are reading the documentation of the bundle's **development
+version**, but in your application you probably have installed a **stable
+version**. [Read the documentation of the most recent stable version](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.0.8/Resources/doc).
+
+-----
 
   * [Chapter 3 - Customizing your first backend](Resources/doc/3-customizing-first-backend.md)
   * [Chapter 4 - Customizing the List Action](Resources/doc/4-customizing-list-action.md)

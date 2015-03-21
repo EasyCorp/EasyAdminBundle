@@ -80,40 +80,6 @@ easy_admin:
         # ...
 ```
 
-Customize the Label of the Button to Create new Items
------------------------------------------------------
-
-Listing page includes a button in the top right part of the page to create new
-items of the same entity. By default, this button displays a generic label that
-includes the name of the entity. Define the `action_label` option of the `new`
-action to change this value:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            new:  # <-- define it in the 'new' action, not in the 'list' action
-                action_label: "Add Customer"
-        # ...
-```
-
-Similarly to the page title, this label can also include the `%entity_name%`
-variable to display the class name of the current entity:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            new:
-                # use double %% to escape special YAML characters
-                action_label: "Add %%entity_name%%"
-        # ...
-```
-
 Customize the Number of Item Rows Displayed
 -------------------------------------------
 

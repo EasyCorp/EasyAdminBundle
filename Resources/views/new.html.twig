@@ -1,11 +1,16 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 
+{% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
+
 {% trans_default_domain "EasyAdminBundle" %}
+{% set _trans_parameters = { '%entity_name%': _entity.label|trans } %}
+
 {% form_theme form '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig' %}
-{% block body_class 'admin new ' ~ entity.name|lower %}
+
+{% block body_class 'admin new ' ~ _entity.name|lower %}
 
 {% block content_title %}
-    {{ entity.new.title|default('new.page_title')|trans({'%entity_name%': entity.label|trans}) }}
+    {{ _entity.new.title|default('new.page_title')|trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}
@@ -60,29 +65,29 @@
                 <div class="col-sm-10 col-sm-offset-2">
                     {# the 'save' action is hardcoded for the 'new' view #}
                     <button type="submit" class="btn">
-                        <i class="fa fa-save"></i> {{ 'action.save'|trans }}
+                        <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters) }}
                     </button>
 
-                    {% set _new_actions = easyadmin_get_actions_for_new_item(entity.name) %}
+                    {% set _new_actions = easyadmin_get_actions_for_new_item(_entity.name) %}
                     {% for _action in _new_actions %}
                         {% if 'method' == _action.type %}
-                            {% set _action_href = path('admin', { action: _action.name, view: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) %}
+                            {% set _action_href = path('admin', { action: _action.name, view: 'edit', entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
                         {% elseif 'route' == _action.type %}
-                            {% set _action_href = path(_action.name, { entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) %}
+                            {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
                         {% endif %}
 
                         <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
                             {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                            {{ _action.label|trans }}
+                            {{ _action.label|trans(_trans_parameters) }}
                         </a>
                     {% endfor %}
 
                     {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
-                    {% if easyadmin_action_is_enabled_for_new_view('list', entity.name) %}
-                        {% set _action = easyadmin_get_action_for_new_view('list', entity.name) %}
-                        <a class="btn btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: _action.name, view: 'new' }) ) }}">{% spaceless %}
+                    {% if easyadmin_action_is_enabled_for_new_view('list', _entity.name) %}
+                        {% set _action = easyadmin_get_action_for_new_view('list', _entity.name) %}
+                        <a class="btn btn-secondary" href="{{ path('admin', ({ entity: _entity.name, action: _action.name, view: 'new' }) ) }}">{% spaceless %}
                             {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                            {{ _action.label|default('action.list')|trans }}
+                            {{ _action.label|default('action.list')|trans(_trans_parameters) }}
                         {% endspaceless %}</a>
                     {% endif %}
                 </div>

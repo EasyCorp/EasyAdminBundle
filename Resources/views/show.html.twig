@@ -1,10 +1,14 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 
+{% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
+
 {% trans_default_domain "EasyAdminBundle" %}
-{% block body_class 'admin show ' ~ entity.name|lower %}
+{% set _trans_parameters = { '%entity_name%': _entity.label|trans, '%entity_id%': attribute(item, _entity.primary_key_field_name) } %}
+
+{% block body_class 'admin show ' ~ _entity.name|lower %}
 
 {% block content_title %}
-    {{ entity.show.title|default('show.page_title')|trans({'%entity_name%': entity.label|trans, '%entity_id%': attribute(item, entity.primary_key_field_name)}) }}
+    {{ entity.show.title|default('show.page_title')|trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}
@@ -34,34 +38,34 @@
 
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
-                {% set _show_actions = easyadmin_get_actions_for_show_item(entity.name) %}
+                {% set _show_actions = easyadmin_get_actions_for_show_item(_entity.name) %}
                 {% for _action in _show_actions %}
                     {% if 'method' == _action.type %}
-                        {% set _action_href = path('admin', { action: _action.name, view: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) %}
+                        {% set _action_href = path('admin', { action: _action.name, view: 'edit', entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
                     {% elseif 'route' == _action.type %}
-                        {% set _action_href = path(_action.name, { entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) %}
+                        {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
                     {% endif %}
 
                     <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                        {{ _action.label|trans }}
+                        {{ _action.label|trans(_trans_parameters) }}
                     </a>
                 {% endfor %}
 
-                {% if easyadmin_action_is_enabled_for_show_view('delete', entity.name) %}
-                    {% set _action = easyadmin_get_action_for_show_view('delete', entity.name) %}
+                {% if easyadmin_action_is_enabled_for_show_view('delete', _entity.name) %}
+                    {% set _action = easyadmin_get_action_for_show_view('delete', _entity.name) %}
                     <button type="button" id="button-delete" class="btn {{ _action.class|default('btn-danger') }}">
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                        {{ _action.label|default('action.delete')|trans }}
+                        {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
                     </button>
                 {% endif %}
 
                 {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
-                {% if easyadmin_action_is_enabled_for_show_view('list', entity.name) %}
-                    {% set _action = easyadmin_get_action_for_show_view('list', entity.name) %}
-                    <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: _action.name, view: 'show' }) ) }}">{% spaceless %}
+                {% if easyadmin_action_is_enabled_for_show_view('list', _entity.name) %}
+                    {% set _action = easyadmin_get_action_for_show_view('list', _entity.name) %}
+                    <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: _entity.name, action: _action.name, view: 'show' }) ) }}">{% spaceless %}
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                        {{ _action.label|default('action.list')|trans }}
+                        {{ _action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>
                 {% endif %}
             </div>
@@ -74,19 +78,19 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h4>{{ 'delete_modal.title'|trans }}</h4>
-                    <p>{{ 'delete_modal.content'|trans }}</p>
+                    <h4>{{ 'delete_modal.title'|trans(_trans_parameters) }}</h4>
+                    <p>{{ 'delete_modal.content'|trans(_trans_parameters) }}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn">
-                        {{ 'action.cancel'|trans }}
+                        {{ 'action.cancel'|trans(_trans_parameters) }}
                     </button>
 
-                    {% if easyadmin_action_is_enabled_for_show_view('delete', entity.name) %}
-                        {% set _action = easyadmin_get_action_for_show_view('delete', entity.name) %}
+                    {% if easyadmin_action_is_enabled_for_show_view('delete', _entity.name) %}
+                        {% set _action = easyadmin_get_action_for_show_view('delete', _entity.name) %}
                         <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
                             {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                            {{ _action.label|default('action.delete')|trans }}
+                            {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
                         </button>
                     {% endif %}
                 </div>

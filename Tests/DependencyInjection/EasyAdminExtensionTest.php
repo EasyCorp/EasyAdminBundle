@@ -45,7 +45,7 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage One of the values of the "fields" option for the "new" action of the "AppBundle\Entity\TestEntity" entity does not define the "property" option.
+     * @expectedExceptionMessage One of the values of the "fields" option for the "new" view of the "AppBundle\Entity\TestEntity" entity does not define the "property" option.
      */
     public function testPropertyOptionIsMandatoryForFields()
     {
@@ -61,7 +61,7 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage The values of the "fields" option for the "new" action of the "AppBundle\Entity\TestEntity" entity can only be strings or arrays.
+     * @expectedExceptionMessage The values of the "fields" option for the "new" view of the "AppBundle\Entity\TestEntity" entity can only be strings or arrays.
      */
     public function testFieldsCanOnlyBeStringsOrArrays()
     {

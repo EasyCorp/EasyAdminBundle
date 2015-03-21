@@ -23,16 +23,16 @@
                 <source>action.delete</source>
                 <target>Izbrišite</target>
             </trans-unit>
-            <trans-unit id="action.save_changes">
-                <source>action.save_changes</source>
+            <trans-unit id="action.save">
+                <source>action.save</source>
                 <target>Shranite spremembe</target>
             </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
                 <target>Prekličite</target>
             </trans-unit>
-            <trans-unit id="action.back_to_listing">
-                <source>action.back_to_listing</source>
+            <trans-unit id="action.list">
+                <source>action.list</source>
                 <target>Nazaj na poslušanje</target>
             </trans-unit>
 
@@ -58,20 +58,16 @@
                 <target><![CDATA[{0} Rezultati niso bili najdeni|{1} <strong>1</strong> rezultat najden|{2} <strong>%count%</strong> rezultata najdena|{3} <strong>%count%</strong> rezultati najdeni|[5,Inf] <strong>%count%</strong>rezultatov najdenih]]></target>
             </trans-unit>
 
-            <!-- 'search' action -->
+            <!-- 'search' view -->
             <trans-unit id="search.no_results">
                 <source>search.no_results</source>
                 <target>Nobenih rezultatov ni najdenih.</target>
             </trans-unit>
 
-            <!-- 'list' action -->
+            <!-- 'list' view -->
             <trans-unit id="list.row_actions">
                 <source>list.row_actions</source>
                 <target>Akcije</target>
-            </trans-unit>
-            <trans-unit id="list.search_placeholder">
-                <source>list.search_placeholder</source>
-                <target>Iskanje</target>
             </trans-unit>
 
             <!-- paginator -->

@@ -281,6 +281,7 @@ button.btn {
     border-radius: 4px;
     color: #FFF;
     line-height: 1.2;
+    outline: none;
     padding: .7em 1em;
     text-align: center;
 }
@@ -290,6 +291,7 @@ button.btn:hover {
     color: #FFF;
     opacity: .9;
 }
+
 .btn + .btn {
     margin-left: 5px;
 }
@@ -301,6 +303,7 @@ button.btn i {
     padding-right: 6px;
 }
 
+/* .bnt-secondary is for 'buttons' displayed as text links */
 a.btn-secondary,
 input.btn-secondary,
 button.btn-secondary,
@@ -315,6 +318,12 @@ a.btn-secondary:hover,
 input.btn-secondary:hover,
 button.btn-secondary:hover {
     text-decoration: none;
+}
+a.btn-secondary:active,
+input.btn-secondary:active,
+button.btn-secondary:active {
+    box-shadow: none;
+    -webkit-box-shadow: none;
 }
 
 a.btn-danger,

@@ -1,5 +1,5 @@
-Chapter 4. Customizing the List Action
-======================================
+Chapter 4. Customizing the List View
+====================================
 
 The first simple backend created with EasyAdmin used a compact configuration
 like the following:

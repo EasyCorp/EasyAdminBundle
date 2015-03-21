@@ -1,12 +1,11 @@
-Chapter 5. Customizing the Show Action
-======================================
+Chapter 5. Customizing the Show View
+====================================
 
 Customize which Fields are Displayed
 ------------------------------------
 
-By default, the `show` action displays all the entity fields and their
-values. Use the `fields` option under the `show` key to restrict the fields to
-display:
+By default, the `show` view displays all the entity fields and their values.
+Use the `fields` option under the `show` key to restrict the fields to display:
 
 ```yaml
 easy_admin:
@@ -60,9 +59,9 @@ easy_admin:
 Customize the Order of the Fields
 ---------------------------------
 
-By default, the `show` action displays the entity properties in the same order
+By default, the `show` view displays the entity properties in the same order
 as they were defined in the associated entity class. You could customize the
-`show` action contents just by reordering the entity properties, but it's more
+`show` view contents just by reordering the entity properties, but it's more
 convenient to just define the order using the `fields` option of the `show`
 option:
 
@@ -104,7 +103,7 @@ the custom label you want to display (`label: 'Contact'`).
 
 ### Translate Labels
 
-Read *"Translate Column Labels"* section of the [chapter 4](4-customizing-list-action.md).
+Read *"Translate Column Labels"* section of the [chapter 4](4-customizing-list-view.md).
 
 Display Images Field Types
 --------------------------
@@ -125,7 +124,7 @@ easy_admin:
 ```
 
 Refer to the *Display Images Field Types* section of the
-[Customizing the List Action](4-customizing-list-action.md) chapter to know how
+[Customizing the List View](4-customizing-list-view.md) chapter to know how
 to define the base path for images stored as relative URLs.
 
 Customize Fields Appearance

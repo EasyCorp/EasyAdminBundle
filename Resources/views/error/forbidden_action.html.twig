@@ -42,9 +42,20 @@
                         </li>
                         <li>
                             If the action name is correct, make sure it's included in
-                            the <code>actions</code> option of your entity configuration.
+                            the <code>actions</code> option in the <code>{{ view }}</code>
+                            view configuration of your entity.
                         </li>
                     </ul>
+
+                    <pre>easy_admin:
+    entities:
+        YourEntity:
+            # ...
+            {{ view }}:
+                actions:
+                    ['{{ action }}', ...]
+        # ...
+                    </pre>
                 </div>
             </div>
         </div>

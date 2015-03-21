@@ -1,20 +1,20 @@
-Chapter 6. Customizing the New and Edit Actions
-===============================================
+Chapter 6. Customizing the New and Edit Views
+=============================================
 
-The `new` action is displayed when creating a new item of the given entity,
-whereas the `edit` action is displayed when editing any entity instance. Both
-actions are pretty similar, so most of the times you apply them the same
+The `new` view is displayed when creating a new item of the given entity,
+whereas the `edit` view is displayed when editing any entity instance. Both
+views are pretty similar, so most of the times you apply them the same
 customization.
 
-Instead of duplicating the configuration for both actions, you can define a new
-*virtual* `form` action with the common configuration:
+Instead of duplicating the configuration for both views, you can define a new
+*virtual* `form` view with the common configuration:
 
 ```yaml
 easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
-            form:  # <-- 'form' is applied to both 'new' and 'edit' actions
+            form:  # <-- 'form' is applied to both 'new' and 'edit' views
                 fields:
                     - 'id'
                     - { property: 'email', type: 'email', label: 'Contact' }
@@ -22,11 +22,11 @@ easy_admin:
     # ...
 ```
 
-Any option defined in the `form` action will be copied into the `new` and
-`edit` actions. However, any option defined in the `edit` and `new` action
+Any option defined in the `form` view will be copied into the `new` and
+`edit` views. However, any option defined in the `edit` and `new` view
 overrides the corresponding `form` option. In other words, always use the
 `form` action to define the common configuration, and then define in the `new`
-and `edit` actions just the specific options you want to override:
+and `edit` views just the specific options you want to override:
 
 ```yaml
 easy_admin:
@@ -182,7 +182,7 @@ These are the options that you can define for form fields:
 
 ### Translate Form Field Labels
 
-Read *"Translate Column Labels"* section of the [chapter 4](4-customizing-list-action.md).
+Read *"Translate Column Labels"* section of the [chapter 4](4-customizing-list-view.md).
 
 Use Custom Doctrine Types in Forms
 ----------------------------------

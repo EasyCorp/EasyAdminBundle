@@ -65,14 +65,14 @@ known Symfony bundle [inheritance mechanism](http://symfony.com/doc/current/book
 The most important templates used by EasyAdmin are the following:
 
   * `layout.html.twig`, the common layout that warps all backend pages;
-  * `new.html.twig`, the template used for the `new` and `search` actions;
-  * `show.html.twig`, the template used for the `show` action;
-  * `edit.html.twig`, the template used for the `edit` action;
-  * `list.html.twig`, the template used for the `list` action;
+  * `new.html.twig`, the template used for the `new` and `search` views;
+  * `show.html.twig`, the template used for the `show` view;
+  * `edit.html.twig`, the template used for the `edit` view;
+  * `list.html.twig`, the template used for the `list` view;
   * `_list_paginator.html.twig`, the template fragment used to display the
-    paginator of the `new` and `search` actions;
+    paginator of the `new` and `search` views;
   * `_flashes.html.twig`, the template fragment used to display flash messages
-    for any action.
+    for any view.
 
 Suppose you want to modify the paginator displayed at the bottom of each
 listing. This element is built with the `_list_paginator.html.twig` template,

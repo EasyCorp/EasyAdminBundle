@@ -48,8 +48,7 @@ generic and simple way to do it:
   * Full theme support (not just changing the main color of the backend)
   * FOSUserBundle integration
   * Form field grouping
-  * Custom actions for list/search records (in addition to the default `edit`
-    and `show` actions).
+  * Custom actions for list/search, edit, show and new views.
 
 **Features that we'll never implement**
 
@@ -61,8 +60,9 @@ the future. However, it's safe to consider that they'll never be implemented:
     stack framework (Silex, Laravel, custom Symfony developments, etc.)
   * Support for anything different from Doctrine ORM (Propel, Doctrine ODM,
     etc.)
-  * Support for fine-grained security control over entity actions (instead,
-    use Symfony's built-in security features, such as voters or ACLs).
+  * Support for fine-grained security control over views and/or entity actions
+    (instead, use Symfony's built-in security features, such as voters or
+    ACLs).
   * Dashboards for backend homepages (with widgets, charts, etc.)
   * Breadcrumbs that show the hierarchical navigation to the given page.
   * Batch actions to apply the same action to more than one list record

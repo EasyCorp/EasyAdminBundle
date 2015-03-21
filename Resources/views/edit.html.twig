@@ -12,23 +12,24 @@
     {{ form_start(form, { attr: { id: 'edit-form', novalidate: 'novalidate' } }) }}
         <div id="form">
             {% for field in form.children if field.vars.name != '_token' %}
+                {% set _field_metadata = entity_fields[field.vars.name] %}
                 <div class="form-group {% if not field.vars.valid %}has-error{% endif %}">
-                    {% if entity_fields[field.vars.name]['fieldType'] == 'association' %}
-                        {{ easyadmin_render_field(item, entity_fields[field.vars.name]) }}
+                    {% if _field_metadata['fieldType'] == 'association' %}
+                        {{ easyadmin_render_field_for_edit_view(item, _field_metadata) }}
                     {% else %}
-                        {% set field_label = entity_fields[field.vars.name]['label']|default(null) %}
+                        {% set field_label = _field_metadata['label']|default(null) %}
                         {{ form_label(field, field_label|trans, { label_attr: { class: 'col-sm-2 control-label' } }) }}
 
-                        <div class="col-sm-10 {% if entity_fields[field.vars.name]['fieldType'] == 'checkbox' %}col-sm-offset-2{% endif %}">
-                            {% set widget_attributes = { attr: { class: entity_fields[field.vars.name]['class']|default(null) }, label: entity_fields[field.vars.name]['label']|trans } %}
+                        <div class="col-sm-10 {% if _field_metadata['fieldType'] == 'checkbox' %}col-sm-offset-2{% endif %}">
+                            {% set widget_attributes = { attr: { class: _field_metadata['class']|default(null) }, label: _field_metadata['label']|trans } %}
                             {{ form_widget(field, widget_attributes) }}
                             {{ form_errors(field) }}
 
-                            {% if entity_fields[field.vars.name]['help'] is defined %}
-                                <span class="help-block">{{ entity_fields[field.vars.name]['help'] }}</span>
+                            {% if _field_metadata['help'] is defined %}
+                                <span class="help-block">{{ _field_metadata['help'] }}</span>
                             {% endif %}
 
-                            {% if entity_fields[field.vars.name]['fieldType'] == 'collection' %}
+                            {% if _field_metadata['fieldType'] == 'collection' %}
                                 {% set add_item_javascript %}
                                     $(function() {
                                         if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
@@ -57,19 +58,41 @@
 
             <div class="form-group">
                 <div class="col-sm-10 col-sm-offset-2">
+                    {# the 'save' action is hardcoded for the 'edit' view #}
                     <button type="submit" class="btn">
-                        <i class="fa fa-save"></i> {{ 'action.save_changes'|trans }}
+                        <i class="fa fa-save"></i> {{ 'action.save'|trans }}
                     </button>
 
-                    {% if easyadmin_action_is_enabled('delete', entity.name) %}
-                        <button type="button" id="button-delete" class="btn btn-danger">
-                            <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
+                    {% set _edit_actions = easyadmin_get_actions_for_edit_item(entity.name) %}
+                    {% for _action in _edit_actions %}
+                        {% if 'method' == _action.type %}
+                            {% set _action_href = path('admin', { action: _action.name, view: 'edit', entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) %}
+                        {% elseif 'route' == _action.type %}
+                            {% set _action_href = path(_action.name, { entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) %}
+                        {% endif %}
+
+                        <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
+                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                            {{ _action.label|trans }}
+                        </a>
+                    {% endfor %}
+
+                    {% if easyadmin_action_is_enabled_for_edit_view('delete', entity.name) %}
+                        {% set _action = easyadmin_get_action_for_edit_view('delete', entity.name) %}
+                        <button type="button" id="button-delete" class="btn {{ _action.class|default('btn-danger') }}">
+                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                            {{ _action.label|default('action.delete')|trans }}
                         </button>
                     {% endif %}
 
-                    <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: 'list' }) ) }}">
-                        {{- 'action.back_to_listing'|trans -}}
-                    </a>
+                    {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
+                    {% if easyadmin_action_is_enabled_for_edit_view('list', entity.name) %}
+                        {% set _action = easyadmin_get_action_for_edit_view('list', entity.name) %}
+                        <a class="btn btn-secondary" href="{{ path('admin', ({ entity: entity.name, action: _action.name, view: 'edit' }) ) }}">{% spaceless %}
+                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                            {{ _action.label|default('action.list')|trans }}
+                        {% endspaceless %}</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -89,9 +112,14 @@
                     <button type="button" data-dismiss="modal" class="btn">
                         {{ 'action.cancel'|trans }}
                     </button>
-                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
-                        <i class="fa fa-trash"></i> {{ 'action.delete'|trans }}
-                    </button>
+
+                    {% if easyadmin_action_is_enabled_for_edit_view('delete', entity.name) %}
+                        {% set _action = easyadmin_get_action_for_edit_view('delete', entity.name) %}
+                        <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                            {{ _action.label|default('action.delete')|trans }}
+                        </button>
+                    {% endif %}
                 </div>
             </div>
         </div>

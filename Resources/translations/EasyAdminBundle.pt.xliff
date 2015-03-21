@@ -23,16 +23,16 @@
                 <source>action.delete</source>
                 <target>Excluir</target>
             </trans-unit>
-            <trans-unit id="action.save_changes">
-                <source>action.save_changes</source>
+            <trans-unit id="action.save">
+                <source>action.save</source>
                 <target>Salvar mudanças</target>
             </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
                 <target>Cancelar</target>
             </trans-unit>
-            <trans-unit id="action.back_to_listing">
-                <source>action.back_to_listing</source>
+            <trans-unit id="action.list">
+                <source>action.list</source>
                 <target>Voltar para a lista</target>
             </trans-unit>
 
@@ -58,20 +58,16 @@
                 <target><![CDATA[{0} Nenhum resultado encontrado|{1} <strong>1</strong> resultado encontrado|]1,Inf] <strong>%count%</strong> resultados encontrados]]></target>
             </trans-unit>
 
-            <!-- 'search' action -->
+            <!-- 'search' view -->
             <trans-unit id="search.no_results">
                 <source>search.no_results</source>
                 <target>Nenhum resultado encontrado.</target>
             </trans-unit>
 
-            <!-- 'list' action -->
+            <!-- 'list' view -->
             <trans-unit id="list.row_actions">
                 <source>list.row_actions</source>
                 <target>Ações</target>
-            </trans-unit>
-            <trans-unit id="list.search_placeholder">
-                <source>list.search_placeholder</source>
-                <target>Pesquisar</target>
             </trans-unit>
 
             <!-- paginator -->

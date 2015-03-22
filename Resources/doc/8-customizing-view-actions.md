@@ -3,7 +3,7 @@ Chapter 8. Customizing the View Actions
 
 EasyAdmin provides five different **views** for each entity: `edit`, `list`,
 `new`, `search` and `show`. In addition, each view can include several
-**actions**. For example, the default `list` view interface include four
+**actions**. For example, the default `list` view interface includes four
 actions as buttons or links:
 
 ![List view interface](images/easyadmin-list-view-actions.png)

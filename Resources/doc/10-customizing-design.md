@@ -1,5 +1,5 @@
-Chapter 9. Customizing the Visual Design of the Backend
-=======================================================
+Chapter 10. Customizing the Visual Design of the Backend
+========================================================
 
 The current version of EasyAdmin doesn't support the concept of themes, but you
 can fully customize its design using CSS and JavaScript files. Define the

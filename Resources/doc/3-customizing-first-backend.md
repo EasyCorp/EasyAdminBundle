@@ -161,7 +161,7 @@ name of user who is logged in the application.
 Customize the Views of the Backend
 ----------------------------------
 
-The backend provides five different views for each entity: `edit`, `list`,
+The backend provides five different **views** for each entity: `edit`, `list`,
 `new`, `search` and `show`. The ``list`` view is mandatory for all entities,
 but the rest of the actions can be disabled as explained the following
 chapters.

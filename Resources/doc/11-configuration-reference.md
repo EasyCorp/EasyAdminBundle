@@ -1,4 +1,4 @@
-Chapter 10. Configuration Reference
+Chapter 11. Configuration Reference
 ===================================
 
 Depending on the complexity and the customization of your backend, you can use

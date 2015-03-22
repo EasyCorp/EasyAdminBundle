@@ -139,14 +139,15 @@ version**. [Read the documentation of the most recent stable version](https://gi
 -----
 
   * [Chapter 3 - Customizing your first backend](Resources/doc/3-customizing-first-backend.md)
-  * [Chapter 4 - Customizing the List Action](Resources/doc/4-customizing-list-action.md)
-  * [Chapter 5 - Customizing the Show Action](Resources/doc/5-customizing-show-action.md)
-  * [Chapter 6 - Customizing the Edit and New Actions](Resources/doc/6-customizing-new-edit-actions.md)
-  * [Chapter 7 - Customizing the Search Action](Resources/doc/7-customizing-search-action.md)
-  * [Chapter 8 - Advanced Techniques for Complex Backends](Resources/doc/8-advanced-techniques.md)
-  * [Chapter 9 - Customizing the Visual Design of the Backend](Resources/doc/9-customizing-design.md)
-  * [Chapter 10 - Configuration Reference](Resources/doc/10-configuration-reference.md)
-  * [Chapter 11 - About this Project](Resources/doc/11-about-this-project.md)
+  * [Chapter 4 - Customizing the List View](Resources/doc/4-customizing-list-view.md)
+  * [Chapter 5 - Customizing the Show View](Resources/doc/5-customizing-show-view.md)
+  * [Chapter 6 - Customizing the Edit and New Views](Resources/doc/6-customizing-new-edit-views.md)
+  * [Chapter 7 - Customizing the Search View](Resources/doc/7-customizing-search-view.md)
+  * [Chapter 8 - Customizing the View Actions](Resources/doc/7-customizing-search-action.md)
+  * [Chapter 9 - Advanced Techniques for Complex Backends](Resources/doc/9-advanced-techniques.md)
+  * [Chapter 10 - Customizing the Visual Design of the Backend](Resources/doc/10-customizing-design.md)
+  * [Chapter 11 - Configuration Reference](Resources/doc/11-configuration-reference.md)
+  * [Chapter 12 - About this Project](Resources/doc/12-about-this-project.md)
 
 LEGAL DISCLAIMER
 ----------------

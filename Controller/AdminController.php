@@ -205,7 +205,7 @@ class AdminController extends Controller
             'fields' => $fields,
             'view'   => 'show',
             'delete_form' => $deleteForm->createView(),
-        ), new Response());
+        ));
     }
 
     /**

@@ -176,11 +176,11 @@ class EasyAdminExtension extends Extension
         // basic configuration for default actions
         $actions = $this->normalizeActionsConfiguration(array(
             array('name' => 'delete', 'label' => 'action.delete', 'type' => 'method', 'icon' => 'trash'),
-            array('name' => 'edit',   'label' => 'action.edit', 'type' => 'method', 'icon' => 'edit'),
-            array('name' => 'new',    'label' => 'action.new', 'type' => 'method',),
+            array('name' => 'edit',   'label' => 'action.edit',   'type' => 'method', 'icon' => 'edit'),
+            array('name' => 'new',    'label' => 'action.new',    'type' => 'method',),
             array('name' => 'search', 'label' => 'action.search', 'type' => 'method',),
-            array('name' => 'show',   'label' => 'action.show', 'type' => 'method',),
-            array('name' => 'list',   'label' => 'action.list', 'type' => 'method',),
+            array('name' => 'show',   'label' => 'action.show',   'type' => 'method',),
+            array('name' => 'list',   'label' => 'action.list',   'type' => 'method',),
         ));
 
         // configure which actions are enabled for each view

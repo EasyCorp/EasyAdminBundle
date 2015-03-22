@@ -241,6 +241,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
     /**
      * Returns the actions configured for each item displayed in the given view.
+     * This method is needed because some actions are displayed globally for the
+     * entire view (e.g. 'new' action in 'list' view) and other default actions
+     * are treated in a special way (e.g. 'delete' action in 'edit'/'show' views)
      *
      * @param  string $entityName
      * @return array

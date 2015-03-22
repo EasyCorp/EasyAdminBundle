@@ -115,41 +115,6 @@ easy_admin:
             class: AppBundle\Entity\Order
 ```
 
-Customize the Actions Displayed for each Entity
------------------------------------------------
-
-The backend provides six different actions for each entity: ``delete``,
-``edit``, ``list``, ``new``, ``search`` and ``show``. The ``list`` action is
-mandatory for all entities, but the rest of the actions can be disabled. Use
-the global ``actions`` option to set the available actions in your backend:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    # this option turns the backend into a read-only application:
-    # you cannot create, delete or modify entities
-    actions: ['show', 'search']
-    # ...
-```
-
-The global `actions` option is applied to all entities. However, entities can
-also define their own `actions` option to override the global option:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    actions: ['show', 'search']
-    entities:
-        Customers:
-            actions: ['delete', 'edit', 'show']
-            class: AppBundle\Entity\Customer
-        Orders:
-            actions: ['edit', 'show', 'search', 'new']
-            class: AppBundle\Entity\Order
-```
-
-In the current version of EasyAdmin you cannot define custom actions.
-
 Customize the Translation of the Backend Interface
 --------------------------------------------------
 
@@ -192,3 +157,51 @@ backend section of your application.
 
 In addition, when accessing a protected backend, EasyAdmin will display the
 name of user who is logged in the application.
+
+Customize the Views of the Backend
+----------------------------------
+
+The backend provides five different views for each entity: `edit`, `list`,
+`new`, `search` and `show`. The ``list`` view is mandatory for all entities,
+but the rest of the actions can be disabled as explained the following
+chapters.
+
+### List View
+
+Displays the list of items that match the given criteria:
+
+![List view interface](images/easyadmin-list-view.png)
+
+Pagination and column sorting is provided out-of-the-box. The rest of the
+`list` view elements can be configured as explained in the [Chapter XXX]().
+
+### Edit and New Views
+
+The `edit` view is used when creating new elements of the given entity. The
+`edit` view is displayed when modifying the contents of any item.
+
+![Edit view interface](images/easyadmin-edit-view.png)
+
+Both views are very similar in their design and behvior. In fact, they can be
+customized simulatenously using a special view called `form` which is applied
+to any form-based view.
+
+### Show View
+
+The `show` view is used when displaying the contents of any entity item. 
+
+![Show view interface](images/easyadmin-show-view.png)
+
+As explained in the [Chapter XX](), you can configure the format of any field and you can even display special contents, such as images.
+
+### Search View
+
+The `search` view is used to display the results of any query performed by the
+user. It's completely based on the `list` view to define the fields displayed
+for each listing row.
+
+![Search view interface](images/easyadmin-search-view.png) 
+
+By default, queries are performed on the contents of all entity properties,
+but you can change this behavior as explained in the [Chapter XX]().
+

@@ -42,7 +42,7 @@ easy_admin:
         # ...
 ```
 
-Refer to the [EasyAdmin Configuration Reference](10-configuration-reference.md)
+Refer to the [EasyAdmin Configuration Reference](11-configuration-reference.md)
 chapter to check out all the available configuration formats.
 
 Customize the Title of the Page

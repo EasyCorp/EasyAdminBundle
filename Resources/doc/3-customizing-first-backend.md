@@ -173,7 +173,17 @@ Displays the list of items that match the given criteria:
 ![List view interface](images/easyadmin-list-view.png)
 
 Pagination and column sorting is provided out-of-the-box. The rest of the
-`list` view elements can be configured as explained in the [Chapter XXX]().
+`list` view elements can be configured as explained in the [Chapter 4](4-customizing-list-view.md).
+
+### Show View
+
+The `show` view is used when displaying the contents of any entity item. 
+
+![Show view interface](images/easyadmin-show-view.png)
+
+As explained in the [Chapter 5](5-customizing-show-view.md), you can configure
+the format of any field and you can even display special contents, such as
+images.
 
 ### Edit and New Views
 
@@ -184,15 +194,8 @@ The `edit` view is used when creating new elements of the given entity. The
 
 Both views are very similar in their design and behvior. In fact, they can be
 customized simulatenously using a special view called `form` which is applied
-to any form-based view.
-
-### Show View
-
-The `show` view is used when displaying the contents of any entity item. 
-
-![Show view interface](images/easyadmin-show-view.png)
-
-As explained in the [Chapter XX](), you can configure the format of any field and you can even display special contents, such as images.
+to any form-based view. Read [Chapter 6](6-customizing-new-edit-views.md) for
+more details.
 
 ### Search View
 
@@ -203,5 +206,4 @@ for each listing row.
 ![Search view interface](images/easyadmin-search-view.png) 
 
 By default, queries are performed on the contents of all entity properties,
-but you can change this behavior as explained in the [Chapter XX]().
-
+but you can change this behavior as explained in the [Chapter 7](7-customizing-search-view.md).

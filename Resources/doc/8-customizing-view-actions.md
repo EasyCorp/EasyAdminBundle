@@ -299,6 +299,10 @@ class ProductController extends Controller
 {
     // ...
 
+    /**
+     * @Route(path = "/admin/product/restock", name = "product_restock")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
     public function restockAction()
     {
         // change the properties of the given entity and save the changes

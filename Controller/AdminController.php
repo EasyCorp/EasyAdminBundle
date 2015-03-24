@@ -288,7 +288,7 @@ class AdminController extends Controller
             throw new \Exception(sprintf('It\'s not possible to toggle the value of the "%s" boolean property of the "%s" entity.', $propertyName, $this->entity['name']));
         }
 
-        $newValue = (bool) $this->request->query->get('newValue');
+        $newValue = $this->request->query->get('newValue') === 'true';
         if (null !== $setter = $propertyMetadata['setter']) {
             $entity->{$setter}($newValue);
         } else {

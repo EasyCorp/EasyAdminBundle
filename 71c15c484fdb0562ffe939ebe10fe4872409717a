@@ -1,0 +1,18 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-23T20:53:49Z
+
+Erf https://github.com/javiereguiluz/EasyAdminBundle/pull/199 :/
+
+This was the exact getBoolean implementation using filter_var:
+```php
+filter_var($this->request->query->get('newValue'), FILTER_VALIDATE_BOOLEAN);
+```
+
+Should I reopen it instead (and fix the missing change) ? Your own fix is sufficient for this case, though. ^^
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-24T06:54:34Z
+
+I don't know, let's ask @javiereguiluz :smile:

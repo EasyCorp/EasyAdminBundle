@@ -24,15 +24,15 @@ class Configurator
     private $defaultEntityFields = array();
 
     private $defaultEntityFieldConfiguration = array(
-        'class'     => null,  // CSS class/classes
-        'format'    => null,  // date/time/datetime/number format
+        'class'     => null,  // CSS class or classes applied to form field
+        'format'    => null,  // date/time/datetime/number format applied to form field value
         'help'      => null,  // form field help message
         'label'     => null,  // form field label (if 'null', autogenerate it)
-        'type'      => null,  // it holds 'dataType' for list/show and 'fieldType' for new/edit
-        'fieldType' => null,  // Symfony form field type (text, date, number, choice, ...)
-        'dataType'  => null,  // Doctrine property data type (text, date, integer, boolean, ...)
-        'virtual'   => false, // is a virtual field or a real entity property?
-        'sortable'  => true,  // listings can be sorted according to the value of this field
+        'type'      => null,  // its value matches the value of 'dataType' for list/show and the value of 'fieldType' for new/edit
+        'fieldType' => null,  // Symfony form field type (text, date, number, choice, ...) used to display the field
+        'dataType'  => null,  // Data type (text, date, integer, boolean, ...) of the Doctrine property associated with the field
+        'virtual'   => false, // is a virtual field or a real Doctrine entity property?
+        'sortable'  => true,  // listings can be sorted according to the values of this field
     );
 
     private $doctrineTypeToFormTypeMap = array(

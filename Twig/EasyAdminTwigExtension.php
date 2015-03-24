@@ -251,16 +251,20 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getActionsForItem($view, $entityName)
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
-        $configuredActions = $entityConfiguration[$view]['actions'];
-        $excludedActionsPerView = array(
+        $viewActions = $entityConfiguration[$view]['actions'];
+
+        // Each view displays some actions in special ways (e.g. the 'new' button
+        // in the 'list' view). Those special actions shouldn't be displayed for
+        // each item as a regular action.
+        $actionsExcludedForItems = array(
             'list' => array('delete', 'list', 'new', 'search'),
             'edit' => array('list', 'delete'),
             'new'  => array('list'),
             'show' => array('list', 'delete'),
         );
-        $excludedActions = $excludedActionsPerView[$view];
+        $excludedActions = $actionsExcludedForItems[$view];
 
-        return array_filter($configuredActions, function($action) use ($excludedActions) {
+        return array_filter($viewActions, function($action) use ($excludedActions) {
             return !in_array($action['name'], $excludedActions);
         });
     }

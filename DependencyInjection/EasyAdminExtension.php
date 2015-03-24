@@ -19,11 +19,11 @@ use Symfony\Component\Config\FileLocator;
 class EasyAdminExtension extends Extension
 {
     private $defaultActionConfiguration = array(
-        'name'   => null,     // the name of the controller method or application route (depending on the 'type')
-        'type'   => 'method', // 'method' if the action is a controller method; 'route' if it's an application route
-        'label'  => null,     // action label (displayed as link or button) (if 'null', autogenerate it)
-        'class'  => '',       // the CSS class applied to the button/link displayed by the action
-        'icon'   => null,     // the name of the FontAwesome icon to display next to the 'label' (don't include the 'fa-' prefix)
+        'name'  => null,     // either the name of a controller method or an application route (it depends on the 'type' option)
+        'type'  => 'method', // 'method' if the action is a controller method; 'route' if it's an application route
+        'label' => null,     // action label (displayed as link or button) (if 'null', autogenerate it)
+        'class' => '',       // the CSS class applied to the button/link displayed by the action
+        'icon'  => null,     // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
     );
 
     public function load(array $configs, ContainerBuilder $container)
@@ -127,8 +127,8 @@ class EasyAdminExtension extends Extension
     }
 
     /**
-     * Merges all the actions that can be configured in the backend and normalize
-     * them to get the final actions related to each entity view.
+     * Merges all the actions that can be configured in the backend and normalizes
+     * them to get the final action configuration for each entity view.
      *
      * @param  array  $backendConfiguration
      * @return array
@@ -143,16 +143,21 @@ class EasyAdminExtension extends Extension
                 $backendActions = isset($backendConfiguration[$view]['actions']) ? $backendConfiguration[$view]['actions'] : array();
                 $backendActions = $this->normalizeActionsConfiguration($backendActions);
 
-                $viewActions = array_replace($defaultActions, $backendActions);
-                $viewActions = $this->filterRemovedActions($viewActions);
+                $defaultViewActions = array_replace($defaultActions, $backendActions);
+                $defaultViewActions = $this->filterRemovedActions($defaultViewActions);
 
                 $entityActions = isset($entityConfiguration[$view]['actions']) ? $entityConfiguration[$view]['actions'] : array();
                 $entityActions = $this->normalizeActionsConfiguration($entityActions);
 
-                $actions = array_replace($viewActions, $entityActions);
-                $actions = $this->filterRemovedActions($actions);
+                $viewActions = array_replace($defaultViewActions, $entityActions);
+                $viewActions = $this->filterRemovedActions($viewActions);
 
-                $entityConfiguration[$view]['actions'] = $actions;
+                // 'list' action is mandatory for all views
+                if (!array_key_exists('list', $viewActions)) {
+                    $viewActions = array_merge($viewActions, $this->normalizeActionsConfiguration(array('list')));
+                }
+
+                $entityConfiguration[$view]['actions'] = $viewActions;
             }
 
             $entitiesConfiguration[$entityName] = $entityConfiguration;
@@ -185,10 +190,10 @@ class EasyAdminExtension extends Extension
 
         // configure which actions are enabled for each view
         $actionsPerView = array(
-            'edit'   => array('delete' => $actions['delete'], 'list' => $actions['list']),
-            'list'   => array('show' => $actions['show'], 'edit' => $actions['edit'], 'search' => $actions['search'], 'new' => $actions['new']),
-            'new'    => array('list' => $actions['list']),
-            'show'   => array('delete' => $actions['delete'], 'list' => $actions['list'], 'edit' => $actions['edit']),
+            'edit' => array('delete' => $actions['delete'], 'list' => $actions['list']),
+            'list' => array('show' => $actions['show'], 'edit' => $actions['edit'], 'search' => $actions['search'], 'new' => $actions['new']),
+            'new'  => array('list' => $actions['list']),
+            'show' => array('delete' => $actions['delete'], 'list' => $actions['list'], 'edit' => $actions['edit']),
         );
 
         // minor tweaks for some action + view combinations
@@ -208,7 +213,7 @@ class EasyAdminExtension extends Extension
      *             list:
      *                 actions: ['search', 'show', 'grantAccess']
      *
-     * # Config format #2: one or more actions define any of its options
+     * # Config format #2: one or more actions define any of their options
      * easy_admin:
      *     entities:
      *         User:
@@ -236,7 +241,7 @@ class EasyAdminExtension extends Extension
 
             // 'name' is the only mandatory option for actions
             if (!isset($action['name'])) {
-                throw new \RuntimeException('Customized entity actions must define their "name" option.');
+                throw new \RuntimeException('When using the expanded configuration format for actions, you must define their "name" option.');
             }
 
             if (!isset($action['type'])) {
@@ -250,7 +255,7 @@ class EasyAdminExtension extends Extension
                 $normalizedConfiguration['label'] = 'action.'.$actionName;
             }
 
-            // actions without a custom label use their name as label
+            // the rest of actions without a custom label use their name as label
             if (null === $normalizedConfiguration['label']) {
                 // copied from Symfony\Component\Form\FormRenderer::humanize() (author: Bernhard Schussek <bschussek@gmail.com>)
                 $label = ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $actionName))));
@@ -264,34 +269,27 @@ class EasyAdminExtension extends Extension
     }
 
     /**
-     * Removes the actions marked as deleted from the given action configuration.
-     * If the name of an action starts with a '-' dash, it must be removed.
+     * Removes the actions marked as deleted from the given actions configuration.
      *
-     * @param  array $actionConfiguration
+     * @param  array $actionsConfiguration
      * @return array
      */
-    private function filterRemovedActions(array $actionConfiguration)
+    private function filterRemovedActions(array $actionsConfiguration)
     {
-        // action names prefixed with '-' make those actions to be removed.
-        // e.g. '-search' removes both '-search' and 'search' (if present)
-        $removedActionNames = array();
-        foreach ($actionConfiguration as $action) {
-            if ('-' === $action['name']{0}) {
-                $removedActionNames[] = $action['name'];
-                $removedActionNames[] = substr($action['name'], 1);
-            }
-        }
-
-        $actionConfiguration = array_filter($actionConfiguration, function($action) use ($removedActionNames) {
-            return !in_array($action['name'], $removedActionNames);
+        // if the name of the action starts with a '-' dash, remove it
+        $removedActions = array_filter($actionsConfiguration, function($action) {
+            return '-' === $action['name']{0};
         });
 
-        // 'list' action is mandatory for all views
-        if (!array_key_exists('list', $actionConfiguration)) {
-            $actionConfiguration = array_merge($actionConfiguration, $this->normalizeActionsConfiguration(array('list')));
+        if (empty($removedActions)) {
+            return $actionsConfiguration;
         }
 
-        return $actionConfiguration;
+        return array_filter($actionsConfiguration, function($action) use ($removedActions) {
+            // e.g. '-search' action name removes both '-search' and 'search' (if exists)
+            return !array_key_exists($action['name'], $removedActions)
+                && !array_key_exists('-'.$action['name'], $removedActions);
+        });
     }
 
     /**

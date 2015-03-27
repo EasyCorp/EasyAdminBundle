@@ -17,24 +17,25 @@
     {{ form_start(form, { attr: { id: 'edit-form', novalidate: 'novalidate' } }) }}
         <div id="form">
             {% for field in form.children if field.vars.name != '_token' %}
-                {% set _field_metadata = entity_fields[field.vars.name] %}
-                <div class="form-group {% if not field.vars.valid %}has-error{% endif %}">
-                    {% if _field_metadata['fieldType'] == 'association' %}
-                        {{ easyadmin_render_field_for_edit_view(item, _field_metadata) }}
+                {% set _field_configuration = entity_fields[field.vars.name] %}
+                {% set _field_type = _field_configuration['fieldType'] %}
+                <div class="form-group field_{{ _field_type|lower|default('default') }} {% if not field.vars.valid %}has-error{% endif %}">
+                    {% if _field_type == 'association' %}
+                        {{ easyadmin_render_field_for_edit_view(item, _field_configuration) }}
                     {% else %}
-                        {% set field_label = _field_metadata['label']|default(null) %}
+                        {% set field_label = _field_configuration['label']|default(null) %}
                         {{ form_label(field, field_label|trans(_trans_parameters), { label_attr: { class: 'col-sm-2 control-label' } }) }}
 
-                        <div class="col-sm-10 {% if _field_metadata['fieldType'] == 'checkbox' %}col-sm-offset-2{% endif %}">
-                            {% set widget_attributes = { attr: { class: _field_metadata['class']|default(null) }, label: _field_metadata['label']|trans } %}
+                        <div class="col-sm-10 {% if _field_type == 'checkbox' %}col-sm-offset-2{% endif %}">
+                            {% set widget_attributes = { attr: { class: _field_configuration['class']|default(null) }, label: _field_configuration['label']|trans } %}
                             {{ form_widget(field, widget_attributes) }}
                             {{ form_errors(field) }}
 
-                            {% if _field_metadata['help'] is defined %}
-                                <span class="help-block">{{ _field_metadata['help'] }}</span>
+                            {% if _field_configuration['help'] is defined %}
+                                <span class="help-block">{{ _field_configuration['help'] }}</span>
                             {% endif %}
 
-                            {% if _field_metadata['fieldType'] == 'collection' %}
+                            {% if _field_type == 'collection' %}
                                 {% set add_item_javascript %}
                                     $(function() {
                                         if(event.preventDefault) event.preventDefault(); else event.returnValue = false;

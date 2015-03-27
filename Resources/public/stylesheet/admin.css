@@ -706,6 +706,10 @@ body.new form textarea {
 body.new form .form-inline select + select {
     margin-left: .5em;
 }
+body.new form .field_datetime .form-inline .null-control {
+    display: inline-block;
+    margin-left: 5px;
+}
 
 /* -------------------------------------------------------------------------
    EDIT PAGE
@@ -715,6 +719,10 @@ body.edit form textarea {
 }
 body.edit form .form-inline select + select {
     margin-left: .5em;
+}
+body.edit form .field_datetime .form-inline .null-control {
+    display: inline-block;
+    margin-left: 5px;
 }
 
 /* -------------------------------------------------------------------------

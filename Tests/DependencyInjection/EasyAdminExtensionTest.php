@@ -22,7 +22,10 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackendConfigurations($inputFixtureFilepath, $outputFixtureFilepath)
     {
-        if ('2.3.x' === getenv('SYMFONY_VERSION') && !$this->isTestCompatibleWithYamlComponent($inputFixtureFilepath)) {
+        if (
+            ('2.3.x' === getenv('SYMFONY_VERSION') || 'low' === getenv('deps'))
+            && !$this->isTestCompatibleWithYamlComponent($inputFixtureFilepath)
+        ) {
             $this->markTestSkipped('This test fails because of the behavior of the YAML component in Symfony 2.3.x version.');
         }
 

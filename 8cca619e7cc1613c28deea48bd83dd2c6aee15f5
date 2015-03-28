@@ -1,0 +1,202 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-22T16:07:53Z
+
+Wow... Such a hard work, It's gonna be tough for code reviews :) I'm gonna test it manually, sounds faster ^^
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-22T18:42:12Z
+
+First, I think you should rebase with the master (but it's a personal opinion on the future merge of this PR).
+
+Next, I tested this PR on my back-end for custom routes, and it works very well!
+But I think the customization of the action type is not very intuitive: the `name` attribute should be only related to the action showed in the query string, like `?action=customActionName`, and the `label` only to show the text on the button/link (for this, it's already working).
+There should be something else to store the value of the action type: the method and the route. I propose to add the two options, so even if we can set both, only the one specified by the `type` will be used, but with it it's gonna be very verbose and very explicit (and easier to remember how to set it up)
+
+What do you think ?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-22T19:21:49Z
+
+I didn't test it yet, but great work !
+
+I must agree with @Pierstoval about the `method` & `route` types.
+But instead of introducing both options while keeping the `type` one, why not remove the `type` one and just use `method` and `route` ?
+If both of them are provided, trigger an Exception, or set a priority, e.g `method` before `route`.
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            list:
+                actions:
+                    - { name: 'restock', method: 'restock' } #call restockAction method
+                    - { name: 'restock', route: 'app_product_restock' } #call app_product_restock route
+                    - { name: 'restock', route: 'app_product_restock', method: 'restock' } #call restockAction method / trigger an exception
+```
+
+These are all my thoughts for now.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-22T20:04:30Z
+
+My opinion is because we don't know if one day we'll implement a new `type`, that's why the best solutions would be a `type` attribute and a `value` parameter (or a word related, like `resource`, `type_params`, etc.).
+I'd personally like to change the parameters sent to the route for instance, to change the primary key, or change the route params to be a value from the entity (I have some pages that are identifiable by their `tree` attribute, which is the result of a function, and is not mapped in Doctrine).
+So keeping the `type` makes sense to me, the problem resides in the name we'll give to the related attribute which will give the "value" to the "type".
+
+I don't know if I'm clear enough :laughing:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-22T20:31:44Z
+
+If your concern is about the fact that adding a new `type` one day means adding a new option, I don't think there will be so much other types (a service id ? There is no point doing that).
+But then remains only one option:
+
+Keep the `type` option and a new generic option called `value` or whatever and give up the two `method` and `route` options you suggested before:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            list:
+                actions:
+                    - { name: 'restock', type:'method', value: 'restock' } #call restockAction method
+                    - { name: 'restock', type:'route', value: 'app_product_restock' } #call app_product_restock route
+```
+
+What should be the generic option's name ? (currently `value`)
+
+Fair summary ? ^^'
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-22T20:35:03Z
+
+> If your concern is about the fact that adding a new type one day means adding a new option, I don't think there will be so much other types (a service id ? There is no point doing that).
+
+And why not ? In the end, we could think about creating custom `types` , and a `service_id` might be one, the controller executes it and returns in the `list` page, for example. It can be something like a database backup, export translations, refresh statistics, even clear cache, etc.
+
+`value` is a solution I like (and obviously, if we use this behavior, we **have to** get rid of `method` and `route` ^^ ), I thought about `params` because maybe we can not only use just one param, for example when you want to send something else than the primary key.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-22T20:37:27Z
+
+Because it means introducing another option to specify the method to call, or create an interface and structure specific to EasyAdmin for your service in order to automatically call the proper method.
+
+For the same reasons as the `repository` & `entity` types, there is no need for that. Call the service from the controller is easy enough.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-22T20:42:11Z
+
+That's why an array option might be a good solution (even though more complex)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-26T20:00:15Z
+
+Is this PR ready to be merged ?
+
+I personnally tested it and it works for my 2 back-ends, but maybe we should wait for more tests ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-26T20:12:38Z
+
+@Pierstoval I've tested it a lot too but I'm afraid of merging it because it's a huge change and we could easily break things. The problem is that this week has been super busy for me and I couldn't work on this PR the time it requires.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-26T20:14:03Z
+
+BC break policy :smile_cat:  (and no worry for the busy week, it's totally normal that you work on this repo in your afterwork)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-26T20:20:26Z
+
+Nope. We just need good tests. We added tens of them ... but we need to add more. The problem is that I don't know how to create those tests. I want to define some YAML configuration snippet and get the full parsed configuration to test it. But for that, I need to pass the YAML file through all the Symfony container but I don't know how to do that in a single bundle :(
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-28T16:25:48Z
+
+OK. I've added a ton of new tests (see 66395dd) and now I'm confident about merging this huge PR.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-28T16:35:54Z
+
+Great :+1:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-28T16:41:23Z
+
+@javiereguiluz : Great :)
+
+However do you think using the route or method name as the action `name` (so, the identifier) isn't an issue ? :/
+What is your opinion about what we talked above with @Pierstoval ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-28T16:46:01Z
+
+@ogizanagi to be honest, I find the proposals a bit redundant. For example, this configuration looks redundant to me:
+
+```yaml
+actions:
+    - { name: 'restock', type:'method', value: 'restock' }
+    - { name: 'restock', type:'route', value: 'app_product_restock' }
+```
+
+Using the proposed configuration, you can achieve the same with the following configuration:
+
+```yaml
+actions:
+    - 'restock'
+    - { label: 'restock', type: 'route', name: 'app_product_restock' }
+```
+
+I know that some people are afraid of using one thing for different purposes. In our case, the `name` option sometimes is the `name` of a method and other times is the `name` of the route. Although I also believe that using one thing for two different purposes is generally a mistake, I believe that in this case it's a convenience that makes sense.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-28T16:48:44Z
+
+Of course it does not comply with my previous wishes about this feature, but at the moment, as long as we can make a difference with the label
+, type and name, without problem, it's good enough for me. Especially fi the method action name is based on the lable (like `restockAction` in your example).
+
+If we add other action types, we'll discuss on how to implement them, we'll have time for that later :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-28T16:56:30Z
+
+The only thing really bothering me with the current implementation, is in fact that the action's name depends a lot on the way the user designed his app. The action's name should be a really simple identifier, where the only requirement is to be unique in easyadmin configuration only.
+The route one may have some prefix or anything to identify properly the route from another in the application. Plus it will be this route name that will be shown in the query string `?action=customActionName`.
+
+```yaml
+actions:
+    - { label: 'restock', type: 'route', name: 'app_product_restock' }
+```
+
+=> `?action=app_product_restock` instead of `?action=restock`
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-28T16:59:52Z
+
+Actually, when the action is of type `route`, the action name is not included in the URL. See https://github.com/javiereguiluz/EasyAdminBundle/pull/202/files#diff-2684f030d2a20dae6483641bbb2adf8bR73-77 for an example.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-03-28T17:07:36Z
+
+Oh...right. Forget what I said about the URL. :)
+I didn't even kept in mind that the route name will only be used internally for url generation in the templates' links/buttons...

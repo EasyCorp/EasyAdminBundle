@@ -22,13 +22,6 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackendConfigurations($inputFixtureFilepath, $outputFixtureFilepath)
     {
-        if (
-            ('2.3.x' === getenv('SYMFONY_VERSION') || 'low' === getenv('deps'))
-            && !$this->isTestCompatibleWithYamlComponent($inputFixtureFilepath)
-        ) {
-            $this->markTestSkipped('This test fails because of the behavior of the YAML component in Symfony 2.3.x version.');
-        }
-
         $parsedConfiguration = $this->parseConfigurationFile($inputFixtureFilepath);
         $expectedConfiguration = file_get_contents($outputFixtureFilepath);
 
@@ -129,21 +122,5 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
         $parsedConfiguration = Yaml::dump(array('easy_admin' => $easyAdminConfigParameter), INF);
 
         return $parsedConfiguration;
-    }
-
-    private function isTestCompatibleWithYamlComponent($filepath)
-    {
-        $incompatibleTests = array(
-            'configurations/input/admin_007.yml',
-            'configurations/input/admin_008.yml',
-            'configurations/input/admin_013.yml',
-            'configurations/input/admin_014.yml',
-            'configurations/input/admin_015.yml',
-            'configurations/input/admin_020.yml',
-            'configurations/input/admin_021.yml',
-            'configurations/input/admin_026.yml',
-        );
-
-        return !in_array(substr($filepath, -34), $incompatibleTests);
     }
 }

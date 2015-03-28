@@ -1,0 +1,11 @@
+# TEST
+# fields configuration can only be a string (shorthand config format) or an
+# array (expanded config format)
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            new:
+                fields: [20, true]

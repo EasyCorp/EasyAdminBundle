@@ -1,7 +1,11 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 
+{% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
+
 {% trans_default_domain "EasyAdminBundle" %}
-{% block body_class 'admin list ' ~ entity.name|lower %}
+{% set _trans_parameters = { '%entity_name%': _entity.label|trans } %}
+
+{% block body_class 'admin list ' ~ _entity.name|lower %}
 
 {% block head_stylesheets %}
     {{ parent() }}
@@ -9,18 +13,18 @@
 {% endblock %}
 
 {% block content_title %}
-    {% if 'search' == app.request.get('action') %}
+    {% if 'search' == app.request.get('view') %}
         {{ 'search.page_title'|transchoice(paginator.nbResults)|raw }}
     {% else %}
-        {{ entity.list.title|default('list.page_title')|trans({'%entity_name%': entity.label|trans}) }}
+        {{ entity.list.title|default('list.page_title')|trans(_trans_parameters) }}
     {% endif %}
 {% endblock %}
 
 {% block content %}
-{% if 'search' == app.request.get('action') %}
-    {% set request_attributes = { action: 'search', entity: entity.name, query: app.request.get('query')|default('') } %}
+{% if 'search' == app.request.get('view') %}
+    {% set request_attributes = { view: 'list', action: 'search', entity: _entity.name, query: app.request.get('query')|default('') } %}
 {% else %}
-    {% set request_attributes = { action: 'list', entity: entity.name, sortDirection: app.request.get('sortDirection', 'DESC') } %}
+    {% set request_attributes = { view: 'list', action: 'list', entity: _entity.name, sortDirection: app.request.get('sortDirection', 'DESC') } %}
 {% endif %}
 
 <div class="row">
@@ -30,20 +34,24 @@
                 <h1 class="title">{{ block('content_title') }}</h1>
             </div>
             <div class="col-xs-12 col-sm-7">
-                {% if easyadmin_action_is_enabled('new', entity.name) %}
+                {% if easyadmin_action_is_enabled_for_list_view('new', _entity.name) %}
+                    {% set _action = easyadmin_get_action_for_list_view('new', _entity.name) %}
                     <div id="content-actions">
-                            <a class="btn" href="{{ path('admin', { entity: entity.name, action: 'new' }) }}">
-                                {{ entity.new.action_label|default('action.new')|trans({'%entity_name%': entity.label|trans}) }}
-                            </a>
+                        <a class="btn {{ _action.class|default('') }}" href="{{ path('admin', { entity: _entity.name, action: _action.name }) }}">
+                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                            {{ _action.label|default('action.new')|trans(_trans_parameters) }}
+                        </a>
                     </div>
                 {% endif %}
 
-                {% if easyadmin_action_is_enabled('search', entity.name) %}
+                {% if easyadmin_action_is_enabled_for_list_view('search', _entity.name) %}
+                    {% set _action = easyadmin_get_action_for_list_view('search', _entity.name) %}
                     <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
                         <div class="input-group">
                             <input type="hidden" name="action" value="search">
-                            <input type="hidden" name="entity" value="{{ entity.name }}">
-                            <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ 'list.search_placeholder'|trans }}" value="{{ app.request.get('query')|default('') }}">
+                            <input type="hidden" name="view" value="list">
+                            <input type="hidden" name="entity" value="{{ _entity.name }}">
+                            <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters) }}" value="{{ app.request.get('query')|default('') }}">
                         </div>
                     </form>
                 {% endif %}
@@ -53,7 +61,7 @@
 
     <div id="main" class="col-sm-12">
         <div>
-            {% set _list_item_actions = easyadmin_list_item_actions(entity.name) %}
+            {% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity.name) %}
 
             <table class="table">
                 <thead>
@@ -78,7 +86,7 @@
                                         {% endif %}
 
                                         {% if metadata.label %}
-                                            {{ metadata.label|trans }}
+                                            {{ metadata.label|trans(_trans_parameters) }}
                                         {% elseif 'id' == metadata.property %}
                                             ID
                                         {% else %}
@@ -96,7 +104,7 @@
                         {% endfor %}
                         {% if _list_item_actions|length > 0 %}
                             <th>
-                                <span>{{ 'list.row_actions'|trans }}</span>
+                                <span>{{ 'list.row_actions'|trans(_trans_parameters) }}</span>
                             </th>
                         {% endif %}
                     </tr>
@@ -104,24 +112,32 @@
 
                 <tbody>
                     {% for item in paginator.currentPageResults %}
-                        <tr data-id="{{ attribute(item, entity.primary_key_field_name) }}">
+                        {% set _item_id = attribute(item, _entity.primary_key_field_name) %}
+                        <tr data-id="{{ _item_id }}">
                             {% for field, metadata in fields %}
                                 {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
                                 <td class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.dataType|lower }}">
                                     {% if metadata.type in ['array', 'json_array', 'simple_array', 'text'] %}
-                                        {{ easyadmin_render_field(item, metadata)|easyadmin_truncate }}
+                                        {{ easyadmin_render_field_for_list_view(item, metadata)|easyadmin_truncate }}
                                     {% else %}
-                                        {{ easyadmin_render_field(item, metadata) }}
+                                        {{ easyadmin_render_field_for_list_view(item, metadata) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                             {% if _list_item_actions|length > 0 %}
                                 <td class="actions">
-                                    {% for action in _list_item_actions %}
-                                        <a href="{{ path('admin', { action: action, entity: entity.name, id: attribute(item, entity.primary_key_field_name) }) }}">
-                                            {{- ('action.' ~ action)|trans -}}
-                                        </a>
+                                    {% for _action in _list_item_actions %}
+                                        {% if 'method' == _action.type %}
+                                            {% set _action_href = path('admin', { action: _action.name, view: 'list', entity: _entity.name, id: _item_id }) %}
+                                        {% elseif 'route' == _action.type %}
+                                            {% set _action_href = path(_action.name, { entity: _entity.name, id: _item_id }) %}
+                                        {% endif %}
+
+                                        <a class="{{ _action.class|default('') }}" href="{{ _action_href }}">{% spaceless %}
+                                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                                            {{ _action.label|trans({'%entity_name%': _entity.label|trans, '%entity_id%': _item_id}) }}
+                                        {% endspaceless %}</a>
                                     {% endfor %}
                                 </td>
                             {% endif %}
@@ -129,7 +145,7 @@
                     {% else %}
                         <tr>
                             <td colspan="{{ _list_item_actions|length > 0 ? fields|length + 1 : fields|length }}">
-                                {{ 'search.no_results'|trans }}
+                                {{ 'search.no_results'|trans(_trans_parameters) }}
                             </td>
                         </tr>
                     {% endfor %}
@@ -157,7 +173,7 @@
                 var columnIndex = $(this).closest('td').index() + 1;
                 var propertyName = $('table th.toggle:nth-child(' + columnIndex + ')').data('property-name');
 
-                var toggleUrl = "{{ path('admin', { action: 'edit', entity: entity.name })|raw }}"
+                var toggleUrl = "{{ path('admin', { action: 'edit', entity: _entity.name, view: 'list' })|raw }}"
                               + "&id=" + $(this).closest('tr').data('id')
                               + "&property=" + propertyName
                               + "&newValue=" + newValue.toString();

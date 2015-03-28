@@ -1,0 +1,81 @@
+easy_admin:
+    list:
+        actions:
+            -
+                name: '-edit'
+            -
+                name: '-list'
+            -
+                name: '-new'
+            -
+                name: '-search'
+            -
+                name: '-show'
+        max_results: 15
+    edit:
+        actions:
+            -
+                name: '-delete'
+            -
+                name: '-list'
+    show:
+        actions:
+            -
+                name: '-delete'
+            -
+                name: '-edit'
+            -
+                name: '-list'
+    new:
+        actions:
+            -
+                name: '-list'
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            label: TestEntity
+            name: TestEntity
+            edit:
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            list:
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            new:
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            show:
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+    site_name: 'Easy Admin'
+    assets:
+        css: {  }
+        js: {  }
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'

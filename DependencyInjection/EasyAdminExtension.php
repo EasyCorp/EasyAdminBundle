@@ -18,11 +18,20 @@ use Symfony\Component\Config\FileLocator;
 
 class EasyAdminExtension extends Extension
 {
+    private $defaultActionConfiguration = array(
+        'name'  => null,     // either the name of a controller method or an application route (it depends on the 'type' option)
+        'type'  => 'method', // 'method' if the action is a controller method; 'route' if it's an application route
+        'label' => null,     // action label (displayed as link or button) (if 'null', autogenerate it)
+        'class' => '',       // the CSS class applied to the button/link displayed by the action
+        'icon'  => null,     // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
+    );
+
     public function load(array $configs, ContainerBuilder $container)
     {
         // process bundle's configuration parameters
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
+        $backendConfiguration = $this->processEntityActions($backendConfiguration);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
 
@@ -96,6 +105,11 @@ class EasyAdminExtension extends Extension
                 $entityConfiguration = array('class' => $entityConfiguration);
             }
 
+            // if config format #3 is used, ensure that it defines the 'class' option
+            if (!isset($entityConfiguration['class'])) {
+                throw new \RuntimeException(sprintf('The "%s" entity must define its associated Doctrine entity class using the "class" option.', $entityLabel));
+            }
+
             $entityClassParts = explode('\\', $entityConfiguration['class']);
             $entityClassName = end($entityClassParts);
 
@@ -118,6 +132,179 @@ class EasyAdminExtension extends Extension
     }
 
     /**
+     * Merges all the actions that can be configured in the backend and normalizes
+     * them to get the final action configuration for each entity view.
+     *
+     * @param  array  $backendConfiguration
+     * @return array
+     */
+    public function processEntityActions(array $backendConfiguration)
+    {
+        $entitiesConfiguration = array();
+
+        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+            foreach (array('edit', 'list', 'new', 'show') as $view) {
+                $defaultActions = $this->getDefaultActions($view);
+                $backendActions = isset($backendConfiguration[$view]['actions']) ? $backendConfiguration[$view]['actions'] : array();
+                $backendActions = $this->normalizeActionsConfiguration($backendActions);
+
+                $defaultViewActions = array_replace($defaultActions, $backendActions);
+                $defaultViewActions = $this->filterRemovedActions($defaultViewActions);
+
+                $entityActions = isset($entityConfiguration[$view]['actions']) ? $entityConfiguration[$view]['actions'] : array();
+                $entityActions = $this->normalizeActionsConfiguration($entityActions);
+
+                $viewActions = array_replace($defaultViewActions, $entityActions);
+                $viewActions = $this->filterRemovedActions($viewActions);
+
+                // 'list' action is mandatory for all views
+                if (!array_key_exists('list', $viewActions)) {
+                    $viewActions = array_merge($viewActions, $this->normalizeActionsConfiguration(array('list')));
+                }
+
+                $entityConfiguration[$view]['actions'] = $viewActions;
+            }
+
+            $entitiesConfiguration[$entityName] = $entityConfiguration;
+        }
+
+        $backendConfiguration['entities'] = $entitiesConfiguration;
+
+        return $backendConfiguration;
+    }
+
+    /**
+     * Returns the default actions defined by EasyAdmin for the given view.
+     * This allows to provide some nice defaults for backends that don't
+     * define their own actions.
+     *
+     * @param  string $view
+     * @return array
+     */
+    private function getDefaultActions($view)
+    {
+        // basic configuration for default actions
+        $actions = $this->normalizeActionsConfiguration(array(
+            array('name' => 'delete', 'label' => 'action.delete', 'type' => 'method', 'icon' => 'trash'),
+            array('name' => 'edit',   'label' => 'action.edit',   'type' => 'method', 'icon' => 'edit'),
+            array('name' => 'new',    'label' => 'action.new',    'type' => 'method',),
+            array('name' => 'search', 'label' => 'action.search', 'type' => 'method',),
+            array('name' => 'show',   'label' => 'action.show',   'type' => 'method',),
+            array('name' => 'list',   'label' => 'action.list',   'type' => 'method',),
+        ));
+
+        // configure which actions are enabled for each view
+        $actionsPerView = array(
+            'edit' => array('delete' => $actions['delete'], 'list' => $actions['list']),
+            'list' => array('show' => $actions['show'], 'edit' => $actions['edit'], 'search' => $actions['search'], 'new' => $actions['new']),
+            'new'  => array('list' => $actions['list']),
+            'show' => array('delete' => $actions['delete'], 'list' => $actions['list'], 'edit' => $actions['edit']),
+        );
+
+        // minor tweaks for some action + view combinations
+        $actionsPerView['list']['edit']['icon'] = null;
+
+        return $actionsPerView[$view];
+    }
+
+    /**
+     * Transforms the different action configuration formats into a normalized
+     * and expanded format. These are the two simple formats allowed:
+     *
+     * # Config format #1: no custom option
+     * easy_admin:
+     *     entities:
+     *         User:
+     *             list:
+     *                 actions: ['search', 'show', 'grantAccess']
+     *
+     * # Config format #2: one or more actions define any of their options
+     * easy_admin:
+     *     entities:
+     *         User:
+     *             list:
+     *                 actions: ['search', { name: 'show', label: 'Show', 'icon': 'user' }, 'grantAccess']
+     *
+     * @param  array  $actionConfiguration
+     * @return array
+     */
+    private function normalizeActionsConfiguration(array $actionConfiguration)
+    {
+        $configuration = array();
+
+        foreach ($actionConfiguration as $action) {
+            if (!is_string($action) && !is_array($action)) {
+                throw new \RuntimeException('The values of the "actions" option can only be strings or arrays.');
+            }
+
+            // config format #1
+            if (is_string($action)) {
+                $action = array('name' => $action);
+            }
+
+            $normalizedConfiguration = array_replace($this->defaultActionConfiguration, $action);
+
+            // 'name' is the only mandatory option for actions
+            if (!isset($action['name'])) {
+                throw new \RuntimeException('When using the expanded configuration format for actions, you must define their "name" option.');
+            }
+
+            // 'name' value is used as the class method name or the Symfony route name
+            // check that its value complies with the PHP method name regexp (the leading dash
+            // is exceptionally allowed to support the configuration format of removed actions)
+            if (!preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $action['name'], $matchActionName)) {
+                throw new \InvalidArgumentException(sprintf('The name of the "%s" action contains invalid characters (allowed: letters, numbers, underscores).', $action['name']));
+            }
+
+            if (!isset($action['type'])) {
+                $action['type'] = 'method';
+            }
+
+            $actionName = $normalizedConfiguration['name'];
+
+            // use the special 'action.<action name>' label for the default actions
+            if (null === $normalizedConfiguration['label'] && in_array($actionName, array('delete', 'edit', 'new', 'search', 'show', 'list'))) {
+                $normalizedConfiguration['label'] = 'action.'.$actionName;
+            }
+
+            // the rest of actions without a custom label use their name as label
+            if (null === $normalizedConfiguration['label']) {
+                // copied from Symfony\Component\Form\FormRenderer::humanize() (author: Bernhard Schussek <bschussek@gmail.com>)
+                $label = ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $actionName))));
+                $normalizedConfiguration['label'] = $label;
+            }
+
+            $configuration[$actionName] = $normalizedConfiguration;
+        }
+
+        return $configuration;
+    }
+
+    /**
+     * Removes the actions marked as deleted from the given actions configuration.
+     *
+     * @param  array $actionsConfiguration
+     * @return array
+     */
+    private function filterRemovedActions(array $actionsConfiguration)
+    {
+        // if the name of the action starts with a '-' dash, remove it
+        $removedActions = array_filter($actionsConfiguration, function($action) {
+            return '-' === $action['name']{0};
+        });
+
+        if (empty($removedActions)) {
+            return $actionsConfiguration;
+        }
+
+        return array_filter($actionsConfiguration, function($action) use ($removedActions) {
+            // e.g. '-search' action name removes both '-search' and 'search' (if exists)
+            return !array_key_exists($action['name'], $removedActions)
+                && !array_key_exists('-'.$action['name'], $removedActions);
+        });
+    }
+
+    /**
      * Normalizes and initializes the configuration of the given entities to
      * simplify the option processing of the other methods and functions.
      *
@@ -132,26 +319,26 @@ class EasyAdminExtension extends Extension
             // copy the original entity configuration to not lose any of its options
             $config = $entityConfiguration;
 
-            // if the common 'form' config is defined, use its options to complete
-            // the configuration for the 'new' and 'edit' actions
+            // if the special 'form' view is defined, use its options to complete
+            // the configuration for the 'new' and 'edit' views
             if (isset($config['form'])) {
                 $config['new'] = isset($config['new']) ? array_replace($config['form'], $config['new']) : $config['form'];
                 $config['edit'] = isset($config['edit']) ? array_replace($config['form'], $config['edit']) : $config['form'];
             }
 
-            // configuration for the actions related to the entity ('list', 'edit', etc.)
-            foreach (array('edit', 'list', 'new', 'show') as $action) {
+            // configuration for the views related to the entity ('list', 'edit', etc.)
+            foreach (array('edit', 'list', 'new', 'show') as $view) {
                 // if needed, initialize options to simplify further configuration processing
-                if (!isset($config[$action])) {
-                    $config[$action] = array('fields' => array());
+                if (!isset($config[$view])) {
+                    $config[$view] = array('fields' => array());
                 }
 
-                if (!isset($config[$action]['fields'])) {
-                    $config[$action]['fields'] = array();
+                if (!isset($config[$view]['fields'])) {
+                    $config[$view]['fields'] = array();
                 }
 
-                if (count($config[$action]['fields']) > 0) {
-                    $config[$action]['fields'] = $this->normalizeFieldsConfiguration($config[$action]['fields'], $action, $entityConfiguration);
+                if (count($config[$view]['fields']) > 0) {
+                    $config[$view]['fields'] = $this->normalizeFieldsConfiguration($config[$view]['fields'], $view, $entityConfiguration);
                 }
             }
 
@@ -163,7 +350,7 @@ class EasyAdminExtension extends Extension
 
     /**
      * The name of the entity is used in the URLs of the application to define the
-     * entity which should be used for each action. Obviously, the entity name
+     * entity which should be used for each view. Obviously, the entity name
      * must be unique in the application to identify entities unequivocally.
      *
      * This method ensures that all entity names are unique by appending some suffix
@@ -184,7 +371,7 @@ class EasyAdminExtension extends Extension
     }
 
     /**
-     * Actions can define their fields using two different formats:
+     * Views can define their fields using two different formats:
      *
      * # Config format #1: simple configuration
      * easy_admin:
@@ -204,28 +391,30 @@ class EasyAdminExtension extends Extension
      * format used in the rest of the application.
      *
      * @param  array  $fieldsConfiguration
-     * @param  string $action              The current action (this argument is needed to create good error messages)
+     * @param  string $view                The current view (this argument is needed to create good error messages)
      * @param  array  $entityConfiguration The full configuration of the entity this field belongs to
      * @return array  The configured entity fields
      */
-    private function normalizeFieldsConfiguration(array $fieldsConfiguration, $action, array $entityConfiguration)
+    private function normalizeFieldsConfiguration(array $fieldsConfiguration, $view, array $entityConfiguration)
     {
         $fields = array();
 
         foreach ($fieldsConfiguration as $field) {
+            if (!is_string($field) && !is_array($field)) {
+                throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" view of the "%s" entity can only be strings or arrays.', $view, $entityConfiguration['class']));
+            }
+
             if (is_string($field)) {
                 // Config format #1: field is just a string representing the entity property
                 $fieldConfiguration = array('property' => $field);
-            } elseif (is_array($field)) {
+            } else {
                 // Config format #1: field is an array that defines one or more
                 // options. check that the mandatory 'property' option is set
                 if (!array_key_exists('property', $field)) {
-                    throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" action of the "%s" entity does not define the "property" option.', $action, $entityConfiguration['class']));
+                    throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" view of the "%s" entity does not define the "property" option.', $view, $entityConfiguration['class']));
                 }
 
                 $fieldConfiguration = $field;
-            } else {
-                throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" action of the "%s" entity can only be strings or arrays.', $action, $entityConfiguration['class']));
             }
 
             // for 'image' type fields, if the entity defines an 'image_base_path'

@@ -1,8 +1,0 @@
-TestEntity:
-    class: AppBundle\Entity\TestEntity
-    new: { fields: [] }
-    edit: { fields: [] }
-    list: { fields: [] }
-    show: { fields: [] }
-    label: TestEntity
-    name: TestEntity

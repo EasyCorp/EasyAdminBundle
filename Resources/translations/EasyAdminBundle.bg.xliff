@@ -23,16 +23,16 @@
                 <source>action.delete</source>
                 <target>Изтриване</target>
             </trans-unit>
-            <trans-unit id="action.save_changes">
-                <source>action.save_changes</source>
+            <trans-unit id="action.save">
+                <source>action.save</source>
                 <target>Запис</target>
             </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
                 <target>Отказ</target>
             </trans-unit>
-            <trans-unit id="action.back_to_listing">
-                <source>action.back_to_listing</source>
+            <trans-unit id="action.list">
+                <source>action.list</source>
                 <target>Обратно към списъка</target>
             </trans-unit>
 
@@ -58,20 +58,16 @@
                 <target><![CDATA[{0} Няма резултати|{1} Един резултат|]1,Inf] <strong>%count%</strong> резултата]]></target>
             </trans-unit>
 
-            <!-- 'search' action -->
+            <!-- 'search' view -->
             <trans-unit id="search.no_results">
                 <source>search.no_results</source>
                 <target>Няма резултати.</target>
             </trans-unit>
 
-            <!-- 'list' action -->
+            <!-- 'list' view -->
             <trans-unit id="list.row_actions">
                 <source>list.row_actions</source>
                 <target>Действия</target>
-            </trans-unit>
-            <trans-unit id="list.search_placeholder">
-                <source>list.search_placeholder</source>
-                <target>Търсене</target>
             </trans-unit>
 
             <!-- paginator -->

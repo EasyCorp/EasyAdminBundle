@@ -23,16 +23,16 @@
                 <source>action.delete</source>
                 <target>Smazat</target>
             </trans-unit>
-            <trans-unit id="action.save_changes">
-                <source>action.save_changes</source>
+            <trans-unit id="action.save">
+                <source>action.save</source>
                 <target>Uložit změny</target>
             </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
                 <target>Zrušit</target>
             </trans-unit>
-            <trans-unit id="action.back_to_listing">
-                <source>action.back_to_listing</source>
+            <trans-unit id="action.list">
+                <source>action.list</source>
                 <target>Zpět na výpis</target>
             </trans-unit>
 
@@ -58,20 +58,16 @@
                 <target><![CDATA[{0} Žádné položky nebyly nalezeny|{1} <strong>1</strong> položka nalezena|]1,Inf] <strong>%count%</strong> položek nalezeno]]></target>
             </trans-unit>
 
-            <!-- 'search' action -->
+            <!-- 'search' view -->
             <trans-unit id="search.no_results">
                 <source>search.no_results</source>
                 <target>Žádné položky.</target>
             </trans-unit>
 
-            <!-- 'list' action -->
+            <!-- 'list' view -->
             <trans-unit id="list.row_actions">
                 <source>list.row_actions</source>
                 <target>Akce</target>
-            </trans-unit>
-            <trans-unit id="list.search_placeholder">
-                <source>list.search_placeholder</source>
-                <target>Hledat</target>
             </trans-unit>
 
             <!-- paginator -->

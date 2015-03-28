@@ -59,10 +59,19 @@ class AdminController extends Controller
         }
 
         $action = $request->query->get('action', 'list');
+        $view = $request->query->get('view', 'list');
 
-        // for now, the homepage redirects to the 'list' action of the first entity
+        if (true !== $forbiddenActionResponse = $this->isActionAllowed($action, $view)) {
+            return $forbiddenActionResponse;
+        }
+
+        // for now, the homepage redirects to the 'list' action and view of the first entity
         if (null === $request->query->get('entity')) {
-            return $this->redirect($this->generateUrl('admin', array('action' => $action, 'entity' => $this->getNameOfTheFirstConfiguredEntity())));
+            return $this->redirect($this->generateUrl('admin', array(
+                'action' => $action,
+                'entity' => $this->getNameOfTheFirstConfiguredEntity(),
+                'view'   => $view,
+            )));
         }
 
         return $this->{$action.'Action'}();
@@ -98,13 +107,6 @@ class AdminController extends Controller
 
         $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
 
-        if (!in_array($action = $request->query->get('action', 'list'), $this->entity['actions'])) {
-            return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
-                'action' => $action,
-                'enabled_actions' => $this->entity['actions'],
-            ));
-        }
-
         if (!$request->query->has('sortField')) {
             $request->query->set('sortField', $this->entity['primary_key_field_name']);
         }
@@ -116,6 +118,19 @@ class AdminController extends Controller
         $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
 
         $this->request = $request;
+    }
+
+    protected function isActionAllowed($action, $view)
+    {
+        if ($action === $view || array_key_exists($action, $this->entity[$view]['actions'])) {
+            return true;
+        }
+
+        return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
+            'action' => $action,
+            'view'   => $view,
+            'enabled_actions' => array_keys($this->entity[$view]['actions']),
+        ));
     }
 
     /**
@@ -131,6 +146,7 @@ class AdminController extends Controller
         return $this->render('@EasyAdmin/list.html.twig', array(
             'paginator' => $paginator,
             'fields'    => $fields,
+            'view'      => 'list',
         ));
     }
 
@@ -158,7 +174,7 @@ class AdminController extends Controller
             $this->prepareEditEntityForPersist($item);
             $this->em->flush();
 
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
 
         return $this->render('@EasyAdmin/edit.html.twig', array(
@@ -166,6 +182,7 @@ class AdminController extends Controller
             'entity_fields' => $fields,
             'item'          => $item,
             'delete_form'   => $deleteForm->createView(),
+            'view'          => 'edit',
         ));
     }
 
@@ -186,6 +203,7 @@ class AdminController extends Controller
         return $this->render('@EasyAdmin/show.html.twig', array(
             'item'   => $item,
             'fields' => $fields,
+            'view'   => 'show',
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -209,13 +227,14 @@ class AdminController extends Controller
             $this->em->persist($item);
             $this->em->flush();
 
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
         }
 
         return $this->render('@EasyAdmin/new.html.twig', array(
             'form'          => $newForm->createView(),
             'entity_fields' => $fields,
             'item'          => $item,
+            'view'          => 'new',
         ));
     }
 
@@ -228,7 +247,7 @@ class AdminController extends Controller
     protected function deleteAction()
     {
         if ('DELETE' !== $this->request->getMethod()) {
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
 
         $form = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
@@ -243,7 +262,7 @@ class AdminController extends Controller
             $this->em->flush();
         }
 
-        return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
+        return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
     }
 
     /**
@@ -259,6 +278,7 @@ class AdminController extends Controller
         return $this->render('@EasyAdmin/list.html.twig', array(
             'paginator' => $paginator,
             'fields'    => $fields,
+            'view'      => 'search',
         ));
     }
 
@@ -269,10 +289,6 @@ class AdminController extends Controller
      */
     protected function ajaxEdit()
     {
-        if (!in_array('edit', $this->entity['actions'])) {
-            throw new \Exception('This entity doesn\'t allow to edit its fields.');
-        }
-
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw new \Exception('The entity does not exist.');
         }

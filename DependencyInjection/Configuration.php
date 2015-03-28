@@ -23,29 +23,39 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             // 'list_actions' and 'max_results' global options are deprecated since 1.0.8
-            // and they are replaced by 'actions' and 'list -> max_results' options
-            ->validate()
+            // and they are replaced by 'list -> 'actions' and 'list -> max_results' options
+            ->beforeNormalization()
                 ->ifTrue(function ($v) { return isset($v['list_max_results']); })
                 ->then(function ($v) {
                     if (!isset($v['list'])) {
                         $v['list'] = array();
                     }
 
-                    $v['list']['max_results'] = $v['list_max_results'];
+                    // if the new option is defined, don't override it with the legacy option
+                    if (!isset($v['list']['max_results'])) {
+                        $v['list']['max_results'] = $v['list_max_results'];
+                    }
+
                     unset($v['list_max_results']);
 
                     return $v;
                 })
             ->end()
-            ->validate()
+
+            ->beforeNormalization()
                 ->ifTrue(function ($v) { return isset($v['list_actions']); })
                 ->then(function ($v) {
-                    $v['actions'] = $v['list_actions'];
+                    // if the new option is defined, don't override it with the legacy option
+                    if (!isset($v['list']['actions'])) {
+                        $v['list']['actions'] = $v['list_actions'];
+                    }
+
                     unset($v['list_actions']);
 
                     return $v;
                 })
             ->end()
+
             ->children()
                 ->scalarNode('site_name')
                     ->defaultValue('Easy Admin')
@@ -53,26 +63,53 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->variableNode('list_actions')
-                    ->defaultNull()
-                    ->info('DEPRECATED: use the global "actions" option.')
-                ->end()
-
-                ->arrayNode('actions')
-                    ->prototype('scalar')->end()
-                    ->info('The list of actions enabled by default for all entities.')
+                    ->info('DEPRECATED: use the "actions" option of the "list" view.')
                 ->end()
 
                 ->integerNode('list_max_results')
-                    ->defaultNull()
                     ->info('DEPRECATED: use "max_results" option under the "list" global key.')
                 ->end()
 
                 ->arrayNode('list')
                     ->addDefaultsIfNotSet()
                     ->children()
+                        ->arrayNode('actions')
+                            ->prototype('variable')->end()
+                            ->info('The list of actions enabled in the "list" view.')
+                        ->end()
                         ->integerNode('max_results')
                             ->defaultValue(15)
                             ->info('The maximum number of items to show on listing and search pages.')
+                        ->end()
+                    ->end()
+                ->end()
+
+                ->arrayNode('edit')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('actions')
+                            ->prototype('variable')->end()
+                            ->info('The list of actions enabled in the "edit" view.')
+                        ->end()
+                    ->end()
+                ->end()
+
+                ->arrayNode('new')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('actions')
+                            ->prototype('variable')->end()
+                            ->info('The list of actions enabled in the "new" view.')
+                        ->end()
+                    ->end()
+                ->end()
+
+                ->arrayNode('show')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('actions')
+                            ->prototype('variable')->end()
+                            ->info('The list of actions enabled in the "show" view.')
                         ->end()
                     ->end()
                 ->end()

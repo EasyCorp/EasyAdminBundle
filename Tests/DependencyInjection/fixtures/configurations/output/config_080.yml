@@ -1,0 +1,121 @@
+easy_admin:
+    list:
+        actions:
+            -
+                name: edit
+                type: route
+                label: 'Global Edit Label'
+                icon: global-edit-icon
+        max_results: 15
+    edit:
+        actions:
+            -
+                name: delete
+                type: route
+                label: 'Global Delete Label'
+                icon: global-delete-icon
+    show:
+        actions:
+            -
+                name: edit
+                type: route
+                label: 'Global Edit Label'
+                icon: global-edit-icon
+    new:
+        actions:
+            -
+                name: list
+                type: route
+                label: 'Global List Label'
+                icon: global-list-icon
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            list:
+                actions:
+                    show:
+                        name: show
+                        type: method
+                        label: action.show
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: 'Entity Edit Label'
+                        class: ''
+                        icon: entity-edit-icon
+                    search:
+                        name: search
+                        type: method
+                        label: action.search
+                        class: ''
+                        icon: null
+                    new:
+                        name: new
+                        type: method
+                        label: action.new
+                        class: ''
+                        icon: null
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                fields: {  }
+            edit:
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: 'Entity Delete Label'
+                        class: ''
+                        icon: entity-delete-icon
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                fields: {  }
+            show:
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: route
+                        label: 'Entity Edit Label'
+                        class: ''
+                        icon: entity-edit-icon
+                fields: {  }
+            new:
+                actions:
+                    list:
+                        name: list
+                        type: route
+                        label: 'Entity List Label'
+                        class: ''
+                        icon: entity-list-icon
+                fields: {  }
+            label: TestEntity
+            name: TestEntity
+    site_name: 'Easy Admin'
+    assets:
+        css: {  }
+        js: {  }
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'

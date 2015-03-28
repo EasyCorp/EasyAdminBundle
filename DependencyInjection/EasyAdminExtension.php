@@ -105,6 +105,11 @@ class EasyAdminExtension extends Extension
                 $entityConfiguration = array('class' => $entityConfiguration);
             }
 
+            // if config format #3 is used, ensure that it defines the 'class' option
+            if (!isset($entityConfiguration['class'])) {
+                throw new \RuntimeException(sprintf('The "%s" entity must define its associated Doctrine entity class using the "class" option.', $entityLabel));
+            }
+
             $entityClassParts = explode('\\', $entityConfiguration['class']);
             $entityClassName = end($entityClassParts);
 
@@ -244,13 +249,20 @@ class EasyAdminExtension extends Extension
                 throw new \RuntimeException('When using the expanded configuration format for actions, you must define their "name" option.');
             }
 
+            // 'name' value is used as the class method name or the Symfony route name
+            // check that its value complies with the PHP method name regexp (the leading dash
+            // is exceptionally allowed to support the configuration format of removed actions)
+            if (!preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $action['name'], $matchActionName)) {
+                throw new \InvalidArgumentException(sprintf('The name of the "%s" action contains invalid characters (allowed: letters, numbers, underscores).', $action['name']));
+            }
+
             if (!isset($action['type'])) {
                 $action['type'] = 'method';
             }
 
             $actionName = $normalizedConfiguration['name'];
 
-            // use the special 'action.<view name>' label for the default actions
+            // use the special 'action.<action name>' label for the default actions
             if (null === $normalizedConfiguration['label'] && in_array($actionName, array('delete', 'edit', 'new', 'search', 'show', 'list'))) {
                 $normalizedConfiguration['label'] = 'action.'.$actionName;
             }

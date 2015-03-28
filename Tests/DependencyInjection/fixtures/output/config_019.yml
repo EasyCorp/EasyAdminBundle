@@ -1,8 +1,0 @@
-TestEntity:
-    class: AppBundle\Entity\TestEntity
-    label: 'Custom #Entity ~ Label'
-    name: TestEntity
-    edit: { fields: [] }
-    list: { fields: [] }
-    new: { fields: [] }
-    show: { fields: [] }

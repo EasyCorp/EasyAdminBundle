@@ -1,0 +1,12 @@
+# TEST
+# fields must always define the property option when using the expanded
+# configuration format
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            new:
+                fields:
+                    - { label: 'Field without property option' }

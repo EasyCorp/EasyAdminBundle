@@ -1,0 +1,10 @@
+# TEST
+# date, time and numeric formats are configurable at global level
+
+# CONFIGURATION
+easy_admin:
+    formats:
+        date:     'j F Y'
+        time:     'H:i A'
+        datetime: 'd/m/Y H:i:s'
+        number:   '%6.2f'

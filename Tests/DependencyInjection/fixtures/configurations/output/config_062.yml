@@ -1,0 +1,129 @@
+easy_admin:
+    list:
+        actions:
+            - custom_action_for_list
+        max_results: 15
+    edit:
+        actions:
+            - custom_action_for_edit
+    show:
+        actions:
+            - custom_action_for_show
+    new:
+        actions:
+            - custom_action_for_new
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            label: TestEntity
+            name: TestEntity
+            edit:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                    custom_action_for_edit:
+                        name: custom_action_for_edit
+                        type: method
+                        label: 'Custom action for edit'
+                        class: ''
+                        icon: null
+            list:
+                fields: {  }
+                actions:
+                    show:
+                        name: show
+                        type: method
+                        label: action.show
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: null
+                    search:
+                        name: search
+                        type: method
+                        label: action.search
+                        class: ''
+                        icon: null
+                    new:
+                        name: new
+                        type: method
+                        label: action.new
+                        class: ''
+                        icon: null
+                    custom_action_for_list:
+                        name: custom_action_for_list
+                        type: method
+                        label: 'Custom action for list'
+                        class: ''
+                        icon: null
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            new:
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                    custom_action_for_new:
+                        name: custom_action_for_new
+                        type: method
+                        label: 'Custom action for new'
+                        class: ''
+                        icon: null
+            show:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: edit
+                    custom_action_for_show:
+                        name: custom_action_for_show
+                        type: method
+                        label: 'Custom action for show'
+                        class: ''
+                        icon: null
+    site_name: 'Easy Admin'
+    assets:
+        css: {  }
+        js: {  }
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'

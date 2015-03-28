@@ -1,0 +1,11 @@
+# TEST
+# the name of the actions cannot contain invalid characters (anything
+# different than letters, numbers and underscores)
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions:
+            - { name: 'invalid-Action~Name!!' }
+    entities:
+        TestEntity: 'AppBundle\Entity\TestEntity'

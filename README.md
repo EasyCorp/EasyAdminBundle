@@ -1,3 +1,10 @@
+**❮ NOTE ❯** This bundle releases new versions on a regular basis. Make sure
+to update your dependencies frequently to get the latest version.
+[Check out the changelog](https://github.com/javiereguiluz/EasyAdminBundle/releases)
+to learn about the new features.
+
+-----
+
 EasyAdmin
 =========
 
@@ -132,9 +139,9 @@ how to do it.
 
 -----
 
-**NOTE**: you are reading the documentation of the bundle's **development
+**❮ NOTE ❯** you are reading the documentation of the bundle's **development
 version**, but in your application you probably have installed a **stable
-version**. [Read the documentation of the most recent stable version](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.0.8/Resources/doc).
+version**. [Read the documentation of the most recent stable version ➜](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc).
 
 -----
 

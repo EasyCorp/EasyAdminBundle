@@ -71,10 +71,11 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
+    design:
+        assets:
+            css: {  }
+            js: {  }
     site_name: 'Easy Admin'
-    assets:
-        css: {  }
-        js: {  }
     formats:
         date: Y-m-d
         time: 'H:i:s'

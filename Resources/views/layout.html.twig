@@ -16,7 +16,7 @@
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/admin.css') }}">
         {% endblock %}
 
-        {% for css_asset in easyadmin_config('assets.css') %}
+        {% for css_asset in easyadmin_config('design.assets.css') %}
             <link rel="stylesheet" href="{{ asset(css_asset) }}">
         {% endfor %}
 
@@ -103,7 +103,7 @@
         <script src="{{ asset('bundles/easyadmin/javascript/bootstrap.min.js') }}"></script>
         <script src="{{ asset('bundles/easyadmin/javascript/admin.js') }}"></script>
     {% endblock %}
-    {% for js_asset in easyadmin_config('assets.js') %}
+    {% for js_asset in easyadmin_config('design.assets.js') %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
 

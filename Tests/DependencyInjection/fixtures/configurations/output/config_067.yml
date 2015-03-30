@@ -5,6 +5,10 @@ easy_admin:
         datetime: 'd/m/Y H:i:s'
         number: '%6.2f'
     site_name: 'Easy Admin'
+    design:
+        assets:
+            css: {  }
+            js: {  }
     list:
         actions: {  }
         max_results: 15
@@ -14,7 +18,4 @@ easy_admin:
         actions: {  }
     show:
         actions: {  }
-    assets:
-        css: {  }
-        js: {  }
     entities: {  }

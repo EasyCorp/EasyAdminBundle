@@ -140,10 +140,11 @@ easy_admin:
                         class: custom-show-class
                         icon: custom-show-icon
     site_name: 'Easy Admin'
-    assets:
-        css: {  }
-        js: {  }
     formats:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    design:
+        assets:
+            css: {  }
+            js: {  }

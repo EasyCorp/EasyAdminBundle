@@ -227,6 +227,14 @@ easy_admin:
             label: TestEntity
             name: TestEntity
     site_name: 'Easy Admin'
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'
+    design:
+        assets:
+            css: {  }
+            js: {  }
     list:
         actions: {  }
         max_results: 15
@@ -236,10 +244,3 @@ easy_admin:
         actions: {  }
     show:
         actions: {  }
-    assets:
-        css: {  }
-        js: {  }
-    formats:
-        date: Y-m-d
-        time: 'H:i:s'
-        datetime: 'F j, Y H:i'

@@ -43,12 +43,24 @@
                     {% block navigation %}
                     <ul id="header-menu">
                         {% block navigation_items %}
-                        {% for item in easyadmin_config('entities') %}
-                            <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
-                                <a href="{{ path('admin', { entity: item.name, action: 'list' }) }}">
-                                    {{- item.label|trans -}}
-                                </a>
-                            </li>
+                        {% for group, entities in easyadmin_config('grouped_entities') if entities is not empty %}
+                            {% if group != '_' %}
+                                <li class="entities_group">
+                                <h3>{{ group|trans }}</h3>
+                                <ul class="entities_group">
+                            {% endif %}
+                            {% for class in entities %}
+                                {% set item = easyadmin_entity(class) %}
+                                <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}{{ group != '_' ? ' grouped' : '' }}">
+                                    <a href="{{ path('admin', { entity: item.name, action: 'list' }) }}">
+                                        {{ item.label|trans }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            {% if group != '_' %}
+                                </ul>
+                                </li>
+                            {% endif %}
                         {% endfor %}
                             <li class="visible-xs visible-sm header-nav-close">
                                 <a href="#header">{{ 'header.close'|trans }}</a>

@@ -516,6 +516,9 @@ body:not(:target) #header-menu:target .header-nav-close a {
 #header #header-footer {
     display: none;
 }
+#header #header-menu li h3 {
+    color: #D5D2CA;
+}
 
 /* Footer
    ------------------------------------------------------------------------- */
@@ -748,6 +751,11 @@ body.error code {
 /* =========================================================================
    RESPONSIVE
    ========================================================================= */
+
+#header #header-menu li h3 {
+    padding-left: 10px;
+    margin-top: 0.5em;
+}
 
 /* -------------------------------------------------------------------------
    VERTICAL TABLETS and LANDSCAPE SMARTPHONES
@@ -990,6 +998,16 @@ body.error code {
     }
     #header #header-menu li:last-child {
         border: none;
+    }
+    #header #header-menu li.grouped {
+        padding-left: 20px;
+    }
+    #header #header-menu li ul.entities_group {
+        margin-left: -20px;
+        padding-left: 10px;
+    }
+    #header #header-menu li h3 {
+        padding-left: 0;
     }
     #header #header-menu li a {
         color: #D5D2CA;

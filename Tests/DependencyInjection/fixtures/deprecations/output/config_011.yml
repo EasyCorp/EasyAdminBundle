@@ -7,6 +7,7 @@ easy_admin:
                 - //path/to/asset3.css
                 - 'http://exmaple.com/path/to/asset4.css'
             js: {  }
+        theme: default
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d

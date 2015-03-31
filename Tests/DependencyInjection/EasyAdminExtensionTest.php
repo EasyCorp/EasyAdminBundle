@@ -95,6 +95,15 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/action_name_cannot_start_with_a_number.yml');
     }
 
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Invalid configuration for path "easy_admin.design.theme": The theme name can only be "default".
+     */
+    public function testThemeNameCanOnlyBeDefault()
+    {
+        $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/theme_name_can_only_be_default.yml');
+    }
+
     public function provideConfigurationFiles()
     {
         $fixtures = array();
@@ -107,7 +116,6 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
         }
 
         return $fixtures;
-
         return $this->lookForFixturesFiles();
     }
 

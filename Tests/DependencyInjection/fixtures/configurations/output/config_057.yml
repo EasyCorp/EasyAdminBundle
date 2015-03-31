@@ -81,6 +81,7 @@ easy_admin:
         assets:
             css: {  }
             js: {  }
+        theme: default
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d

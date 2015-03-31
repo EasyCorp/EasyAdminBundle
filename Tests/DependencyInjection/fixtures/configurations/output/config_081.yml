@@ -259,12 +259,12 @@ easy_admin:
                         label: 'W e i r d case action'
                         class: ''
                         icon: null
+    design:
+        assets:
+            css: {  }
+            js: {  }
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
-    design:
-        assets:
-            css: {  }
-            js: {  }

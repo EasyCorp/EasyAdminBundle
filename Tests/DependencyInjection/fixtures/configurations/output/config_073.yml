@@ -95,12 +95,12 @@ easy_admin:
                 fields: {  }
             label: TestEntity
             name: TestEntity
+    design:
+        assets:
+            css: {  }
+            js: {  }
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
-    design:
-        assets:
-            css: {  }
-            js: {  }

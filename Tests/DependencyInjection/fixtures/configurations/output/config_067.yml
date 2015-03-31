@@ -4,11 +4,11 @@ easy_admin:
         time: 'H:i A'
         datetime: 'd/m/Y H:i:s'
         number: '%6.2f'
-    site_name: 'Easy Admin'
     design:
         assets:
             css: {  }
             js: {  }
+    site_name: 'Easy Admin'
     list:
         actions: {  }
         max_results: 15

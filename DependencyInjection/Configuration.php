@@ -70,6 +70,19 @@ class Configuration implements ConfigurationInterface
                 })
             ->end()
 
+            // make sure the new 'design' global option exists to simplify
+            // updating the deprecated 'assets -> css' and 'assets -> js' options
+            ->beforeNormalization()
+                ->always()
+                ->then(function ($v) {
+                    if (!isset($v['design'])) {
+                        $v['design'] = array('assets' => array());
+                    }
+
+                    return $v;
+                })
+            ->end()
+
             // 'assets -> css' global option was deprecated in 1.1.0
             // and replaced by 'design -> assets -> css'
             ->beforeNormalization()

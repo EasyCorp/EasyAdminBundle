@@ -198,6 +198,16 @@ class Configuration implements ConfigurationInterface
                     ->performNoDeepMerging()
                     ->addDefaultsIfNotSet()
                     ->children()
+                        // the 'theme' option is not used at the moment, but it allows us to be prepared for the future
+                        ->scalarNode('theme')
+                            ->defaultValue('default')
+                            ->info('The theme used to render the backend pages. For now this value can only be "default".')
+                            ->validate()
+                            ->ifNotInArray(array('default'))
+                                ->thenInvalid('The theme name can only be "default".')
+                            ->end()
+                        ->end()
+
                         ->arrayNode('assets')
                             ->performNoDeepMerging()
                             ->addDefaultsIfNotSet()

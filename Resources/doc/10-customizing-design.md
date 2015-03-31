@@ -11,6 +11,21 @@ easy_admin:
         # ...
 ```
 
+Changing the Backend Theme
+--------------------------
+
+The current version of EasyAdmin doesn't allow to select the theme used to
+render the backend pages. In future versions of the bundle, you'll be able to
+change the default theme using the `theme` option. For now, the value of this
+option can only be `default`:
+
+```yaml
+easy_admin:
+    design:
+        theme: 'default'
+        # ...
+```
+
 Adding Custom Web Assets
 ------------------------
 

@@ -1,17 +1,9 @@
 easy_admin:
-    list:
-        actions:
-            - '-custom_action_for_list'
-        max_results: 15
-    edit:
-        actions:
-            - '-custom_action_for_edit'
-    show:
-        actions:
-            - '-custom_action_for_show'
-    new:
-        actions:
-            - '-custom_action_for_new'
+    design:
+        theme: default
+        assets:
+            css: {  }
+            js: {  }
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity
@@ -95,13 +87,17 @@ easy_admin:
                         label: action.edit
                         class: ''
                         icon: edit
-    design:
-        assets:
-            css: {  }
-            js: {  }
-        theme: default
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    list:
+        actions: {  }
+        max_results: 15
+    edit:
+        actions: {  }
+    new:
+        actions: {  }
+    show:
+        actions: {  }

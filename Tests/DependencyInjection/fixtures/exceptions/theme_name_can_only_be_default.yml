@@ -1,0 +1,14 @@
+# TEST
+# the 'theme' design option must always be 'default' (for now this option is a
+# placeholder that will be used in future versions)
+
+# CONFIGURATION
+easy_admin:
+    design:
+        theme: 'my_custom_theme'
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            new:
+                fields:
+                    - { label: 'Field without property option' }

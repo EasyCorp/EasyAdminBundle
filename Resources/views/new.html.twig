@@ -18,23 +18,32 @@
         <div id="form">
             {% for field in form.children if field.vars.name != '_token' %}
                 {% set _field_configuration = entity_fields[field.vars.name] %}
-                <div class="form-group field_{{ _field_configuration['fieldType']|lower|default('default') }} {% if not field.vars.valid %}has-error{% endif %}">
-                    {% if _field_configuration['fieldType'] == 'association' %}
+                {% set _field_type = _field_configuration['fieldType'] %}
+                <div class="form-group field_{{ _field_type|lower|default('default') }} {% if not field.vars.valid %}has-error{% endif %}">
+                    {% if _field_type == 'association' %}
                         {{ easyadmin_render_field_for_new_view(item, _field_configuration) }}
                     {% else %}
                         {% set field_label = _field_configuration['label']|default(null) %}
                         {{ form_label(field, field_label|trans, { label_attr: { class: 'col-sm-2 control-label' } }) }}
 
-                        <div class="col-sm-10 {% if _field_configuration['fieldType'] == 'checkbox' %}col-sm-offset-2{% endif %}">
+                        <div class="col-sm-10 {% if _field_type == 'checkbox' %}col-sm-offset-2{% endif %}">
                             {% set widget_attributes = { attr: { class: _field_configuration['class']|default(null) }, label: entity_fields[field.vars.name]['label']|trans } %}
                             {{ form_widget(field, widget_attributes) }}
+                            {% if _field_type in ['datetime', 'datetimetz', 'date', 'time'] and _field_configuration['nullable'] %}
+                                <div class="null-control">
+                                    <label>
+                                        <input type="checkbox" {% if field.vars.data is null %}checked="checked" {% endif %}>
+                                        Null
+                                    </label>
+                                </div>
+                            {% endif %}
                             {{ form_errors(field) }}
 
                             {% if _field_configuration['help'] is defined %}
                                 <span class="help-block">{{ _field_configuration['help'] }}</span>
                             {% endif %}
 
-                            {% if _field_configuration['fieldType'] == 'collection' %}
+                            {% if _field_type == 'collection' %}
                                 {% set add_item_javascript %}
                                     $(function() {
                                         if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
@@ -103,6 +112,8 @@
     <script type="text/javascript">
         $(function() {
             $('#new-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
+
+            enhanceNullableDatetimeFields();
         });
     </script>
 {% endblock %}

@@ -1,0 +1,22 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-31T09:48:25Z
+
+:+1:
+I'm glad you did not set the `menu` option in this PR because I think that the menu should not be under `design`, but directly under the root node.
+
+Everything sounds well to me
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-03-31T16:05:18Z
+
+@Pierstoval I'm leaving the `menu` thing until the end on purpose. Meanwhile we'll be able to discuss about it.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-03-31T16:18:36Z
+
+Everything seems well, I think you can merge this !
+
+The BC break convenience is really good !

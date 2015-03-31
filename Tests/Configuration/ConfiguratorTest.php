@@ -3,7 +3,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration;
 
 use Symfony\Component\Yaml\Yaml;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
@@ -44,7 +43,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 
         $expectedConfiguration = file_get_contents($outputFixtureFilepath);
 
-        $this->assertEquals($expectedConfiguration, $yamlConfiguration, sprintf("%s configuration is correctly parsed into %s", basename($inputFixtureFilepath), basename($outputFixtureFilepath)));
+        $this->assertEquals($expectedConfiguration, $yamlConfiguration, sprintf('%s configuration is correctly parsed into %s', basename($inputFixtureFilepath), basename($outputFixtureFilepath)));
     }
 
     public function provideConfigurationFixtures()

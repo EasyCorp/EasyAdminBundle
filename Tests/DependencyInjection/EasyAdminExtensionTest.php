@@ -29,7 +29,7 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
         $parsedConfiguration = $this->parseConfigurationFile($inputFixtureFilepath);
         $expectedConfiguration = file_get_contents($outputFixtureFilepath);
 
-        $this->assertEquals($expectedConfiguration, $parsedConfiguration, sprintf("%s configuration is correctly parsed into %s", $inputFixtureFilepath, $outputFixtureFilepath));
+        $this->assertEquals($expectedConfiguration, $parsedConfiguration, sprintf('%s configuration is correctly parsed into %s', $inputFixtureFilepath, $outputFixtureFilepath));
     }
 
     /**
@@ -107,6 +107,7 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
         }
 
         return $fixtures;
+
         return $this->lookForFixturesFiles();
     }
 
@@ -114,7 +115,8 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
      * Given the filepath of the original backend YAML configuration, it returns
      * the configuration parsed by the container and dumped into YAML format.
      *
-     * @param  string $filepath
+     * @param string $filepath
+     *
      * @return string
      */
     private function parseConfigurationFile($filepath)

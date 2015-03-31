@@ -14,7 +14,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Class EasyAdminBundle
+ * Class EasyAdminBundle.
  */
 class EasyAdminBundle extends Bundle
 {

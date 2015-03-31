@@ -29,7 +29,8 @@ class EntityMetadataInspector
      * Takes the FQCN of an entity and returns all its metadata introspected
      * with Doctrine.
      *
-     * @param  string $entityClass
+     * @param string $entityClass
+     *
      * @return array
      */
     public function getEntityMetadata($entityClass)

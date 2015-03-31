@@ -45,7 +45,8 @@ class EasyAdminExtension extends Extension
      * that are managed by the backend. Several configuration formats are allowed,
      * so this method normalizes them all.
      *
-     * @param  array $entitiesConfiguration
+     * @param array $entitiesConfiguration
+     *
      * @return array The full entity configuration
      */
     public function getEntitiesConfiguration(array $entitiesConfiguration)
@@ -92,7 +93,8 @@ class EasyAdminExtension extends Extension
      *             class: AppBundle\Entity\User
      *             label: 'Clients'
      *
-     * @param  array $entitiesConfiguration The entity configuration in one of the simplified formats
+     * @param array $entitiesConfiguration The entity configuration in one of the simplified formats
+     *
      * @return array The normalized configuration
      */
     private function normalizeEntitiesConfiguration(array $entitiesConfiguration)
@@ -135,7 +137,8 @@ class EasyAdminExtension extends Extension
      * Merges all the actions that can be configured in the backend and normalizes
      * them to get the final action configuration for each entity view.
      *
-     * @param  array  $backendConfiguration
+     * @param array $backendConfiguration
+     *
      * @return array
      */
     public function processEntityActions(array $backendConfiguration)
@@ -178,7 +181,8 @@ class EasyAdminExtension extends Extension
      * This allows to provide some nice defaults for backends that don't
      * define their own actions.
      *
-     * @param  string $view
+     * @param string $view
+     *
      * @return array
      */
     private function getDefaultActions($view)
@@ -187,10 +191,10 @@ class EasyAdminExtension extends Extension
         $actions = $this->normalizeActionsConfiguration(array(
             array('name' => 'delete', 'label' => 'action.delete', 'type' => 'method', 'icon' => 'trash'),
             array('name' => 'edit',   'label' => 'action.edit',   'type' => 'method', 'icon' => 'edit'),
-            array('name' => 'new',    'label' => 'action.new',    'type' => 'method',),
-            array('name' => 'search', 'label' => 'action.search', 'type' => 'method',),
-            array('name' => 'show',   'label' => 'action.show',   'type' => 'method',),
-            array('name' => 'list',   'label' => 'action.list',   'type' => 'method',),
+            array('name' => 'new',    'label' => 'action.new',    'type' => 'method'),
+            array('name' => 'search', 'label' => 'action.search', 'type' => 'method'),
+            array('name' => 'show',   'label' => 'action.show',   'type' => 'method'),
+            array('name' => 'list',   'label' => 'action.list',   'type' => 'method'),
         ));
 
         // configure which actions are enabled for each view
@@ -225,7 +229,8 @@ class EasyAdminExtension extends Extension
      *             list:
      *                 actions: ['search', { name: 'show', label: 'Show', 'icon': 'user' }, 'grantAccess']
      *
-     * @param  array  $actionConfiguration
+     * @param array $actionConfiguration
+     *
      * @return array
      */
     private function normalizeActionsConfiguration(array $actionConfiguration)
@@ -283,13 +288,14 @@ class EasyAdminExtension extends Extension
     /**
      * Removes the actions marked as deleted from the given actions configuration.
      *
-     * @param  array $actionsConfiguration
+     * @param array $actionsConfiguration
+     *
      * @return array
      */
     private function filterRemovedActions(array $actionsConfiguration)
     {
         // if the name of the action starts with a '-' dash, remove it
-        $removedActions = array_filter($actionsConfiguration, function($action) {
+        $removedActions = array_filter($actionsConfiguration, function ($action) {
             return '-' === $action['name']{0};
         });
 
@@ -297,7 +303,7 @@ class EasyAdminExtension extends Extension
             return $actionsConfiguration;
         }
 
-        return array_filter($actionsConfiguration, function($action) use ($removedActions) {
+        return array_filter($actionsConfiguration, function ($action) use ($removedActions) {
             // e.g. '-search' action name removes both '-search' and 'search' (if exists)
             return !array_key_exists($action['name'], $removedActions)
                 && !array_key_exists('-'.$action['name'], $removedActions);
@@ -308,7 +314,8 @@ class EasyAdminExtension extends Extension
      * Normalizes and initializes the configuration of the given entities to
      * simplify the option processing of the other methods and functions.
      *
-     * @param  array $entitiesConfiguration
+     * @param array $entitiesConfiguration
+     *
      * @return array The configured entities
      */
     private function processEntitiesConfiguration(array $entitiesConfiguration)
@@ -356,7 +363,8 @@ class EasyAdminExtension extends Extension
      * This method ensures that all entity names are unique by appending some suffix
      * to repeated names until they are unique.
      *
-     * @param  array $entitiesConfiguration
+     * @param array $entitiesConfiguration
+     *
      * @return array The entities configuration with unique entity names
      */
     private function getUniqueEntityName($entityName, $existingEntityNames)
@@ -390,10 +398,11 @@ class EasyAdminExtension extends Extension
      * This method processes both formats to produce a common form field configuration
      * format used in the rest of the application.
      *
-     * @param  array  $fieldsConfiguration
-     * @param  string $view                The current view (this argument is needed to create good error messages)
-     * @param  array  $entityConfiguration The full configuration of the entity this field belongs to
-     * @return array  The configured entity fields
+     * @param array  $fieldsConfiguration
+     * @param string $view                The current view (this argument is needed to create good error messages)
+     * @param array  $entityConfiguration The full configuration of the entity this field belongs to
+     *
+     * @return array The configured entity fields
      */
     private function normalizeFieldsConfiguration(array $fieldsConfiguration, $view, array $entityConfiguration)
     {

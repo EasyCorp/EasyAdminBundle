@@ -19,8 +19,9 @@ class ClassPropertyReflector
     /**
      * Returns the name of the getter for the class property or null if there is none.
      *
-     * @param  string      $classNamespace
-     * @param  string      $propertyName
+     * @param string $classNamespace
+     * @param string $propertyName
+     *
      * @return string|null
      */
     public function getGetter($classNamespace, $propertyName)
@@ -42,8 +43,9 @@ class ClassPropertyReflector
     /**
      * Returns the name of the setter for the class property or null if there is none.
      *
-     * @param  string      $classNamespace
-     * @param  string      $propertyName
+     * @param string $classNamespace
+     * @param string $propertyName
+     *
      * @return string|null
      */
     public function getSetter($classNamespace, $propertyName)
@@ -64,8 +66,9 @@ class ClassPropertyReflector
     /**
      * Returns 'true' if the class property is public (it exists and its scope is 'public').
      *
-     * @param  string $classNamespace
-     * @param  string $propertyName
+     * @param string $classNamespace
+     * @param string $propertyName
+     *
      * @return bool
      */
     public function isPublic($classNamespace, $propertyName)

@@ -69,8 +69,9 @@ class Configurator
      * This configuration includes all the information about the form fields
      * and properties of the entity.
      *
-     * @param  string $entityName
-     * @return array  The full entity configuration
+     * @param string $entityName
+     *
+     * @return array The full entity configuration
      */
     public function getEntityConfiguration($entityName)
     {
@@ -111,8 +112,9 @@ class Configurator
      * Takes the entity metadata introspected via Doctrine and completes its
      * contents to simplify data processing for the rest of the application.
      *
-     * @param  ClassMetadata $entityMetadata The entity metadata introspected via Doctrine
-     * @return array         The entity properties metadata provided by Doctrine
+     * @param ClassMetadata $entityMetadata The entity metadata introspected via Doctrine
+     *
+     * @return array The entity properties metadata provided by Doctrine
      */
     private function processEntityPropertiesMetadata(ClassMetadata $entityMetadata)
     {
@@ -153,7 +155,8 @@ class Configurator
     /**
      * Returns the list of fields to show in the 'list' view of this entity.
      *
-     * @param  array $entityConfiguration
+     * @param array $entityConfiguration
+     *
      * @return array The list of fields to show and their metadata
      */
     private function getFieldsForListView(array $entityConfiguration)
@@ -169,7 +172,8 @@ class Configurator
     /**
      * Returns the list of fields to show in the 'show' view of this entity.
      *
-     * @param  array $entityConfiguration
+     * @param array $entityConfiguration
+     *
      * @return array The list of fields to show and their metadata
      */
     private function getFieldsForShowView(array $entityConfiguration)
@@ -186,7 +190,8 @@ class Configurator
      * Returns the list of fields to show in the forms of this entity for the
      * views which display forms ('edit' and 'new').
      *
-     * @param  array $entityConfiguration
+     * @param array $entityConfiguration
+     *
      * @return array The list of fields to show and their metadata
      */
     protected function getFieldsForFormBasedViews($view, array $entityConfiguration)
@@ -222,7 +227,8 @@ class Configurator
      * If the backend configuration doesn't define any options for the fields of some entity,
      * create some basic field configuration based on the entity's Doctrine metadata.
      *
-     * @param  array $entityProperties
+     * @param array $entityProperties
+     *
      * @return array The array of fields
      */
     private function createFieldsFromEntityProperties($entityProperties)
@@ -247,7 +253,8 @@ class Configurator
      * define any configuration. It does so limiting the number of fields to
      * display and discarding several field types.
      *
-     * @param  array $entityFields
+     * @param array $entityFields
+     *
      * @return array The list of fields to display
      */
     private function filterListFieldsBasedOnSmartGuesses(array $entityFields)
@@ -282,9 +289,10 @@ class Configurator
     /**
      * Filters a list of fields excluding the given list of field names and field types.
      *
-     * @param  array $fields
-     * @param  array $excludedFieldNames
-     * @param  array $excludedFieldTypes
+     * @param array $fields
+     * @param array $excludedFieldNames
+     * @param array $excludedFieldTypes
+     *
      * @return array The filtered list of fields
      */
     private function filterFieldsByNameAndType(array $fields, array $excludedFieldNames, array $excludedFieldTypes)
@@ -304,9 +312,10 @@ class Configurator
      * Merges all the information about the fields associated with the given view
      * to return the complete set of normalized field configuration.
      *
-     * @param  string $view
-     * @param  array  $entityConfiguration
-     * @return array  The complete field configuration
+     * @param string $view
+     * @param array  $entityConfiguration
+     *
+     * @return array The complete field configuration
      */
     private function normalizeFieldsConfiguration($view, $entityConfiguration)
     {
@@ -362,7 +371,7 @@ class Configurator
             if ('list' === $view && 'boolean' === $normalizedConfiguration['dataType']) {
                 // conditions: 1) the end-user hasn't configured the field type explicitly
                 // 2) the 'edit' action is allowed for the 'list' view of this entity
-                if(!isset($fieldConfiguration['type']) && array_key_exists('edit', $entityConfiguration['list']['actions'])) {
+                if (!isset($fieldConfiguration['type']) && array_key_exists('edit', $entityConfiguration['list']['actions'])) {
                     $normalizedConfiguration['dataType'] = 'toggle';
                 }
             }
@@ -381,7 +390,8 @@ class Configurator
      * Returns the date/time/datetime/number format for the given field
      * according to its type and the default formats defined for the backend.
      *
-     * @param  string $fieldType
+     * @param string $fieldType
+     *
      * @return string The format that should be applied to the field value
      */
     private function getFieldFormat($fieldType)
@@ -403,7 +413,8 @@ class Configurator
      * This preprocessing saves a lot of further processing when accessing or
      * setting the value of the entity properties.
      *
-     * @param  array $entityConfiguration
+     * @param array $entityConfiguration
+     *
      * @return array
      */
     private function introspectGettersAndSetters($entityConfiguration)
@@ -434,7 +445,8 @@ class Configurator
     /**
      * Returns the most appropriate Symfony Form type for the given Doctrine type.
      *
-     * @param  string $doctrineType
+     * @param string $doctrineType
+     *
      * @return string
      */
     private function getFormTypeFromDoctrineType($doctrineType)

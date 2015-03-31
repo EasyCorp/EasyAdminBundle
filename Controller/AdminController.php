@@ -29,7 +29,7 @@ use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 
 /**
- * Class AdminController
+ * Class AdminController.
  */
 class AdminController extends Controller
 {
@@ -44,6 +44,7 @@ class AdminController extends Controller
 
     /**
      * @Route("/", name="admin")
+     *
      * @param Request $request
      *
      * @return RedirectResponse|Response
@@ -84,7 +85,8 @@ class AdminController extends Controller
      * If everything goes right, it returns null. If there is any error, it
      * returns a 404 error page using a Response object.
      *
-     * @param  Request       $request
+     * @param Request $request
+     *
      * @return Response|null
      */
     protected function initialize(Request $request)
@@ -267,6 +269,7 @@ class AdminController extends Controller
 
     /**
      * The method that is executed when the user performs a query on an entity.
+     *
      * @return Response
      */
     protected function searchAction()
@@ -320,7 +323,8 @@ class AdminController extends Controller
      * Allows applications to modify the entity associated with the item being
      * edited before persisting it.
      *
-     * @param  object $entity
+     * @param object $entity
+     *
      * @return object
      */
     protected function prepareEditEntityForPersist($entity)
@@ -332,7 +336,8 @@ class AdminController extends Controller
      * Allows applications to modify the entity associated with the item being
      * created before persisting it.
      *
-     * @param  object $entity
+     * @param object $entity
+     *
      * @return object
      */
     protected function prepareNewEntityForPersist($entity)
@@ -473,8 +478,8 @@ class AdminController extends Controller
      * the deletion of the entity are always performed with the 'DELETE' HTTP method,
      * which requires a form to work in the current browsers.
      *
-     * @param string  $entityName
-     * @param integer $entityId
+     * @param string $entityName
+     * @param int    $entityId
      *
      * @return Form
      */

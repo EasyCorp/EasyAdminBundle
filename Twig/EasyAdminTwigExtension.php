@@ -50,7 +50,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * the provided key. The dots of the key are automatically transformed into
      * nested keys. Example: 'assets.css' => $config['assets']['css']
      *
-     * @param  string|null $key
+     * @param string|null $key
+     *
      * @return mixed
      */
     public function getBackendConfiguration($key = null)
@@ -75,7 +76,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * Returns the entire configuration of the given entity.
      *
-     * @param  string $entityName
+     * @param string $entityName
+     *
      * @return array|null
      */
     public function getEntityConfiguration($entityName)
@@ -91,8 +93,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * property doesn't exist or its value is not accessible. This ensures that
      * the function never generates a warning or error message when calling it.
      *
-     * @param  array $entity
-     * @param  array  $fieldMetadata
+     * @param array $entity
+     * @param array $fieldMetadata
+     *
      * @return mixed
      */
     public function renderEntityField($view, $entity, array $fieldMetadata)
@@ -212,9 +215,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * Checks whether the given 'action' is enabled for the given 'entity'.
      *
-     * @param  string  $action
-     * @param  string  $entityName
-     * @return boolean
+     * @param string $action
+     * @param string $entityName
+     *
+     * @return bool
      */
     public function isActionEnabled($view, $action, $entityName)
     {
@@ -226,9 +230,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * Checks whether the given 'action' is enabled for the given 'entity'.
      *
-     * @param  string  $action
-     * @param  string  $entityName
-     * @return boolean
+     * @param string $action
+     * @param string $entityName
+     *
+     * @return bool
      */
     public function getActionConfiguration($view, $action, $entityName)
     {
@@ -243,9 +248,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * Returns the actions configured for each item displayed in the given view.
      * This method is needed because some actions are displayed globally for the
      * entire view (e.g. 'new' action in 'list' view) and other default actions
-     * are treated in a special way (e.g. 'delete' action in 'edit'/'show' views)
+     * are treated in a special way (e.g. 'delete' action in 'edit'/'show' views).
      *
-     * @param  string $entityName
+     * @param string $entityName
+     *
      * @return array
      */
     public function getActionsForItem($view, $entityName)
@@ -264,7 +270,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
         );
         $excludedActions = $actionsExcludedForItems[$view];
 
-        return array_filter($viewActions, function($action) use ($excludedActions) {
+        return array_filter($viewActions, function ($action) use ($excludedActions) {
             return !in_array($action['name'], $excludedActions);
         });
     }

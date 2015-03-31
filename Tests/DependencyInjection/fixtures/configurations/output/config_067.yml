@@ -4,6 +4,10 @@ easy_admin:
         time: 'H:i A'
         datetime: 'd/m/Y H:i:s'
         number: '%6.2f'
+    design:
+        assets:
+            css: {  }
+            js: {  }
     site_name: 'Easy Admin'
     list:
         actions: {  }
@@ -14,7 +18,4 @@ easy_admin:
         actions: {  }
     show:
         actions: {  }
-    assets:
-        css: {  }
-        js: {  }
     entities: {  }

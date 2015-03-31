@@ -7,18 +7,19 @@ easy_admin:
                 action: edit
                 label: 'Custom Label'
         max_results: 15
+    design:
+        assets:
+            css: {  }
+            js: {  }
     site_name: 'Easy Admin'
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'
     edit:
         actions: {  }
     new:
         actions: {  }
     show:
         actions: {  }
-    assets:
-        css: {  }
-        js: {  }
-    formats:
-        date: Y-m-d
-        time: 'H:i:s'
-        datetime: 'F j, Y H:i'
     entities: {  }

@@ -1,19 +1,32 @@
 Chapter 10. Customizing the Visual Design of the Backend
 ========================================================
 
-The current version of EasyAdmin doesn't support the concept of themes, but you
-can fully customize its design using CSS and JavaScript files. Define the
-`assets` option to load your own web assets:
+The current version of EasyAdmin doesn't support the concept of themes.
+However, you can customize lots of options related to the visual design of your
+backend. All these options are defined under the global `design` option:
 
 ```yaml
 easy_admin:
-    assets:
-        css:
-            - 'bundles/app/css/admin1.css'
-            - 'bundles/acmedemo/css/admin2.css'
-        js:
-            - 'bundles/app/js/admin1.js'
-            - 'bundles/acmedemo/js/admin2.js'
+    design:
+        # ...
+```
+
+Adding Custom Web Assets
+------------------------
+
+Use the `assets` option to define the web assets (CSS and JavaScript files)
+that should be loaded in the backend layout:
+
+```yaml
+easy_admin:
+    design:
+        assets:
+            css:
+                - 'bundles/app/css/admin1.css'
+                - 'bundles/acmedemo/css/admin2.css'
+            js:
+                - 'bundles/app/js/admin1.js'
+                - 'bundles/acmedemo/js/admin2.js'
     # ...
 ```
 
@@ -22,25 +35,26 @@ absolute) and links to them accordingly:
 
 ```yaml
 easy_admin:
-    assets:
-        css:
-            # HTTP protocol-relative URL
-            - '//example.org/css/admin1.css'
-            # absolute non-secure URL
-            - 'http://example.org/css/admin2.css'
-            # absolute secure URL
-            - 'https://example.org/css/admin3.css'
-            # absolute internal bundle URL
-            - '/bundles/acmedemo/css/admin4.css'
-            # relative internal bundle URL
-            - 'bundles/app/css/admin5.css'
-        js:
-            # this option works exactly the same as the 'css' option
-            - '//example.org/js/admin1.js'
-            - 'http://example.org/js/admin2.js'
-            - 'https://example.org/js/admin3.js'
-            - '/bundles/acmedemo/js/admin4.js'
-            - 'bundles/app/js/admin5.js'
+    design:
+        assets:
+            css:
+                # HTTP protocol-relative URL
+                - '//example.org/css/admin1.css'
+                # absolute non-secure URL
+                - 'http://example.org/css/admin2.css'
+                # absolute secure URL
+                - 'https://example.org/css/admin3.css'
+                # absolute internal bundle URL
+                - '/bundles/acmedemo/css/admin4.css'
+                # relative internal bundle URL
+                - 'bundles/app/css/admin5.css'
+            js:
+                # this option works exactly the same as the 'css' option
+                - '//example.org/js/admin1.js'
+                - 'http://example.org/js/admin2.js'
+                - 'https://example.org/js/admin3.js'
+                - '/bundles/acmedemo/js/admin4.js'
+                - 'bundles/app/js/admin5.js'
     # ...
 ```
 

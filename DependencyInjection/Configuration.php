@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -21,9 +22,20 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('easy_admin');
 
+        $this->addDeprecationsSection($rootNode);
+        $this->addGlobalOptionsSection($rootNode);
+        $this->addDesignSection($rootNode);
+        $this->addViewsSection($rootNode);
+        $this->addEntitiesSection($rootNode);
+
+        return $treeBuilder;
+    }
+
+    private function addDeprecationsSection(ArrayNodeDefinition $rootNode)
+    {
         $rootNode
-            // 'list_actions' and 'max_results' global options are deprecated since 1.0.8
-            // and they are replaced by 'list -> 'actions' and 'list -> max_results' options
+            // 'list_max_results' global option was deprecated in 1.0.8
+            // and replaced by 'list -> max_results'
             ->beforeNormalization()
                 ->ifTrue(function ($v) { return isset($v['list_max_results']); })
                 ->then(function ($v) {
@@ -42,6 +54,8 @@ class Configuration implements ConfigurationInterface
                 })
             ->end()
 
+            // 'list_actions' global option was deprecated in 1.0.8
+            // and replaced by 'list -> actions'
             ->beforeNormalization()
                 ->ifTrue(function ($v) { return isset($v['list_actions']); })
                 ->then(function ($v) {
@@ -56,12 +70,65 @@ class Configuration implements ConfigurationInterface
                 })
             ->end()
 
-            ->children()
-                ->scalarNode('site_name')
-                    ->defaultValue('Easy Admin')
-                    ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
-                ->end()
+            // make sure the new 'design' global option exists to simplify
+            // updating the deprecated 'assets -> css' and 'assets -> js' options
+            ->beforeNormalization()
+                ->always()
+                ->then(function ($v) {
+                    if (!isset($v['design'])) {
+                        $v['design'] = array('assets' => array());
+                    }
 
+                    return $v;
+                })
+            ->end()
+
+            // 'assets -> css' global option was deprecated in 1.1.0
+            // and replaced by 'design -> assets -> css'
+            ->beforeNormalization()
+                ->ifTrue(function ($v) { return isset($v['assets']['css']); })
+                ->then(function ($v) {
+                    // if the new option is defined, don't override it with the legacy option
+                    if (!isset($v['design']['assets']['css'])) {
+                        $v['design']['assets']['css'] = $v['assets']['css'];
+                    }
+
+                    unset($v['assets']['css']);
+
+                    return $v;
+                })
+            ->end()
+
+            // 'assets -> js' global option was deprecated in 1.1.0
+            // and replaced by 'design -> assets -> js'
+            ->beforeNormalization()
+                ->ifTrue(function ($v) { return isset($v['assets']['js']); })
+                ->then(function ($v) {
+                    // if the new option is defined, don't override it with the legacy option
+                    if (!isset($v['design']['assets']['js'])) {
+                        $v['design']['assets']['js'] = $v['assets']['js'];
+                    }
+
+                    unset($v['assets']['js']);
+
+                    return $v;
+                })
+            ->end()
+
+            // after updating 'assets -> css' and 'assets -> js' deprecated options,
+            // remove the parent 'assets' deprecated option if it's defined
+            ->beforeNormalization()
+                ->always()
+                ->then(function ($v) {
+                    if (isset($v['assets'])) {
+                        unset($v['assets']);
+                    }
+
+                    return $v;
+                })
+            ->end()
+
+            ->children()
                 ->variableNode('list_actions')
                     ->info('DEPRECATED: use the "actions" option of the "list" view.')
                 ->end()
@@ -70,6 +137,91 @@ class Configuration implements ConfigurationInterface
                     ->info('DEPRECATED: use "max_results" option under the "list" global key.')
                 ->end()
 
+                ->arrayNode('assets')
+                    ->performNoDeepMerging()
+                    ->children()
+                        ->arrayNode('css')
+                            ->info('DEPRECATED: use the "design -> assets -> css" option.')
+                        ->end()
+                        ->arrayNode('js')
+                            ->info('DEPRECATED: use the "design -> assets -> js" option.')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addGlobalOptionsSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
+                ->scalarNode('site_name')
+                    ->defaultValue('Easy Admin')
+                    ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
+                ->end()
+
+                ->arrayNode('formats')
+                    ->performNoDeepMerging()
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('date')
+                            ->defaultValue('Y-m-d')
+                            ->info('The PHP date format applied to "date" field types.')
+                            ->example('d/m/Y (see http://php.net/manual/en/function.date.php)')
+                        ->end()
+                        ->scalarNode('time')
+                            ->defaultValue('H:i:s')
+                            ->info('The PHP time format applied to "time" field types.')
+                            ->example('h:i a (see http://php.net/date)')
+                        ->end()
+                        ->scalarNode('datetime')
+                            ->defaultValue('F j, Y H:i')
+                            ->info('The PHP date/time format applied to "datetime" field types.')
+                            ->example('l, F jS Y / h:i (see http://php.net/date)')
+                        ->end()
+                        ->scalarNode('number')
+                            ->info('The sprintf-compatible format applied to numeric values.')
+                            ->example('%.2d (see http://php.net/sprintf)')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addDesignSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('design')
+                    ->performNoDeepMerging()
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('assets')
+                            ->performNoDeepMerging()
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->arrayNode('css')
+                                    ->prototype('scalar')->end()
+                                    ->info('The array of CSS assets to load in all backend pages.')
+                                ->end()
+                                ->arrayNode('js')
+                                    ->prototype('scalar')->end()
+                                    ->info('The array of JavaScript assets to load in all backend pages.')
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addViewsSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
                 ->arrayNode('list')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -113,55 +265,19 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+            ->end()
+        ;
+    }
 
-                ->arrayNode('assets')
-                    ->performNoDeepMerging()
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->arrayNode('css')
-                            ->prototype('scalar')->end()
-                            ->info('The array of CSS assets to load in all backend pages.')
-                        ->end()
-                        ->arrayNode('js')
-                            ->prototype('scalar')->end()
-                            ->info('The array of JavaScript assets to load in all backend pages.')
-                        ->end()
-                    ->end()
-                ->end()
-
-                ->arrayNode('formats')
-                    ->performNoDeepMerging()
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('date')
-                            ->defaultValue('Y-m-d')
-                            ->info('The PHP date format applied to "date" field types.')
-                            ->example('d/m/Y (see http://php.net/manual/en/function.date.php)')
-                        ->end()
-                        ->scalarNode('time')
-                            ->defaultValue('H:i:s')
-                            ->info('The PHP time format applied to "time" field types.')
-                            ->example('h:i a (see http://php.net/date)')
-                        ->end()
-                        ->scalarNode('datetime')
-                            ->defaultValue('F j, Y H:i')
-                            ->info('The PHP date/time format applied to "datetime" field types.')
-                            ->example('l, F jS Y / h:i (see http://php.net/date)')
-                        ->end()
-                        ->scalarNode('number')
-                            ->info('The sprintf-compatible format applied to numeric values.')
-                            ->example('%.2d (see http://php.net/sprintf)')
-                        ->end()
-                    ->end()
-                ->end()
-
+    private function addEntitiesSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
                 ->variableNode('entities')
                     ->defaultValue(array())
                     ->info('The list of entities to manage in the administration zone.')
                 ->end()
             ->end()
         ;
-
-        return $treeBuilder;
     }
 }

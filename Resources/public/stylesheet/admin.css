@@ -706,6 +706,9 @@ body.new form textarea {
 body.new form .form-inline select + select {
     margin-left: .5em;
 }
+body.new form .field_collection_action {
+    margin-top: -15px;
+}
 
 /* -------------------------------------------------------------------------
    EDIT PAGE
@@ -715,6 +718,9 @@ body.edit form textarea {
 }
 body.edit form .form-inline select + select {
     margin-left: .5em;
+}
+body.edit form .field_collection_action {
+    margin-top: -15px;
 }
 
 /* -------------------------------------------------------------------------

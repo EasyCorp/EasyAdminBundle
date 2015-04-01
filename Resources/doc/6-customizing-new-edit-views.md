@@ -177,8 +177,10 @@ These are the options that you can define for form fields:
   * `help` (optional): the help message that will be displayed below the
     form field.
   * `class` (optional): the CSS class that will be applied to the form field
-    widget. For example, to display a big input field, use the Bootstrap 3
-    class called `input-lg`.
+    widget container element. For example, when using the default Bootstrap
+    based form theme, this value is applied to the `<div class="form-group">`
+    element which wraps the label, the widget and the error messages of the
+    field.
 
 ### Translate Form Field Labels
 

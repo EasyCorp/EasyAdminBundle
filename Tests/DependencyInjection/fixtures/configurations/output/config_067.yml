@@ -9,6 +9,8 @@ easy_admin:
             css: {  }
             js: {  }
         theme: default
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
     site_name: 'Easy Admin'
     list:
         actions: {  }

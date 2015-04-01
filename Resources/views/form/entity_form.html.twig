@@ -1,0 +1,91 @@
+{% trans_default_domain "EasyAdminBundle" %}
+
+{{ form_start(form, { attr: form.vars.attr|merge({ novalidate: 'novalidate' }) }) }}
+    <div id="form row">
+        {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
+            {% set _field_metadata = entity_fields[field.vars.name] %}
+
+            {% if _field_metadata['fieldType'] == 'association' %}
+                {{ easyadmin_render_field_for_edit_view(item, _field_metadata) }}
+            {% else %}
+                {% set _field_label = _field_metadata['label']|default(null) %}
+                {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}
+            {% endif %}
+
+            {% if _field_metadata['fieldType'] == 'collection' %}
+                {% set add_item_javascript %}
+                    $(function() {
+                        if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+                        var collection = $('#form_{{ field.vars.name|escape('js') }}');
+                        var numItems = collection.children('div.form-group').length;
+
+                        var newItem = collection.attr('data-prototype')
+                            .replace(/__name__label__/g, numItems)
+                            .replace(/__name__/g, numItems)
+                        ;
+
+                        collection.append(newItem);
+                    });
+                {% endset %}
+
+                <div class="form-group field_collection_action">
+                    <a href="#" onclick="{{ add_item_javascript|raw }}" class="col-sm-12 text-right">
+                        <i class="fa fa-plus-square"></i>
+                        {{ field|length == 0 ? 'Add a new item' : 'Add another item' }}
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="form-group">
+            <div class="{{ form.vars.attr.form_button_row_class }}">
+                {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
+                <button type="submit" class="btn">
+                    <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters) }}
+                </button>
+
+                {% set _entity_actions = (view == 'new')
+                    ? easyadmin_get_actions_for_new_item(_entity.name)
+                    : easyadmin_get_actions_for_edit_item(_entity.name) %}
+
+                {% for _action in _entity_actions %}
+                    {% if 'method' == _action.type %}
+                        {% set _action_href = path('admin', { action: _action.name, view: view, entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
+                    {% elseif 'route' == _action.type %}
+                        {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
+                    {% endif %}
+
+                    <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
+                        {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                        {{ _action.label|trans(_trans_parameters) }}
+                    </a>
+                {% endfor %}
+
+                {% if view == 'edit' %}
+                    {% if easyadmin_action_is_enabled_for_edit_view('delete', _entity.name) %}
+                        {% set _action = easyadmin_get_action_for_edit_view('delete', _entity.name) %}
+                        <button type="button" id="button-delete" class="btn {{ _action.class|default('btn-danger') }}">
+                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                            {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
+                        </button>
+                    {% endif %}
+                {% endif %}
+
+                {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
+                {% if view == 'new' and easyadmin_action_is_enabled_for_new_view('list', _entity.name) %}
+                    {% set _list_action = easyadmin_get_action_for_new_view('list', _entity.name) %}
+                {% elseif view == 'edit' and easyadmin_action_is_enabled_for_edit_view('list', _entity.name) %}
+                    {% set _list_action = easyadmin_get_action_for_edit_view('list', _entity.name) %}
+                {% endif %}
+
+                {% if _list_action is defined %}
+                    <a class="btn btn-secondary" href="{{ path('admin', ({ entity: _entity.name, action: _list_action.name, view: view }) ) }}">{% spaceless %}
+                        {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
+                        {{ _list_action.label|default('action.list')|trans(_trans_parameters) }}
+                    {% endspaceless %}</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{{ form_end(form) }}

@@ -28,7 +28,7 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
 
         $parsedConfiguration = $this->parseConfigurationFile($inputFixtureFilepath);
         $expectedConfiguration = file_get_contents($outputFixtureFilepath);
-if ('' === $expectedConfiguration) { file_put_contents($outputFixtureFilepath, $parsedConfiguration); }
+
         $this->assertEquals($expectedConfiguration, $parsedConfiguration, sprintf('%s configuration is correctly parsed into %s', $inputFixtureFilepath, $outputFixtureFilepath));
     }
 

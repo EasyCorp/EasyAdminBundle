@@ -421,8 +421,40 @@ class AdminController extends Controller
      */
     protected function createEditForm($entity, array $entityProperties)
     {
+        return $this->createEntityForm($entity, $entityProperties, 'edit');
+    }
+
+    /**
+     * Creates the form used to create an entity.
+     *
+     * @param object $entity
+     * @param array  $entityProperties
+     *
+     * @return Form
+     */
+    protected function createNewForm($entity, array $entityProperties)
+    {
+        return $this->createEntityForm($entity, $entityProperties, 'new');
+    }
+
+    /**
+     * Creates the form used to create or edit an entity.
+     *
+     * @param object $entity
+     * @param array  $entityProperties
+     * @param string $view The name of the view where this form is used ('new' or 'edit')
+     *
+     * @return Form
+     */
+    protected function createEntityForm($entity, array $entityProperties, $view)
+    {
+        $formCssClass = array_reduce($this->config['design']['form_theme'], function($previousClass, $formTheme) {
+            return sprintf('theme_%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
+        });
+
         $form = $this->createFormBuilder($entity, array(
             'data_class' => $this->entity['class'],
+            'attr' => array('class' => $formCssClass, 'id' => $view.'-form'),
         ));
 
         foreach ($entityProperties as $name => $metadata) {
@@ -440,23 +472,14 @@ class AdminController extends Controller
                 }
             }
 
+            $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];
+            $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
+            $formFieldOptions['attr']['field_help'] = $metadata['help'];
+
             $form->add($name, $metadata['fieldType'], $formFieldOptions);
         }
 
         return $form->getForm();
-    }
-
-    /**
-     * Creates the form used to create an entity.
-     *
-     * @param object $entity
-     * @param array  $entityProperties
-     *
-     * @return Form
-     */
-    protected function createNewForm($entity, array $entityProperties)
-    {
-        return $this->createEditForm($entity, $entityProperties);
     }
 
     /**

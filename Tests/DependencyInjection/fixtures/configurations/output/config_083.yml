@@ -1,6 +1,8 @@
 easy_admin:
     design:
         theme: default
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
         assets:
             css: {  }
             js: {  }

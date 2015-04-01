@@ -5,7 +5,7 @@
 {% trans_default_domain "EasyAdminBundle" %}
 {% set _trans_parameters = { '%entity_name%': _entity.label|trans } %}
 
-{% form_theme form '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig' %}
+{% form_theme form with easyadmin_config('design.form_theme') %}
 
 {% block body_class 'admin new ' ~ _entity.name|lower %}
 
@@ -14,86 +14,7 @@
 {% endblock %}
 
 {% block main %}
-    {{ form_start(form, { attr: { id: 'new-form', novalidate: 'novalidate' } }) }}
-        <div id="form">
-            {% for field in form.children if field.vars.name != '_token' %}
-                {% set _field_configuration = entity_fields[field.vars.name] %}
-                <div class="form-group field_{{ _field_configuration['fieldType']|lower|default('default') }} {% if not field.vars.valid %}has-error{% endif %}">
-                    {% if _field_configuration['fieldType'] == 'association' %}
-                        {{ easyadmin_render_field_for_new_view(item, _field_configuration) }}
-                    {% else %}
-                        {% set field_label = _field_configuration['label']|default(null) %}
-                        {{ form_label(field, field_label|trans, { label_attr: { class: 'col-sm-2 control-label' } }) }}
-
-                        <div class="col-sm-10 {% if _field_configuration['fieldType'] == 'checkbox' %}col-sm-offset-2{% endif %}">
-                            {% set widget_attributes = { attr: { class: _field_configuration['class']|default(null) }, label: entity_fields[field.vars.name]['label']|trans } %}
-                            {{ form_widget(field, widget_attributes) }}
-                            {{ form_errors(field) }}
-
-                            {% if _field_configuration['help'] is defined %}
-                                <span class="help-block">{{ _field_configuration['help'] }}</span>
-                            {% endif %}
-
-                            {% if _field_configuration['fieldType'] == 'collection' %}
-                                {% set add_item_javascript %}
-                                    $(function() {
-                                        if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
-
-                                        var collection = $('#form_{{ field.vars.name|escape('js') }}');
-                                        var numItems = collection.children('div.form-group').length;
-
-                                        var newItem = collection.attr('data-prototype')
-                                            .replace(/__name__label__/g, numItems)
-                                            .replace(/__name__/g, numItems)
-                                        ;
-
-                                        collection.append(newItem);
-                                    });
-                                {% endset %}
-                                <a href="#" onclick="{{ add_item_javascript|raw }}" class="{{ field|length > 0 ? 'pull-right' : '' }}">
-                                    <i class="fa fa-plus-square"></i>
-                                    {{ field|length == 0 ? 'Add a new item' : 'Add another item' }}
-                                </a>
-
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-
-            <div class="form-group">
-                <div class="col-sm-10 col-sm-offset-2">
-                    {# the 'save' action is hardcoded for the 'new' view #}
-                    <button type="submit" class="btn">
-                        <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters) }}
-                    </button>
-
-                    {% set _new_actions = easyadmin_get_actions_for_new_item(_entity.name) %}
-                    {% for _action in _new_actions %}
-                        {% if 'method' == _action.type %}
-                            {% set _action_href = path('admin', { action: _action.name, view: 'edit', entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
-                        {% elseif 'route' == _action.type %}
-                            {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
-                        {% endif %}
-
-                        <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
-                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                            {{ _action.label|trans(_trans_parameters) }}
-                        </a>
-                    {% endfor %}
-
-                    {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
-                    {% if easyadmin_action_is_enabled_for_new_view('list', _entity.name) %}
-                        {% set _action = easyadmin_get_action_for_new_view('list', _entity.name) %}
-                        <a class="btn btn-secondary" href="{{ path('admin', ({ entity: _entity.name, action: _action.name, view: 'new' }) ) }}">{% spaceless %}
-                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                            {{ _action.label|default('action.list')|trans(_trans_parameters) }}
-                        {% endspaceless %}</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    {{ form_end(form) }}
+    {{ include('@EasyAdmin/form/entity_form.html.twig', { view: 'new' }) }}
 {% endblock %}
 
 {% block body_javascript %}

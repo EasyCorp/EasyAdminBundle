@@ -8,6 +8,8 @@ easy_admin:
                 - 'http://exmaple.com/path/to/asset4.js'
             css: {  }
         theme: default
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d

@@ -448,14 +448,13 @@ class AdminController extends Controller
      */
     protected function createEntityForm($entity, array $entityProperties, $view)
     {
-        $formUsesHorizontalLayout = in_array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig', $this->config['design']['form_theme']);
+        $formCssClass = array_reduce($this->config['design']['form_theme'], function($previousClass, $formTheme) {
+            return sprintf('theme_%s %s', str_replace('.html.twig', '', basename($formTheme)), $previousClass);
+        });
 
         $form = $this->createFormBuilder($entity, array(
             'data_class' => $this->entity['class'],
-            'attr' => array(
-                'id' => $view.'-form',
-                'form_button_row_class' => $formUsesHorizontalLayout ? 'col-sm-10 col-sm-offset-2' : '',
-            ),
+            'attr' => array('class' => $formCssClass, 'id' => $view.'-form'),
         ));
 
         foreach ($entityProperties as $name => $metadata) {

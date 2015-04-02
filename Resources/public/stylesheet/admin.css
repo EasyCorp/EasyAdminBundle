@@ -710,6 +710,17 @@ body.new form .field_collection_action {
     margin-top: -15px;
 }
 
+body.new form.theme_bootstrap_3_horizontal_layout #form-actions-row {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+@media (min-width: 768px) {
+    body.new form.theme_bootstrap_3_horizontal_layout #form-actions-row {
+        margin-left: 16.66666667%;
+    }
+}
+
 /* -------------------------------------------------------------------------
    EDIT PAGE
    ------------------------------------------------------------------------- */
@@ -721,6 +732,17 @@ body.edit form .form-inline select + select {
 }
 body.edit form .field_collection_action {
     margin-top: -15px;
+}
+
+body.edit form.theme_bootstrap_3_horizontal_layout #form-actions-row {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+@media (min-width: 768px) {
+    body.edit form.theme_bootstrap_3_horizontal_layout #form-actions-row {
+        margin-left: 16.66666667%;
+    }
 }
 
 /* -------------------------------------------------------------------------

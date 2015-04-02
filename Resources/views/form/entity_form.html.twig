@@ -39,7 +39,7 @@
         {% endfor %}
 
         <div class="form-group">
-            <div class="{{ form.vars.attr.form_button_row_class }}">
+            <div id="form-actions-row">
                 {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
                 <button type="submit" class="btn">
                     <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters) }}

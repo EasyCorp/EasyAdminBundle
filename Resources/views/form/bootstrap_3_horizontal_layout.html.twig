@@ -26,11 +26,15 @@ col-sm-2
 
 {% block form_row -%}
 {% spaceless %}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %}">
+    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field_{{ form.vars.attr.field_type|default('default') }} {{ form.vars.attr.field_css_class|default('') }}">
         {{ form_label(form) }}
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}
             {{ form_errors(form) }}
+
+            {% if form.vars.attr.field_help is defined %}
+                <span class="help-block">{{ form.vars.attr.field_help }}</span>
+            {% endif %}
         </div>
     </div>
 {% endspaceless %}
@@ -46,7 +50,7 @@ col-sm-2
 
 {% block checkbox_radio_row -%}
 {% spaceless %}
-    <div class="form-group {% if not valid %}has-error{% endif %}">
+    <div class="form-group {% if not valid %}has-error{% endif %} field_{{ form.vars.attr.field_type|default('default') }} {{ form.vars.attr.field_css_class|default('') }}">
         <div class="{{ block('form_label_class') }}"></div>
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}
@@ -58,7 +62,7 @@ col-sm-2
 
 {% block submit_row -%}
 {% spaceless %}
-    <div class="form-group">
+    <div class="form-group field_{{ form.vars.attr.field_type|default('default') }} {{ form.vars.attr.field_css_class|default('') }}">
         <div class="{{ block('form_label_class') }}"></div>
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}

@@ -1,0 +1,32 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-04-01T23:21:04Z
+
+I'm sorry about asking this, but would you mind consider #207 before merging this ? I would not rush anything, but I don't think I'll have time to rebase it in the next days.
+Of course it can wait more than a few days :smiley:
+However including #207 into this PR might be useful to ask ourself how to handle some easyadmin features properly if the developer chose to override the `Resources/views/form/entity_form.html.twig` template for instance. (The other solution for #207 was to create a custom formtype for date & time style fields and using it, but it has its own drawbacks)
+
+Nice enhancements by the way !
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-02T07:27:33Z
+
+I'm not a fan of this idea of naming a theme.
+
+I don't know if we'll provide "downloadable" themes, and if so, a theme should then be a configuration parameter defining assets and form design, etc.
+
+Maybe we should decide on a strategy between those two ideas:
+
+* Everything related to design lies under the "theme" option, and any theme would be a simple `yml` file configuration that will be merged with the parameters under the `theme` attribute. By this, I mean this kind of usage:<br>
+You specify the "dark" theme. Every parameter under the theme will be loaded from, at first, the `@EasyAdminBundle/Resources/themes/dark.yml`.
+If you specify any parameter directly under the `theme` option, everything will override the default theme params, but the other theme params will stay. This allows us to define a theme "skeleton".
+* You keep the actual behavior, but in the end, the `theme` name won't have that much impact on the back-end because the theme `name` is only informative... :confused:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-02T18:49:19Z
+
+@Pierstoval I promise that the `theme` option will make sense in the near term. Trust me :)
+
+@ogizanagi I don't forget about #207. I assure you that I will consider it in the short term. If you don't have time to finish or rebase it, I'll take your work and I'll finish it. Thanks.

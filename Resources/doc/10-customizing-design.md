@@ -34,7 +34,7 @@ Bootstrap 3 CSS framework:
 
 ![Default horizontal form style](images/easyadmin-form-horizontal.png)
 
-The style of the forms can changed application-wide using the `form_theme`
+The style of the forms can be changed application-wide using the `form_theme`
 option inside the `design` configuration section. In fact, the default form
 style is equivalent to using this configuration:
 
@@ -60,8 +60,8 @@ The same form shown previously will now be rendered as follows:
 ![Vertical form style](images/easyadmin-form-vertical.png)
 
 The `horizontal` and `vertical` values are just nice shortcuts to use any of
-the two built-in form themes. In case you have created your own form theme, use
-it as follows:
+the two built-in form themes. But you can also use your own form themes. Just
+set the full theme path as the value of the `form_theme` option:
 
 ```yaml
 easy_admin:
@@ -70,7 +70,7 @@ easy_admin:
     # ...
 ```
 
-You can even pass several form themes in an array to use all of them when
+You can even pass several form themes paths in an array to use all of them when
 rendering the backend forms:
 
 ```yaml

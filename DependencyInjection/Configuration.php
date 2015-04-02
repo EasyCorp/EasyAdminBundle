@@ -210,6 +210,7 @@ class Configuration implements ConfigurationInterface
 
                         ->variableNode('form_theme')
                             ->defaultValue(array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'))
+                            ->treatNullLike(array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'))
                             ->info('The form theme applied to backend forms. Allowed values: "horizontal", "vertical" and a custom theme path or array of custom theme paths.')
                             ->validate()
                                 ->ifTrue(function ($v) { return 'horizontal' === $v; })
@@ -221,9 +222,6 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->validate()
                                 ->ifString()->then(function($v) { return array($v); })
-                            ->end()
-                            ->validate()
-                                ->ifNull()->then(function() { return array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'); })
                             ->end()
                         ->end()
 

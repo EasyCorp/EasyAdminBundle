@@ -449,7 +449,7 @@ class AdminController extends Controller
     protected function createEntityForm($entity, array $entityProperties, $view)
     {
         $formCssClass = array_reduce($this->config['design']['form_theme'], function($previousClass, $formTheme) {
-            return sprintf('theme_%s %s', str_replace('.html.twig', '', basename($formTheme)), $previousClass);
+            return sprintf('theme_%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
         });
 
         $form = $this->createFormBuilder($entity, array(

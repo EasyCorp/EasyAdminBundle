@@ -208,6 +208,12 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
 
+                        ->scalarNode('brand_color')
+                            ->info('The color used in the backend design to highlight important elements.')
+                            ->defaultValue('#D47843')
+                            ->treatNullLike('#D47843')
+                        ->end()
+
                         ->variableNode('form_theme')
                             ->defaultValue(array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'))
                             ->treatNullLike(array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'))

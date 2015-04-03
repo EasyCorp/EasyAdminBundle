@@ -4,6 +4,7 @@ easy_admin:
             - '@AppBundle/form/custom_layout.html.twig'
             - form_div_layout.html.twig
         theme: default
+        brand_color: '#D47843'
         assets:
             css: {  }
             js: {  }

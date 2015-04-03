@@ -13,7 +13,7 @@
         {% block head_stylesheets %}
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}">
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/admin.css') }}">
+            <link rel="stylesheet" href="{{ path('_easyadmin_render_css', { brand_color: easyadmin_config('design.brand_color') }) }}">
         {% endblock %}
 
         {% for css_asset in easyadmin_config('design.assets.css') %}

@@ -22,7 +22,7 @@ a {
 }
 a:hover {
     border: none;
-    color: #D47843;
+    color: {{ brand_color }};
     text-decoration: underline;
 }
 a:active {
@@ -268,7 +268,7 @@ ul.pager .next {
 /* Badges
    ------------------------------------------------------------------------- */
 span.badge {
-    background-color: #D47843;
+    background-color: {{ brand_color }};
 }
 
 /* Buttons
@@ -276,7 +276,7 @@ span.badge {
 a.btn,
 input.btn,
 button.btn {
-    background: #D47843;
+    background: {{ brand_color }};
     border: none;
     border-radius: 4px;
     color: #FFF;
@@ -311,7 +311,7 @@ a.btn-secondary:hover,
 input.btn-secondary:hover,
 button.btn-secondary:hover {
     background: transparent;
-    color: #D47843;
+    color: {{ brand_color }};
     text-decoration: underline;
 }
 a.btn-secondary:hover,
@@ -470,7 +470,7 @@ button.btn-danger {
 }
 #header-menu li:hover a,
 #header-menu li.active a {
-  color: #D47843;
+  color: {{ brand_color }};
 }
 
 body:not(:target) #header-menu {
@@ -625,16 +625,16 @@ body.list table thead th span {
 }
 body.list table thead th a:hover {
     background: #F2F1F2;
-    color: #D47843;
+    color: {{ brand_color }};
     text-decoration: none;
 }
 body.list table thead th a:hover i {
-    color: #D47843;
+    color: {{ brand_color }};
 }
 
 body.list table thead th.sorted,
 body.list table thead th.sorted a {
-    background: #D47843;
+    background: {{ brand_color }};
     border-bottom-color: #A15932 !important;
     color: #FFF;
     text-decoration: none;
@@ -659,7 +659,7 @@ body.list .table thead tr th {
     border-bottom: 2px solid #DBD6DB;
 }
 body.list .table tbody {
-    border-bottom: 2px solid #D47843;
+    border-bottom: 2px solid {{ brand_color }};
 }
 body.list .table tbody tr:hover td {
     background: #F3EFEB;
@@ -685,7 +685,7 @@ body.list .pagination > li > a {
     color: #222;
 }
 body.list .pagination > li > a:hover {
-    background: #D47843;
+    background: {{ brand_color }};
     color: #FFF;
 }
 body.list .pagination > li i {
@@ -865,7 +865,7 @@ body.error code {
     }
     #header-menu li a:hover {
         background: transparent;
-        color: #D47843;
+        color: {{ brand_color }};
     }
 
     #header #header-menu li:hover,
@@ -873,7 +873,7 @@ body.error code {
         background: transparent;
     }
     #header #header-menu li.active a {
-        color: #D47843;
+        color: {{ brand_color }};
     }
 
     body:not(:target) #header-menu {
@@ -983,7 +983,7 @@ body.error code {
         padding: 28px 10px 25px;
     }
     #header-logo a:hover {
-        background: #D47843;
+        background: {{ brand_color }};
     }
     #header #header-nav {
         flex: 1;
@@ -1032,7 +1032,7 @@ body.error code {
         -webkit-transition-delay: 0s;
     }
     #header #header-menu li a:hover {
-        color: #D47843;
+        color: {{ brand_color }};
         padding-left: .5em;
         text-decoration: none;
     }

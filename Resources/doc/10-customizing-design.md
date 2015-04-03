@@ -110,6 +110,44 @@ easy_admin:
     # ...
 ```
 
+Customizing Backend Colors
+--------------------------
+
+The default backend visual design uses a dark orange shade as the accent color.
+Use the `brand_color` design option to change this accent color:
+
+```yaml
+easy_admin:
+    design:
+        brand_color: '#1ABC9C'
+    # ...
+```
+
+Applying the above configuration, the backend will now display a beautiful
+turquoise shade:
+
+![Using a custom brand color in the backend](images/easyadmin-design-brand-color.png)
+
+The value of the `brand_color` option is directly passed to the `color` and
+`background-color` CSS properties, so you can define the color using any valid
+CSS format:
+
+```yaml
+easy_admin:
+    design:
+        brand_color: 'rgb(26, 188, 156)'
+    # ...
+```
+
+This flexibility allows you to use semi-transparent colors:
+
+```yaml
+easy_admin:
+    design:
+        brand_color: 'rgba(26, 188, 156, 0.85)'
+    # ...
+```
+
 Adding Custom Web Assets
 ------------------------
 

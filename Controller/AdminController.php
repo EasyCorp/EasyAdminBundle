@@ -528,4 +528,16 @@ class AdminController extends Controller
     {
         return $this->render($view, $parameters, new Response('', 404));
     }
+
+    /**
+     * @Route("/_css/admin.css", name="_easyadmin_render_css")
+     */
+    public function renderCssAction(Request $request)
+    {
+        $cssContent = $this->renderView('@EasyAdmin/css/admin.css.twig', array(
+            'brand_color' => $request->query->get('brand_color'),
+        ));
+
+        return new Response($cssContent, Response::HTTP_OK, array('Content-Type' => 'text/css'));
+    }
 }

@@ -212,6 +212,11 @@ class Configuration implements ConfigurationInterface
                             ->info('The color used in the backend design to highlight important elements.')
                             ->defaultValue('#D47843')
                             ->treatNullLike('#D47843')
+                            ->validate()
+                                // if present, remove the trailing ';' to avoid CSS issues
+                                ->ifTrue(function ($v) { return ';' === substr(trim($v), -1); })
+                                ->then(function ($v) { return trim(substr(trim($v), 0, -1)); })
+                            ->end()
                         ->end()
 
                         ->variableNode('form_theme')

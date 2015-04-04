@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-03T20:57:43Z
+
+I'm really sad that the admin css is now loaded directly in the page :confused:
+
+Thought a better solution could be used...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-03T21:23:30Z
+
+@Pierstoval there is a (hopefully) better proposal as of 0c2e299
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-04T08:35:02Z
+
+Nice :+1: I think some cache can be used for this route, like 3600s :) It's still a css file
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-04T08:44:01Z
+
+@Pierstoval good idea! I've added a 10 minutes cache. I'm going to merge this PR as it is now, because I want to work in a relaed PR to pick the color scheme of the backend. If we find any problem with this PR, I'll fix it in the next PR. Thanks.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-04T08:45:17Z
+
+The dynamic css in a route is better for theme switching, because we can easily add css directly under the `theme` or `design` option :+1:

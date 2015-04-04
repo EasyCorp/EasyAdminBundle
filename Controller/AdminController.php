@@ -528,4 +528,24 @@ class AdminController extends Controller
     {
         return $this->render($view, $parameters, new Response('', 404));
     }
+
+    /**
+     * It renders the main CSS applied to the backend design. This controller
+     * allows to generate dynamic CSS files that use variables without the need
+     * to set up a CSS preprocessing toolchain.
+     *
+     * @Route("/_css/admin.css", name="_easyadmin_render_css")
+     */
+    public function renderCssAction(Request $request)
+    {
+        $cssContent = $this->renderView('@EasyAdmin/css/admin.css.twig', array(
+            'brand_color' => $request->query->get('brand_color'),
+        ));
+
+        $response = new Response($cssContent, Response::HTTP_OK, array('Content-Type' => 'text/css'));
+        $response->setPublic();
+        $response->setSharedMaxAge(600);
+
+        return $response;
+    }
 }

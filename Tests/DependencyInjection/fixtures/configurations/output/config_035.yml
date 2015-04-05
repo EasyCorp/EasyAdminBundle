@@ -99,7 +99,8 @@ easy_admin:
             css: {  }
             js: {  }
         theme: default
-        brand_color: '#D47843'
+        color_scheme: dark
+        brand_color: '#E67E22'
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
     site_name: 'Easy Admin'

@@ -8,7 +8,8 @@ easy_admin:
                 - 'http://exmaple.com/path/to/asset4.js'
             css: {  }
         theme: default
-        brand_color: '#D47843'
+        color_scheme: dark
+        brand_color: '#E67E22'
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
     site_name: 'Easy Admin'

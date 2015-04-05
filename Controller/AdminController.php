@@ -540,6 +540,7 @@ class AdminController extends Controller
     {
         $cssContent = $this->renderView('@EasyAdmin/css/admin.css.twig', array(
             'brand_color' => $request->query->get('brand_color'),
+            'color_scheme' => $request->query->get('color_scheme'),
         ));
 
         $response = new Response($cssContent, Response::HTTP_OK, array('Content-Type' => 'text/css'));

@@ -1,0 +1,9 @@
+# TEST
+# the color scheme can only be 'dark' or 'light'
+
+# CONFIGURATION
+easy_admin:
+    design:
+        color_scheme: 'custom_value'
+    entities:
+        TestEntity: 'AppBundle\Entity\TestEntity'

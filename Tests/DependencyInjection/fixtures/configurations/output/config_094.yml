@@ -2,6 +2,7 @@ easy_admin:
     design:
         brand_color: 'hsla(0, 100%, 50%, 0.7)'
         theme: default
+        color_scheme: dark
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
         assets:

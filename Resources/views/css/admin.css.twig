@@ -1144,7 +1144,9 @@ body.error .error-solution pre {
         color: {{ colors.white }};
     }
     #header #header-footer {
-        border-top: 1px solid {{ colors.gray }};
+{% if 'dark' == color_scheme %}
+        border-top: 1px solid {{ colors.gray_dark }};
+{% endif %}
         font-size: 14px;
         padding-bottom: 1em;
         padding-top: 1em;

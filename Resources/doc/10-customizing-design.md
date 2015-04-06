@@ -35,12 +35,13 @@ Use the `brand_color` design option to change it:
 ```yaml
 easy_admin:
     design:
+        # this backend uses turquoise as its main color
         brand_color: '#1ABC9C'
     # ...
 ```
 
-Applying the above configuration, the backend will now display a beautiful
-turquoise shade:
+This simple configuration option allows you to easily match the backend design
+to your project identity:
 
 ![Using a custom brand color in the backend](images/easyadmin-design-brand-color.png)
 
@@ -80,6 +81,11 @@ easy_admin:
 ```
 
 ![The default backend homepage using the light color scheme](images/easyadmin-design-color-scheme-light.png)
+
+Combine the `light` color scheme with the `brand_color` option to get a myriad
+of new backend designs:
+
+![Combining the light color scheme with a colorful palette](images/easyadmin-design-brand-color-light-theme.png)
 
 Customizing Form Design
 -----------------------

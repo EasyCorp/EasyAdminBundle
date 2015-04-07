@@ -208,10 +208,17 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
 
+                        ->enumNode('color_scheme')
+                            ->values(array('dark', 'light'))
+                            ->info('The color scheme applied to the backend design (values: "dark" or "light").')
+                            ->defaultValue('dark')
+                            ->treatNullLike('dark')
+                        ->end()
+
                         ->scalarNode('brand_color')
                             ->info('The color used in the backend design to highlight important elements.')
-                            ->defaultValue('#D47843')
-                            ->treatNullLike('#D47843')
+                            ->defaultValue('#E67E22')
+                            ->treatNullLike('#E67E22')
                             ->validate()
                                 // if present, remove the trailing ';' to avoid CSS issues
                                 ->ifTrue(function ($v) { return ';' === substr(trim($v), -1); })

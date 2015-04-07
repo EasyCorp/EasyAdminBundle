@@ -32,8 +32,8 @@ col-sm-2
             {{ form_widget(form) }}
             {{ form_errors(form) }}
 
-            {% if form.vars.attr.field_help is defined %}
-                <span class="help-block">{{ form.vars.attr.field_help }}</span>
+            {% if form.vars.attr.field_help|default('') != '' %}
+                <span class="help-block"><i class="fa fa-info-circle"></i> {{ form.vars.attr.field_help }}</span>
             {% endif %}
         </div>
     </div>

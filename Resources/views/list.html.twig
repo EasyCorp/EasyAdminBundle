@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content_title %}
-    {% if 'search' == app.request.get('view') %}
+    {% if 'search' == app.request.get('action') %}
         {{ 'search.page_title'|transchoice(paginator.nbResults)|raw }}
     {% else %}
         {{ entity.list.title|default('list.page_title')|trans(_trans_parameters) }}
@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content %}
-{% if 'search' == app.request.get('view') %}
+{% if 'search' == app.request.get('action') %}
     {% set request_attributes = { view: 'list', action: 'search', entity: _entity.name, query: app.request.get('query')|default('') } %}
 {% else %}
     {% set request_attributes = { view: 'list', action: 'list', entity: _entity.name, sortDirection: app.request.get('sortDirection', 'DESC') } %}

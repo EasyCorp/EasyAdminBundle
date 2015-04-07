@@ -7,7 +7,7 @@
             </div>
 
             <div class="col-xs-12 col-sm-10">
-                <ul class="pagination list-pagination-paginator">
+                <ul class="pagination list-pagination-paginator {{ 1 == paginator.currentPage ? 'first-page' : '' }} {{ paginator.hasNextPage ? '' : 'last-page' }}">
                     {% if 1 == paginator.currentPage %}
                         <li class="disabled">
                             <span>

@@ -104,6 +104,15 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/theme_name_can_only_be_default.yml');
     }
 
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage The value "custom_value" is not allowed for path "easy_admin.design.color_scheme". Permissible values: "dark", "light"
+     */
+    public function testColorSchemeValuesAreLimited()
+    {
+        $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/color_scheme_values_are_limited.yml');
+    }
+
     public function provideConfigurationFiles()
     {
         $fixtures = array();

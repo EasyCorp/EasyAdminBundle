@@ -137,24 +137,23 @@ backends and rapid prototypes, but most of the times, you need to customize
 some parts of the backend. Keep reading the rest of the documentation to learn
 how to do it.
 
+  * [Chapter 3 - Customizing your first backend](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/3-customizing-first-backend.md)
+  * [Chapter 4 - Customizing the List View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/4-customizing-list-view.md)
+  * [Chapter 5 - Customizing the Show View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/5-customizing-show-view.md)
+  * [Chapter 6 - Customizing the Edit and New Views](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/6-customizing-new-edit-views.md)
+  * [Chapter 7 - Customizing the Search View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/7-customizing-search-view.md)
+  * [Chapter 8 - Customizing the View Actions](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/8-customizing-view-actions.md)
+  * [Chapter 9 - Advanced Techniques for Complex Backends](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/9-advanced-techniques.md)
+  * [Chapter 10 - Customizing the Visual Design of the Backend](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/10-customizing-design.md)
+  * [Chapter 11 - Configuration Reference](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/11-configuration-reference.md)
+  * [Chapter 12 - About this Project](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc/12-about-this-project.md)
+
 -----
 
-**❮ NOTE ❯** you are reading the documentation of the bundle's **development
-version**, but in your application you probably have installed a **stable
-version**. [Read the documentation of the most recent stable version ➜](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.1.0/Resources/doc).
+**❮ NOTE ❯** you are reading the documentation of the bundle's **most recent
+stable version**. You can also [read the documentation of the development version ➜](https://github.com/javiereguiluz/EasyAdminBundle/tree/master/Resources/doc).
 
 -----
-
-  * [Chapter 3 - Customizing your first backend](Resources/doc/3-customizing-first-backend.md)
-  * [Chapter 4 - Customizing the List View](Resources/doc/4-customizing-list-view.md)
-  * [Chapter 5 - Customizing the Show View](Resources/doc/5-customizing-show-view.md)
-  * [Chapter 6 - Customizing the Edit and New Views](Resources/doc/6-customizing-new-edit-views.md)
-  * [Chapter 7 - Customizing the Search View](Resources/doc/7-customizing-search-view.md)
-  * [Chapter 8 - Customizing the View Actions](Resources/doc/8-customizing-view-actions.md)
-  * [Chapter 9 - Advanced Techniques for Complex Backends](Resources/doc/9-advanced-techniques.md)
-  * [Chapter 10 - Customizing the Visual Design of the Backend](Resources/doc/10-customizing-design.md)
-  * [Chapter 11 - Configuration Reference](Resources/doc/11-configuration-reference.md)
-  * [Chapter 12 - About this Project](Resources/doc/12-about-this-project.md)
 
 LEGAL DISCLAIMER
 ----------------

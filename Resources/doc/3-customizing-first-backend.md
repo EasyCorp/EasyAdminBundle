@@ -154,6 +154,22 @@ access to the backend. In case you need it, checkout the
 [Security Chapter](http://symfony.com/doc/current/book/security.html) of the
 official Symfony documentation to learn how to restrict the access to the
 backend section of your application.
+But if you want to add a bit more of control over who can access what, you can specify
+a role for each entity using the `role` key, which will be checked against the logged user
+to allow access:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customers:
+            class: AppBundle\Entity\Customer
+            role: ROLE_MANAGER
+```
+
+Be careful that if the user isn't granted with the role needed for the first entity,
+he or she will no be able to access any part of the backend; to solve this, simply
+change the order the entities are specified in `config.yml`.
 
 In addition, when accessing a protected backend, EasyAdmin will display the
 name of user who is logged in the application.

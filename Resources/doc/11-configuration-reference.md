@@ -53,6 +53,7 @@ easy_admin:
                 fields: ['code', 'description', 'price', 'category']
             new:
                 fields: ['code', 'description', 'price', 'category']
+            role: ROLE_MANAGER
 ```
 
 If the `edit` and `new` configuration is the same, use instead the special
@@ -71,6 +72,7 @@ easy_admin:
                 fields: ['id', 'code', 'description', 'price']
             form:
                 fields: ['code', 'description', 'price', 'category']
+            role: ROLE_MANAGER
 ```
 
 Advanced Configuration with Custom Field Configuration
@@ -97,6 +99,7 @@ easy_admin:
                     - { property: 'description', type: 'textarea' }
                     - { property: 'price', type: 'number', class: 'input-lg' }
                     - { property: 'category', label: 'Commercial Category' }
+            role: ROLE_MANAGER
 ```
 
 Combining Different Configuration Formats
@@ -119,4 +122,5 @@ easy_admin:
                     - { property: 'description', type: 'textarea' }
                     - { property: 'price', type: 'number', class: 'input-lg' }
                     - { property: 'category', label: 'Commercial Category' }
+            role: ROLE_MANAGER
 ```

@@ -46,7 +46,7 @@
                     {% block navigation %}
                     <ul id="header-menu">
                         {% block navigation_items %}
-                        {% for item in easyadmin_config('entities') %}
+                        {% for item in easyadmin_config('entities') if is_granted(item.role|default('IS_AUTHENTICATED_ANONYMOUSLY')) %}
                             <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
                                 <a href="{{ path('admin', { entity: item.name, action: 'list' }) }}">
                                     {{- item.label|trans -}}

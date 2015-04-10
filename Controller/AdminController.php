@@ -66,8 +66,14 @@ class AdminController extends Controller
             return $forbiddenActionResponse;
         }
 
+        $entity = $request->query->get('entity');
+        if (isset($this->entity['role']) &&
+            !$this->get('security.context')->isGranted($this->entity['role'])) {
+                throw $this->createAccessDeniedException();
+        }
+
         // for now, the homepage redirects to the 'list' action and view of the first entity
-        if (null === $request->query->get('entity')) {
+        if (null === $entity) {
             return $this->redirect($this->generateUrl('admin', array(
                 'action' => $action,
                 'entity' => $this->getNameOfTheFirstConfiguredEntity(),

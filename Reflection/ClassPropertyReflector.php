@@ -33,11 +33,7 @@ class ClassPropertyReflector
             'has'.ucfirst($propertyName),
         );
 
-        foreach ($getterMethods as $method) {
-            if (method_exists($classNamespace, $method)) {
-                return $method;
-            }
-        }
+        return $this->getFirstExistingMethod($classNamespace, $getterMethods);
     }
 
     /**
@@ -56,7 +52,21 @@ class ClassPropertyReflector
             $propertyName,
         );
 
-        foreach ($setterMethods as $method) {
+        return $this->getFirstExistingMethod($classNamespace, $setterMethods);
+    }
+
+    /**
+     * Returns the name of the first method that exist for the given class, or
+     * null if none of the given methods exist.
+     *
+     * @param string $classNamespace
+     * @param array  $methods
+     *
+     * @return string|null
+     */
+    private function getFirstExistingMethod($classNamespace, array $methods)
+    {
+        foreach ($methods as $method) {
             if (method_exists($classNamespace, $method)) {
                 return $method;
             }

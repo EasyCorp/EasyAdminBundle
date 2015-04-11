@@ -368,7 +368,7 @@ class AdminController extends Controller
         ;
 
         if (null !== $sortField) {
-            if (!$sortDirection || !in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
+            if (empty($sortDirection) || !in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
                 $sortDirection = 'DESC';
             }
 

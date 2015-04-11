@@ -60,7 +60,7 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     {
         $backendConfig = array('easy_admin' => null);
         $configurator = new Configurator($backendConfig, $this->inspector, $this->reflector);
-        $configuration = $configurator->getEntityConfiguration('TestEntity');
+        $configurator->getEntityConfiguration('TestEntity');
     }
 
     /**
@@ -71,6 +71,6 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     {
         $backendConfig = array('easy_admin' => array('entities' => array('AppBundle\\Entity\\TestEntity')));
         $configurator = new Configurator($backendConfig, $this->inspector, $this->reflector);
-        $configuration = $configurator->getEntityConfiguration('UnmanagedEntity');
+        $configurator->getEntityConfiguration('UnmanagedEntity');
     }
 }

@@ -187,10 +187,11 @@ class Configurator
     }
 
     /**
-     * Returns the list of fields to show in the forms of this entity for the
-     * views which display forms ('edit' and 'new').
+     * Returns the list of fields to show in the forms of the given view
+     * ('edit' or 'new').
      *
-     * @param array $entityConfiguration
+     * @param string $view
+     * @param array  $entityConfiguration
      *
      * @return array The list of fields to show and their metadata
      */
@@ -290,8 +291,8 @@ class Configurator
      * Filters a list of fields excluding the given list of field names and field types.
      *
      * @param array $fields
-     * @param array $excludedFieldNames
-     * @param array $excludedFieldTypes
+     * @param string[] $excludedFieldNames
+     * @param string[] $excludedFieldTypes
      *
      * @return array The filtered list of fields
      */

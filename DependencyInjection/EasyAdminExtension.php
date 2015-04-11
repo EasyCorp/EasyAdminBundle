@@ -363,7 +363,8 @@ class EasyAdminExtension extends Extension
      * This method ensures that all entity names are unique by appending some suffix
      * to repeated names until they are unique.
      *
-     * @param array $entitiesConfiguration
+     * @param string $entityName
+     * @param array  $existingEntityNames
      *
      * @return array The entities configuration with unique entity names
      */

@@ -5,8 +5,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Yaml\Yaml;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
+use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
 
-class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
+class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 {
     private $container;
     private $loader;
@@ -113,19 +114,9 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/color_scheme_values_are_limited.yml');
     }
 
-    public function provideConfigurationFiles()
+    public function provideConfigurationFiles($fixturesDir)
     {
-        $fixtures = array();
-
-        $inputs = glob(__DIR__.'/fixtures/*/input/admin_*.yml');
-        $outputs = glob(__DIR__.'/fixtures/*/output/config_*.yml');
-
-        $numFixtures = count($inputs);
-        for ($i = 0; $i < $numFixtures; $i++) {
-            $fixtures[] = array($inputs[$i], $outputs[$i]);
-        }
-
-        return $fixtures;
+        return parent::provideConfigurationFiles(__DIR__.'/fixtures/*/');
     }
 
     /**

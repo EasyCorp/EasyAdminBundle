@@ -7,8 +7,9 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
+use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
 
-class ConfiguratorTest extends \PHPUnit_Framework_TestCase
+class ConfiguratorTest extends CommonPhpUnitTestCase
 {
     private $extension;
     private $inspector;
@@ -30,7 +31,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider provideConfigurationFixtures
+     * @dataProvider provideConfigurationFiles
      */
     public function testGetEntityConfiguration($inputFixtureFilepath, $outputFixtureFilepath)
     {
@@ -46,18 +47,9 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedConfiguration, $yamlConfiguration, sprintf('%s configuration is correctly parsed into %s', basename($inputFixtureFilepath), basename($outputFixtureFilepath)));
     }
 
-    public function provideConfigurationFixtures()
+    public function provideConfigurationFiles($fixturesDir)
     {
-        $fixtures = array();
-
-        $inputs = glob(__DIR__.'/fixtures/input/admin_*.yml');
-        $outputs = glob(__DIR__.'/fixtures/output/config_*.yml');
-
-        for ($i = 0; $i < count($inputs); $i++) {
-            $fixtures[] = array($inputs[$i], $outputs[$i]);
-        }
-
-        return $fixtures;
+        return parent::provideConfigurationFiles(__DIR__.'/fixtures/');
     }
 
     /**

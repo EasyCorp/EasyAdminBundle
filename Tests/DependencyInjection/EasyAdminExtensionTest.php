@@ -116,7 +116,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 
     public function provideConfigurationFiles($fixturesDir)
     {
-        return parent::provideConfigurationFiles(__DIR__.'/fixtures/*/');
+        return parent::provideConfigurationFiles(__DIR__.'/fixtures/*');
     }
 
     /**

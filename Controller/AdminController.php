@@ -163,13 +163,14 @@ class AdminController extends Controller
             return $this->ajaxEdit();
         }
 
-        if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
-            throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
+        $id = $this->request->query->get('id');
+        if (!$item = $this->em->getRepository($this->entity['class'])->find($id)) {
+            throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $id));
         }
 
         $fields = $this->entity['edit']['fields'];
         $editForm = $this->createEditForm($item, $fields);
-        $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
+        $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
         $editForm->handleRequest($this->request);
         if ($editForm->isValid()) {
@@ -195,12 +196,13 @@ class AdminController extends Controller
      */
     protected function showAction()
     {
-        if (!$item = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
-            throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $this->request->query->get('id')));
+        $id = $this->request->query->get('id');
+        if (!$item = $this->em->getRepository($this->entity['class'])->find($id)) {
+            throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $id));
         }
 
         $fields = $this->entity['show']['fields'];
-        $deleteForm = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
+        $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
         return $this->render('@EasyAdmin/show.html.twig', array(
             'item'   => $item,
@@ -252,11 +254,12 @@ class AdminController extends Controller
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
 
-        $form = $this->createDeleteForm($this->entity['name'], $this->request->query->get('id'));
+        $id = $this->request->query->get('id');
+        $form = $this->createDeleteForm($this->entity['name'], $id);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
+            if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
                 throw $this->createNotFoundException('The entity to be delete does not exist.');
             }
 

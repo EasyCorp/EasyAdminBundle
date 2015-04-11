@@ -120,7 +120,8 @@ class EasyAdminExtensionTest extends \PHPUnit_Framework_TestCase
         $inputs = glob(__DIR__.'/fixtures/*/input/admin_*.yml');
         $outputs = glob(__DIR__.'/fixtures/*/output/config_*.yml');
 
-        for ($i = 0; $i < count($inputs); $i++) {
+        $numFixtures = count($inputs);
+        for ($i = 0; $i < $numFixtures; $i++) {
             $fixtures[] = array($inputs[$i], $outputs[$i]);
         }
 

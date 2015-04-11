@@ -239,7 +239,7 @@ class Configuration implements ConfigurationInterface
                                 ->then(function () { return array('@EasyAdmin/form/bootstrap_3_layout.html.twig'); })
                             ->end()
                             ->validate()
-                                ->ifString()->then(function($v) { return array($v); })
+                                ->ifString()->then(function ($v) { return array($v); })
                             ->end()
                         ->end()
 

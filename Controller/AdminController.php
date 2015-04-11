@@ -442,13 +442,13 @@ class AdminController extends Controller
      *
      * @param object $entity
      * @param array  $entityProperties
-     * @param string $view The name of the view where this form is used ('new' or 'edit')
+     * @param string $view             The name of the view where this form is used ('new' or 'edit')
      *
      * @return Form
      */
     protected function createEntityForm($entity, array $entityProperties, $view)
     {
-        $formCssClass = array_reduce($this->config['design']['form_theme'], function($previousClass, $formTheme) {
+        $formCssClass = array_reduce($this->config['design']['form_theme'], function ($previousClass, $formTheme) {
             return sprintf('theme_%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
         });
 

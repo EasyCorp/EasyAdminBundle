@@ -290,7 +290,7 @@ class Configurator
     /**
      * Filters a list of fields excluding the given list of field names and field types.
      *
-     * @param array $fields
+     * @param array    $fields
      * @param string[] $excludedFieldNames
      * @param string[] $excludedFieldTypes
      *

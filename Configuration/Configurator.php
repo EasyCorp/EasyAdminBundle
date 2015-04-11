@@ -20,6 +20,7 @@ class Configurator
 {
     private $backendConfig = array();
     private $entitiesConfig = array();
+    private $inspector;
     private $reflector;
     private $defaultEntityFields = array();
 

@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Reflection;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
@@ -31,7 +32,7 @@ class EntityMetadataInspector
      *
      * @param string $entityClass
      *
-     * @return array
+     * @return ClassMetadata
      */
     public function getEntityMetadata($entityClass)
     {

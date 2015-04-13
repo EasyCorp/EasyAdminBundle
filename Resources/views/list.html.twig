@@ -16,7 +16,7 @@
     {% if 'search' == app.request.get('action') %}
         {{ 'search.page_title'|transchoice(paginator.nbResults)|raw }}
     {% else %}
-        {{ entity.list.title|default('list.page_title')|trans(_trans_parameters) }}
+        {{ _entity.list.title|default('list.page_title')|trans(_trans_parameters) }}
     {% endif %}
 {% endblock %}
 

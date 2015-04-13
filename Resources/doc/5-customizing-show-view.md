@@ -148,11 +148,7 @@ easy_admin:
 
 These are the supported types:
 
-  * All the Doctrine data types:
-    * Dates: `date`, `datetime`, `datetimetz`, `time`
-    * Logical: `boolean`
-    * Arrays: `array`, `simple_array`
-    * Text: `string`, `text`
-    * Numeric: `bigint`, `integer`, `smallint`, `decimal`, `float`
-  * `image`, custom type defined by EasyAdmin which displays images inlined in
-    the entity show page. Read the previous sections for more details.
+  * All the [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
+  * Custom EasyAdmin types:
+    * `image`, displays images inlined in the entity listings. Read the
+      previous sections for more details.

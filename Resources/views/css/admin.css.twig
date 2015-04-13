@@ -1124,7 +1124,6 @@ body.error .error-solution pre {
         border: none;
     }
     #header #header-menu li a {
-        ccolor: {{ colors.gray_light }};
         display: block;
         font-size: 16px;
         font-weight: 500;
@@ -1135,7 +1134,8 @@ body.error .error-solution pre {
         -webkit-transition: padding-left .1s ease-out;
         -webkit-transition-delay: 0s;
     }
-    #header #header-menu li a:hover {
+    #header #header-menu li a:hover,
+    #header-menu li:hover a {
         color: {{ brand_color }};
         padding-left: 15px;
         text-decoration: none;

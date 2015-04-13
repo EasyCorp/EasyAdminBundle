@@ -162,12 +162,11 @@ class Configurator
      */
     private function getFieldsForListView(array $entityConfiguration)
     {
-        // there is a custom configuration for 'list' fields
-        if (count($entityConfiguration['list']['fields']) > 0) {
-            return $this->normalizeFieldsConfiguration('list', $entityConfiguration);
+        if (0 === count($entityConfiguration['list']['fields'])) {
+            $entityConfiguration['list']['fields'] = $this->filterListFieldsBasedOnSmartGuesses($this->defaultEntityFields);
         }
 
-        return $this->filterListFieldsBasedOnSmartGuesses($this->defaultEntityFields);
+        return $this->normalizeFieldsConfiguration('list', $entityConfiguration);
     }
 
     /**
@@ -371,9 +370,16 @@ class Configurator
             // special case for the 'list' view: 'boolean' properties are displayed
             // as toggleable flip switches when certain conditions are met
             if ('list' === $view && 'boolean' === $normalizedConfiguration['dataType']) {
-                // conditions: 1) the end-user hasn't configured the field type explicitly
-                // 2) the 'edit' action is allowed for the 'list' view of this entity
-                if (!isset($fieldConfiguration['type']) && array_key_exists('edit', $entityConfiguration['list']['actions'])) {
+                // conditions:
+                //   1) the end-user hasn't configured the field type explicitly
+                //   2) the 'edit' action is enabled for the 'list' view of this entity
+                $originalEntityListConfiguration = $this->backendConfig['entities'][$entityConfiguration['name']]['list'];
+                $originalFieldConfiguration = isset($originalEntityListConfiguration['fields'][$fieldName])
+                    ? $originalEntityListConfiguration['fields'][$fieldName] : null;
+
+                $isEditActionEnabled = array_key_exists('edit', $entityConfiguration['list']['actions']);
+
+                if (!isset($originalFieldConfiguration['type']) && $isEditActionEnabled) {
                     $normalizedConfiguration['dataType'] = 'toggle';
                 }
             }

@@ -220,7 +220,7 @@ class Configurator
     private function getFieldsForSearchAction()
     {
         $excludedFieldNames = array();
-        $excludedFieldTypes = array('association', 'binary', 'blob', 'date', 'datetime', 'datetimetz', 'guid', 'time', 'object');
+        $excludedFieldTypes = array('association', 'binary', 'boolean', 'blob', 'date', 'datetime', 'datetimetz', 'guid', 'time', 'object');
 
         return $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
     }

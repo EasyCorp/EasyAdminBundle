@@ -8,7 +8,7 @@
 {% block body_class 'admin show ' ~ _entity.name|lower %}
 
 {% block content_title %}
-    {{ entity.show.title|default('show.page_title')|trans(_trans_parameters) }}
+    {{ _entity.show.title|default('show.page_title')|trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}

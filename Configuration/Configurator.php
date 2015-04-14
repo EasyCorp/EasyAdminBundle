@@ -357,11 +357,9 @@ class Configurator
             // for the field, use it as 'fieldType'. Otherwise, infer the best field
             // type using the property data type.
             if (in_array($view, array('edit', 'new'))) {
-                if (isset($originalFieldConfiguration['type'])) {
-                    $normalizedConfiguration['fieldType'] = $originalFieldConfiguration['type'];
-                } else {
-                    $normalizedConfiguration['fieldType'] = $this->getFormTypeFromDoctrineType($normalizedConfiguration['type']);
-                }
+                $normalizedConfiguration['fieldType'] = isset($originalFieldConfiguration['type'])
+                    ? $originalFieldConfiguration['type']
+                    : $this->getFormTypeFromDoctrineType($normalizedConfiguration['type']);
             }
 
             // special case for the 'list' view: 'boolean' properties are displayed

@@ -178,12 +178,11 @@ class Configurator
      */
     private function getFieldsForShowView(array $entityConfiguration)
     {
-        // there is a custom configuration for 'show' fields
-        if (count($entityConfiguration['show']['fields']) > 0) {
-            return $this->normalizeFieldsConfiguration('show', $entityConfiguration);
+        if (0 === count($entityConfiguration['show']['fields'])) {
+            $entityConfiguration['show']['fields'] = $this->defaultEntityFields;
         }
 
-        return $this->defaultEntityFields;
+        return $this->normalizeFieldsConfiguration('show', $entityConfiguration);
     }
 
     /**
@@ -197,18 +196,13 @@ class Configurator
      */
     protected function getFieldsForFormBasedViews($view, array $entityConfiguration)
     {
-        $entityFields = array();
-
-        // there is a custom field configuration for this view
-        if (count($entityConfiguration[$view]['fields']) > 0) {
-            $entityFields = $this->normalizeFieldsConfiguration($view, $entityConfiguration);
-        } else {
+        if (0 === count($entityConfiguration[$view]['fields'])) {
             $excludedFieldNames = array($entityConfiguration['primary_key_field_name']);
             $excludedFieldTypes = array('binary', 'blob', 'json_array', 'object');
-            $entityFields = $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
+            $entityConfiguration[$view]['fields'] = $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
         }
 
-        return $entityFields;
+        return $this->normalizeFieldsConfiguration($view, $entityConfiguration);
     }
 
     /**
@@ -322,8 +316,11 @@ class Configurator
     {
         $configuration = array();
         $fieldsConfiguration = $entityConfiguration[$view]['fields'];
+        $originalViewConfiguration = $this->backendConfig['entities'][$entityConfiguration['name']][$view];
 
         foreach ($fieldsConfiguration as $fieldName => $fieldConfiguration) {
+            $originalFieldConfiguration = isset($originalViewConfiguration['fields'][$fieldName]) ? $originalViewConfiguration['fields'][$fieldName] : null;
+
             if (!array_key_exists($fieldName, $entityConfiguration['properties'])) {
                 // treat this field as 'virtual' because it doesn't exist as a
                 // property of the related Doctrine entity
@@ -360,8 +357,8 @@ class Configurator
             // for the field, use it as 'fieldType'. Otherwise, infer the best field
             // type using the property data type.
             if (in_array($view, array('edit', 'new'))) {
-                if (isset($fieldConfiguration['type'])) {
-                    $normalizedConfiguration['fieldType'] = $fieldConfiguration['type'];
+                if (isset($originalFieldConfiguration['type'])) {
+                    $normalizedConfiguration['fieldType'] = $originalFieldConfiguration['type'];
                 } else {
                     $normalizedConfiguration['fieldType'] = $this->getFormTypeFromDoctrineType($normalizedConfiguration['type']);
                 }
@@ -373,12 +370,7 @@ class Configurator
                 // conditions:
                 //   1) the end-user hasn't configured the field type explicitly
                 //   2) the 'edit' action is enabled for the 'list' view of this entity
-                $originalEntityListConfiguration = $this->backendConfig['entities'][$entityConfiguration['name']]['list'];
-                $originalFieldConfiguration = isset($originalEntityListConfiguration['fields'][$fieldName])
-                    ? $originalEntityListConfiguration['fields'][$fieldName] : null;
-
                 $isEditActionEnabled = array_key_exists('edit', $entityConfiguration['list']['actions']);
-
                 if (!isset($originalFieldConfiguration['type']) && $isEditActionEnabled) {
                     $normalizedConfiguration['dataType'] = 'toggle';
                 }

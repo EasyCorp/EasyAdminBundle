@@ -219,7 +219,7 @@ class AdminController extends Controller
      */
     protected function newAction()
     {
-        $item = $this->instanciateNewEntity();
+        $item = $this->instantiateNewEntity();
 
         $fields = $fields = $this->entity['new']['fields'];
         $newForm = $this->createNewForm($item, $fields);
@@ -320,16 +320,17 @@ class AdminController extends Controller
 
         return new Response((string) $newValue);
     }
-    
+
     /**
      * Creates a new object of the current managed entity.
      * This method is mostly here for override convenience, because it allows
      * the user to use his own method to customize the entity instanciation.
-     * 
+     *
      * @return object
      */
-    protected function instanciateNewEntity() {
+    protected function instantiateNewEntity() {
         $entityFullyQualifiedClassName = $this->entity['class'];
+
         return new $entityFullyQualifiedClassName();
     }
 

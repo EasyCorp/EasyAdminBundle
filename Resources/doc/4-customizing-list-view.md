@@ -250,13 +250,13 @@ easy_admin:
             list:
                 fields:
                     - 'id'
-                    - { property: 'firstname', label: 'app.orders.firstname' }
-                    - { property: 'lastname', label: 'app.orders.firstname' }
+                    - { property: 'firstname', label: 'app.users.firstname' }
+                    - { property: 'lastname', label: 'app.users.firstname' }
             form:
                 fields:
                     - 'id'
-                    - { property: 'firstname', label: 'app.orders.firstname' }
-                    - { property: 'lastname', label: 'app.orders.firstname' }
+                    - { property: 'firstname', label: 'app.users.firstname' }
+                    - { property: 'lastname', label: 'app.users.firstname' }
         # ...
 ```
 
@@ -335,8 +335,8 @@ easy_admin:
 ```
 
 In this case, the value of the `format` option is passed to the `sprintf()`
-function, so you can use any of its
-[format specifiers](http://php.net/manual/en/function.sprintf.php).
+function, so you can use any of the
+[PHP format specifiers](http://php.net/manual/en/function.sprintf.php).
 
 The same `format` option can be applied to any numeric entity field. This
 field configuration always overrides the global number format:
@@ -480,13 +480,35 @@ easy_admin:
 
 These are the supported types:
 
-  * All the Doctrine data types:
-    * Dates: `date`, `datetime`, `datetimetz`, `time`
-    * Logical: `boolean`
-    * Arrays: `array`, `simple_array`
-    * Text: `string`, `text`
-    * Numeric: `bigint`, `integer`, `smallint`, `decimal`, `float`
-  * `image`, custom type defined by EasyAdmin which displays images inlined in
-    the entity listings. Read the previous sections for more details.
-  * `toggle`, custom type defined by EasyAdmin which displays a boolean value
-    as a flip switch. Read the previous sections for more details.
+  * All the [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
+  * All the [Doctrine data types](http://doctrine-dbal.readthedocs.org/en/latest/reference/types.html)
+  * Custom EasyAdmin types:
+    * `image`, displays images inlined in the entity listings. Read the
+      previous sections for more details.
+    * `toggle`, displays a boolean value as a flip switch. Read the previous
+      sections for more details.
+
+If you use any of the types defined by Doctrine, the backend automatically
+transforms into the appropriate Symfony Form type using the following
+conversion table:
+
+| Doctrine Type  | Symfony form type
+| -------------- | -----------------
+| `array`        | `collection`
+| `bigint`       | `text`
+| `blob`         | `textarea`
+| `boolean`      | `checkbox`
+| `date`         | `date`
+| `datetime`     | `datetime`
+| `datetimetz`   | `datetime`
+| `decimal`      | `number`
+| `float`        | `number`
+| `guid`         | `text`
+| `integer`      | `integer`
+| `json_array`   | `textarea`
+| `object`       | `textarea`
+| `simple_array` | `collection`
+| `smallint`     | `integer`
+| `string`       | `text`
+| `text`         | `textarea`
+| `time`         | `time`

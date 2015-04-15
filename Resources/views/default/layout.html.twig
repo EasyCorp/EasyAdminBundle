@@ -41,7 +41,7 @@
                     <div id="header-logo" class="navbar-brand">
                         {% block header_logo %}
                         {% set _site_name_length = easyadmin_config('site_name')|length <= 10 ? 'short'
-                            : easyadmin_config('site_name')|length <= 12 ? 'medium' : 'long;'
+                            : easyadmin_config('site_name')|length <= 12 ? 'medium' : 'long'
                         %}
                         <a href="{{ path('admin') }}" class="{{ _site_name_length }}">{{ easyadmin_config('site_name')|raw }}</a>
                         {% endblock header_logo %}

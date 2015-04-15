@@ -45,7 +45,7 @@
                 {% set _show_actions = easyadmin_get_actions_for_show_item(_entity.name) %}
                 {% for _action in _show_actions %}
                     {% if 'method' == _action.type %}
-                        {% set _action_href = path('admin', { action: _action.name, view: 'edit', entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
+                        {% set _action_href = path('admin', { action: _action.name, view: 'show', entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
                     {% elseif 'route' == _action.type %}
                         {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
                     {% endif %}

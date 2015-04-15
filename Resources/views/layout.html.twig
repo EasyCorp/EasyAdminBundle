@@ -48,7 +48,7 @@
                         {% block navigation_items %}
                         {% for item in easyadmin_config('entities') %}
                             <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
-                                <a href="{{ path('admin', { entity: item.name, action: 'list' }) }}">
+                                <a href="{{ path('admin', { entity: item.name, action: 'list', view: 'list' }) }}">
                                     {{- item.label|trans -}}
                                 </a>
                             </li>

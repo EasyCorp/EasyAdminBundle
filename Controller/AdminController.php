@@ -42,6 +42,8 @@ class AdminController extends Controller
     /** @var EntityManager */
     protected $em;
 
+    protected $view;
+
     /**
      * @Route("/", name="admin")
      *
@@ -60,18 +62,13 @@ class AdminController extends Controller
         }
 
         $action = $request->query->get('action', 'list');
-        $view = $request->query->get('view', 'list');
-
-        if (true !== $forbiddenActionResponse = $this->isActionAllowed($action, $view)) {
-            return $forbiddenActionResponse;
-        }
 
         // for now, the homepage redirects to the 'list' action and view of the first entity
         if (null === $request->query->get('entity')) {
             return $this->redirect($this->generateUrl('admin', array(
                 'action' => $action,
                 'entity' => $this->getNameOfTheFirstConfiguredEntity(),
-                'view'   => $view,
+                'view'   => $this->view,
             )));
         }
 
@@ -120,19 +117,7 @@ class AdminController extends Controller
         $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
 
         $this->request = $request;
-    }
-
-    protected function isActionAllowed($action, $view)
-    {
-        if ($action === $view || array_key_exists($action, $this->entity[$view]['actions'])) {
-            return true;
-        }
-
-        return $this->render404error('@EasyAdmin/error/forbidden_action.html.twig', array(
-            'action' => $action,
-            'view'   => $view,
-            'enabled_actions' => array_keys($this->entity[$view]['actions']),
-        ));
+        $this->view = $this->request->query->get('view', 'list');
     }
 
     /**
@@ -142,6 +127,10 @@ class AdminController extends Controller
      */
     protected function listAction()
     {
+        if (!$this->isActionAllowed('list')) {
+            return $this->renderForbiddenActionError('list');
+        }
+
         $fields = $this->entity['list']['fields'];
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
@@ -159,6 +148,10 @@ class AdminController extends Controller
      */
     protected function editAction()
     {
+        if (!$this->isActionAllowed('edit')) {
+            return $this->renderForbiddenActionError('edit');
+        }
+
         if ($this->request->isXmlHttpRequest()) {
             return $this->ajaxEdit();
         }
@@ -196,6 +189,10 @@ class AdminController extends Controller
      */
     protected function showAction()
     {
+        if (!$this->isActionAllowed('show')) {
+            return $this->renderForbiddenActionError('show');
+        }
+
         $id = $this->request->query->get('id');
         if (!$item = $this->em->getRepository($this->entity['class'])->find($id)) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $id));
@@ -219,6 +216,10 @@ class AdminController extends Controller
      */
     protected function newAction()
     {
+        if (!$this->isActionAllowed('new')) {
+            return $this->renderForbiddenActionError('new');
+        }
+
         $item = $this->instantiateNewEntity();
 
         $fields = $fields = $this->entity['new']['fields'];
@@ -328,7 +329,8 @@ class AdminController extends Controller
      *
      * @return object
      */
-    protected function instantiateNewEntity() {
+    protected function instantiateNewEntity()
+    {
         $entityFullyQualifiedClassName = $this->entity['class'];
 
         return new $entityFullyQualifiedClassName();
@@ -541,7 +543,38 @@ class AdminController extends Controller
      */
     protected function render404error($view, array $parameters = array())
     {
-        return $this->render($view, $parameters, new Response('', 404));
+        return $this->render($view, $parameters, new Response('', Response::HTTP_NOT_FOUND));
+    }
+
+    /**
+     * Utility method that checks if the given action is allowed for the current
+     * view of the current entity.
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
+    protected function isActionAllowed($action)
+    {
+        if (array_key_exists($action, $this->entity[$this->view]['actions'])) {
+            return true;
+        }
+    }
+
+    /**
+     * Utility shortcut to render an error when the requested action is not allowed
+     * for the given view of the given entity.
+     *
+     * @param string $action
+     *
+     * @return Response
+     */
+    protected function renderForbiddenActionError($action)
+    {
+        $allowedActions = array_keys($this->entity[$this->view]['actions']);
+        $parameters = array('action' => $action, 'allowed_actions' => $allowedActions, 'view' => $this->view);
+
+        return $this->render('@EasyAdmin/error/forbidden_action.html.twig', $parameters, new Response('', Response::HTTP_FORBIDDEN));
     }
 
     /**

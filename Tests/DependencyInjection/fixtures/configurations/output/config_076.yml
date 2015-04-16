@@ -56,7 +56,7 @@ easy_admin:
                         type: method
                         label: action.delete
                         class: ''
-                        icon: null
+                        icon: trash
                     list:
                         name: list
                         type: method
@@ -83,7 +83,7 @@ easy_admin:
                         type: method
                         label: action.edit
                         class: ''
-                        icon: null
+                        icon: edit
                 fields: {  }
             new:
                 actions:

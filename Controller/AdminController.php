@@ -551,7 +551,7 @@ class AdminController extends Controller
      *
      * @Route("/_css/admin.css", name="_easyadmin_render_css")
      */
-    public function renderCssAction(Request $request)
+    public function renderCssAction()
     {
         $config = $this->container->getParameter('easyadmin.config');
 

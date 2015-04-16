@@ -553,9 +553,11 @@ class AdminController extends Controller
      */
     public function renderCssAction(Request $request)
     {
+        $config = $this->container->getParameter('easyadmin.config');
+
         $cssContent = $this->renderView('@EasyAdmin/css/admin.css.twig', array(
-            'brand_color' => $request->query->get('brand_color'),
-            'color_scheme' => $request->query->get('color_scheme'),
+            'brand_color' => $config['design']['brand_color'],
+            'color_scheme' => $config['design']['color_scheme'],
         ));
 
         $response = new Response($cssContent, Response::HTTP_OK, array('Content-Type' => 'text/css'));

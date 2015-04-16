@@ -149,13 +149,13 @@ class EasyAdminExtension extends Extension
             foreach (array('edit', 'list', 'new', 'show') as $view) {
                 $defaultActions = $this->getDefaultActions($view);
                 $backendActions = isset($backendConfiguration[$view]['actions']) ? $backendConfiguration[$view]['actions'] : array();
-                $backendActions = $this->normalizeActionsConfiguration($backendActions);
+                $backendActions = $this->normalizeActionsConfiguration($backendActions, $defaultActions);
 
                 $defaultViewActions = array_replace($defaultActions, $backendActions);
                 $defaultViewActions = $this->filterRemovedActions($defaultViewActions);
 
                 $entityActions = isset($entityConfiguration[$view]['actions']) ? $entityConfiguration[$view]['actions'] : array();
-                $entityActions = $this->normalizeActionsConfiguration($entityActions);
+                $entityActions = $this->normalizeActionsConfiguration($entityActions, $defaultViewActions);
 
                 $viewActions = array_replace($defaultViewActions, $entityActions);
                 $viewActions = $this->filterRemovedActions($viewActions);
@@ -189,15 +189,15 @@ class EasyAdminExtension extends Extension
     {
         // basic configuration for default actions
         $actions = $this->normalizeActionsConfiguration(array(
-            array('name' => 'delete', 'label' => 'action.delete', 'type' => 'method', 'icon' => 'trash'),
-            array('name' => 'edit',   'label' => 'action.edit',   'type' => 'method', 'icon' => 'edit'),
-            array('name' => 'new',    'label' => 'action.new',    'type' => 'method'),
-            array('name' => 'search', 'label' => 'action.search', 'type' => 'method'),
-            array('name' => 'show',   'label' => 'action.show',   'type' => 'method'),
-            array('name' => 'list',   'label' => 'action.list',   'type' => 'method'),
+            array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash'),
+            array('name' => 'edit',   'label' => 'action.edit', 'icon' => 'edit'),
+            array('name' => 'new',    'label' => 'action.new'),
+            array('name' => 'search', 'label' => 'action.search'),
+            array('name' => 'show',   'label' => 'action.show'),
+            array('name' => 'list',   'label' => 'action.list'),
         ));
 
-        // configure which actions are enabled for each view
+        // define which actions are enabled for each view
         $actionsPerView = array(
             'edit' => array('delete' => $actions['delete'], 'list' => $actions['list']),
             'list' => array('show' => $actions['show'], 'edit' => $actions['edit'], 'search' => $actions['search'], 'new' => $actions['new']),
@@ -229,46 +229,46 @@ class EasyAdminExtension extends Extension
      *             list:
      *                 actions: ['search', { name: 'show', label: 'Show', 'icon': 'user' }, 'grantAccess']
      *
-     * @param array $actionConfiguration
+     * @param array $actionsConfiguration
+     * @param array $defaultActionsConfiguration
      *
      * @return array
      */
-    private function normalizeActionsConfiguration(array $actionConfiguration)
+    private function normalizeActionsConfiguration(array $actionsConfiguration, array $defaultActionsConfiguration = array())
     {
         $configuration = array();
 
-        foreach ($actionConfiguration as $action) {
-            if (!is_string($action) && !is_array($action)) {
+        foreach ($actionsConfiguration as $action) {
+            if (is_string($action)) {
+                // config format #1
+                $actionConfiguration = array('name' => $action);
+            } elseif (is_array($action)) {
+                // config format #2
+                $actionConfiguration = $action;
+            } else {
                 throw new \RuntimeException('The values of the "actions" option can only be strings or arrays.');
             }
 
-            // config format #1
-            if (is_string($action)) {
-                $action = array('name' => $action);
-            }
-
-            $normalizedConfiguration = array_replace($this->defaultActionConfiguration, $action);
-
             // 'name' is the only mandatory option for actions
-            if (!isset($action['name'])) {
+            if (!isset($actionConfiguration['name'])) {
                 throw new \RuntimeException('When using the expanded configuration format for actions, you must define their "name" option.');
             }
+
+            $actionName = $actionConfiguration['name'];
 
             // 'name' value is used as the class method name or the Symfony route name
             // check that its value complies with the PHP method name regexp (the leading dash
             // is exceptionally allowed to support the configuration format of removed actions)
-            if (!preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $action['name'], $matchActionName)) {
-                throw new \InvalidArgumentException(sprintf('The name of the "%s" action contains invalid characters (allowed: letters, numbers, underscores).', $action['name']));
+            if (!preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $actionName, $matchActionName)) {
+                throw new \InvalidArgumentException(sprintf('The name of the "%s" action contains invalid characters (allowed: letters, numbers, underscores).', $actionName));
             }
 
-            if (!isset($action['type'])) {
-                $action['type'] = 'method';
-            }
+            $normalizedConfiguration = array_replace($this->defaultActionConfiguration, $actionConfiguration);
 
             $actionName = $normalizedConfiguration['name'];
 
             // use the special 'action.<action name>' label for the default actions
-            if (null === $normalizedConfiguration['label'] && in_array($actionName, array('delete', 'edit', 'new', 'search', 'show', 'list'))) {
+            if (!isset($normalizedConfiguration['label']) && in_array($actionName, array('delete', 'edit', 'new', 'search', 'show', 'list'))) {
                 $normalizedConfiguration['label'] = 'action.'.$actionName;
             }
 
@@ -277,6 +277,20 @@ class EasyAdminExtension extends Extension
                 // copied from Symfony\Component\Form\FormRenderer::humanize() (author: Bernhard Schussek <bschussek@gmail.com>)
                 $label = ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $actionName))));
                 $normalizedConfiguration['label'] = $label;
+            }
+
+            if (count($defaultActionsConfiguration)) {
+                // if the user defines an action with the same name of a default action,
+                // he/she is in fact overriding the default configuration of that action.
+                // for example: actions: ['delete', 'list']
+                // this condition ensures that when the user doesn't define the value for
+                // some option of the action (for example the icon or the label) that
+                // option is actually added with the right default value. Otherwise,
+                // those options would be 'null' and the template would show some issues
+                if (array_key_exists($actionName, $defaultActionsConfiguration)) {
+                    $normalizedConfiguration = array_filter($normalizedConfiguration); // remove empty/null config options
+                    $normalizedConfiguration = array_replace($defaultActionsConfiguration[$actionName], $normalizedConfiguration);
+                }
             }
 
             $configuration[$actionName] = $normalizedConfiguration;

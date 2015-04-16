@@ -1,56 +1,14 @@
 easy_admin:
-    list:
-        actions:
-            - show
-            -
-                name: edit
-        max_results: 15
     edit:
         actions:
             - delete
+            - list
     show:
         actions:
-            -
-                name: edit
-    new:
-        actions:
-            - list
+            - edit
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity
-            list:
-                actions:
-                    show:
-                        name: show
-                        type: method
-                        label: action.show
-                        class: ''
-                        icon: null
-                    edit:
-                        name: edit
-                        type: method
-                        label: action.edit
-                        class: ''
-                        icon: null
-                    search:
-                        name: search
-                        type: method
-                        label: action.search
-                        class: ''
-                        icon: null
-                    new:
-                        name: new
-                        type: method
-                        label: action.new
-                        class: ''
-                        icon: null
-                    list:
-                        name: list
-                        type: method
-                        label: action.list
-                        class: ''
-                        icon: null
-                fields: {  }
             edit:
                 actions:
                     delete:
@@ -87,7 +45,43 @@ easy_admin:
                         class: ''
                         icon: edit
                 fields: {  }
+            label: TestEntity
+            name: TestEntity
+            list:
+                fields: {  }
+                actions:
+                    show:
+                        name: show
+                        type: method
+                        label: action.show
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: null
+                    search:
+                        name: search
+                        type: method
+                        label: action.search
+                        class: ''
+                        icon: null
+                    new:
+                        name: new
+                        type: method
+                        label: action.new
+                        class: ''
+                        icon: null
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
             new:
+                fields: {  }
                 actions:
                     list:
                         name: list
@@ -95,9 +89,6 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
-                fields: {  }
-            label: TestEntity
-            name: TestEntity
     design:
         assets:
             css: {  }
@@ -112,3 +103,8 @@ easy_admin:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    list:
+        actions: {  }
+        max_results: 15
+    new:
+        actions: {  }

@@ -190,7 +190,7 @@ class EasyAdminExtension extends Extension
         // basic configuration for default actions
         $actions = $this->normalizeActionsConfiguration(array(
             array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash'),
-            array('name' => 'edit',   'label' => 'action.edit', 'icon' => 'edit'),
+            array('name' => 'edit',   'label' => 'action.edit',   'icon' => 'edit'),
             array('name' => 'new',    'label' => 'action.new'),
             array('name' => 'search', 'label' => 'action.search'),
             array('name' => 'show',   'label' => 'action.show'),

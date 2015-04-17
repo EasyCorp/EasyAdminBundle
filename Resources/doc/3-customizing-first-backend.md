@@ -64,6 +64,16 @@ easy_admin:
     # ...
 ```
 
+Also you can set the route to be linked in the logo. By default, the logo links 
+to admin home page (route 'admin').
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    logo_route: my_home_page
+    # ...
+```
+
 Customize the Order of the Main Menu Items
 ------------------------------------------
 

@@ -161,6 +161,11 @@ class Configuration implements ConfigurationInterface
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
 
+                ->scalarNode('logo_route')
+                    ->defaultValue('admin')
+                    ->info('The route linked in header logo of the administration zone.')
+                ->end()
+
                 ->arrayNode('formats')
                     ->performNoDeepMerging()
                     ->addDefaultsIfNotSet()

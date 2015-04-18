@@ -1,32 +1,11 @@
 easy_admin:
-    list:
-        actions:
-            - '-search'
-            -
-                name: edit
-                label: custom-edit-label
-            - custom_action_for_list
-        max_results: 15
     edit:
         actions:
-            - '-delete'
-            -
-                name: list
-                label: custom-list-label
-            - custom_action_for_edit
+            - delete
+            - list
     show:
         actions:
-            - '-list'
-            -
-                name: edit
-                label: custom-edit-label
-            - custom_action_for_show
-    new:
-        actions:
-            - '-list'
-            -
-                name: custom_action_for_new
-                label: custom-action-label
+            - edit
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity
@@ -35,16 +14,16 @@ easy_admin:
             edit:
                 fields: {  }
                 actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
                     list:
                         name: list
                         type: method
-                        label: custom-list-label
-                        class: ''
-                        icon: null
-                    custom_action_for_edit:
-                        name: custom_action_for_edit
-                        type: method
-                        label: 'Custom action for edit'
+                        label: action.list
                         class: ''
                         icon: null
             list:
@@ -59,19 +38,19 @@ easy_admin:
                     edit:
                         name: edit
                         type: method
-                        label: custom-edit-label
+                        label: action.edit
+                        class: ''
+                        icon: null
+                    search:
+                        name: search
+                        type: method
+                        label: action.search
                         class: ''
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        class: ''
-                        icon: null
-                    custom_action_for_list:
-                        name: custom_action_for_list
-                        type: method
-                        label: 'Custom action for list'
                         class: ''
                         icon: null
                     list:
@@ -83,12 +62,6 @@ easy_admin:
             new:
                 fields: {  }
                 actions:
-                    custom_action_for_new:
-                        name: custom_action_for_new
-                        type: method
-                        label: custom-action-label
-                        class: ''
-                        icon: null
                     list:
                         name: list
                         type: method
@@ -104,24 +77,18 @@ easy_admin:
                         label: action.delete
                         class: ''
                         icon: trash
-                    edit:
-                        name: edit
-                        type: method
-                        label: custom-edit-label
-                        class: ''
-                        icon: edit
-                    custom_action_for_show:
-                        name: custom_action_for_show
-                        type: method
-                        label: 'Custom action for show'
-                        class: ''
-                        icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
                         class: ''
                         icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: edit
     design:
         assets:
             css: {  }
@@ -136,3 +103,8 @@ easy_admin:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    list:
+        actions: {  }
+        max_results: 15
+    new:
+        actions: {  }

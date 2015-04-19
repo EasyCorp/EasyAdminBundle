@@ -137,16 +137,16 @@ backends and rapid prototypes, but most of the times, you need to customize
 some parts of the backend. Keep reading the rest of the documentation to learn
 how to do it.
 
-  * [Chapter 3 - Customizing your first backend](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/3-customizing-first-backend.md)
-  * [Chapter 4 - Customizing the List View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/4-customizing-list-view.md)
-  * [Chapter 5 - Customizing the Show View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/5-customizing-show-view.md)
-  * [Chapter 6 - Customizing the Edit and New Views](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/6-customizing-new-edit-views.md)
-  * [Chapter 7 - Customizing the Search View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/7-customizing-search-view.md)
-  * [Chapter 8 - Customizing the View Actions](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/8-customizing-view-actions.md)
-  * [Chapter 9 - Advanced Techniques for Complex Backends](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/9-advanced-techniques.md)
-  * [Chapter 10 - Customizing the Visual Design of the Backend](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/10-customizing-design.md)
-  * [Chapter 11 - Configuration Reference](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/11-configuration-reference.md)
-  * [Chapter 12 - About this Project](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.0/Resources/doc/12-about-this-project.md)
+  * [Chapter 3 - Customizing your first backend](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/3-customizing-first-backend.md)
+  * [Chapter 4 - Customizing the List View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/4-customizing-list-view.md)
+  * [Chapter 5 - Customizing the Show View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/5-customizing-show-view.md)
+  * [Chapter 6 - Customizing the Edit and New Views](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/6-customizing-new-edit-views.md)
+  * [Chapter 7 - Customizing the Search View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/7-customizing-search-view.md)
+  * [Chapter 8 - Customizing the View Actions](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/8-customizing-view-actions.md)
+  * [Chapter 9 - Advanced Techniques for Complex Backends](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/9-advanced-techniques.md)
+  * [Chapter 10 - Customizing the Visual Design of the Backend](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/10-customizing-design.md)
+  * [Chapter 11 - Configuration Reference](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/11-configuration-reference.md)
+  * [Chapter 12 - About this Project](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.2.1/Resources/doc/12-about-this-project.md)
 
 -----
 

@@ -1,0 +1,15 @@
+{% trans_default_domain "EasyAdminBundle" %}
+
+{% set _action = easyadmin_get_action_for_list_view('search', _entity.name) %}
+
+<form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
+    <input type="hidden" name="view" value="list">
+    <input type="hidden" name="action" value="search">
+    <input type="hidden" name="entity" value="{{ _entity.name }}">
+
+    <div class="input-group">
+        <input class="form-control" id="content-search-query" type="search" name="query"
+               placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters) }}"
+               value="{{ app.request.get('query')|default('') }}">
+    </div>
+</form>

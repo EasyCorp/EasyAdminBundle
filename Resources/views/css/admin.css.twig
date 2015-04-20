@@ -580,82 +580,35 @@ body.list #content-header #content-search .input-group:after {
 }
 
 body.list table {
-    background: {{ colors.white }};
-    border: 1px solid {{ colors.table_border }};
-    margin-bottom: 10px;
+    background: transparent;
+    border: 0;
 }
-body.list table thead th {
-    background: {{ colors.table_header }};
-    padding: 0;
-}
-body.list table thead th i {
-    color: {{ colors.gray_dark }};
-    padding: 0 3px;
-}
-body.list table thead th a,
-body.list table thead th span {
-    color: {{ colors.text }};
-    display: block;
-    padding: 10px 6px;
-    white-space: nowrap;
-}
-body.list table thead th a:hover {
-    background: {{ colors.gray_lighter }};
-    color: {{ brand_color }};
-    text-decoration: none;
-}
-body.list table thead th a:hover i {
-    color: {{ brand_color }};
-}
-
-body.list table thead th.sorted,
-body.list table thead th.sorted a {
-    background: {{ brand_color }};
-    color: {{ colors.white }};
-    text-decoration: none;
-}
-body.list table thead th.sorted a:hover i,
-body.list table thead th.sorted i {
-    color: {{ colors.white }};
-}
-body.list table tbody td.sorted {
-    background: {{ colors.gray_lighter }};
-    border-color: {{ colors.table_row_border }};
-}
-
-body.list table thead th.boolean,
-body.list table tbody td.boolean,
-body.list table thead th.toggle,
-body.list table tbody td.toggle {
-    text-align: center;
-}
-
-body.list .table thead tr th {
-    border-bottom: 2px solid {{ colors.gray }};
-}
-body.list .table thead tr th.sorted {
-    border-bottom: 2px outset {{ brand_color }};
-}
-/* these styles are needed to fix some visual glitches when the sort field is the first column */
-body.list .table thead tr th:first-child.sorted {
-    border-left: 1px solid {{ brand_color }};
-    border-top: 1px solid {{ brand_color }};
+body.list table thead {
+    display: none;
 }
 body.list .table tbody {
-{% if 'dark' == color_scheme %}
-    border-bottom: 2px solid {{ brand_color }};
-{% elseif 'light' == color_scheme %}
-    /* this '1px double' style is correct because 'double' gives the border more priority
-       and allows us to override the table border bottom (otherwise this border won't
-        be shown) */
-    border-bottom: 1px double {{ colors.gray }};
-{% endif %}
+    background: transparent;
+    border: 0;
 }
-body.list .table tbody tr:hover td {
-    background: {{ colors.gray_lighter }};
+body.list table tbody tr {
+    background: {{ colors.white }};
+    border: 1px solid {{ colors.gray }};
+    display: block;
+    margin-bottom: 1em;
 }
 body.list table tbody td {
     border-bottom: 1px solid {{ colors.table_row_border }};
+    border-top: 0;
+    display: block;
+    text-align: right;
+}
+body.list table tbody td:last-child {
+    border-bottom: 0;
+}
+table td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
 }
 body.list table tbody td.actions a {
     margin-right: 10px;
@@ -885,6 +838,96 @@ body.error .error-solution pre {
     }
     body.list #content-header #content-search {
         float: right;
+    }
+
+    body.list table {
+        background: {{ colors.white }};
+        border: 1px solid {{ colors.table_border }};
+    }
+    body.list table thead {
+        display: table-header-group;
+    }
+    body.list table thead th {
+        background: {{ colors.table_header }};
+        padding: 0;
+    }
+    body.list table thead th i {
+        color: {{ colors.gray_dark }};
+        padding: 0 3px;
+    }
+    body.list table thead th a,
+    body.list table thead th span {
+        color: {{ colors.text }};
+        display: block;
+        padding: 10px 6px;
+        white-space: nowrap;
+    }
+    body.list table thead th a:hover {
+        background: {{ colors.gray_lighter }};
+        color: {{ brand_color }};
+        text-decoration: none;
+    }
+    body.list table thead th a:hover i {
+        color: {{ brand_color }};
+    }
+    body.list table thead th.sorted,
+    body.list table thead th.sorted a {
+        background: {{ brand_color }};
+        color: {{ colors.white }};
+        text-decoration: none;
+    }
+    body.list table thead th.sorted a:hover i,
+    body.list table thead th.sorted i {
+        color: {{ colors.white }};
+    }
+    body.list table thead th.boolean,
+    body.list table tbody td.boolean,
+    body.list table thead th.toggle,
+    body.list table tbody td.toggle {
+        text-align: center;
+    }
+    body.list .table thead tr th {
+        border-bottom: 2px solid {{ colors.gray }};
+    }
+    body.list .table thead tr th.sorted {
+        border-bottom: 2px outset {{ brand_color }};
+    }
+    /* these styles are needed to fix some visual glitches when the sort field is the first column */
+    body.list .table thead tr th:first-child.sorted {
+        border-left: 1px solid {{ brand_color }};
+        border-top: 1px solid {{ brand_color }};
+    }
+    body.list .table tbody {
+{% if 'dark' == color_scheme %}
+        border-bottom: 2px solid {{ brand_color }};
+{% elseif 'light' == color_scheme %}
+        /* this '1px double' style is correct because 'double' gives the border more priority
+           and allows us to override the table border bottom (otherwise this border won't
+            be shown) */
+        border-bottom: 1px double {{ colors.gray }};
+{% endif %}
+    }
+    body.list table tbody tr {
+        border: 0;
+        display: table-row;
+        margin-bottom: 0;
+    }
+    body.list table tbody td {
+        border-bottom: 0;
+        border-top: 1px solid {{ colors.table_row_border }};
+        display: table-cell;
+        text-align: left;
+    }
+    table td:before {
+        content: none;
+        float: none;
+    }
+    body.list table tbody td.sorted {
+        background: {{ colors.gray_lighter }};
+        border-color: {{ colors.table_row_border }};
+    }
+    body.list .table tbody tr:hover td {
+        background: {{ colors.gray_lighter }};
     }
 
     body.new form .field_date select + select,

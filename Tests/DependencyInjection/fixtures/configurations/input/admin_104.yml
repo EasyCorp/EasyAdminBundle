@@ -1,0 +1,7 @@
+# TEST
+# configuration format #104: Simple "null_label" override to check that it works
+
+# CONFIGURATION
+easy_admin:
+    design:
+        null_label: '<div class="text-center">~</div>'

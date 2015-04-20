@@ -4,6 +4,7 @@ easy_admin:
             - '@AppBundle/form/custom_layout.html.twig'
             - form_div_layout.html.twig
         theme: default
+        null_label: '<span class="label">NULL</span>'
         color_scheme: dark
         brand_color: '#E67E22'
         assets:

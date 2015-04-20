@@ -208,6 +208,11 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
 
+                        ->scalarNode('null_label')
+                            ->defaultValue('<span class="label">NULL</span>')
+                            ->info('The html/text used to render the label used to display NULL values in both "list" and "view" actions.')
+                        ->end()
+
                         ->enumNode('color_scheme')
                             ->values(array('dark', 'light'))
                             ->info('The color scheme applied to the backend design (values: "dark" or "light").')

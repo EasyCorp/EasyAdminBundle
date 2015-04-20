@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-20T14:48:47Z
+
+Wow, this is simply AWESOME! :+1:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-04-20T15:36:44Z
+
+It's awesome ! :heart:
+But it doesn't allow to easily and visually compare values between records. For some small entities, I don't know. Maybe the old table would be preferable.
+Perhaps this feature should be a layout option (enabled by default) ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-20T18:51:38Z
+
+@ogizanagi you are right, but I think that the use case you mention is very rare. To correctly see the original table in a smartphone, you can only have 2 columns with tiny contents or 1 column with very short contents. In practice that means that the table looks horrible in a desktop and honestly I think it's a very rare scenario.
+
+Let's merge this PR and test it in real backends. Then we'll do the required tweaks.

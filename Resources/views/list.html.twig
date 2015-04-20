@@ -63,7 +63,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        {% set _table_column_labels = {} %}
+                        {% set _table_column_labels = [] %}
                         {% for field, metadata in fields %}
                             {% set isSortingField = metadata.property == app.request.get('sortField') %}
 

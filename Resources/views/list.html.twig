@@ -63,6 +63,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        {% set _table_column_labels = [] %}
                         {% for field, metadata in fields %}
                             {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
@@ -71,6 +72,9 @@
                                     {% set sortDirection = ('DESC' == app.request.get('sortDirection')) ? 'ASC' : 'DESC' %}
                                     {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
                                 {% endif %}
+
+                                {% set _column_label =  metadata.label ? ( metadata.label|trans(_trans_parameters) ) : ( ('id' == metadata.property) ? 'ID' : field|humanize ) %}
+                                {% set _table_column_labels = _table_column_labels|merge([_column_label]) %}
 
                                 {% if metadata.sortable %}
                                     <a href="{{ path('admin', request_attributes|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
@@ -82,26 +86,19 @@
                                             <i class="fa fa-sort"></i>
                                         {% endif %}
 
-                                        {% if metadata.label %}
-                                            {{ metadata.label|trans(_trans_parameters) }}
-                                        {% elseif 'id' == metadata.property %}
-                                            ID
-                                        {% else %}
-                                            {{ field|humanize }}
-                                        {% endif %}
+                                        {{ _column_label }}
                                     </a>
                                 {% else %}
-                                    {% if metadata.label %}
-                                        <span>{{ metadata.label|trans }}</span>
-                                    {% else %}
-                                        <span>{{ field|humanize }}</span>
-                                    {% endif %}
+                                    <span>{{ _column_label }}</span>
                                 {% endif %}
                             </th>
                         {% endfor %}
+
                         {% if _list_item_actions|length > 0 %}
+                            {% set _column_label =  'list.row_actions'|trans(_trans_parameters) %}
+                            {% set _table_column_labels = _table_column_labels|merge([_column_label]) %}
                             <th>
-                                <span>{{ 'list.row_actions'|trans(_trans_parameters) }}</span>
+                                <span>{{ _column_label }}</span>
                             </th>
                         {% endif %}
                     </tr>
@@ -114,7 +111,7 @@
                             {% for field, metadata in fields %}
                                 {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
-                                <td class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.dataType|lower }}">
+                                <td data-label="{{ _table_column_labels[loop.index0] }}" class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.dataType|lower }}">
                                     {% if metadata.type in ['array', 'json_array', 'simple_array', 'text'] %}
                                         {{ easyadmin_render_field_for_list_view(item, metadata)|easyadmin_truncate }}
                                     {% else %}
@@ -122,8 +119,9 @@
                                     {% endif %}
                                 </td>
                             {% endfor %}
+
                             {% if _list_item_actions|length > 0 %}
-                                <td class="actions">
+                                <td data-label="{{ _table_column_labels|last }}" class="actions">
                                     {% for _action in _list_item_actions %}
                                         {% if 'method' == _action.type %}
                                             {% set _action_href = path('admin', { action: _action.name, view: 'list', entity: _entity.name, id: _item_id }) %}

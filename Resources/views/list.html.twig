@@ -73,7 +73,7 @@
                                     {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
                                 {% endif %}
 
-                                {% set _column_label =  metadata.label ? metadata.label|trans(_trans_parameters) : ('id' == metadata.property) ? 'ID' : field|humanize %}
+                                {% set _column_label =  metadata.label ? ( metadata.label|trans(_trans_parameters) ) : ( ('id' == metadata.property) ? 'ID' : field|humanize ) %}
                                 {% set _table_column_labels = _table_column_labels|merge([_column_label]) %}
 
                                 {% if metadata.sortable %}

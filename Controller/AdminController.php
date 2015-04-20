@@ -341,12 +341,10 @@ class AdminController extends Controller
      * edited before persisting it.
      *
      * @param object $entity
-     *
-     * @return object
      */
     protected function prepareEditEntityForPersist($entity)
     {
-        return $entity;
+        // Method only present here to allow overridance.
     }
 
     /**
@@ -354,12 +352,10 @@ class AdminController extends Controller
      * created before persisting it.
      *
      * @param object $entity
-     *
-     * @return object
      */
     protected function prepareNewEntityForPersist($entity)
     {
-        return $entity;
+        // Method only present here to allow overridance.
     }
 
     /**

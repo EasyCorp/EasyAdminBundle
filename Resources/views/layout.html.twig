@@ -27,54 +27,51 @@
 
     <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
     <div id="wrapper" class="container">
-        <div id="header" class="col-lg-2">
-            <div id="header-contents" class="row">
-                <div id="header-logo" class="col-xs-6 col-md-2 col-lg-12">
-                    {% set _site_name_length = easyadmin_config('site_name')|length <= 10 ? 'short'
-                        : easyadmin_config('site_name')|length <= 12 ? 'medium' : 'long;'
-                    %}
-                    <a href="{{ path('admin') }}" class="{{ _site_name_length }}">{{ easyadmin_config('site_name')|raw }}</a>
+        <nav id="header" class="ccol-lg-2 navbar navbar-default navbar-static-top" role="navigation">
+            <div id="header-contents">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-nav">
+                        <span class="sr-only">Toggle navigation</span>
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <div id="header-logo" class="navbar-brand ccol-xs-6 ccol-md-2 ccol-lg-12">
+                        {% set _site_name_length = easyadmin_config('site_name')|length <= 10 ? 'short'
+                            : easyadmin_config('site_name')|length <= 12 ? 'medium' : 'long;'
+                        %}
+                        <a href="{{ path('admin') }}" class="{{ _site_name_length }}">{{ easyadmin_config('site_name')|raw }}</a>
+                    </div>
                 </div>
 
-                <div id="header-nav" class="col-xs-12 col-md-8 col-lg-12">
-                    <div class="visible-xs visible-sm">
-                        <a href="#header-menu" class="header-nav-open">
-                            <i class="fa fa-bars"></i>
-                        </a>
-                    </div>
-
+                <div class="ccol-xs-12 ccol-md-8 ccol-lg-12 collapse navbar-collapse" id="header-nav">
                     {% block navigation %}
-                    <ul id="header-menu">
-                        {% block navigation_items %}
-                        {% for item in easyadmin_config('entities') %}
-                            <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
-                                <a href="{{ path('admin', { entity: item.name, action: 'list', view: 'list' }) }}">
-                                    {{- item.label|trans -}}
-                                </a>
-                            </li>
-                        {% endfor %}
-                            <li class="visible-xs visible-sm header-nav-close">
-                                <a href="#header">{{ 'header.close'|trans }}</a>
-                            </li>
-                        {% endblock %}
-                    </ul>
+                        <ul id="header-menu" class="nav navbar-nav">
+                            {% block navigation_items %}
+                                {% for item in easyadmin_config('entities') %}
+                                    <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
+                                        <a href="{{ path('admin', { entity: item.name, action: 'list', view: 'list' }) }}">
+                                            {{- item.label|trans -}}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            {% endblock %}
+                        </ul>
                     {% endblock %}
                 </div>
 
-                <div id="header-footer">
-                {% block header_footer %}
-                    {% if app.user %}
-                        <div id="header-security" class="col-xs-12 col-md-2 col-lg-12">
-                            <p>
-                                <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as'|trans }}</span></small>
-                                {{ app.user.username|default('Unnamed User') }}
-                            </p>
-                        </div>
-                    {% endif %}
-                {% endblock %}
+                <div id="header-footer" class="navbar-right">
+                    {% block header_footer %}
+                        {% if true or app.user %}
+                            <div id="header-security" class="ccol-xs-12 ccol-md-2 ccol-lg-12">
+                                <p>
+                                    <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as'|trans }}</span></small>
+                                    {{ app.user.username|default('Unnamed User') }}
+                                </p>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
                 </div>
             </div>
-        </div>
+        </nav>
 
         <div id="content" class="col-lg-10 col-lg-offset-2">
             {% block content %}

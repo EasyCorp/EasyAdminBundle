@@ -543,7 +543,7 @@ class AdminController extends Controller
      */
     protected function render404error($view, array $parameters = array())
     {
-        return $this->render($view, $parameters, new Response('', Response::HTTP_NOT_FOUND));
+        return $this->render($view, $parameters, new Response('', 404));
     }
 
     /**
@@ -574,7 +574,7 @@ class AdminController extends Controller
         $allowedActions = array_keys($this->entity[$this->view]['actions']);
         $parameters = array('action' => $action, 'allowed_actions' => $allowedActions, 'view' => $this->view);
 
-        return $this->render('@EasyAdmin/error/forbidden_action.html.twig', $parameters, new Response('', Response::HTTP_FORBIDDEN));
+        return $this->render('@EasyAdmin/error/forbidden_action.html.twig', $parameters, new Response('', 403));
     }
 
     /**
@@ -593,7 +593,7 @@ class AdminController extends Controller
             'color_scheme' => $config['design']['color_scheme'],
         ));
 
-        $response = new Response($cssContent, Response::HTTP_OK, array('Content-Type' => 'text/css'));
+        $response = new Response($cssContent, 200, array('Content-Type' => 'text/css'));
         $response->setPublic();
         $response->setSharedMaxAge(600);
 

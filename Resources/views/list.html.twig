@@ -45,12 +45,7 @@
                 {% endif %}
 
                 {% if easyadmin_action_is_enabled_for_list_view('search', _entity.name) %}
-                    {% set _action = easyadmin_get_action_for_list_view('search', _entity.name) %}
-                    <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin', { view: 'list', action: 'search', entity: _entity.name }) }}">
-                        <div class="input-group">
-                            <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters) }}" value="{{ app.request.get('query')|default('') }}">
-                        </div>
-                    </form>
+                    {{ include('@EasyAdmin/form/search_form.html.twig') }}
                 {% endif %}
             </div>
         </div>

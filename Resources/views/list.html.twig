@@ -21,10 +21,11 @@
 {% endblock %}
 
 {% block content %}
-{% if 'search' == app.request.get('action') %}
-    {% set request_attributes = { view: 'list', action: 'search', entity: _entity.name, query: app.request.get('query')|default('') } %}
-{% else %}
-    {% set request_attributes = { view: 'list', action: 'list', entity: _entity.name, sortDirection: app.request.get('sortDirection', 'DESC') } %}
+    {% set _request_parameters = { view: 'list', action: app.request.get('action'), entity: _entity.name, sortField: app.request.get('sortField', ''), sortDirection: app.request.get('sortDirection', 'DESC') } %}
+
+    {% if 'search' == app.request.get('action') %}
+        {% set _request_parameters = _request_parameters|merge({ query: app.request.get('query')|default('') }) %}
+    {% else %}
 {% endif %}
 
 <div class="row">
@@ -50,6 +51,8 @@
                         <input type="hidden" name="view" value="list">
                         <input type="hidden" name="action" value="search">
                         <input type="hidden" name="entity" value="{{ _entity.name }}">
+                        <input type="hidden" name="sortField" value="{{ _request_parameters.sortField }}">
+                        <input type="hidden" name="sortDirection" value="{{ _request_parameters.sortDirection }}">
                         <div class="input-group">
                             <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters) }}" value="{{ app.request.get('query')|default('') }}">
                         </div>
@@ -73,14 +76,14 @@
                             <th data-property-name="{{ metadata.property }}" class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.virtual|default(false) ? 'virtual' : '' }} {{ metadata.dataType|lower }}">
                                 {% if isSortingField %}
                                     {% set sortDirection = ('DESC' == app.request.get('sortDirection')) ? 'ASC' : 'DESC' %}
-                                    {% set request_attributes = request_attributes|merge({ sortField: metadata.property }) %}
+                                    {% set _request_parameters = _request_parameters|merge({ sortField: metadata.property }) %}
                                 {% endif %}
 
                                 {% set _column_label =  metadata.label ? ( metadata.label|trans(_trans_parameters) ) : ( ('id' == metadata.property) ? 'ID' : field|humanize ) %}
                                 {% set _table_column_labels = _table_column_labels|merge([_column_label]) %}
 
                                 {% if metadata.sortable %}
-                                    <a href="{{ path('admin', request_attributes|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
+                                    <a href="{{ path('admin', _request_parameters|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
                                         {% if isSortingField and sortDirection == 'DESC' %}
                                             <i class="fa fa-caret-up"></i>
                                         {% elseif isSortingField and sortDirection == 'ASC' %}

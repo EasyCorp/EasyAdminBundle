@@ -233,39 +233,80 @@ Customize the Templates of the Backend
 --------------------------------------
 
 In addition to loading your own stylesheets and scripts, you can also override
-the templates used to build the backend interface. To do so, follow the well-
-known Symfony bundle [inheritance mechanism](http://symfony.com/doc/current/book/templating.html#overriding-bundle-templates).
+the templates used to build the backend interface. To do so, EasyAdmin defines
+an advanced but simple to use overriding mechanism.
 
-The most important templates used by EasyAdmin are the following:
+First of all, these are the templates which can be overridden:
 
-  * `layout.html.twig`, the common layout that warps all backend pages;
-  * `new.html.twig`, the template used for the `new` and `search` views;
-  * `show.html.twig`, the template used for the `show` view;
-  * `edit.html.twig`, the template used for the `edit` view;
-  * `list.html.twig`, the template used for the `list` view;
-  * `_list_paginator.html.twig`, the template fragment used to display the
-    paginator of the `new` and `search` views;
-  * `_flashes.html.twig`, the template fragment used to display flash messages
-    for any view.
+  * `layout.html.twig`, the common layout that decorates the main templates
+    (`list`, `edit`, `new` and `show`);
+  * `new.html.twig`, the template used to render the page where new entities 
+    are created;
+  * `show.html.twig`, the template used to render the contents stored by a 
+    given entity;
+  * `edit.html.twig`, the template used to render the page where entities are 
+    edited;
+  * `list.html.twig`, the template used to render the listing page and the
+    search results page;
+  * `paginator.html.twig`, the template used to render the paginator of the
+    `list` and `search` views;
+  * `form.html.twig`, the template to render the form displayed in the `new`
+    and `edit` pages.
+
+The template overriding mechanism let you choose the template to use for each
+backend element as follows:
+
+  1. If you don't configure any option, the selected template is
+     `@EasyAdmin/default/<template_name>`
+  2. If you want to override some template for all entities, create a new
+     template in `app/Resources/views/easy_admin/<template_name>.html.twig`
+  3. If you want to override some template for a specific entity, create a new
+     template in `app/Resources/views/easy_admin/<entiy_name>/<template_name>.html.twig`
+  4. If you want to use your a custom template located in any other location,
+     use the `design.templates` configuration option.
 
 Suppose you want to modify the paginator displayed at the bottom of each
-listing. This element is built with the `_list_paginator.html.twig` template,
-so you have to create the following new template to override it:
+listing. This element is built with the `paginator.html.twig` template,
+so you have to create the following new template to override it for all
+entities:
 
 ```
 your-project/
 ├─ app/
 │  ├─ ...
 │  └─ Resources/
-│     └─ EasyAdminBundle/
-│        └─ views/
-│           └─ _list_paginator.html.twig
+│     └─ views/
+│        └─ easy_admin/
+│           └─ paginator.html.twig
 ├─ src/
 ├─ vendor/
 └─ web/
 ```
 
-Be careful to use those exact folder and file names. If you do, the backend
-will use your template instead of the default one. Please note that when
-adding a template in a new location, **you may need to clear your cache** (with
-the command `php app/console cache:clear`), **even if you are in debug mode**.
+In case you want to create a specific paginator for the `Customer` entity,
+create the following template:
+
+```
+your-project/
+├─ app/
+│  ├─ ...
+│  └─ Resources/
+│     └─ views/
+│        └─ easy_admin/
+│           └─ Customer/
+│              └─ paginator.html.twig
+├─ src/
+├─ vendor/
+└─ web/
+```
+
+Finally, if you want to use your own paginator template located anywhere else,
+use the `design.templates` option and provide the template path in any of the
+valid formats supported by Symfony:
+
+```yaml
+easy_admin:
+    design:
+        templates:
+            paginator: 'AcmeProductBundle:Default:fragments/_paginator.html.twig'
+```

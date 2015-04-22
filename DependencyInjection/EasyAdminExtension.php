@@ -26,12 +26,27 @@ class EasyAdminExtension extends Extension
         'icon'  => null,     // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
     );
 
+    private $defaultBackendTemplates = array(
+        'layout' => '@EasyAdmin/default/layout.html.twig',
+        'edit' => '@EasyAdmin/default/edit.html.twig',
+        'list' => '@EasyAdmin/default/list.html.twig',
+        'new' => '@EasyAdmin/default/new.html.twig',
+        'show' => '@EasyAdmin/default/show.html.twig',
+        'form' => '@EasyAdmin/form/entity_form.html.twig',
+        'paginator' => '@EasyAdmin/default/paginator.html.twig',
+    );
+
+    private $kernelRootDir;
+
     public function load(array $configs, ContainerBuilder $container)
     {
+        $this->kernelRootDir = $container->getParameter('kernel.root_dir');
+
         // process bundle's configuration parameters
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
         $backendConfiguration = $this->processEntityActions($backendConfiguration);
+        $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
 
@@ -322,6 +337,46 @@ class EasyAdminExtension extends Extension
             return !array_key_exists($action['name'], $removedActions)
                 && !array_key_exists('-'.$action['name'], $removedActions);
         });
+    }
+
+    /**
+     * Determines the template used to render each backend element. This is not
+     * trivial because templates can depend on the entity displayed and they
+     * define an advanced override mechanism.
+     *
+     * @param array $backendConfiguration
+     *
+     * @return array
+     */
+    private function processEntityTemplates(array $backendConfiguration)
+    {
+        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+            foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
+                // 4th level priority: @EasyAdmin/default/<templateName>.html.twig
+                $template = $defaultTemplatePath;
+
+                // 3rd level priority: app/Resources/views/<entityName>/<templateName>.html.twig
+                if (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$templateName.'html.twig')) {
+                    $template = $templateFilePath;
+                }
+
+                // 2nd level priority: app/Resources/views/<templateName>.html.twig
+                if (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$entityName.'/'.$templateName.'html.twig')) {
+                    $template = $templateFilePath;
+                }
+
+                // 1st level priority: easy_admin.design.templates.<templateName> config option
+                if (isset($backendConfiguration['design']['templates'][$templateName])) {
+                    $template = $backendConfiguration['design']['templates'][$templateName];
+                }
+
+                $entityConfiguration['templates'][$templateName] = $template;
+            }
+
+            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
+        }
+
+        return $backendConfiguration;
     }
 
     /**

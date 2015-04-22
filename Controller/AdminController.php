@@ -134,7 +134,7 @@ class AdminController extends Controller
         $fields = $this->entity['list']['fields'];
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
-        return $this->render('@EasyAdmin/list.html.twig', array(
+        return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
             'fields'    => $fields,
             'view'      => 'list',
@@ -173,7 +173,7 @@ class AdminController extends Controller
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
 
-        return $this->render('@EasyAdmin/edit.html.twig', array(
+        return $this->render($this->entity['templates']['edit'], array(
             'form'          => $editForm->createView(),
             'entity_fields' => $fields,
             'item'          => $item,
@@ -201,7 +201,7 @@ class AdminController extends Controller
         $fields = $this->entity['show']['fields'];
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
-        return $this->render('@EasyAdmin/show.html.twig', array(
+        return $this->render($this->entity['templates']['show'], array(
             'item'   => $item,
             'fields' => $fields,
             'view'   => 'show',
@@ -234,7 +234,7 @@ class AdminController extends Controller
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
         }
 
-        return $this->render('@EasyAdmin/new.html.twig', array(
+        return $this->render($this->entity['templates']['new'], array(
             'form'          => $newForm->createView(),
             'entity_fields' => $fields,
             'item'          => $item,
@@ -281,7 +281,7 @@ class AdminController extends Controller
         $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list']['max_results']);
         $fields = $this->entity['list']['fields'];
 
-        return $this->render('@EasyAdmin/list.html.twig', array(
+        return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
             'fields'    => $fields,
             'view'      => 'search',

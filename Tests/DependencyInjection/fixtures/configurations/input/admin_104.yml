@@ -1,0 +1,18 @@
+# TEST
+# custom templates defined in the design.templates configuration option have
+# more priority than default templates
+
+# CONFIGURATION
+easy_admin:
+    design:
+        templates:
+            layout: 'custom_template/layout.html.twig'
+            edit: 'custom_template/edit.html.twig'
+            list: 'custom_template/list.html.twig'
+            new: 'custom_template/new.html.twig'
+            show: 'custom_template/show.html.twig'
+            form: 'custom_template/entity_form.html.twig'
+            paginator: 'custom_template/paginator.html.twig'
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity

@@ -82,6 +82,14 @@ easy_admin:
                         label: action.edit
                         class: ''
                         icon: edit
+            templates:
+                layout: '@EasyAdmin/default/layout.html.twig'
+                edit: '@EasyAdmin/default/edit.html.twig'
+                list: '@EasyAdmin/default/list.html.twig'
+                new: '@EasyAdmin/default/new.html.twig'
+                show: '@EasyAdmin/default/show.html.twig'
+                form: '@EasyAdmin/form/entity_form.html.twig'
+                paginator: '@EasyAdmin/default/paginator.html.twig'
         TestEntity_:
             class: AppBundle\AnotherNamespace\Entity\TestEntity
             label: 'Custom #Entity ~ Label'
@@ -164,6 +172,14 @@ easy_admin:
                         label: action.edit
                         class: ''
                         icon: edit
+            templates:
+                layout: '@EasyAdmin/default/layout.html.twig'
+                edit: '@EasyAdmin/default/edit.html.twig'
+                list: '@EasyAdmin/default/list.html.twig'
+                new: '@EasyAdmin/default/new.html.twig'
+                show: '@EasyAdmin/default/show.html.twig'
+                form: '@EasyAdmin/form/entity_form.html.twig'
+                paginator: '@EasyAdmin/default/paginator.html.twig'
     design:
         assets:
             css: {  }

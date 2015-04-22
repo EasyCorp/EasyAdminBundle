@@ -1,14 +1,43 @@
 easy_admin:
+    design:
+        templates:
+            layout: custom_template/layout.html.twig
+            edit: custom_template/edit.html.twig
+            list: custom_template/list.html.twig
+            new: custom_template/new.html.twig
+            show: custom_template/show.html.twig
+            form: custom_template/entity_form.html.twig
+            paginator: custom_template/paginator.html.twig
+        theme: default
+        color_scheme: dark
+        brand_color: '#E67E22'
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+        assets:
+            css: {  }
+            js: {  }
     entities:
         TestEntity:
-            image_base_path: /entity_img/
             class: AppBundle\Entity\TestEntity
+            label: TestEntity
+            name: TestEntity
+            edit:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
             list:
-                fields:
-                    field1:
-                        property: field1
-                        type: image
-                        base_path: /entity_img/
+                fields: {  }
                 actions:
                     show:
                         name: show
@@ -34,23 +63,6 @@ easy_admin:
                         label: action.new
                         class: ''
                         icon: null
-                    list:
-                        name: list
-                        type: method
-                        label: action.list
-                        class: ''
-                        icon: null
-            label: TestEntity
-            name: TestEntity
-            edit:
-                fields: {  }
-                actions:
-                    delete:
-                        name: delete
-                        type: method
-                        label: action.delete
-                        class: ''
-                        icon: trash
                     list:
                         name: list
                         type: method
@@ -88,22 +100,13 @@ easy_admin:
                         class: ''
                         icon: edit
             templates:
-                layout: '@EasyAdmin/default/layout.html.twig'
-                edit: '@EasyAdmin/default/edit.html.twig'
-                list: '@EasyAdmin/default/list.html.twig'
-                new: '@EasyAdmin/default/new.html.twig'
-                show: '@EasyAdmin/default/show.html.twig'
-                form: '@EasyAdmin/form/entity_form.html.twig'
-                paginator: '@EasyAdmin/default/paginator.html.twig'
-    design:
-        assets:
-            css: {  }
-            js: {  }
-        theme: default
-        color_scheme: dark
-        brand_color: '#E67E22'
-        form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+                layout: custom_template/layout.html.twig
+                edit: custom_template/edit.html.twig
+                list: custom_template/list.html.twig
+                new: custom_template/new.html.twig
+                show: custom_template/show.html.twig
+                form: custom_template/entity_form.html.twig
+                paginator: custom_template/paginator.html.twig
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d

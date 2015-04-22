@@ -1,11 +1,10 @@
-{% extends '@EasyAdmin/layout.html.twig' %}
+{% trans_default_domain "EasyAdminBundle" %}
+{% form_theme form with easyadmin_config('design.form_theme') %}
 
 {% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
-
-{% trans_default_domain "EasyAdminBundle" %}
 {% set _trans_parameters = { '%entity_name%': _entity.label|trans } %}
 
-{% form_theme form with easyadmin_config('design.form_theme') %}
+{% extends _entity.templates.layout %}
 
 {% block body_class 'admin new ' ~ _entity.name|lower %}
 
@@ -14,7 +13,7 @@
 {% endblock %}
 
 {% block main %}
-    {{ include('@EasyAdmin/form/entity_form.html.twig', { view: 'new' }) }}
+    {{ include(_entity.templates.form, { view: 'new' }) }}
 {% endblock %}
 
 {% block body_javascript %}

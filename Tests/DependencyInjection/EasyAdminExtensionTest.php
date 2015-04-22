@@ -114,6 +114,15 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/color_scheme_values_are_limited.yml');
     }
 
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Unrecognized option "this_template_name_is_not_valid" under "easy_admin.design.templates"
+     */
+    public function testOverriddenTemplateNamesAreLimited()
+    {
+        $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/overridden_template_names_are_limited.yml');
+    }
+
     public function provideConfigurationFiles($fixturesDir)
     {
         return parent::provideConfigurationFiles(__DIR__.'/fixtures/*');
@@ -129,6 +138,8 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
      */
     private function parseConfigurationFile($filepath)
     {
+        $this->container->setParameter('kernel.root_dir', __DIR__);
+
         $inputConfiguration = Yaml::parse(file_get_contents($filepath));
         $this->loader->load($inputConfiguration, $this->container);
 

@@ -1,9 +1,9 @@
-{% extends '@EasyAdmin/layout.html.twig' %}
+{% trans_default_domain "EasyAdminBundle" %}
 
 {% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
-
-{% trans_default_domain "EasyAdminBundle" %}
 {% set _trans_parameters = { '%entity_name%': _entity.label|trans, '%entity_id%': attribute(item, _entity.primary_key_field_name) } %}
+
+{% extends _entity.templates.layout %}
 
 {% block body_class 'admin show ' ~ _entity.name|lower %}
 

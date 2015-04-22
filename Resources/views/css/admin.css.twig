@@ -364,7 +364,7 @@ button.btn-danger {
 /* Wrapper
    ------------------------------------------------------------------------- */
 #wrapper {
-    padding: 50px 0 0;
+    padding: 60px 0 0;
 }
 
 /* Header
@@ -373,16 +373,27 @@ button.btn-danger {
 
 #header {
     background: {{ colors.header_background }};
-    bborder-right: 1px solid {{ colors.gray_light }};
+    border-color: {{ colors.header_background }};
     box-shadow: 1px 0 2px #DDD;
-    height: 35px;
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
-    opacity: 50%;
 }
-
+#header .navbar-toggle {
+    border: 0;
+    padding: 5px 0 5px 10px;
+}
+#header .navbar-toggle:hover,
+#header .navbar-toggle:active,
+#header .navbar-toggle:focus {
+    background-color: transparent;
+}
+#header .navbar-toggle i {
+    color: {{ colors.header_text }};
+    font-size: 21px;
+    text-align: right;
+}
 #header-logo {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -394,7 +405,6 @@ button.btn-danger {
     float: left;
     font-size: 16px;
     font-weight: 500;
-    line-height: 35px;
     margin: 0;
     overflow: hidden;
     position: relative;
@@ -413,23 +423,10 @@ button.btn-danger {
     position: static;
 }
 
-.header-nav-open,
-.header-nav-open:visited,
-.header-nav-open:hover,
-.header-nav-open:active {
-  border: 0;
-  color: {{ colors.header_text }};
-  font-size: 21px;
-  padding: 7px;
-  position: absolute;
-  right: 0;
-  top: -40px;
-  z-index: 1001;
-}
-
 #header-menu {
     background: {{ colors.menu_background }};
     box-shadow: 0 1px 2px {{ colors.gray_darker }};
+    margin: 0 -15px;
 }
 #header-menu li {
     display: block;
@@ -447,7 +444,7 @@ button.btn-danger {
     display: block;
     font-size: 16px;
     text-decoration: none;
-    padding: 1.2em 1em;
+    padding: 1em;
 }
 #header-menu li:hover,
 #header-menu li.active {
@@ -458,47 +455,6 @@ button.btn-danger {
   background: {{ brand_color }};
   color: {{ colors.white }};
 }
-
-body:not(:target) #header-menu {
-    margin: 0;
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 1000;
-}
-body:not(:target) #header-menu li {
-    width: 100%;
-    height: 0;
-    line-height: 0;
-    overflow: hidden;
-}
-body:not(:target) #header-menu:target {
-    z-index: 1001;
-}
-body:not(:target) #header-menu:target li {
-    height: auto;
-    line-height: auto;
-    overflow: visible;
-}
-body:not(:target) #header-menu:target .header-nav-close {
-    height: 0;
-    line-height: 0;
-}
-body:not(:target) #header-menu:target .header-nav-close a {
-    width: 100%;
-    background-color: transparent;
-    border: none;
-    height: auto;
-    position: absolute;
-    top: -101em;
-    bottom: -101em;
-    left: 0;
-    right: 0;
-    text-indent: -999em;
-    z-index: -1;
-}
-
 #header #header-footer {
     display: none;
 }
@@ -812,24 +768,30 @@ body.error .error-solution pre {
     }
 
     body #wrapper {
-        padding: 60px 0 0;
+        padding: 70px 0 0;
         width: 100%;
     }
 
-    #header-menu li:hover a,
-    #header-menu li.active a {
-        background: transparent;
-{% if 'dark' == color_scheme %}
-        color: {{ colors.gray_lighter }};
-{% elseif 'light' == color_scheme %}
-        color: {{ colors.white }};
-{% endif %}
+    #header-menu li a {
+        border-top: 0;
+        padding: 15px 16px 14px;
     }
+    #header-menu li a:hover,
+    #header #header-menu li:hover,
+    #header #header-menu li.active,
+    #header #header-menu li.active a {
+        background: transparent;
+        color: {{ brand_color }};
+    }
+
     #header-logo a.medium {
         font-size: 18px;
     }
     #header-logo a.short {
         font-size: 21px;
+    }
+    #header-menu {
+        margin-left: 0;
     }
 
     body.list h1.title {
@@ -949,12 +911,12 @@ body.error .error-solution pre {
     #header {
         height: 50px;
         margin-bottom: 2em;
+        overflow: hidden;
         position: static;
         width: 100%;
     }
 
     #header-logo a {
-        line-height: 50px;
     }
     #header-logo a img {
         max-height: 40px;
@@ -970,7 +932,6 @@ body.error .error-solution pre {
         margin: 0;
         padding: 0 15px;
         position: static;
-        width: 100%;
         overflow: hidden;
     }
 
@@ -998,36 +959,14 @@ body.error .error-solution pre {
         line-height: 40px;
         padding: 5px 1.5em 5px 0;
     }
-    #header-menu li a:hover {
-        background: transparent;
-        color: {{ brand_color }};
-    }
 
-    #header #header-menu li:hover,
-    #header #header-menu li.active {
-        background: transparent;
-    }
-    #header #header-menu li.active a {
-        background: transparent;
-        color: {{ brand_color }};
-    }
-
-    body:not(:target) #header-menu {
-        position: static;
-    }
-    body:not(:target) #header-menu li {
-        height: auto;
-        overflow: visible;
-        width: auto;
-    }
     #header #header-footer {
         color: {{ colors.gray_dark }};
         display: block;
         font-size: 14px;
     }
     #header #header-footer p {
-        line-height: 50px;
-        margin: 0;
+        margin: 16px 0 16px;
         text-align: right;
     }
     #header #header-footer p small span {
@@ -1086,26 +1025,21 @@ body.error .error-solution pre {
     /* Header
        ------------------------------------------------------------------------- */
     #header {
-        padding-left: 15px;
-        padding-right: 25px;
-        padding-top: 0;
         margin-bottom: 0;
-        overflow: hidden;
         height: 100%;
         top: 0;
         bottom: 0;
+        overflow: hidden;
         position: fixed;
         width: 202px;
     }
     #header-contents {
-        margin-right: -25px;
         min-height: 100%;
         display: flex;
         flex-direction: column;
     }
     #header-logo {
-        bbackground: {{ colors.black }};
-        bborder-bottom: 2px solid {{ colors.gray_darker }};
+        float: none;
         margin: 0;
         overflow: visible;
         text-overflow: inherit;
@@ -1114,11 +1048,11 @@ body.error .error-solution pre {
     }
     #header-logo a {
         display: block;
-        float: none;
         height: 65px;
         font-size: 18px;
         line-height: 65px;
         padding-left: 10px;
+        width: 100%;
     }
     #header-logo a.medium {
         font-size: 24px;
@@ -1129,27 +1063,23 @@ body.error .error-solution pre {
     #header-logo a img {
         max-height: 48px;
     }
-
     #header #header-nav {
         flex: 1;
-        height: 0;
+        height: 0 !important;
         margin: 0;
         overflow: hidden;
+        overflow-y: auto !important;
         padding: 0 0 1em;
         width: 222px;
     }
-    #header #header-nav:hover {
-        overflow-y: auto;
-    }
     #header #header-menu {
         display: block;
-        height: auto;
-        margin-left: 0;
-        margin-right: 0;
-        margin-top: 0;
         padding: 0;
         list-style: none;
         width: 202px;
+    }
+    #header #header-menu:hover {
+        overflow-y: auto;
     }
     #header #header-menu li {
         border-bottom: 1px solid {{ colors.header_separator }};
@@ -1158,41 +1088,41 @@ body.error .error-solution pre {
         margin: 0;
         padding: 0;
     }
-    #header #header-menu li.active,
-    #header #header-menu li.active a {
-        background: {{ brand_color }};
-        color: {{ colors.white }};
-    }
     #header #header-menu li:last-child {
         border: none;
     }
     #header #header-menu li a {
-        display: block;
-        font-size: 16px;
         font-weight: 500;
         line-height: 1.4;
-        padding: 10px 0 10px 10px;
-        text-align: left;
-        -moz-transition: padding-left .1s ease-out 0s;
-        -webkit-transition: padding-left .1s ease-out;
-        -webkit-transition-delay: 0s;
+        padding: 12px 0 12px 10px;
     }
-    #header #header-menu li a:hover,
-    #header-menu li:hover a {
+    #header #header-menu li a:hover {
+        background: {{ colors.header_background }};
         color: {{ brand_color }};
-        padding-left: 15px;
         text-decoration: none;
     }
-    #header #header-menu li.active a:hover {
+    #header #header-menu li:hover a  {
+        background: {{ colors.header_background }};
+        color: {{ brand_color }};
+    }
+    #header #header-menu li.active a,
+    #header #header-menu li.active:hover a {
+        background: {{ brand_color }};
         color: {{ colors.white }};
     }
     #header #header-footer {
+        background: {{ colors.header_background }};
 {% if 'dark' == color_scheme %}
         border-top: 1px solid {{ colors.gray_dark }};
 {% endif %}
         font-size: 14px;
         padding-bottom: 1em;
         padding-top: 1em;
+        padding-left: 10px;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        z-index: 999;
         -moz-transition: box-shadow 0.3s ease-out;
         -webkit-transition: box-shadow 0.3s ease-out;
         transition: box-shadow 0.3s ease-out;
@@ -1206,6 +1136,7 @@ body.error .error-solution pre {
     }
     #header #header-footer p {
         line-height: 1.5;
+        margin: 0;
         text-align: left;
     }
     #header #header-footer p small {

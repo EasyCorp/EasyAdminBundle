@@ -1,0 +1,61 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-04-21T22:50:25Z
+
+@javiereguiluz : Sure. I tried your changes on one of my backends, ~~and I still see the drop shadow~~. However, I'm unable to scroll, due to:
+
+```diff
+#bootstrap.min.css
+@media (min-width: 768px)
+.navbar-collapse.collapse {
+  display: block!important;
+-  height: auto!important;
+  padding-bottom: 0;
+-  overflow: visible!important;
+  visibility: visible!important;
+}
+```
+and
+```diff
+#admin.css
+@media (min-width: 1200px)
+#header #header-nav {
+  flex: 1;
+  height: 0;
+  margin: 0;
+-  overflow: hidden;
+  padding: 0 0 1em;
+  width: 222px;
+}
+```
+
+For me, the problem is solved by replacing the following [css block] (https://github.com/javiereguiluz/EasyAdminBundle/blob/use_bootstrap_header/Resources/views/css/admin.css.twig#L1066) by:
+```css
+#header #header-nav {
+    flex: 1;
+    height: 0!important;
+    margin: 0;
+    overflow: hidden;
+    overflow-y: auto!important;
+    padding: 0 0 1em;
+    width: 222px;
+}
+```
+
+=====
+(Or see https://github.com/ogizanagi/EasyAdminBundle/commit/a1739605b33a57191261e956341b95a0d6930eaf)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-04-21T23:01:39Z
+
+NVM, I do not see the drop shadow either without those changes (I had some cache).
+I think this is related to the `bootstrap.min.css` setting height to `auto`. The `admin.js` is unable to guess the proper height nor scrolling (basically because there is no scrolling) and cannot add the `drop-shadow` class.
+
+Anyway, the above changes should do the trick :smile:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-22T07:03:55Z
+
+@ogizanagi thanks a lot!!!!!!! Everything worked perfectly and the drop shadow is back! :tada:

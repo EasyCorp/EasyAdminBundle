@@ -567,7 +567,7 @@ table td:before {
     font-weight: bold;
 }
 body.list table tbody td.actions a {
-    margin-right: 10px;
+    margin-left: 10px;
 }
 body.list table tbody td.image img {
     max-height: 50px;
@@ -892,6 +892,10 @@ body.error .error-solution pre {
     }
     body.list .table tbody tr:hover td {
         background: {{ colors.gray_lighter }};
+    }
+    body.list table tbody td.actions a {
+        margin-left: 0;
+        margin-right: 10px;
     }
 
     body.new form .field_date select + select,

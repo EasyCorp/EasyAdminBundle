@@ -236,39 +236,31 @@ In addition to loading your own stylesheets and scripts, you can also override
 the templates used to build the backend interface. To do so, EasyAdmin defines
 an advanced but simple to use overriding mechanism.
 
-First of all, these are the templates which can be overridden:
+First of all, these are the names of the templates which can be overridden:
 
-  * `layout.html.twig`, the common layout that decorates the main templates
-    (`list`, `edit`, `new` and `show`);
-  * `new.html.twig`, the template used to render the page where new entities 
-    are created;
-  * `show.html.twig`, the template used to render the contents stored by a 
-    given entity;
-  * `edit.html.twig`, the template used to render the page where entities are 
-    edited;
-  * `list.html.twig`, the template used to render the listing page and the
-    search results page;
-  * `paginator.html.twig`, the template used to render the paginator of the
-    `list` and `search` views;
-  * `form.html.twig`, the template to render the form displayed in the `new`
-    and `edit` pages.
+  * `layout`, the common layout that decorates the main templates (`list`,
+    `edit`, `new` and `show`);
+  * `new`, the template used to render the page where new entities are created;
+  * `show`, the template used to render the contents stored by a given entity;
+  * `edit`, the template used to render the page where entities are edited;
+  * `list`, the template used to render the listing page and the search
+    results page;
+  * `paginator`, the template used to render the paginator of the `list` and
+    `search` views;
+  * `form`, the template to render the form displayed in the `new` and `edit`
+    pages.
 
-The template overriding mechanism let you choose the template to use for each
-backend element as follows:
+EasyAdmin applies the following overridding mechanism to select the template
+used to render each element (from highest to lowest priority):
 
-  1. If you don't configure any option, the selected template is
-     `@EasyAdmin/default/<template_name>`
-  2. If you want to override some template for all entities, create a new
-     template in `app/Resources/views/easy_admin/<template_name>.html.twig`
-  3. If you want to override some template for a specific entity, create a new
-     template in `app/Resources/views/easy_admin/<entiy_name>/<template_name>.html.twig`
-  4. If you want to use your a custom template located in any other location,
-     use the `design.templates` configuration option.
+  1. `design.templates.<template_name>` configuration option.
+  2. `app/Resources/views/easy_admin/<entiy_name>/<template_name>.html.twig`
+  3. `app/Resources/views/easy_admin/<template_name>.html.twig`
+  4. `@EasyAdmin/default/<template_name>`
 
 Suppose you want to modify the paginator displayed at the bottom of each
-listing. This element is built with the `paginator.html.twig` template,
-so you have to create the following new template to override it for all
-entities:
+listing. This element is built with the `paginator` template, so you have to 
+create the following new template to override it for all entities:
 
 ```
 your-project/
@@ -301,12 +293,86 @@ your-project/
 ```
 
 Finally, if you want to use your own paginator template located anywhere else,
-use the `design.templates` option and provide the template path in any of the
-valid formats supported by Symfony:
+use the `design.templates.paginator` option and provide the template path in 
+any of the valid formats supported by Symfony:
 
 ```yaml
 easy_admin:
     design:
         templates:
-            paginator: 'AcmeProductBundle:Default:fragments/_paginator.html.twig'
+            paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
 ```
+
+### Customize the Templates Used to Render Each Field
+
+You can use the same overridding mechanism to customize the template fragments
+used to render each field type. These are the available templates (most of
+them correspond to the associated Doctrine data type):
+
+  * `field_array`
+  * `field_association`, used to render fields that store Doctrine associations
+  * `field_bigint`
+  * `field_boolean`
+  * `field_date`
+  * `field_datetime`
+  * `field_datetimetz`
+  * `field_decimal`
+  * `field_float`
+  * `field_id`, used to render the field called `id`. This avoids formatting 
+    its value as any other regular number with decimals and thousand separators
+  * `field_image`, special type used to display the contents of an image
+  * `field_integer`
+  * `field_simple_array`
+  * `field_smallint`
+  * `field_string`
+  * `field_text`
+  * `field_time`
+  * `field_toggle`, special type used to display boolean values as flip 
+    switches
+  * `label_empty`, used when the field to render is an empty collection
+  * `label_inaccessible, used when is not possible to access the value of the
+    field to render because there is no getter or public property
+  * `label_null`, used when the value of the field to render is null
+  * `label_undefined`, used when any kind of error or exception happens when
+    trying to access the value of the field to render
+
+Suppose that in you backend you don't want to display a `NULL` badge for null
+values and prefer to display a more human friendly value, such as a dash (`-`).
+The easiest way to override this template, would be to create a new
+`label_null` template with your own contents:
+
+```twig
+{# app/Resources/views/easy_admin/label_null.html.twig #}
+<span class="null">~</span>
+```
+
+To override this value just for a specific entity (for example, `Invoice`), 
+create this other template:
+
+```twig
+{# app/Resources/views/easy_admin/Invoice/label_null.html.twig #}
+<span class="null">Unpaid</span>
+```
+
+To use your own custom template, define the following configuration option:
+
+```yaml
+easy_admin:
+    design:
+        templates:
+            label_null: 'AppBundle:Default:labels/null.html.twig'
+```
+
+If you want to customize any of these templates, it's recommended to check out
+first the contents of the default `field_*` and `label_*` templates, so you can
+learn about their features.
+
+Inside the `field_*` and `label_*` templates you can use any of the following
+variables:
+
+  * `view`, the name of the view where the field is being rendered (`show` or
+    `list`).
+  * `value`, the content of the field being rendered, which can be a variable
+    of any time (String, numeric, boolean, array, etc.)
+  * `format`, available only for the date and numeric field types. It defines
+    the formatting that should be applied to the value before displaying it.

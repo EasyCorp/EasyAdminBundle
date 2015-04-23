@@ -29,7 +29,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('easyadmin_render_field_for_*_view', array($this, 'renderEntityField')),
+            new \Twig_SimpleFunction('easyadmin_render_field_for_*_view', array($this, 'renderEntityField'), array('is_safe' => array('html'), 'needs_environment' => true)),
             new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
             new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
             new \Twig_SimpleFunction('easyadmin_action_is_enabled_for_*_view', array($this, 'isActionEnabled')),
@@ -93,74 +93,44 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * property doesn't exist or its value is not accessible. This ensures that
      * the function never generates a warning or error message when calling it.
      *
-     * @param array $entity
-     * @param array $fieldMetadata
+     * @param string $view          The vie in which the item is being rendered
+     * @param string $entityName    The name of the entity associated with the item
+     * @param object $item          The item which is being rendered
+     * @param array  $fieldMetadata The metadata of the actual field being rendered
      *
      * @return mixed
      */
-    public function renderEntityField($view, $entity, array $fieldMetadata)
+    public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
+        $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
+
         if (!$fieldMetadata['canBeGet']) {
-            return new \Twig_Markup('<span class="label label-danger" title="Getter method does not exist or property is not public">inaccessible</span>', 'UTF-8');
+            return $twig->render($entityConfiguration['templates']['label_inaccessible'], array('view' => $view));
         }
 
         $fieldName = $fieldMetadata['property'];
-        $value = (null !== $getter = $fieldMetadata['getter']) ? $entity->{$getter}() : $entity->{$fieldName};
+        $value = (null !== $getter = $fieldMetadata['getter']) ? $item->{$getter}() : $item->{$fieldName};
+
+        $templates = $entityConfiguration['templates'];
 
         try {
             $fieldType = $fieldMetadata['dataType'];
 
             if (null === $value) {
-                return new \Twig_Markup('<span class="label">NULL</span>', 'UTF-8');
+                return $twig->render($entityConfiguration['templates']['label_null'], array('view' => $view));
             }
 
             // when a virtual field doesn't define it's type, consider it a string
             if (true === $fieldMetadata['virtual'] && null === $fieldType) {
-                return strval($value);
+                return $twig->render($entityConfiguration['templates']['field_text'], array('value' => strval($value), 'view' => $view));
             }
 
             if ('id' === $fieldName) {
-                // return the ID value as is to avoid number formatting
-                return $value;
+                return $twig->render($entityConfiguration['templates']['field_id'], array('value' => $value, 'view' => $view));
             }
 
-            if (in_array($fieldType, array('date'))) {
-                return $value->format($fieldMetadata['format']);
-            }
-
-            if (in_array($fieldType, array('datetime', 'datetimetz'))) {
-                return $value->format($fieldMetadata['format']);
-            }
-
-            if (in_array($fieldType, array('time'))) {
-                return $value->format($fieldMetadata['format']);
-            }
-
-            if (in_array($fieldType, array('toggle'))) {
-                return new \Twig_Markup(sprintf('<input type="checkbox" %s data-toggle="toggle" data-size="mini" data-onstyle="success" data-offstyle="danger" data-on="YES" data-off="NO">',
-                    true === $value ? 'checked' : ''
-                ), 'UTF-8');
-            }
-
-            if (in_array($fieldType, array('boolean'))) {
-                return new \Twig_Markup(sprintf('<span class="label label-%s">%s</span>',
-                    true === $value ? 'success' : 'danger',
-                    true === $value ? 'YES' : 'NO'
-                ), 'UTF-8');
-            }
-
-            if (in_array($fieldType, array('array', 'simple_array'))) {
-                return empty($value)
-                    ? new \Twig_Markup('<span class="label label-empty">EMPTY</span>', 'UTF-8')
-                    : implode(', ', $value);
-            }
-
-            if (in_array($fieldType, array('string', 'text'))) {
-                return (string) $value;
-            }
-
-            if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {
-                return isset($fieldMetadata['format']) ? sprintf($fieldMetadata['format'], $value) : number_format($value);
+            if (in_array($fieldType, array('date', 'datetime', 'datetimetz', 'time', 'bigint', 'integer', 'smallint', 'decimal', 'float'))) {
+                return $twig->render($entityConfiguration['templates']['field_'.$fieldType], array('value' => $value, 'view' => $view, 'format' => isset($fieldMetadata['format']) ? $fieldMetadata['format'] : null));
             }
 
             if (in_array($fieldType, array('image'))) {
@@ -173,12 +143,20 @@ class EasyAdminTwigExtension extends \Twig_Extension
                         : '/'.ltrim($value, '/');
                 }
 
-                return new \Twig_Markup(sprintf('<img src="%s">', $imageUrl), 'UTF-8');
+                return $twig->render($entityConfiguration['templates']['field_image'], array('value' => $value, 'view' => $view));
+            }
+
+            if (in_array($fieldType, array('array', 'simple_array'))) {
+                if (empty($value)) {
+                    return $twig->render($entityConfiguration['templates']['label_empty']);
+                }
+
+                return $twig->render($entityConfiguration['templates']['field_'.$fieldType], array('value' => $value, 'view' => $view));
             }
 
             if (in_array($fieldType, array('association'))) {
                 if ($value instanceof PersistentCollection) {
-                    return new \Twig_Markup(sprintf('<span class="badge">%d</span>', count($value)), 'UTF-8');
+                    return $twig->render($entityConfiguration['templates']['field_association'], array('value' => $value, 'view' => $view));
                 }
 
                 $associatedEntityClassParts = explode('\\', $fieldMetadata['targetEntity']);
@@ -189,27 +167,26 @@ class EasyAdminTwigExtension extends \Twig_Extension
                     $associatedEntityPrimaryKey = $associatedEntityConfig['primary_key_field_name'];
                 } catch (\Exception $e) {
                     // if the entity isn't managed by EasyAdmin, don't link to it and just display its raw value
-                    return $value;
+                    return $twig->render($entityConfiguration['templates']['field_association'], array('value' => $value, 'view' => $view));
                 }
 
                 $primaryKeyGetter = 'get'.ucfirst($associatedEntityPrimaryKey);
                 if (method_exists($value, $primaryKeyGetter)) {
-                    $associatedEntityUrl = $this->urlGenerator->generate('admin', array('entity' => $associatedEntityClassName, 'action' => 'show', 'view' => $view, 'id' => $value->$primaryKeyGetter()));
-                    // escaping is done manually in order to include this content inside a Twig_Markup object
-                    $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-                    // ideally we'd use the 'truncateEntityField' method, but it's cumbersome to invoke it from here
-                    $associatedEntityValue = strlen($value) > 64 ? substr($value, 0, 64).'...' : $value;
+                    $linkParameters = array('entity' => $associatedEntityClassName, 'action' => 'show', 'view' => $view, 'id' => $value->$primaryKeyGetter());
 
-                    return new \Twig_Markup(sprintf('<a href="%s">%s</a>', $associatedEntityUrl, $associatedEntityValue), 'UTF-8');
+                    return $twig->render($entityConfiguration['templates']['field_association'], array('value' => $value, 'link_parameters' => $linkParameters, 'view' => $view));
                 }
 
-                return $value;
+                return $twig->render($entityConfiguration['templates']['field_association'], array('value' => $value, 'view' => $view));
             }
+
+            // all the other data types: boolean, string, text, toggle
+            return $twig->render($entityConfiguration['templates']['field_'.$fieldType], array('value' => $value, 'view' => $view));
         } catch (\Exception $e) {
-            return '';
+            return $twig->render($entityConfiguration['templates']['label_undefined'], array('view' => $view));
         }
 
-        return '';
+        return $twig->render($entityConfiguration['templates']['label_undefined'], array('view' => $view));
     }
 
     /**

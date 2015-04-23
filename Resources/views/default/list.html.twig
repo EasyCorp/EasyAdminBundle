@@ -118,11 +118,7 @@
                                 {% set isSortingField = metadata.property == app.request.get('sortField') %}
 
                                 <td data-label="{{ _table_column_labels[loop.index0] }}" class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.dataType|lower }}">
-                                    {% if metadata.type in ['array', 'json_array', 'simple_array', 'text'] %}
-                                        {{ easyadmin_render_field_for_list_view(item, metadata)|easyadmin_truncate }}
-                                    {% else %}
-                                        {{ easyadmin_render_field_for_list_view(item, metadata) }}
-                                    {% endif %}
+                                    {{ easyadmin_render_field_for_list_view(_entity.name, item, metadata) }}
                                 </td>
                             {% endfor %}
 

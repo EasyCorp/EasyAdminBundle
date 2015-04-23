@@ -8,6 +8,7 @@ easy_admin:
                 - 'http://exmaple.com/path/to/asset4.css'
             js: {  }
         theme: default
+        null_label: '<span class="label">NULL</span>'
         color_scheme: dark
         brand_color: '#E67E22'
         form_theme:

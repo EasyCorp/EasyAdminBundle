@@ -2,6 +2,7 @@ easy_admin:
     design:
         brand_color: red
         theme: default
+        null_label: '<span class="label">NULL</span>'
         color_scheme: dark
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'

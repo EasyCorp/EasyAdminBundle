@@ -111,7 +111,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
             $fieldType = $fieldMetadata['dataType'];
 
             if (null === $value) {
-                return new \Twig_Markup('<span class="label">NULL</span>', 'UTF-8');
+                $config = $this->configurator->getBackendConfig();
+                return new \Twig_Markup($config['design']['null_label'], 'UTF-8');
             }
 
             // when a virtual field doesn't define it's type, consider it a string

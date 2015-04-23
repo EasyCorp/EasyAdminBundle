@@ -1,22 +1,22 @@
 easy_admin:
-    list:
-        max_results: 50
-        actions: {  }
     design:
-        assets:
-            css: {  }
-            js: {  }
+        null_label: '<div class="text-center">~</div>'
         theme: default
-        null_label: '<span class="label">NULL</span>'
         color_scheme: dark
         brand_color: '#E67E22'
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+        assets:
+            css: {  }
+            js: {  }
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    list:
+        actions: {  }
+        max_results: 15
     edit:
         actions: {  }
     new:

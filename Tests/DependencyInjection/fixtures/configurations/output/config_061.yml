@@ -120,6 +120,7 @@ easy_admin:
             css: {  }
             js: {  }
         theme: default
+        null_label: '<span class="label">NULL</span>'
         color_scheme: dark
         brand_color: '#E67E22'
         form_theme:

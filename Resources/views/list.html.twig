@@ -50,7 +50,7 @@
                     <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
                         <input type="hidden" name="view" value="list">
                         <input type="hidden" name="action" value="search">
-                        <input type="hidden" name="entity" value="{{ _entity.name }}">
+                        <input type="hidden" name="entity" value="{{ _request_parameters.entity }}">
                         <input type="hidden" name="sortField" value="{{ _request_parameters.sortField }}">
                         <input type="hidden" name="sortDirection" value="{{ _request_parameters.sortDirection }}">
                         <div class="input-group">

@@ -236,9 +236,9 @@ In addition to loading your own stylesheets and scripts, you can also override
 the templates used to build the backend interface. To do so, EasyAdmin defines
 an advanced but simple to use overriding mechanism.
 
-First of all, these are the names of the templates which can be overridden:
+First, these are the names of the main templates which can be overridden:
 
-  * `layout`, the common layout that decorates the main templates (`list`,
+  * `layout`, the common layout that decorates the rest of templates (`list`,
     `edit`, `new` and `show`);
   * `new`, the template used to render the page where new entities are created;
   * `show`, the template used to render the contents stored by a given entity;
@@ -250,17 +250,88 @@ First of all, these are the names of the templates which can be overridden:
   * `form`, the template to render the form displayed in the `new` and `edit`
     pages.
 
-EasyAdmin applies the following overridding mechanism to select the template
+EasyAdmin applies the following overriding mechanism to select the template
 used to render each element (from highest to lowest priority):
 
-  1. `design.templates.<template_name>` configuration option.
-  2. `app/Resources/views/easy_admin/<entiy_name>/<template_name>.html.twig`
-  3. `app/Resources/views/easy_admin/<template_name>.html.twig`
-  4. `@EasyAdmin/default/<template_name>`
+  1. `easy_admin.entities.<entityName>.templates.<templateName>` configuration 
+     option.
+  2. `easy_admin.design.templates.<template_name>` configuration option.
+  3. `app/Resources/views/easy_admin/<entiy_name>/<template_name>.html.twig`
+  4. `app/Resources/views/easy_admin/<template_name>.html.twig`
+  5. `@EasyAdmin/default/<template_name>` (these are the templates defined by
+     EasyAdmin and they are always available).
+
+### Tweaking the default templates for all entities
+
+Most often than not, customizing the design of the backend is a matter of
+tweaking some element of the default templates. The easiest way to do that is
+to create a new template that extends from the default one and override the
+specific template block you want to customize.
+
+Suppose you want to change the search form displayed in the `list` view.
+First, create a new template in `app/Resources/views/easy_admin/list.html.twig`
+and make it extend from the default `list` template. Then, override the
+`form_search` block:
+
+```twig
+{# app/Resources/views/easy_admin/list.html.twig #}
+{% extends @EasyAdmin/default/list.html.twig %}
+
+{% block search_form %}
+    {# ... #}
+{% endblock %}
+```
+
+If you prefer to use one of your existing templates located elsewhere, add the
+``easy_admin.design.templates.list` option and use any of the valid Symfony
+formats to define the template path:
+
+```yaml
+easy_admin:
+    design:
+        templates:
+            list: 'AppBundle:Backend:list.html.twig'
+```
+
+### Tweaking the default templates for some entities
+
+Follow the steps explained in the previous section, but change the location of
+the template to a subdirectory called after the entity. Suppose you want to
+override the search form just for the `Customer` entity. Then, create this
+template:
+
+```
+your-project/
+├─ app/
+│  ├─ ...
+│  └─ Resources/
+│     └─ views/
+│        └─ easy_admin/
+│           └─ Customer/
+│              └─ list.html.twig
+├─ src/
+├─ vendor/
+└─ web/
+```
+
+Again, you can use an existing template located elsewhere via the ``templates``
+configuration option. This time you have to define the option just for the
+specific entity:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            # ...
+            templates:
+                list: 'AppBundle:Backend:list.html.twig'
+```
+
+### Overriding the default templates for all entities
 
 Suppose you want to modify the paginator displayed at the bottom of each
-listing. This element is built with the `paginator` template, so you have to 
-create the following new template to override it for all entities:
+listing page. This element is built with the `paginator` template, so you have
+to create the following template to override it for all entities:
 
 ```
 your-project/
@@ -275,8 +346,23 @@ your-project/
 └─ web/
 ```
 
-In case you want to create a specific paginator for the `Customer` entity,
-create the following template:
+If you prefer to use one of your existing templates to override it, add the
+``easy_admin.design.templates.paginator` option and use any of the valid
+Symfony formats to define the template path:
+
+```yaml
+easy_admin:
+    design:
+        templates:
+            paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
+```
+
+### Overriding the default templates for some entities
+
+Follow the steps explained in the previous section, but change the location of
+the template to a subdirectory called after the entity. Suppose you want to
+override the paginator just for the `Customer` entity. Then, create this
+template:
 
 ```
 your-project/
@@ -292,20 +378,23 @@ your-project/
 └─ web/
 ```
 
-Finally, if you want to use your own paginator template located anywhere else,
-use the `design.templates.paginator` option and provide the template path in 
-any of the valid formats supported by Symfony:
+Again, you can use an existing template located elsewhere via the ``templates``
+configuration option. This time you have to define the option just for the
+specific entity:
 
 ```yaml
 easy_admin:
-    design:
-        templates:
-            paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
+    entities:
+        Customer:
+            # ...
+            templates:
+                paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
 ```
 
-### Customize the Templates Used to Render Each Field
+Customize the Templates Used to Render Each Field
+-------------------------------------------------
 
-You can use the same overridding mechanism to customize the template fragments
+You can use the same overriding mechanism to customize the template fragments
 used to render each field type. These are the available templates (most of
 them correspond to the associated Doctrine data type):
 

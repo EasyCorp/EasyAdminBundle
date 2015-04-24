@@ -377,12 +377,12 @@ class EasyAdminExtension extends Extension
                 // 4th level priority: @EasyAdmin/default/<templateName>.html.twig
                 $template = $defaultTemplatePath;
 
-                // 3rd level priority: app/Resources/views/<entityName>/<templateName>.html.twig
+                // 3rd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
                 if (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$templateName.'html.twig')) {
                     $template = $templateFilePath;
                 }
 
-                // 2nd level priority: app/Resources/views/<templateName>.html.twig
+                // 2nd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
                 if (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$entityName.'/'.$templateName.'html.twig')) {
                     $template = $templateFilePath;
                 }

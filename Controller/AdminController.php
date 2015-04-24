@@ -418,7 +418,7 @@ class AdminController extends Controller
         foreach ($searchableFields as $name => $metadata) {
             $wildcards = $this->getDoctrine()->getConnection()->getDatabasePlatform()->getWildcards();
             $searchQuery = addcslashes($searchQuery, implode('', $wildcards));
-            $query->orWhere("entity.$name LIKE :query")->setParameter('query', '%'.$searchQuery.'%');
+            $query->orWhere('entity.'.$name.' LIKE :query')->setParameter('query', '%'.$searchQuery.'%');
         }
 
         $paginator = new Pagerfanta(new DoctrineORMAdapter($query, false));

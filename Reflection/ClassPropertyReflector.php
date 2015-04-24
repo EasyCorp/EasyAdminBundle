@@ -80,7 +80,7 @@ class ClassPropertyReflector
      * @param string $classNamespace The fully qualified name of the class
      * @param string $propertyName
      *
-     * @return boolean
+     * @return bool
      */
     public function isPublic($classNamespace, $propertyName)
     {

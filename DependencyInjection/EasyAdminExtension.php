@@ -27,7 +27,13 @@ class EasyAdminExtension extends Extension
     );
 
     private $defaultBackendTemplates = array(
+        'layout' => '@EasyAdmin/default/layout.html.twig',
         'edit' => '@EasyAdmin/default/edit.html.twig',
+        'list' => '@EasyAdmin/default/list.html.twig',
+        'new' => '@EasyAdmin/default/new.html.twig',
+        'show' => '@EasyAdmin/default/show.html.twig',
+        'form' => '@EasyAdmin/form/entity_form.html.twig',
+        'paginator' => '@EasyAdmin/default/paginator.html.twig',
         'field_array' => '@EasyAdmin/default/field_array.html.twig',
         'field_association' => '@EasyAdmin/default/field_association.html.twig',
         'field_bigint' => '@EasyAdmin/default/field_bigint.html.twig',
@@ -46,16 +52,10 @@ class EasyAdminExtension extends Extension
         'field_text' => '@EasyAdmin/default/field_text.html.twig',
         'field_time' => '@EasyAdmin/default/field_time.html.twig',
         'field_toggle' => '@EasyAdmin/default/field_toggle.html.twig',
-        'form' => '@EasyAdmin/form/entity_form.html.twig',
         'label_empty' => '@EasyAdmin/default/label_empty.html.twig',
         'label_inaccessible' => '@EasyAdmin/default/label_inaccessible.html.twig',
         'label_null' => '@EasyAdmin/default/label_null.html.twig',
         'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
-        'layout' => '@EasyAdmin/default/layout.html.twig',
-        'list' => '@EasyAdmin/default/list.html.twig',
-        'new' => '@EasyAdmin/default/new.html.twig',
-        'paginator' => '@EasyAdmin/default/paginator.html.twig',
-        'show' => '@EasyAdmin/default/show.html.twig',
     );
 
     private $kernelRootDir;

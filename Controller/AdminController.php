@@ -552,13 +552,11 @@ class AdminController extends Controller
      *
      * @param string $action
      *
-     * @return bool
+     * @return boolean
      */
     protected function isActionAllowed($action)
     {
-        if (array_key_exists($action, $this->entity[$this->view]['actions'])) {
-            return true;
-        }
+        return array_key_exists($action, $this->entity[$this->view]['actions']);
     }
 
     /**

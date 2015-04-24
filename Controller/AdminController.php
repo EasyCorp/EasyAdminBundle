@@ -366,11 +366,11 @@ class AdminController extends Controller
      * Performs a database query to get all the records related to the given
      * entity. It supports pagination and field sorting.
      *
-     * @param string $entityClass
-     * @param int    $page
-     * @param int    $maxPerPage
-     * @param string $sortField
-     * @param string $sortDirection
+     * @param string      $entityClass
+     * @param int         $page
+     * @param int         $maxPerPage
+     * @param string|null $sortField
+     * @param string|null $sortDirection
      *
      * @return Pagerfanta The paginated query results
      */
@@ -552,7 +552,7 @@ class AdminController extends Controller
      *
      * @param string $action
      *
-     * @return boolean
+     * @return bool
      */
     protected function isActionAllowed($action)
     {

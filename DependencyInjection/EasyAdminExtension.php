@@ -374,22 +374,21 @@ class EasyAdminExtension extends Extension
     {
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
-                // 4th level priority: @EasyAdmin/default/<templateName>.html.twig
-                $template = $defaultTemplatePath;
-
-                // 3rd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-                if (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$templateName.'html.twig')) {
-                    $template = $templateFilePath;
-                }
-
-                // 2nd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
-                if (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$entityName.'/'.$templateName.'html.twig')) {
-                    $template = $templateFilePath;
-                }
-
-                // 1st level priority: easy_admin.design.templates.<templateName> config option
-                if (isset($backendConfiguration['design']['templates'][$templateName])) {
+                // 1st level priority: easy_admin.entities.<entityName>.templates.<templateName> config option
+                if (isset($entityConfiguration['templates'][$templateName])) {
+                    $template = $entityConfiguration['templates'][$templateName];
+                // 2nd level priority: easy_admin.design.templates.<templateName> config option
+                } elseif (isset($backendConfiguration['design']['templates'][$templateName])) {
                     $template = $backendConfiguration['design']['templates'][$templateName];
+                // 3nd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
+                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$entityName.'/'.$templateName.'html.twig')) {
+                    $template = $templateFilePath;
+                // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
+                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$templateName.'html.twig')) {
+                    $template = $templateFilePath;
+                // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
+                } else {
+                    $template = $defaultTemplatePath;
                 }
 
                 $entityConfiguration['templates'][$templateName] = $template;

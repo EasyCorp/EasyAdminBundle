@@ -115,8 +115,8 @@ class EasyAdminExtension extends Extension
             $entityClassParts = explode('\\', $entityConfiguration['class']);
             $entityClassName = end($entityClassParts);
 
-            # if config format #3 defines the 'label' option, use its value.
-            # otherwise, infer the entity label from its configuration.
+            // if config format #3 defines the 'label' option, use its value.
+            // otherwise, infer the entity label from its configuration.
             if (!isset($entityConfiguration['label'])) {
                 // config format #1 doesn't define any entity label because configuration is
                 // just a plain numeric array (the label is the integer key of that array).

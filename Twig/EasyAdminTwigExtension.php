@@ -12,17 +12,14 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\PersistentCollection;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
 class EasyAdminTwigExtension extends \Twig_Extension
 {
-    private $urlGenerator;
     private $configurator;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, Configurator $configurator)
+    public function __construct(Configurator $configurator)
     {
-        $this->urlGenerator = $urlGenerator;
         $this->configurator = $configurator;
     }
 

@@ -6,7 +6,6 @@
     <services>
 
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
-            <argument type="service" id="router"></argument>
             <argument type="service" id="easyadmin.configurator"></argument>
             <tag name="twig.extension" />
         </service>

@@ -1,0 +1,8 @@
+{% if view == 'show' %}
+    <span class="label label-{{ value == true ? 'success' : 'danger' }}">{{ value == true ? 'YES' : 'NO' }}</span>
+{% else %}
+    <input type="checkbox" {{ value == true ? 'checked' : '' }}
+       data-toggle="toggle" data-size="mini"
+       data-onstyle="success" data-offstyle="danger"
+       data-on="YES" data-off="NO">
+{% endif %}

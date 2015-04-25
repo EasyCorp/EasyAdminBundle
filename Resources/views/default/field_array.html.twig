@@ -1,0 +1,9 @@
+{% if view == 'show' %}
+    <ul>
+        {% for element in value %}
+            <li>{{ element }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    {{ value|join(', ')|easyadmin_truncate }}
+{% endif %}

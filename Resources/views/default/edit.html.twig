@@ -1,0 +1,67 @@
+{% trans_default_domain "EasyAdminBundle" %}
+{% form_theme form with easyadmin_config('design.form_theme') %}
+
+{% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
+{% set _trans_parameters = { '%entity_name%': _entity.label|trans, '%entity_id%': attribute(item, _entity.primary_key_field_name) } %}
+
+{% extends _entity.templates.layout %}
+
+{% block body_class 'admin edit ' ~ _entity.name|lower %}
+
+{% block content_title %}
+    {{ _entity.edit.title|default('edit.page_title')|trans(_trans_parameters) }}
+{% endblock %}
+
+{% block main %}
+    {% block entity_form %}
+        {{ include(_entity.templates.form, { view: 'edit' }) }}
+    {% endblock entity_form %}
+
+    {% block delete_form %}
+        {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
+
+        <div id="modal-delete" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h4>{{ 'delete_modal.title'|trans(_trans_parameters) }}</h4>
+                        <p>{{ 'delete_modal.content'|trans(_trans_parameters) }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn">
+                            {{ 'action.cancel'|trans(_trans_parameters) }}
+                        </button>
+
+                        {% if easyadmin_action_is_enabled_for_edit_view('delete', _entity.name) %}
+                            {% set _delete_action = easyadmin_get_action_for_edit_view('delete', _entity.name) %}
+                            <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                                {% if _delete_action.icon %}<i class="fa fa-{{ _delete_action.icon }}"></i>{% endif %}
+                                {{ _delete_action.label|default('action.delete')|trans(_trans_parameters) }}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock delete_form %}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.are-you-sure.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#edit-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
+
+            $('#button-delete').on('click', function(e) {
+                e.preventDefault();
+
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .one('click', '#modal-delete-button', function (e) {
+                        $('#delete-form').trigger('submit');
+                    });
+            });
+        });
+    </script>
+{% endblock %}

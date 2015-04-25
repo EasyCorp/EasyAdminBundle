@@ -1,9 +1,9 @@
-{% extends '@EasyAdmin/layout.html.twig' %}
+{% trans_default_domain "EasyAdminBundle" %}
 
 {% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
-
-{% trans_default_domain "EasyAdminBundle" %}
 {% set _trans_parameters = { '%entity_name%': _entity.label|trans, '%entity_id%': attribute(item, _entity.primary_key_field_name) } %}
+
+{% extends _entity.templates.layout %}
 
 {% block body_class 'admin show ' ~ _entity.name|lower %}
 
@@ -26,11 +26,7 @@
                 </label>
                 <div class="col-sm-10">
                     <div class="form-control">
-                        {% if metadata.type in ['text'] %}
-                            {{ easyadmin_render_field_for_show_view(item, metadata)|nl2br }}
-                        {% else %}
-                            {{ easyadmin_render_field_for_show_view(item, metadata) }}
-                        {% endif %}
+                        {{ easyadmin_render_field_for_show_view(_entity.name, item, metadata) }}
                     </div>
 
                     {% if metadata.help|default('') != '' %}
@@ -42,6 +38,7 @@
 
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
+            {% block item_actions %}
                 {% set _show_actions = easyadmin_get_actions_for_show_item(_entity.name) %}
                 {% for _action in _show_actions %}
                     {% if 'method' == _action.type %}
@@ -72,35 +69,38 @@
                         {{ _action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>
                 {% endif %}
+            {% endblock item_actions %}
             </div>
         </div>
     </div>
 
-    {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
+    {% block delete_form %}
+        {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
 
-    <div id="modal-delete" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <h4>{{ 'delete_modal.title'|trans(_trans_parameters) }}</h4>
-                    <p>{{ 'delete_modal.content'|trans(_trans_parameters) }}</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn">
-                        {{ 'action.cancel'|trans(_trans_parameters) }}
-                    </button>
-
-                    {% if easyadmin_action_is_enabled_for_show_view('delete', _entity.name) %}
-                        {% set _action = easyadmin_get_action_for_show_view('delete', _entity.name) %}
-                        <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
-                            {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                            {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
+        <div id="modal-delete" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h4>{{ 'delete_modal.title'|trans(_trans_parameters) }}</h4>
+                        <p>{{ 'delete_modal.content'|trans(_trans_parameters) }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn">
+                            {{ 'action.cancel'|trans(_trans_parameters) }}
                         </button>
-                    {% endif %}
+
+                        {% if easyadmin_action_is_enabled_for_show_view('delete', _entity.name) %}
+                            {% set _action = easyadmin_get_action_for_show_view('delete', _entity.name) %}
+                            <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                                {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                                {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
+                            </button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endblock delete_form %}
 {% endblock %}
 
 {% block body_javascript %}

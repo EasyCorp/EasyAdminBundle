@@ -26,12 +26,49 @@ class EasyAdminExtension extends Extension
         'icon'  => null,     // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
     );
 
+    private $defaultBackendTemplates = array(
+        'layout' => '@EasyAdmin/default/layout.html.twig',
+        'edit' => '@EasyAdmin/default/edit.html.twig',
+        'list' => '@EasyAdmin/default/list.html.twig',
+        'new' => '@EasyAdmin/default/new.html.twig',
+        'show' => '@EasyAdmin/default/show.html.twig',
+        'form' => '@EasyAdmin/default/form.html.twig',
+        'paginator' => '@EasyAdmin/default/paginator.html.twig',
+        'field_array' => '@EasyAdmin/default/field_array.html.twig',
+        'field_association' => '@EasyAdmin/default/field_association.html.twig',
+        'field_bigint' => '@EasyAdmin/default/field_bigint.html.twig',
+        'field_boolean' => '@EasyAdmin/default/field_boolean.html.twig',
+        'field_date' => '@EasyAdmin/default/field_date.html.twig',
+        'field_datetime' => '@EasyAdmin/default/field_datetime.html.twig',
+        'field_datetimetz' => '@EasyAdmin/default/field_datetimetz.html.twig',
+        'field_decimal' => '@EasyAdmin/default/field_decimal.html.twig',
+        'field_float' => '@EasyAdmin/default/field_float.html.twig',
+        'field_id' => '@EasyAdmin/default/field_id.html.twig',
+        'field_image' => '@EasyAdmin/default/field_image.html.twig',
+        'field_integer' => '@EasyAdmin/default/field_integer.html.twig',
+        'field_simple_array' => '@EasyAdmin/default/field_simple_array.html.twig',
+        'field_smallint' => '@EasyAdmin/default/field_smallint.html.twig',
+        'field_string' => '@EasyAdmin/default/field_string.html.twig',
+        'field_text' => '@EasyAdmin/default/field_text.html.twig',
+        'field_time' => '@EasyAdmin/default/field_time.html.twig',
+        'field_toggle' => '@EasyAdmin/default/field_toggle.html.twig',
+        'label_empty' => '@EasyAdmin/default/label_empty.html.twig',
+        'label_inaccessible' => '@EasyAdmin/default/label_inaccessible.html.twig',
+        'label_null' => '@EasyAdmin/default/label_null.html.twig',
+        'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
+    );
+
+    private $kernelRootDir;
+
     public function load(array $configs, ContainerBuilder $container)
     {
+        $this->kernelRootDir = $container->getParameter('kernel.root_dir');
+
         // process bundle's configuration parameters
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
         $backendConfiguration = $this->processEntityActions($backendConfiguration);
+        $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
 
@@ -322,6 +359,45 @@ class EasyAdminExtension extends Extension
             return !array_key_exists($action['name'], $removedActions)
                 && !array_key_exists('-'.$action['name'], $removedActions);
         });
+    }
+
+    /**
+     * Determines the template used to render each backend element. This is not
+     * trivial because templates can depend on the entity displayed and they
+     * define an advanced override mechanism.
+     *
+     * @param array $backendConfiguration
+     *
+     * @return array
+     */
+    private function processEntityTemplates(array $backendConfiguration)
+    {
+        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+            foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
+                // 1st level priority: easy_admin.entities.<entityName>.templates.<templateName> config option
+                if (isset($entityConfiguration['templates'][$templateName])) {
+                    $template = $entityConfiguration['templates'][$templateName];
+                // 2nd level priority: easy_admin.design.templates.<templateName> config option
+                } elseif (isset($backendConfiguration['design']['templates'][$templateName])) {
+                    $template = $backendConfiguration['design']['templates'][$templateName];
+                // 3nd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
+                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$entityName.'/'.$templateName.'html.twig')) {
+                    $template = $templateFilePath;
+                // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
+                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$templateName.'html.twig')) {
+                    $template = $templateFilePath;
+                // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
+                } else {
+                    $template = $defaultTemplatePath;
+                }
+
+                $entityConfiguration['templates'][$templateName] = $template;
+            }
+
+            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
+        }
+
+        return $backendConfiguration;
     }
 
     /**

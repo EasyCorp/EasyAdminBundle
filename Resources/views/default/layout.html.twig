@@ -14,7 +14,7 @@
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}">
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}">
             <link rel="stylesheet" href="{{ path('_easyadmin_render_css') }}">
-        {% endblock %}
+        {% endblock head_stylesheets %}
 
         {% for css_asset in easyadmin_config('design.assets.css') %}
             <link rel="stylesheet" href="{{ asset(css_asset) }}">
@@ -25,25 +25,32 @@
         {% block head_javascript %}{% endblock %}
     </head>
 
+    {% block body %}
     <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
     <div id="wrapper" class="container">
+        {% block wrapper %}
         <nav id="header" class="navbar navbar-default navbar-static-top" role="navigation">
+            {% block header %}
             <div id="header-contents">
                 <div class="navbar-header">
+                    {% block navbar_header %}
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-nav">
                         <span class="sr-only">Toggle navigation</span>
                         <i class="fa fa-bars"></i>
                     </button>
                     <div id="header-logo" class="navbar-brand">
+                        {% block header_logo %}
                         {% set _site_name_length = easyadmin_config('site_name')|length <= 10 ? 'short'
                             : easyadmin_config('site_name')|length <= 12 ? 'medium' : 'long;'
                         %}
                         <a href="{{ path('admin') }}" class="{{ _site_name_length }}">{{ easyadmin_config('site_name')|raw }}</a>
+                        {% endblock header_logo %}
                     </div>
+                    {% endblock navbar_header %}
                 </div>
 
                 <div class="collapse navbar-collapse" id="header-nav">
-                    {% block navigation %}
+                    {% block header_menu %}
                         <ul id="header-menu" class="nav navbar-nav">
                             {% block navigation_items %}
                                 {% for item in easyadmin_config('entities') %}
@@ -55,12 +62,12 @@
                                 {% endfor %}
                             {% endblock %}
                         </ul>
-                    {% endblock %}
+                    {% endblock header_menu %}
                 </div>
 
                 <div id="header-footer" class="navbar-right">
                     {% block header_footer %}
-                        {% if true or app.user %}
+                        {% if app.user %}
                             <div id="header-security">
                                 <p>
                                     <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as'|trans }}</span></small>
@@ -68,9 +75,10 @@
                                 </p>
                             </div>
                         {% endif %}
-                    {% endblock %}
+                    {% endblock header_footer %}
                 </div>
             </div>
+            {% endblock header %}
         </nav>
 
         <div id="content" class="col-lg-10 col-lg-offset-2">
@@ -83,7 +91,7 @@
                                     <h1 class="title">{% block content_title %}{% endblock %}</h1>
                                 </div>
                             </div>
-                        {% endblock %}
+                        {% endblock content_header %}
                     </div>
 
                     <div id="main" class="col-sm-9">
@@ -94,18 +102,21 @@
                         {% block sidebar %}{% endblock %}
                     </div>
                 </div>
-            {% endblock %}
+            {% endblock content %}
         </div>
+        {% endblock wrapper %}
     </div>
 
     {% block body_javascript %}
         <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
         <script src="{{ asset('bundles/easyadmin/javascript/bootstrap.min.js') }}"></script>
         <script src="{{ asset('bundles/easyadmin/javascript/admin.js') }}"></script>
-    {% endblock %}
+    {% endblock body_javascript %}
+
     {% for js_asset in easyadmin_config('design.assets.js') %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
 
     </body>
+    {% endblock body %}
 </html>

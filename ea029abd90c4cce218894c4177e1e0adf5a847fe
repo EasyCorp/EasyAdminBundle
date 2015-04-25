@@ -1,0 +1,138 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-22T20:41:07Z
+
+In the extension, I see that you don't check if the `$entityConfiguration['templates']` exists nor is set, because it may be good to allow override with a totally different template, or use the same template for two entities but not the others, which is not possible with the actual implementation.
+The templates already set in the entity should be the "0-level" priority IMO.
+
+EDIT: A simple `if (isset($entityConfiguration['templates'][$templateName])) { continue; }` should be enough?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-22T20:44:15Z
+
+Plus, I'd like to see a special template for the search form, because it can be customized easily (with AJAX, etc), can you add it ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-23T19:52:32Z
+
+I've updated this PR and now you can override any template fragment used to display field contents.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-23T20:17:51Z
+
+@Pierstoval regarding the search template, I want to leave it for the near future. The reason is that I want to do some tweaks to the search action and probably separate it from the list action.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-23T20:18:48Z
+
+@Pierstoval I'm afraid I don't understand your comment below:
+
+> In the extension, I see that you don't check if the $entityConfiguration['templates'] exists nor is set, because it may be good to allow override with a totally different template, or use the same template for two entities but not the others, which is not possible with the actual implementation.
+The templates already set in the entity should be the "0-level" priority IMO.
+>
+> EDIT: A simple if (isset($entityConfiguration['templates'][$templateName])) { continue; } should be enough?
+
+Which specific file are you referring to? Could you please elaborate a bit more your use case? Thanks.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-04-23T20:28:56Z
+
+It's such a shame we cannot use nor redevelop easily a system like the symfony's form themes for this feature :confused: It would be so great.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-23T20:35:30Z
+
+@ogizanagi personally I think that's a big plus in terms of code simplicity and application performance. Besides, it's not that bad to have 20 small templates to override any of them instead of one large template with 20 small blocks that can be overridden.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-04-23T20:45:42Z
+
+@javiereguiluz : Sure, you're absolutely right in terms of performances.
+I didn't mean to sound negative about this implementation ^^'.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-24T06:39:18Z
+
+@ogizanagi you didn't sound bad at all! I also think it's very convenient to create one large file with small template fragments .... but the consequences of that would be to create a very complex and slow system, like the Symfony Forms.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-24T07:17:01Z
+
+> Which specific file are you referring to? Could you please elaborate a bit more your use case? Thanks.
+
+I'm talking about `DependencyInjection/EasyAdminExtension.php` , and the multiple loops inside the `processEntityTemplates` method.
+
+In fact, you do this (to summarize):
+
+```php
+foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+    foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
+        // 4th-level - Default value
+        // 3rd-level - Existing template
+        // 2nd-level - Existing entity-specific template
+        // 1st-level - Template defined in main config
+
+        // After that you have your resolved template
+        // And set it in this "resolved" config :
+        // $backendConfiguration['entities'][$entityName]['templates'][$templateName] = $template;
+    }
+}
+```
+
+But we're missing something.
+With this implementation, I cannot do this:
+
+```yml
+easy_admin:
+    entities:
+        Category:
+            class: AppBundle\Entity\Category
+            templates:
+                edit: "@App/admin/category_edit.html.twig"
+```
+
+Because you automatically override this parameter with your 4-level checks.
+That's why I'm talking about a "0-level" check which should be looking like this (right after the 1st-level check):
+
+```php
+// 0-level priority: template directly set in the entity configuration
+if (isset($entityConfiguration['templates'][$templateName])) {
+    continue;// Don't do anything because the template is already set
+}
+```
+
+Do you see what I mean?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-24T15:35:57Z
+
+@Pierstoval I understand you now. You are right: entities should be able to define their templates too. Everything has been updated: code, docs and tests. This PR is now "finished" and ready for the final review before merge. Thanks.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-25T10:14:52Z
+
+Everything looks good to me ! If you made tests for each use case, I think we're ok to merge this PR soon :smile:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-25T14:35:29Z
+
+I've added a lot of minor tweaks and a big important feature: I've created lots of new Twig blocks in the `layout`, `new`, `edit`, `show`, `list` and `form` templates. @Pierstoval if you can, please check that the proposed blocks are enough to provide lots of design flexibility (of course in the future we can easily add, remove or tweak any other block). Thanks!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-25T14:50:49Z
+
+Seems good to me. For other blocks, I think it's gonna be easier to find out what new blocks might be added by practicing in different back-ends.
+As I said, I have a big project at work using EasyAdmin, to come on May 15th, so I think I'm gonna practice and optimize until then :)

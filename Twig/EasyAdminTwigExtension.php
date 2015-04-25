@@ -111,8 +111,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
         $fieldName = $fieldMetadata['property'];
         $value = (null !== $getter = $fieldMetadata['getter']) ? $item->{$getter}() : $item->{$fieldName};
 
-        $templates = $entityConfiguration['templates'];
-
         try {
             $fieldType = $fieldMetadata['dataType'];
 

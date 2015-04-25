@@ -3,8 +3,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration;
 
 use Symfony\Component\Yaml\Yaml;
-use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
-use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;

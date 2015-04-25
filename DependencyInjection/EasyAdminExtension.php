@@ -115,8 +115,8 @@ class EasyAdminExtension extends Extension
             $entityClassParts = explode('\\', $entityConfiguration['class']);
             $entityClassName = end($entityClassParts);
 
-            # if config format #3 defines the 'label' option, use its value.
-            # otherwise, infer the entity label from its configuration.
+            // if config format #3 defines the 'label' option, use its value.
+            // otherwise, infer the entity label from its configuration.
             if (!isset($entityConfiguration['label'])) {
                 // config format #1 doesn't define any entity label because configuration is
                 // just a plain numeric array (the label is the integer key of that array).
@@ -370,19 +370,21 @@ class EasyAdminExtension extends Extension
     }
 
     /**
-     * The name of the entity is used in the URLs of the application to define the
-     * entity which should be used for each view. Obviously, the entity name
-     * must be unique in the application to identify entities unequivocally.
+     * The name of the entity is included in the URLs of the backend to define
+     * the entity used to perform the operations. Obviously, the entity name
+     * must be unique to identify entities unequivocally.
      *
-     * This method ensures that all entity names are unique by appending some suffix
-     * to repeated names until they are unique.
+     * This method ensures that the given entity name is unique among all the
+     * previously existing entities passed as the second argument. This is
+     * achieved by iteratively appending a suffix until the entity name is
+     * guaranteed to be unique.
      *
      * @param string $entityName
      * @param array  $existingEntityNames
      *
-     * @return array The entities configuration with unique entity names
+     * @return string The entity name transformed to be unique
      */
-    private function getUniqueEntityName($entityName, $existingEntityNames)
+    private function getUniqueEntityName($entityName, array $existingEntityNames)
     {
         $uniqueName = $entityName;
 

@@ -366,11 +366,11 @@ class AdminController extends Controller
      * Performs a database query to get all the records related to the given
      * entity. It supports pagination and field sorting.
      *
-     * @param string $entityClass
-     * @param int    $page
-     * @param int    $maxPerPage
-     * @param string $sortField
-     * @param string $sortDirection
+     * @param string      $entityClass
+     * @param int         $page
+     * @param int         $maxPerPage
+     * @param string|null $sortField
+     * @param string|null $sortDirection
      *
      * @return Pagerfanta The paginated query results
      */
@@ -418,7 +418,7 @@ class AdminController extends Controller
         foreach ($searchableFields as $name => $metadata) {
             $wildcards = $this->getDoctrine()->getConnection()->getDatabasePlatform()->getWildcards();
             $searchQuery = addcslashes($searchQuery, implode('', $wildcards));
-            $query->orWhere("entity.$name LIKE :query")->setParameter('query', '%'.$searchQuery.'%');
+            $query->orWhere('entity.'.$name.' LIKE :query')->setParameter('query', '%'.$searchQuery.'%');
         }
 
         $paginator = new Pagerfanta(new DoctrineORMAdapter($query, false));
@@ -556,9 +556,7 @@ class AdminController extends Controller
      */
     protected function isActionAllowed($action)
     {
-        if (array_key_exists($action, $this->entity[$this->view]['actions'])) {
-            return true;
-        }
+        return array_key_exists($action, $this->entity[$this->view]['actions']);
     }
 
     /**

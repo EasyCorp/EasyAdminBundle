@@ -56,11 +56,12 @@ class ClassPropertyReflector
     }
 
     /**
-     * Returns the name of the first method that exist for the given class, or
-     * null if none of the given methods exist.
+     * Given an array of method names, it returns the name of the first method
+     * that exists for the given class. It returns null if none of the given
+     * method exist.
      *
-     * @param string $classNamespace
-     * @param array  $methods
+     * @param string   $classNamespace The fully qualified name of the class
+     * @param string[] $methods
      *
      * @return string|null
      */
@@ -76,7 +77,7 @@ class ClassPropertyReflector
     /**
      * Returns 'true' if the class property is public (it exists and its scope is 'public').
      *
-     * @param string $classNamespace
+     * @param string $classNamespace The fully qualified name of the class
      * @param string $propertyName
      *
      * @return bool
@@ -88,8 +89,7 @@ class ClassPropertyReflector
         }
 
         $propertyMetadata = new \ReflectionProperty($classNamespace, $propertyName);
-        if ($propertyMetadata->isPublic()) {
-            return true;
-        }
+
+        return $propertyMetadata->isPublic();
     }
 }

@@ -141,7 +141,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                         : '/'.ltrim($value, '/');
                 }
 
-                return $twig->render($entityConfiguration['templates']['field_image'], array('value' => $value, 'view' => $view));
+                return $twig->render($entityConfiguration['templates']['field_image'], array('value' => $imageUrl, 'view' => $view));
             }
 
             if (in_array($fieldType, array('array', 'simple_array'))) {

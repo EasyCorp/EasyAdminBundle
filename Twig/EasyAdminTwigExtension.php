@@ -183,8 +183,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
         } catch (\Exception $e) {
             return $twig->render($entityConfiguration['templates']['label_undefined'], array('view' => $view));
         }
-
-        return $twig->render($entityConfiguration['templates']['label_undefined'], array('view' => $view));
     }
 
     /**

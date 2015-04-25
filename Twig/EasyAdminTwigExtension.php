@@ -98,7 +98,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * @param object $item          The item which is being rendered
      * @param array  $fieldMetadata The metadata of the actual field being rendered
      *
-     * @return mixed
+     * @return string
      */
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {

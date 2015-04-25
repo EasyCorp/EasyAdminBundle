@@ -13,7 +13,9 @@
 {% endblock %}
 
 {% block main %}
-    {{ include(_entity.templates.form, { view: 'new' }) }}
+    {% block entity_form %}
+        {{ include(_entity.templates.form, { view: 'new' }) }}
+    {% endblock entity_form %}
 {% endblock %}
 
 {% block body_javascript %}

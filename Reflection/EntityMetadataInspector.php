@@ -15,7 +15,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
- * Introspects information about the properties of the given class.
+ * Introspects information about the properties of the given entity class.
  */
 class EntityMetadataInspector
 {

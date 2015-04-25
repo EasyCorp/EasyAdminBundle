@@ -40,7 +40,7 @@
 
         <div class="form-group">
             <div id="form-actions-row">
-            {% block form_actions %}
+            {% block item_actions %}
                 {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
                 <button type="submit" class="btn">
                     <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters) }}
@@ -86,7 +86,7 @@
                         {{ _list_action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>
                 {% endif %}
-            {% endblock form_actions %}
+            {% endblock item_actions %}
             </div>
         </div>
     </div>

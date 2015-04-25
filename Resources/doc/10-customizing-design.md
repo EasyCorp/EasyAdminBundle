@@ -271,13 +271,13 @@ specific template block you want to customize.
 Suppose you want to change the search form displayed in the `list` view.
 First, create a new template in `app/Resources/views/easy_admin/list.html.twig`
 and make it extend from the default `list` template. Then, override the
-`form_search` block:
+`search_action` block:
 
 ```twig
 {# app/Resources/views/easy_admin/list.html.twig #}
 {% extends @EasyAdmin/default/list.html.twig %}
 
-{% block search_form %}
+{% block search_action %}
     {# ... #}
 {% endblock %}
 ```

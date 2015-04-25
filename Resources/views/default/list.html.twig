@@ -35,9 +35,9 @@
                     <h1 class="title">{{ block('content_title') }}</h1>
                 </div>
                 <div class="col-xs-12 col-sm-7">
-                {% block global_actions %}
+                {% block view_actions %}
                     {% if easyadmin_action_is_enabled_for_list_view('new', _entity.name) %}
-                        {% block action_new %}
+                        {% block new_action %}
                             {% set _action = easyadmin_get_action_for_list_view('new', _entity.name) %}
                             <div id="content-actions">
                                 <a class="btn {{ _action.class|default('') }}" href="{{ path('admin', { entity: _entity.name, action: _action.name, view: 'list' }) }}">
@@ -45,11 +45,11 @@
                                     {{ _action.label|default('action.new')|trans(_trans_parameters) }}
                                 </a>
                             </div>
-                        {% endblock action_new %}
+                        {% endblock new_action %}
                     {% endif %}
 
                     {% if easyadmin_action_is_enabled_for_list_view('search', _entity.name) %}
-                        {% block action_search %}
+                        {% block search_action %}
                             {% set _action = easyadmin_get_action_for_list_view('search', _entity.name) %}
                             <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
                                 <input type="hidden" name="view" value="list">
@@ -61,9 +61,9 @@
                                     <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters) }}" value="{{ app.request.get('query')|default('') }}">
                                 </div>
                             </form>
-                        {% endblock action_search %}
+                        {% endblock search_action %}
                     {% endif %}
-                {% endblock global_actions %}
+                {% endblock view_actions %}
                 </div>
             </div>
             {% endblock content_header %}
@@ -133,7 +133,7 @@
                                 {% if _list_item_actions|length > 0 %}
                                     {% set _column_label =  'list.row_actions'|trans(_trans_parameters) %}
                                     <td data-label="{{ _column_label }}" class="actions">
-                                    {% block table_actions %}
+                                    {% block item_actions %}
                                         {% for _action in _list_item_actions %}
                                             {% if 'method' == _action.type %}
                                                 {% set _action_href = path('admin', { action: _action.name, view: 'list', entity: _entity.name, id: _item_id }) %}
@@ -146,7 +146,7 @@
                                                 {{ _action.label|trans({'%entity_name%': _entity.label|trans, '%entity_id%': _item_id}) }}
                                             {% endspaceless %}</a>
                                         {% endfor %}
-                                    {% endblock table_actions %}
+                                    {% endblock item_actions %}
                                     </td>
                                 {% endif %}
                             </tr>

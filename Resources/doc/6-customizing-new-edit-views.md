@@ -215,34 +215,15 @@ this custom Doctrine DBAL type. Read the
 article of the official Symfony documentation to learn how to define custom
 form types.
 
-Customize the Actions Used to Create and Edit Entities
+Modify entities before they are persisted or updated
 ------------------------------------------------------
 
 By default, new and edited entities are persisted without any further
 modification. In case you want to manipulate the entity before persisting it,
 you can override the methods used by EasyAdmin.
 
-Similarly to customizing templates, you need to use the Symfony bundle
-[inheritance mechanism](http://symfony.com/doc/current/book/templating.html#overriding-bundle-templates)
-to override the controller used to generate the backend. Among many other
-methods, this controller contains two methods which are called just before the
-entity is persisted:
-
-```php
-protected function prepareEditEntityForPersist($entity)
-{
-    return $entity;
-}
-
-protected function prepareNewEntityForPersist($entity)
-{
-    return $entity;
-}
-```
-
-Suppose you want to automatically set the slug of some entity called `Article`
-whenever the entity is persisted. First, create a new controller inside any of
-your own bundles. Make this controller extend the `AdminController` provided by
+For this, just create a new controller inside any of your own bundles.
+Make this controller extend the `AdminController` provided by
 EasyAdmin and include, at least, the following contents:
 
 ```php
@@ -264,6 +245,12 @@ class AdminController extends EasyAdminController
     }
 }
 ```
+
+**Important!** Remember you need to **update your routing** to make it point
+on your new controller, instead of EasyAdmin's one!
+
+Now, suppose you want to automatically set the slug of some entity called `Article`
+whenever the entity is persisted.
 
 Now you can add in this new controller any of the original controller's
 methods to override them. Let's add `prepareEditEntityForPersist()` and
@@ -291,23 +278,21 @@ class AdminController extends EasyAdminController
     protected function prepareEditEntityForPersist($entity)
     {
         if ($entity instanceof Article) {
-            return $this->updateSlug($entity);
+            $this->updateSlug($entity);
         }
     }
 
     protected function prepareNewEntityForPersist($entity)
     {
         if ($entity instanceof Article) {
-            return $this->updateSlug($entity);
+            $this->updateSlug($entity);
         }
     }
 
-    private function updateSlug($entity)
+    private function updateSlug(Article $entity)
     {
         $slug = $this->get('app.slugger')->slugify($entity->getTitle());
         $entity->setSlug($slug);
-
-        return $entity;
     }
 }
 ```

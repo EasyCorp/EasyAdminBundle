@@ -420,9 +420,11 @@ class AdminController extends Controller
 
         foreach ($searchableFields as $name => $metadata) {
             if (in_array($metadata['fieldType'], array('text', 'string'))) {
-                $query->orWhere('entity.'.$name.' LIKE :fuzzy_value')->setParameter('fuzzy_value', '%'.$searchQuery.'%');
+                $searchTerm = '%'.$searchQuery.'%';
+                $query->orWhere('entity.'.$name.' LIKE :fuzzy_query')->setParameter('fuzzy_query', $searchTerm);
             } else {
-                $query->orWhere('entity.'.$name.' = :exact_value')->setParameter('exact_value', $searchQuery);
+                $searchTerm = '"'.implode('", "', explode(' ', $searchQuery)).'"';
+                $query->orWhere('entity.'.$name.' IN ( :exact_query )')->setParameter('exact_query', $searchTerm);
             }
         }
 

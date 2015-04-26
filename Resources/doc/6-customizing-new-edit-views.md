@@ -223,7 +223,7 @@ modification. In case you want to manipulate the entity before persisting it,
 you can override the methods used by EasyAdmin.
 
 Similarly to customizing templates, you need to use the Symfony bundle
-[inheritance mechanism](http://symfony.com/doc/current/book/templating.html#overriding-bundle-templates)
+[inheritance mechanism](http://symfony.com/doc/current/cookbook/bundles/inheritance.html#overriding-controllers)
 to override the controller used to generate the backend. Among many other
 methods, this controller contains two methods which are called just before the
 entity is persisted:

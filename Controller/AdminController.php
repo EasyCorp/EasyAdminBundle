@@ -415,10 +415,15 @@ class AdminController extends Controller
             ->from($entityClass, 'entity')
         ;
 
+        $wildcards = $this->getDoctrine()->getConnection()->getDatabasePlatform()->getWildcards();
+        $searchQuery = addcslashes($searchQuery, implode('', $wildcards));
+
         foreach ($searchableFields as $name => $metadata) {
-            $wildcards = $this->getDoctrine()->getConnection()->getDatabasePlatform()->getWildcards();
-            $searchQuery = addcslashes($searchQuery, implode('', $wildcards));
-            $query->orWhere('entity.'.$name.' LIKE :query')->setParameter('query', '%'.$searchQuery.'%');
+            if (in_array($metadata['fieldType'], array('text', 'string'))) {
+                $query->orWhere('entity.'.$name.' LIKE :fuzzy_value')->setParameter('fuzzy_value', '%'.$searchQuery.'%');
+            } else {
+                $query->orWhere('entity.'.$name.' = :exact_value')->setParameter('exact_value', $searchQuery);
+            }
         }
 
         $paginator = new Pagerfanta(new DoctrineORMAdapter($query, false));

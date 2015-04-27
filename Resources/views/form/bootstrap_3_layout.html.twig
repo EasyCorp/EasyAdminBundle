@@ -184,7 +184,7 @@
         {{- form_errors(form) -}}
 
         {% if form.vars.attr.field_help|default('') != '' %}
-            <span class="help-block"><i class="fa fa-info-circle"></i> {{ form.vars.attr.field_help }}</span>
+            <span class="help-block"><i class="fa fa-info-circle"></i> {{ form.vars.attr.field_help | raw }}</span>
         {% endif %}
     </div>
 {%- endblock form_row %}

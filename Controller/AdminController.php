@@ -410,25 +410,23 @@ class AdminController extends Controller
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
     {
-        $query = $this->em->createQueryBuilder()
-            ->select('entity')
-            ->from($entityClass, 'entity')
-        ;
+        $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
 
-        $wildcards = $this->getDoctrine()->getConnection()->getDatabasePlatform()->getWildcards();
-        $searchQuery = addcslashes($searchQuery, implode('', $wildcards));
-
+        $queryConditions = $queryBuilder->expr()->orX();
         foreach ($searchableFields as $name => $metadata) {
             if (in_array($metadata['fieldType'], array('text', 'string'))) {
-                $searchTerm = '%'.$searchQuery.'%';
-                $query->orWhere('entity.'.$name.' LIKE :fuzzy_query')->setParameter('fuzzy_query', $searchTerm);
+                $queryConditions->add(sprintf('entity.%s LIKE :query', $name));
             } else {
-                $searchTerm = '"'.implode('", "', explode(' ', $searchQuery)).'"';
-                $query->orWhere('entity.'.$name.' IN ( :exact_query )')->setParameter('exact_query', $searchTerm);
+                $queryConditions->add(sprintf('entity.%s IN (:words)', $name));
             }
         }
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($query, false));
+        $queryBuilder->add('where', $queryConditions)->setParameters(array(
+            'query' => '%'.$searchQuery.'%',
+            'words' => explode(' ', $searchQuery)
+        ));
+
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, false));
         $paginator->setMaxPerPage($maxPerPage);
         $paginator->setCurrentPage($page);
 

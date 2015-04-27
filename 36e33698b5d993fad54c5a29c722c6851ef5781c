@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-27T16:15:10Z
+
+These two `ltrim` won't work on Windows.
+
+Can the final template name be simply be prepended by `easy_admin/` ? Twig understands this notation as long as the root name (`easy_admin` in this case) is a valid view/directory in the `app/Resources/views/` directory.
+Relying on absolute paths does not seem good to me, in fact :confused:
+
+EDIT:
+To be clearer (I know I might have misty words sometimes :smile_cat: ), I mean replacing this way:
+
+```php
+if (isset($entityConfiguration['templates'][$templateName])) {
+    $template = $entityConfiguration['templates'][$templateName];
+    // 2nd level priority: easy_admin.design.templates.<templateName> config option
+} elseif (isset($backendConfiguration['design']['templates'][$templateName])) {
+    $template = $backendConfiguration['design']['templates'][$templateName];
+    // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
+} elseif (file_exists($templateFilePath = $applicationTemplateDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
+-    $template = ltrim(str_replace($applicationTemplateDir, '', $templateFilePath), DIRECTORY_SEPARATOR);
++    $template = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
+    // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
+} elseif (file_exists($templateFilePath = $applicationTemplateDir.'/easy_admin/'.$templateName.'.html.twig')) {
+-    $template = ltrim(str_replace($applicationTemplateDir, '', $templateFilePath), DIRECTORY_SEPARATOR);
++    $template = 'easy_admin/'.$templateName.'.html.twig';
+    // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
+} else {
+    $template = $defaultTemplatePath;
+}
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-27T17:23:22Z
+
+@Pierstoval thanks for your proposal. I've just updated the PR with your code. It's so obvious that this is the way it should be done that I wonder what the hell I was thinking before :confused:

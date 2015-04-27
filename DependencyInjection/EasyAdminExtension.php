@@ -381,10 +381,10 @@ class EasyAdminExtension extends Extension
                 } elseif (isset($backendConfiguration['design']['templates'][$templateName])) {
                     $template = $backendConfiguration['design']['templates'][$templateName];
                 // 3nd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
-                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$entityName.'/'.$templateName.'html.twig')) {
+                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
                     $template = $templateFilePath;
                 // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$templateName.'html.twig')) {
+                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$templateName.'.html.twig')) {
                     $template = $templateFilePath;
                 // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
                 } else {

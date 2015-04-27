@@ -372,6 +372,8 @@ class EasyAdminExtension extends Extension
      */
     private function processEntityTemplates(array $backendConfiguration)
     {
+        $applicationTemplateDir = $this->kernelRootDir.'/Resources/views';
+
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
                 // 1st level priority: easy_admin.entities.<entityName>.templates.<templateName> config option
@@ -380,12 +382,12 @@ class EasyAdminExtension extends Extension
                 // 2nd level priority: easy_admin.design.templates.<templateName> config option
                 } elseif (isset($backendConfiguration['design']['templates'][$templateName])) {
                     $template = $backendConfiguration['design']['templates'][$templateName];
-                // 3nd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
-                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
-                    $template = $templateFilePath;
+                // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
+                } elseif (file_exists($applicationTemplateDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
+                    $template = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
                 // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-                } elseif (file_exists($templateFilePath = $this->kernelRootDir.'/Resources/views/easy_admin/'.$templateName.'.html.twig')) {
-                    $template = $templateFilePath;
+                } elseif (file_exists($applicationTemplateDir.'/easy_admin/'.$templateName.'.html.twig')) {
+                    $template = 'easy_admin/'.$templateName.'.html.twig';
                 // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
                 } else {
                     $template = $defaultTemplatePath;

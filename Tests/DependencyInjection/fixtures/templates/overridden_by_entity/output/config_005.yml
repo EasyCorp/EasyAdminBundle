@@ -1,0 +1,254 @@
+easy_admin:
+    design:
+        templates:
+            layout: global_custom_template/layout.html.twig
+            list: global_custom_template/list.html.twig
+            field_string: global_custom_template/field_string.html.twig
+            label_null: global_custom_template/label_null.html.twig
+        theme: default
+        color_scheme: dark
+        brand_color: '#E67E22'
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+        assets:
+            css: {  }
+            js: {  }
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            templates:
+                layout: entity_custom_template/layout.html.twig
+                list: entity_custom_template/list.html.twig
+                field_string: entity_custom_template/field_string.html.twig
+                label_null: entity_custom_template/label_null.html.twig
+                edit: '@EasyAdmin/default/edit.html.twig'
+                new: '@EasyAdmin/default/new.html.twig'
+                show: '@EasyAdmin/default/show.html.twig'
+                form: '@EasyAdmin/default/form.html.twig'
+                paginator: '@EasyAdmin/default/paginator.html.twig'
+                field_array: '@EasyAdmin/default/field_array.html.twig'
+                field_association: '@EasyAdmin/default/field_association.html.twig'
+                field_bigint: '@EasyAdmin/default/field_bigint.html.twig'
+                field_boolean: '@EasyAdmin/default/field_boolean.html.twig'
+                field_date: '@EasyAdmin/default/field_date.html.twig'
+                field_datetime: '@EasyAdmin/default/field_datetime.html.twig'
+                field_datetimetz: '@EasyAdmin/default/field_datetimetz.html.twig'
+                field_decimal: '@EasyAdmin/default/field_decimal.html.twig'
+                field_float: '@EasyAdmin/default/field_float.html.twig'
+                field_id: '@EasyAdmin/default/field_id.html.twig'
+                field_image: '@EasyAdmin/default/field_image.html.twig'
+                field_integer: '@EasyAdmin/default/field_integer.html.twig'
+                field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
+                field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
+                field_text: '@EasyAdmin/default/field_text.html.twig'
+                field_time: '@EasyAdmin/default/field_time.html.twig'
+                field_toggle: '@EasyAdmin/default/field_toggle.html.twig'
+                label_empty: '@EasyAdmin/default/label_empty.html.twig'
+                label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
+                label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
+            label: TestEntity
+            name: TestEntity
+            edit:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            list:
+                fields: {  }
+                actions:
+                    show:
+                        name: show
+                        type: method
+                        label: action.show
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: null
+                    search:
+                        name: search
+                        type: method
+                        label: action.search
+                        class: ''
+                        icon: null
+                    new:
+                        name: new
+                        type: method
+                        label: action.new
+                        class: ''
+                        icon: null
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            new:
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            show:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: edit
+        AnotherTestEntity:
+            class: AppBundle\Entity\AnotherTestEntity
+            templates:
+                layout: another_entity_custom_template/layout.html.twig
+                list: another_entity_custom_template/list.html.twig
+                field_string: another_entity_custom_template/field_string.html.twig
+                label_null: another_entity_custom_template/label_null.html.twig
+                edit: '@EasyAdmin/default/edit.html.twig'
+                new: '@EasyAdmin/default/new.html.twig'
+                show: '@EasyAdmin/default/show.html.twig'
+                form: '@EasyAdmin/default/form.html.twig'
+                paginator: '@EasyAdmin/default/paginator.html.twig'
+                field_array: '@EasyAdmin/default/field_array.html.twig'
+                field_association: '@EasyAdmin/default/field_association.html.twig'
+                field_bigint: '@EasyAdmin/default/field_bigint.html.twig'
+                field_boolean: '@EasyAdmin/default/field_boolean.html.twig'
+                field_date: '@EasyAdmin/default/field_date.html.twig'
+                field_datetime: '@EasyAdmin/default/field_datetime.html.twig'
+                field_datetimetz: '@EasyAdmin/default/field_datetimetz.html.twig'
+                field_decimal: '@EasyAdmin/default/field_decimal.html.twig'
+                field_float: '@EasyAdmin/default/field_float.html.twig'
+                field_id: '@EasyAdmin/default/field_id.html.twig'
+                field_image: '@EasyAdmin/default/field_image.html.twig'
+                field_integer: '@EasyAdmin/default/field_integer.html.twig'
+                field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
+                field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
+                field_text: '@EasyAdmin/default/field_text.html.twig'
+                field_time: '@EasyAdmin/default/field_time.html.twig'
+                field_toggle: '@EasyAdmin/default/field_toggle.html.twig'
+                label_empty: '@EasyAdmin/default/label_empty.html.twig'
+                label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
+                label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
+            label: AnotherTestEntity
+            name: AnotherTestEntity
+            edit:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            list:
+                fields: {  }
+                actions:
+                    show:
+                        name: show
+                        type: method
+                        label: action.show
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: null
+                    search:
+                        name: search
+                        type: method
+                        label: action.search
+                        class: ''
+                        icon: null
+                    new:
+                        name: new
+                        type: method
+                        label: action.new
+                        class: ''
+                        icon: null
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            new:
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            show:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: edit
+    site_name: 'Easy Admin'
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'
+    list:
+        actions: {  }
+        max_results: 15
+    edit:
+        actions: {  }
+    new:
+        actions: {  }
+    show:
+        actions: {  }

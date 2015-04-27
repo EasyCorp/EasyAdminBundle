@@ -99,10 +99,10 @@
                                                 <i class="fa fa-sort"></i>
                                             {% endif %}
 
-                                            {{ _column_label }}
+                                            {{ _column_label|raw }}
                                         </a>
                                     {% else %}
-                                        <span>{{ _column_label }}</span>
+                                        <span>{{ _column_label|raw }}</span>
                                     {% endif %}
                                 </th>
                             {% endfor %}

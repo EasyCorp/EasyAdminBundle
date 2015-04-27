@@ -123,6 +123,40 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/overridden_template_names_are_limited.yml');
     }
 
+    /**
+     * Tests the template overriding mechanism when a given entity defines
+     * its own custom templates in app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig files
+     * See EasyAdminExtension::processEntityTemplates()
+     */
+    public function testEntityOverridesDefaultTemplates()
+    {
+        $fixturesDir = __DIR__.'/fixtures/templates/overridden_by_entity';
+
+        foreach (range(1, 5) as $i) {
+            $parsedConfiguration = $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
+            $expectedConfiguration = file_get_contents($fixturesDir.'/output/config_00'.$i.'.yml');
+
+            $this->assertEquals($expectedConfiguration, $parsedConfiguration);
+        }
+    }
+
+    /**
+     * Tests the template overriding mechanism when the application defines
+     * its own custom templates in app/Resources/views/easy_admin/<templateName>.html.twig files
+     * See EasyAdminExtension::processEntityTemplates()
+     */
+    public function testApplicationOverridesDefaultTemplates()
+    {
+        $fixturesDir = __DIR__.'/fixtures/templates/overridden_by_application';
+
+        foreach (range(1, 5) as $i) {
+            $parsedConfiguration = $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
+            $expectedConfiguration = file_get_contents($fixturesDir.'/output/config_00'.$i.'.yml');
+
+            $this->assertEquals($expectedConfiguration, $parsedConfiguration);
+        }
+    }
+
     public function provideConfigurationFiles($fixturesDir)
     {
         return parent::provideConfigurationFiles(__DIR__.'/fixtures/*');
@@ -136,9 +170,9 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
      *
      * @return string
      */
-    private function parseConfigurationFile($filepath)
+    private function parseConfigurationFile($filepath, $kernelRootDir = null)
     {
-        $this->container->setParameter('kernel.root_dir', __DIR__);
+        $this->container->setParameter('kernel.root_dir', $kernelRootDir ?: __DIR__);
 
         $inputConfiguration = Yaml::parse(file_get_contents($filepath));
         $this->loader->load($inputConfiguration, $this->container);

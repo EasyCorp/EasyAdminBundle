@@ -256,7 +256,7 @@ used to render each element (from highest to lowest priority):
   1. `easy_admin.entities.<entityName>.templates.<templateName>` configuration 
      option.
   2. `easy_admin.design.templates.<template_name>` configuration option.
-  3. `app/Resources/views/easy_admin/<entiy_name>/<template_name>.html.twig`
+  3. `app/Resources/views/easy_admin/<entity_name>/<template_name>.html.twig`
   4. `app/Resources/views/easy_admin/<template_name>.html.twig`
   5. `@EasyAdmin/default/<template_name>` (these are the templates defined by
      EasyAdmin and they are always available).

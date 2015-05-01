@@ -18,7 +18,7 @@ These are the actions included by default in each view:
 | `show` | `edit`, `list`, `delete`
 
 EasyAdmin lets you configure the actions displayed in each view and all its
-features. In addition, you can define your own actions and siplay them in any
+features. In addition, you can define your own actions and display them in any
 of the views.
 
 Configure the Actions Displayed in Each View

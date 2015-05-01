@@ -192,8 +192,8 @@ The `edit` view is used when creating new elements of the given entity. The
 
 ![Edit view interface](images/easyadmin-edit-view.png)
 
-Both views are very similar in their design and behvior. In fact, they can be
-customized simulatenously using a special view called `form` which is applied
+Both views are very similar in their design and behavior. In fact, they can be
+customized simultaneously using a special view called `form` which is applied
 to any form-based view. Read [Chapter 6](6-customizing-new-edit-views.md) for
 more details.
 

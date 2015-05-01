@@ -30,7 +30,7 @@ easy_admin:
 Improving Backend Performance
 -----------------------------
 
-EasyAdmin does an intense use of Doctrine metadata instrospection to generate
+EasyAdmin does an intense use of Doctrine metadata introspection to generate
 the backend on the fly without generating any file or resource. For complex
 backends, this process can add a noticeable performance overhead.
 

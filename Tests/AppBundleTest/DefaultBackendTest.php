@@ -3,7 +3,6 @@
 namespace AppBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
 class DefaultBackendTest extends WebTestCase
 {
@@ -12,7 +11,7 @@ class DefaultBackendTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/admin/');
 
-        $this->assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertEquals(
             '/admin/?action=list&entity=Category',
             $client->getResponse()->getTargetUrl()

@@ -1,0 +1,36 @@
+# Basic config common to all functional tests
+# Can be easily overriden in each test config
+parameters:
+    locale: en
+    database_path: %kernel.root_dir%/../../../build/test.db
+
+framework:
+    secret:          secret
+    test:            ~
+    router:          { resource: "%kernel.root_dir%/config/routing.yml" }
+    form:            true
+    csrf_protection: false
+    validation:      { enable_annotations: true }
+    templating:      { engines: ['twig'] }
+    session:
+        storage_id: session.storage.filesystem
+
+doctrine:
+    dbal:
+        driver:   pdo_sqlite
+        dbname:   easyadmin_test
+        user:     root
+        charset:  UTF8
+        path:     %database_path%
+    orm:
+        auto_generate_proxy_classes: true
+        auto_mapping: true
+
+security:
+    firewalls:
+        secured_area:
+            pattern:    ^/
+            anonymous:  true
+    providers:
+        in_memory:
+             memory: ~

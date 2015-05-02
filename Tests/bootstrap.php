@@ -12,6 +12,7 @@
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\NullOutput;
 
 $file = __DIR__.'/../vendor/autoload.php';
@@ -52,7 +53,7 @@ $input = new ArrayInput(array('command' => 'doctrine:schema:create',));
 $application->run($input, new NullOutput);
 
 // Load fixtures of the AppTestBundle
-$input = new ArrayInput(array('command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => 'true'));
+$input = new ArrayInput(array('command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => true));
 $application->run($input, new NullOutput);
 
 unset($input, $application);

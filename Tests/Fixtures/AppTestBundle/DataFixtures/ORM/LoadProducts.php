@@ -69,10 +69,12 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
 
     public function getRandomEan()
     {
-        $start  = 100000000000;
-        $end    = 999999999999;
-
-        $ean13 = (string) mt_rand($start, $end);
+        $chars = str_split('0123456789');
+        $count = count($chars)-1;
+        $ean13 = '';
+        do {
+            $ean13 .= $char = $chars[rand(0, $count)];
+        } while (strlen($ean13) < 13);
 
         $checksum = 0;
         foreach (str_split(strrev($ean13)) as $pos => $val) {

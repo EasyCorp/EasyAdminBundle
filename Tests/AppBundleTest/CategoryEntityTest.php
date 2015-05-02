@@ -17,8 +17,6 @@ class CategoryEntityTest extends AbstractTestCase
 
     public function testListViewSearchAction()
     {
-        $this->markTestSkipped("It requires the latest not-yet-released stable version");
-
         $hiddenParameters = array(
             'view' => 'list',
             'action' => 'search',
@@ -127,7 +125,7 @@ class CategoryEntityTest extends AbstractTestCase
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
 
-        $this->assertEquals('/admin/?view=list&action=list&entity=Category&sortDirection=DESC&sortField=id&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
-        $this->assertEquals('/admin/?view=list&action=list&entity=Category&sortDirection=DESC&sortField=id&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
+        $this->assertEquals('/admin/?view=list&action=list&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
+        $this->assertEquals('/admin/?view=list&action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 }

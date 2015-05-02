@@ -1,7 +1,18 @@
 <?php
 
+/*
+ * This file is part of the EasyAdminBundle.
+ *
+ * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\DependencyInjection;
 
+use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Yaml\Yaml;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
@@ -9,7 +20,14 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
 
 class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 {
+    /**
+     * @var ContainerBuilder
+     */
     private $container;
+
+    /**
+     * @var EasyAdminExtension
+     */
     private $loader;
 
     public function setUp()
@@ -29,6 +47,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 
         $parsedConfiguration = $this->parseConfigurationFile($inputFixtureFilepath);
         $expectedConfiguration = file_get_contents($outputFixtureFilepath);
+        $expectedConfiguration = str_replace("\r", '', $expectedConfiguration);// Prevents bugs from different git crlf config
 
         $this->assertEquals($expectedConfiguration, $parsedConfiguration, sprintf('%s configuration is correctly parsed into %s', $inputFixtureFilepath, $outputFixtureFilepath));
     }
@@ -135,6 +154,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         foreach (range(1, 5) as $i) {
             $parsedConfiguration = $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
             $expectedConfiguration = file_get_contents($fixturesDir.'/output/config_00'.$i.'.yml');
+            $expectedConfiguration = str_replace("\r", '', $expectedConfiguration);// Prevents bugs from different git crlf config
 
             $this->assertEquals($expectedConfiguration, $parsedConfiguration);
         }
@@ -152,6 +172,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         foreach (range(1, 5) as $i) {
             $parsedConfiguration = $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
             $expectedConfiguration = file_get_contents($fixturesDir.'/output/config_00'.$i.'.yml');
+            $expectedConfiguration = str_replace("\r", '', $expectedConfiguration);// Prevents bugs from different git crlf config
 
             $this->assertEquals($expectedConfiguration, $parsedConfiguration);
         }
@@ -167,6 +188,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
      * the configuration parsed by the container and dumped into YAML format.
      *
      * @param string $filepath
+     * @param string $kernelRootDir
      *
      * @return string
      */

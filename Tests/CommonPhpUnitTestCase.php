@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * This file is part of the EasyAdminBundle.
+ *
+ * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests;
 
-class CommonPhpUnitTestCase extends \PHPUnit_Framework_TestCase
+abstract class CommonPhpUnitTestCase extends \PHPUnit_Framework_TestCase
 {
-    public function provideConfigurationFiles($fixturesDir)
+    protected function provideConfigurationFiles($fixturesDir)
     {
         $fixtures = array();
 

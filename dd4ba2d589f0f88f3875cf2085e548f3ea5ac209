@@ -1,0 +1,28 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-02T17:59:46Z
+
+Great work @Pierstoval ! :smile:
+We could surely improve the directory structure, but I do not have any more relevant suggestion for now. :/
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-02T18:25:29Z
+
+In fact, everything in the `Tests/AppBundleTest` directory is related to the bundled bundle dedicated to tests, and the others are to test the main functions of EasyAdmin. So here you can define your own "production-like" parameters to test the bundle *in situ* .
+
+The `Tests/Controller` directory is only here to test the default behavior of the `AdminController` : check that the routes are properly executed (index, css, etc.). There should not be any entity-linked logic in there. Only configuration.
+
+With the `environment` parameter in the different kernel methods in the `AbstractTestCase` class, you can specify different config files that will recreate the environment based on a real configuration, contrary to all the files we use to test only the `DependencyInjection` classes.
+
+What do you think about this @javiereguiluz ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-03T14:15:40Z
+
+@Pierstoval thank you for working on this. The work you've done is just fantastic! This is exactly what I wanted to do but I didn't know how to do it :)
+
+I agree with @ogizanagi about the directory structure, but I guess it will just take a while to get used to it.
+
+I'm going to merge this code as is and in the coming days I'm going to tweak some minor things (such as adding PHPdocs, adding a reference to the original repo where this code was copied from (https://github.com/Orbitale/CmsBundle), etc.) Anyway, I will be very busy until Wednesday, so I won't be able to work on it until then.

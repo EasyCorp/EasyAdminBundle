@@ -1,7 +1,17 @@
 <?php
 
+/*
+ * This file is part of the EasyAdminBundle.
+ *
+ * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration;
 
+use InvalidArgumentException;
 use Symfony\Component\Yaml\Yaml;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
@@ -41,8 +51,9 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
         $yamlConfiguration = str_replace('{  }', '[]', Yaml::dump($configuration));
 
         $expectedConfiguration = file_get_contents($outputFixtureFilepath);
+        $expectedConfiguration = str_replace("\r", '', $expectedConfiguration);// Prevents bugs from different git crlf config
 
-        $this->assertEquals($expectedConfiguration, $yamlConfiguration, sprintf('%s configuration is correctly parsed into %s', basename($inputFixtureFilepath), basename($outputFixtureFilepath)));
+        $this->assertEquals($expectedConfiguration, $yamlConfiguration, sprintf('%s configuration is not correctly parsed into %s', basename($inputFixtureFilepath), basename($outputFixtureFilepath)));
     }
 
     public function provideConfigurationFiles($fixturesDir)

@@ -15,6 +15,11 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
+/**
+ * Class AbstractTestCase. Code copied from
+ * https://github.com/Orbitale/CmsBundle/blob/master/Tests/Fixtures/AbstractTestCase.php
+ * (c) Alexandre Rock Ancelet <alex@orbitale.io>
+ */
 abstract class AbstractTestCase extends WebTestCase
 {
     /**

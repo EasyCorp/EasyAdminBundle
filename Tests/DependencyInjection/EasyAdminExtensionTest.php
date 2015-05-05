@@ -47,7 +47,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 
         $parsedConfiguration = $this->parseConfigurationFile($inputFixtureFilepath);
         $expectedConfiguration = file_get_contents($outputFixtureFilepath);
-        $expectedConfiguration = str_replace("\r", '', $expectedConfiguration);// Prevents bugs from different git crlf config
+        $expectedConfiguration = str_replace("\r", '', $expectedConfiguration); // Prevents bugs from different git crlf config
 
         $this->assertEquals($expectedConfiguration, $parsedConfiguration, sprintf('%s configuration is correctly parsed into %s', $inputFixtureFilepath, $outputFixtureFilepath));
     }

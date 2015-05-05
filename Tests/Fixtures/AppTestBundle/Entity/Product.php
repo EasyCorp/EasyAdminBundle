@@ -136,7 +136,7 @@ class Product
      * Add a category in the product association.
      * (Owning side).
      *
-     * @param $category Category the category to associate
+     * @param Category $category The category to associate
      */
     public function addCategory($category)
     {
@@ -151,7 +151,7 @@ class Product
      * Remove a category in the product association.
      * (Owning side).
      *
-     * @param $category Category the category to associate
+     * @param Category $category The category to disassociate
      */
     public function removeCategory($category)
     {
@@ -313,7 +313,7 @@ class Product
     /**
      * Set the list of the tags.
      *
-     * @param \string[] $tags
+     * @param string[] $tags
      */
     public function setTags($tags)
     {
@@ -323,7 +323,7 @@ class Product
     /**
      * Get the list of tags associated to the product.
      *
-     * @return \string[]
+     * @return string[]
      */
     public function getTags()
     {

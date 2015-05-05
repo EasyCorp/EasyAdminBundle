@@ -51,7 +51,7 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
         $yamlConfiguration = str_replace('{  }', '[]', Yaml::dump($configuration));
 
         $expectedConfiguration = file_get_contents($outputFixtureFilepath);
-        $expectedConfiguration = str_replace("\r", '', $expectedConfiguration);// Prevents bugs from different git crlf config
+        $expectedConfiguration = str_replace("\r", '', $expectedConfiguration); // Prevents bugs from different git crlf config
 
         $this->assertEquals($expectedConfiguration, $yamlConfiguration, sprintf('%s configuration is not correctly parsed into %s', basename($inputFixtureFilepath), basename($outputFixtureFilepath)));
     }

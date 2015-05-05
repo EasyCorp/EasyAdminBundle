@@ -1,4 +1,3 @@
-
 easy_admin_bundle:
     resource: "@AppTestBundle/Controller/"
     type:     annotation

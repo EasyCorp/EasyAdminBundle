@@ -154,7 +154,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         foreach (range(1, 5) as $i) {
             $parsedConfiguration = $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
             $expectedConfiguration = file_get_contents($fixturesDir.'/output/config_00'.$i.'.yml');
-            $expectedConfiguration = str_replace("\r", '', $expectedConfiguration);// Prevents bugs from different git crlf config
+            $expectedConfiguration = str_replace("\r", '', $expectedConfiguration); // Prevents bugs from different git crlf config
 
             $this->assertEquals($expectedConfiguration, $parsedConfiguration);
         }
@@ -172,7 +172,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         foreach (range(1, 5) as $i) {
             $parsedConfiguration = $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
             $expectedConfiguration = file_get_contents($fixturesDir.'/output/config_00'.$i.'.yml');
-            $expectedConfiguration = str_replace("\r", '', $expectedConfiguration);// Prevents bugs from different git crlf config
+            $expectedConfiguration = str_replace("\r", '', $expectedConfiguration); // Prevents bugs from different git crlf config
 
             $this->assertEquals($expectedConfiguration, $parsedConfiguration);
         }

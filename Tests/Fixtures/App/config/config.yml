@@ -21,11 +21,8 @@ framework:
 
 doctrine:
     dbal:
-        driver:   pdo_sqlite
-        dbname:   easyadmin_test
-        user:     root
-        charset:  UTF8
-        path:     %database_path%
+        driver: pdo_sqlite
+        path:   %database_path%
     orm:
         auto_generate_proxy_classes: true
         auto_mapping: true

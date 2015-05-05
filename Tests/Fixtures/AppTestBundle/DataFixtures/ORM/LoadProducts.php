@@ -64,13 +64,13 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
         $numTags = rand(2, 4);
         shuffle($tags);
 
-        return array_slice($tags, 0, $numTags-1);
+        return array_slice($tags, 0, $numTags - 1);
     }
 
     public function getRandomEan()
     {
         $chars = str_split('0123456789');
-        $count = count($chars)-1;
+        $count = count($chars) - 1;
         $ean13 = '';
         do {
             $ean13 .= $char = $chars[rand(0, $count)];
@@ -132,6 +132,6 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
         $numPhrases = rand(5, 10);
         shuffle($phrases);
 
-        return implode(' ', array_slice($phrases, 0, $numPhrases-1));
+        return implode(' ', array_slice($phrases, 0, $numPhrases - 1));
     }
 }

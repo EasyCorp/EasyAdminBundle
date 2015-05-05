@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 /**
  * Class AbstractTestCase. Code copied from
  * https://github.com/Orbitale/CmsBundle/blob/master/Tests/Fixtures/AbstractTestCase.php
- * (c) Alexandre Rock Ancelet <alex@orbitale.io>
+ * (c) Alexandre Rock Ancelet <alex@orbitale.io>.
  */
 abstract class AbstractTestCase extends WebTestCase
 {
@@ -46,12 +46,13 @@ abstract class AbstractTestCase extends WebTestCase
 
     /**
      * @param array $options An array of options to pass to the createKernel class
+     *
      * @return KernelInterface
      */
     protected function getKernel(array $options = array())
     {
         static::bootKernel($options);
+
         return static::$kernel;
     }
-
 }

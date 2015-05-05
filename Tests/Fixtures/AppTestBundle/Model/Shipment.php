@@ -16,13 +16,15 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Mode
  *
  * @author MacFJA
  */
-class Shipment {
+class Shipment
+{
     protected $address;
     protected $cost;
     protected $transporter;
 
     /**
-     * Set the shipping address
+     * Set the shipping address.
+     *
      * @param mixed $address
      */
     public function setAddress($address)
@@ -31,7 +33,8 @@ class Shipment {
     }
 
     /**
-     * Get the shipping address
+     * Get the shipping address.
+     *
      * @return mixed
      */
     public function getAddress()
@@ -40,7 +43,8 @@ class Shipment {
     }
 
     /**
-     * Set the delivery cost of the order
+     * Set the delivery cost of the order.
+     *
      * @param mixed $cost
      */
     public function setCost($cost)
@@ -49,7 +53,8 @@ class Shipment {
     }
 
     /**
-     * Get the delivery cost
+     * Get the delivery cost.
+     *
      * @return mixed
      */
     public function getCost()
@@ -58,7 +63,8 @@ class Shipment {
     }
 
     /**
-     * Set the transporter that handle the delivery
+     * Set the transporter that handle the delivery.
+     *
      * @param mixed $transporter
      */
     public function setTransporter($transporter)
@@ -67,7 +73,8 @@ class Shipment {
     }
 
     /**
-     * Get the order's transporter
+     * Get the order's transporter.
+     *
      * @return mixed
      */
     public function getTransporter()
@@ -76,7 +83,7 @@ class Shipment {
     }
 
     /** {@inheritdoc} */
-    function __toString()
+    public function __toString()
     {
         return $this->getTransporter().': '.$this->getCost();
     }

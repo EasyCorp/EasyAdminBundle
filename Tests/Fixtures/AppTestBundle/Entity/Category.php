@@ -14,7 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class Category
+ * Class Category.
  *
  * @author MacFJA
  *
@@ -24,8 +24,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Category
 {
     /**
-     * The identifier of the category
-     * @var integer
+     * The identifier of the category.
+     *
+     * @var int
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -33,21 +34,24 @@ class Category
     protected $id = null;
 
     /**
-     * The category name
+     * The category name.
+     *
      * @var string
      * @ORM\Column(type="string")
      */
     protected $name;
 
     /**
-     * Product in the category
+     * Product in the category.
+     *
      * @var Product[]
      * @ORM\ManyToMany(targetEntity="Product", mappedBy="categories")
      **/
     protected $products;
 
     /**
-     * The category parent
+     * The category parent.
+     *
      * @var Category
      * @ORM\OneToOne(targetEntity="Category")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
@@ -56,23 +60,24 @@ class Category
 
     /**
      * Constructor of the Category class.
-     * (Initialize array field)
+     * (Initialize array field).
      */
-    function __construct()
+    public function __construct()
     {
         //Initialize product as a Doctrine Collection
         $this->products = new ArrayCollection();
     }
 
     /** {@inheritdoc} */
-    function __toString()
+    public function __toString()
     {
         return $this->getName();
     }
 
     /**
      * Get the id of the category.
-     * Return null if the category is new and not saved
+     * Return null if the category is new and not saved.
+     *
      * @return int
      */
     public function getId()
@@ -81,7 +86,8 @@ class Category
     }
 
     /**
-     * Set the name of the category
+     * Set the name of the category.
+     *
      * @param string $name
      */
     public function setName($name)
@@ -90,7 +96,8 @@ class Category
     }
 
     /**
-     * Get the name of the category
+     * Get the name of the category.
+     *
      * @return string
      */
     public function getName()
@@ -99,7 +106,8 @@ class Category
     }
 
     /**
-     * Set the parent category
+     * Set the parent category.
+     *
      * @param Category $parent
      */
     public function setParent($parent)
@@ -108,7 +116,8 @@ class Category
     }
 
     /**
-     * Get the parent category
+     * Get the parent category.
+     *
      * @return Category
      */
     public function getParent()
@@ -117,7 +126,8 @@ class Category
     }
 
     /**
-     * Return all product associated to the category
+     * Return all product associated to the category.
+     *
      * @return Product[]
      */
     public function getProducts()
@@ -126,19 +136,23 @@ class Category
     }
 
     /**
-     * Set all products in the category
+     * Set all products in the category.
+     *
      * @param Product[] $products
      */
-    public function setProducts($products) {
+    public function setProducts($products)
+    {
         $this->products->clear();
         $this->products = new ArrayCollection($products);
     }
 
     /**
-     * Add a product in the category
+     * Add a product in the category.
+     *
      * @param $product Product The product to associate
      */
-    public function addProduct($product) {
+    public function addProduct($product)
+    {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
         }

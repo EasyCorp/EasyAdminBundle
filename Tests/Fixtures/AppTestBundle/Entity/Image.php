@@ -13,37 +13,42 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Enti
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class Image
+ * Class Image.
  *
  * @author MacFJA
  *
  * @ORM\Table(name="image")
  * @ORM\Entity
  */
-class Image {
+class Image
+{
     /**
-     * The identifier of the image
-     * @var integer
+     * The identifier of the image.
+     *
+     * @var int
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id = null;
     /**
-     * The raw data of the full size image
+     * The raw data of the full size image.
+     *
      * @var resource
      * @ORM\Column(type="blob", name="image_data")
      */
     protected $data;
     /**
-     * The raw data of the thumbnail of the image
+     * The raw data of the thumbnail of the image.
+     *
      * @var resource
      * @ORM\Column(type="blob")
      */
     protected $thumbnail;
 
     /**
-     * Set the content of the full size image
+     * Set the content of the full size image.
+     *
      * @param resource $data
      */
     public function setData($data)
@@ -52,7 +57,8 @@ class Image {
     }
 
     /**
-     * Get the (raw) content of the image
+     * Get the (raw) content of the image.
+     *
      * @return resource
      */
     public function getData()
@@ -61,7 +67,8 @@ class Image {
     }
 
     /**
-     * Set the thumbnail of the image
+     * Set the thumbnail of the image.
+     *
      * @param resource $thumbnail
      */
     public function setThumbnail($thumbnail)
@@ -70,7 +77,8 @@ class Image {
     }
 
     /**
-     * Get the (raw) content of the thumbnail
+     * Get the (raw) content of the thumbnail.
+     *
      * @return resource
      */
     public function getThumbnail()
@@ -79,7 +87,8 @@ class Image {
     }
 
     /**
-     * Get the id of the image
+     * Get the id of the image.
+     *
      * @return int
      */
     public function getId()

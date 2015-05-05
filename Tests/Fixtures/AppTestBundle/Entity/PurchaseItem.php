@@ -13,17 +13,19 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Enti
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class PurchaseItem
+ * Class PurchaseItem.
  *
  * @author MacFJA
  *
  * @ORM\Table(name="purchase_item")
  * @ORM\Entity
  */
-class PurchaseItem {
+class PurchaseItem
+{
     /**
-     * The identifier of the image
-     * @var integer
+     * The identifier of the image.
+     *
+     * @var int
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -31,21 +33,24 @@ class PurchaseItem {
     protected $id = null;
 
     /**
-     * The ordered quantity
-     * @var integer
+     * The ordered quantity.
+     *
+     * @var int
      * @ORM\Column(type="smallint")
      */
     protected $quantity = 1;
 
     /**
-     * The tax rate to apply on the product
+     * The tax rate to apply on the product.
+     *
      * @var string
      * @ORM\Column(type="decimal", name="tax_rate")
      */
     protected $taxRate = 0.21;
 
     /**
-     * The ordered product
+     * The ordered product.
+     *
      * @var Product
      * @ORM\ManyToOne(targetEntity="Product")
      * @ORM\JoinColumn(name="product_id", referencedColumnName="id")
@@ -109,16 +114,18 @@ class PurchaseItem {
     }
 
     /** {@inheritdoc} */
-    function __toString()
+    public function __toString()
     {
         return $this->getProduct()->getName().' [x'.$this->getQuantity().']: '.$this->getTotalPrice();
     }
 
     /**
-     * Return the total price (tax included)
+     * Return the total price (tax included).
+     *
      * @return float
      */
-    public function getTotalPrice() {
+    public function getTotalPrice()
+    {
         return $this->product->getPrice() * $this->quantity * (1 + $this->taxRate);
     }
 }

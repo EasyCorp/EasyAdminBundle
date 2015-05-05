@@ -145,7 +145,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
     /**
      * Tests the template overriding mechanism when a given entity defines
      * its own custom templates in app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig files
-     * See EasyAdminExtension::processEntityTemplates()
+     * See EasyAdminExtension::processEntityTemplates().
      */
     public function testEntityOverridesDefaultTemplates()
     {
@@ -163,7 +163,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
     /**
      * Tests the template overriding mechanism when the application defines
      * its own custom templates in app/Resources/views/easy_admin/<templateName>.html.twig files
-     * See EasyAdminExtension::processEntityTemplates()
+     * See EasyAdminExtension::processEntityTemplates().
      */
     public function testApplicationOverridesDefaultTemplates()
     {

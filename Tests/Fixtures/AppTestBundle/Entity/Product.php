@@ -14,17 +14,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class Product
+ * Class Product.
  *
  * @author MacFJA
  *
  * @ORM\Table(name="product")
  * @ORM\Entity
  */
-class Product {
+class Product
+{
     /**
-     * The identifier of the product
-     * @var integer
+     * The identifier of the product.
+     *
+     * @var int
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -32,28 +34,32 @@ class Product {
     protected $id = null;
 
     /**
-     * The creation date of the product
+     * The creation date of the product.
+     *
      * @var \DateTime
      * @ORM\Column(type="datetime", name="created_at")
      */
     protected $createdAt = null;
 
     /**
-     * List of tags associated to the product
+     * List of tags associated to the product.
+     *
      * @var string[]
      * @ORM\Column(type="simple_array")
      */
     protected $tags = array();
 
     /**
-     * The EAN 13 of the product. (type set to string in PHP due to 32 bit limitation)
+     * The EAN 13 of the product. (type set to string in PHP due to 32 bit limitation).
+     *
      * @var string
      * @ORM\Column(type="bigint")
      */
     protected $ean;
 
     /**
-     * Indicate if the product is enabled (available in store)
+     * Indicate if the product is enabled (available in store).
+     *
      * @var bool
      * @ORM\Column(type="boolean")
      */
@@ -65,28 +71,32 @@ class Product {
      * Example:<pre>array(
      *     'size' => '13cm x 15cm x 6cm',
      *     'bluetooth' => '4.1'
-     * )</pre>
+     * )</pre>.
+     *
      * @var array
      * @ORM\Column(type="array")
      */
     protected $features = array();
 
     /**
-     * The price of the product
+     * The price of the product.
+     *
      * @var float
      * @ORM\Column(type="float")
      */
     protected $price = 0.0;
 
     /**
-     * The name of the product
+     * The name of the product.
+     *
      * @var string
      * @ORM\Column(type="string")
      */
     protected $name;
 
     /**
-     * The description of the product
+     * The description of the product.
+     *
      * @var string
      * @ORM\Column(type="text")
      */
@@ -94,14 +104,16 @@ class Product {
 
     /**
      * List of categories where the products is
-     * (Owning side)
+     * (Owning side).
+     *
      * @var Category[]
      * @ORM\ManyToMany(targetEntity="Category", inversedBy="products")
      * @ORM\JoinTable(name="product_category")
      */
     protected $categories;
     /**
-     * The image of the product
+     * The image of the product.
+     *
      * @var Image
      * @ORM\OneToOne(targetEntity="Image")
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
@@ -110,9 +122,9 @@ class Product {
 
     /**
      * Constructor of the Category class.
-     * (Initialize some fields)
+     * (Initialize some fields).
      */
-    function __construct()
+    public function __construct()
     {
         //Initialize categories as a Doctrine Collection
         $this->categories = new ArrayCollection();
@@ -122,10 +134,12 @@ class Product {
 
     /**
      * Add a category in the product association.
-     * (Owning side)
+     * (Owning side).
+     *
      * @param $category Category the category to associate
      */
-    public function addCategory($category) {
+    public function addCategory($category)
+    {
         $category->addProduct($this);
 
         if (!$this->categories->contains($category)) {
@@ -135,16 +149,19 @@ class Product {
 
     /**
      * Remove a category in the product association.
-     * (Owning side)
+     * (Owning side).
+     *
      * @param $category Category the category to associate
      */
-    public function removeCategory($category) {
+    public function removeCategory($category)
+    {
         $category->removeProduct($this);
         $this->categories->removeElement($category);
     }
 
     /**
-     * Set the description of the product
+     * Set the description of the product.
+     *
      * @param string $description
      */
     public function setDescription($description)
@@ -153,7 +170,8 @@ class Product {
     }
 
     /**
-     * The the full description of the product
+     * The the full description of the product.
+     *
      * @return string
      */
     public function getDescription()
@@ -162,7 +180,8 @@ class Product {
     }
 
     /**
-     * Define the EAN code of the product
+     * Define the EAN code of the product.
+     *
      * @param string $ean
      */
     public function setEan($ean)
@@ -171,7 +190,8 @@ class Product {
     }
 
     /**
-     * Get the EAN code
+     * Get the EAN code.
+     *
      * @return string
      */
     public function getEan()
@@ -180,8 +200,9 @@ class Product {
     }
 
     /**
-     * Set if the product is enable
-     * @param boolean $enabled
+     * Set if the product is enable.
+     *
+     * @param bool $enabled
      */
     public function setEnabled($enabled)
     {
@@ -190,7 +211,8 @@ class Product {
 
     /**
      * Is the product enabled?
-     * @return boolean
+     *
+     * @return bool
      */
     public function getEnabled()
     {
@@ -198,16 +220,19 @@ class Product {
     }
 
     /**
-     * Alias of getEnabled
+     * Alias of getEnabled.
+     *
      * @return bool
      */
-    public function isEnabled() {
+    public function isEnabled()
+    {
         return $this->getEnabled();
     }
 
     /**
      * Set the list of features.
-     * The parameter is an associative array (key as type, value as data
+     * The parameter is an associative array (key as type, value as data.
+     *
      * @param array $features
      */
     public function setFeatures($features)
@@ -216,7 +241,8 @@ class Product {
     }
 
     /**
-     * Get all product features
+     * Get all product features.
+     *
      * @return array
      */
     public function getFeatures()
@@ -225,7 +251,8 @@ class Product {
     }
 
     /**
-     * Set the product image
+     * Set the product image.
+     *
      * @param Image $image
      */
     public function setImage($image)
@@ -234,7 +261,8 @@ class Product {
     }
 
     /**
-     * Get the product image
+     * Get the product image.
+     *
      * @return Image
      */
     public function getImage()
@@ -243,7 +271,8 @@ class Product {
     }
 
     /**
-     * Set the product name
+     * Set the product name.
+     *
      * @param string $name
      */
     public function setName($name)
@@ -252,7 +281,8 @@ class Product {
     }
 
     /**
-     * Retrieve the name of the product
+     * Retrieve the name of the product.
+     *
      * @return string
      */
     public function getName()
@@ -261,7 +291,8 @@ class Product {
     }
 
     /**
-     * Set the price
+     * Set the price.
+     *
      * @param float $price
      */
     public function setPrice($price)
@@ -270,7 +301,8 @@ class Product {
     }
 
     /**
-     * Get the price of the product
+     * Get the price of the product.
+     *
      * @return float
      */
     public function getPrice()
@@ -279,7 +311,8 @@ class Product {
     }
 
     /**
-     * Set the list of the tags
+     * Set the list of the tags.
+     *
      * @param \string[] $tags
      */
     public function setTags($tags)
@@ -288,7 +321,8 @@ class Product {
     }
 
     /**
-     * Get the list of tags associated to the product
+     * Get the list of tags associated to the product.
+     *
      * @return \string[]
      */
     public function getTags()
@@ -297,7 +331,8 @@ class Product {
     }
 
     /**
-     * Get all associated categories
+     * Get all associated categories.
+     *
      * @return Category[]
      */
     public function getCategories()
@@ -306,10 +341,12 @@ class Product {
     }
 
     /**
-     * Set all categories of the product
+     * Set all categories of the product.
+     *
      * @param Category[] $categories
      */
-    public function setCategories($categories) {
+    public function setCategories($categories)
+    {
         // This is the owning side, we have to call remove and add to have change in the category side too.
         foreach ($this->getCategories() as $category) {
             $this->removeCategory($category);
@@ -320,7 +357,8 @@ class Product {
     }
 
     /**
-     * Get the date when the product have been created
+     * Get the date when the product have been created.
+     *
      * @return \DateTime
      */
     public function getCreatedAt()
@@ -329,7 +367,8 @@ class Product {
     }
 
     /**
-     * Get the id of the product
+     * Get the id of the product.
+     *
      * @return int
      */
     public function getId()
@@ -340,7 +379,7 @@ class Product {
     /**
      * {@inheritdoc}
      */
-    function __toString()
+    public function __toString()
     {
         return $this->getName();
     }

@@ -29,24 +29,19 @@ class DefaultBackendTest extends WebTestCase
 
     public function testDefaultCssFilesAreLinked()
     {
+        $cssFiles = array(
+            '/bundles/easyadmin/stylesheet/bootstrap.min.css',
+            '/bundles/easyadmin/stylesheet/font-awesome.min.css',
+            '/_css/admin.css',
+        );
+
         $client = static::createClient();
         $client->followRedirects(true);
         $crawler = $client->request('GET', '/admin/');
 
-        $this->assertEquals(
-            '/bundles/easyadmin/stylesheet/bootstrap.min.css',
-            $crawler->filterXPath('//link[@rel="stylesheet"]')->eq(0)->attr('href')
-        );
-
-        $this->assertEquals(
-            '/bundles/easyadmin/stylesheet/font-awesome.min.css',
-            $crawler->filterXPath('//link[@rel="stylesheet"]')->eq(1)->attr('href')
-        );
-
-        $this->assertEquals(
-            '/_css/admin.css',
-            $crawler->filterXPath('//link[@rel="stylesheet"]')->eq(2)->attr('href')
-        );
+        foreach ($cssFiles as $i => $url) {
+            $this->assertEquals($url, $crawler->filterXPath('//link[@rel="stylesheet"]')->eq($i)->attr('href'));
+        }
     }
 
     public function testLogo()

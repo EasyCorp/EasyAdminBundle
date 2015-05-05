@@ -11,21 +11,32 @@
 
 namespace AppBundle\Tests;
 
+use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CategoryEntityTest extends AbstractTestCase
 {
-    public function testListViewPageTitle()
+    /**
+     * @return Crawler
+     */
+    private function requestListView()
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
+        return $client->request('GET', '/admin/?entity=Category&action=list&view=list');
+    }
+
+    public function testListViewPageTitle()
+    {
+        $crawler = $this->requestListView();
 
         $this->assertEquals('Product Categories', trim($crawler->filter('h1.title')->text()));
     }
 
     public function testListViewSearchAction()
     {
+        $crawler = $this->requestListView();
+
         $hiddenParameters = array(
             'view' => 'list',
             'action' => 'search',
@@ -33,9 +44,6 @@ class CategoryEntityTest extends AbstractTestCase
             'sortField' => 'id',
             'sortDirection' => 'DESC',
         );
-
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
 
         $this->assertEquals('Look for Categories', $crawler->filter('#content-search input[type=search]')->attr('placeholder'));
 
@@ -50,8 +58,7 @@ class CategoryEntityTest extends AbstractTestCase
 
     public function testListViewNewAction()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
+        $crawler = $this->requestListView();
 
         $this->assertEquals('New Categories', trim($crawler->filter('#content-actions a.btn')->text()));
         $this->assertEquals('fa fa-plus-circle', $crawler->filter('#content-actions a.btn i')->attr('class'));
@@ -60,8 +67,7 @@ class CategoryEntityTest extends AbstractTestCase
 
     public function testListViewTableIdColumn()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
+        $crawler = $this->requestListView();
 
         $this->assertEquals('ID', trim($crawler->filter('table th[data-property-name="id"]')->text()),
             'The ID entity property is very special and we uppercase it automatically to improve its readability.'
@@ -70,10 +76,8 @@ class CategoryEntityTest extends AbstractTestCase
 
     public function testListViewTableColumnLabels()
     {
+        $crawler = $this->requestListView();
         $columnLabels = array('ID', 'Label', 'Parent category', 'Actions');
-
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
 
         foreach ($columnLabels as $i => $label) {
             $this->assertEquals($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
@@ -82,10 +86,8 @@ class CategoryEntityTest extends AbstractTestCase
 
     public function testListViewTableColumnAttributes()
     {
+        $crawler = $this->requestListView();
         $columnAttributes = array('id', 'name', 'parent');
-
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertEquals($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
@@ -94,30 +96,24 @@ class CategoryEntityTest extends AbstractTestCase
 
     public function testListViewDefaultTableSorting()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
+        $crawler = $this->requestListView();
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
-
         $this->assertEquals('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
-
         $this->assertEquals('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
     public function testListViewTableContents()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
+        $crawler = $this->requestListView();
 
         $this->assertCount(15, $crawler->filter('.table tbody tr'));
     }
 
     public function testListViewTableRowAttributes()
     {
+        $crawler = $this->requestListView();
         $columnAttributes = array('ID', 'Label', 'Parent category');
-
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertEquals($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
@@ -126,8 +122,7 @@ class CategoryEntityTest extends AbstractTestCase
 
     public function testListViewPagination()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?entity=Category&action=list&view=list');
+        $crawler = $this->requestListView();
 
         $this->assertContains('1 - 15 of 200', $crawler->filter('.list-pagination')->text());
 

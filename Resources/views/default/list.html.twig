@@ -152,7 +152,7 @@
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="{{ _list_item_actions|length > 0 ? fields|length + 1 : fields|length }}">
+                                <td class="no-results" colspan="{{ _list_item_actions|length > 0 ? fields|length + 1 : fields|length }}">
                                     {{ 'search.no_results'|trans(_trans_parameters) }}
                                 </td>
                             </tr>
@@ -202,4 +202,14 @@
             });
         });
     </script>
+
+    {% if 'search' == app.request.get('action') %}
+        <script src="{{ asset('bundles/easyadmin/javascript/jquery.highlight.min.js') }}"></script>
+
+        <script type="text/javascript">
+            var _search_query = "{{ app.request.get('query')|default('')|e('js') }}";
+            // the original query is prepended to allow matching exact phrases in addition to single words
+            $('#main table tbody').highlight($.merge([_search_query], _search_query.split(' ')));
+        </script>
+    {% endif %}
 {% endblock %}

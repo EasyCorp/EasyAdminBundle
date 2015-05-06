@@ -1,16 +1,15 @@
 easy_admin:
-    design:
-        brand_color: red
-        theme: default
-        color_scheme: dark
-        form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
-        assets:
-            css: {  }
-            js: {  }
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity
+            search:
+                fields:
+                    field1:
+                        property: field1
+                    field2:
+                        property: field2
+                    field3:
+                        property: field3
             label: TestEntity
             name: TestEntity
             edit:
@@ -70,8 +69,6 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
-            search:
-                fields: {  }
             show:
                 fields: {  }
                 actions:
@@ -123,6 +120,15 @@ easy_admin:
                 label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
                 label_null: '@EasyAdmin/default/label_null.html.twig'
                 label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
+    design:
+        assets:
+            css: {  }
+            js: {  }
+        theme: default
+        color_scheme: dark
+        brand_color: '#E67E22'
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d

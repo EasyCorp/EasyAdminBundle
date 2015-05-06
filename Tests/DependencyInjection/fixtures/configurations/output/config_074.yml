@@ -79,6 +79,8 @@ easy_admin:
                 fields: {  }
             label: TestEntity
             name: TestEntity
+            search:
+                fields: {  }
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
                 edit: '@EasyAdmin/default/edit.html.twig'

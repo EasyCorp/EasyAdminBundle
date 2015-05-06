@@ -7,10 +7,10 @@ list:
     fields: []
 new:
     fields: []
+search:
+    fields: []
 show:
     fields: []
 primary_key_field_name:
     - id
 properties: []
-search:
-    fields: []

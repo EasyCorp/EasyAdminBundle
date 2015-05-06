@@ -100,7 +100,7 @@ class Configurator
         $entityConfiguration['show']['fields'] = $this->getFieldsForShowView($entityConfiguration);
         $entityConfiguration['edit']['fields'] = $this->getFieldsForFormBasedViews('edit', $entityConfiguration);
         $entityConfiguration['new']['fields'] = $this->getFieldsForFormBasedViews('new', $entityConfiguration);
-        $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction();
+        $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction($entityConfiguration);
 
         $entityConfiguration = $this->introspectGettersAndSetters($entityConfiguration);
 
@@ -210,12 +210,15 @@ class Configurator
      *
      * @return array The list of fields to use for the search
      */
-    private function getFieldsForSearchAction()
+    private function getFieldsForSearchAction(array $entityConfiguration)
     {
-        $excludedFieldNames = array();
-        $excludedFieldTypes = array('association', 'binary', 'boolean', 'blob', 'date', 'datetime', 'datetimetz', 'guid', 'time', 'object');
+        if (0 === count($entityConfiguration['search']['fields'])) {
+            $excludedFieldNames = array();
+            $excludedFieldTypes = array('association', 'binary', 'boolean', 'blob', 'date', 'datetime', 'datetimetz', 'time', 'object');
+            $entityConfiguration['search']['fields'] = $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
+        }
 
-        return $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
+        return $this->normalizeFieldsConfiguration('search', $entityConfiguration);
     }
 
     /**
@@ -346,10 +349,10 @@ class Configurator
                 $normalizedConfiguration['sortable'] = false;
             }
 
-            // 'list' and 'show' views: use the value of the 'type' option as
-            // the 'dataType' option because the previous code has already
+            // 'list', 'search' and 'show' views: use the value of the 'type' option
+            // as the 'dataType' option because the previous code has already
             // prioritized end-user preferences over Doctrine and default values
-            if (in_array($view, array('list', 'show'))) {
+            if (in_array($view, array('list', 'search', 'show'))) {
                 $normalizedConfiguration['dataType'] = $normalizedConfiguration['type'];
             }
 

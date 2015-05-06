@@ -82,6 +82,8 @@ easy_admin:
                         icon: edit
             label: TestEntity
             name: TestEntity
+            search:
+                fields: {  }
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
                 edit: '@EasyAdmin/default/edit.html.twig'

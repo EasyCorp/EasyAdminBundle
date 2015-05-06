@@ -349,6 +349,13 @@ class Configurator
                 $normalizedConfiguration['sortable'] = false;
             }
 
+            // special case: if the field is called 'id' and doesn't define a custom
+            // label, use 'ID' as label. This improves the readability of the label
+            // of this important field, which is usually related to the primary key
+            if ('id' === $normalizedConfiguration['fieldName'] && !isset($normalizedConfiguration['label'])) {
+                $normalizedConfiguration['label'] = 'ID';
+            }
+
             // 'list', 'search' and 'show' views: use the value of the 'type' option
             // as the 'dataType' option because the previous code has already
             // prioritized end-user preferences over Doctrine and default values

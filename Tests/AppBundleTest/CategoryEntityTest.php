@@ -26,6 +26,16 @@ class CategoryEntityTest extends AbstractTestCase
         return $client->request('GET', '/admin/?entity=Category&action=list&view=list');
     }
 
+    /**
+     * @return Crawler
+     */
+    private function requestShowView()
+    {
+        $client = static::createClient();
+
+        return $client->request('GET', '/admin/?action=show&view=list&entity=Category&id=200');
+    }
+
     public function testListViewPageTitle()
     {
         $crawler = $this->requestListView();
@@ -131,5 +141,22 @@ class CategoryEntityTest extends AbstractTestCase
 
         $this->assertEquals('/admin/?view=list&action=list&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
         $this->assertEquals('/admin/?view=list&action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
+    }
+
+    public function testShowViewPageTitle()
+    {
+        $crawler = $this->requestShowView();
+
+        $this->assertEquals('Details for Categories number 200', trim($crawler->filter('h1.title')->text()));
+    }
+
+    public function testShowViewFieldLabels()
+    {
+        $crawler = $this->requestShowView();
+        $fieldLabels = array('#', 'Label', 'Parent category');
+
+        foreach ($fieldLabels as $i => $label) {
+            $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
+        }
     }
 }

@@ -87,7 +87,7 @@
                                         {% set _request_parameters = _request_parameters|merge({ sortField: metadata.property }) %}
                                     {% endif %}
 
-                                    {% set _column_label =  metadata.label ? ( metadata.label|trans(_trans_parameters) ) : ( ('id' == metadata.property) ? 'ID' : field|humanize ) %}
+                                    {% set _column_label =  metadata.label ? metadata.label|trans(_trans_parameters) : field|humanize %}
 
                                     {% if metadata.sortable %}
                                         <a href="{{ path('admin', _request_parameters|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
@@ -123,7 +123,7 @@
                             <tr data-id="{{ _item_id }}">
                                 {% for field, metadata in fields %}
                                     {% set isSortingField = metadata.property == app.request.get('sortField') %}
-                                    {% set _column_label =  metadata.label ? ( metadata.label|trans(_trans_parameters) ) : ( ('id' == metadata.property) ? 'ID' : field|humanize ) %}
+                                    {% set _column_label =  metadata.label ? metadata.label|trans(_trans_parameters) : field|humanize %}
 
                                     <td data-label="{{ _column_label }}" class="{{ isSortingField ? 'sorted' : '' }} {{ metadata.dataType|lower }}">
                                         {{ easyadmin_render_field_for_list_view(_entity.name, item, metadata) }}

@@ -36,3 +36,5 @@ before_install:
 install:
   - if [ "$deps" = "low" ]; then composer update --prefer-lowest; fi
   - if [ "$deps" != "low" ]; then composer install; fi
+
+script: phpunit --coverage-text

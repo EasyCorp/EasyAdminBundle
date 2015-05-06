@@ -26,7 +26,7 @@ easy_admin:
             show:
                 title: 'Details for %%entity_name%% number %%entity_id%%'
                 fields:
-                    - { property: 'id', label: 'Id' }
+                    - { property: 'id', label: '#' }
                     - { property: 'name', label: 'Label' }
                     - { property: 'parent', label: 'Parent category' }
         Image:

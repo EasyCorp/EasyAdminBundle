@@ -153,7 +153,7 @@ class CategoryEntityTest extends AbstractTestCase
     public function testShowViewFieldLabels()
     {
         $crawler = $this->requestShowView();
-        $fieldLabels = array('Id', 'Label', 'Parent category');
+        $fieldLabels = array('#', 'Label', 'Parent category');
 
         foreach ($fieldLabels as $i => $label) {
             $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));

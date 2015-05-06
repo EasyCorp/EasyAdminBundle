@@ -114,10 +114,10 @@ easy_admin:
                 label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
                 label_null: '@EasyAdmin/default/label_null.html.twig'
                 label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
-        TestEntity_:
+        TestEntity2:
             class: AppBundle\AnotherNamespace\Entity\TestEntity
             label: TestEntity
-            name: TestEntity_
+            name: TestEntity2
             edit:
                 fields: {  }
                 actions:

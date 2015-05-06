@@ -466,8 +466,9 @@ class EasyAdminExtension extends Extension
     {
         $uniqueName = $entityName;
 
+        $i = 2;
         while (in_array($uniqueName, $existingEntityNames)) {
-            $uniqueName .= '_';
+            $uniqueName = $entityName.($i++);
         }
 
         return $uniqueName;

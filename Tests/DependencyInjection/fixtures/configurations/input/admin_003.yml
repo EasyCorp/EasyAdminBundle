@@ -5,4 +5,5 @@
 easy_admin:
     entities:
         - AppBundle\Entity\TestEntity
-        - AppBundle\OtherNamespace\Entity\TestEntity
+        - AppBundle\AnotherNamespace\Entity\TestEntity
+        - AnotherBundle\Entity\TestEntity

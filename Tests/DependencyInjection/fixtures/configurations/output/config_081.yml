@@ -202,6 +202,8 @@ easy_admin:
                         label: 'W e i r d case action'
                         class: ''
                         icon: null
+            search:
+                fields: {  }
             show:
                 fields: {  }
                 actions:

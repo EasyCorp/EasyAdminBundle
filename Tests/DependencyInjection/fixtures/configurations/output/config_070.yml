@@ -76,6 +76,8 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
+            search:
+                fields: {  }
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
                 edit: '@EasyAdmin/default/edit.html.twig'

@@ -413,18 +413,18 @@ class AdminController extends Controller
         $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
 
         $queryConditions = $queryBuilder->expr()->orX();
+        $queryParameters = array();
         foreach ($searchableFields as $name => $metadata) {
-            if (in_array($metadata['fieldType'], array('text', 'string'))) {
+            if (in_array($metadata['dataType'], array('text', 'string'))) {
                 $queryConditions->add(sprintf('entity.%s LIKE :query', $name));
+                $queryParameters['query'] = '%'.$searchQuery.'%';
             } else {
                 $queryConditions->add(sprintf('entity.%s IN (:words)', $name));
+                $queryParameters['words'] = explode(' ', $searchQuery);
             }
         }
 
-        $queryBuilder->add('where', $queryConditions)->setParameters(array(
-            'query' => '%'.$searchQuery.'%',
-            'words' => explode(' ', $searchQuery)
-        ));
+        $queryBuilder->add('where', $queryConditions)->setParameters($queryParameters);
 
         $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, false));
         $paginator->setMaxPerPage($maxPerPage);

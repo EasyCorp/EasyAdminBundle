@@ -426,7 +426,7 @@ class EasyAdminExtension extends Extension
             }
 
             // configuration for the views related to the entity ('list', 'edit', etc.)
-            foreach (array('edit', 'list', 'new', 'show') as $view) {
+            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
                 // if needed, initialize options to simplify further configuration processing
                 if (!isset($config[$view])) {
                     $config[$view] = array('fields' => array());

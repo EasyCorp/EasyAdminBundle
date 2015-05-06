@@ -94,6 +94,8 @@ easy_admin:
                         label: custom-list-label
                         class: custom-list-class
                         icon: custom-list-icon
+            search:
+                fields: {  }
             show:
                 fields: {  }
                 actions:

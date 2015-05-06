@@ -112,6 +112,8 @@ easy_admin:
                         label: custom-new-label
                         class: custom-new-class
                         icon: custom-new-icon
+            search:
+                fields: {  }
             show:
                 fields: {  }
                 actions:

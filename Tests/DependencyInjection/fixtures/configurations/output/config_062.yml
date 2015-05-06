@@ -92,6 +92,8 @@ easy_admin:
                         label: 'Custom action for new'
                         class: ''
                         icon: null
+            search:
+                fields: {  }
             show:
                 fields: {  }
                 actions:

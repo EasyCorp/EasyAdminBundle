@@ -61,6 +61,8 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
+            search:
+                fields: {  }
             show:
                 fields: {  }
                 actions:
@@ -173,6 +175,8 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
+            search:
+                fields: {  }
             show:
                 fields: {  }
                 actions:

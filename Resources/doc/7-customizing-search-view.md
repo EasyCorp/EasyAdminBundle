@@ -1,9 +1,26 @@
 Chapter 7. Customizing the Search View
 ======================================
 
-Currently, the `search` view uses the same configuration as the `list` view
-and doesn't allow to configure any specific option.
+In order to provide a consistent user experience, the `search` view reuses most
+of the `list` view configuration. That's why the search results are displayed
+using the same template and the same fields as in the listings.
 
-The main shortcoming of the `search` view is that you cannot configure the
-fields on which the search query is performed. EasyAdmin will soon allow you
-to configure some of these features.
+Customize the Columns on which the Query is Performed
+-----------------------------------------------------
+
+By default, the search query is performed on all entity properties except those
+with special data types, such as `binary`, `blob`, `object`, etc.
+
+Define the `fields` option in the `search` configuration of any entity to
+explicitly set the fields used to perform the query:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            search:
+                fields: ['firstName', 'lastName', 'email']
+    # ...
+```

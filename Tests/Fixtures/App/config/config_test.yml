@@ -23,6 +23,12 @@ easy_admin:
                     - 'id'
                     - { property: 'name', label: 'Label' }
                     - { property: 'parent', label: 'Parent category' }
+            show:
+                title: 'Details for %%entity_name%% number %%entity_id%%'
+                fields:
+                    - { property: 'id', label: '#' }
+                    - { property: 'name', label: 'Label' }
+                    - { property: 'parent', label: 'Parent category' }
         Image:
             class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Image
             label: 'Images'

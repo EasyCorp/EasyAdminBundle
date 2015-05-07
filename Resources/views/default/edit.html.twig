@@ -1,20 +1,20 @@
 {% trans_default_domain "EasyAdminBundle" %}
 {% form_theme form with easyadmin_config('design.form_theme') %}
 
-{% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
-{% set _trans_parameters = { '%entity_name%': _entity.label|trans, '%entity_id%': attribute(item, _entity.primary_key_field_name) } %}
+{% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
+{% set _trans_parameters = { '%entity_name%': _entity_config.label|trans, '%entity_id%': attribute(entity, _entity_config.primary_key_field_name) } %}
 
-{% extends _entity.templates.layout %}
+{% extends _entity_config.templates.layout %}
 
-{% block body_class 'admin edit ' ~ _entity.name|lower %}
+{% block body_class 'admin edit ' ~ _entity_config.name|lower %}
 
 {% block content_title %}
-    {{ _entity.edit.title|default('edit.page_title')|trans(_trans_parameters) }}
+    {{ _entity_config.edit.title|default('edit.page_title')|trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}
     {% block entity_form %}
-        {{ include(_entity.templates.form, { view: 'edit' }) }}
+        {{ include(_entity_config.templates.form, { view: 'edit' }) }}
     {% endblock entity_form %}
 
     {% block delete_form %}
@@ -38,8 +38,8 @@
                             {{ 'action.cancel'|trans(_trans_parameters) }}
                         </button>
 
-                        {% if easyadmin_action_is_enabled_for_edit_view('delete', _entity.name) %}
-                            {% set _delete_action = easyadmin_get_action_for_edit_view('delete', _entity.name) %}
+                        {% if easyadmin_action_is_enabled_for_edit_view('delete', _entity_config.name) %}
+                            {% set _delete_action = easyadmin_get_action_for_edit_view('delete', _entity_config.name) %}
                             <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
                                 {% if _delete_action.icon %}<i class="fa fa-{{ _delete_action.icon }}"></i>{% endif %}
                                 {{ _delete_action.label|default('action.delete')|trans(_trans_parameters) }}

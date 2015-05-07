@@ -74,10 +74,10 @@ class AdminController extends Controller
             )));
         }
 
-        $customActionName  = $action.$this->entity['name'].'Action';
-        $defaultActionName = $action.'Action';
+        $customMethodName  = $action.$this->entity['name'].'Action';
+        $defaultMethodName = $action.'Action';
 
-        return method_exists($this, $customActionName) ? $this->{$customActionName}() : $this->{$defaultActionName}();
+        return method_exists($this, $customMethodName) ? $this->{$customMethodName}() : $this->{$defaultMethodName}();
     }
 
     /**
@@ -139,9 +139,10 @@ class AdminController extends Controller
             'view'    => $this->view,
         ), $arguments);
 
-        $event = new GenericEvent(null, $arguments);
+        $subject = isset($arguments['paginator']) ? $arguments['paginator'] : $arguments['entity'];
+        $event = new GenericEvent($subject, $arguments);
 
-        $this->get('event_dispatcher')->dispatch($eventName, $arguments);
+        $this->get('event_dispatcher')->dispatch($eventName, $event);
     }
 
     /**
@@ -187,20 +188,27 @@ class AdminController extends Controller
         }
 
         $id = $this->request->query->get('id');
-        if (!$item = $this->em->getRepository($this->entity['class'])->find($id)) {
+        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $id));
         }
 
         $fields = $this->entity['edit']['fields'];
-        $editForm = $this->createEditForm($item, $fields);
+        $editForm = $this->createEditForm($entity, $fields);
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
         $editForm->handleRequest($this->request);
         if ($editForm->isValid()) {
-            $this->prepareEditEntityForPersist($item);
-            $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $item));
+            $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity));
+
+            if (method_exists($this, $customMethodName = 'preUpdate'.$this->entity['name'].'Entity')) {
+                $this->{$customMethodName}($entity);
+            } else {
+                $this->preUpdateEntity($entity);
+            }
+
             $this->em->flush();
-            $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $item));
+
+            $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity));
 
             $refererUrl = $this->request->query->get('referer', '');
 
@@ -214,7 +222,7 @@ class AdminController extends Controller
         return $this->render($this->entity['templates']['edit'], array(
             'form'          => $editForm->createView(),
             'entity_fields' => $fields,
-            'item'          => $item,
+            'entity'        => $entity,
             'delete_form'   => $deleteForm->createView(),
             'view'          => 'edit',
         ));
@@ -234,7 +242,7 @@ class AdminController extends Controller
         }
 
         $id = $this->request->query->get('id');
-        if (!$item = $this->em->getRepository($this->entity['class'])->find($id)) {
+        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $id));
         }
 
@@ -244,11 +252,11 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::POST_SHOW, array(
             'deleteForm' => $deleteForm,
             'fields' => $fields,
-            'item' => $item,
+            'entity' => $entity,
         ));
 
         return $this->render($this->entity['templates']['show'], array(
-            'item'   => $item,
+            'entity' => $entity,
             'fields' => $fields,
             'view'   => 'show',
             'delete_form' => $deleteForm->createView(),
@@ -268,18 +276,29 @@ class AdminController extends Controller
             return $this->renderForbiddenActionError('new');
         }
 
-        $item = $this->instantiateNewEntity();
+        if (method_exists($this, $customMethodName = 'createNew'.$this->entity['name'].'Entity')) {
+            $entity = $this->{$customMethodName}();
+        } else {
+            $entity = $this->createNewEntity();
+        }
 
-        $fields = $fields = $this->entity['new']['fields'];
-        $newForm = $this->createNewForm($item, $fields);
+        $fields = $this->entity['new']['fields'];
+        $newForm = $this->createNewForm($entity, $fields);
 
         $newForm->handleRequest($this->request);
         if ($newForm->isValid()) {
-            $this->dispatch(EasyAdminEvents::PRE_PERSIST, array('entity' => $item));
-            $this->prepareNewEntityForPersist($item);
-            $this->em->persist($item);
+            $this->dispatch(EasyAdminEvents::PRE_PERSIST, array('entity' => $entity));
+
+            if (method_exists($this, $customMethodName = 'prePersist'.$this->entity['name'].'Entity')) {
+                $this->{$customMethodName}($entity);
+            } else {
+                $this->prePersistEntity($entity);
+            }
+
+            $this->em->persist($entity);
             $this->em->flush();
-            $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $item));
+
+            $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $entity));
 
             $refererUrl = $this->request->query->get('referer', '');
 
@@ -291,13 +310,13 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::POST_NEW, array(
             'entity_fields' => $fields,
             'form' => $newForm,
-            'item' => $item,
+            'entity' => $entity,
         ));
 
         return $this->render($this->entity['templates']['new'], array(
             'form'          => $newForm->createView(),
             'entity_fields' => $fields,
-            'item'          => $item,
+            'entity'        => $entity,
             'view'          => 'new',
         ));
     }
@@ -326,6 +345,12 @@ class AdminController extends Controller
             }
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));
+
+            if (method_exists($this, $customMethodName = 'preRemove'.$this->entity['name'].'Entity')) {
+                $this->{$customMethodName}($entity);
+            } else {
+                $this->preRemoveEntity($entity);
+            }
 
             $this->em->remove($entity);
             $this->em->flush();
@@ -408,7 +433,7 @@ class AdminController extends Controller
      *
      * @return object
      */
-    protected function instantiateNewEntity()
+    protected function createNewEntity()
     {
         $entityFullyQualifiedClassName = $this->entity['class'];
 
@@ -417,28 +442,38 @@ class AdminController extends Controller
 
     /**
      * Allows applications to modify the entity associated with the item being
-     * edited before persisting it.
-     *
-     * @param object $entity
-     *
-     * @return object
-     */
-    protected function prepareEditEntityForPersist($entity)
-    {
-        return $entity;
-    }
-
-    /**
-     * Allows applications to modify the entity associated with the item being
      * created before persisting it.
      *
      * @param object $entity
      *
-     * @return object
+     * @return null
      */
-    protected function prepareNewEntityForPersist($entity)
+    protected function prePersistEntity($entity)
     {
-        return $entity;
+    }
+
+    /**
+     * Allows applications to modify the entity associated with the item being
+     * edited before persisting it.
+     *
+     * @param object $entity
+     *
+     * @return null
+     */
+    protected function preUpdateEntity($entity)
+    {
+    }
+
+    /**
+     * Allows applications to modify the entity associated with the item being
+     * deleted before removing it.
+     *
+     * @param object $entity
+     *
+     * @return null
+     */
+    protected function preRemoveEntity($entity)
+    {
     }
 
     /**

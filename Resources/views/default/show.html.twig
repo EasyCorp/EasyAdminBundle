@@ -1,14 +1,14 @@
 {% trans_default_domain "EasyAdminBundle" %}
 
-{% set _entity = easyadmin_entity(app.request.query.get('entity')) %}
-{% set _trans_parameters = { '%entity_name%': _entity.label|trans, '%entity_id%': attribute(item, _entity.primary_key_field_name) } %}
+{% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
+{% set _trans_parameters = { '%entity_name%': _entity_config.label|trans, '%entity_id%': attribute(entity, _entity_config.primary_key_field_name) } %}
 
-{% extends _entity.templates.layout %}
+{% extends _entity_config.templates.layout %}
 
-{% block body_class 'admin show ' ~ _entity.name|lower %}
+{% block body_class 'admin show ' ~ _entity_config.name|lower %}
 
 {% block content_title %}
-    {{ _entity.show.title|default('show.page_title')|trans(_trans_parameters) }}
+    {{ _entity_config.show.title|default('show.page_title')|trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}
@@ -24,7 +24,7 @@
                 </label>
                 <div class="col-sm-10">
                     <div class="form-control">
-                        {{ easyadmin_render_field_for_show_view(_entity.name, item, metadata) }}
+                        {{ easyadmin_render_field_for_show_view(_entity_config.name, entity, metadata) }}
                     </div>
 
                     {% if metadata.help|default('') != '' %}
@@ -37,12 +37,12 @@
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
             {% block item_actions %}
-                {% set _show_actions = easyadmin_get_actions_for_show_item(_entity.name) %}
+                {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
                 {% for _action in _show_actions %}
                     {% if 'method' == _action.type %}
-                        {% set _action_href = path('admin', { action: _action.name, view: 'show', entity: _entity.name, id: attribute(item, _entity.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
+                        {% set _action_href = path('admin', { action: _action.name, view: 'show', entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
                     {% elseif 'route' == _action.type %}
-                        {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
+                        {% set _action_href = path(_action.name, { entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
                     {% endif %}
 
                     <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
@@ -51,8 +51,8 @@
                     </a>
                 {% endfor %}
 
-                {% if easyadmin_action_is_enabled_for_show_view('delete', _entity.name) %}
-                    {% set _action = easyadmin_get_action_for_show_view('delete', _entity.name) %}
+                {% if easyadmin_action_is_enabled_for_show_view('delete', _entity_config.name) %}
+                    {% set _action = easyadmin_get_action_for_show_view('delete', _entity_config.name) %}
                     <button type="button" id="button-delete" class="btn {{ _action.class|default('btn-danger') }}">
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                         {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
@@ -60,9 +60,9 @@
                 {% endif %}
 
                 {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
-                {% if easyadmin_action_is_enabled_for_show_view('list', _entity.name) %}
-                    {% set _action = easyadmin_get_action_for_show_view('list', _entity.name) %}
-                    <a class="btn btn-list btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer') : path('admin', ({ entity: _entity.name, action: _action.name, view: 'show' })) }}">{% spaceless %}
+                {% if easyadmin_action_is_enabled_for_show_view('list', _entity_config.name) %}
+                    {% set _action = easyadmin_get_action_for_show_view('list', _entity_config.name) %}
+                    <a class="btn btn-list btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer') : path('admin', ({ entity: _entity_config.name, action: _action.name, view: 'show' })) }}">{% spaceless %}
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                         {{ _action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>
@@ -93,8 +93,8 @@
                             {{ 'action.cancel'|trans(_trans_parameters) }}
                         </button>
 
-                        {% if easyadmin_action_is_enabled_for_show_view('delete', _entity.name) %}
-                            {% set _action = easyadmin_get_action_for_show_view('delete', _entity.name) %}
+                        {% if easyadmin_action_is_enabled_for_show_view('delete', _entity_config.name) %}
+                            {% set _action = easyadmin_get_action_for_show_view('delete', _entity_config.name) %}
                             <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
                                 {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                 {{ _action.label|default('action.delete')|trans(_trans_parameters) }}

@@ -783,6 +783,7 @@ body.error .error-solution pre {
         background: transparent;
         box-shadow: none;
         margin-left: 0;
+        float: none;
     }
     #header-menu li a {
         border-top: 0;
@@ -791,9 +792,15 @@ body.error .error-solution pre {
     #header-menu li a:hover,
     #header #header-menu li:hover,
     #header #header-menu li.active,
-    #header #header-menu li.active a {
+    #header #header-menu li.active a,
+    #header #header-menu ul.flexMenu-popup li a:hover,
+    #header #header-menu ul.flexMenu-popup li.active a{
         background: transparent;
         color: {{ brand_color }};
+    }
+    #header #header-menu ul.flexMenu-popup li a{
+        background: transparent;
+        color: {{ colors.header_text }};
     }
 
     #header-logo a.medium {

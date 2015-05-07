@@ -27,7 +27,7 @@ function mainMenuResponsiveCollapse() {
     var mainMenuItems = $('#header-menu');
 
     if ($(window).width() > 768 && $(window).width() < 1200) {
-        $('#header-menu').flexMenu({ 'linkText': '...' });
+        mainMenuItems.flexMenu({'linkText': '...'});
     } else {
         mainMenuItems.flexMenu({ 'undo': true });
     }

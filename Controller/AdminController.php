@@ -19,6 +19,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +28,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 
 /**
  * Class AdminController.
@@ -72,7 +74,10 @@ class AdminController extends Controller
             )));
         }
 
-        return $this->{$action.'Action'}();
+        $customActionName  = $action.$this->entity['name'].'Action';
+        $defaultActionName = $action.'Action';
+
+        return method_exists($this, $customActionName) ? $this->{$customActionName}() : $this->{$defaultActionName}();
     }
 
     /**
@@ -88,6 +93,8 @@ class AdminController extends Controller
      */
     protected function initialize(Request $request)
     {
+        $this->dispatch(EasyAdminEvents::PRE_INITIALIZE);
+
         $this->config = $this->container->getParameter('easyadmin.config');
 
         if (0 === count($this->config['entities'])) {
@@ -118,6 +125,23 @@ class AdminController extends Controller
 
         $this->request = $request;
         $this->view = $this->request->query->get('view', 'list');
+
+        $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
+    }
+
+    private function dispatch($eventName, array $arguments = array())
+    {
+        $arguments = array_replace(array(
+            'config'  => $this->config,
+            'em'      => $this->em,
+            'entity'  => $this->entity,
+            'request' => $this->request,
+            'view'    => $this->view,
+        ), $arguments);
+
+        $event = new GenericEvent(null, $arguments);
+
+        $this->get('event_dispatcher')->dispatch($eventName, $arguments);
     }
 
     /**
@@ -127,12 +151,16 @@ class AdminController extends Controller
      */
     protected function listAction()
     {
+        $this->dispatch(EasyAdminEvents::PRE_LIST);
+
         if (!$this->isActionAllowed('list')) {
             return $this->renderForbiddenActionError('list');
         }
 
         $fields = $this->entity['list']['fields'];
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
+
+        $this->dispatch(EasyAdminEvents::POST_LIST, array('paginator' => $paginator));
 
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
@@ -148,6 +176,8 @@ class AdminController extends Controller
      */
     protected function editAction()
     {
+        $this->dispatch(EasyAdminEvents::PRE_EDIT);
+
         if (!$this->isActionAllowed('edit')) {
             return $this->renderForbiddenActionError('edit');
         }
@@ -168,7 +198,9 @@ class AdminController extends Controller
         $editForm->handleRequest($this->request);
         if ($editForm->isValid()) {
             $this->prepareEditEntityForPersist($item);
+            $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $item));
             $this->em->flush();
+            $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $item));
 
             $refererUrl = $this->request->query->get('referer', '');
 
@@ -176,6 +208,8 @@ class AdminController extends Controller
                 ? $this->redirect(urldecode($refererUrl))
                 : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
+
+        $this->dispatch(EasyAdminEvents::POST_EDIT);
 
         return $this->render($this->entity['templates']['edit'], array(
             'form'          => $editForm->createView(),
@@ -193,6 +227,8 @@ class AdminController extends Controller
      */
     protected function showAction()
     {
+        $this->dispatch(EasyAdminEvents::PRE_SHOW);
+
         if (!$this->isActionAllowed('show')) {
             return $this->renderForbiddenActionError('show');
         }
@@ -204,6 +240,12 @@ class AdminController extends Controller
 
         $fields = $this->entity['show']['fields'];
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
+
+        $this->dispatch(EasyAdminEvents::POST_SHOW, array(
+            'deleteForm' => $deleteForm,
+            'fields' => $fields,
+            'item' => $item,
+        ));
 
         return $this->render($this->entity['templates']['show'], array(
             'item'   => $item,
@@ -220,6 +262,8 @@ class AdminController extends Controller
      */
     protected function newAction()
     {
+        $this->dispatch(EasyAdminEvents::PRE_NEW);
+
         if (!$this->isActionAllowed('new')) {
             return $this->renderForbiddenActionError('new');
         }
@@ -231,9 +275,11 @@ class AdminController extends Controller
 
         $newForm->handleRequest($this->request);
         if ($newForm->isValid()) {
+            $this->dispatch(EasyAdminEvents::PRE_PERSIST, array('entity' => $item));
             $this->prepareNewEntityForPersist($item);
             $this->em->persist($item);
             $this->em->flush();
+            $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $item));
 
             $refererUrl = $this->request->query->get('referer', '');
 
@@ -241,6 +287,12 @@ class AdminController extends Controller
                 ? $this->redirect(urldecode($refererUrl))
                 : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
         }
+
+        $this->dispatch(EasyAdminEvents::POST_NEW, array(
+            'entity_fields' => $fields,
+            'form' => $newForm,
+            'item' => $item,
+        ));
 
         return $this->render($this->entity['templates']['new'], array(
             'form'          => $newForm->createView(),
@@ -258,6 +310,8 @@ class AdminController extends Controller
      */
     protected function deleteAction()
     {
+        $this->dispatch(EasyAdminEvents::PRE_DELETE);
+
         if ('DELETE' !== $this->request->getMethod()) {
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
@@ -271,11 +325,17 @@ class AdminController extends Controller
                 throw $this->createNotFoundException('The entity to be deleted does not exist.');
             }
 
+            $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));
+
             $this->em->remove($entity);
             $this->em->flush();
+
+            $this->dispatch(EasyAdminEvents::POST_REMOVE, array('entity' => $entity));
         }
 
         $refererUrl = $this->request->query->get('referer', '');
+
+        $this->dispatch(EasyAdminEvents::POST_DELETE);
 
         return !empty($refererUrl)
             ? $this->redirect(urldecode($refererUrl))
@@ -289,9 +349,16 @@ class AdminController extends Controller
      */
     protected function searchAction()
     {
+        $this->dispatch(EasyAdminEvents::PRE_SEARCH);
+
         $searchableFields = $this->entity['search']['fields'];
         $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list']['max_results']);
         $fields = $this->entity['list']['fields'];
+
+        $this->dispatch(EasyAdminEvents::POST_SEARCH, array(
+            'fields' => $fields,
+            'paginator' => $paginator,
+        ));
 
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,

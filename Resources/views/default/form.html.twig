@@ -3,6 +3,8 @@
 {{ form_start(form, { attr: form.vars.attr|merge({ novalidate: 'novalidate' }) }) }}
     <div id="form row">
         {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
+            <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}" />
+
             {% set _field_metadata = entity_fields[field.vars.name] %}
 
             {% if _field_metadata['fieldType'] == 'association' %}
@@ -81,7 +83,7 @@
                 {% endif %}
 
                 {% if _list_action is defined %}
-                    <a class="btn btn-secondary" href="{{ path('admin', ({ entity: _entity.name, action: _list_action.name, view: view }) ) }}">{% spaceless %}
+                    <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer') : path('admin', ({ entity: _entity.name, action: _list_action.name, view: view }) ) }}">{% spaceless %}
                         {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
                         {{ _list_action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>

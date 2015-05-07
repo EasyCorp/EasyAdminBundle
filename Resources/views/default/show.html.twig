@@ -40,9 +40,9 @@
                 {% set _show_actions = easyadmin_get_actions_for_show_item(_entity.name) %}
                 {% for _action in _show_actions %}
                     {% if 'method' == _action.type %}
-                        {% set _action_href = path('admin', { action: _action.name, view: 'show', entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
+                        {% set _action_href = path('admin', { action: _action.name, view: 'show', entity: _entity.name, id: attribute(item, _entity.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
                     {% elseif 'route' == _action.type %}
-                        {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
+                        {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
                     {% endif %}
 
                     <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
@@ -62,7 +62,7 @@
                 {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
                 {% if easyadmin_action_is_enabled_for_show_view('list', _entity.name) %}
                     {% set _action = easyadmin_get_action_for_show_view('list', _entity.name) %}
-                    <a class="btn btn-list btn-secondary" href="{{ path('admin', ({ entity: _entity.name, action: _action.name, view: 'show' }) ) }}">{% spaceless %}
+                    <a class="btn btn-list btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer') : path('admin', ({ entity: _entity.name, action: _action.name, view: 'show' })) }}">{% spaceless %}
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                         {{ _action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>
@@ -73,7 +73,13 @@
     </div>
 
     {% block delete_form %}
-        {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
+        {{
+            form(delete_form, {
+                action: delete_form.vars.action ~ '&referer=' ~ app.request.query.get('referer', ''),
+                method: 'DELETE',
+                attr: { id: 'delete-form', style: 'display: none' }
+            })
+        }}
 
         <div id="modal-delete" class="modal fade">
             <div class="modal-dialog">

@@ -275,7 +275,7 @@ and make it extend from the default `list` template. Then, override the
 
 ```twig
 {# app/Resources/views/easy_admin/list.html.twig #}
-{% extends @EasyAdmin/default/list.html.twig %}
+{% extends '@EasyAdmin/default/list.html.twig' %}
 
 {% block search_action %}
     {# ... #}

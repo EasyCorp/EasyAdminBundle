@@ -18,7 +18,13 @@
     {% endblock entity_form %}
 
     {% block delete_form %}
-        {{ form(delete_form, { attr: { id: 'delete-form', style: 'display: none' }}) }}
+        {{
+            form(delete_form, {
+                action: delete_form.vars.action ~ '&referer=' ~ app.request.query.get('referer', ''),
+                method: 'DELETE',
+                attr: { id: 'delete-form', style: 'display: none' }
+            })
+        }}
 
         <div id="modal-delete" class="modal fade">
             <div class="modal-dialog">

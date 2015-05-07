@@ -1,0 +1,65 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-07T13:28:30Z
+
+I think it can be quite disturbing to directly use the referrer when the page is the same.
+
+For instance imagine a scenario: you are on the search list, you edit an entity, but the form is invalid. You're then still on the same page. So what does become the referrer? Is it changed to the `edit` page, or does it keep the referrer value?
+
+I'm afraid I did not test it because I don't have any easyadmin env right now and tired to install one, but if what I'm talking about works like expected, then the PR would be fine for me :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-07T13:32:42Z
+
+Unless there is any bug, it works "right" because the referer is only set by the list and search pages. So you cannot end up in a referer hell of circular references.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-07T13:36:58Z
+
+Then it's good for me I think you can merge this, and we'll test the feature in the next release :+1:  (In fact, the big app I'm working has begun staging process so I can't use dev-master anymore until next release. But when 1.5 comes out, I'll run all phpunit tests on the app to see whether it's still compatible)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-07T13:50:10Z
+
+@Pierstoval here you have a screencast of the scenario you propose: I make a search, go to the second page, edit the entity, make a mistake, an error happens, fix the error and when I clcik save ... I return to the original second page of the search:
+
+![referer](https://cloud.githubusercontent.com/assets/73419/7516581/a7e1622c-f4d0-11e4-8140-ace4007a1cdc.gif)
+
+---------------------------------------------------------------------------
+
+by arukado-sama at 2015-05-07T13:57:37Z
+
+May I suggest something?
+
+Save -> stay on the form after save and show a message "changes saved"  <-- new function
+Delete -> return to previous list/search after deletion
+Return -> return to previous list/search
+
+This is just my opinion but I think it would be very useful to have choice between the two possibilities.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-07T14:00:50Z
+
+In fact, there's a debate over the web about "save return to edit page" and "save return to listing" two arguments.
+
+For this, SonataAdmin, for instance, found a solution by adding both buttons : "Save" and "Save and finish".
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-07T14:02:09Z
+
+@arukado-sama thanks for your suggestions. It's true that the behavior that you propose is common in some backends. However, in EasyAdmin we made some decisions a time ago regarding these topics.
+
+One of those decisions is to not bother the user with useless messages. 99.99% of the times things work right (in EasyAdmin and in any other backend). That's why we believe you shouldn't display messages when things go right (e.g. "Chages saved successfully") but when they go wrong (validation errors, database errors, etc.)
+
+With this new behavior, when you click on "Save" you don't stay at the form, but you return to the exact same page where you clicked on "Edit", so you can click again on that link if that's what you want (in my experience, saving several consecutive times the same form is not very common).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-07T14:04:38Z
+
+When something is wrong, it means that the problem is internal, so no need for flash messages, just an error might be enough. So this means that the back-end config is wrong, or that the entities are not well managed. The most frequent might come from validation and entities mapping I think.

@@ -13,6 +13,11 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Event;
 
 final class EasyAdminEvents
 {
+    // Initialization related events
+    const PRE_INITIALIZE = 'easy_admin.pre_initialize';
+    const POST_INITIALIZE = 'easy_admin.post_initialize';
+
+    // Backend views related events
     const PRE_DELETE = 'easy_admin.pre_delete';
     const POST_DELETE = 'easy_admin.post_delete';
     const PRE_EDIT = 'easy_admin.pre_edit';
@@ -25,4 +30,12 @@ final class EasyAdminEvents
     const POST_SEARCH = 'easy_admin.post_search';
     const PRE_SHOW = 'easy_admin.pre_show';
     const POST_SHOW = 'easy_admin.post_show';
+
+    // Doctrine related events
+    const PRE_PERSIST = 'easy_admin.pre_persist';
+    const POST_PERSIST = 'easy_admin.post_persist';
+    const PRE_UPDATE = 'easy_admin.pre_update';
+    const POST_UPDATE = 'easy_admin.post_update';
+    const PRE_REMOVE = 'easy_admin.pre_remove';
+    const POST_REMOVE = 'easy_admin.post_remove';
 }

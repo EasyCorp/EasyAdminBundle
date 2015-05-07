@@ -171,7 +171,7 @@ class AdminController extends Controller
             $this->em->flush();
 
             return !empty($refererUrl = $this->request->query->get('referer', ''))
-                ? $this->redirect($refererUrl)
+                ? $this->redirect(urldecode($refererUrl))
                 : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
 
@@ -234,7 +234,7 @@ class AdminController extends Controller
             $this->em->flush();
 
             return !empty($refererUrl = $this->request->query->get('referer', ''))
-                ? $this->redirect($refererUrl)
+                ? $this->redirect(urldecode($refererUrl))
                 : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
         }
 
@@ -272,7 +272,7 @@ class AdminController extends Controller
         }
 
         return !empty($refererUrl = $this->request->query->get('referer', ''))
-            ? $this->redirect($refererUrl)
+            ? $this->redirect(urldecode($refererUrl))
             : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
     }
 

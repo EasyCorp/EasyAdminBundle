@@ -170,7 +170,11 @@ class AdminController extends Controller
             $this->prepareEditEntityForPersist($item);
             $this->em->flush();
 
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
+            $refererUrl = $this->request->query->get('referer', '');
+
+            return !empty($refererUrl)
+                ? $this->redirect(urldecode($refererUrl))
+                : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
 
         return $this->render($this->entity['templates']['edit'], array(
@@ -231,7 +235,11 @@ class AdminController extends Controller
             $this->em->persist($item);
             $this->em->flush();
 
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
+            $refererUrl = $this->request->query->get('referer', '');
+
+            return !empty($refererUrl)
+                ? $this->redirect(urldecode($refererUrl))
+                : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
         }
 
         return $this->render($this->entity['templates']['new'], array(
@@ -260,14 +268,18 @@ class AdminController extends Controller
 
         if ($form->isValid()) {
             if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-                throw $this->createNotFoundException('The entity to be delete does not exist.');
+                throw $this->createNotFoundException('The entity to be deleted does not exist.');
             }
 
             $this->em->remove($entity);
             $this->em->flush();
         }
 
-        return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
+        $refererUrl = $this->request->query->get('referer', '');
+
+        return !empty($refererUrl)
+            ? $this->redirect(urldecode($refererUrl))
+            : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
     }
 
     /**

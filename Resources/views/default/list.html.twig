@@ -21,11 +21,13 @@
 {% endblock %}
 
 {% block content %}
-    {% set _request_parameters = { view: 'list', action: app.request.get('action'), entity: _entity.name, sortField: app.request.get('sortField', ''), sortDirection: app.request.get('sortDirection', 'DESC') } %}
+    {% set _request_parameters = { view: 'list', action: app.request.get('action'), entity: _entity.name, sortField: app.request.get('sortField', ''), sortDirection: app.request.get('sortDirection', 'DESC'), page: app.request.get('page', 1) } %}
 
     {% if 'search' == app.request.get('action') %}
         {% set _request_parameters = _request_parameters|merge({ query: app.request.get('query')|default('') }) %}
     {% endif %}
+
+    {% set _request_parameters = _request_parameters|merge({ referer: path('admin', _request_parameters)|url_encode }) %}
 
     <div class="row">
         <div id="content-header" class="col-sm-12">
@@ -136,9 +138,9 @@
                                     {% block item_actions %}
                                         {% for _action in _list_item_actions %}
                                             {% if 'method' == _action.type %}
-                                                {% set _action_href = path('admin', { action: _action.name, view: 'list', entity: _entity.name, id: _item_id }) %}
+                                                {% set _action_href = path('admin', _request_parameters|merge({ action: _action.name, id: _item_id })) %}
                                             {% elseif 'route' == _action.type %}
-                                                {% set _action_href = path(_action.name, { entity: _entity.name, id: _item_id }) %}
+                                                {% set _action_href = path(_action.name, _request_parameters|merge({ action: _action.name, id: _item_id })) %}
                                             {% endif %}
 
                                             <a class="{{ _action.class|default('') }}" href="{{ _action_href }}">{% spaceless %}

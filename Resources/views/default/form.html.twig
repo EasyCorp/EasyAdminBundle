@@ -8,7 +8,7 @@
             {% set _field_metadata = entity_fields[field.vars.name] %}
 
             {% if _field_metadata['fieldType'] == 'association' %}
-                {{ easyadmin_render_field_for_edit_view(item, _field_metadata) }}
+                {{ easyadmin_render_field_for_edit_view(entity, _field_metadata) }}
             {% else %}
                 {% set _field_label = _field_metadata['label']|default(null) %}
                 {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}
@@ -49,14 +49,14 @@
                 </button>
 
                 {% set _entity_actions = (view == 'new')
-                    ? easyadmin_get_actions_for_new_item(_entity.name)
-                    : easyadmin_get_actions_for_edit_item(_entity.name) %}
+                    ? easyadmin_get_actions_for_new_item(_entity_config.name)
+                    : easyadmin_get_actions_for_edit_item(_entity_config.name) %}
 
                 {% for _action in _entity_actions %}
                     {% if 'method' == _action.type %}
-                        {% set _action_href = path('admin', { action: _action.name, view: view, entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
+                        {% set _action_href = path('admin', { action: _action.name, view: view, entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name) }) %}
                     {% elseif 'route' == _action.type %}
-                        {% set _action_href = path(_action.name, { entity: _entity.name, id: attribute(item, _entity.primary_key_field_name) }) %}
+                        {% set _action_href = path(_action.name, { entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name) }) %}
                     {% endif %}
 
                     <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
@@ -66,8 +66,8 @@
                 {% endfor %}
 
                 {% if view == 'edit' %}
-                    {% if easyadmin_action_is_enabled_for_edit_view('delete', _entity.name) %}
-                        {% set _action = easyadmin_get_action_for_edit_view('delete', _entity.name) %}
+                    {% if easyadmin_action_is_enabled_for_edit_view('delete', _entity_config.name) %}
+                        {% set _action = easyadmin_get_action_for_edit_view('delete', _entity_config.name) %}
                         <button type="button" id="button-delete" class="btn {{ _action.class|default('btn-danger') }}">
                             {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                             {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
@@ -76,14 +76,14 @@
                 {% endif %}
 
                 {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
-                {% if view == 'new' and easyadmin_action_is_enabled_for_new_view('list', _entity.name) %}
-                    {% set _list_action = easyadmin_get_action_for_new_view('list', _entity.name) %}
-                {% elseif view == 'edit' and easyadmin_action_is_enabled_for_edit_view('list', _entity.name) %}
-                    {% set _list_action = easyadmin_get_action_for_edit_view('list', _entity.name) %}
+                {% if view == 'new' and easyadmin_action_is_enabled_for_new_view('list', _entity_config.name) %}
+                    {% set _list_action = easyadmin_get_action_for_new_view('list', _entity_config.name) %}
+                {% elseif view == 'edit' and easyadmin_action_is_enabled_for_edit_view('list', _entity_config.name) %}
+                    {% set _list_action = easyadmin_get_action_for_edit_view('list', _entity_config.name) %}
                 {% endif %}
 
                 {% if _list_action is defined %}
-                    <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer') : path('admin', ({ entity: _entity.name, action: _list_action.name, view: view }) ) }}">{% spaceless %}
+                    <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer') : path('admin', ({ entity: _entity_config.name, action: _list_action.name, view: view }) ) }}">{% spaceless %}
                         {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
                         {{ _list_action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>

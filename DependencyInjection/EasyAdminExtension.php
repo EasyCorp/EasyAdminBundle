@@ -159,6 +159,13 @@ class EasyAdminExtension extends Extension
                 $entityClassParts = explode('\\', $entityConfiguration['class']);
                 $entityClassName = end($entityClassParts);
                 $entityName = $this->getUniqueEntityName($entityClassName, array_keys($normalizedConfiguration));
+            } else {
+                // if config format #2 and #3 are used, make sure that the entity
+                // name is valid as a PHP method name (this is required to allow
+                // extending the backend with a custom controller)
+                if (!$this->isValidMethodName($entityName)) {
+                    throw new \InvalidArgumentException(sprintf('The name of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $entityName));
+                }
             }
 
             // if config format #3 defines the 'label' option, use its value.
@@ -298,10 +305,10 @@ class EasyAdminExtension extends Extension
             $actionName = $actionConfiguration['name'];
 
             // 'name' value is used as the class method name or the Symfony route name
-            // check that its value complies with the PHP method name regexp (the leading dash
+            // check that its value complies with the PHP method name rules (the leading dash
             // is exceptionally allowed to support the configuration format of removed actions)
-            if (!preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $actionName, $matchActionName)) {
-                throw new \InvalidArgumentException(sprintf('The name of the "%s" action contains invalid characters (allowed: letters, numbers, underscores).', $actionName));
+            if (!$this->isValidMethodName('-' === $actionName[0] ? substr($actionName, 1) : $actionName)) {
+                throw new \InvalidArgumentException(sprintf('The name of the "%s" action contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $actionName));
             }
 
             $normalizedConfiguration = array_replace($this->defaultActionConfiguration, $actionConfiguration);
@@ -539,5 +546,16 @@ class EasyAdminExtension extends Extension
         }
 
         return $fields;
+    }
+
+    /**
+     * Checks whether the given string is valid as a PHP method name.
+     *
+     * @param  string  $name
+     * @return boolean
+     */
+    private function isValidMethodName($name)
+    {
+        return preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name, $matches);
     }
 }

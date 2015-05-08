@@ -90,7 +90,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The name of the "invalid-Action~Name!!" action contains invalid characters (allowed: letters, numbers, underscores).
+     * @expectedExceptionMessage The name of the "invalid-Action~Name!!" action contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).
      */
     public function testActionNameCannotContainInvalidCharacters()
     {
@@ -99,7 +99,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The name of the "Invalid action name" action contains invalid characters (allowed: letters, numbers, underscores).
+     * @expectedExceptionMessage The name of the "Invalid action name" action contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).
      */
     public function testActionNameCannotContainWhiteSpaces()
     {
@@ -108,11 +108,38 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The name of the "7invalidActionName" action contains invalid characters (allowed: letters, numbers, underscores).
+     * @expectedExceptionMessage The name of the "7invalidActionName" action contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).
      */
     public function testActionNameCannotStartWithANumber()
     {
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/action_name_cannot_start_with_a_number.yml');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The name of the "Invalid-Entity~Name!!" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).
+     */
+    public function testEntityNameCannotContainInvalidCharacters()
+    {
+        $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/entity_name_cannot_contain_invalid_caracters.yml');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The name of the "Test Entity" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).
+     */
+    public function testEntityNameCannotContainWhiteSpaces()
+    {
+        $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/entity_name_cannot_contain_white_spaces.yml');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The name of the "7TestEntity" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).
+     */
+    public function testEntityNameCannotStartWithANumber()
+    {
+        $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/entity_name_cannot_start_with_a_number.yml');
     }
 
     /**

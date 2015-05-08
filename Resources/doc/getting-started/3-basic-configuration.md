@@ -6,8 +6,42 @@ EasyAdmin proposes an hybrid approach to customize the backends:
   * Use YAML-based configuration when it's simple to do so;
   * Use PHP classes/methods and Twig templates for more advanced customization.
 
-This approach ensures a smooth developer experience and balances simplicity
-and extensibility.
+This chapter focus on the basic configuration options that you can define for
+the backend using the YAML configuration file.
+
+Expanded Configuration Format
+-----------------------------
+
+The simple backend created in the previous chapter used a compact configuration
+like the following:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        - AppBundle\Entity\Customer
+        - AppBundle\Entity\Order
+        - AppBundle\Entity\Product
+```
+
+When you start customizing the backend, instead of the compact configuration
+format, you must use the expanded format:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+        Order:
+            class: AppBundle\Entity\Order
+        Product:
+            class: AppBundle\Entity\Product
+```
+
+This expanded configuration format allows to define lots of attributes for each
+entity, as explained the following chapters. Refer to the [Configuration Reference]()
+tutorial to check out all the available configuration formats.
 
 Customize the URL Used to Access the Backend
 --------------------------------------------
@@ -133,53 +167,3 @@ backend section of your application.
 
 When accessing a protected backend, EasyAdmin will display the name of user
 who is logged in the application.
-
-Customize the Views of the Backend
-----------------------------------
-
-The backend provides five different **views** for each entity: `edit`, `list`,
-`new`, `search` and `show`. The ``list`` view is mandatory for all entities,
-but the rest of the actions can be disabled as explained the following
-chapters.
-
-### List View
-
-Displays the list of items that match the given criteria:
-
-![List view interface](images/easyadmin-list-view.png)
-
-Pagination and column sorting is provided out-of-the-box. The rest of the
-`list` view elements can be configured as explained in the [Chapter 4](4-customizing-list-view.md).
-
-### Show View
-
-The `show` view is used when displaying the contents of any entity item. 
-
-![Show view interface](images/easyadmin-show-view.png)
-
-As explained in the [Chapter 5](5-customizing-show-view.md), you can configure
-the format of any field and you can even display special contents, such as
-images.
-
-### Edit and New Views
-
-The `edit` view is used when creating new elements of the given entity. The
-`edit` view is displayed when modifying the contents of any item.
-
-![Edit view interface](images/easyadmin-edit-view.png)
-
-Both views are very similar in their design and behavior. In fact, they can be
-customized simultaneously using a special view called `form` which is applied
-to any form-based view. Read [Chapter 6](6-customizing-new-edit-views.md) for
-more details.
-
-### Search View
-
-The `search` view is used to display the results of any query performed by the
-user. It's completely based on the `list` view to define the fields displayed
-for each listing row.
-
-![Search view interface](images/easyadmin-search-view.png) 
-
-By default, queries are performed on the contents of all entity properties,
-but you can change this behavior as explained in the [Chapter 7](7-customizing-search-view.md).

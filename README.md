@@ -1,7 +1,7 @@
 **❮ NOTE ❯** This bundle releases new versions on a regular basis. Make sure
 to update your dependencies frequently to get the latest version.
 [Check out the changelog](https://github.com/javiereguiluz/EasyAdminBundle/releases)
-to learn about the new features.
+to learn about the new features and read the [UPGRADE guide](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/UPGRADE.md).
 
 -----
 
@@ -35,8 +35,8 @@ with unprecedented simplicity.
 Installation
 ------------
 
-The EasyAdmin installation requires you to edit two files and execute two
-console commands, as explained in the following steps.
+Installing EasyAdmin requires you to edit two files and execute two console
+commands:
 
 ### Step 1: Download the Bundle
 
@@ -48,8 +48,7 @@ $ composer require javiereguiluz/easyadmin-bundle
 ```
 
 This command requires you to have Composer installed globally, as explained
-in the [installation chapter](https://getcomposer.org/doc/00-intro.md)
-of the Composer documentation.
+in the [Composer documentation](https://getcomposer.org/doc/00-intro.md).
 
 ### Step 2: Enable the Bundle
 
@@ -129,7 +128,8 @@ the admin backend:
 ![Default listing interface](Resources/doc/images/easyadmin-list-view.png)
 
 Creating a backend is that simple because EasyAdmin doesn't generate any code.
-All resources are served on-the-fly to ensure an exceptional developer experience.
+All resources are served on-the-fly to ensure an exceptional developer
+experience.
 
 Without any further configuration, EasyAdmin guesses the best settings to make
 your admin backend look "good enough". This may be acceptable for simple
@@ -137,33 +137,36 @@ backends and rapid prototypes, but most of the times, you need to customize
 some parts of the backend. Keep reading the rest of the documentation to learn
 how to do it.
 
-  * [Chapter 3 - Customizing your first backend](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/3-customizing-first-backend.md)
-  * [Chapter 4 - Customizing the List View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/4-customizing-list-view.md)
-  * [Chapter 5 - Customizing the Show View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/5-customizing-show-view.md)
-  * [Chapter 6 - Customizing the Edit and New Views](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/6-customizing-new-edit-views.md)
-  * [Chapter 7 - Customizing the Search View](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/7-customizing-search-view.md)
-  * [Chapter 8 - Customizing the View Actions](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/8-customizing-view-actions.md)
-  * [Chapter 9 - Advanced Techniques for Complex Backends](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/9-advanced-techniques.md)
-  * [Chapter 10 - Customizing the Visual Design of the Backend](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/10-customizing-design.md)
-  * [Chapter 11 - Configuration Reference](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/11-configuration-reference.md)
-  * [Chapter 12 - About this Project](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/Resources/doc/12-about-this-project.md)
+-----
+
+Getting Started Guide
+---------------------
+
+  * [Chapter 1 - Installation](Resources/doc/getting-started/1-installation.md)
+  * [Chapter 2 - Your First Backend](Resources/doc/getting-started/2-first-backend.md)
+  * [Chapter 3 - Basic Configuration](Resources/doc/getting-started/3-basic-configuration.md)
+  * [Chapter 4 - Views and Actions](Resources/doc/getting-started/4-views-and-actions.md)
+  * [Chapter 5 - Backend Design Customization](Resources/doc/getting-started/5-design-customization.md)
+  * [Chapter 6 - About this Project](Resources/doc/getting-started/6-about-this-project.md)
+
+Advanced Tutorials
+------------------
+
+  * [Customizing Backend Actions](Resources/doc/tutorials/customizing-backend-actions.md)
+  * [Customizing AdminController](Resources/doc/tutorials/customizing-admin-controller.md)
+  * [Advanced Design Customization](Resources/doc/tutorials/advanced-design-customization.md)
+  * [Tips and Tricks](Resources/doc/tutorials/tips-and-tricks.md)
+  * [Configuration Reference](Resources/doc/tutorials/configuration-reference.md)
 
 -----
 
-**❮ NOTE ❯** you are reading the documentation of the bundle's **most recent
-stable version**. You can also [read the documentation of the development version ➜](https://github.com/javiereguiluz/EasyAdminBundle/tree/master/Resources/doc).
+**❮ NOTE ❯** you are reading the documentation of the bundle's **development** 
+version. You can also [read the documentation of the latest stable version ➜]
+(https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/).
 
 -----
 
-LEGAL DISCLAIMER
-----------------
+License
+-------
 
-This software is published under the MIT License, which states that:
-
-> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-> SOFTWARE.
+This software is published under the [MIT License](LICENSE.md)

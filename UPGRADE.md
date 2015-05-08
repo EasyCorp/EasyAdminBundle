@@ -8,6 +8,35 @@ the next version.
 Upgrade to 1.5.0
 ----------------
 
+### Some methods used to tweak AdminController behaviour have changed
+
+
+```php
+// Before
+protected function prepareNewEntityForPersist($entity) { ... }
+
+// After
+protected function prePersistEntity($entity) { ... }
+
+// You can also create custom methods for each entity
+protected function prePersistUserEntity($entity) { ... }
+protected function prePersistProductEntity($entity) { ... }
+// ...
+```
+
+```php
+// Before
+protected function prepareEditEntityForPersist($entity) { ... }
+
+// After
+protected function preUpdateEntity($entity) { ... }
+
+// You can also create custom methods for each entity
+protected function preUpdateUserEntity($entity) { ... }
+protected function preUpdateProductEntity($entity) { ... }
+// ...
+```
+
 ### New strategy to determine the entity name
 
 The strategy used to determine the entity name has change in preparation for

@@ -1,5 +1,5 @@
-Chapter 11. About this project
-==============================
+Chapter 6. About this project
+=============================
 
 The main author of this bundle works for SensioLabs, the company behind the
 Symfony framework. However, this bundle is not promoted, endorsed or sponsored
@@ -18,7 +18,7 @@ features as possible and we must keep the original vision of the project.
 
 These are some of our **development principles**:
 
-  * Developers and backend users are our priorities. We'll always prioritize
+  * Developers and end users are our priorities. We'll always prioritize
     UX (user experience) and DX (developer experience) over code purity.
   * Backend customization is balanced between configuration options and code.
     We'll add new options when they are easy and make sense. Otherwise, we'll
@@ -41,14 +41,14 @@ generic and simple way to do it:
 
   * Complete Doctrine association support (all kinds of associations: one-to-
     one, including self-referencing, one-to-many, many-to-one and many-to-many)
-  * Allow to configure the main color used in the backend (to match the
+  * [DONE] Allow to configure the main color used in the backend (to match the
     company's brand color)
   * Nested main menu items (two-level only)
   * Support for exporting the list or search results to CSV and/or Excel
-  * Full theme support (not just changing the main color of the backend)
+  * [DONE] Full theme support (not just changing the main color of the backend)
   * FOSUserBundle integration
   * Form field grouping
-  * Custom actions for list/search, edit, show and new views.
+  * [DONE] Custom actions for list/search, edit, show and new views.
 
 **Features that we'll never implement**
 
@@ -74,15 +74,13 @@ the future. However, it's safe to consider that they'll never be implemented:
 How to Collaborate in this Project
 ----------------------------------
 
-**1.** Ideas, Feature Requests, Issues, Bug Reports and Comments (positive or
-negative) are more than welcome.
+If you have an idea, feature request, issue, bug report or comment, please open
+an issue at https://github.com/javiereguiluz/EasyAdminBundle/issues.
 
-**2.** Unsolicited Pull Requests are currently not accepted.
-
-EasyAdmin is a very young project. In order to protect the original vision of
-the project, we don't accept unsolicited Pull Requests. This decision will of
-course be revised in the near term, once we fully realize how the project is
-being used and what do users expect from us.
+**Don't submit unsolicited pull requests**. Please open an issue to discuss
+about any idea or new feature that you want to implement. Once approved, you
+can submit the associated pull request. Otherwise, there is a good chance your
+pull request is rejected.
 
 Alternative Projects
 --------------------
@@ -92,7 +90,7 @@ focusing on the simplest 80% of the backend projects. In case you encounter an
 unavoidable limitation to develop your backend with EasyAdmin, consider using
 any of the following alternative admin generators:
 
-  * [AdmingeneratorGeneratorBundle](https://github.com/symfony2admingenerator/AdmingeneratorGeneratorBundle),
+  * [GeneratorBundle](https://github.com/symfony2admingenerator/GeneratorBundle),
     a project similar to EasyAdmin and based on YAML configuration files. It
     provides support for Propel, Doctrine ORM and Doctrine ODM models.
   * [SonataAdminBundle](https://github.com/sonata-project/SonataAdminBundle),

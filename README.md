@@ -147,8 +147,7 @@ Getting Started Guide
   * [Chapter 3 - Basic Configuration]()
   * [Chapter 4 - Views and Actions]()
   * [Chapter 5 - Backend Design Customization]()
-  * [Chapter 6 - Customizing the Edit and New Views]()
-  * [Chapter 7 - About this Project]()
+  * [Chapter 6 - About this Project]()
 
 Advanced Tutorials
 ------------------

@@ -144,7 +144,7 @@ Getting Started Guide
 
   * [Chapter 1 - Installation]()
   * [Chapter 2 - Your First Backend]()
-  * [Chapter 3 - Basic Backend Configuration]()
+  * [Chapter 3 - Basic Configuration]()
   * [Chapter 4 - Views and Actions]()
   * [Chapter 5 - Backend Design Customization]()
   * [Chapter 6 - Customizing the Edit and New Views]()

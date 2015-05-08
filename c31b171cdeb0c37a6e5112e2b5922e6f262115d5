@@ -1,0 +1,198 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-07T20:49:18Z
+
+For the `method_exists` checks, do you think it might improve readability to have some private method like `$this->resolveAction('new')` that will automatically check the function existence ? And for the functions that accept one or more argument, use it as a variadic function and send the parameters automatically, except the first one that is the action name.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-07T21:21:24Z
+
+Might I also suggest using a system like the one you have in the twig extensions, like this:
+
+```php
+// Entity currently used: Post
+$this->resolveAction('new'); // Returns 'newPostAction'
+$this->resolveAction('prePersist*Entity'); // Returns 'prePersistPostEntity'
+```
+
+When there is no wildcard, the entity name is appended. Unless, the wildcard is replaced by the entity name.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-07T21:28:44Z
+
+Excluding what I said, seems all good :+1:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-07T21:30:45Z
+
+I'm definitively not fan of "_magic_" methods like:
+
+```php
+public function createNew<EntityName>Entity()
+{
+    ...
+}
+```
+
+I don't see any value to these, as the user is already able to do that, with it's own logic and methods.
+
+----
+
+The event system looks great ! :+1:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-07T21:40:18Z
+
+The goal is mainly to prevent this:
+
+```php
+public function newAction() {
+
+    if ($this->entity['name'] === 'Post') {
+        return $this->newPostAction();
+    } if ($this->entity['name'] === 'Product') {
+        return $this->newProductAction();
+    } if ($this->entity['name'] === 'Category') {
+        return $this->newCategoryAction();
+    } if ($this->entity['name'] === 'Customer') {
+        return $this->newCustomerAction();
+    } if ($this->entity['name'] === 'Page') {
+        return $this->newPageAction();
+    } if ($this->entity['name'] === 'Video') {
+        return $this->newVideoAction();
+    } if ($this->entity['name'] === 'BlogArticle') {
+        return $this->newBlogArticleAction();
+    }
+
+    return parent::newAction();
+}
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-07T22:03:50Z
+
+@Pierstoval : I understood the purpose, but I don't think this is required, and why the bundle should take care of such things. This isn't even about DX IMO.  :confused:
+
+If they really need it, developers may easily create their own solutions in order to avoid such `if` cascading. I don't see why the bundle should handle this itself, and impose _hardcoded conventions_ which we don't even know will change or not in the future (Remember the issue/PR about entities' names and suffixes ?), and then fail any backend relying on it. There is a chance the developper doesn't even understand why it failed, as he didn't "fully control the code".
+
+I do not know if I am making myself clear on this. But I think it's only source of trouble for easyadmin.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-08T06:38:48Z
+
+@ogizanagi in my opinion this system doesn't bring magic but conventions. And I think those are two very different things. In Symfony 1 for example the filter system changed your response without you being aware of it (that's magic). In Symfony 2 if you create a file with a very specic name (e.g. `messages.fr_FR.xlf`) and in a very specific location (e.g. `app/Resources/translations/`) that file is loaded and used in the application (that's a convention).
+
+Regarding the `createNewCustomerEntity()`, `editProductAction()`, etc. methods, not only I think they are necessary, but in practice they will be only methods used by developers. Otherwise you have to override a very complex method (`newAction()`) or do some ugly stuff with `if` or `switch` as pointed by @Pierstoval.
+
+In short, I think this new feature is consisent with the rest of the bundle behavior:
+
+1. Do you want some basic customization? Use the tens of configuration options available.
+2. Do you want to do some cool stuff? Use two coventions: `app/Resources/views/easy_admin/<EntityName>/<templateName>.html.twig` templates and `<actionName><EntityName>Action()` methods.
+3. Do you want extreme customization? Use your own templates (define them in `design.templates` option) and the event system of the AdminController.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-08T09:27:54Z
+
+@javiereguiluz : But the entity's name is (_magic_). Because the developper doesn't really have full control over it, and the name might change if there is another entity with the same name (edge case, right, but still :/ ).
+BTW, didn't we say the entity's name should be kept as an internal thing only ?
+
+What do you think about what we discussed later in https://github.com/javiereguiluz/EasyAdminBundle/pull/276#issuecomment-99604657 ?
+Or / and should the entity's name be configurable ?
+
+I didn't realized it before with templates, but it's indeed the same problem. :confused:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-08T09:40:27Z
+
+@ogizanagi yes, the entity name is "magic" for one use case: when you have totally different entities that share the same name. How often does this happen? In my experience very infrequently ... but I'd love to hear other experiences.
+
+And yes, I plan to make the entity name configurable in the future to avoid problems in this edge case.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-08T14:11:57Z
+
+I think I have a solution for this problem:
+
+1) If you use the simple config format, the `name` is autogenerated:
+
+```yaml
+easy_admin:
+    entities:
+        - 'AppBundle\Entity\Product'
+        - '...'
+```
+
+If there are more than one entity with the same name, EasyAdmin autogenerates incremental names (`Product`, `Product2`, `Product3`).
+
+This is not a problem because if you are using this config format, you are obviously doing some quick-and-dirty test of this bundle and you are not going to extend the backend with a custom controller.
+
+2) If you use the other config formats, the YAML key will be used as the entity name. This solves our problem because you obviously can't have different YAML keys with the same value:
+
+```yaml
+# config format 2
+easy_admin:
+    entities:
+        Product: 'AppBundle\Entity\Product'
+        ProductArchive:  'AppBundle\Entity\Archive\Product'
+
+# config format 3
+easy_admin:
+    entities:
+        Product:
+            class: 'AppBundle\Entity\Product'
+        ProductArchive:
+            class: 'AppBundle\Entity\Archive\Product'
+```
+
+There is only one catch: right now we use the YAML key as the label (unless you define the `label` option for the entity). This means that someone could do the following:
+
+```yaml
+# config format 3
+easy_admin:
+    entities:
+        'Current Products':
+            class: 'AppBundle\Entity\Product'
+        'Product Archive (2015)':
+            class: 'AppBundle\Entity\Archive\Product'
+```
+
+And that would be a problem because you cannot name a PHP method as `newCurrent ProductsAction()`.
+
+So this is my proposal:
+
+  * Always use the YAML key as the entity name, so the developer has full control over it (unless the basic config format is used, where names are autogenerated).
+  * Throw an error if you use white spaces or unsafe characters in the YAML key. This is a BC break, but it's not that important and we'll throw good error messages.
+  * If someone wants to customize the label of the entity, use the `label` option in that entity (this is the same as of now, but this proposal will turn it into the only way to do this).
+
+What do you think?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-08T14:53:49Z
+
+I think it's the most straightforward and ideal solution.
+Anyway, for more consistency, I think getting rid of the "strange" behavior you mentioned with the entities keys in the config will be for the best (IIRC, I was the one who made this, for minor BC reasons when introducing the `label` option for translations).
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-08T18:07:53Z
+
+@Pierstoval I like your comments about reducing code repetition and extracting the logic about checking if a custom method exists. But I'm not sure about the proposed alternatives. That's why I'm going to merge this PR as is and I'll think about how to improve that part of the code in the future.
+
+After merging this PR, this is the roadmap (to be compelted in different PRs):
+
+  * Fix the handling of the entity names as discussed above. Basically we must prvent developers from using unsafe chars in the YAML key associated with each entity.
+  * Reorganize the documentation as discussed in #279
+  * Add more functional tests, specially for the new features introduced recently
+  * Release the new stable version

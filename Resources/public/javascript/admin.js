@@ -26,7 +26,7 @@ function mainMenuDropShadow() {
 function mainMenuResponsiveCollapse() {
     var mainMenuItems = $('#header-menu');
 
-    if ($(window).width() > 768 && $(window).width() < 1200) {
+    if ($(window).width() > 768 && $(window).width() < 1024) {
         mainMenuItems.flexMenu({'linkText': '...'});
     } else {
         mainMenuItems.flexMenu({ 'undo': true });

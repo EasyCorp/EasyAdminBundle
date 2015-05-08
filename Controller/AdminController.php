@@ -193,7 +193,13 @@ class AdminController extends Controller
         }
 
         $fields = $this->entity['edit']['fields'];
-        $editForm = $this->createEditForm($entity, $fields);
+
+        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EditForm')) {
+            $editForm = $this->{$customMethodName}($entity, $fields);
+        } else {
+            $editForm = $this->createEditForm($entity, $fields);
+        }
+
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
         $editForm->handleRequest($this->request);
@@ -283,7 +289,12 @@ class AdminController extends Controller
         }
 
         $fields = $this->entity['new']['fields'];
-        $newForm = $this->createNewForm($entity, $fields);
+
+        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'NewForm')) {
+            $newForm = $this->{$customMethodName}($entity, $fields);
+        } else {
+            $newForm = $this->createNewForm($entity, $fields);
+        }
 
         $newForm->handleRequest($this->request);
         if ($newForm->isValid()) {
@@ -588,7 +599,7 @@ class AdminController extends Controller
             return sprintf('theme_%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
         });
 
-        $form = $this->createFormBuilder($entity, array(
+        $formBuilder = $this->createFormBuilder($entity, array(
             'data_class' => $this->entity['class'],
             'attr' => array('class' => $formCssClass, 'id' => $view.'-form'),
         ));
@@ -612,10 +623,10 @@ class AdminController extends Controller
             $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
             $formFieldOptions['attr']['field_help'] = $metadata['help'];
 
-            $form->add($name, $metadata['fieldType'], $formFieldOptions);
+            $formBuilder->add($name, $metadata['fieldType'], $formFieldOptions);
         }
 
-        return $form->getForm();
+        return $formBuilder->getForm();
     }
 
     /**

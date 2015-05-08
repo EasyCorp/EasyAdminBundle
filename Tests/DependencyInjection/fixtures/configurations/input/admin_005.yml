@@ -1,7 +1,7 @@
 # TEST
-# configuration format #2 with custom entity label that doesn't match entity name
+# configuration format #2 with custom entity name that doesn't match its class name
 
 # CONFIGURATION
 easy_admin:
     entities:
-        CustomEntityLabel: AppBundle\Entity\TestEntity
+        CustomEntityName: AppBundle\Entity\TestEntity

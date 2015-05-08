@@ -1,8 +1,9 @@
+# NOTE: this test is empty because it was related to a feature that is no longer
+# used in EasyAdmin
+
 # TEST
-# configuration format #2 with custom entity label that doesn't match entity name
+# configuration format #2 with custom entity name that doesn't match its class name
 # and which contains special YAML characters
 
 # CONFIGURATION
-easy_admin:
-    entities:
-        'Custom #Entity ~ Label': AppBundle\Entity\TestEntity
+easy_admin: ~

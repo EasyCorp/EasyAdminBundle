@@ -1,0 +1,7 @@
+# TEST
+# the name of the entity cannot contain white spaces
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        'Test Entity': 'AppBundle\Entity\TestEntity'

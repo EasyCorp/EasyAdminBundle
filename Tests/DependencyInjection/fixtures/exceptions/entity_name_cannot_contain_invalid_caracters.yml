@@ -1,0 +1,8 @@
+# TEST
+# the name of the entity cannot contain invalid characters (anything
+# different than letters, numbers and underscores)
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        'Invalid-Entity~Name!!': 'AppBundle\Entity\TestEntity'

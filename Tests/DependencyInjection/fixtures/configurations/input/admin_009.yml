@@ -1,5 +1,5 @@
 # TEST
-# configuration format #3: entity label matches entity name
+# configuration format #3: entity name matches its class name
 
 # CONFIGURATION
 easy_admin:

@@ -1,5 +1,6 @@
 # TEST
-# all the original (and custom) entity configuration options are maintained
+# any custom entity configuration options are maintained when processing the
+# backend configuration (this allows to add custom options for complex backends)
 
 # CONFIGURATION
 easy_admin:

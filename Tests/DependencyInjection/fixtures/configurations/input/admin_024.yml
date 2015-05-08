@@ -1,6 +1,6 @@
 # TEST
 # configuration format #3 expanded, with two different entities using
-# different names and same custom labels
+# different entity names but the same custom label
 
 # CONFIGURATION
 easy_admin:

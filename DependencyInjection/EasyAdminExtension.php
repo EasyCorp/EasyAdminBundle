@@ -105,12 +105,12 @@ class EasyAdminExtension extends Extension
      *
      * These are the two simple formats allowed:
      *
-     * # Config format #1: no custom entity label
+     * # Config format #1: no custom entity name
      * easy_admin:
      *     entities:
      *         - AppBundle\Entity\User
      *
-     * # Config format #2: simple config with custom entity label
+     * # Config format #2: simple config with custom entity name
      * easy_admin:
      *     entities:
      *         User: AppBundle\Entity\User
@@ -123,7 +123,10 @@ class EasyAdminExtension extends Extension
      *         User:
      *             class: AppBundle\Entity\User
      *
-     * # Config format #3 can optionally define a custom entity label
+     * By default the entity name is used as its label (showed in buttons, the
+     * main menu, etc.). That's why the config format #3 can optionally define
+     * a custom entity label
+     *
      * easy_admin:
      *     entities:
      *         User:
@@ -138,32 +141,33 @@ class EasyAdminExtension extends Extension
     {
         $normalizedConfiguration = array();
 
-        foreach ($entitiesConfiguration as $entityLabel => $entityConfiguration) {
-            // config formats #1 and #2
+        foreach ($entitiesConfiguration as $entityName => $entityConfiguration) {
+            // normalize config formats #1 and #2 to use the 'class' option as config format #3
             if (!is_array($entityConfiguration)) {
                 $entityConfiguration = array('class' => $entityConfiguration);
             }
 
             // if config format #3 is used, ensure that it defines the 'class' option
             if (!isset($entityConfiguration['class'])) {
-                throw new \RuntimeException(sprintf('The "%s" entity must define its associated Doctrine entity class using the "class" option.', $entityLabel));
+                throw new \RuntimeException(sprintf('The "%s" entity must define its associated Doctrine entity class using the "class" option.', $entityName));
             }
 
-            $entityClassParts = explode('\\', $entityConfiguration['class']);
-            $entityClassName = end($entityClassParts);
+            // if config format #1 is used, the entity name is the numeric index
+            // of the configuration array. In this case, autogenerate the entity
+            // name using its class name
+            if (is_integer($entityName)) {
+                $entityClassParts = explode('\\', $entityConfiguration['class']);
+                $entityClassName = end($entityClassParts);
+                $entityName = $this->getUniqueEntityName($entityClassName, array_keys($normalizedConfiguration));
+            }
 
             // if config format #3 defines the 'label' option, use its value.
-            // otherwise, infer the entity label from its configuration.
+            // otherwise, use the entity name as its label
             if (!isset($entityConfiguration['label'])) {
-                // config format #1 doesn't define any entity label because configuration is
-                // just a plain numeric array (the label is the integer key of that array).
-                // In that case, use the entity class name as its label
-                $entityConfiguration['label'] = is_integer($entityLabel) ? $entityClassName : $entityLabel;
+                $entityConfiguration['label'] = $entityName;
             }
 
-            $entityName = $this->getUniqueEntityName($entityClassName, array_keys($normalizedConfiguration));
             $entityConfiguration['name'] = $entityName;
-
             $normalizedConfiguration[$entityName] = $entityConfiguration;
         }
 

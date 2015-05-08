@@ -4,6 +4,7 @@ easy_admin:
             class: AppBundle\Entity\TestEntity
             label: CustomEntityLabel
             name: TestEntity
+            camel_cased_name: TestEntity
             edit:
                 fields: {  }
                 actions:

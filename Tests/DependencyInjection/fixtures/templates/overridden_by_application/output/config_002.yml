@@ -34,6 +34,7 @@ easy_admin:
                 show: custom_template/show.html.twig
             label: TestEntity
             name: TestEntity
+            camel_cased_name: TestEntity
             edit:
                 fields: {  }
                 actions:

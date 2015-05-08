@@ -23,6 +23,7 @@ easy_admin:
                         icon: null
             label: TestEntity
             name: TestEntity
+            camel_cased_name: TestEntity
             edit:
                 fields:
                     field1:

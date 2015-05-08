@@ -46,6 +46,7 @@ easy_admin:
                 label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
             label: TestEntity
             name: TestEntity
+            camel_cased_name: TestEntity
             edit:
                 fields: {  }
                 actions:
@@ -160,6 +161,7 @@ easy_admin:
                 label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
             label: AnotherTestEntity
             name: AnotherTestEntity
+            camel_cased_name: AnotherTestEntity
             edit:
                 fields: {  }
                 actions:

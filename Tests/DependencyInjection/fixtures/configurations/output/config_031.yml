@@ -8,6 +8,7 @@ easy_admin:
                 - 'custom value 2-2'
             label: TestEntity
             name: TestEntity
+            camel_cased_name: TestEntity
             edit:
                 fields: {  }
                 actions:

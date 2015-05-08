@@ -32,6 +32,7 @@ easy_admin:
             class: AppBundle\Entity\TestEntity
             label: TestEntity
             name: TestEntity
+            camel_cased_name: TestEntity
             edit:
                 fields: {  }
                 actions:

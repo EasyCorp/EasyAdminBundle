@@ -74,7 +74,7 @@ class AdminController extends Controller
             )));
         }
 
-        $customMethodName  = $action.$this->entity['name'].'Action';
+        $customMethodName  = $action.$this->entity['camel_cased_name'].'Action';
         $defaultMethodName = $action.'Action';
 
         return method_exists($this, $customMethodName) ? $this->{$customMethodName}() : $this->{$defaultMethodName}();
@@ -194,7 +194,7 @@ class AdminController extends Controller
 
         $fields = $this->entity['edit']['fields'];
 
-        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EditForm')) {
+        if (method_exists($this, $customMethodName = 'create'.$this->entity['camel_cased_name'].'EditForm')) {
             $editForm = $this->{$customMethodName}($entity, $fields);
         } else {
             $editForm = $this->createEditForm($entity, $fields);
@@ -206,7 +206,7 @@ class AdminController extends Controller
         if ($editForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity));
 
-            if (method_exists($this, $customMethodName = 'preUpdate'.$this->entity['name'].'Entity')) {
+            if (method_exists($this, $customMethodName = 'preUpdate'.$this->entity['camel_cased_name'].'Entity')) {
                 $this->{$customMethodName}($entity);
             } else {
                 $this->preUpdateEntity($entity);
@@ -282,7 +282,7 @@ class AdminController extends Controller
             return $this->renderForbiddenActionError('new');
         }
 
-        if (method_exists($this, $customMethodName = 'createNew'.$this->entity['name'].'Entity')) {
+        if (method_exists($this, $customMethodName = 'createNew'.$this->entity['camel_cased_name'].'Entity')) {
             $entity = $this->{$customMethodName}();
         } else {
             $entity = $this->createNewEntity();
@@ -290,7 +290,7 @@ class AdminController extends Controller
 
         $fields = $this->entity['new']['fields'];
 
-        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'NewForm')) {
+        if (method_exists($this, $customMethodName = 'create'.$this->entity['camel_cased_name'].'NewForm')) {
             $newForm = $this->{$customMethodName}($entity, $fields);
         } else {
             $newForm = $this->createNewForm($entity, $fields);
@@ -300,7 +300,7 @@ class AdminController extends Controller
         if ($newForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, array('entity' => $entity));
 
-            if (method_exists($this, $customMethodName = 'prePersist'.$this->entity['name'].'Entity')) {
+            if (method_exists($this, $customMethodName = 'prePersist'.$this->entity['camel_cased_name'].'Entity')) {
                 $this->{$customMethodName}($entity);
             } else {
                 $this->prePersistEntity($entity);
@@ -357,7 +357,7 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));
 
-            if (method_exists($this, $customMethodName = 'preRemove'.$this->entity['name'].'Entity')) {
+            if (method_exists($this, $customMethodName = 'preRemove'.$this->entity['camel_cased_name'].'Entity')) {
                 $this->{$customMethodName}($entity);
             } else {
                 $this->preRemoveEntity($entity);

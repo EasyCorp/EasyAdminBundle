@@ -1,12 +1,10 @@
+# NOTE: this test is empty because it was related to a feature that is no longer
+# used in EasyAdmin
+
 # TEST
-# configuration format #3 with two different entities using the same custom label
+# configuration format #3 with two different entities using the same custom name
 # which contains special YAML characters
 # (the first defined entity wins)
 
 # CONFIGURATION
-easy_admin:
-    entities:
-        'Custom #Entity ~ Label':
-            class: AppBundle\Entity\TestEntity
-        'Custom #Entity ~ Label':
-            class: AppBundle\AnotherNamespace\Entity\TestEntity
+easy_admin: ~

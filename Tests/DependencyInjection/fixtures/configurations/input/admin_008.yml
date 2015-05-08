@@ -1,9 +1,9 @@
 # TEST
-# configuration format #2: two different entities with the same custom label
+# configuration format #2: two different entities with the same custom name
 # (the first defined entity wins)
 
 # CONFIGURATION
 easy_admin:
     entities:
-        CustomEntityLabel: AppBundle\Entity\TestEntity
-        CustomEntityLabel: AppBundle\OtherNamespace\Entity\TestEntity
+        CustomEntityName: AppBundle\Entity\TestEntity
+        CustomEntityName: AppBundle\OtherNamespace\Entity\TestEntity

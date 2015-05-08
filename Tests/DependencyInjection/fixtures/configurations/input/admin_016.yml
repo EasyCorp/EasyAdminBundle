@@ -1,6 +1,6 @@
 # TEST
-# configuration format #3 with two different entities with the same name
-# but defining a different label
+# configuration format #3 with two different entities with the same class name
+# but with a different entity name
 
 # CONFIGURATION
 easy_admin:

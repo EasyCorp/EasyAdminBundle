@@ -116,7 +116,7 @@ easy_admin:
                 label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
         TestEntity2:
             class: AppBundle\AnotherNamespace\Entity\TestEntity
-            label: TestEntity
+            label: TestEntity2
             name: TestEntity2
             edit:
                 fields: {  }
@@ -230,7 +230,7 @@ easy_admin:
                 label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
         TestEntity3:
             class: AnotherBundle\Entity\TestEntity
-            label: TestEntity
+            label: TestEntity3
             name: TestEntity3
             edit:
                 fields: {  }

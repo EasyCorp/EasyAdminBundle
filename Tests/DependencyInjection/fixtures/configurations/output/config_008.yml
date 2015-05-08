@@ -1,9 +1,9 @@
 easy_admin:
     entities:
-        TestEntity:
+        CustomEntityName:
             class: AppBundle\Entity\TestEntity
-            label: CustomEntityLabel
-            name: TestEntity
+            label: CustomEntityName
+            name: CustomEntityName
             edit:
                 fields: {  }
                 actions:

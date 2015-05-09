@@ -154,8 +154,7 @@ Advanced Tutorials
 
   * [Creating Custom Actions]()
   * [Customizing Backend Behavior]()
-  * [Advanved Design Customization]()
-  * [Customizing the Visual Design of the Backend]()
+  * [Advanced Design Customization]()
   * [Tips and Tricks]()
   * [Configuration Reference]()
 

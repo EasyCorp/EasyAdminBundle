@@ -1,5 +1,5 @@
-Chapter 9. Advanced Techniques for Complex Backends
-===================================================
+Tips and Tricks
+===============
 
 Better Organizing Backend Configuration
 ---------------------------------------

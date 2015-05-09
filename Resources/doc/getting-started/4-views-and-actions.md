@@ -136,7 +136,15 @@ easy_admin:
 ```
 
 This option can also be used to reorder the way properties are displayed, which
-is specially important for the `edit`, `new` and `show` views.
+is specially important for the `edit`, `new` and `show` views (by default these
+views display the properties in the same order as defined in the related
+Doctrine entity).
+
+If any of the properties is an association with another entity, the `edit` and
+`new` views will display it as a `<select>` list. The values displayed in this
+list will be the values returned by the magic `__toString()` PHP method.
+Define this method in all your entities to avoid errors and to define the
+textual representation of the entity.
 
 ### Display Virtual Properties
 
@@ -214,16 +222,17 @@ easy_admin:
 The only significant limitation of virtual properties is that you cannot sort
 listings using these fields.
 
-Customize the Property Labels
------------------------------
+Customize the Properties Appearance
+-----------------------------------
 
-By default, property labels are a "humanized" version of the related Doctrine
-property name. If your property is called `published`, its label will be
-`Published` and if your property is called `dateOfBirth`, the label will be
-`Date of birth`.
+By default, properties are displayed with the most appropriate appearance
+according to their data types and their labels are generated automatically
+based on their property name (e.g. if the property name is `published`, the 
+label will be `Published` and if the name is `dateOfBirth`, the label will be
+`Date of birth`).
 
-In case you want to define a custom label, use the following expanded field
-configuration:
+In order to customize the appearance of the properties,use the following 
+expanded field configuration:
 
 ```yaml
 # app/config/config.yml
@@ -258,6 +267,45 @@ easy_admin:
                     - { property: 'email', label: 'Contact' }
     # ...
 ```
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields:
+                    - 'id'
+                    - { property: 'email', type: 'email', label: 'Contact' }
+                    - { property: 'code', type: 'number', label: 'Customer Code', class: 'input-lg' }
+                    - { property: 'notes', help: 'Use this field to add private notes and comments about the client' }
+                    - { property: 'zone', type: 'country' }
+    # ...
+```
+
+These are the options that you can define for each property:
+
+  * `property` (mandatory): the name of the related Doctrine property. It can
+    be a real property or a "virtual property" based on an entity method. This 
+    is the only mandatory option when using the expanded configuration format.
+  * `label` (optional): the title displayed for the property. The default
+    title is the "humanized" version of the property name.
+  * `help` (optional): the help message displayed below the form field in the
+    `edit`, `new` and `show` views.
+  * `class` (optional): the CSS class applied to the form field widget
+    container element in the `edit`, `new` and `show` views. For example, when
+    using the default Bootstrap based form theme, this value is applied to the
+    `<div class="form-group">` element which wraps the label, the widget and
+    the error messages of the field.
+  * `type` (optional): the type of data displayed in the `list`, `search` and
+    `show` views and the form widget displayed in the `edit` and `new` views.
+    These are the supported types:
+        * All the [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
+        * Custom EasyAdmin types:
+            * `image`, displays inline images in the `list`, `search` and
+              `show` views (as explained later in this chapter).
+            * `toggle`, displays a boolean value as a flip switch in the `list`
+              and `search` views (as explained later in this chapter).
 
 ### Translate Property Labels
 
@@ -470,15 +518,13 @@ easy_admin:
 The base paths defined for a property always have priority over the one defined
 globally for the entity.
 
-
-
 List View Configuration
 -----------------------
 
 ### Customize the Number of Item Rows Displayed
 
-By default, listings display a maximum of `15` rows. Define the
-`max_results` option under the `list` key to change this value:
+By default, listings display a maximum of `15` rows. Define the `max_results`
+option under the `list` key to change this value:
 
 ```yaml
 # app/config/config.yml
@@ -487,7 +533,6 @@ easy_admin:
         max_results: 30
     # ...
 ```
-
 
 Search View Configuration
 -------------------------
@@ -513,43 +558,56 @@ easy_admin:
 Edit and New Views Configuration
 --------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Customize Fields Appearance
----------------------------
-
-By default, all fields are displayed using the most appropriate format
-according to their Doctrine type. Use the `type` option to explicitly set how
-the field should be displayed:
+The `edit` and `new` views are pretty similar, so most of the times you apply
+the same customization to them. Instead of duplicating the configuration for 
+both views, you can use the special `form` view:
 
 ```yaml
 easy_admin:
     entities:
-        Product:
-            class: AppBundle\Entity\Product
-            list:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:  # <-- 'form' is applied to both 'new' and 'edit' views
                 fields:
-                    - { property: '...', type: '...' }
+                    - 'id'
+                    - { property: 'email', type: 'email', label: 'Contact' }
                     # ...
     # ...
 ```
 
-These are the supported types:
+Any option defined in the `form` view will be copied into the `new` and
+`edit` views. However, any option defined in the `edit` and `new` view
+overrides the corresponding `form` option. In other words, always use the
+`form` action to define the common configuration, and then use the `new` and
+`edit` views to define just the specific options you want to override:
 
-  * All the [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
-  * Custom EasyAdmin types:
-    * `image`, displays images inlined in the entity listings. Read the
-      previous sections for more details.
-    * `toggle`, displays a boolean value as a flip switch. Read the previous
-      sections for more details.
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields: ['id', 'name', 'email']
+                title:  'Add customer'
+            new:
+                fields: ['name', 'email']
+            edit:
+                title:  'Edit customer'
+    # ...
+```
+
+The above configuration is equivalent to the following:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            new:
+                fields: ['name', 'email']
+                title:  'Add customer'
+            edit:
+                fields: ['id', 'name', 'email']
+                title:  'Edit customer'
+    # ...
+```

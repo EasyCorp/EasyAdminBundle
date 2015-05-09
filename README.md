@@ -142,26 +142,27 @@ how to do it.
 Getting Started Guide
 ---------------------
 
-  * [Chapter 1 - Installation]()
-  * [Chapter 2 - Your First Backend]()
-  * [Chapter 3 - Basic Configuration]()
-  * [Chapter 4 - Views and Actions]()
-  * [Chapter 5 - Backend Design Customization]()
-  * [Chapter 6 - About this Project]()
+  * [Chapter 1 - Installation](Resources/doc/getting-started/1-installation.md)
+  * [Chapter 2 - Your First Backend](Resources/doc/getting-started/2-first-backend.md)
+  * [Chapter 3 - Basic Configuration](Resources/doc/getting-started/3-basic-configuration.md)
+  * [Chapter 4 - Views and Actions](Resources/doc/getting-started/4-views-and-actions.md)
+  * [Chapter 5 - Backend Design Customization](Resources/doc/getting-started/5-design-customization.md)
+  * [Chapter 6 - About this Project](Resources/doc/getting-started/6-about-this-project.md)
 
 Advanced Tutorials
 ------------------
 
-  * [Customizing Backend Actions]()
-  * [Customizing Admin Controller]()
-  * [Advanced Design Customization]()
-  * [Tips and Tricks]()
-  * [Configuration Reference]()
+  * [Customizing Backend Actions](Resources/doc/tutorials/customizing-backend-actions.md)
+  * [Customizing AdminController](Resources/doc/tutorials/customizing-admin-controller.md)
+  * [Advanced Design Customization](Resources/doc/tutorials/advanced-design-customization.md)
+  * [Tips and Tricks](Resources/doc/tutorials/tips-and-tricks.md)
+  * [Configuration Reference](Resources/doc/tutorials/configuration-reference.md)
 
 -----
 
-**❮ NOTE ❯** you are reading the documentation of the bundle's **most recent
-stable version**. You can also [read the documentation of the development version ➜](https://github.com/javiereguiluz/EasyAdminBundle/tree/master/Resources/doc).
+**❮ NOTE ❯** you are reading the documentation of the bundle's **development** 
+version. You can also [read the documentation of the latest stable version ➜]
+(https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.4.0/).
 
 -----
 

@@ -199,4 +199,4 @@ easy_admin:
     # ...
 ```
 
-[advanced-design-customization]: ../advanced-tutorials/advanced-design-customization.md
+[advanced-design-customization]: ../tutorials/advanced-design-customization.md

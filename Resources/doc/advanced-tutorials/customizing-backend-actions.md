@@ -154,12 +154,11 @@ link in the *Actions* column of the `Product` entity listings. However, if you
 click on any of those links, you'll see an error because the `restockAction()`
 method is not defined in the AdminController.
 
-// TODO : change these instructions
-Therefore, the next step is to create your own AdminController in your Symfony
-application and to make it extend from the base AdminController provided by
-EasyAdmin. This process will take you less than a minute and it's explained in
-detail in the *Customize the Actions Used to Create and Edit Entities* section
-in the [Chapter 6](6-customizing-new-edit-views.md).
+Therefore, the next step is to create a custom `AdminController` in your
+Symfony application and to make it extend from the base AdminController 
+provided by EasyAdmin. This process will take you less than a minute and it's 
+explained in detail in the *Customization Based on Controller Methods* section
+in the [Customizing AdminController tutorial] [customizing-admin-controller].
 
 Now you can define the `restockAction()` method in your own controller:
 
@@ -177,8 +176,8 @@ class AdminController extends EasyAdminController
     {
         // controllers extending the base AdminController can access to the
         // following variables:
-        // $this->request, stores the current request
-        // $this->em, stores the Entity Manager for this Doctrine entity
+        //   $this->request, stores the current request
+        //   $this->em, stores the Entity Manager for this Doctrine entity
 
         // change the properties of the given entity and save the changes
         $id = $this->request->query->get('id');
@@ -302,3 +301,5 @@ class ProductController extends Controller
 
 Similarly to method based actions, you can configure any option of the route
 based actions and you can also leverage the action inheritance mechanism.
+
+[customizing-admin-controller]: ./customizing-admin-controller.md

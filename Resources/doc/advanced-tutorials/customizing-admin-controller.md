@@ -1,5 +1,5 @@
-Customizing Admin Controller
-============================
+Customizing AdminController
+===========================
 
 EasyAdmin includes one controller called `AdminController` which is responsible
 for most of the backend operations (rendering views, looking for entities,

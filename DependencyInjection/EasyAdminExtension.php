@@ -155,7 +155,7 @@ class EasyAdminExtension extends Extension
             // if config format #1 is used, the entity name is the numeric index
             // of the configuration array. In this case, autogenerate the entity
             // name using its class name
-            if (is_integer($entityName)) {
+            if (is_numeric($entityName)) {
                 $entityClassParts = explode('\\', $entityConfiguration['class']);
                 $entityClassName = end($entityClassParts);
                 $entityName = $this->getUniqueEntityName($entityClassName, array_keys($normalizedConfiguration));

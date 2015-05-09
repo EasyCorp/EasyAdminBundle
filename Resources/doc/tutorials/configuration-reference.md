@@ -1,5 +1,5 @@
-Chapter 11. Configuration Reference
-===================================
+Configuration Reference
+=======================
 
 Depending on the complexity and the customization of your backend, you can use
 different configuration formats.
@@ -17,12 +17,12 @@ easy_admin:
         - AppBundle\Entity\Product
 ```
 
-Simple Configuration with Custom Menu Labels
---------------------------------------------
+Simple Configuration with Custom Entity Names
+---------------------------------------------
 
-This configuration format allows to set the labels displayed in the main menu
-of the backend. Just list the entities but use a text-based key for each
-entity:
+This configuration format allows to set explicitly the entity names as the
+keys of the YAML configuration file. These entity names are used in buttons,
+page titles and the main menu labels:
 
 ```yaml
 easy_admin:
@@ -31,12 +31,12 @@ easy_admin:
         Inventory: AppBundle\Entity\Product
 ```
 
-Advanced Configuration with no Field Configuration
---------------------------------------------------
+Advanced Configuration with no Property Configuration
+-----------------------------------------------------
 
-This configuration format allows to control which fields, and in which order,
-are shown in the listings and in the forms. Just use the `list`, `edit` and
-`new` options and define the fields to display in the `fields` option:
+This configuration format allows to control which properties, and in which
+order, are shown in the views. Just use the `fields` option in the `edit`,
+`list`, `new` and `show` views:
 
 ```yaml
 easy_admin:
@@ -45,7 +45,8 @@ easy_admin:
             class: AppBundle\Entity\Customer
             list:
                 fields: ['id', 'name', 'email']
-        Inventory:
+        Product:
+            label: Inventory
             class: AppBundle\Entity\Product
             list:
                 fields: ['id', 'code', 'description', 'price']
@@ -56,7 +57,7 @@ easy_admin:
 ```
 
 If the `edit` and `new` configuration is the same, use instead the special
-`form` option, which will be applied to both of them:
+`form` view, which will be applied to both of them:
 
 ```yaml
 easy_admin:
@@ -65,7 +66,8 @@ easy_admin:
             class: AppBundle\Entity\Customer
             list:
                 fields: ['id', 'name', 'email']
-        Inventory:
+        Product:
+            label: Inventory
             class: AppBundle\Entity\Product
             list:
                 fields: ['id', 'code', 'description', 'price']
@@ -73,12 +75,11 @@ easy_admin:
                 fields: ['code', 'description', 'price', 'category']
 ```
 
-Advanced Configuration with Custom Field Configuration
-------------------------------------------------------
+Advanced Configuration with Custom Property Configuration
+---------------------------------------------------------
 
 This is the most advanced configuration format and it allows you to control the
-type, style, help message and label displayed for each field. Customize any
-field just by replacing its name with a hash with its properties:
+type, style, help message and label displayed for each property:
 
 ```yaml
 easy_admin:
@@ -87,7 +88,8 @@ easy_admin:
             class: AppBundle\Entity\Customer
             list:
                 fields: ['id', 'name', { property: 'email', label: 'Contact Info' }]
-        Inventory:
+        Product:
+            label: Inventory
             class: AppBundle\Entity\Product
             list:
                 fields: ['id', 'code', 'description', 'price']
@@ -109,7 +111,8 @@ the default configuration when it's convenient and to customize it when needed:
 easy_admin:
     entities:
         Customer:  AppBundle\Entity\Customer
-        Inventory:
+        Product:
+            label: Inventory
             class: AppBundle\Entity\Product
             list:
                 fields: ['id', 'code', 'description', 'price']

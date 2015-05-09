@@ -210,6 +210,261 @@ easy_admin:
 The only significant limitation of virtual properties is that you cannot sort
 listings using these fields.
 
+Customize the Property Labels
+-----------------------------
+
+By default, property labels are a "humanized" version of the related Doctrine
+property name. If your property is called `published`, its label will be
+`Published` and if your property is called `dateOfBirth`, the label will be
+`Date of birth`.
+
+In case you want to define a custom label, use the following expanded field
+configuration:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: ['id', 'name', { property: 'email', label: 'Contact' }]
+    # ...
+```
+
+Instead of using a string to define the name of the property (e.g. `email`) you
+have to define a hash with the name of the property (`property: 'email'`) and
+the custom label you want to display (`label: 'Contact'`).
+
+If your view contain lots of properties and most of them define their own
+custom label, consider using the alternative YAML syntax for sequences to
+improve the legibility of your backend configuration. The following example is
+equivalent to the above example:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields:
+                    - 'id'
+                    - 'name'
+                    - { property: 'email', label: 'Contact' }
+    # ...
+```
+
+### Translate Property Labels
+
+In order to translate the labels to the application language, use translation
+keys instead of contents for the `label` option:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields:
+                    - 'id'
+                    - { property: 'firstname', label: 'app.users.firstname' }
+                    - { property: 'lastname', label: 'app.users.firstname' }
+        # ...
+```
+
+Now, instead of displaying the label content, EasyAdmin will look for any
+translation file available in the application which defines the value of those
+keys for the current language.
+
+If there is no translation available, it will try to look for those values for
+the default application language. In case no translation is available, the key
+will be displayed so you can easily spot any missing translation.
+
+### Customize Date Format
+
+By default, these are the formats applied to date properties (read the
+[date configuration options](http://php.net/manual/en/function.date.php) page
+in the PHP manual in case you don't know the meaning of these options):
+
+  * `date`: `Y-m-d`
+  * `time`:  `H:i:s`
+  * `datetime`: `F j, Y H:i`
+
+These default formats can be overridden in two ways: globally for all entities
+and locally for each entity property. Define the global `formats` option to set
+the new formats for all entities (define any or all the `date`, `time` and
+`datetime` options):
+
+```yaml
+easy_admin:
+    formats:
+        date:     'd/m/Y'
+        time:     'H:i'
+        datetime: 'd/m/Y H:i:s'
+    entities:
+        # ...
+```
+
+The value of the `format` option is passed to the `format()` method of the
+`DateTime` class, so you can use any of the
+[date configuration options](http://php.net/manual/en/function.date.php)
+defined by PHP.
+
+The same `format` option can be applied to any date-based property. This local
+option always overrides the global formats:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields:
+                    - { property: 'dateOfBirth', format: 'j/n/Y' }
+                    # ...
+    # ...
+```
+
+### Customize Number Format
+
+Number related properties (`bigint`, `integer`, `smallint`, `decimal`, `float`)
+are displayed using the appropriate formatting according to the locale of your
+Symfony application. Use the `format` option to explicitly set the format
+applied to numeric properties.
+
+The global `formats` option applies the same formatting for all numeric values:
+
+```yaml
+easy_admin:
+    formats:
+        # ...
+        number: '%.2f'
+    entities:
+        # ...
+```
+
+In this case, the value of the `format` option is passed to the `sprintf()`
+function, so you can use any of the
+[PHP format specifiers](http://php.net/manual/en/function.sprintf.php).
+
+The same `format` option can be applied to any numeric property. This local
+configuration always overrides the global format:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'serialNumber', format: '%010s' }
+                    - { property: 'margin', format: '%01.2f' }
+                    # ...
+    # ...
+```
+
+### Customize Boolean Properties
+
+By default, when an entity is editable its boolean properties are displayed in
+listings as flip switches that allow to toggle their values very easily:
+
+![Advanced boolean fields](images/easyadmin-boolean-field-toggle.gif)
+
+When you change the value of any boolean property, EasyAdmin makes an Ajax
+request to actually change that value in the database. If something goes
+wrong, the switch will automatically return to its original value and it will
+also be disabled until the page is refreshed to avoid further issues:
+
+![Boolean field behavior when an error happens](images/easyadmin-boolean-field-toggle-error.gif)
+
+In case you want to disable this behavior, use `boolean` as the property type:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'hasStock', type: 'boolean' }
+                    # ...
+    # ...
+```
+
+Now the boolean value will be rendered as a simple label and its value cannot
+be modified:
+
+![Boolean field displayed as a label](images/easyadmin-boolean-field-label.png)
+
+### Customize Image Properties
+
+If some property stores the URL of an image, you can show the actual image in 
+the `list`, `search` and `show` views instead of its URL. Just set the type of 
+the property to `image`:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'photo', type: 'image' }
+                    # ...
+    # ...
+```
+
+The `photo` property will be displayed as a `<img>` HTML element whose `src`
+attribute is the value of the property. If your application stores relative
+paths, the image may not be displayed correctly. In those cases, define the
+`base_path` option to set the path to be prefixed to the image:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'photo', type: 'image', base_path: '/img/' }
+                    # ...
+    # ...
+```
+
+The value of the `base_path` can be a relative or absolute URL and even a
+Symfony parameter:
+
+```yaml
+# relative path
+- { property: 'photo', type: 'image', base_path: '/img/products/' }
+
+# absolute path pointing to an external host
+- { property: 'photo', type: 'image', base_path: 'http://static.acme.org/img/' }
+
+# Symfony container parameter
+- { property: 'photo', type: 'image', base_path: '%vich_uploader.mappings.product_image%' }
+```
+
+The image base path can also be set in the entity, to avoid repeating its
+value for different properties or different views (`list`, `show`):
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            image_base_path: 'http://static.acme.org/img/'
+            list:
+                fields:
+                    - { property: 'photo', type: 'image' }
+                    # ...
+    # ...
+```
+
+The base paths defined for a property always have priority over the one defined
+globally for the entity.
 
 
 
@@ -246,273 +501,8 @@ Edit and New Views Configuration
 
 
 
-Customize the Labels of the Columns
------------------------------------
 
-By default, column labels are a "humanized" version of the related Doctrine
-entity property name. If your property is called `published`, the column label
-will be `Published` and if your property is called `dateOfBirth`, the column
-label will be `Date of birth`.
 
-In case you want to define a custom label for one or all columns, just use the
-following expanded field configuration:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields: ['id', 'name', { property: 'email', label: 'Contact' }]
-    # ...
-```
-
-Instead of using a string to define the name of the property (e.g. `email`) you
-have to define a hash with the name of the property (`property: 'email'`) and
-the custom label you want to display (`label: 'Contact'`).
-
-If your listings contain lots of properties and most of them define their own
-custom label, consider using the alternative YAML syntax for sequences to
-improve the legibility of your backend configuration. The following example is
-equivalent to the above example:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields:
-                    - 'id'
-                    - 'name'
-                    - { property: 'email', label: 'Contact' }
-    # ...
-```
-
-### Translate Column Labels
-
-In order to translate the column labels to the application language, use
-translation keys instead of contents for the `label` option:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields:
-                    - 'id'
-                    - { property: 'firstname', label: 'app.users.firstname' }
-                    - { property: 'lastname', label: 'app.users.firstname' }
-            form:
-                fields:
-                    - 'id'
-                    - { property: 'firstname', label: 'app.users.firstname' }
-                    - { property: 'lastname', label: 'app.users.firstname' }
-        # ...
-```
-
-Now, instead of displaying the label content, EasyAdmin will look for any
-translation file available in the application which defines the value of those
-keys for the current language.
-
-If there is no translation available, it will try to look for those values for
-the default application language. In case no translation is available, the key
-will be displayed so you can easily spot any missing translation.
-
-Customize the Format of the Dates and Numbers
----------------------------------------------
-
-### Date Formatting
-
-By default, these are the formats applied to date related fields (read the
-[date configuration options](http://php.net/manual/en/function.date.php) PHP
-manual page in case you don't know the meaning of these options):
-
-  * `date`: `Y-m-d`
-  * `time`:  `H:i:s`
-  * `datetime`: `F j, Y H:i`
-
-These default formats can be overridden in two ways: globally for all entities
-and locally for each entity field. Define the global `formats` option to set
-the new formats for all entities (define any or all the `date`, `time` and
-`datetime` options):
-
-```yaml
-easy_admin:
-    formats:
-        date:     'd/m/Y'
-        time:     'H:i'
-        datetime: 'd/m/Y H:i:s'
-    entities:
-        # ...
-```
-
-The value of the `format` option is passed to the `format()` method of the
-`DateTime` class, so you can use any of the
-[date configuration options](http://php.net/manual/en/function.date.php)
-defined by PHP.
-
-The same `format` option can be applied to any date-based entity field. This
-field configuration always overrides the global date formats:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields:
-                    - { property: 'dateOfBirth', format: 'j/n/Y' }
-                    # ...
-    # ...
-```
-
-### Number Formatting
-
-Number related fields (`bigint`, `integer`, `smallint`, `decimal`, `float`)
-are displayed using the appropriate formatting according to the locale of the
-Symfony application. Use the `format` option to explicitly set the format
-applied to numeric fields.
-
-The global `formats` option applies the same formatting for all numeric values:
-
-```yaml
-easy_admin:
-    formats:
-        # ...
-        number: '%.2f'
-    entities:
-        # ...
-```
-
-In this case, the value of the `format` option is passed to the `sprintf()`
-function, so you can use any of the
-[PHP format specifiers](http://php.net/manual/en/function.sprintf.php).
-
-The same `format` option can be applied to any numeric entity field. This
-field configuration always overrides the global number format:
-
-```yaml
-easy_admin:
-    entities:
-        Product:
-            class: AppBundle\Entity\Product
-            list:
-                fields:
-                    - { property: 'serialNumber', format: '%010s' }
-                    - { property: 'margin', format: '%01.2f' }
-                    # ...
-    # ...
-```
-
-Customize Boolean Values
-------------------------
-
-By default, when the `edit` action is enabled for the entity, its boolean
-values are displayed in listings as flip switches:
-
-![Advanced boolean fields](images/easyadmin-boolean-field-toggle.gif)
-
-When you change the value of any boolean field, EasyAdmin will make an Ajax
-request to actually change that value in the database. If something goes
-wrong, the switch will automatically return to its original value and it will
-also be disabled until the page is refreshed to avoid further issues:
-
-![Boolean field behavior when an error happens](images/easyadmin-boolean-field-toggle-error.gif)
-
-In case you want to disable this behavior, use `boolean` as the property type:
-
-```yaml
-easy_admin:
-    entities:
-        Product:
-            class: AppBundle\Entity\Product
-            list:
-                fields:
-                    - { property: 'hasStock', type: 'boolean' }
-                    # ...
-    # ...
-```
-
-Now the boolean value will be rendered as a simple label and its value cannot
-be modified:
-
-![Boolean field displayed as a label](images/easyadmin-boolean-field-label.png)
-
-These non-editable labels are also displayed when the `edit` action is not
-enabled for the entity (see the `actions` option in [Chapter 3](3-customizing-first-backend.md)).
-
-Display Image Field Types
--------------------------
-
-If some field stores the URL of an image, you can show the actual image in the
-listing instead of its URL. Just set the type of the field to `image`:
-
-```yaml
-easy_admin:
-    entities:
-        Product:
-            class: AppBundle\Entity\Product
-            list:
-                fields:
-                    - { property: 'photo', type: 'image' }
-                    # ...
-    # ...
-```
-
-The `photo` field will be displayed as a `<img>` HTML element whose `src`
-attribute is the value of the field. If you store relative paths, the image may
-not be displayed correctly. In those cases, define the `base_path` option to
-set the path to be prefixed to the image:
-
-```yaml
-easy_admin:
-    entities:
-        Product:
-            class: AppBundle\Entity\Product
-            list:
-                fields:
-                    - { property: 'photo', type: 'image', base_path: '/img/' }
-                    # ...
-    # ...
-```
-
-The value of the `base_path` can be a relative or absolute URL and even a
-Symfony parameter:
-
-```yaml
-# relative path
-- { property: 'photo', type: 'image', base_path: '/img/products/' }
-
-# absolute path pointing to an external host
-- { property: 'photo', type: 'image', base_path: 'http://static.acme.org/img/' }
-
-# Symfony container parameter
-- { property: 'photo', type: 'image', base_path: '%vich_uploader.mappings.product_image%' }
-```
-
-The image base path can also be set in the entity, to avoid repeating its
-value for different fields or different actions (`list`, `show`):
-
-```yaml
-easy_admin:
-    entities:
-        Product:
-            class: AppBundle\Entity\Product
-            image_base_path: 'http://static.acme.org/img/'
-            list:
-                fields:
-                    - { property: 'photo', type: 'image' }
-                    # ...
-    # ...
-```
-
-The base paths defined for a field always have priority over the one defined
-for the entity.
 
 Customize Fields Appearance
 ---------------------------

@@ -57,32 +57,3 @@ your Doctrine entities.
 
 This simple metadata cache configuration can improve your backend performance
 between 20% and 30% depending on the complexity and number of your entities.
-
-Use Custom Doctrine Types in Forms
-----------------------------------
-
-When your application defines custom Doctrine DBAL types, you must define a
-related custom form type before using them as form fields. Imagine that your
-application defines a `UTCDateTime` type to convert the timezone of datetime
-values to UTC before saving them in the database.
-
-If you add that type in a form field as follows, you'll get an error message
-saying that the `utcdatetime` type couldn't be loaded:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            form:
-                fields:
-                    - { property: 'createdAt', type: 'utcdatetime' }
-                    # ...
-    # ...
-```
-
-This problem is solved defining a custom `utcdatetime` Form Type related to
-this custom Doctrine DBAL type. Read the
-[How to Create a Custom Form Field Type](http://symfony.com/doc/current/cookbook/form/create_custom_field_type.html)
-article of the official Symfony documentation to learn how to define custom
-form types.

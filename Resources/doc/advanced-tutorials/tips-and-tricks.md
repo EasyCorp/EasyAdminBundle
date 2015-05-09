@@ -71,3 +71,14 @@ easy_admin:
     show:
         actions: ['-delete', '-edit']
 ```
+
+Unloading the Default JavaScript and Stylesheets
+------------------------------------------------
+
+EasyAdmin uses Bootstrap CSS and jQuery frameworks to build the interface.
+In case you want to unload these files in addition to loading your own assets,
+override the default `layout.html.twig` template and empty the
+`head_stylesheets` and `body_javascripts` Twig blocks.
+
+Read the [Advanced Design Customization] [advanced-design-customization]
+tutorial to learn how to override default templates.

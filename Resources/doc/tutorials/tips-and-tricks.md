@@ -82,3 +82,5 @@ override the default `layout.html.twig` template and empty the
 
 Read the [Advanced Design Customization] [advanced-design-customization]
 tutorial to learn how to override default templates.
+
+[advanced-design-customization]: ./advanced-design-customization.md

@@ -25,7 +25,7 @@ easy_admin:
 This simple configuration option allows you to easily match the backend design
 to your project identity:
 
-![Using a custom brand color in the backend](images/easyadmin-design-brand-color.png)
+![Using a custom brand color in the backend](../images/easyadmin-design-brand-color.png)
 
 The value of the `brand_color` option is directly passed to the `color` and
 `background-color` CSS properties, so you can define the color using any valid
@@ -61,12 +61,12 @@ easy_admin:
     # ...
 ```
 
-![The default backend homepage using the light color scheme](images/easyadmin-design-color-scheme-light.png)
+![The default backend homepage using the light color scheme](../images/easyadmin-design-color-scheme-light.png)
 
 Combine the `light` color scheme with the `brand_color` option to get a myriad
 of new backend designs:
 
-![Combining the light color scheme with a colorful palette](images/easyadmin-design-brand-color-light-theme.png)
+![Combining the light color scheme with a colorful palette](../images/easyadmin-design-brand-color-light-theme.png)
 
 Customizing Form Design
 -----------------------
@@ -74,7 +74,7 @@ Customizing Form Design
 By default, forms are displayed using the **horizontal style** defined by the
 Bootstrap 3 CSS framework:
 
-![Default horizontal form style](images/easyadmin-form-horizontal.png)
+![Default horizontal form style](../images/easyadmin-form-horizontal.png)
 
 The style of the forms can be changed application-wide using the `form_theme`
 option inside the `design` configuration section. In fact, the default form
@@ -99,7 +99,7 @@ easy_admin:
 
 The same form shown previously will now be rendered as follows:
 
-![Vertical form style](images/easyadmin-form-vertical.png)
+![Vertical form style](../images/easyadmin-form-vertical.png)
 
 The `horizontal` and `vertical` values are just nice shortcuts for the two
 built-in form themes. But you can also use your own form themes. Just set the
@@ -131,7 +131,7 @@ However, you can use the `class` form field to create these advanced layouts.
 The `class` value is applied to the parent `<div>` element which contains the
 field label, the field widget, the field help and the optional field errors:
 
-![Multi-column form](images/easyadmin-form-multi-column.png)
+![Multi-column form](../images/easyadmin-form-multi-column.png)
 
 The configuration used to display this form is the following:
 

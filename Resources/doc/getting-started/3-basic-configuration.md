@@ -40,8 +40,9 @@ easy_admin:
 ```
 
 This expanded configuration format allows to define lots of attributes for each
-entity, as explained the following chapters. Refer to the [Configuration Reference]()
-tutorial to check out all the available configuration formats.
+entity, as explained the following chapters. Refer to the
+[Configuration Reference] [config-reference] tutorial to check out all the
+available configuration formats.
 
 Customize the URL Used to Access the Backend
 --------------------------------------------
@@ -167,3 +168,5 @@ backend section of your application.
 
 When accessing a protected backend, EasyAdmin will display the name of user
 who is logged in the application.
+
+[config-reference]: ../tutorials/configuration-reference.md

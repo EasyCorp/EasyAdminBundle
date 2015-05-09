@@ -19,20 +19,20 @@ the rest of the views can be disabled if needed as explained in this chapter.
 Displays the list of items that match the given criteria and provides automatic
 pagination and column sorting:
 
-![List view interface](images/easyadmin-list-view.png)
+![List view interface](../images/easyadmin-list-view.png)
 
 **Show View**
 
 The `show` view is used when displaying the contents of any entity:
 
-![Show view interface](images/easyadmin-show-view.png)
+![Show view interface](../images/easyadmin-show-view.png)
 
 **Edit and New Views**
 
 The `edit` view is used when creating new elements of the given entity. The
 `edit` view is displayed when modifying the contents of any existing entity:
 
-![Edit view interface](images/easyadmin-edit-view.png)
+![Edit view interface](../images/easyadmin-edit-view.png)
 
 **Search View**
 
@@ -40,7 +40,7 @@ The `search` view is used to display the results of any query performed by the
 user. It reuses most of the design and features of the `list` view to ensure a
 consistent user experience:
 
-![Search view interface](images/easyadmin-search-view.png)
+![Search view interface](../images/easyadmin-search-view.png)
 
 ### Actions
 
@@ -48,7 +48,7 @@ Each view includes one or more **actions** to perform operations on the items
 displayed in that view. For example, the default `list` view interface
 includes four actions as buttons or links:
 
-![List view interface](images/easyadmin-list-view-actions.png)
+![List view interface](../images/easyadmin-list-view-actions.png)
 
 These are the actions included by default in each view:
 
@@ -422,14 +422,14 @@ easy_admin:
 By default, when an entity is editable its boolean properties are displayed in
 listings as flip switches that allow to toggle their values very easily:
 
-![Advanced boolean fields](images/easyadmin-boolean-field-toggle.gif)
+![Advanced boolean fields](../images/easyadmin-boolean-field-toggle.gif)
 
 When you change the value of any boolean property, EasyAdmin makes an Ajax
 request to actually change that value in the database. If something goes
 wrong, the switch will automatically return to its original value and it will
 also be disabled until the page is refreshed to avoid further issues:
 
-![Boolean field behavior when an error happens](images/easyadmin-boolean-field-toggle-error.gif)
+![Boolean field behavior when an error happens](../images/easyadmin-boolean-field-toggle-error.gif)
 
 In case you want to disable this behavior, use `boolean` as the property type:
 
@@ -448,7 +448,7 @@ easy_admin:
 Now the boolean value will be rendered as a simple label and its value cannot
 be modified:
 
-![Boolean field displayed as a label](images/easyadmin-boolean-field-label.png)
+![Boolean field displayed as a label](../images/easyadmin-boolean-field-label.png)
 
 ### Customize Image Properties
 

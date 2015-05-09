@@ -153,7 +153,7 @@ by reference and any modification made on it will propagate back to the
 original `AdminController`.
 
 Similarly, you may want to update the `slug` when editing a blog post, but only
-when the `slug` field is empty:
+if the `slug` field is empty:
 
 ```php
 public function preUpdateBlogPostEntity($entity)
@@ -181,8 +181,8 @@ it's recommended to use CamelCase notation to set the entity names.
 
 ### Tweak All Entities Before Persisting/Updating/Removing Them
 
-`AdminController` also defines three similar but generic methods to allow you
-tweak all the entities of the backend in a single method:
+`AdminController` also defines three similar but generic methods to allow
+tweaking all the entities of the backend in a single method:
 
 ```php
 public function prePersistEntity($entity) { ... }
@@ -190,168 +190,53 @@ public function preUpdateEntity($entity)  { ... }
 public function preRemoveEntity($entity)  { ... }
 ```
 
-### Tweak the list/new/edit/show/delete method for a specific entity
+### Tweak the Default Actions for a Specific Entity
 
-Create a new AdminController extending from the default one and add this method:
+`AdminController` defines one method for each default action (`listAction()`,
+`editAction()`, etc.) Before executing these generic methods, it checks whether
+specific methods are defined for the given entity.
+
+Suppose the listing of the `Product` entity in your backend is very complex and
+requires executing some custom logic. The easiest way to achieve that is to
+create a new `AdminController` extending from the default one and then, define
+this method:
 
 ```php
-public function list<EntityName>Action()
-public function new<EntityName>Action()
-public function edit<EntityName>Action()
-public function show<EntityName>Action()
-public function delete<EntityName>Action()
+public function listProductAction()
 {
-    ...
+    // custom logic
+    
+    $this->render($this->entity['templates']['list'], array(...));
 }
 ```
 
-### Tweak the list/new/edit/show/delete method for all entities
-
-Create a new AdminController extending from the default one and add this method:
+You can define any of the following methods for any or all of your entities:
 
 ```php
-public function listAction()
-public function newAction()
-public function editAction()
-public function showAction()
-public function deleteAction()
-{
-    ...
-}
+public function list<EntityName>Action()   { ... }
+public function new<EntityName>Action()    { ... }
+public function edit<EntityName>Action()   { ... }
+public function show<EntityName>Action()   { ... }
+public function delete<EntityName>Action() { ... }
 ```
 
+Given the syntax of method names, it's recommended to use CamelCase notation
+to set the entity names.
 
+### Tweak the Default Actions for All Entities
 
-
-
-Customize the Actions Used to Create and Edit Entities
-------------------------------------------------------
-
-By default, new and edited entities are persisted without any further
-modification. In case you want to manipulate the entity before persisting it,
-you can override the methods used by EasyAdmin.
-
-Similarly to customizing templates, you need to use the Symfony bundle
-[inheritance mechanism](http://symfony.com/doc/current/cookbook/bundles/inheritance.html#overriding-controllers)
-to override the controller used to generate the backend. Among many other
-methods, this controller contains two methods which are called just before the
-entity is persisted:
+This use case is only useful for extremely complex backends which need to
+override the entire behavior of one or all the default actions. To do so,
+create a new `AdminController` extending from the default one and then, define
+any of these methods:
 
 ```php
-protected function prepareEditEntityForPersist($entity)
-{
-    return $entity;
-}
-
-protected function prepareNewEntityForPersist($entity)
-{
-    return $entity;
-}
+public function listAction()   { ... }
+public function newAction()    { ... }
+public function editAction()   { ... }
+public function showAction()   { ... }
+public function deleteAction() { ... }
 ```
-
-Suppose you want to automatically set the slug of some entity called `Article`
-whenever the entity is persisted.
-
-Now you can add in this new controller any of the original controller's
-methods to override them. Let's add `prepareEditEntityForPersist()` and
-`prepareNewEntityForPersist()` to set the `slug` of the `Article` entity:
-
-```php
-// src/AppBundle/Controller/AdminController.php
-namespace AppBundle\Controller;
-
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
-use AppBundle\Entity\Article;
-
-class AdminController extends EasyAdminController
-{
-    /**
-     * @Route("/admin/", name="admin")
-     */
-    public function indexAction(Request $request)
-    {
-        return parent::indexAction($request);
-    }
-
-    protected function prepareEditEntityForPersist($entity)
-    {
-        if ($entity instanceof Article) {
-            return $this->updateSlug($entity);
-        }
-    }
-
-    protected function prepareNewEntityForPersist($entity)
-    {
-        if ($entity instanceof Article) {
-            return $this->updateSlug($entity);
-        }
-    }
-
-    private function updateSlug($entity)
-    {
-        $slug = $this->get('app.slugger')->slugify($entity->getTitle());
-        $entity->setSlug($slug);
-
-        return $entity;
-    }
-}
-```
-
-The example above is trivial, but your custom admin controller can be as
-complex as needed. In fact, you can override any of the original controller's
-methods to customize the backend as much as you need.
-
-Advanced Customization of the Fields Displayed in Forms
--------------------------------------------------------
-
-The previous sections showed how to tweak the fields displayed in the `edit`
-and `new` forms using some simple options. When the field customization is
-more advanced, you should override the `configureEditForm()` method in your own
-admin controller.
-
-In this example, the form of the `Event` entity is tweaked to change the
-regular `city` field by a `choice` form field with custom and limited choices:
-
-```php
-// src/AppBundle/Controller/AdminController.php
-namespace AppBundle\Controller;
-
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
-use AppBundle\Entity\Event;
-
-class AdminController extends EasyAdminController
-{
-    /**
-     * @Route("/admin/", name="admin")
-     */
-    public function indexAction(Request $request)
-    {
-        return parent::indexAction($request);
-    }
-
-    public function createEditForm($entity, array $entityProperties)
-    {
-        $editForm = parent::createEditForm($entity, $entityProperties);
-
-        if ($entity instanceof Event) {
-            // the trick is to remove the default field and then
-            // add the customized field
-            $editForm->remove('city');
-            $editForm->add('city', 'choice', array('choices' => array(
-                'London', 'New York', 'Paris', 'Tokyo'
-            )));
-        }
-
-        return $editForm;
-    }
-}
-```
-
-
 
 Customization Based on Symfony Events
 -------------------------------------

@@ -121,7 +121,8 @@ By default, the `edit`, `new` and `show` views display all the entity
 properties, but the `list` and `search` views make some "smart guesses" to
 decide which columns to display to make listings look "good enough".
 
-Use the `fields` option to explicitly set the fields to display in each view:
+Use the `fields` option to explicitly set the properties to display in each
+view:
 
 ```yaml
 # app/config/config.yml
@@ -133,6 +134,9 @@ easy_admin:
                 fields: ['id', 'firstName', 'lastName', 'phone', 'email']
     # ...
 ```
+
+This option can also be used to reorder the way properties are displayed, which
+is specially important for the `edit`, `new` and `show` views.
 
 ### Display Virtual Properties
 

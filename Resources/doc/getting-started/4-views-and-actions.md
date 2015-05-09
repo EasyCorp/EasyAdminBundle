@@ -492,6 +492,24 @@ easy_admin:
 Search View Configuration
 -------------------------
 
+### Customize the Properties on which the Query is Performed
+
+By default, the search query is performed on all entity properties except those
+with special data types, such as `binary`, `blob`, `object`, etc. Define the
+`fields` option in the `search` configuration of any entity to explicitly set
+the properties used to perform the query:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            search:
+                fields: ['firstName', 'lastName', 'email']
+    # ...
+```
+
 Edit and New Views Configuration
 --------------------------------
 

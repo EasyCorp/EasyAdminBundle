@@ -23,7 +23,7 @@ pagination and column sorting:
 
 **Show View**
 
-The `show` view is used when displaying the contents of any entity: 
+The `show` view is used when displaying the contents of any entity:
 
 ![Show view interface](images/easyadmin-show-view.png)
 
@@ -62,13 +62,18 @@ These are the actions included by default in each view:
 Default actions can be configured and/or disabled for any view. In addition,
 you can define your own custom actions.
 
+Common View Configuration
+-------------------------
 
+In this section you'll learn all the common configuration that can be applied
+to all views. The examples will use the `list` view, but you can replace it
+with any other view (`edit`, `new`, `show`, `search`). In the next sections
+you'll learn the specific configuration options available for each view.
 
-Customize the Title of the Page
--------------------------------
+### Customize the Title of the Page
 
-By default, the title of the listing page just displays the name of the entity.
-Define the `title` option to set a custom page title:
+By default, titles just display the name of the entity. Define the `title`
+option to set a custom page title:
 
 ```yaml
 # app/config/config.yml
@@ -76,50 +81,47 @@ easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
+            label: 'Customers'
             list:
                 title: "Most recent customers"
         # ...
 ```
 
-The `title` option can include the following variable:
+The `title` content can include the following special variables:
 
-  * `%entity_name%`, resolves to the class name of the current entity (e.g.
-    `Customer`, `Product`, `User`, etc.)
+  * `%entity_label%`, resolves to the value defined in the `label` option of
+    the entity. If you haven't defined it, this value will be equal to the
+    entity name. In the example above, this value would be `Customers`.
+  * `%entity_name%`, resolves to the entity name, which is the YAML key used
+    to configure the entity in the backend configuration file. In the example
+    above, this value would be `Customer`.
+  * `%entity_id%`, resolves to the value of the primary key of the entity being
+    edited or showed. Obviously, this variable is only available for the `show`
+    and `edit` views. Even if the option is called `entity_id`, it also works
+    for primary keys with names different from `id`.
 
 Beware that, in Symfony applications, YAML values enclosed with `%` and `%`
-have a special meaning. Use two consecutive `%` characters to avoid any issue:
+have a special meaning. To avoid any issue, use two consecutive `%` characters
+when including these variables:
 
 ```yaml
 easy_admin:
     entities:
         Customer:
             class: AppBundle\Entity\Customer
+            label: 'Customers'
             list:
                 title: '%%entity_name%% listing'
         # ...
 ```
 
-Customize the Number of Item Rows Displayed
--------------------------------------------
+### Customize the Properties Displayed
 
-By default, listings display a maximum of `15` rows. Define the
-`max_results` option under the `list` key to change this value:
+By default, the `edit`, `new` and `show` views display all the entity
+properties, but the `list` and `search` views make some "smart guesses" to
+decide which columns to display to make listings look "good enough".
 
-```yaml
-# app/config/config.yml
-easy_admin:
-    list:
-        max_results: 30
-    # ...
-```
-
-Customize the Columns Displayed
--------------------------------
-
-By default, the backend makes some "smart guesses" to decide which columns to
-display in listings to make them look "good enough". Define the `fields` option
-in the `list` configuration of any entity to explicitly set the fields to
-display:
+Use the `fields` option to explicitly set the fields to display in each view:
 
 ```yaml
 # app/config/config.yml
@@ -132,15 +134,15 @@ easy_admin:
     # ...
 ```
 
-### Virtual Entity Fields
+### Display Virtual Properties
 
 Sometimes, it's useful to display values which are not entity properties. For
 example, if your `Customer` entity defines the `firstName` and `lastName`
 properties, you may want to just display a column called `Name` with both
-values merged. These columns are called *virtual fields* because they don't
-really exist as Doctrine entity fields.
+values merged. These are called *virtual properties* because they don't really
+exist as Doctrine entity properties.
 
-First, add this new virtual field (`name`) to the entity configuration:
+First, add this new virtual property (`name`) to the entity configuration:
 
 ```yaml
 easy_admin:
@@ -152,16 +154,14 @@ easy_admin:
     # ...
 ```
 
-Now, if you reload the backend, you'll see that the virtual field only displays
-`Inaccessible` as its value. The reason is that virtual field `name` does not
-match any of the entity's properties. To fix this issue, add a new public
-method in your entity called `getXxx()` or `xxx()`, where `xxx` is the name of
-the virtual field (in this case the field is called `name`, so the method must
-be called `getName()` or `name()`):
+Now, if you reload the backend, you'll see that the virtual property only
+displays `Inaccessible` as its value. The reason is that `name` does not match
+any of the entity's properties. To fix this issue, add a new public method in
+your entity called `getXxx()` or `xxx()`, where `xxx` is the name of the
+virtual property (in this case the property is called `name`, so the method
+must be called `getName()` or `name()`):
 
 ```php
-namespace AppBundle\Entity;
-
 use Doctrine\ORM\Mapping as ORM;
 
 /** @ORM\Entity */
@@ -176,13 +176,13 @@ class Customer
 }
 ```
 
-That's it. Reload your backend and now you'll see the right values of this
-virtual field. By default, virtual fields are displayed as text contents. If
-your virtual field is a *boolean* value or a date, use the `type` option to
-set a more appropriate form field to render them:
+That's it. Reload your backend and now you'll see the value of this virtual
+property. By default, these properties are displayed as text contents. If your
+virtual property is a *boolean* value or a date, use the `type` option to set
+a more appropriate data type:
 
 ```yaml
-# in this example, the virtual fields 'is_eligible' and 'last_contact' will
+# in this example, the virtual properties 'is_eligible' and 'last_contact' will
 # be considered strings, even if they return boolean and DateTime values
 # respectively
 easy_admin:
@@ -193,7 +193,7 @@ easy_admin:
                 fields: ['id', 'is_eligible', 'last_contact']
     # ...
 
-# in this example, the virtual fields 'is_eligible' and 'last_contact' will
+# in this example, the virtual properties 'is_eligible' and 'last_contact' will
 # be displayed as a boolean and a DateTime value respectively
 easy_admin:
     entities:
@@ -207,8 +207,44 @@ easy_admin:
     # ...
 ```
 
-The only significant limitation of virtual fields is that you cannot reorder
+The only significant limitation of virtual properties is that you cannot sort
 listings using these fields.
+
+
+
+
+List View Configuration
+-----------------------
+
+### Customize the Number of Item Rows Displayed
+
+By default, listings display a maximum of `15` rows. Define the
+`max_results` option under the `list` key to change this value:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    list:
+        max_results: 30
+    # ...
+```
+
+
+Search View Configuration
+-------------------------
+
+Edit and New Views Configuration
+--------------------------------
+
+
+
+
+
+
+
+
+
+
 
 Customize the Labels of the Columns
 -----------------------------------

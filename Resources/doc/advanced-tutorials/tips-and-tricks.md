@@ -57,3 +57,17 @@ your Doctrine entities.
 
 This simple metadata cache configuration can improve your backend performance
 between 20% and 30% depending on the complexity and number of your entities.
+
+Create a Read-Only Backend
+--------------------------
+
+Disable the `delete`, `edit` and `new` actions for all views and the users
+won't be able to add, modify or remove any information:
+
+```yaml
+easy_admin:
+    list:
+        actions: ['-edit', '-new']
+    show:
+        actions: ['-delete', '-edit']
+```

@@ -205,7 +205,7 @@ this method:
 public function listProductAction()
 {
     // custom logic
-    
+
     $this->render($this->entity['templates']['list'], array(...));
 }
 ```
@@ -241,64 +241,107 @@ public function deleteAction() { ... }
 Customization Based on Symfony Events
 -------------------------------------
 
+`AdminController` dispatches lots of custom events during the execution of the
+backend. Use Symfony's [event listeners] [event-listener] or event subscribers
+to hook into the default controller and tweak its behavior.
 
+The custom events are defined in the `EasyAdmin\Event\EasyAdminEvents` class
+and are divided into three groups.
 
-Hook into any of the new events defined by the bundle:
+### Initialization related events
+
+The `initialize()` method is executed before any other action method. It checks
+for some common errors and initializes the variables used by the rest of the
+methods (`$entity`, `$request`, `$config`, etc.)
+
+The two events related to this `initialize()` method are:
+
+  * `PRE_INITIALIZE`, executed just at the beginning of the method, before any
+    variable has been initialized and any error checked.
+  * `POST_INITIALIZE`, executed at the very end of the method, just before
+    executing the method associated with the current action.
+
+### Views related events
+
+Each view defines two events which are dispatched respectively at the very
+beginning of each method and at the very end of it, just before executing the
+`$this->render()` instruction:
+
+  * `PRE_DELETE`, `POST_DELETE`
+  * `PRE_EDIT`, `POST_EDIT`
+  * `PRE_LIST`, `POST_LIST`
+  * `PRE_NEW`, `POST_NEW`
+  * `PRE_SEARCH`, `POST_SEARCH`
+  * `PRE_SHOW`, `POST_SHOW`
+
+### Doctrine related events
+
+Doctrine related logic is wrapped with a before and after event that allows you
+to tweak the entity being created/updated/removed:
+
+  * `PRE_PERSIST`, `POST_PERSIST`
+  * `PRE_UPDATE`, `POST_UPDATE`
+  * `PRE_REMOVE`, `POST_REMOVE`
+
+### The Event Object
+
+Event listeners and subscribers receive an event object based on the
+[GenericEvent class] [generic-event] defined by Symfony. The subject of the
+event depends on the current action:
+
+  * `delete`, `edit` and `show` actions receive the current `$entity` object
+    as the subject (this object is also available in the event arguments as
+    `$event['entity']`).
+  * `list` and `search` actions receive the `$paginator` object as the subject
+    which contains the collection of entities that meet the criteria of the
+    current listing of search query (this object is also available in the
+    event arguments as `$event['paginator']`).
+
+In addition, the event arguments contain all the action method variables. You
+can access to them through the `getArgument()` method or via the array access
+provided by the `GenericEvent` class.
+
+The following example shows how to implement with an event subscriber the same
+example used in the previous section (set the `slug` property of the `BlogPost`entity before persisting it):
 
 ```php
-// Initialization related events
-const PRE_INITIALIZE = 'easy_admin.pre_initialize';
-const POST_INITIALIZE = 'easy_admin.post_initialize';
-
-// Backend views related events
-const PRE_DELETE = 'easy_admin.pre_delete';
-const POST_DELETE = 'easy_admin.post_delete';
-const PRE_EDIT = 'easy_admin.pre_edit';
-const POST_EDIT = 'easy_admin.post_edit';
-const PRE_LIST = 'easy_admin.pre_list';
-const POST_LIST = 'easy_admin.post_list';
-const PRE_NEW = 'easy_admin.pre_new';
-const POST_NEW = 'easy_admin.post_new';
-const PRE_SEARCH = 'easy_admin.pre_search';
-const POST_SEARCH = 'easy_admin.post_search';
-const PRE_SHOW = 'easy_admin.pre_show';
-const POST_SHOW = 'easy_admin.post_show';
-
-// Doctrine related events
-const PRE_PERSIST = 'easy_admin.pre_persist';
-const POST_PERSIST = 'easy_admin.post_persist';
-const PRE_UPDATE = 'easy_admin.pre_update';
-const POST_UPDATE = 'easy_admin.post_update';
-const PRE_REMOVE = 'easy_admin.pre_remove';
-const POST_REMOVE = 'easy_admin.post_remove';
-```
-
-Single entity actions (edit, new, delete, etc.) receive the `$entity` as the event subject. The actions related to multiple entities (list, search) receive the `$paginator` object as the subject of the event. In addition, the event receives all the controller variables as arguments. You can access them via `getArgument()` or via the array access provided by Symfony for the GenericEvent:
-
-```php
-<?php
-
 namespace AppBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use AppBundle\Entity\BlogPost;
 
 class EasyAdminSubscriber implements EventSubscriberInterface
 {
+    private $slugger;
+
+    public function __construct($slugger)
+    {
+        $this->slugger = $slugger;
+    }
+
     public static function getSubscribedEvents()
     {
         return array(
-            'easy_admin.pre_update' => array('preUpdate'),
+            'easy_admin.pre_persist' => array('setBlogPostSlug'),
         );
     }
 
-    public function preUpdate(GenericEvent $event)
+    public function setBlogPostSlug(GenericEvent $event)
     {
         $entity = $event->getSubject();
-        $view = $event['view'];
-        $entity = $event['entity'];
 
-        // ...
+        if (!($entity instanceof BlogPost)) {
+            return;
+        }
+
+        $slug = $this->slugger->slugify($entity->getTitle());
+        $entity->setSlug($slug);
+
+        $event['entity'] = $entity;
     }
 }
 ```
+
+[event-listener]: http://symfony.com/doc/current/cookbook/service_container/event_listener.html
+[generic-event]: http://symfony.com/doc/current/components/event_dispatcher/generic_event.html

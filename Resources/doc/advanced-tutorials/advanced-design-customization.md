@@ -237,4 +237,3 @@ variables:
     of any time (String, numeric, boolean, array, etc.)
   * `format`, available only for the date and numeric field types. It defines
     the formatting that should be applied to the value before displaying it.
-

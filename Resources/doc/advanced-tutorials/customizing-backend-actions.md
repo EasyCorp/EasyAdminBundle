@@ -1,5 +1,8 @@
-Creating Custom Actions
-=======================
+Customizing Backend Actions
+===========================
+
+In this article you'll learn how to disable actions, how to tweak their
+appearance and how to create your own custom actions.
 
 Configure the Actions Displayed in Each View
 --------------------------------------------
@@ -18,14 +21,13 @@ easy_admin:
     # ...
 ```
 
-The value of the `actions` option is added to the default actions. This means
-that in the example above, the `edit` view of all the backend entities will
-include the `list`, `delete` and `show` actions (the first two are the default
-actions and the last one is explicitly configured).
+The value of the `actions` option is merged with the default action
+configuration. This means that in the example above, the `edit` view of all
+entities will include the `list`, `delete` and `show` actions (the first two 
+are the default actions and the last one is explicitly configured).
 
-Instead of adding new actions, sometimes you want to remove some actions from
-the views. To do so, use the same `actions` option but prefix each action to
-remove with a dash (`-`):
+Instead of adding new actions, sometimes you want to remove them. To do so, use
+the same `actions` option but prefix each action to remove with a dash (`-`):
 
 ```yaml
 easy_admin:
@@ -34,8 +36,8 @@ easy_admin:
     # ...
 ```
 
-In the example above, the `edit` view will now include the `list` and `show`
-because of the following:
+In the example above, the `edit` view will now include just the `list` and the
+`show` actions because of the following:
 
   * Default actions for `edit` view: `list` and `delete`
   * Actions added by configuration: `show`
@@ -45,7 +47,7 @@ because of the following:
 ### Adding or Removing Actions Per Entity
 
 In addition to adding or removing actions for the entire backend, you can also
-define the `actions` option for the view of each entity:
+define the `actions` option for each entity:
 
 ```yaml
 easy_admin:
@@ -72,7 +74,8 @@ will be the following:
   * Default actions for `list` view: `edit`, `list`, `new`, `search`, `show`
   * Actions added by the backend: none
   * Actions removed by the backend: `edit`
-  * Resulting actions for the backend (and inherited by the entity): `list`, `new`, `search`, `show`
+  * Resulting actions for the backend (and inherited by the entity): `list`,
+    `new`, `search`, `show`
   * Actions added by the entity: none
   * Actions removed by the entity: `show`
   * Resulting actions for this entity: `list`, `new`, `search`
@@ -87,7 +90,7 @@ customized action:
 ```yaml
 easy_admin:
     list:
-        actions: [ { name: 'edit', label: 'Modify' }]
+        actions: [{ name: 'edit', label: 'Modify' }]
 ```
 
 When customizing lots of actions, consider using the alternative YAML syntax to
@@ -103,11 +106,11 @@ easy_admin:
 
 The following properties can be configured for each action:
 
-  * `name`, this is the only mandatory option. Later in this chapter you'll
+  * `name`, this is the only mandatory option. Later in this article you'll
     fully understand the importance of this option when defining your own
     custom actions.
   * `type`, (default value: `method`), this option defines the type of action,
-    which can be `method` or `route`. Later in this chapter you'll fully
+    which can be `method` or `route`. Later in this article you'll fully
     understand the importance of this option when defining your own custom
     actions.
   * `label`, is the text displayed in the button or link associated with the
@@ -118,26 +121,24 @@ The following properties can be configured for each action:
   * `icon`, is the name of the FontAwesome icon displayed next to the link or
     inside the button used to render the action. You don't have to include the
     `fa-` prefix of the icon name (e.g. to display the icon of a user, don't
-    use the `fa fa-user` or `fa-user` names; just use `icon`).
+    use the `fa fa-user` or `fa-user` values; just use `user`).
 
-Defining Custom Actions in the Backend
---------------------------------------
+Creating Custom Actions
+-----------------------
 
 So far you've learned how to add/remove built-in actions and how to configure
 them. However, one of the most powerful features of EasyAdmin is the
-possibility of defining your own actions and displaying them in any of the
-views.
+possibility of defining your own actions.
 
 ### Method Based Actions
 
 This is the most common type of action and it just executes a method of the
 AdminController used by the backend. Suppose that in your backend, one of the
-most common tasks is to restock a product adding 100 units to its current
-stock. Instead of editing a product, manually add those 100 units and saving
-the changes, you can define a new `Restock` action in the product listing.
+usual tasks is to restock a product adding 100 units to its current stock.
+Instead of editing a product, manually adding those 100 units and saving
+the changes, you can display a new `Restock` action in the `list` view.
 
-First, define a new `restock` action using the `actions` option of the `list`
-view:
+First, define a new `restock` action using the `actions` option:
 
 ```yaml
 easy_admin:
@@ -153,6 +154,7 @@ link in the *Actions* column of the `Product` entity listings. However, if you
 click on any of those links, you'll see an error because the `restockAction()`
 method is not defined in the AdminController.
 
+// TODO : change these instructions
 Therefore, the next step is to create your own AdminController in your Symfony
 application and to make it extend from the base AdminController provided by
 EasyAdmin. This process will take you less than a minute and it's explained in
@@ -176,10 +178,11 @@ class AdminController extends EasyAdminController
         // controllers extending the base AdminController can access to the
         // following variables:
         // $this->request, stores the current request
-        // $this->em, stores the Doctrine Entity Manager associated with this entity
+        // $this->em, stores the Entity Manager for this Doctrine entity
 
         // change the properties of the given entity and save the changes
-        $entity = $this->em->getRepository('AppBundle:Product')->find($this->request->query->get('id'));
+        $id = $this->request->query->get('id');
+        $entity = $this->em->getRepository('AppBundle:Product')->find($id);
         $entity->setStock(100 + $entity->getStock());
         $this->em->flush();
 
@@ -192,8 +195,8 @@ class AdminController extends EasyAdminController
         // redirect to the 'edit' view of the given entity item
         return $this->redirectToRoute('admin', array(
             'view' => 'edit',
+            'id' => $id,
             'entity' => $this->request->query->get('entity'),
-            'id' => $this->request->query->get('id'),
         ));
     }
 }
@@ -236,23 +239,22 @@ easy_admin:
 This type of actions allow you to execute any controller of your existing
 application, without the need to define a custom AdminController extending from
 the default one. In this case, the `name` of the action is considered the name
-of the route to link to. These actions must also define the `type` option as
-`route` because actions by default are considered of `method` type:
+of the route to link to and its type must be `route`:
 
 ```yaml
 easy_admin:
     entities:
         Product:
             list:
-                actions: [ { name: 'product_restock', type: 'route' } ]
+                actions: [{ name: 'product_restock', type: 'route' }]
         # ...
 ```
 
 Route based actions are displayed as regular links or buttons, but they don't
 point to the usual `admin` route but to the route configured by the action.
 In addition, the route is passed two parameters in the query string: `entity`
-(with the name of the Doctrine entity) and, when possible, the `id` of the
-current entity.
+(the name of the Doctrine entity) and, when available, the `id` of the related
+entity.
 
 Following the same example as above, the controller of this new route based
 action would look as follows:
@@ -277,7 +279,8 @@ class ProductController extends Controller
         $em = $this->getDoctrine()->getManager();
         $repository = $this->getDoctrine()->getRepository('AppBundle:Product');
 
-        $entity = $repository->find($this->request->query->get('id'));
+        $id = $this->request->query->get('id');
+        $entity = $repository->find($id);
         $entity->setStock(100 + $entity->getStock());
         $em->flush();
 
@@ -290,8 +293,8 @@ class ProductController extends Controller
         // redirect to the 'edit' view of the given entity item
         return $this->redirectToRoute('admin', array(
             'view' => 'edit',
+            'id' => $id,
             'entity' => $this->request->query->get('entity'),
-            'id' => $this->request->query->get('id'),
         ));
     }
 }

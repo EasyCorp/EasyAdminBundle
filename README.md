@@ -152,7 +152,7 @@ Getting Started Guide
 Advanced Tutorials
 ------------------
 
-  * [Creating Custom Actions]()
+  * [Customizing Backend Actions]()
   * [Customizing Admin Controller]()
   * [Advanced Design Customization]()
   * [Tips and Tricks]()

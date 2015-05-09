@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-09T08:42:17Z
+
+I still think that this part:
+
+```markdown
+ **❮ NOTE ❯** you are reading the documentation of the bundle's **most recent stable
+version**. You can also [read the documentation of the development version ➜]
+(https://github.com/javiereguiluz/EasyAdminBundle/tree/master/Resources/doc).
+```
+
+should be replaced with:
+
+```markdown
+ **❮ NOTE ❯** you are reading the documentation of the bundle's **dev** version. You
+can also [read the documentation of the **latest stable** version ➜]
+(https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.5.0/#easyadmin).
+```
+
+And change the version before each new release.
+
+(and don't forget to remove the newlines in this code, because it's just here for readability in the issues ^^ )
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-09T17:46:54Z
+
+@Pierstoval I don't agree with your proposal to change that note about dev/stable versions ... but anyway I've done the change as you suggested. Let's see if that makes me chage my mind about this :)
+
+Regarding the doc reorganization, everything is finished now. Since it's impossible to review this PR, I'm going to merge it as is and then you can read the doc of the `dev` version to spot any error. Thanks!

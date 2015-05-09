@@ -300,12 +300,14 @@ These are the options that you can define for each property:
   * `type` (optional): the type of data displayed in the `list`, `search` and
     `show` views and the form widget displayed in the `edit` and `new` views.
     These are the supported types:
-        * All the [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
-        * Custom EasyAdmin types:
-            * `image`, displays inline images in the `list`, `search` and
-              `show` views (as explained later in this chapter).
-            * `toggle`, displays a boolean value as a flip switch in the `list`
-              and `search` views (as explained later in this chapter).
+
+    * All the [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
+    * Custom EasyAdmin types:
+
+      * `image`, displays inline images in the `list`, `search` and
+        `show` views (as explained later in this chapter).
+      * `toggle`, displays a boolean value as a flip switch in the `list`
+        and `search` views (as explained later in this chapter).
 
 ### Translate Property Labels
 

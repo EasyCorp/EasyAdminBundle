@@ -14,6 +14,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\DependencyInjection;
 use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
@@ -41,22 +42,20 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
      */
     public function testBackendConfigurations($inputFixtureFilepath, $outputFixtureFilepath)
     {
-        if ('2.3.x' === getenv('SYMFONY_VERSION') && !$this->isTestCompatibleWithYamlComponent($inputFixtureFilepath)) {
-            $this->markTestSkipped('This test fails because of the behavior of the YAML component in Symfony 2.3.x version.');
+        if ('2' === Kernel::MAJOR_VERSION && '3' === Kernel::MINOR_VERSION && !$this->isTestCompatibleWithYamlComponent($inputFixtureFilepath)) {
+            $this->markTestSkipped('The YAML component does not ignore duplicate keys in Symfony 2.3.');
         }
 
-        $parsedConfiguration = $this->parseConfigurationFile($inputFixtureFilepath);
-        $expectedConfiguration = file_get_contents($outputFixtureFilepath);
-        $expectedConfiguration = str_replace("\r", '', $expectedConfiguration); // Prevents bugs from different git crlf config
+        $this->parseConfigurationFile($inputFixtureFilepath);
 
-        $this->assertEquals($expectedConfiguration, $parsedConfiguration, sprintf('%s configuration is correctly parsed into %s', $inputFixtureFilepath, $outputFixtureFilepath));
+        $this->assertConfigurationParameterMatchesExpectedValue($outputFixtureFilepath);
     }
 
     /**
      * @expectedException RuntimeException
      * @expectedExceptionMessage The "TestEntity" entity must define its associated Doctrine entity class using the "class" option.
      */
-    public function testClassOptionIsMandatoryFoEntityConfiguration()
+    public function testClassOptionIsMandatoryForEntityConfiguration()
     {
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/class_option_is_mandatory_for_expanded_entity_configuration.yml');
     }
@@ -160,12 +159,13 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/color_scheme_values_are_limited.yml');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Unrecognized option "this_template_name_is_not_valid" under "easy_admin.design.templates"
-     */
     public function testOverriddenTemplateNamesAreLimited()
     {
+        $this->setExpectedExceptionRegExp(
+            '\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException',
+            '/Unrecognized options? "this_template_name_is_not_valid" under "easy_admin.design.templates"/'
+        );
+
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/overridden_template_names_are_limited.yml');
     }
 
@@ -179,11 +179,9 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         $fixturesDir = __DIR__.'/fixtures/templates/overridden_by_entity';
 
         foreach (range(1, 5) as $i) {
-            $parsedConfiguration = $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
-            $expectedConfiguration = file_get_contents($fixturesDir.'/output/config_00'.$i.'.yml');
-            $expectedConfiguration = str_replace("\r", '', $expectedConfiguration); // Prevents bugs from different git crlf config
+            $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
 
-            $this->assertEquals($expectedConfiguration, $parsedConfiguration);
+            $this->assertConfigurationParameterMatchesExpectedValue($fixturesDir.'/output/config_00'.$i.'.yml');
         }
     }
 
@@ -197,11 +195,9 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         $fixturesDir = __DIR__.'/fixtures/templates/overridden_by_application';
 
         foreach (range(1, 5) as $i) {
-            $parsedConfiguration = $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
-            $expectedConfiguration = file_get_contents($fixturesDir.'/output/config_00'.$i.'.yml');
-            $expectedConfiguration = str_replace("\r", '', $expectedConfiguration); // Prevents bugs from different git crlf config
+            $this->parseConfigurationFile($fixturesDir.'/input/admin_00'.$i.'.yml', $fixturesDir);
 
-            $this->assertEquals($expectedConfiguration, $parsedConfiguration);
+            $this->assertConfigurationParameterMatchesExpectedValue($fixturesDir.'/output/config_00'.$i.'.yml');
         }
     }
 
@@ -225,11 +221,14 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 
         $inputConfiguration = Yaml::parse(file_get_contents($filepath));
         $this->loader->load($inputConfiguration, $this->container);
+    }
 
-        $easyAdminConfigParameter = $this->container->getParameter('easyadmin.config');
-        $parsedConfiguration = Yaml::dump(array('easy_admin' => $easyAdminConfigParameter), INF);
+    private function assertConfigurationParameterMatchesExpectedValue($expectedConfigFile)
+    {
+        $expectedConfiguration = Yaml::parse(file_get_contents($expectedConfigFile));
+        $actualConfiguration = $this->container->getParameter('easyadmin.config');
 
-        return $parsedConfiguration;
+        $this->assertEquals($expectedConfiguration['easy_admin'], $actualConfiguration);
     }
 
     private function isTestCompatibleWithYamlComponent($filepath)

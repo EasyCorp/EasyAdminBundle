@@ -24,7 +24,7 @@
         "twig/extensions"               : "~1.0",
         "sensio/distribution-bundle"    : "~2.3|~3.0",
         "sensio/framework-extra-bundle" : "~3.0,>=3.0.2",
-        "twig/twig"                     : "~1.0"
+        "twig/twig"                     : "~1.12"
     },
     "require-dev": {
         "phpunit/phpunit"                   : "~4.4",

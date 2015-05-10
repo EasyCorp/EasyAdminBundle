@@ -1,0 +1,16 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-10T15:39:45Z
+
+:+1:
+Is there even a reason why you kept `entity_name ` ?
+
+Might be helpful to add a warning in UPGRADE.md about changing `entity_name` to `entity_label` in translation files ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-10T17:12:16Z
+
+If you check out the test file, you'll see that sometimes I use `entity_name` (`Category`) and sometimes the `entity_label` (`Categories`). In some titles is better to use the label (`Look for Categories`) and in some buttons is better to use the name (`New Category`).
+
+Regarding the UPGRADE file, I think this change is more like a bugfix so it's not really a BC break.

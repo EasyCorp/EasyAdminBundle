@@ -17,8 +17,8 @@ easy_admin:
             list:
                 actions:
                     - { name: 'new', label: 'New %%entity_name%%', icon: 'plus-circle' }
-                    - { name: 'search', label: 'Look for %%entity_name%%' }
-                title: 'Product %%entity_name%%'
+                    - { name: 'search', label: 'Look for %%entity_label%%' }
+                title: 'Product %%entity_label%%'
                 fields:
                     - 'id'
                     - { property: 'name', label: 'Label' }

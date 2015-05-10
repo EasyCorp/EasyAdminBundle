@@ -1,7 +1,7 @@
 {% trans_default_domain "EasyAdminBundle" %}
 
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
-{% set _trans_parameters = { '%entity_name%': _entity_config.label|trans } %}
+{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans } %}
 
 {% extends _entity_config.templates.layout %}
 
@@ -145,7 +145,7 @@
 
                                             <a class="{{ _action.class|default('') }}" href="{{ _action_href }}">{% spaceless %}
                                                 {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                                {{ _action.label|trans({'%entity_name%': _entity_config.label|trans, '%entity_id%': _item_id}) }}
+                                                {{ _action.label|trans({'%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': _item_id}) }}
                                             {% endspaceless %}</a>
                                         {% endfor %}
                                     {% endblock item_actions %}

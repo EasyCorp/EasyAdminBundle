@@ -70,7 +70,7 @@ class CategoryEntityTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('New Categories', trim($crawler->filter('#content-actions a.btn')->text()));
+        $this->assertEquals('New Category', trim($crawler->filter('#content-actions a.btn')->text()));
         $this->assertEquals('fa fa-plus-circle', $crawler->filter('#content-actions a.btn i')->attr('class'));
         $this->assertEquals('/admin/?entity=Category&action=new&view=list', $crawler->filter('#content-actions a.btn')->attr('href'));
     }
@@ -147,7 +147,7 @@ class CategoryEntityTest extends AbstractTestCase
     {
         $crawler = $this->requestShowView();
 
-        $this->assertEquals('Details for Categories number 200', trim($crawler->filter('h1.title')->text()));
+        $this->assertEquals('Details for Category number 200', trim($crawler->filter('h1.title')->text()));
     }
 
     public function testShowViewFieldLabels()

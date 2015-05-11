@@ -26,7 +26,7 @@ application and make it extend from the default `AdminController`. Then you
 just add one or more methods in your controller to override the default ones.
 
 The first step is to create a new controller in your Symfony application. Its
-class name or namespace deson't matter as long as it extends the default
+class name or namespace doesn't matter as long as it extends the default
 `AdminController`:
 
 ```php
@@ -103,7 +103,7 @@ Similarly, you can define the `createNewEntity()` method in your
 ```php
 public function createNewEntity()
 {
-    ...
+    // ...
 }
 ```
 

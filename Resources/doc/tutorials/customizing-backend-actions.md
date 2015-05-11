@@ -121,7 +121,7 @@ The following properties can be configured for each action:
   * `icon`, is the name of the FontAwesome icon displayed next to the link or
     inside the button used to render the action. You don't have to include the
     `fa-` prefix of the icon name (e.g. to display the icon of a user, don't
-    use the `fa fa-user` or `fa-user` values; just use `user`).
+    use `fa fa-user` or `fa-user`; just use `user`).
 
 Creating Custom Actions
 -----------------------
@@ -168,7 +168,7 @@ namespace AppBundle\Controller;
 
 // ...
 
-class AdminController extends EasyAdminController
+class AdminController extends BaseAdminController
 {
     // ...
 

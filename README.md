@@ -144,7 +144,7 @@ Getting Started Guide
 
   * [Chapter 1 - Installation](Resources/doc/getting-started/1-installation.md)
   * [Chapter 2 - Your First Backend](Resources/doc/getting-started/2-first-backend.md)
-  * [Chapter 3 - Basic Configuration](Resources/doc/getting-started/3-basic-configuration.md)
+  * [Chapter 3 - Backend Configuration](Resources/doc/getting-started/3-backend-configuration.md)
   * [Chapter 4 - Views and Actions](Resources/doc/getting-started/4-views-and-actions.md)
   * [Chapter 5 - Backend Design Customization](Resources/doc/getting-started/5-design-customization.md)
   * [Chapter 6 - About this Project](Resources/doc/getting-started/6-about-this-project.md)

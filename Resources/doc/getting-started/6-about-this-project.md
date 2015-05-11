@@ -28,7 +28,7 @@ These are some of our **development principles**:
   * Documentation is more important than code. Everything must be documented
     and documentation must be always up-to-date.
 
-Our roadmap
+Our Roadmap
 -----------
 
 Our **short-term roadmap** of features that will be added soon is available in

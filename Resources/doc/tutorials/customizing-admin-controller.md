@@ -111,7 +111,6 @@ Inside this method, you can access the entire backend configuration via the
 `$this->config` variable and the configuration of the current entity via the
 `$this->entity` variable:
 
-
 ```php
 public function createNewEntity()
 {
@@ -122,6 +121,52 @@ public function createNewEntity()
     // ...
 }
 ```
+
+### Customize the Form Used to Create New Entities
+
+By default, the form used to create new entities is generated automatically
+using the `fields` option of the `new` view configuration and the related
+Doctrine entity properties. If you need to customize this form heavily, use
+the `createNewForm()` method.
+
+Suppose that your application defines a `Product` entity which defines a very
+complex form. In order to tweak the form used to create new instances of this
+entity, define a new `AdminController` extending from the default one and add
+this method:
+
+```php
+public function createProductNewForm()
+{
+    // ...
+}
+```
+
+This method allows you to create the form for this specific entity using the
+form builder, a custom form type, a Symfony service, etc. The name of the
+method is constructed as `create<EntityName>NewForm()` so it's recommended to
+use CamelCase notation to set the entity names.
+
+If you want to customize the form used to create new instances of all entities,
+use instead the `createNewForm()` method:
+
+```php
+public function createNewForm()
+{
+    if ('Product' === $this->entity['name']) {
+        // ...
+    }
+
+    // ...
+}
+```
+
+### Customize the Form Used to Edit Existing Entities
+
+In addition to customizing the form to create new entities, you can also
+customize the form used to edit any of the existing entities. In this case the
+method name is constructed as `create<EntityName>EditForm()`. A generic method
+called `createEditForm()` is also available to customize the edit form for all
+the entities managed by the backend.
 
 ### Tweak a Specific Entity Before Persisting/Updating/Removing It
 

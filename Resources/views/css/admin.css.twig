@@ -1062,6 +1062,7 @@ body.error .error-solution pre {
     #header-logo {
         float: none;
         margin: 0;
+        height: auto;
         overflow: visible;
         text-overflow: inherit;
         padding: 0;
@@ -1185,5 +1186,23 @@ body.error .error-solution pre {
 
     body.error #content h1 {
         margin-top: .25em;
+    }
+}
+
+
+/* -------------------------------------------------------------------------
+ALL BUT LARGE DESKTOP
+------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+    #header-logo {
+        display: table;
+        height: 50px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    #header-logo a {
+        display: table-cell;
+        vertical-align: middle;
+        float: none;
     }
 }

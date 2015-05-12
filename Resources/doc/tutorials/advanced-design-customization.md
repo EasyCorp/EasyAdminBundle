@@ -240,7 +240,7 @@ Doctrine data type and are self-explanatory):
   * `label_undefined`, used when any kind of error or exception happens when
     trying to access the value of the property.
 
-Suppose that in you backend you don't want to display a `NULL` text for `null`
+Suppose that in your backend you don't want to display a `NULL` text for `null`
 values and prefer to display a more human friendly value, such as a dash (`-`).
 Making this change is as easy as creating a new `label_null` template with your
 own content and HTML markup:

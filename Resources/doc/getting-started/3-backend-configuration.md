@@ -4,10 +4,11 @@ Chapter 3. Backend Configuration
 EasyAdmin proposes an hybrid approach to customize the backends:
 
   * Use YAML-based configuration when it's simple to do so;
-  * Use PHP classes/methods and Twig templates for more advanced customization.
+  * Use PHP methods and Twig templates for more advanced customization.
 
-This chapter focus on the basic configuration options that you can define for
-the backend using the YAML configuration file.
+This chapter explains all the YAML-based configuration options. Read the
+[Customizing AdminController] [custom-admin-controller] tutorial to learn how
+to do extreme backend customizations using PHP methods and Twig templates.
 
 Expanded Configuration Format
 -----------------------------
@@ -169,4 +170,5 @@ backend section of your application.
 When accessing a protected backend, EasyAdmin will display the name of user
 who is logged in the application.
 
+[custom-admin-controller]: ../tutorials/customizing-admin-controller.md
 [config-reference]: ../tutorials/configuration-reference.md

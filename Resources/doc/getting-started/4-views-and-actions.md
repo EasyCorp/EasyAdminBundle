@@ -4,9 +4,9 @@ Chapter 4. Views and Actions
 Introduction to Views and Actions
 ---------------------------------
 
-Backends consists of **views** and **actions**. The **view** is the page where
+Backends consist of **views** and **actions**. The **view** is the page where
 you are (`list`, `edit`, `show`, etc.) and the **action** is what you want to
-do (`search`, `delete`, etc.)
+do next (`search`, `delete`, etc.)
 
 EasyAdmin defines five different **views** for each entity: `edit`, `list`,
 `new`, `search` and `show`. The `list` view is mandatory for all entities, but
@@ -14,38 +14,31 @@ the rest of the views can be disabled if needed as explained in this chapter.
 
 ### Views
 
-**List View**
-
-Displays the list of items that match the given criteria and provides automatic
-pagination and column sorting:
+The **List View** displays the list of items that match the given criteria and
+provides automatic pagination and column sorting:
 
 ![List view interface](../images/easyadmin-list-view.png)
 
-**Show View**
-
-The `show` view is used when displaying the contents of any entity:
+The **Show View** is used when displaying the contents of any entity:
 
 ![Show view interface](../images/easyadmin-show-view.png)
 
-**Edit and New Views**
-
-The `edit` view is used when creating new elements of the given entity. The
-`edit` view is displayed when modifying the contents of any existing entity:
+The **Edit and New Views** are pretty similar. The `new` view is used when
+creating new elements of the given entity. The `edit` view is displayed when
+modifying the contents of any existing entity:
 
 ![Edit view interface](../images/easyadmin-edit-view.png)
 
-**Search View**
-
-The `search` view is used to display the results of any query performed by the
-user. It reuses most of the design and features of the `list` view to ensure a
-consistent user experience:
+The **Search View** is used to display the results of any query performed by
+the user. It reuses most of the design and features of the `list` view to
+ensure a consistent user experience:
 
 ![Search view interface](../images/easyadmin-search-view.png)
 
 ### Actions
 
-Each view includes one or more **actions** to perform operations on the items
-displayed in that view. For example, the default `list` view interface
+Each view can include one or more **actions** to perform operations on the
+items displayed in that view. For example, the default `list` view interface
 includes four actions as buttons or links:
 
 ![List view interface](../images/easyadmin-list-view-actions.png)
@@ -59,8 +52,8 @@ These are the actions included by default in each view:
 | `new`  | `list`
 | `show` | `delete`, `edit`, `list`
 
-Default actions can be configured and/or disabled for any view. In addition,
-you can define your own custom actions.
+Read the [Customizing Backend Actions] [custom-actions] tutorial to learn how
+to configure and/or disable default actions and how to create your own actions.
 
 Common View Configuration
 -------------------------
@@ -642,3 +635,5 @@ This problem is solved defining a custom `utcdatetime` Form Type. Read the
 [How to Create a Custom Form Field Type](http://symfony.com/doc/current/cookbook/form/create_custom_field_type.html)
 article of the official Symfony documentation to learn how to define custom
 form types.
+
+[custom-actions]: ../tutorials/customizing-backend-actions.md

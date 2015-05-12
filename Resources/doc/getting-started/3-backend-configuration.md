@@ -1,7 +1,7 @@
 Chapter 3. Backend Configuration
 ================================
 
-EasyAdmin proposes an hybrid approach to customize the backends:
+EasyAdmin proposes a hybrid approach to customize the backends:
 
   * Use YAML-based configuration when it's simple to do so;
   * Use PHP methods and Twig templates for more advanced customization.

@@ -15,8 +15,7 @@ Depending on your needs you can choose any of these two customization options:
     customize the backend. It allows your application to hook on any event to
     modify the behavior of the `AdminController` without having to override it.
 
-In case you backend is very complex, you can even combine both methods in the
-same application.
+In case your backend is very complex, you can even combine both methods.
 
 Customization Based on Controller Methods
 -----------------------------------------
@@ -25,8 +24,8 @@ This technique requires you to create a new controller in your Symfony
 application and make it extend from the default `AdminController`. Then you
 just add one or more methods in your controller to override the default ones.
 
-The first step is to create a new controller in your Symfony application. Its
-class name or namespace doesn't matter as long as it extends the default
+The first step is to **create a new controller** in your Symfony application.
+Its class name or namespace doesn't matter as long as it extends the default
 `AdminController`:
 
 ```php
@@ -226,7 +225,7 @@ it's recommended to use CamelCase notation to set the entity names.
 
 ### Tweak All Entities Before Persisting/Updating/Removing Them
 
-`AdminController` also defines three similar but generic methods to allow
+`AdminController` also defines three similar but generic methods to allow you
 tweaking all the entities of the backend in a single method:
 
 ```php
@@ -346,8 +345,9 @@ In addition, the event arguments contain all the action method variables. You
 can access to them through the `getArgument()` method or via the array access
 provided by the `GenericEvent` class.
 
-The following example shows how to implement with an event subscriber the same
-example used in the previous section (set the `slug` property of the `BlogPost`entity before persisting it):
+The following example shows how to use an event subscriber to implement the
+same example used in the previous section (set the `slug` property of the
+`BlogPost` entity before persisting it):
 
 ```php
 namespace AppBundle\EventListener;

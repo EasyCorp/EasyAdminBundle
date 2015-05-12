@@ -3,16 +3,16 @@ Chapter 5. Design Customization
 
 The design of the backend can be customized in two ways:
 
-  * Using some simple configuration options, as explained in this chapter.
-  * Overriding the default templates and fragments used to render the backend,
+  1. Using some simple configuration options, as explained in this chapter.
+  2. Overriding the default templates and fragments used to render the backend,
     which is useful for very complex backends. This is explained in the
     [Advanced Design Customization] [advanced-design-customization] tutorial.
 
 Customizing the Main Backend Color
 ----------------------------------
 
-The default backend visual design uses a dark orange shade as the main color.
-Use the `brand_color` design option to change it:
+By default, backends use a dark orange shade as the main color. Use the
+`brand_color` design option to change it:
 
 ```yaml
 easy_admin:

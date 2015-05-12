@@ -15,8 +15,7 @@ Depending on your needs you can choose any of these two customization options:
     customize the backend. It allows your application to hook on any event to
     modify the behavior of the `AdminController` without having to override it.
 
-In case you backend is very complex, you can even combine both methods in the
-same application.
+In case your backend is very complex, you can even combine both methods.
 
 Customization Based on Controller Methods
 -----------------------------------------
@@ -25,8 +24,8 @@ This technique requires you to create a new controller in your Symfony
 application and make it extend from the default `AdminController`. Then you
 just add one or more methods in your controller to override the default ones.
 
-The first step is to create a new controller in your Symfony application. Its
-class name or namespace deson't matter as long as it extends the default
+The first step is to **create a new controller** in your Symfony application.
+Its class name or namespace doesn't matter as long as it extends the default
 `AdminController`:
 
 ```php
@@ -103,14 +102,13 @@ Similarly, you can define the `createNewEntity()` method in your
 ```php
 public function createNewEntity()
 {
-    ...
+    // ...
 }
 ```
 
 Inside this method, you can access the entire backend configuration via the
 `$this->config` variable and the configuration of the current entity via the
 `$this->entity` variable:
-
 
 ```php
 public function createNewEntity()
@@ -122,6 +120,52 @@ public function createNewEntity()
     // ...
 }
 ```
+
+### Customize the Form Used to Create New Entities
+
+By default, the form used to create new entities is generated automatically
+using the `fields` option of the `new` view configuration and the related
+Doctrine entity properties. If you need to customize this form heavily, use
+the `createNewForm()` method.
+
+Suppose that your application defines a `Product` entity which defines a very
+complex form. In order to tweak the form used to create new instances of this
+entity, define a new `AdminController` extending from the default one and add
+this method:
+
+```php
+public function createProductNewForm()
+{
+    // ...
+}
+```
+
+This method allows you to create the form for this specific entity using the
+form builder, a custom form type, a Symfony service, etc. The name of the
+method is constructed as `create<EntityName>NewForm()` so it's recommended to
+use CamelCase notation to set the entity names.
+
+If you want to customize the form used to create new instances of all entities,
+use instead the `createNewForm()` method:
+
+```php
+public function createNewForm()
+{
+    if ('Product' === $this->entity['name']) {
+        // ...
+    }
+
+    // ...
+}
+```
+
+### Customize the Form Used to Edit Existing Entities
+
+The form used to edit any of the existing entities can be customized in a
+similar fashion. In this case, the method name is constructed as
+`create<EntityName>EditForm()`. A generic method called `createEditForm()` is
+also available to customize the edit form for all the entities managed by the
+backend.
 
 ### Tweak a Specific Entity Before Persisting/Updating/Removing It
 
@@ -181,7 +225,7 @@ it's recommended to use CamelCase notation to set the entity names.
 
 ### Tweak All Entities Before Persisting/Updating/Removing Them
 
-`AdminController` also defines three similar but generic methods to allow
+`AdminController` also defines three similar but generic methods to allow you
 tweaking all the entities of the backend in a single method:
 
 ```php
@@ -301,8 +345,9 @@ In addition, the event arguments contain all the action method variables. You
 can access to them through the `getArgument()` method or via the array access
 provided by the `GenericEvent` class.
 
-The following example shows how to implement with an event subscriber the same
-example used in the previous section (set the `slug` property of the `BlogPost`entity before persisting it):
+The following example shows how to use an event subscriber to implement the
+same example used in the previous section (set the `slug` property of the
+`BlogPost` entity before persisting it):
 
 ```php
 namespace AppBundle\EventListener;

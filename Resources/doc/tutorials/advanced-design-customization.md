@@ -9,39 +9,39 @@ Customize the Templates Used by the Backend
 
 EasyAdmin uses the following seven Twig templates to create its interface:
 
-  * `layout`, the common layout that decorates the rest of templates (`list`,
-    `edit`, `new` and `show`);
-  * `new`, used to render the page where new entities are created;
-  * `show`, used to render the contents stored by a given entity;
-  * `edit`, used to render the page where entities are edited;
-  * `list`, used to render the listings and the search results page;
-  * `paginator`, used to render the paginator of the `list` and `search` views;
-  * `form`, used to render the form of the `new` and `edit` views.
+  * `layout`, the common layout that decorates the `list`, `edit`, `new` and
+    `show` templates;
+  * `new`, renders the page where new entities are created;
+  * `show`, renders the contents stored by a given entity;
+  * `edit`, renders the page where entity contents are edited;
+  * `list`, renders the entity listings and the search results page;
+  * `paginator`, renders the paginator of the `list` view;
+  * `form`, renders the form of the `new` and `edit` views.
 
 EasyAdmin offers a powerful overriding mechanism which allows you to customize
 any of these templates in several different ways. Depending on your needs you
 must select the best alternative.
 
-Before rendering a template, EasyAdmin applies the following logic to decide
-which template to choose (the first existing template is used):
+Before rendering a template, EasyAdmin applies the following logic to choose
+the template (the first existing template is used):
 
   1. The template defined in the
-     `easy_admin.entities.<entityName>.templates.<templateName>` configuration
+     `easy_admin.entities.<EntityName>.templates.<TemplateName>` configuration
      option.
-  2. The template defined in the `easy_admin.design.templates.<template_name>`
+  2. The template defined in the `easy_admin.design.templates.<TemplateName>`
      configuration option.
-  3. `app/Resources/views/easy_admin/<entity_name>/<template_name>.html.twig`
+  3. `app/Resources/views/easy_admin/<EntityName>/<TemplateName>.html.twig`
      template.
-  4. `app/Resources/views/easy_admin/<template_name>.html.twig`
+  4. `app/Resources/views/easy_admin/<TemplateName>.html.twig`
      template.
-  5. `@EasyAdmin/default/<template_name>.html.twig` (these are the default
+  5. `@EasyAdmin/default/<TemplateName>.html.twig` (these are the default
      templates defined by EasyAdmin and they are always available).
 
 The following sections explain all these alternatives with practical examples.
 
 ### Tweaking the Default Templates for All Entities
 
-Most often than not, customizing the design of the backend is a matter of
+Most often than not, customizing the design of the backend is a matter of just
 tweaking some element of the default templates. The easiest way to do that is
 to create a new template that extends from the default one and override the
 specific Twig block you want to customize.
@@ -94,7 +94,7 @@ easy_admin:
             list: 'AppBundle:Backend:list.html.twig'
 ```
 
-### Tweaking the default templates for some entities
+### Tweaking the Default Templates for Some Entities
 
 In this case, the changes are applied just for one entity, instead of applying
 them in the entire backend. To do so, follow the steps explained in the
@@ -131,7 +131,7 @@ easy_admin:
                 list: 'AppBundle:Backend:list.html.twig'
 ```
 
-### Overriding the default templates for all entities
+### Overriding the Default Templates for All Entities
 
 Default templates define lots of Twig blocks to provide you great flexibility.
 However, sometimes it's not enough to modify the default templates and you need
@@ -167,7 +167,7 @@ easy_admin:
             paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
 ```
 
-### Overriding the default templates for some entities
+### Overriding the Default Templates for Some Entities
 
 Similarly, you can also replace the paginator template just for a single
 entity. For example, if you want to override the paginator of the `Customer`
@@ -203,10 +203,10 @@ easy_admin:
 Customize the Templates Used to Render Each Property
 ----------------------------------------------------
 
-You can use the same overriding mechanism to customize the template fragments
-used to render each property in the `list`, `search` and `show` views. If you
-want to customize the form fields, configure your own form theme as explained
-in the [chapter 5] [chapter-5] of the "Getting Started" guide.
+The same template overriding mechanism can be applied to customize the template
+fragments used to render each property in the `list`, `search` and `show` views
+(if you need to customize the form fields, configure your own form theme as
+explained in the [chapter 5] [chapter-5] of the "Getting Started" guide).
 
 These are the available templates (most of them correspond to the associated
 Doctrine data type and are self-explanatory):
@@ -224,7 +224,7 @@ Doctrine data type and are self-explanatory):
     avoids formatting the value of the primary key as a numeric value, with
     decimals and thousand separators.
   * `field_image`, related to the special `image` type defined by EasyAdmin
-    to display the contents of an image.
+    used to display the contents of an image.
   * `field_integer`
   * `field_simple_array`
   * `field_smallint`
@@ -232,7 +232,7 @@ Doctrine data type and are self-explanatory):
   * `field_text`
   * `field_time`
   * `field_toggle`, related to the special `toggle` type defined by EasyAdmin
-    to display boolean values as flip switches.
+    used to display boolean values as flip switches.
   * `label_empty`, used when the property to render is an empty collection.
   * `label_inaccessible`, used when is not possible to access the value of the
     property because there is no getter or public property.
@@ -242,8 +242,8 @@ Doctrine data type and are self-explanatory):
 
 Suppose that in you backend you don't want to display a `NULL` text for `null`
 values and prefer to display a more human friendly value, such as a dash (`-`).
-To achieve it, create a new `label_null` template with your own content and
-HTML markup:
+Making this change is as easy as creating a new `label_null` template with your
+own content and HTML markup:
 
 ```twig
 {# app/Resources/views/easy_admin/label_null.html.twig #}
@@ -258,18 +258,25 @@ create this other template:
 <span class="null">Unpaid</span>
 ```
 
-To use your own custom template, define the following configuration option:
+To use an existing template located elsewhere, define the global
+`design.templates` configuration option or the entity's `templates` option
+depending on your needs:
 
 ```yaml
 easy_admin:
     design:
         templates:
             label_null: 'AppBundle:Default:labels/null.html.twig'
+    # ...
+    entities:
+      Invoice:
+        templates:
+            label_null: 'AppBundle:Invoice:backend/label_null.html.twig'
 ```
 
-If you want to customize any of these templates, it's recommended to check out
-first the contents of the default `field_*` and `label_*` templates, so you can
-learn about their features.
+Before customizing any of these templates, it's recommended to check out the
+contents of the default `field_*` and `label_*` templates, so you can learn
+about their features.
 
 Inside the `field_*` and `label_*` templates you have access to the following
 variables:

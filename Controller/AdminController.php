@@ -440,7 +440,7 @@ class AdminController extends Controller
     /**
      * Creates a new object of the current managed entity.
      * This method is mostly here for override convenience, because it allows
-     * the user to use his own method to customize the entity instanciation.
+     * the user to use his own method to customize the entity instantiation.
      *
      * @return object
      */

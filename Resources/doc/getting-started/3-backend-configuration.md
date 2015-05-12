@@ -1,5 +1,5 @@
-Chapter 3. Basic Configuration
-==============================
+Chapter 3. Backend Configuration
+================================
 
 EasyAdmin proposes an hybrid approach to customize the backends:
 

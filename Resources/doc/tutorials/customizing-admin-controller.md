@@ -162,11 +162,11 @@ public function createNewForm()
 
 ### Customize the Form Used to Edit Existing Entities
 
-In addition to customizing the form to create new entities, you can also
-customize the form used to edit any of the existing entities. In this case the
-method name is constructed as `create<EntityName>EditForm()`. A generic method
-called `createEditForm()` is also available to customize the edit form for all
-the entities managed by the backend.
+The form used to edit any of the existing entities can be customized in a
+similar fashion. In this case, the method name is constructed as
+`create<EntityName>EditForm()`. A generic method called `createEditForm()` is
+also available to customize the edit form for all the entities managed by the
+backend.
 
 ### Tweak a Specific Entity Before Persisting/Updating/Removing It
 

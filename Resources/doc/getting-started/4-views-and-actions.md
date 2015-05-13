@@ -139,7 +139,7 @@ list will be the values returned by the magic `__toString()` PHP method.
 Define this method in all your entities to avoid errors and to define the
 textual representation of the entity.
 
-### Display Virtual Properties
+### Virtual Properties
 
 Sometimes, it's useful to display values which are not entity properties. For
 example, if your `Customer` entity defines the `firstName` and `lastName`
@@ -182,7 +182,10 @@ class Customer
 ```
 
 That's it. Reload your backend and now you'll see the value of this virtual
-property. By default, these properties are displayed as text contents. If your
+property. These virtual properties can also be used in the `edit` and `new`
+views, as long as you define a *setter* method for them.
+
+By default, these virtual properties are displayed as text contents. If your
 virtual property is a *boolean* value or a date, use the `type` option to set
 a more appropriate data type:
 
@@ -276,11 +279,14 @@ easy_admin:
     # ...
 ```
 
-These are the options that you can define for each property:
+These are the options that you can define for each field:
 
-  * `property` (mandatory): the name of the related Doctrine property. It can
-    be a real property or a "virtual property" based on an entity method. This 
-    is the only mandatory option when using the expanded configuration format.
+  * `property` (mandatory): the name of the Doctrine property which you want to
+    display (in `list`, `search` and `show` views), set (in `new` view) or
+    modify (in `edit` view). Properties can be real (they exist as Doctrine
+    properties) or "virtual" (they just define getter/setter methods). The
+    `property` option is the only mandatory option when using the expanded
+    field configuration format.
   * `label` (optional): the title displayed for the property. The default
     title is the "humanized" version of the property name.
   * `help` (optional): the help message displayed below the form field in the

@@ -50,6 +50,7 @@ easy_admin:
                     - enabled
                     - { property: 'createdAt', format: 'j / M / Y' }
                     - tags
+                    - thisFieldIsVirtual # this field doesn't correspond to a valid Doctrine property
             show:
                 fields:
                     - id

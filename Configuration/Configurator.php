@@ -325,14 +325,22 @@ class Configurator
             $originalFieldConfiguration = isset($originalViewConfiguration['fields'][$fieldName]) ? $originalViewConfiguration['fields'][$fieldName] : null;
 
             if (!array_key_exists($fieldName, $entityConfiguration['properties'])) {
-                // treat this field as 'virtual' because it doesn't exist as a
-                // property of the related Doctrine entity
+                // this field doesn't exist as a property of the related Doctrine
+                // entity. Treat it as a 'virtual' field and provide default values
+                // for some field options (such as fieldName and columnName) to avoid
+                // any problem while processing field data
                 $normalizedConfiguration = array_replace(
                     $this->defaultEntityFieldConfiguration,
+                    array(
+                        'columnName' => null,
+                        'fieldName' => $fieldName,
+                        'id' => false,
+                        'label' => $fieldName,
+                        'sortable' => false,
+                        'virtual' => true,
+                    ),
                     $fieldConfiguration
                 );
-
-                $normalizedConfiguration['virtual'] = true;
             } else {
                 // this is a regular field that exists as a property of the related Doctrine entity
                 $normalizedConfiguration = array_replace(

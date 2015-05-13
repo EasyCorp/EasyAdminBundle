@@ -278,9 +278,12 @@ easy_admin:
 
 These are the options that you can define for each property:
 
-  * `property` (mandatory): the name of the related Doctrine property. It can
-    be a real property or a "virtual property" based on an entity method. This 
-    is the only mandatory option when using the expanded configuration format.
+  * `property` (mandatory): the name of the related Doctrine property. In
+    `list`, `search` and `show` views, properties can be "virtual", i.e. they
+    don't correspond to a valid Doctrine property. For `edit` and `new` views
+    you can only use real properties that exist in the related Doctrine entity.
+    The `property` option is the only mandatory option when using the expanded
+    field configuration format.
   * `label` (optional): the title displayed for the property. The default
     title is the "humanized" version of the property name.
   * `help` (optional): the help message displayed below the form field in the

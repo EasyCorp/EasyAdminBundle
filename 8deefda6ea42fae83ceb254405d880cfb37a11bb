@@ -1,0 +1,148 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-15T11:10:36Z
+
+I must confess that I did this on purpose ... but thanks to your pull request I realized that I was wrong.
+
+The font size of the site name automatically adapts to its length. If you use `ACME` you'll see a big and beautiful site name and if you use `ACME Megacorp` you'll see it in small letters. However, if your site name is really long, the font size no longer changes and the overflow text is lost.
+
+I'm going to test this change in my backends and I'll merge it ASAP. Thanks.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-15T11:25:23Z
+
+I've found a big problem in this proposal :cry:  It works perfectly for long names ... but it breaks the design for short names. The first alternative solution I can think of is using an image as the site name. The other one is using the following markup:
+
+```yaml
+easy_admin:
+    site_name: '<div style="line-height: 1.3">My Company <br/> Our Project</div>'
+```
+
+What do you think of these solutions? Do you know any alternative CSS solution that we could use to keep both long and short names vertically centered? Thanks.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-15T11:32:33Z
+
+When you talk about centering the text vertically, you mean relative to what?
+
+Because the goal of the `padding: 20px 10px;` is the best solution for this.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-15T11:35:03Z
+
+Plus, changing the `line-height` does not center anything vertically.
+
+Here is how it renders:
+
+ ![capture d ecran 2015-04-15 a 13 33 56](https://cloud.githubusercontent.com/assets/3369266/7157880/1e15d78e-e374-11e4-9c2f-b43bef9aad8e.png)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-15T17:48:06Z
+
+When using your CSS, I get these results:
+
+### Long Project Name
+
+It only looks right in the > 1200px and > 1024 resolutions
+
+![long_1](https://cloud.githubusercontent.com/assets/73419/7165453/141e6de8-e3a8-11e4-8869-bf13330a58bf.png)
+
+![long_2](https://cloud.githubusercontent.com/assets/73419/7165455/16454bd2-e3a8-11e4-9e4d-eec0505c25a4.png)
+
+![long_3](https://cloud.githubusercontent.com/assets/73419/7165463/18a7e2cc-e3a8-11e4-8545-540810f81c35.png)
+
+![long_4](https://cloud.githubusercontent.com/assets/73419/7165464/1adb86e8-e3a8-11e4-9a63-3d5b46336097.png)
+
+### Short Project Name (~ 99% of use cases)
+
+It only looks right in the > 1200px resolution
+
+![short_1](https://cloud.githubusercontent.com/assets/73419/7165477/2edddb6e-e3a8-11e4-9401-92f0df847653.png)
+
+![short_2](https://cloud.githubusercontent.com/assets/73419/7165481/30b5fb92-e3a8-11e4-9559-6be3939936a8.png)
+
+![short_3](https://cloud.githubusercontent.com/assets/73419/7165482/32c211c8-e3a8-11e4-948a-7a03bbff50bc.png)
+
+![short_4](https://cloud.githubusercontent.com/assets/73419/7165485/34c268c4-e3a8-11e4-8236-02bb79877684.png)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-04-15T17:51:08Z
+
+Hmm ... You're right, I'm gonna update this PR to fix responsive issues
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-04-20T18:42:05Z
+
+In case it's useful, here it is a web service dedicated to solve the awful CSS centering drama: http://howtocenterincss.com/
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-11T10:18:45Z
+
+Heya, sorry for being soooo late on this PR, but I totally refactored it, and now it works for every responsive mode, with multiline text and images.
+
+BUT, this does not support more than 3 lines of text in responsive mode. 2-lines are showed very well, one line is completely centered, and images fit all necessary sizes automatically.
+
+Bonus: I also found a bug in the definition of the "long" class in the header logo `<a>` tag.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-13T16:47:28Z
+
+@Pierstoval thanks for working on this. I really appreciate it. Sadly, the last version doesn't work right on my computer using the demo application.
+
+**For SHORT names** the four breakpoints work perfectly:
+
+![short_1](https://cloud.githubusercontent.com/assets/73419/7615796/5329b106-f9a0-11e4-88b4-8df2544ecf3e.png)
+
+![short_2](https://cloud.githubusercontent.com/assets/73419/7615807/590658cc-f9a0-11e4-8580-2614a0670e82.png)
+
+![short_3](https://cloud.githubusercontent.com/assets/73419/7615809/5baf317a-f9a0-11e4-85c2-39bf2bcc1b92.png)
+
+![short_4](https://cloud.githubusercontent.com/assets/73419/7615813/5ee6c5a6-f9a0-11e4-8b0c-d7ec3d2695bc.png)
+
+**For LONG names** it doesn't look right:
+
+![long_1](https://cloud.githubusercontent.com/assets/73419/7615820/64dc01b0-f9a0-11e4-93b0-6beab45b76ad.png)
+
+![long_2](https://cloud.githubusercontent.com/assets/73419/7615823/66c4c46c-f9a0-11e4-8929-d489b7fd8ba6.png)
+
+![long_3](https://cloud.githubusercontent.com/assets/73419/7615824/68cf5eac-f9a0-11e4-9c9a-f36bc01e92d2.png)
+
+![long_4](https://cloud.githubusercontent.com/assets/73419/7615825/6ae6b60e-f9a0-11e4-87ee-c303686ca427.png)
+
+Am I doing something wrong?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-13T18:22:03Z
+
+Everything seems to work well in your screenshots.
+
+There is no default support for "long" names in desktop, because we would need a letter-wrapping.
+On mobile/tablet, the long name is simply modifying the width of its container, naturally.
+I think we cannot have a "generic" function for this, because the design on mobile/tablet is restricted in height, and the design in desktop is restricted in width...
+
+Maybe @ogizanagi you can find a better idea ? :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-13T20:52:40Z
+
+@Pierstoval excuse me because I'm completely stupid. Your PR fixes the issue with **multiline** site names, not with **very long** names. I've tested it with multi-line names and it works perfectly:
+
+![multiline_1](https://cloud.githubusercontent.com/assets/73419/7620821/a5cadf44-f9c2-11e4-861d-e82177a21d18.png)
+
+![multiline_2](https://cloud.githubusercontent.com/assets/73419/7620824/a7cdc248-f9c2-11e4-9bcd-0ecd7a0c16a6.png)
+
+![multiline_3](https://cloud.githubusercontent.com/assets/73419/7620825/a9b3ed30-f9c2-11e4-87d7-102487e887e5.png)
+
+![multiline_4](https://cloud.githubusercontent.com/assets/73419/7620827/ac3e6792-f9c2-11e4-9db6-447b94d03763.png)
+
+I'm going to merge it right now. Thanks a lot for working on this. I really appreciate it.

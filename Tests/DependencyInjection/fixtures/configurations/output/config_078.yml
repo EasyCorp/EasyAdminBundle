@@ -98,6 +98,7 @@ easy_admin:
                 fields: {  }
             label: TestEntity
             name: TestEntity
+            camel_cased_name: TestEntity
             search:
                 fields: {  }
             templates:

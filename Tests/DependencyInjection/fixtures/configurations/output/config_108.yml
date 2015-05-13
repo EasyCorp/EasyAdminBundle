@@ -1,8 +1,27 @@
 easy_admin:
     entities:
-        TestEntity:
+        test_entity:
             class: AppBundle\Entity\TestEntity
+            label: test_entity
+            name: test_entity
+            camel_cased_name: TestEntity
+            edit:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
             list:
+                fields: {  }
                 actions:
                     show:
                         name: show
@@ -28,101 +47,25 @@ easy_admin:
                         label: action.new
                         class: ''
                         icon: null
-                    CamelCaseAction:
-                        name: CamelCaseAction
-                        type: method
-                        label: 'Camel case action'
-                        class: ''
-                        icon: null
-                    snakeCaseAction:
-                        name: snakeCaseAction
-                        type: method
-                        label: 'Snake case action'
-                        class: ''
-                        icon: null
-                    underscore_action:
-                        name: underscore_action
-                        type: method
-                        label: 'Underscore action'
-                        class: ''
-                        icon: null
-                    UPPERCASE_ACTION:
-                        name: UPPERCASE_ACTION
-                        type: method
-                        label: 'U p p e r c a s e a c t i o n'
-                        class: ''
-                        icon: null
-                    lowercaseaction:
-                        name: lowercaseaction
-                        type: method
-                        label: Lowercaseaction
-                        class: ''
-                        icon: null
-                    WEIRD_caseAction:
-                        name: WEIRD_caseAction
-                        type: method
-                        label: 'W e i r d case action'
-                        class: ''
-                        icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
                         class: ''
                         icon: null
+            new:
                 fields: {  }
-            edit:
                 actions:
-                    delete:
-                        name: delete
-                        type: method
-                        label: action.delete
-                        class: ''
-                        icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
                         class: ''
                         icon: null
-                    CamelCaseAction:
-                        name: CamelCaseAction
-                        type: method
-                        label: 'Camel case action'
-                        class: ''
-                        icon: null
-                    snakeCaseAction:
-                        name: snakeCaseAction
-                        type: method
-                        label: 'Snake case action'
-                        class: ''
-                        icon: null
-                    underscore_action:
-                        name: underscore_action
-                        type: method
-                        label: 'Underscore action'
-                        class: ''
-                        icon: null
-                    UPPERCASE_ACTION:
-                        name: UPPERCASE_ACTION
-                        type: method
-                        label: 'U p p e r c a s e a c t i o n'
-                        class: ''
-                        icon: null
-                    lowercaseaction:
-                        name: lowercaseaction
-                        type: method
-                        label: Lowercaseaction
-                        class: ''
-                        icon: null
-                    WEIRD_caseAction:
-                        name: WEIRD_caseAction
-                        type: method
-                        label: 'W e i r d case action'
-                        class: ''
-                        icon: null
+            search:
                 fields: {  }
             show:
+                fields: {  }
                 actions:
                     delete:
                         name: delete
@@ -142,44 +85,91 @@ easy_admin:
                         label: action.edit
                         class: ''
                         icon: edit
-                    CamelCaseAction:
-                        name: CamelCaseAction
-                        type: method
-                        label: 'Camel case action'
-                        class: ''
-                        icon: null
-                    snakeCaseAction:
-                        name: snakeCaseAction
-                        type: method
-                        label: 'Snake case action'
-                        class: ''
-                        icon: null
-                    underscore_action:
-                        name: underscore_action
-                        type: method
-                        label: 'Underscore action'
-                        class: ''
-                        icon: null
-                    UPPERCASE_ACTION:
-                        name: UPPERCASE_ACTION
-                        type: method
-                        label: 'U p p e r c a s e a c t i o n'
-                        class: ''
-                        icon: null
-                    lowercaseaction:
-                        name: lowercaseaction
-                        type: method
-                        label: Lowercaseaction
-                        class: ''
-                        icon: null
-                    WEIRD_caseAction:
-                        name: WEIRD_caseAction
-                        type: method
-                        label: 'W e i r d case action'
-                        class: ''
-                        icon: null
+            templates:
+                layout: '@EasyAdmin/default/layout.html.twig'
+                edit: '@EasyAdmin/default/edit.html.twig'
+                list: '@EasyAdmin/default/list.html.twig'
+                new: '@EasyAdmin/default/new.html.twig'
+                show: '@EasyAdmin/default/show.html.twig'
+                form: '@EasyAdmin/default/form.html.twig'
+                paginator: '@EasyAdmin/default/paginator.html.twig'
+                field_array: '@EasyAdmin/default/field_array.html.twig'
+                field_association: '@EasyAdmin/default/field_association.html.twig'
+                field_bigint: '@EasyAdmin/default/field_bigint.html.twig'
+                field_boolean: '@EasyAdmin/default/field_boolean.html.twig'
+                field_date: '@EasyAdmin/default/field_date.html.twig'
+                field_datetime: '@EasyAdmin/default/field_datetime.html.twig'
+                field_datetimetz: '@EasyAdmin/default/field_datetimetz.html.twig'
+                field_decimal: '@EasyAdmin/default/field_decimal.html.twig'
+                field_float: '@EasyAdmin/default/field_float.html.twig'
+                field_id: '@EasyAdmin/default/field_id.html.twig'
+                field_image: '@EasyAdmin/default/field_image.html.twig'
+                field_integer: '@EasyAdmin/default/field_integer.html.twig'
+                field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
+                field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
+                field_string: '@EasyAdmin/default/field_string.html.twig'
+                field_text: '@EasyAdmin/default/field_text.html.twig'
+                field_time: '@EasyAdmin/default/field_time.html.twig'
+                field_toggle: '@EasyAdmin/default/field_toggle.html.twig'
+                label_empty: '@EasyAdmin/default/label_empty.html.twig'
+                label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
+                label_null: '@EasyAdmin/default/label_null.html.twig'
+                label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
+        _another_test_entity_:
+            class: AppBundle\Entity\TestEntity
+            label: _another_test_entity_
+            name: _another_test_entity_
+            camel_cased_name: AnotherTestEntity
+            edit:
                 fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            list:
+                fields: {  }
+                actions:
+                    show:
+                        name: show
+                        type: method
+                        label: action.show
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: null
+                    search:
+                        name: search
+                        type: method
+                        label: action.search
+                        class: ''
+                        icon: null
+                    new:
+                        name: new
+                        type: method
+                        label: action.new
+                        class: ''
+                        icon: null
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
             new:
+                fields: {  }
                 actions:
                     list:
                         name: list
@@ -187,48 +177,29 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
-                    CamelCaseAction:
-                        name: CamelCaseAction
-                        type: method
-                        label: 'Camel case action'
-                        class: ''
-                        icon: null
-                    snakeCaseAction:
-                        name: snakeCaseAction
-                        type: method
-                        label: 'Snake case action'
-                        class: ''
-                        icon: null
-                    underscore_action:
-                        name: underscore_action
-                        type: method
-                        label: 'Underscore action'
-                        class: ''
-                        icon: null
-                    UPPERCASE_ACTION:
-                        name: UPPERCASE_ACTION
-                        type: method
-                        label: 'U p p e r c a s e a c t i o n'
-                        class: ''
-                        icon: null
-                    lowercaseaction:
-                        name: lowercaseaction
-                        type: method
-                        label: Lowercaseaction
-                        class: ''
-                        icon: null
-                    WEIRD_caseAction:
-                        name: WEIRD_caseAction
-                        type: method
-                        label: 'W e i r d case action'
-                        class: ''
-                        icon: null
-                fields: {  }
-            label: TestEntity
-            name: TestEntity
-            camel_cased_name: TestEntity
             search:
                 fields: {  }
+            show:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: edit
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
                 edit: '@EasyAdmin/default/edit.html.twig'

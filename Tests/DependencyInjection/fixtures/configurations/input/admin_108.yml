@@ -1,0 +1,10 @@
+# TEST
+# camel casing entity name
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        test_entity:
+            class: AppBundle\Entity\TestEntity
+        _another_test_entity_:
+            class: AppBundle\Entity\TestEntity

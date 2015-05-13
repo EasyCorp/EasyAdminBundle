@@ -175,6 +175,7 @@ class EasyAdminExtension extends Extension
             }
 
             $entityConfiguration['name'] = $entityName;
+            $entityConfiguration['camel_cased_name'] = str_replace(' ', '', ucwords(str_replace('_', ' ', $entityName)));
             $normalizedConfiguration[$entityName] = $entityConfiguration;
         }
 

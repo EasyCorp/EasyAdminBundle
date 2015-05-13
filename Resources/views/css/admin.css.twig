@@ -405,6 +405,7 @@ button.btn-danger {
     float: left;
     font-size: 16px;
     font-weight: 500;
+    height: auto;
     margin: 0;
     overflow: hidden;
     position: relative;
@@ -938,8 +939,6 @@ body.error .error-solution pre {
         width: 100%;
     }
 
-    #header-logo a {
-    }
     #header-logo a img {
         max-height: 40px;
     }
@@ -1063,6 +1062,7 @@ body.error .error-solution pre {
     #header-logo {
         float: none;
         margin: 0;
+        height: auto;
         overflow: visible;
         text-overflow: inherit;
         padding: 0;
@@ -1070,11 +1070,10 @@ body.error .error-solution pre {
     }
     #header-logo a {
         display: block;
-        height: 65px;
+        float: none;
+        min-height: 65px;
         font-size: 18px;
-        line-height: 65px;
-        padding-left: 10px;
-        width: 100%;
+        padding: 20px 10px;
     }
     #header-logo a.medium {
         font-size: 24px;
@@ -1187,5 +1186,23 @@ body.error .error-solution pre {
 
     body.error #content h1 {
         margin-top: .25em;
+    }
+}
+
+
+/* -------------------------------------------------------------------------
+ALL BUT LARGE DESKTOP
+------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+    #header-logo {
+        display: table;
+        height: 50px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    #header-logo a {
+        display: table-cell;
+        vertical-align: middle;
+        float: none;
     }
 }

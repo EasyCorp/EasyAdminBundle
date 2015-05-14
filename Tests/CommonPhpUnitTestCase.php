@@ -15,16 +15,6 @@ abstract class CommonPhpUnitTestCase extends \PHPUnit_Framework_TestCase
 {
     protected function provideConfigurationFiles($fixturesDir)
     {
-        $fixtures = array();
-
-        $inputs = glob($fixturesDir.'/input/admin_*.yml');
-        $outputs = glob($fixturesDir.'/output/config_*.yml');
-
-        $numFixtures = count($inputs);
-        for ($i = 0; $i < $numFixtures; $i++) {
-            $fixtures[] = array($inputs[$i], $outputs[$i]);
-        }
-
-        return $fixtures;
+        return array_map(null, glob($fixturesDir.'/input/admin_*.yml'), glob($fixturesDir.'/output/config_*.yml'));
     }
 }

@@ -1,0 +1,64 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-10T17:18:35Z
+
+@xabbuh thanks for trying to improve the tests. However, as you can see this produces a lot of errors. Some of them should be easy to fix, like the following, which refers to an option not available in older Symfony versions and which we use in the "fake" Symfony application used in the functional tests:
+
+```
+1) AppBundle\Tests\CategoryEntityTest::testListViewPageTitle
+Symfony\Component\Config\Definition\Exception\InvalidConfigurationException:
+Unrecognized options "fallbacks" under "framework.translator"
+```
+
+But there are a lot of other tests that seem more complicated to fix. My question is: is it worth it to fix them? Is it an acceptable compromise to not test the lowest deps?
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-05-10T17:22:26Z
+
+@javiereguiluz Yeah, I didn't expect this to fail so massively. ;) But imho tests should succeed with the lowest allowed dependency versions. Otherwise, the version constraints in `composer.json` can not be relied on. I'll take a look into the failing tests and keep you informed.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-10T19:24:02Z
+
+We can still change the test environment to fit with some kind of Symfony 2.3 config, and change it to 2.7 once it's released :laughing:
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-05-14T09:56:06Z
+
+@javiereguiluz There is only one failing test left. Do you have an idea what could be the cause of it?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-15T10:15:52Z
+
+@xabbuh I've tracked the error and I think I've finally found it.
+
+The 6th line of `paginator.html.twig` is the following:
+
+```twig
+{{ 'paginator.counter'|trans({"%start%": paginator.currentPageOffsetStart,
+"%end%": paginator.currentPageOffsetEnd, "%results%": paginator.nbResults})|raw }}
+```
+
+PagerFanta bundle added `currentPageOffsetStart` and `currentPageOffsetEnd` in [its 1.0.1 version](https://github.com/whiteoctober/Pagerfanta/blob/master/CHANGELOG.md#101-2013-09-23). The composer.json of EasyAdminBundle requires:
+
+```json
+"pagerfanta/pagerfanta"         : "~1.0",
+```
+
+If you change it by:
+
+```json
+"pagerfanta/pagerfanta"         : "~1.0.1",
+```
+
+The error disappears.
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-05-15T11:00:38Z
+
+@javiereguiluz Indeed, thanks for investigating.

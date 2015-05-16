@@ -313,9 +313,7 @@ class AdminController extends Controller
 
             $refererUrl = $this->request->query->get('referer', '');
 
-            return !empty($refererUrl)
-                ? $this->redirect(urldecode($refererUrl))
-                : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
         }
 
         $this->dispatch(EasyAdminEvents::POST_NEW, array(

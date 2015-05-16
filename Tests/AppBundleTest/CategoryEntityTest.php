@@ -36,10 +36,28 @@ class CategoryEntityTest extends AbstractTestCase
         return $client->request('GET', '/admin/?action=show&view=list&entity=Category&id=200');
     }
 
+    /**
+     * @return Crawler
+     */
+    private function requestEditView()
+    {
+        $client = static::createClient();
+
+        return $client->request('GET', '/admin/?action=edit&view=list&entity=Category&id=200');
+    }
+
+    public function testListViewPageMainMenu()
+    {
+        $crawler = $this->requestShowView();
+
+        $this->assertEquals('Categories', trim($crawler->filter('#header-menu li.active')->text()));
+    }
+
     public function testListViewPageTitle()
     {
         $crawler = $this->requestListView();
 
+        $this->assertEquals('Product Categories', trim($crawler->filter('head title')->text()));
         $this->assertEquals('Product Categories', trim($crawler->filter('h1.title')->text()));
     }
 
@@ -143,10 +161,18 @@ class CategoryEntityTest extends AbstractTestCase
         $this->assertStringStartsWith('/admin/?view=list&action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 
+    public function testShowViewPageMainMenu()
+    {
+        $crawler = $this->requestShowView();
+
+        $this->assertEquals('Categories', trim($crawler->filter('#header-menu li.active')->text()));
+    }
+
     public function testShowViewPageTitle()
     {
         $crawler = $this->requestShowView();
 
+        $this->assertEquals('Details for Category number 200', trim($crawler->filter('head title')->text()));
         $this->assertEquals('Details for Category number 200', trim($crawler->filter('h1.title')->text()));
     }
 
@@ -158,5 +184,169 @@ class CategoryEntityTest extends AbstractTestCase
         foreach ($fieldLabels as $i => $label) {
             $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
         }
+    }
+
+    public function testShowViewFieldClasses()
+    {
+        $crawler = $this->requestShowView();
+        $fieldClasses = array('integer', 'string', 'association');
+
+        foreach ($fieldClasses as $i => $cssClass) {
+            $this->assertContains('field_'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
+        }
+    }
+
+    public function testShowViewActions()
+    {
+        $crawler = $this->requestShowView();
+
+        // edit action
+        $this->assertContains('fa-pencil-square', trim($crawler->filter('.form-actions a:contains("Modify Category") i')->attr('class')));
+
+        // delete action (removed in configuration file)
+        $this->assertCount(0, $crawler->filter('.form-actions button:contains("Delete")'));
+
+        // list action
+        $this->assertContains('fa-list', trim($crawler->filter('.form-actions a:contains("Back to Category listing") i')->attr('class')));
+    }
+
+    public function testShowViewListActionReferer()
+    {
+        $parameters = array(
+            'action' => 'list',
+            'entity' => 'Category',
+            'page' => '2',
+            'sortDirection' => 'ASC',
+            'sortField' => 'name',
+            'view' => 'list',
+        );
+
+        // 1. visit a specific 'list' view page
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+
+        // 2. click on the 'Show' link of the first item
+        $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
+        $crawler = $client->click($link);
+
+        // 3. the 'referer' parameter should point to the previous specific 'list' view page
+        $refererUrl = $crawler->filter('.form-actions a:contains("Back to Category listing")')->attr('href');
+        $queryString = parse_url($refererUrl, PHP_URL_QUERY);
+        parse_str($queryString, $refererParameters);
+
+        $this->assertEquals($parameters, $refererParameters);
+    }
+
+    /**
+     * The 'referer' parameter stores the original 'list' or 'search' page
+     * from which the user browsed to other pages (edit, delete, show). When
+     * visiting several consecutive pages, the 'referer' value should be kept
+     * without changes,
+     */
+    public function testChainedReferer()
+    {
+        $parameters = array(
+            'action' => 'list',
+            'entity' => 'Category',
+            'page' => '2',
+            'sortDirection' => 'ASC',
+            'sortField' => 'name',
+            'view' => 'list',
+        );
+
+        // 1. visit a specific 'list' view page
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+
+        // 2. click on the 'Show' link of the first item
+        $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
+        $crawler = $client->click($link);
+
+        // 3. click on the 'Edit' button
+        $link = $crawler->filter('.form-actions a:contains("Modify Category")')->link();
+        $crawler = $client->click($link);
+
+        // 4. the 'referer' parameter should point to the previous specific 'list' view page
+        $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
+        $queryString = parse_url($refererUrl, PHP_URL_QUERY);
+        parse_str($queryString, $refererParameters);
+
+        $this->assertEquals($parameters, $refererParameters);
+    }
+
+    public function testEditViewPageMainMenu()
+    {
+        $crawler = $this->requestEditView();
+
+        $this->assertEquals('Categories', trim($crawler->filter('#header-menu li.active')->text()));
+    }
+
+    public function testEditViewPageTitle()
+    {
+        $crawler = $this->requestEditView();
+
+        $this->assertEquals('Modify Category (200) details', trim($crawler->filter('head title')->text()));
+        $this->assertEquals('Modify Category (200) details', trim($crawler->filter('h1.title')->text()));
+    }
+
+    public function testEditViewFieldLabels()
+    {
+        $crawler = $this->requestEditView();
+        $fieldLabels = array('ID', 'Label', 'Parent Category Label');
+
+        foreach ($fieldLabels as $i => $label) {
+            $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
+        }
+    }
+
+    public function testEditViewFieldClasses()
+    {
+        $crawler = $this->requestEditView();
+        $fieldClasses = array('integer', 'text', 'default');
+
+        foreach ($fieldClasses as $i => $cssClass) {
+            $this->assertContains('field_'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
+        }
+    }
+
+    public function testEditViewActions()
+    {
+        $crawler = $this->requestEditView();
+
+        // save action
+        $this->assertContains('fa-save', trim($crawler->filter('#form-actions-row button:contains("Save changes") i')->attr('class')));
+
+        // delete action
+        $this->assertContains('fa-minus-circle', trim($crawler->filter('#form-actions-row button:contains("Remove") i')->attr('class')));
+
+        // list action
+        $this->assertContains('fa-list', trim($crawler->filter('#form-actions-row a:contains("Return to listing") i')->attr('class')));
+    }
+
+    public function testEditViewListActionReferer()
+    {
+        $parameters = array(
+            'action' => 'list',
+            'entity' => 'Category',
+            'page' => '2',
+            'sortDirection' => 'ASC',
+            'sortField' => 'name',
+            'view' => 'list',
+        );
+
+        // 1. visit a specific 'list' view page
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+
+        // 2. click on the 'Edit' link of the first item
+        $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
+        $crawler = $client->click($link);
+
+        // 3. the 'referer' parameter should point to the previous specific 'list' view page
+        $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
+        $queryString = parse_url($refererUrl, PHP_URL_QUERY);
+        parse_str($queryString, $refererParameters);
+
+        $this->assertEquals($parameters, $refererParameters);
     }
 }

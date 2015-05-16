@@ -15,20 +15,34 @@ easy_admin:
             class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
             label: 'Categories'
             list:
+                title: 'Product %%entity_label%%'
                 actions:
                     - { name: 'new', label: 'New %%entity_name%%', icon: 'plus-circle' }
                     - { name: 'search', label: 'Look for %%entity_label%%' }
-                title: 'Product %%entity_label%%'
                 fields:
                     - 'id'
                     - { property: 'name', label: 'Label' }
                     - { property: 'parent', label: 'Parent category' }
             show:
                 title: 'Details for %%entity_name%% number %%entity_id%%'
+                actions:
+                    - { name: 'edit', label: 'Modify %%entity_name%%', icon: 'pencil-square' }
+                    - '-delete'
+                    - { name: 'list', label: 'Back to %%entity_name%% listing', icon: 'list' }
                 fields:
                     - { property: 'id', label: '#' }
                     - { property: 'name', label: 'Label' }
                     - { property: 'parent', label: 'Parent category' }
+            form:
+                fields:
+                    - { property: 'id' }
+                    - { property: 'name', label: 'Label' }
+                    - { property: 'parent', label: 'Parent Category Label' }
+            edit:
+                title: 'Modify %%entity_name%% (%%entity_id%%) details'
+                actions:
+                    - { name: 'delete', label: 'Remove', icon: 'minus-circle' }
+                    - { name: 'list', label: 'Return to listing', icon: 'list' }
         Image:
             class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Image
             label: 'Images'

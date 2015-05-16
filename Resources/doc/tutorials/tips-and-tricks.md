@@ -58,6 +58,43 @@ your Doctrine entities.
 This simple metadata cache configuration can improve your backend performance
 between 20% and 30% depending on the complexity and number of your entities.
 
+Use a Custom Dashboard as the Index Page of the Backend
+-------------------------------------------------------
+
+By default, the index page of the backend is the `list` view of the first
+configured entity. If you want to display instead a custom page or dashboard,
+[override the default AdminController] [override-admin-controller] and use
+the following code:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+
+class AdminController extends BaseAdminController
+{
+    /**
+     * @Route("/admin/", name="admin")
+     */
+    public function indexAction(Request $request)
+    {
+        // if the URL doesn't include the entity name, this is the index page
+        if (null === $request->query->get('entity')) {
+            // define this route in any of your own controllers
+            return $this->redirectToRoute('admin_dashboard');
+        }
+
+        // don't forget to add this line to serve the regular backend pages
+        return parent::indexAction($request);
+    }
+
+    // ...
+}
+```
+
 Create a Read-Only Backend
 --------------------------
 
@@ -83,4 +120,5 @@ override the default `layout.html.twig` template and empty the
 Read the [Advanced Design Customization] [advanced-design-customization]
 tutorial to learn how to override default templates.
 
+[override-admin-controller]: ./customizing-admin-controller.md
 [advanced-design-customization]: ./advanced-design-customization.md

@@ -21,9 +21,15 @@ class CategoryEntityTest extends AbstractTestCase
      */
     private function requestListView()
     {
+        $parameters = array(
+            'action' => 'list',
+            'entity' => 'Category',
+            'view' => 'list',
+        );
+
         $client = static::createClient();
 
-        return $client->request('GET', '/admin/?entity=Category&action=list&view=list');
+        return $client->request('GET', '/admin/?'.http_build_query($parameters));
     }
 
     /**
@@ -31,9 +37,16 @@ class CategoryEntityTest extends AbstractTestCase
      */
     private function requestShowView()
     {
+        $parameters = array(
+            'action' => 'show',
+            'entity' => 'Category',
+            'id' => '200',
+            'view' => 'list',
+        );
+
         $client = static::createClient();
 
-        return $client->request('GET', '/admin/?action=show&view=list&entity=Category&id=200');
+        return $client->request('GET', '/admin/?'.http_build_query($parameters));
     }
 
     /**
@@ -41,9 +54,16 @@ class CategoryEntityTest extends AbstractTestCase
      */
     private function requestEditView()
     {
+        $parameters = array(
+            'action' => 'edit',
+            'entity' => 'Category',
+            'id' => '200',
+            'view' => 'list',
+        );
+
         $client = static::createClient();
 
-        return $client->request('GET', '/admin/?action=edit&view=list&entity=Category&id=200');
+        return $client->request('GET', '/admin/?'.http_build_query($parameters));
     }
 
     public function testListViewPageMainMenu()

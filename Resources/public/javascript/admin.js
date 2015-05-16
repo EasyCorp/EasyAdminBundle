@@ -4,9 +4,11 @@ $(function () {
     $(mainMenu).bind('scroll', mainMenuDropShadow);
     $(window).bind('resize', function() {
         mainMenuDropShadow.apply(mainMenu);
+        mainMenuResponsiveCollapse();
     });
 
     mainMenuDropShadow.apply(mainMenu);
+    mainMenuResponsiveCollapse();
 });
 
 function mainMenuDropShadow() {
@@ -19,4 +21,14 @@ function mainMenuDropShadow() {
 
     var scrollPercent = 100 * this.scrollTop / this.scrollHeight / (1 - this.clientHeight / this.scrollHeight);
     isNaN(scrollPercent) || scrollPercent >= 100 ? headerFooter.removeClass('drop-shadow') : headerFooter.addClass('drop-shadow');
+}
+
+function mainMenuResponsiveCollapse() {
+    var mainMenuItems = $('#header-menu');
+
+    if ($(window).width() > 768 && $(window).width() < 1024) {
+        mainMenuItems.flexMenu({ 'linkText': '<i class="fa fa-ellipsis-h"></i>' });
+    } else {
+        mainMenuItems.flexMenu({ 'undo': true });
+    }
 }

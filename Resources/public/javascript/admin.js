@@ -27,7 +27,7 @@ function mainMenuResponsiveCollapse() {
     var mainMenuItems = $('#header-menu');
 
     if ($(window).width() > 768 && $(window).width() < 1024) {
-        mainMenuItems.flexMenu({'linkText': '...'});
+        mainMenuItems.flexMenu({ 'linkText': '<i class="fa fa-ellipsis-h"></i>' });
     } else {
         mainMenuItems.flexMenu({ 'undo': true });
     }

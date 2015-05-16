@@ -34,6 +34,9 @@ easy_admin:
                     - { property: 'name', label: 'Label' }
                     - { property: 'parent', label: 'Parent category' }
             form:
+                title: 'Add a new %%entity_name%%'
+                actions:
+                    - { name: 'list', label: 'Return to listing', icon: 'list' }
                 fields:
                     - { property: 'id' }
                     - { property: 'name', label: 'Label' }
@@ -43,6 +46,7 @@ easy_admin:
                 actions:
                     - { name: 'delete', label: 'Remove', icon: 'minus-circle' }
                     - { name: 'list', label: 'Return to listing', icon: 'list' }
+            new: ~
         Image:
             class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Image
             label: 'Images'

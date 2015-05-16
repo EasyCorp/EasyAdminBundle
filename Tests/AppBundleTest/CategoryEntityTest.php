@@ -66,6 +66,22 @@ class CategoryEntityTest extends AbstractTestCase
         return $client->request('GET', '/admin/?'.http_build_query($parameters));
     }
 
+    /**
+     * @return Crawler
+     */
+    private function requestNewView()
+    {
+        $parameters = array(
+            'action' => 'new',
+            'entity' => 'Category',
+            'view' => 'list',
+        );
+
+        $client = static::createClient();
+
+        return $client->request('GET', '/admin/?'.http_build_query($parameters));
+    }
+
     public function testListViewPageMainMenu()
     {
         $crawler = $this->requestShowView();
@@ -110,7 +126,7 @@ class CategoryEntityTest extends AbstractTestCase
 
         $this->assertEquals('New Category', trim($crawler->filter('#content-actions a.btn')->text()));
         $this->assertEquals('fa fa-plus-circle', $crawler->filter('#content-actions a.btn i')->attr('class'));
-        $this->assertEquals('/admin/?entity=Category&action=new&view=list', $crawler->filter('#content-actions a.btn')->attr('href'));
+        $this->assertStringStartsWith('/admin/?view=list&action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('#content-actions a.btn')->attr('href'));
     }
 
     public function testListViewTableIdColumn()
@@ -360,6 +376,79 @@ class CategoryEntityTest extends AbstractTestCase
 
         // 2. click on the 'Edit' link of the first item
         $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
+        $crawler = $client->click($link);
+
+        // 3. the 'referer' parameter should point to the previous specific 'list' view page
+        $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
+        $queryString = parse_url($refererUrl, PHP_URL_QUERY);
+        parse_str($queryString, $refererParameters);
+
+        $this->assertEquals($parameters, $refererParameters);
+    }
+
+    public function testNewViewPageMainMenu()
+    {
+        $crawler = $this->requestNewView();
+
+        $this->assertEquals('Categories', trim($crawler->filter('#header-menu li.active')->text()));
+    }
+
+    public function testNewViewPageTitle()
+    {
+        $crawler = $this->requestNewView();
+
+        $this->assertEquals('Add a new Category', trim($crawler->filter('head title')->text()));
+        $this->assertEquals('Add a new Category', trim($crawler->filter('h1.title')->text()));
+    }
+
+    public function testNewViewFieldLabels()
+    {
+        $crawler = $this->requestNewView();
+        $fieldLabels = array('ID', 'Label', 'Parent Category Label');
+
+        foreach ($fieldLabels as $i => $label) {
+            $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
+        }
+    }
+
+    public function testNewViewFieldClasses()
+    {
+        $crawler = $this->requestNewView();
+        $fieldClasses = array('integer', 'text', 'default');
+
+        foreach ($fieldClasses as $i => $cssClass) {
+            $this->assertContains('field_'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
+        }
+    }
+
+    public function testNewViewActions()
+    {
+        $crawler = $this->requestNewView();
+
+        // save action
+        $this->assertContains('fa-save', trim($crawler->filter('#form-actions-row button:contains("Save changes") i')->attr('class')));
+
+        // list action
+        $this->assertContains('fa-list', trim($crawler->filter('#form-actions-row a:contains("Return to listing") i')->attr('class')));
+    }
+
+    public function testNewViewListActionReferer()
+    {
+        $parameters = array(
+            'action' => 'list',
+            'entity' => 'Category',
+            'page' => '2',
+            'sortDirection' => 'ASC',
+            'sortField' => 'name',
+            'view' => 'list',
+        );
+
+        // 1. visit a specific 'list' view page
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+
+        // 2. click on the 'New' link to browse the 'new' view
+        $link = $crawler->filter('#content-actions a:contains("New Category")')->link();
         $crawler = $client->click($link);
 
         // 3. the 'referer' parameter should point to the previous specific 'list' view page

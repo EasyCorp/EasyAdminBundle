@@ -53,8 +53,8 @@
    BASIC STYLES
    ------------------------------------------------------------------------- */
 body {
-    background: {{ colors.page_background }};
-    color: {{ colors.text }};
+    background: {{ colors.page_background|raw }};
+    color: {{ colors.text|raw }};
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.5;
@@ -64,12 +64,12 @@ body {
 /* Links
    ------------------------------------------------------------------------- */
 a {
-    color: {{ colors.link }};
+    color: {{ colors.link|raw }};
     text-decoration: none;
 }
 a:hover {
     border: none;
-    color: {{ brand_color }};
+    color: {{ brand_color|raw }};
     text-decoration: underline;
 }
 a:active {
@@ -81,7 +81,7 @@ a:active {
 /* Headings
    ------------------------------------------------------------------------- */
 h1, h2, h3, h4, h5, h6 {
-    color: {{ colors.text }};
+    color: {{ colors.text|raw }};
     font-weight: 500;
     line-height: 1.2;
     margin-bottom: .3em;
@@ -124,7 +124,7 @@ i {
 }
 
 .disabled {
-    color: {{ colors.gray_dark }} !important;
+    color: {{ colors.gray_dark|raw }} !important;
 }
 
 /* Lists
@@ -145,7 +145,7 @@ li {
 code {
     background: transparent;
     border-radius: 0;
-    color: {{ colors.text }};
+    color: {{ colors.text|raw }};
     font-family: Consolas, "Liberation Mono", "Droid Sans Mono", Monaco, Menlo, "Courier New", Courier, monospace;
     font-size-adjust: .5;
     font-size: 14px;
@@ -163,12 +163,12 @@ div.flash {
     padding: .5em;
 }
 div.flash-success {
-    background: {{ colors.success }};
-    color: {{ colors.white }};
+    background: {{ colors.success|raw }};
+    color: {{ colors.white|raw }};
 }
 div.flash-error {
-    background: {{ colors.danger }};
-    color: {{ colors.white }};
+    background: {{ colors.danger|raw }};
+    color: {{ colors.white|raw }};
 }
 div.flash-error strong {
     padding-right: .5em;
@@ -177,23 +177,23 @@ div.flash-error strong {
 /* Labels
    ------------------------------------------------------------------------- */
 .label {
-    background: {{ colors.gray_darker }};
-    color: {{ colors.white }};
+    background: {{ colors.gray_darker|raw }};
+    color: {{ colors.white|raw }};
     font-size: 11px;
     padding: 2px 4px;
     text-transform: uppercase;
 }
 .label-success {
-    background: {{ colors.success }};
+    background: {{ colors.success|raw }};
 }
 .label-danger {
-    background: {{ colors.danger }};
+    background: {{ colors.danger|raw }};
 }
 .label-empty {
     background: transparent;
     border: 2px dotted;
     border-radius: 4px;
-    color: {{ colors.text }};
+    color: {{ colors.text|raw }};
 }
 
 /* Switches / toggles
@@ -204,12 +204,12 @@ div.flash-error strong {
     font-weight: bold;
 }
 .toggle .toggle.btn-success {
-    border-color: {{ colors.success }};
-    background: {{ colors.success }};
+    border-color: {{ colors.success|raw }};
+    background: {{ colors.success|raw }};
 }
 .toggle .toggle.btn-danger {
-    border-color: {{ colors.danger }};
-    background: {{ colors.danger }};
+    border-color: {{ colors.danger|raw }};
+    background: {{ colors.danger|raw }};
 }
 .toggle .btn-success .toggle-handle {
     box-shadow: -2px 0 1px rgba(0, 0, 0, .2);
@@ -218,10 +218,10 @@ div.flash-error strong {
     box-shadow: 2px 0 1px rgba(0, 0, 0, .2);
 }
 .toggle .toggle .toggle-on {
-    background: {{ colors.success }};
+    background: {{ colors.success|raw }};
 }
 .toggle .toggle .toggle-off {
-    background: {{ colors.danger }};
+    background: {{ colors.danger|raw }};
 }
 .toggle .toggle-group label {
     padding-top: 2px;
@@ -238,7 +238,7 @@ div.flash-error strong {
 /* Badges
    ------------------------------------------------------------------------- */
 span.badge {
-    background-color: {{ brand_color }};
+    background-color: {{ brand_color|raw }};
 }
 
 /* Buttons
@@ -246,10 +246,10 @@ span.badge {
 a.btn,
 input.btn,
 button.btn {
-    background: {{ brand_color }};
+    background: {{ brand_color|raw }};
     border: none;
     border-radius: 4px;
-    color: {{ colors.white }};
+    color: {{ colors.white|raw }};
     line-height: 1.2;
     outline: none;
     padding: .7em 1em;
@@ -258,7 +258,7 @@ button.btn {
 a.btn:hover,
 input.btn:hover,
 button.btn:hover {
-    color: {{ colors.white }};
+    color: {{ colors.white|raw }};
     opacity: .9;
 }
 
@@ -281,7 +281,7 @@ a.btn-secondary:hover,
 input.btn-secondary:hover,
 button.btn-secondary:hover {
     background: transparent;
-    color: {{ brand_color }};
+    color: {{ brand_color|raw }};
     text-decoration: underline;
 }
 a.btn-secondary:hover,
@@ -299,15 +299,15 @@ button.btn-secondary:active {
 a.btn-danger,
 input.btn-danger,
 button.btn-danger {
-    background: {{ colors.danger }};
+    background: {{ colors.danger|raw }};
 }
 
 /* Forms
    ------------------------------------------------------------------------- */
 .form-control,
 .form-control:focus {
-    color: {{ colors.text }};
-    border: 1px solid {{ colors.gray_dark }};
+    color: {{ colors.text|raw }};
+    border: 1px solid {{ colors.gray_dark|raw }};
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
     -webkit-transition: none;
@@ -317,19 +317,19 @@ button.btn-danger {
 
 .help-block,
 .has-error .help-block {
-    color: {{ colors.gray_dark }};
+    color: {{ colors.gray_dark|raw }};
 }
 
 .has-error .control-label {
-    color: {{ colors.danger }};
+    color: {{ colors.danger|raw }};
 }
 .has-error .form-control,
 .has-error .form-control:focus {
-    border-color: {{ colors.danger }};
+    border-color: {{ colors.danger|raw }};
     box-shadow: none;
 }
 .has-error .error-block {
-    color: {{ colors.danger }};
+    color: {{ colors.danger|raw }};
     font-weight: bold;
     padding-top: 5px;
 }
@@ -353,7 +353,7 @@ button.btn-danger {
     margin: .5em 0;
 }
 .modal-dialog .modal-footer {
-    background: {{ colors.gray_lighter }};
+    background: {{ colors.gray_lighter|raw }};
     margin-top: 1.5em;
 }
 
@@ -372,8 +372,8 @@ button.btn-danger {
 /* Responsive menu inspired by http://www.joesnellpdx.com/toggle-navigation-no-javascript/ */
 
 #header {
-    background: {{ colors.header_background }};
-    border-color: {{ colors.header_background }};
+    background: {{ colors.header_background|raw }};
+    border-color: {{ colors.header_background|raw }};
     box-shadow: 1px 0 2px #DDD;
     position: fixed;
     top: 0;
@@ -390,7 +390,7 @@ button.btn-danger {
     background-color: transparent;
 }
 #header .navbar-toggle i {
-    color: {{ colors.header_text }};
+    color: {{ colors.header_text|raw }};
     font-size: 21px;
     text-align: right;
 }
@@ -400,7 +400,7 @@ button.btn-danger {
     white-space: nowrap;
 }
 #header-logo a {
-    color: {{ brand_color }};
+    color: {{ brand_color|raw }};
     display: block;
     float: left;
     font-size: 16px;
@@ -426,8 +426,8 @@ button.btn-danger {
 
 #header-menu,
 .flexMenu-popup {
-    background: {{ colors.menu_background }};
-    box-shadow: 0 1px 2px {{ colors.gray_darker }};
+    background: {{ colors.menu_background|raw }};
+    box-shadow: 0 1px 2px {{ colors.gray_darker|raw }};
     margin: 0 -15px;
 }
 #header-menu li,
@@ -444,12 +444,12 @@ button.btn-danger {
     white-space: pre;
 }
 #header-menu li a {
-    border-top: 1px solid {{ colors.header_separator }};
-    color: {{ colors.header_text }};
+    border-top: 1px solid {{ colors.header_separator|raw }};
+    color: {{ colors.header_text|raw }};
 {% if 'dark' == color_scheme %}
-    color: {{ colors.gray_lighter }};
+    color: {{ colors.gray_lighter|raw }};
 {% elseif 'light' == color_scheme %}
-    color: {{ colors.text }};
+    color: {{ colors.text|raw }};
 {% endif %}
     display: block;
     font-size: 16px;
@@ -458,12 +458,12 @@ button.btn-danger {
 }
 #header-menu li:hover,
 #header-menu li.active {
-  background: {{ brand_color }};
+  background: {{ brand_color|raw }};
 }
 #header-menu li:hover a,
 #header-menu li.active a {
-  background: {{ brand_color }};
-  color: {{ colors.white }};
+  background: {{ brand_color|raw }};
+  color: {{ colors.white|raw }};
 }
 #header #header-footer {
     display: none;
@@ -479,7 +479,7 @@ button.btn-danger {
     padding-top: 1em;
 }
 #footer {
-    color: {{ colors.gray_dark }};
+    color: {{ colors.gray_dark|raw }};
     font-size: 12px;
 }
 
@@ -536,7 +536,7 @@ body.list #content-header #content-search #content-search-query {
 }
 body.list #content-header #content-search .input-group:after {
   content: "\f002";
-  color: {{ colors.gray_light }};
+  color: {{ colors.gray_light|raw }};
   font-family: "FontAwesome";
   font-size: 16px;
   position: absolute;
@@ -557,13 +557,13 @@ body.list .table tbody {
     border: 0;
 }
 body.list table tbody tr {
-    background: {{ colors.white }};
-    border: 1px solid {{ colors.gray }};
+    background: {{ colors.white|raw }};
+    border: 1px solid {{ colors.gray|raw }};
     display: block;
     margin-bottom: 1em;
 }
 body.list table tbody td {
-    border-bottom: 1px solid {{ colors.table_row_border }};
+    border-bottom: 1px solid {{ colors.table_row_border|raw }};
     border-top: 0;
     display: block;
     text-align: right;
@@ -609,14 +609,14 @@ body.list .pagination > .disabled > span {
     border: 1px solid transparent;
 }
 body.list .pagination > li > a {
-    background: {{ colors.white }};
-    border-color: {{ colors.gray }};
+    background: {{ colors.white|raw }};
+    border-color: {{ colors.gray|raw }};
     border-radius: 0;
-    color: {{ colors.text }};
+    color: {{ colors.text|raw }};
 }
 body.list .pagination > li > a:hover {
-    background: {{ brand_color }};
-    color: {{ colors.white }};
+    background: {{ brand_color|raw }};
+    color: {{ colors.white|raw }};
 }
 .pagination > li > a,
 .pagination > li > span {
@@ -694,9 +694,9 @@ body.edit form.theme_bootstrap_3_horizontal_layout #form-actions-row {
    ------------------------------------------------------------------------- */
 body.show .form-control {
 {% if 'dark' == color_scheme %}
-    background: {{ colors.white }};
+    background: {{ colors.white|raw }};
 {% elseif 'light' == color_scheme %}
-    background: {{ colors.gray_lighter }};
+    background: {{ colors.gray_lighter|raw }};
 {% endif %}
     border: 0;
     border-radius: 0;
@@ -718,24 +718,24 @@ body.show .form-control.image {
    ERROR PAGES
    ------------------------------------------------------------------------- */
 body.error {
-    background: {{ colors.gray }};
+    background: {{ colors.gray|raw }};
 }
 body.error .container {
-    background: {{ colors.white }};
+    background: {{ colors.white|raw }};
     height: auto;
     margin: 3em auto 2em;
     max-width: 80%;
     padding: 0;
 }
 body.error .container h1 {
-    background: {{ colors.danger }};
-    color: {{ colors.gray_lighter }};
+    background: {{ colors.danger|raw }};
+    color: {{ colors.gray_lighter|raw }};
     margin-top: 0;
     padding: 15px;
     text-transform: uppercase;
 }
 body.error .error-problem code {
-    color: {{ colors.danger }};
+    color: {{ colors.danger|raw }};
     font-family: inherit;
     font-size: inherit;
     font-weight: bold;
@@ -745,7 +745,7 @@ body.error .error-solution {
     padding: 15px;
 }
 body.error .error-problem p.lead {
-    border-bottom: 1px solid {{ colors.gray }};
+    border-bottom: 1px solid {{ colors.gray|raw }};
     margin-bottom: 0;
     padding-bottom: 1em;
 }
@@ -753,7 +753,7 @@ body.error .error-solution h2 {
     margin-top: 0;
 }
 body.error .error-solution code {
-    color: {{ colors.success }};
+    color: {{ colors.success|raw }};
     font-family: inherit;
     font-size: inherit;
     font-weight: bold;
@@ -815,11 +815,11 @@ body.error .error-solution pre {
     #header #header-menu ul.flexMenu-popup li a:hover,
     #header #header-menu ul.flexMenu-popup li.active a{
         background: transparent;
-        color: {{ brand_color }};
+        color: {{ brand_color|raw }};
     }
     #header #header-menu ul.flexMenu-popup li a{
         background: transparent;
-        color: {{ colors.header_text }};
+        color: {{ colors.header_text|raw }};
     }
 
     #header-logo a.medium {
@@ -838,44 +838,44 @@ body.error .error-solution pre {
     }
 
     body.list table {
-        background: {{ colors.white }};
-        border: 1px solid {{ colors.table_border }};
+        background: {{ colors.white|raw }};
+        border: 1px solid {{ colors.table_border|raw }};
     }
     body.list table thead {
         display: table-header-group;
     }
     body.list table thead th {
-        background: {{ colors.table_header }};
+        background: {{ colors.table_header|raw }};
         padding: 0;
     }
     body.list table thead th i {
-        color: {{ colors.gray_dark }};
+        color: {{ colors.gray_dark|raw }};
         padding: 0 3px;
     }
     body.list table thead th a,
     body.list table thead th span {
-        color: {{ colors.text }};
+        color: {{ colors.text|raw }};
         display: block;
         padding: 10px 6px;
         white-space: nowrap;
     }
     body.list table thead th a:hover {
-        background: {{ colors.gray_lighter }};
-        color: {{ brand_color }};
+        background: {{ colors.gray_lighter|raw }};
+        color: {{ brand_color|raw }};
         text-decoration: none;
     }
     body.list table thead th a:hover i {
-        color: {{ brand_color }};
+        color: {{ brand_color|raw }};
     }
     body.list table thead th.sorted,
     body.list table thead th.sorted a {
-        background: {{ brand_color }};
-        color: {{ colors.white }};
+        background: {{ brand_color|raw }};
+        color: {{ colors.white|raw }};
         text-decoration: none;
     }
     body.list table thead th.sorted a:hover i,
     body.list table thead th.sorted i {
-        color: {{ colors.white }};
+        color: {{ colors.white|raw }};
     }
     body.list table thead th.boolean,
     body.list table tbody td.boolean,
@@ -884,24 +884,24 @@ body.error .error-solution pre {
         text-align: center;
     }
     body.list .table thead tr th {
-        border-bottom: 2px solid {{ colors.gray }};
+        border-bottom: 2px solid {{ colors.gray|raw }};
     }
     body.list .table thead tr th.sorted {
-        border-bottom: 2px outset {{ brand_color }};
+        border-bottom: 2px outset {{ brand_color|raw }};
     }
     /* these styles are needed to fix some visual glitches when the sort field is the first column */
     body.list .table thead tr th:first-child.sorted {
-        border-left: 1px solid {{ brand_color }};
-        border-top: 1px solid {{ brand_color }};
+        border-left: 1px solid {{ brand_color|raw }};
+        border-top: 1px solid {{ brand_color|raw }};
     }
     body.list .table tbody {
 {% if 'dark' == color_scheme %}
-        border-bottom: 2px solid {{ brand_color }};
+        border-bottom: 2px solid {{ brand_color|raw }};
 {% elseif 'light' == color_scheme %}
         /* this '1px double' style is correct because 'double' gives the border more priority
            and allows us to override the table border bottom (otherwise this border won't
             be shown) */
-        border-bottom: 1px double {{ colors.gray }};
+        border-bottom: 1px double {{ colors.gray|raw }};
 {% endif %}
     }
     body.list table tbody tr {
@@ -911,7 +911,7 @@ body.error .error-solution pre {
     }
     body.list table tbody td {
         border-bottom: 0;
-        border-top: 1px solid {{ colors.table_row_border }};
+        border-top: 1px solid {{ colors.table_row_border|raw }};
         display: table-cell;
         text-align: left;
     }
@@ -920,11 +920,11 @@ body.error .error-solution pre {
         float: none;
     }
     body.list table tbody td.sorted {
-        background: {{ colors.gray_lighter }};
-        border-color: {{ colors.table_row_border }};
+        background: {{ colors.gray_lighter|raw }};
+        border-color: {{ colors.table_row_border|raw }};
     }
     body.list .table tbody tr:hover td {
-        background: {{ colors.gray_lighter }};
+        background: {{ colors.gray_lighter|raw }};
     }
     body.list table tbody td.actions a {
         margin-left: 0;
@@ -988,9 +988,9 @@ body.error .error-solution pre {
     #header-menu li a {
         border: 0;
 {% if 'dark' == color_scheme %}
-        color: {{ colors.gray_lighter }};
+        color: {{ colors.gray_lighter|raw }};
 {% elseif 'light' == color_scheme %}
-        color: {{ colors.text }};
+        color: {{ colors.text|raw }};
 {% endif %}
         display: block;
         line-height: 40px;
@@ -998,7 +998,7 @@ body.error .error-solution pre {
     }
 
     #header #header-footer {
-        color: {{ colors.gray_dark }};
+        color: {{ colors.gray_dark|raw }};
         display: block;
         font-size: 14px;
     }
@@ -1122,7 +1122,7 @@ body.error .error-solution pre {
         overflow-y: hidden;
     }
     #header #header-menu li {
-        border-bottom: 1px solid {{ colors.header_separator }};
+        border-bottom: 1px solid {{ colors.header_separator|raw }};
         display: block;
         float: none;
         margin: 0;
@@ -1137,23 +1137,23 @@ body.error .error-solution pre {
         padding: 12px 0 12px 10px;
     }
     #header #header-menu li a:hover {
-        background: {{ colors.header_background }};
-        color: {{ brand_color }};
+        background: {{ colors.header_background|raw }};
+        color: {{ brand_color|raw }};
         text-decoration: none;
     }
     #header #header-menu li:hover a  {
-        background: {{ colors.header_background }};
-        color: {{ brand_color }};
+        background: {{ colors.header_background|raw }};
+        color: {{ brand_color|raw }};
     }
     #header #header-menu li.active a,
     #header #header-menu li.active:hover a {
-        background: {{ brand_color }};
-        color: {{ colors.white }};
+        background: {{ brand_color|raw }};
+        color: {{ colors.white|raw }};
     }
     #header #header-footer {
-        background: {{ colors.header_background }};
+        background: {{ colors.header_background|raw }};
 {% if 'dark' == color_scheme %}
-        border-top: 1px solid {{ colors.gray_dark }};
+        border-top: 1px solid {{ colors.gray_dark|raw }};
 {% endif %}
         font-size: 14px;
         padding-bottom: 1em;

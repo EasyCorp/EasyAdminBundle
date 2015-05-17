@@ -62,7 +62,7 @@
                 {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
                 {% if easyadmin_action_is_enabled_for_show_view('list', _entity_config.name) %}
                     {% set _action = easyadmin_get_action_for_show_view('list', _entity_config.name) %}
-                    <a class="btn btn-list btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer') : path('admin', ({ entity: _entity_config.name, action: _action.name, view: 'show' })) }}">{% spaceless %}
+                    <a class="btn btn-list btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('admin', ({ entity: _entity_config.name, action: _action.name, view: 'show' })) }}">{% spaceless %}
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                         {{ _action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>

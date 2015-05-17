@@ -39,6 +39,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFilter('easyadmin_truncate', array($this, 'truncateText'), array('needs_environment' => true)),
+            new \Twig_SimpleFilter('easyadmin_urldecode', 'urldecode'),
         );
     }
 

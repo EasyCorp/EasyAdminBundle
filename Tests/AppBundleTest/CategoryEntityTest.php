@@ -82,6 +82,23 @@ class CategoryEntityTest extends AbstractTestCase
         return $client->request('GET', '/admin/?'.http_build_query($parameters));
     }
 
+    /**
+     * @return Crawler
+     */
+    private function requestSearchView()
+    {
+        $parameters = array(
+            'action' => 'search',
+            'entity' => 'Category',
+            'query' => 'cat',
+            'view' => 'list',
+        );
+
+        $client = static::createClient();
+
+        return $client->request('GET', '/admin/?'.http_build_query($parameters));
+    }
+
     public function testListViewPageMainMenu()
     {
         $crawler = $this->requestShowView();
@@ -127,6 +144,14 @@ class CategoryEntityTest extends AbstractTestCase
         $this->assertEquals('New Category', trim($crawler->filter('#content-actions a.btn')->text()));
         $this->assertEquals('fa fa-plus-circle', $crawler->filter('#content-actions a.btn i')->attr('class'));
         $this->assertStringStartsWith('/admin/?view=list&action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('#content-actions a.btn')->attr('href'));
+    }
+
+    public function testListViewItemActions()
+    {
+        $crawler = $this->requestListView();
+
+        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
     }
 
     public function testListViewTableIdColumn()
@@ -325,6 +350,16 @@ class CategoryEntityTest extends AbstractTestCase
         $this->assertEquals('Modify Category (200) details', trim($crawler->filter('h1.title')->text()));
     }
 
+    public function testEditViewFormClasses()
+    {
+        $crawler = $this->requestEditView();
+        $formClasses = array('theme_bootstrap_3_horizontal_layout', 'form-horizontal');
+
+        foreach ($formClasses as $cssClass) {
+            $this->assertContains($cssClass, trim($crawler->filter('#main form')->eq(0)->attr('class')));
+        }
+    }
+
     public function testEditViewFieldLabels()
     {
         $crawler = $this->requestEditView();
@@ -401,6 +436,16 @@ class CategoryEntityTest extends AbstractTestCase
         $this->assertEquals('Add a new Category', trim($crawler->filter('h1.title')->text()));
     }
 
+    public function testNewViewFormClasses()
+    {
+        $crawler = $this->requestNewView();
+        $formClasses = array('theme_bootstrap_3_horizontal_layout', 'form-horizontal');
+
+        foreach ($formClasses as $cssClass) {
+            $this->assertContains($cssClass, trim($crawler->filter('#main form')->eq(0)->attr('class')));
+        }
+    }
+
     public function testNewViewFieldLabels()
     {
         $crawler = $this->requestNewView();
@@ -453,6 +498,125 @@ class CategoryEntityTest extends AbstractTestCase
 
         // 3. the 'referer' parameter should point to the previous specific 'list' view page
         $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
+        $queryString = parse_url($refererUrl, PHP_URL_QUERY);
+        parse_str($queryString, $refererParameters);
+
+        $this->assertEquals($parameters, $refererParameters);
+    }
+
+    public function testSearchViewPageMainMenu()
+    {
+        $crawler = $this->requestSearchView();
+
+        $this->assertEquals('Categories', trim($crawler->filter('#header-menu li.active')->text()));
+    }
+
+    public function testSearchViewPageTitle()
+    {
+        $crawler = $this->requestSearchView();
+
+        $this->assertEquals('200 results found', trim($crawler->filter('head title')->text()));
+        $this->assertEquals('200 results found', trim($crawler->filter('h1.title')->text()));
+    }
+
+    public function testSearchViewTableIdColumn()
+    {
+        $crawler = $this->requestSearchView();
+
+        $this->assertEquals('ID', trim($crawler->filter('table th[data-property-name="id"]')->text()),
+            'The ID entity property is very special and we uppercase it automatically to improve its readability.'
+        );
+    }
+
+    public function testSearchViewTableColumnLabels()
+    {
+        $crawler = $this->requestSearchView();
+        $columnLabels = array('ID', 'Label', 'Parent category', 'Actions');
+
+        foreach ($columnLabels as $i => $label) {
+            $this->assertEquals($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
+        }
+    }
+
+    public function testSearchViewTableColumnAttributes()
+    {
+        $crawler = $this->requestSearchView();
+        $columnAttributes = array('id', 'name', 'parent');
+
+        foreach ($columnAttributes as $i => $attribute) {
+            $this->assertEquals($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
+        }
+    }
+
+    public function testSearchViewDefaultTableSorting()
+    {
+        $crawler = $this->requestSearchView();
+
+        $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
+        $this->assertEquals('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
+        $this->assertEquals('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+    }
+
+    public function testSearchViewTableContents()
+    {
+        $crawler = $this->requestSearchView();
+
+        $this->assertCount(15, $crawler->filter('.table tbody tr'));
+    }
+
+    public function testSearchViewTableRowAttributes()
+    {
+        $crawler = $this->requestSearchView();
+        $columnAttributes = array('ID', 'Label', 'Parent category');
+
+        foreach ($columnAttributes as $i => $attribute) {
+            $this->assertEquals($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
+        }
+    }
+
+    public function testSearchViewPagination()
+    {
+        $crawler = $this->requestSearchView();
+
+        $this->assertContains('1 - 15 of 200', $crawler->filter('.list-pagination')->text());
+
+        $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
+        $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
+
+        $this->assertStringStartsWith('/admin/?view=list&action=search&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?view=list&action=search&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
+    }
+
+    public function testSearchViewItemActions()
+    {
+        $crawler = $this->requestSearchView();
+
+        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
+    }
+
+    public function testSearchViewShowActionReferer()
+    {
+        $parameters = array(
+            'action' => 'search',
+            'entity' => 'Category',
+            'page' => '2',
+            'query' => 'cat',
+            'sortDirection' => 'ASC',
+            'sortField' => 'name',
+            'view' => 'list',
+        );
+
+        // 1. visit a specific 'search' view page
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+
+        // 2. click on the 'Show' action of the first result
+        $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
+        $crawler = $client->click($link);
+
+        // 3. the 'referer' parameter should point to the previous specific 'search' view page
+        $refererUrl = $crawler->filter('.form-actions a:contains("Back to Category listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 

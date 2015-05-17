@@ -9,7 +9,8 @@ easy_admin:
     site_name: 'ACME Backend'
     design:
         form_theme:   'horizontal'
-        color_scheme: 'dark'
+        color_scheme: 'light'
+        brand_color:  '#123456'
     entities:
         Category:
             class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category

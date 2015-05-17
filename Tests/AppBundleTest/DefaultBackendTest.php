@@ -77,4 +77,31 @@ class DefaultBackendTest extends WebTestCase
             $i++;
         }
     }
+
+    public function testUndefinedEntityError()
+    {
+        $parameters = array(
+            'action' => 'list',
+            'entity' => 'InexistentEntity',
+            'view' => 'list',
+        );
+
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+        $this->assertContains('Undefined entity', $crawler->filter('head title')->text());
+        $this->assertEquals("The InexistentEntity entity is not defined in\n    the configuration of your backend.", trim($crawler->filter('body.error .container .error-problem p.lead')->text()));
+    }
+
+    public function testAdminCss()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/_css/admin.css');
+
+        $this->assertEquals('text/css; charset=UTF-8', $client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(21, substr_count($client->getResponse()->getContent(), '#123456'), 'The custom brand_color option is used in the admin CSS.');
+        // #FAFAFA color is only used by the "light" color scheme, not the "dark" one
+        $this->assertEquals(12, substr_count($client->getResponse()->getContent(), '#FAFAFA'), 'The selected "light" color scheme is used in the admin CSS.');
+    }
 }

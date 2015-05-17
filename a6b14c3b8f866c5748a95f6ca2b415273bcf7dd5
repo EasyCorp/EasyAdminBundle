@@ -1,0 +1,151 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-16T21:19:50Z
+
+@javiereguiluz : I'm not sure it is related, but does it solve https://github.com/javiereguiluz/EasyAdminBundle/issues/272#issuecomment-100807829 ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-17T07:31:13Z
+
+@ogizanagi not really. The referer feature was implemented a few commits ago, but here we fix some minor bugs discovered while adding functional tests in the application.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-17T08:55:55Z
+
+Tests pass for most of the Symfony+PHP versions, but in the last functional tests there is a very strange error with [2.7.x-dev](https://travis-ci.org/javiereguiluz/EasyAdminBundle/jobs/62884985) and [2.8.x-dev](https://travis-ci.org/javiereguiluz/EasyAdminBundle/jobs/62884986) versions. Is this something temporary or should I open an issue in the Symfony repository?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-17T10:12:18Z
+
+@javiereguiluz : I don't have the time to investigate further right now (but I will the afternoon), but here is the generated css with 2.7:
+
+```css
+#header .navbar-toggle i { color: \23 123456; font-size: 21px; text-align: right; }
+```
+
+With 2.6:
+
+```css
+#header .navbar-toggle i { color: #123456; font-size: 21px; text-align: right; }
+```
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-17T10:14:06Z
+
+Maybe you could apply `raw` to all datas in the css twig file ? I bet there's an auto escaping that's set to `css` in the file. Or it's an error from SF2.7...
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-17T10:15:20Z
+
+@Pierstoval : ~~I tried (very quickly, I'm kind in a hurry ^^'), it didn't work.~~
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-17T10:23:25Z
+
+@Pierstoval : Actually, it works. As I said, I was quick, and didn't search and replace everything...
+I'd like to know what has changed in order to produce that in 2.7 :confused:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-17T11:15:37Z
+
+Maybe someone else can give us some clues /cc @WouterJ @stof ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-17T11:28:50Z
+
+If someone not familiar with this bundle wants to look into the error, this is the problem explained:
+
+**1. We use Twig to generate a dynamic CSS file**
+
+Here it is an example of the code we use to allow colors to be configurable by the user:
+
+```twig
+body {
+    background: {{ colors.page_background }};
+    color: {{ colors.text }};
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+```
+
+**2. If we use #123456 as one of the colors...**
+
+... in **Symfony 2.6 and below** everything works as expected. Example of the generated CSS:
+
+```css
+#header .navbar-toggle i { color: #123456; font-size: 21px; text-align: right; }
+```
+
+... in **Symfony 2.7-dev and 2.8-dev** the generated CSS is the following:
+
+```css
+#header .navbar-toggle i { color: \23 123456; font-size: 21px; text-align: right; }
+```
+
+The latest Symfony versions wrongly escape the `#` character of the CSS Hex color.
+
+**3. If we apply the |raw filter to each value, everything works great for any Symfony version**
+
+```twig
+body {
+    background: {{ colors.page_background|raw }};
+    color: {{ colors.text|raw }};
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+```
+
+Are we doing something wrong in this bundle? Or is this a 2.7/2.8 bug that should be reported to Symfony?
+
+---------------------------------------------------------------------------
+
+by WouterJ at 2015-05-17T12:44:30Z
+
+The `|raw` filter is completely valid and I recommend not to remove it. In CSS, variables are escaped using the CSS escape strategy, which means `#` will be escaped as `\23 ` (just like `<` is escaped in HTML without the `|raw` filter).
+
+Determining the escape strategy based on the file extension was added in Twig 1.17. As TwigBundle 2.6 still supports Twig <1.17, it could not use the `Twig_FileExtensionEscapingStrategy` class. This is why the bundle comes with a [custom file extensino escaping strategy class](https://github.com/symfony/symfony/blob/2.6/src/Symfony/Bundle/TwigBundle/TwigDefaultEscapingStrategy.php). TwigBundle 2.7 dropped Twig <1.18 support, so it was no longer needed to use this class.
+
+The CSS escaping strategy was introduced in [Twig 1.18](https://github.com/twigphp/Twig/commit/7657c01e65695a9a53cf63e0d8e4b872ce00451b). This means the guesser in the TwigBundle doesn't yet enable the CSS escaper (again, to support Twig <1.18).
+
+This is why the CSS strategy is used in Symfony 2.7+ and why it wasn't using the CSS escaping strategy in Symfony 2.6 and below. I'm unsure if this is called a BC break (I would rather put it in the list of things that the bundle did wrong before).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-17T12:50:46Z
+
+It might be a BC break, but anyway, this can be a part of the many changelogs and "UPGRADE*" files we'll need to read when upgrading to SF2.7+ :smile:
+
+Plus, to me it seems very logical to escape with the `css` strategy whenever you're using css twig files.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-17T12:54:10Z
+
+@WouterJ : Thank you for clarifying the situation !
+I agree with @Pierstoval , I think it should be mentioned in the UPGRADE files, don't you think ?
+
+---------------------------------------------------------------------------
+
+by WouterJ at 2015-05-17T13:02:46Z
+
+I agree with you, see #14666 :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-17T13:58:25Z
+
+@WouterJ thanks for looking into this error, proposing a solution and creating the related issue in the Symfony repository.
+
+@ogizanagi I fully agree with you. Let's disable the escaping mechanism for this file.

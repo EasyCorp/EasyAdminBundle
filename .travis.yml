@@ -43,4 +43,8 @@ install:
   - if [ "$deps" = "low" ]; then composer update --prefer-lowest; fi
   - if [ "$deps" != "low" ]; then composer install; fi
 
-script: phpunit --coverage-text
+script: phpunit --coverage-text --coverage-clover build/logs/clover.xml
+
+after_success: |
+    sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" -a "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;'
+

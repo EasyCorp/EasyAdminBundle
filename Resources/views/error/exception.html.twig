@@ -1,0 +1,77 @@
+{% extends '@EasyAdmin/error/error_page.html.twig' %}
+
+{% block page_title 'An exception occured!' %}
+{% block solution_wrapper '' %}
+{% block body_class %}{{ parent() }} exception{% endblock %}
+
+{% block error_title %}An exception occured!{% endblock %}
+
+{% block problem %}
+    <p><a href="{{ path('admin') }}" class="btn btn-info">&laquo; Back to the admin panel.</a></p>
+
+    {% set firstException = (exceptions | slice(0,1) | first) %}
+    {% set exceptions = (exceptions | slice(1, null)) %}
+
+    <div class="well well-sm">
+        <h2>{{ firstException.class | abbr_class }} ({{ firstException.code }})</h2>
+        <p>
+            {{ firstException.message | nl2br | format_file_from_text }}
+        </p>
+        {% if app.debug %}
+            <p>
+                {% for trace in firstException.trace %}
+                    #{{ loop.revindex0 }} -
+                        {% if trace.function %}
+                            <strong>
+                                {% if trace.class is defined %}
+                                    {{ trace.class | abbr_class }}
+                                {% endif %}
+                                {{ (trace.type | default('')) ~ trace.function }}
+                            </strong>
+                        {% endif %}
+                        {% if trace.file is defined and trace.file and trace.line is defined and trace.line %}
+                            {{ trace.file | format_file(trace.line) }}
+                        {% endif %}
+                    <br>
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
+    {% if exceptions | length %}
+        <div>
+            <p><strong>{{ exceptions | length }}</strong> other exception{{ exceptions | length > 1 ? 's' : '' }}:</p>
+            <ul class="list-unstyled">
+                {% for exception in exceptions %}
+                    <li class="well well-sm">
+                        <h3>#{{ (loop.index+1) }} - {{ exception.class | abbr_class }} ({{ exception.code }})</h3>
+                        <p>
+                            {{ exception.message | nl2br | format_file_from_text }}
+                        </p>
+
+                        {% if app.debug %}
+                            <p>
+                                {% for trace in exception.trace %}
+                                    #{{ loop.revindex0 }} -
+                                    {% if trace.function %}
+                                        <strong>
+                                            {% if trace.class is defined %}
+                                                {{ trace.class | abbr_class }}
+                                            {% endif %}
+                                            {{ (trace.type | default('')) ~ trace.function }}
+                                        </strong>
+                                    {% endif %}
+                                        {% if trace.file is defined and trace.file and trace.line is defined and trace.line %}
+                                    {{ trace.file | format_file(trace.line) }}
+                                {% endif %}
+                                    <br>
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% endblock %}

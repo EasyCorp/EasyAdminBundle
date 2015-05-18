@@ -764,6 +764,16 @@ body.error .error-solution pre {
     background: none;
     border: 0;
 }
+body.error .error-problem .well {
+    padding-top: 0;
+}
+
+@media (min-width: 768px) {
+    body.error .error-problem .well h3,
+    body.error .error-problem .well h2 {
+        margin-top: 0.8em;
+    }
+}
 
     /*font-size: inherit;*/
 
@@ -1038,6 +1048,9 @@ body.error .error-solution pre {
 
     body.error .container {
         max-width: 50%;
+    }
+    body.error.exception .container {
+        max-width: 100%;
     }
 }
 

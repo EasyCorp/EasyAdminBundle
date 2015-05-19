@@ -1,0 +1,51 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-19T15:43:08Z
+
+As always, I'm glad to help :smile:
+
+Users should keep in mind that overriding an originally declared action with a `@Route` annotation should redeclare this annotation: as you did [here](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/tips-and-tricks.md#use-a-custom-dashboard-as-the-index-page-of-the-backend).
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-19T15:52:58Z
+
+Your comment is very important. I've just added a note in 990d338
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-19T15:54:44Z
+
+Good, this should be the main entry point in customizing the backend :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-19T15:56:30Z
+
+@javiereguiluz : To be consistent, as you [specified the `admin/` prefix in `routing.yml`](https://github.com/javiereguiluz/EasyAdminBundle/pull/318/files#diff-d67879fe0ef179dc5f9ccf642085891cR56), I think you should change `admin` by `/` [here](https://github.com/javiereguiluz/EasyAdminBundle/pull/318/files#diff-c1f1e6773cdba6b2c621b1283800b1d7R82). What do you think ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-19T15:58:39Z
+
+I fully agree! Thanks.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-19T15:59:04Z
+
+Omg, Kinda 1 minute reactivity in edit/add/commit/push, awesome :+1: :+1:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-19T16:00:26Z
+
+@Pierstoval : and [merge](https://github.com/javiereguiluz/easy-admin-demo/issues/1) :stuck_out_tongue_winking_eye:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-19T16:02:06Z
+
+The advantage of merging is that it needs 2 consecutive clicks :D

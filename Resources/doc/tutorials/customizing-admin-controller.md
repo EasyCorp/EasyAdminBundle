@@ -36,42 +36,29 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdmin
 
 class AdminController extends BaseAdminController
 {
-    // ...
 }
 ```
 
 Extending from the default controller is not enough to override the entire
-backend. That's why you must define an `indexAction()` method with the
-following content:
+backend. You must also **update the routing configuration** to point the
+`admin` route to the new controller.
 
-```php
-// src/AppBundle/Controller/AdminController.php
-namespace AppBundle\Controller;
+Open the `app/config/routing.yml` file and change the value of the `resource`
+option defined by the existing `easy_admin_bundle` route to load your own
+controller instead of the default one:
 
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
-
-class AdminController extends BaseAdminController
-{
-    /**
-     * @Route("/admin/", name="admin")
-     */
-    public function indexAction(Request $request)
-    {
-        return parent::indexAction($request);
-    }
-
-    // ...
-}
+```yaml
+# app/config/routing.yml
+easy_admin_bundle:
+    # resource: "@EasyAdminBundle/Controller/"           <-- REMOVE this line
+    resource: "@AppBundle/Controller/AdminController.php" # <-- ADD this line
+    type:     annotation
+    prefix:   /admin
 ```
 
-This `indexAction()` method overrides the default `admin` route, which is
-essential to make your controller override the default `AdminController`
-behavior.
-
-Keep reading the practical examples of the next sections to learn which
-methods you can override in the backend.
+Save the changes and the backend will start using your own controller. Then,
+keep reading the practical examples of the next sections to learn which
+methods you can override in the controller.
 
 ### Customize the Instantiation of a Single Entity
 

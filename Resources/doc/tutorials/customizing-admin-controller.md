@@ -36,71 +36,29 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdmin
 
 class AdminController extends BaseAdminController
 {
-    // ...
 }
 ```
 
 Extending from the default controller is not enough to override the entire
-backend. That's why you must define an `indexAction()` method with the
-following content:
+backend. You must also **update the routing configuration** to point the
+`admin` route to the new controller.
 
-```php
-// src/AppBundle/Controller/AdminController.php
-namespace AppBundle\Controller;
-
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
-
-class AdminController extends BaseAdminController
-{
-    /**
-     * @Route("/admin/", name="admin")
-     */
-    public function indexAction(Request $request)
-    {
-        return parent::indexAction($request);
-    }
-
-    // ...
-}
-```
-
-This `indexAction()` method overrides the default `admin` route, which is
-essential to make your controller override the default `AdminController`
-behavior.
-
-However, in order to activate this route, you need to import it and other routes defined in this controller through annotations by adding your controller as a resource in your routing files:
-```yaml
-# app/config/routing.yml
-
-app:
-    resource: @AppBundle/Controller/AdminController.php
-    type:     annotation
-```
-
-At this point, you don't even need to import easyadmin routes from the original controller, and could simply replace the old definition:
+Open the `app/config/routing.yml` file and change the value of the `resource`
+option defined by the existing `easy_admin_bundle` route to load your own
+controller instead of the default one:
 
 ```yaml
 # app/config/routing.yml
-
-# Old definition:
-#easy_admin_bundle:
-#    resource: "@EasyAdminBundle/Controller/"
-#    type:     annotation
-#    prefix:   /admin
-
-# New
-app_admin:
-    resource: "@AppBundle/Controller/AdminController.php"
+easy_admin_bundle:
+    # resource: "@EasyAdminBundle/Controller/"           <-- REMOVE this line
+    resource: "@AppBundle/Controller/AdminController.php" # <-- ADD this line
     type:     annotation
     prefix:   /admin
 ```
 
-and delete the `indexAction()` method in your controller (if you don't need to do anything within it).
-
-Keep reading the practical examples of the next sections to learn which
-methods you can override in the backend.
+Save the changes and the backend will start using your own controller. Then,
+keep reading the practical examples of the next sections to learn which
+methods you can override in the controller.
 
 ### Customize the Instantiation of a Single Entity
 

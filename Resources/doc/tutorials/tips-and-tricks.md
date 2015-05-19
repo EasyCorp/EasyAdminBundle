@@ -79,7 +79,7 @@ class AdminController extends BaseAdminController
     /**
      * Don't forget to add this route annotation!
      *
-     * @Route("/admin/", name="admin")
+     * @Route("/", name="admin")
      */
     public function indexAction(Request $request)
     {

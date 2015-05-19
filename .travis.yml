@@ -42,7 +42,7 @@ before_install:
 install:
   - if [ "$deps" = "low" ]; then composer update --prefer-lowest; fi
   - if [ "$deps" != "low" ]; then composer install; fi
-  - composer require satooshi/php-coveralls:~0.6
+  - composer require --dev satooshi/php-coveralls:~0.6
 
 script: phpunit --coverage-text --coverage-clover build/logs/clover.xml
 

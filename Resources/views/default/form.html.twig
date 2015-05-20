@@ -10,8 +10,10 @@
             {% if _field_metadata['fieldType'] == 'association' %}
                 {{ easyadmin_render_field_for_edit_view(entity, _field_metadata) }}
             {% else %}
-                {% set _field_label = _field_metadata['label']|default(null) %}
-                {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}
+                {% set _field_label = _field_metadata['label'] | default(null) | trans(_trans_parameters) %}
+                {% set widget_attr = _field_metadata['widget_attr'] is defined ? _field_metadata['widget_attr'] : {} %}
+                {% set widget_attr = ( widget_attr | merge({label: _field_label})) %}
+                {{ form_row(field, widget_attr) }}
             {% endif %}
 
             {% if _field_metadata['fieldType'] == 'collection' %}

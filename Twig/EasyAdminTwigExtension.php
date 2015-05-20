@@ -46,7 +46,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * @see \JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator::get()
      *
-     * @param null $key
+     * @param string|null $key
      *
      * @return mixed
      */

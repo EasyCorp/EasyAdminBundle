@@ -87,7 +87,7 @@ class DefaultBackendTest extends WebTestCase
         );
 
         $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters, '', '&'));
 
         $this->assertEquals(404, $client->getResponse()->getStatusCode());
         $this->assertContains('Undefined entity', $crawler->filter('head title')->text());

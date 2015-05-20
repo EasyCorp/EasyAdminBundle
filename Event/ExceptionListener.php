@@ -45,7 +45,7 @@ class ExceptionListener
         $route = $event->getRequest()->attributes->get('_route');
 
         if ('admin' === $route) {
-            $extendsAdminController = true;
+            $isInAdminScope = true;
         } else {
             $controller = $event->getRequest()->attributes->get('_controller');
 
@@ -54,12 +54,12 @@ class ExceptionListener
             $reflection = new \ReflectionClass($class);
 
             do {
-                $extendsAdminController = $reflection->getName() === 'JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController';
+                $isInAdminScope = $reflection->getName() === 'JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController';
                 $reflection = $reflection->getParentClass();
-            } while ($reflection && !$extendsAdminController);
+            } while ($reflection && !$isInAdminScope);
         }
 
-        if ($extendsAdminController) {
+        if ($isInAdminScope) {
             $e = $event->getException();
             $response = new Response('', 500);
 

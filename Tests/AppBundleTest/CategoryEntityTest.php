@@ -16,89 +16,6 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CategoryEntityTest extends AbstractTestCase
 {
-    /**
-     * @return Crawler
-     */
-    private function requestListView()
-    {
-        $parameters = array(
-            'action' => 'list',
-            'entity' => 'Category',
-            'view' => 'list',
-        );
-
-        $client = static::createClient();
-
-        return $client->request('GET', '/admin/?'.http_build_query($parameters));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestShowView()
-    {
-        $parameters = array(
-            'action' => 'show',
-            'entity' => 'Category',
-            'id' => '200',
-            'view' => 'list',
-        );
-
-        $client = static::createClient();
-
-        return $client->request('GET', '/admin/?'.http_build_query($parameters));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestEditView()
-    {
-        $parameters = array(
-            'action' => 'edit',
-            'entity' => 'Category',
-            'id' => '200',
-            'view' => 'list',
-        );
-
-        $client = static::createClient();
-
-        return $client->request('GET', '/admin/?'.http_build_query($parameters));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestNewView()
-    {
-        $parameters = array(
-            'action' => 'new',
-            'entity' => 'Category',
-            'view' => 'list',
-        );
-
-        $client = static::createClient();
-
-        return $client->request('GET', '/admin/?'.http_build_query($parameters));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestSearchView()
-    {
-        $parameters = array(
-            'action' => 'search',
-            'entity' => 'Category',
-            'query' => 'cat',
-            'view' => 'list',
-        );
-
-        $client = static::createClient();
-
-        return $client->request('GET', '/admin/?'.http_build_query($parameters));
-    }
-
     public function testListViewPageMainMenu()
     {
         $crawler = $this->requestShowView();
@@ -621,5 +538,78 @@ class CategoryEntityTest extends AbstractTestCase
         parse_str($queryString, $refererParameters);
 
         $this->assertEquals($parameters, $refererParameters);
+    }
+
+    /**
+     * @return Crawler
+     */
+    private function doGetRequest(array $parameters)
+    {
+        $client = static::createClient();
+
+        return $client->request('GET', '/admin/?'.http_build_query($parameters, '', '&'));
+    }
+
+    /**
+     * @return Crawler
+     */
+    private function requestListView()
+    {
+        return $this->doGetRequest(array(
+            'action' => 'list',
+            'entity' => 'Category',
+            'view' => 'list',
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
+    private function requestShowView()
+    {
+        return $this->doGetRequest(array(
+            'action' => 'show',
+            'entity' => 'Category',
+            'id' => '200',
+            'view' => 'list',
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
+    private function requestEditView()
+    {
+        return $this->doGetRequest(array(
+            'action' => 'edit',
+            'entity' => 'Category',
+            'id' => '200',
+            'view' => 'list',
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
+    private function requestNewView()
+    {
+        return $this->doGetRequest(array(
+            'action' => 'new',
+            'entity' => 'Category',
+            'view' => 'list',
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
+    private function requestSearchView()
+    {
+        return $this->doGetRequest(array(
+            'action' => 'search',
+            'entity' => 'Category',
+            'query' => 'cat',
+            'view' => 'list',
+        ));
     }
 }

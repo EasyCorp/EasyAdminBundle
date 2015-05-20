@@ -1,0 +1,36 @@
+{% extends '@EasyAdmin/error/error_page.html.twig' %}
+
+{% set firstException = (exceptions | slice(0,1) | first) %}
+{% set exceptions = (exceptions | slice(1, null)) %}
+
+{% block page_title firstException.message %}
+{% block solution_wrapper '' %}
+
+{% block error_title %}{{ firstException.message }}!{% endblock %}
+
+{% block problem %}
+
+    <h2>{{ firstException.statusCode }} {{ firstException.message }}</h2>
+    <p><a href="{{ path('admin') }}" class="btn btn-info">&laquo; Back to the admin panel.</a></p>
+
+    {% if app.debug %}
+        <p>
+            {% for trace in firstException.trace %}
+                #{{ loop.revindex0 }} -
+                    {% if trace.function %}
+                        <strong>
+                            {% if trace.class is defined %}
+                                {{ trace.class | abbr_class }}
+                            {% endif %}
+                            {{ (trace.type | default('')) ~ trace.function }}
+                        </strong>
+                    {% endif %}
+                    {% if trace.file is defined and trace.file and trace.line is defined and trace.line %}
+                        {{ trace.file | format_file(trace.line) }}
+                    {% endif %}
+                <br>
+            {% endfor %}
+        </p>
+    {% endif %}
+
+{% endblock %}

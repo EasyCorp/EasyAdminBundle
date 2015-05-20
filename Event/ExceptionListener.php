@@ -15,6 +15,7 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ExceptionListener
 {
@@ -37,7 +38,7 @@ class ExceptionListener
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        if (!$this->enabled) {
+        if (false === $this->enabled) {
             return;
         }
 
@@ -58,19 +59,21 @@ class ExceptionListener
 
             $exceptions = array();
 
+            $isHttpException = false;
+
             do {
-                $exceptions[] = array(
-                    'class'         => get_class($e),
-                    'file'          => $e->getFile(),
-                    'line'          => $e->getLine(),
-                    'code'          => $e->getCode(),
-                    'message'       => $e->getMessage(),
-                    'trace'         => $e->getTrace(),
-                    'traceAsString' => $e->getTraceAsString(),
-                );
+                $e->class = get_class($e); // Hack to get the whole exception and its class name in twig
+                $exceptions[] = $e;
+                if ($e instanceof HttpExceptionInterface) {
+                    $isHttpException = true;
+                }
             } while ($e = $e->getPrevious());
 
-            $response->setContent($this->templating->render('@EasyAdmin/error/exception.html.twig', array('exceptions' => $exceptions)));
+            $template = $isHttpException
+                ? '@EasyAdmin/error/http_exception.html.twig'
+                : '@EasyAdmin/error/exception.html.twig'
+            ;
+            $response->setContent($this->templating->render($template, array('exceptions' => $exceptions, 'is_http_exception' => $isHttpException)));
 
             $event->setResponse($response);
         }

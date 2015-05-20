@@ -582,7 +582,7 @@ class AdminController extends Controller
         $formBuilder = $this->createFormBuilder($entity, $formOptions);
 
         foreach ($entityProperties as $name => $metadata) {
-            $formFieldOptions = array();
+            $formFieldOptions = $metadata['type_options'];
 
             if ('association' === $metadata['fieldType'] && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
                 continue;

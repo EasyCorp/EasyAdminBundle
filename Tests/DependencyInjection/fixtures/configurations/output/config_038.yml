@@ -14,6 +14,7 @@ easy_admin:
                     field2:
                         property: field2
                 custom_option: 'another custom value'
+                form_options: {  }
                 actions:
                     list:
                         name: list
@@ -28,6 +29,7 @@ easy_admin:
                     field4:
                         property: field4
                 custom_option: 'custom value'
+                form_options: {  }
                 actions:
                     delete:
                         name: delete

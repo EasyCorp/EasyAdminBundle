@@ -1,53 +1,46 @@
 easy_admin:
-    edit:
-        actions:
-            - delete
-            - list
-    show:
-        actions:
-            - edit
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity
-            edit:
-                actions:
-                    delete:
-                        name: delete
-                        type: method
-                        label: action.delete
-                        class: ''
-                        icon: trash
-                    list:
-                        name: list
-                        type: method
-                        label: action.list
-                        class: ''
-                        icon: null
-                fields: {  }
-                form_options: {  }
-            show:
-                actions:
-                    delete:
-                        name: delete
-                        type: method
-                        label: action.delete
-                        class: ''
-                        icon: trash
-                    list:
-                        name: list
-                        type: method
-                        label: action.list
-                        class: ''
-                        icon: null
-                    edit:
-                        name: edit
-                        type: method
-                        label: action.edit
-                        class: ''
-                        icon: edit
-                fields: {  }
+            form:
+                form_options:
+                    validation_groups:
+                        - Default
+                        - my_validation_group
             label: TestEntity
             name: TestEntity
+            new:
+                form_options:
+                    validation_groups:
+                        - Default
+                        - my_validation_group
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            edit:
+                form_options:
+                    validation_groups:
+                        - Default
+                        - my_validation_group
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
             list:
                 fields: {  }
                 actions:
@@ -81,18 +74,29 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
-            new:
+            search:
                 fields: {  }
-                form_options: {  }
+            show:
+                fields: {  }
                 actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
                         class: ''
                         icon: null
-            search:
-                fields: {  }
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: edit
             disabled_actions: {  }
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
@@ -142,5 +146,9 @@ easy_admin:
     list:
         actions: {  }
         max_results: 15
+    edit:
+        actions: {  }
     new:
+        actions: {  }
+    show:
         actions: {  }

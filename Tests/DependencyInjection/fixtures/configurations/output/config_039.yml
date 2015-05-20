@@ -4,6 +4,7 @@ easy_admin:
             class: AppBundle\Entity\TestEntity
             new:
                 fields: {  }
+                form_options: {  }
                 actions:
                     list:
                         name: list
@@ -13,6 +14,7 @@ easy_admin:
                         icon: null
             edit:
                 fields: {  }
+                form_options: {  }
                 actions:
                     delete:
                         name: delete

@@ -148,6 +148,13 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+
+                ->arrayNode('exception_listener')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')->defaultNull()->end()
+                    ->end()
+                ->end()
             ->end()
         ;
     }

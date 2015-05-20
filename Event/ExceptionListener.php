@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Event;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -23,13 +24,23 @@ class ExceptionListener
      */
     protected $templating;
 
-    public function __construct(TwigEngine $templating)
+    /**
+     * @var boolean
+     */
+    protected $debug;
+
+    public function __construct(Configurator $configurator, TwigEngine $templating)
     {
+        $this->debug = $configurator->get('exception_listener.active');
         $this->templating = $templating;
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
+        if (!$this->debug) {
+            return;
+        }
+
         $controller = $event->getRequest()->attributes->get('_controller');
 
         $class = preg_replace('~\:.*$~', '', $controller);

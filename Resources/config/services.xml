@@ -23,6 +23,7 @@
         <service id="easyadmin.property_reflector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector" public="false" />
 
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\Event\ExceptionListener">
+            <argument type="service" id="easyadmin.configurator" />
             <argument type="service" id="templating.engine.twig" />
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="250" />
         </service>

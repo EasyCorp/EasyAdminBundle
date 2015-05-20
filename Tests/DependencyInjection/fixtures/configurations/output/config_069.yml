@@ -11,6 +11,7 @@ easy_admin:
                         class: ''
                         icon: null
                 fields: {  }
+                form_options: {  }
             label: TestEntity
             name: TestEntity
             list:
@@ -48,6 +49,7 @@ easy_admin:
                         icon: null
             new:
                 fields: {  }
+                form_options: {  }
                 actions:
                     list:
                         name: list

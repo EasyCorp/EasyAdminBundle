@@ -1,15 +1,28 @@
 easy_admin:
-    edit:
-        actions:
-            - delete
-            - list
-    show:
-        actions:
-            - edit
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity
+            form:
+                form_options:
+                    validation_groups:
+                        - Default
+            new:
+                form_options:
+                    validation_groups:
+                        - Register
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
             edit:
+                form_options:
+                    validation_groups:
+                        - Update
+                fields: {  }
                 actions:
                     delete:
                         name: delete
@@ -23,29 +36,6 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
-                fields: {  }
-                form_options: {  }
-            show:
-                actions:
-                    delete:
-                        name: delete
-                        type: method
-                        label: action.delete
-                        class: ''
-                        icon: trash
-                    list:
-                        name: list
-                        type: method
-                        label: action.list
-                        class: ''
-                        icon: null
-                    edit:
-                        name: edit
-                        type: method
-                        label: action.edit
-                        class: ''
-                        icon: edit
-                fields: {  }
             label: TestEntity
             name: TestEntity
             list:
@@ -81,18 +71,29 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
-            new:
+            search:
                 fields: {  }
-                form_options: {  }
+            show:
+                fields: {  }
                 actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
                         class: ''
                         icon: null
-            search:
-                fields: {  }
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: edit
             disabled_actions: {  }
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
@@ -142,5 +143,9 @@ easy_admin:
     list:
         actions: {  }
         max_results: 15
+    edit:
+        actions: {  }
     new:
+        actions: {  }
+    show:
         actions: {  }

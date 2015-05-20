@@ -75,6 +75,7 @@ easy_admin:
             name: TestEntity
             edit:
                 fields: {  }
+                form_options: {  }
                 actions:
                     delete:
                         name: delete
@@ -123,6 +124,7 @@ easy_admin:
                         icon: null
             new:
                 fields: {  }
+                form_options: {  }
                 actions:
                     list:
                         name: list

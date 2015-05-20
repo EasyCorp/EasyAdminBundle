@@ -590,16 +590,16 @@ class AdminController extends Controller
 
             if ('collection' === $metadata['fieldType']) {
                 if (!isset($formFieldOptions['allow_add'])) {
-                    $formFieldOptions = array('allow_add' => true);
+                    $formFieldOptions['allow_add'] = true;
                 }
 
                 if (!isset($formFieldOptions['allow_delete'])) {
-                    $formFieldOptions = array('allow_delete' => true);
+                    $formFieldOptions['allow_delete'] = true;
                 }
 
                 if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
                     if (!isset($formFieldOptions['delete_empty'])) {
-                        $formFieldOptions = array('delete_empty' => true);
+                        $formFieldOptions['delete_empty'] = true;
                     }
                 }
             }

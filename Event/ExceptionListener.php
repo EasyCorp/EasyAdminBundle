@@ -27,17 +27,17 @@ class ExceptionListener
     /**
      * @var boolean
      */
-    protected $debug;
+    protected $enabled;
 
     public function __construct(Configurator $configurator, TwigEngine $templating)
     {
-        $this->debug = $configurator->get('exception_listener.active');
+        $this->enabled = $configurator->get('exception_listener.enabled');
         $this->templating = $templating;
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        if (!$this->debug) {
+        if (!$this->enabled) {
             return;
         }
 

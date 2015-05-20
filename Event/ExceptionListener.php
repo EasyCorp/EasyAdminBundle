@@ -32,7 +32,16 @@ class ExceptionListener
     {
         $controller = $event->getRequest()->attributes->get('_controller');
 
-        if (strpos($controller, 'JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController') !== false) {
+        $class = preg_replace('~\:.*$~', '', $controller);
+
+        $reflection = new \ReflectionClass($class);
+
+        do {
+            $extendsAdminController = $reflection->getName() === 'JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController';
+            $reflection = $reflection->getParentClass();
+        } while ($reflection && !$extendsAdminController);
+
+        if ($extendsAdminController) {
             $e = $event->getException();
             $response = new Response('', 500);
 

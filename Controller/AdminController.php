@@ -569,10 +569,10 @@ class AdminController extends Controller
             return sprintf('theme_%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
         });
 
-        $formBuilder = $this->createFormBuilder($entity, array(
+        $formBuilder = $this->createFormBuilder($entity, array_replace($this->entity[$view]['form_options'], array(
             'data_class' => $this->entity['class'],
             'attr' => array('class' => $formCssClass, 'id' => $view.'-form'),
-        ));
+        )));
 
         foreach ($entityProperties as $name => $metadata) {
             $formFieldOptions = array();

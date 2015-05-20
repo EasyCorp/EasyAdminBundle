@@ -42,16 +42,22 @@ class ExceptionListener
             return;
         }
 
-        $controller = $event->getRequest()->attributes->get('_controller');
+        $route = $event->getRequest()->attributes->get('_route');
 
-        $class = preg_replace('~\:.*$~', '', $controller);
+        if ('admin' === $route) {
+            $extendsAdminController = true;
+        } else {
+            $controller = $event->getRequest()->attributes->get('_controller');
 
-        $reflection = new \ReflectionClass($class);
+            $class = preg_replace('~\:.*$~', '', $controller);
 
-        do {
-            $extendsAdminController = $reflection->getName() === 'JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController';
-            $reflection = $reflection->getParentClass();
-        } while ($reflection && !$extendsAdminController);
+            $reflection = new \ReflectionClass($class);
+
+            do {
+                $extendsAdminController = $reflection->getName() === 'JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController';
+                $reflection = $reflection->getParentClass();
+            } while ($reflection && !$extendsAdminController);
+        }
 
         if ($extendsAdminController) {
             $e = $event->getException();

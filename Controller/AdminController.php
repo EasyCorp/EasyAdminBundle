@@ -603,7 +603,7 @@ class AdminController extends Controller
         ));
 
         foreach ($entityProperties as $name => $metadata) {
-            $formFieldOptions = array();
+            $formFieldOptions = isset($metadata['options']) ? $metadata['options'] : array();
 
             if ('association' === $metadata['fieldType'] && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
                 continue;

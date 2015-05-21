@@ -200,12 +200,11 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'list' view page
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+        $crawler = $this->doGetRequest($parameters);
 
         // 2. click on the 'Show' link of the first item
         $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
-        $crawler = $client->click($link);
+        $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the previous specific 'list' view page
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to Category listing")')->attr('href');
@@ -219,7 +218,7 @@ class CategoryEntityTest extends AbstractTestCase
      * The 'referer' parameter stores the original 'list' or 'search' page
      * from which the user browsed to other pages (edit, delete, show). When
      * visiting several consecutive pages, the 'referer' value should be kept
-     * without changes,
+     * without changes.
      */
     public function testChainedReferer()
     {
@@ -233,16 +232,15 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'list' view page
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+        $crawler = $this->doGetRequest($parameters);
 
         // 2. click on the 'Show' link of the first item
         $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
-        $crawler = $client->click($link);
+        $crawler = $this->client->click($link);
 
         // 3. click on the 'Edit' button
         $link = $crawler->filter('.form-actions a:contains("Modify Category")')->link();
-        $crawler = $client->click($link);
+        $crawler = $this->client->click($link);
 
         // 4. the 'referer' parameter should point to the previous specific 'list' view page
         $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
@@ -323,12 +321,11 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'list' view page
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+        $crawler = $this->doGetRequest($parameters);
 
         // 2. click on the 'Edit' link of the first item
         $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
-        $crawler = $client->click($link);
+        $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the previous specific 'list' view page
         $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
@@ -406,12 +403,11 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'list' view page
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+        $crawler = $this->doGetRequest($parameters);
 
         // 2. click on the 'New' link to browse the 'new' view
         $link = $crawler->filter('#content-actions a:contains("New Category")')->link();
-        $crawler = $client->click($link);
+        $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the previous specific 'list' view page
         $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
@@ -525,12 +521,11 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'search' view page
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters));
+        $crawler = $this->doGetRequest($parameters);
 
         // 2. click on the 'Show' action of the first result
         $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
-        $crawler = $client->click($link);
+        $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the previous specific 'search' view page
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to Category listing")')->attr('href');
@@ -538,16 +533,6 @@ class CategoryEntityTest extends AbstractTestCase
         parse_str($queryString, $refererParameters);
 
         $this->assertEquals($parameters, $refererParameters);
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function doGetRequest(array $parameters)
-    {
-        $client = static::createClient();
-
-        return $client->request('GET', '/admin/?'.http_build_query($parameters, '', '&'));
     }
 
     /**

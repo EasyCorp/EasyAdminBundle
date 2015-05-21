@@ -17,16 +17,15 @@ class AdminControllerTest extends AbstractTestCase
 {
     public function testNoEntityInBackend()
     {
-        $client = static::createClient(array('environment' => 'empty'));
+        $this->initClient(array('environment' => 'empty'));
+        $this->client->request('GET', '/admin');
 
-        $client->request('GET', '/admin');
+        $this->assertEquals(301, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals('http://localhost/admin/', $this->client->getResponse()->headers->get('Location'));
 
-        $this->assertEquals(301, $client->getResponse()->getStatusCode());
-        $this->assertEquals('http://localhost/admin/', $client->getResponse()->headers->get('Location'));
+        $crawler = $this->client->followRedirect();
 
-        $crawler = $client->followRedirect();
-
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
         $this->assertEquals("Your backend is empty because you haven't configured\n    any Doctrine entity to manage.", trim($crawler->filter('body.error .container .error-problem p.lead')->text()));
     }
 }

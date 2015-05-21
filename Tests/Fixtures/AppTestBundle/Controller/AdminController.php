@@ -17,11 +17,5 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdmin
 
 class AdminController extends EasyAdminController
 {
-    /**
-     * @Route("/admin/", name="admin")
-     */
-    public function indexAction(Request $request)
-    {
-        return parent::indexAction($request);
-    }
+
 }

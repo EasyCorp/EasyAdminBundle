@@ -1,4 +1,4 @@
 easy_admin_bundle:
-    resource: "@AppTestBundle/Controller/"
+    resource: "@AppTestBundle/Controller/AdminController.php"
     type:     annotation
-    prefix:   /
+    prefix:   /admin

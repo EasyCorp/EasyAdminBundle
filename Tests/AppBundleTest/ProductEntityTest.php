@@ -21,9 +21,11 @@ class ProductEntityTest extends AbstractTestCase
      */
     private function requestListView()
     {
-        $client = static::createClient();
-
-        return $client->request('GET', '/admin/?entity=Product&action=list&view=list');
+        return $this->doGetRequest(array(
+            'entity' => 'Product',
+            'action' => 'list',
+            'view' => 'list',
+        ));
     }
 
     public function testListViewVirtualFields()

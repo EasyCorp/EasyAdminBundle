@@ -12,6 +12,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Enti
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Category.
@@ -38,6 +39,7 @@ class Category
      *
      * @var string
      * @ORM\Column(type="string")
+     * @Assert\NotNull(groups={"Validate"})
      */
     protected $name;
 

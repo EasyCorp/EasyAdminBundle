@@ -94,9 +94,9 @@ class DefaultBackendTest extends AbstractTestCase
         $client = static::createClient();
         $client->request('GET', '/admin/_css/admin.css');
 
-        $this->assertEquals('text/css; charset=UTF-8', $this->client->getResponse()->headers->get('Content-Type'));
-        $this->assertEquals(21, substr_count($this->client->getResponse()->getContent(), '#123456'), 'The custom brand_color option is used in the admin CSS.');
+        $this->assertEquals('text/css; charset=UTF-8', $client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(21, substr_count($client->getResponse()->getContent(), '#123456'), 'The custom brand_color option is used in the admin CSS.');
         // #FAFAFA color is only used by the "light" color scheme, not the "dark" one
-        $this->assertEquals(12, substr_count($this->client->getResponse()->getContent(), '#FAFAFA'), 'The selected "light" color scheme is used in the admin CSS.');
+        $this->assertEquals(12, substr_count($client->getResponse()->getContent(), '#FAFAFA'), 'The selected "light" color scheme is used in the admin CSS.');
     }
 }

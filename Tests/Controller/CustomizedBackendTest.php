@@ -9,13 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace AppBundle\Tests;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
-class CategoryEntityTest extends AbstractTestCase
+class CustomizedBackendTest extends AbstractTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->initClient(array('environment' => 'customized_backend'));
+    }
+
     public function testListViewPageMainMenu()
     {
         $crawler = $this->requestShowView();
@@ -200,13 +207,13 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'list' view page
-        $crawler = $this->doGetRequest($parameters);
+        $crawler = $this->getBackendPage($parameters);
 
         // 2. click on the 'Show' link of the first item
         $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
         $crawler = $this->client->click($link);
 
-        // 3. the 'referer' parameter should point to the previous specific 'list' view page
+        // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to Category listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
@@ -232,7 +239,7 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'list' view page
-        $crawler = $this->doGetRequest($parameters);
+        $crawler = $this->getBackendPage($parameters);
 
         // 2. click on the 'Show' link of the first item
         $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
@@ -242,7 +249,7 @@ class CategoryEntityTest extends AbstractTestCase
         $link = $crawler->filter('.form-actions a:contains("Modify Category")')->link();
         $crawler = $this->client->click($link);
 
-        // 4. the 'referer' parameter should point to the previous specific 'list' view page
+        // 4. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
@@ -321,13 +328,13 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'list' view page
-        $crawler = $this->doGetRequest($parameters);
+        $crawler = $this->getBackendPage($parameters);
 
         // 2. click on the 'Edit' link of the first item
         $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
         $crawler = $this->client->click($link);
 
-        // 3. the 'referer' parameter should point to the previous specific 'list' view page
+        // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
@@ -403,13 +410,13 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'list' view page
-        $crawler = $this->doGetRequest($parameters);
+        $crawler = $this->getBackendPage($parameters);
 
         // 2. click on the 'New' link to browse the 'new' view
         $link = $crawler->filter('#content-actions a:contains("New Category")')->link();
         $crawler = $this->client->click($link);
 
-        // 3. the 'referer' parameter should point to the previous specific 'list' view page
+        // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('#form-actions-row a:contains("Return to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
@@ -521,7 +528,7 @@ class CategoryEntityTest extends AbstractTestCase
         );
 
         // 1. visit a specific 'search' view page
-        $crawler = $this->doGetRequest($parameters);
+        $crawler = $this->getBackendPage($parameters);
 
         // 2. click on the 'Show' action of the first result
         $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
@@ -535,14 +542,30 @@ class CategoryEntityTest extends AbstractTestCase
         $this->assertEquals($parameters, $refererParameters);
     }
 
+    public function testListViewVirtualFields()
+    {
+        $crawler = $this->requestListView('Product');
+
+        $this->assertCount(15, $crawler->filter('.table tbody td:contains("inaccessible")'));
+
+        $this->assertEquals('thisFieldIsVirtual', $crawler->filter('.table tbody td:contains("inaccessible")')->first()->attr('data-label'));
+
+        $firstVirtualField = $crawler->filter('.table tbody td:contains("inaccessible") span')->first();
+        $this->assertEquals('label label-danger', $firstVirtualField->attr('class'));
+        $this->assertEquals(
+            'Getter method does not exist for this field or the property is not public',
+            $firstVirtualField->attr('title')
+        );
+    }
+
     /**
      * @return Crawler
      */
-    private function requestListView()
+    private function requestListView($entityName = 'Category')
     {
-        return $this->doGetRequest(array(
+        return $this->getBackendPage(array(
             'action' => 'list',
-            'entity' => 'Category',
+            'entity' => $entityName,
             'view' => 'list',
         ));
     }
@@ -552,7 +575,7 @@ class CategoryEntityTest extends AbstractTestCase
      */
     private function requestShowView()
     {
-        return $this->doGetRequest(array(
+        return $this->getBackendPage(array(
             'action' => 'show',
             'entity' => 'Category',
             'id' => '200',
@@ -565,7 +588,7 @@ class CategoryEntityTest extends AbstractTestCase
      */
     private function requestEditView()
     {
-        return $this->doGetRequest(array(
+        return $this->getBackendPage(array(
             'action' => 'edit',
             'entity' => 'Category',
             'id' => '200',
@@ -578,7 +601,7 @@ class CategoryEntityTest extends AbstractTestCase
      */
     private function requestNewView()
     {
-        return $this->doGetRequest(array(
+        return $this->getBackendPage(array(
             'action' => 'new',
             'entity' => 'Category',
             'view' => 'list',
@@ -590,7 +613,7 @@ class CategoryEntityTest extends AbstractTestCase
      */
     private function requestSearchView()
     {
-        return $this->doGetRequest(array(
+        return $this->getBackendPage(array(
             'action' => 'search',
             'entity' => 'Category',
             'query' => 'cat',

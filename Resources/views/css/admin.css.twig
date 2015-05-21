@@ -1075,7 +1075,9 @@ body.error .error-solution pre {
     #header-contents {
         min-height: 100%;
         display: flex;
+        display: -webkit-flex;
         flex-direction: column;
+        -webkit-flex-direction: column;
     }
     #header-logo {
         float: none;
@@ -1104,6 +1106,7 @@ body.error .error-solution pre {
     }
     #header #header-nav {
         flex: 1;
+        -webkit-flex: 1;
         height: 0 !important;
         margin: 0;
         overflow: hidden;

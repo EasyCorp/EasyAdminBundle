@@ -25,7 +25,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testListViewPageMainMenu()
     {
-        $crawler = $this->requestShowView();
+        $crawler = $this->requestListView();
 
         $this->assertEquals('Categories', trim($crawler->filter('#header-menu li.active')->text()));
     }

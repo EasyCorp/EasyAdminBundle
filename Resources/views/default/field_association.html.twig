@@ -1,4 +1,4 @@
-{% if value is iterable and value|length > 1 %}
+{% if value is iterable %}
     <span class="badge">{{ value|length }}</span>
 {% elseif link_parameters is defined %}
     <a href="{{ path('admin', link_parameters) }}">{{ value|easyadmin_truncate }}</a>

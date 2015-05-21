@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
@@ -18,9 +18,14 @@ class EmptyBackendTest extends AbstractTestCase
     public function testNoEntityHasBennConfigured()
     {
         $this->initClient(array('environment' => 'empty_backend'));
-        $this->getBackendHomepage();
+        $this->client->request('GET', '/admin');
+
+        $this->assertEquals(301, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals('http://localhost/admin/', $this->client->getResponse()->headers->get('Location'));
+
+        $crawler = $this->client->followRedirect();
 
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals("Your backend is empty because you haven't configured\n    any Doctrine entity to manage.", trim($this->client->getCrawler()->filter('body.error .container .error-problem p.lead')->text()));
+        $this->assertEquals("Your backend is empty because you haven't configured\n    any Doctrine entity to manage.", trim($crawler->filter('body.error .container .error-problem p.lead')->text()));
     }
 }

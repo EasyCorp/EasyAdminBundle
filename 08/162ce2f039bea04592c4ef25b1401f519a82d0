@@ -1,0 +1,16 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-21T14:37:45Z
+
+I understand your PR and I thank you for that .... but I wanted to reorganize tests, so I don't know if this PR is beneficial. This is what I want to do:
+
+* Create a plain configuration file and an associated functional test to check the values of the default backend (this is essential for EasyAdmin newcomers)
+* Create a 100% customized configuration (change every field, label, action, etc.) and create an associated functional test to check the values of the customized backends (this is essential for EasyAdmin experts).
+
+And in the future I'd like to follow this same workflow: create the minimal specific configuration file to test something and load that config file only in one specific functional tests.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-21T14:40:30Z
+
+@javiereguiluz : No problem. I think what you plan to achieve will be great, indeed.

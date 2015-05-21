@@ -45,8 +45,18 @@ abstract class AbstractTestCase extends WebTestCase
      *
      * @return Crawler
      */
-    protected function doGetRequest(array $parameters = array())
+    protected function getBackendPage(array $parameters)
     {
-        return $this->client->request('GET', '/admin/'.(empty($parameters) ? '' : '?'.http_build_query($parameters, '', '&')));
+        return $this->client->request('GET', '/admin/?'.http_build_query($parameters, '', '&'));
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return Crawler
+     */
+    protected function getBackendHomepage()
+    {
+        return $this->getBackendPage(array('entity' => 'Category', 'view' => 'list'));
     }
 }

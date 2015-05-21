@@ -1,0 +1,89 @@
+imports:
+    - { resource: config.yml }
+
+framework:
+    # This file overrides the EasyAdmin controller
+    router: { resource: "%kernel.root_dir%/config/routing_override.yml" }
+
+easy_admin:
+    site_name: 'ACME Backend'
+    design:
+        form_theme:   'horizontal'
+        color_scheme: 'light'
+        brand_color:  '#123456'
+    entities:
+        Category:
+            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            label: 'Categories'
+            list:
+                title: 'Product %%entity_label%%'
+                actions:
+                    - { name: 'new', label: 'New %%entity_name%%', icon: 'plus-circle' }
+                    - { name: 'search', label: 'Look for %%entity_label%%' }
+                fields:
+                    - 'id'
+                    - { property: 'name', label: 'Label' }
+                    - { property: 'parent', label: 'Parent category' }
+            show:
+                title: 'Details for %%entity_name%% number %%entity_id%%'
+                actions:
+                    - { name: 'edit', label: 'Modify %%entity_name%%', icon: 'pencil-square' }
+                    - '-delete'
+                    - { name: 'list', label: 'Back to %%entity_name%% listing', icon: 'list' }
+                fields:
+                    - { property: 'id', label: '#' }
+                    - { property: 'name', label: 'Label' }
+                    - { property: 'parent', label: 'Parent category' }
+            form:
+                title: 'Add a new %%entity_name%%'
+                actions:
+                    - { name: 'list', label: 'Return to listing', icon: 'list' }
+                fields:
+                    - { property: 'id' }
+                    - { property: 'name', label: 'Label' }
+                    - { property: 'parent', label: 'Parent Category Label' }
+            edit:
+                title: 'Modify %%entity_name%% (%%entity_id%%) details'
+                actions:
+                    - { name: 'delete', label: 'Remove', icon: 'minus-circle' }
+                    - { name: 'list', label: 'Return to listing', icon: 'list' }
+            new: ~
+        Image:
+            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Image
+            label: 'Images'
+        Purchase:
+            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Purchase
+            label: 'Purchases'
+        PurchaseItem:
+            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\PurchaseItem
+            label: 'Purchase Items'
+        Product:
+            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+            label: 'Products'
+            list:
+                fields:
+                    - id
+                    - name
+                    - { property: 'price', format: '%.2f' }
+                    - { property: 'ean', label: 'EAN13', type: 'string' }
+                    - enabled
+                    - { property: 'createdAt', format: 'j / M / Y' }
+                    - tags
+                    - thisFieldIsVirtual # this field doesn't correspond to a valid Doctrine property
+            show:
+                fields:
+                    - id
+                    - name
+                    - { property: 'ean', type: 'string' }
+                    - description
+                    - price
+                    - features
+                    - enabled
+                    - createdAt
+            form:
+                fields:
+                    - 'name'
+                    - { property: price, type: 'number', help: 'Prices are always in euros' }
+                    - { property: 'ean', label: 'EAN', help: 'EAN 13 valid code. Leave empty if unknown.' }
+                    - 'enabled'
+                    - 'description'

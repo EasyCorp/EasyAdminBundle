@@ -11,19 +11,18 @@
 
 namespace AppBundle\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
-class DefaultBackendTest extends WebTestCase
+class DefaultBackendTest extends AbstractTestCase
 {
     public function testIndexRedirectsToTheFirstEntityListing()
     {
-        $client = static::createClient();
-        $client->request('GET', '/admin/');
+        $this->doGetRequest();
 
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
         $this->assertEquals(
             '/admin/?action=list&entity=Category',
-            $client->getResponse()->getTargetUrl()
+            $this->client->getResponse()->getTargetUrl()
         );
     }
 
@@ -35,9 +34,8 @@ class DefaultBackendTest extends WebTestCase
             '/_css/admin.css',
         );
 
-        $client = static::createClient();
-        $client->followRedirects(true);
-        $crawler = $client->request('GET', '/admin/');
+        $this->client->followRedirects(true);
+        $crawler = $this->doGetRequest();
 
         foreach ($cssFiles as $i => $url) {
             $this->assertEquals($url, $crawler->filterXPath('//link[@rel="stylesheet"]')->eq($i)->attr('href'));
@@ -46,9 +44,8 @@ class DefaultBackendTest extends WebTestCase
 
     public function testLogo()
     {
-        $client = static::createClient();
-        $client->followRedirects(true);
-        $crawler = $client->request('GET', '/admin/');
+        $this->client->followRedirects(true);
+        $crawler = $this->doGetRequest();
 
         $this->assertEquals('ACME Backend', $crawler->filter('#header-logo a')->text());
         $this->assertEquals('/admin/', $crawler->filter('#header-logo a')->attr('href'));
@@ -65,9 +62,8 @@ class DefaultBackendTest extends WebTestCase
             'Products' => '/admin/?entity=Product&action=list&view=list',
         );
 
-        $client = static::createClient();
-        $client->followRedirects(true);
-        $crawler = $client->request('GET', '/admin/');
+        $this->client->followRedirects(true);
+        $crawler = $this->doGetRequest();
 
         $i = 0;
         foreach ($menuItems as $label => $url) {
@@ -86,22 +82,20 @@ class DefaultBackendTest extends WebTestCase
             'view' => 'list',
         );
 
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/admin/?'.http_build_query($parameters, '', '&'));
+        $crawler = $this->doGetRequest($parameters);
 
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Undefined entity', $crawler->filter('head title')->text());
         $this->assertEquals("The InexistentEntity entity is not defined in\n    the configuration of your backend.", trim($crawler->filter('body.error .container .error-problem p.lead')->text()));
     }
 
     public function testAdminCss()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/_css/admin.css');
+        $this->client->request('GET', '/_css/admin.css');
 
-        $this->assertEquals('text/css; charset=UTF-8', $client->getResponse()->headers->get('Content-Type'));
-        $this->assertEquals(21, substr_count($client->getResponse()->getContent(), '#123456'), 'The custom brand_color option is used in the admin CSS.');
+        $this->assertEquals('text/css; charset=UTF-8', $this->client->getResponse()->headers->get('Content-Type'));
+        $this->assertEquals(21, substr_count($this->client->getResponse()->getContent(), '#123456'), 'The custom brand_color option is used in the admin CSS.');
         // #FAFAFA color is only used by the "light" color scheme, not the "dark" one
-        $this->assertEquals(12, substr_count($client->getResponse()->getContent(), '#FAFAFA'), 'The selected "light" color scheme is used in the admin CSS.');
+        $this->assertEquals(12, substr_count($this->client->getResponse()->getContent(), '#FAFAFA'), 'The selected "light" color scheme is used in the admin CSS.');
     }
 }

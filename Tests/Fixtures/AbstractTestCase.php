@@ -11,9 +11,9 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures;
 
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class AbstractTestCase. Code copied from
@@ -22,37 +22,31 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 abstract class AbstractTestCase extends WebTestCase
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected static $container;
+    /** @var Client */
+    protected $client;
 
-    /**
-     * @param array $options
-     */
-    protected static function bootKernel(array $options = array())
+    protected function setUp()
     {
-        if (method_exists('Symfony\Bundle\FrameworkBundle\Test\KernelTestCase', 'bootKernel')) {
-            parent::bootKernel($options);
-        } else {
-            if (null !== static::$kernel) {
-                static::$kernel->shutdown();
-            }
-            static::$kernel = static::createKernel($options);
-            static::$kernel->boot();
-            static::$kernel;
-        }
+        $this->initClient();
+    }
+
+    protected function tearDown()
+    {
+        $this->client = null;
+    }
+
+    protected function initClient(array $options = array())
+    {
+        $this->client = static::createClient($options);
     }
 
     /**
-     * @param array $options An array of options to pass to the createKernel class
+     * @param array $parameters
      *
-     * @return KernelInterface
+     * @return Crawler
      */
-    protected function getKernel(array $options = array())
+    protected function doGetRequest(array $parameters = array())
     {
-        static::bootKernel($options);
-
-        return static::$kernel;
+        return $this->client->request('GET', '/admin/'.(empty($parameters) ? '' : '?'.http_build_query($parameters, '', '&')));
     }
 }

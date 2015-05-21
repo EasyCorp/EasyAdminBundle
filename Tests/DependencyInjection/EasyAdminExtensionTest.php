@@ -21,14 +21,10 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
 
 class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 {
-    /**
-     * @var ContainerBuilder
-     */
+    /** @var ContainerBuilder */
     private $container;
 
-    /**
-     * @var EasyAdminExtension
-     */
+    /** @var EasyAdminExtension */
     private $loader;
 
     public function setUp()

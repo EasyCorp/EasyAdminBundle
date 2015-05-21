@@ -9,15 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
-class AdminControllerTest extends AbstractTestCase
+class EmptyBackendTest extends AbstractTestCase
 {
-    public function testNoEntityInBackend()
+    public function testNoEntityHasBennConfigured()
     {
-        $this->initClient(array('environment' => 'empty'));
+        $this->initClient(array('environment' => 'empty_backend'));
         $this->client->request('GET', '/admin');
 
         $this->assertEquals(301, $this->client->getResponse()->getStatusCode());

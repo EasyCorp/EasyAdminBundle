@@ -32,7 +32,7 @@ class DefaultBackendTest extends WebTestCase
         $cssFiles = array(
             '/bundles/easyadmin/stylesheet/bootstrap.min.css',
             '/bundles/easyadmin/stylesheet/font-awesome.min.css',
-            '/_css/admin.css',
+            '/admin/_css/admin.css',
         );
 
         $client = static::createClient();
@@ -97,7 +97,7 @@ class DefaultBackendTest extends WebTestCase
     public function testAdminCss()
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/_css/admin.css');
+        $client->request('GET', '/admin/_css/admin.css');
 
         $this->assertEquals('text/css; charset=UTF-8', $client->getResponse()->headers->get('Content-Type'));
         $this->assertEquals(21, substr_count($client->getResponse()->getContent(), '#123456'), 'The custom brand_color option is used in the admin CSS.');

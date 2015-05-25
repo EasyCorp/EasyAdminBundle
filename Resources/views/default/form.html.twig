@@ -59,7 +59,7 @@
                         {% set _action_href = path(_action.name, { entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name) }) %}
                     {% endif %}
 
-                    <a class="btn {{ _action.class|default('') }}" href="{{ _action_href }}">
+                    <a class="btn {{ _action.css_class|default('') }}" href="{{ _action_href }}">
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                         {{ _action.label|trans(_trans_parameters) }}
                     </a>
@@ -68,7 +68,7 @@
                 {% if view == 'edit' %}
                     {% if easyadmin_action_is_enabled_for_edit_view('delete', _entity_config.name) %}
                         {% set _action = easyadmin_get_action_for_edit_view('delete', _entity_config.name) %}
-                        <button type="button" id="button-delete" class="btn {{ _action.class|default('btn-danger') }}">
+                        <button type="button" id="button-delete" class="btn {{ _action.css_class|default('btn-danger') }}">
                             {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                             {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
                         </button>

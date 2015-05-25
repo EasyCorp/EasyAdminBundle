@@ -116,8 +116,8 @@ The following properties can be configured for each action:
   * `label`, is the text displayed in the button or link associated with the
     action. If not defined, the action label is the *humanized* version of its
     `name` option.
-  * `class`, is the CSS class or classes applied to the link or button used to
-    render the action.
+  * `css_class`, is the CSS class or classes applied to the link or button used
+    to render the action.
   * `icon`, is the name of the FontAwesome icon displayed next to the link or
     inside the button used to render the action. You don't have to include the
     `fa-` prefix of the icon name (e.g. to display the icon of a user, don't

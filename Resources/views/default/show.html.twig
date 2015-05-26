@@ -28,7 +28,7 @@
                     </div>
 
                     {% if metadata.help|default('') != '' %}
-                        <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help }}</span>
+                        <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help|trans(_trans_parameters) }}</span>
                     {% endif %}
                 </div>
             </div>

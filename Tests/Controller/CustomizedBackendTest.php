@@ -51,6 +51,7 @@ class CustomizedBackendTest extends AbstractTestCase
         );
 
         $this->assertEquals('Look for Categories', $crawler->filter('#content-search input[type=search]')->attr('placeholder'));
+        $this->assertContains('custom_class_search', $crawler->filter('#content-search')->attr('class'));
 
         $i = 0;
         foreach ($hiddenParameters as $name => $value) {
@@ -66,6 +67,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertEquals('New Category', trim($crawler->filter('#content-actions a.btn')->text()));
+        $this->assertEquals('btn custom_class_new', $crawler->filter('#content-actions a.btn')->attr('class'));
         $this->assertEquals('fa fa-plus-circle', $crawler->filter('#content-actions a.btn i')->attr('class'));
         $this->assertStringStartsWith('/admin/?view=list&action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('#content-actions a.btn')->attr('href'));
     }
@@ -295,10 +297,15 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testEditViewFieldClasses()
     {
         $crawler = $this->requestEditView();
-        $fieldClasses = array('integer', 'text', 'default');
+        $fieldDefaultClasses = array('integer', 'text', 'default');
+        $fieldCustomClasses = array('integer', 'text', 'default');
 
-        foreach ($fieldClasses as $i => $cssClass) {
+        foreach ($fieldDefaultClasses as $i => $cssClass) {
             $this->assertContains('field_'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
+        }
+
+        foreach ($fieldCustomClasses as $i => $cssClass) {
+            $this->assertContains($cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
         }
     }
 

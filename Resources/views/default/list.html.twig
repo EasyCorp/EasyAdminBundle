@@ -42,7 +42,7 @@
                         {% block new_action %}
                             {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
                             <div id="content-actions">
-                                <a class="btn {{ _action.class|default('') }}" href="{{ path('admin', _request_parameters|merge({ action: _action.name })) }}">
+                                <a class="btn {{ _action.css_class|default('') }}" href="{{ path('admin', _request_parameters|merge({ action: _action.name })) }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                     {{ _action.label|default('action.new')|trans(_trans_parameters) }}
                                 </a>
@@ -53,7 +53,7 @@
                     {% if easyadmin_action_is_enabled_for_list_view('search', _entity_config.name) %}
                         {% block search_action %}
                             {% set _action = easyadmin_get_action_for_list_view('search', _entity_config.name) %}
-                            <form id="content-search" class="col-xs-6 col-sm-8" method="get" action="{{ path('admin') }}">
+                            <form id="content-search" class="col-xs-6 col-sm-8 {{ _action.css_class|default('') }}" method="get" action="{{ path('admin') }}">
                                 <input type="hidden" name="view" value="list">
                                 <input type="hidden" name="action" value="search">
                                 <input type="hidden" name="entity" value="{{ _request_parameters.entity }}">
@@ -143,7 +143,7 @@
                                                 {% set _action_href = path(_action.name, _request_parameters|merge({ action: _action.name, id: _item_id })) %}
                                             {% endif %}
 
-                                            <a class="{{ _action.class|default('') }}" href="{{ _action_href }}">{% spaceless %}
+                                            <a class="{{ _action.css_class|default('') }}" href="{{ _action_href }}">{% spaceless %}
                                                 {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                                 {{ _action.label|trans({'%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': _item_id}) }}
                                             {% endspaceless %}</a>

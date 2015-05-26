@@ -18,8 +18,8 @@ easy_admin:
             list:
                 title: 'Product %%entity_label%%'
                 actions:
-                    - { name: 'new', label: 'New %%entity_name%%', icon: 'plus-circle' }
-                    - { name: 'search', label: 'Look for %%entity_label%%' }
+                    - { name: 'new', label: 'New %%entity_name%%', icon: 'plus-circle', css_class: 'custom_class_new' }
+                    - { name: 'search', label: 'Look for %%entity_label%%', css_class: 'custom_class_search' }
                 fields:
                     - 'id'
                     - { property: 'name', label: 'Label' }
@@ -39,9 +39,9 @@ easy_admin:
                 actions:
                     - { name: 'list', label: 'Return to listing', icon: 'list' }
                 fields:
-                    - { property: 'id' }
-                    - { property: 'name', label: 'Label' }
-                    - { property: 'parent', label: 'Parent Category Label' }
+                    - { property: 'id', css_class: 'custom_class_id' }
+                    - { property: 'name', label: 'Label', css_class: 'custom_class_name' }
+                    - { property: 'parent', label: 'Parent Category Label', css_class: 'custom_class_parent' }
             edit:
                 title: 'Modify %%entity_name%% (%%entity_id%%) details'
                 actions:

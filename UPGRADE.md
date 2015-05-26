@@ -5,6 +5,37 @@ This document describes the backwards incompatible changes introduced by each
 EasyAdminBundle version and the needed changes to be made before upgrading to
 the next version.
 
+Upgrade to 1.5.3
+----------------
+
+The `css` option has been renamed to `css_class`.
+
+Before:
+
+```yaml
+easy_admin:
+    actions:
+        # ...
+            - { name: 'edit', class: 'danger' }
+    entities:
+        # ...
+        fields:
+            - { property: 'id', class: 'col-md-12' }
+```
+
+After:
+
+```yaml
+easy_admin:
+    actions:
+        # ...
+            - { name: 'edit', css_class: 'danger' }
+    entities:
+        # ...
+        fields:
+            - { property: 'id', css_class: 'col-md-12' }
+```
+
 Upgrade to 1.5.0
 ----------------
 

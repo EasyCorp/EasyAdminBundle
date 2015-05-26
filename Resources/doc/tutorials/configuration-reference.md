@@ -97,7 +97,7 @@ easy_admin:
                 fields:
                     - { property: 'code', help: 'Alphanumeric characters only' }
                     - { property: 'description', type: 'textarea' }
-                    - { property: 'price', type: 'number', class: 'input-lg' }
+                    - { property: 'price', type: 'number', css_class: 'input-lg' }
                     - { property: 'category', label: 'Commercial Category' }
 ```
 
@@ -120,6 +120,6 @@ easy_admin:
                 fields:
                     - { property: 'code', help: 'Alphanumeric characters only' }
                     - { property: 'description', type: 'textarea' }
-                    - { property: 'price', type: 'number', class: 'input-lg' }
+                    - { property: 'price', type: 'number', css_class: 'input-lg' }
                     - { property: 'category', label: 'Commercial Category' }
 ```

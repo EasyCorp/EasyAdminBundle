@@ -127,9 +127,10 @@ easy_admin:
 ### Multiple-Column Forms
 
 EasyAdmin doesn't provide any mechanism to create multi-column form layouts.
-However, you can use the `class` form field to create these advanced layouts.
-The `class` value is applied to the parent `<div>` element which contains the
-field label, the field widget, the field help and the optional field errors:
+However, you can use the `css_class` form field to create these advanced
+layouts. The `css_class` value is applied to the parent `<div>` element which
+contains the field label, the field widget, the field help and the optional
+field errors:
 
 ![Multi-column form](../images/easyadmin-form-multi-column.png)
 
@@ -144,11 +145,11 @@ easy_admin:
             # ...
             form:
                 fields:
-                    - { property: name, class: 'col-sm-12' }
-                    - { property: price, type: 'number', help: 'Prices are always in euros', class: 'col-sm-6' }
-                    - { property: 'ean', label: 'EAN', help: 'EAN 13 valid code. Leave empty if unknown.', class: 'col-sm-6' }
-                    - { property: 'enabled', class: 'col-sm-12' }
-                    - { property: 'description', class: 'col-sm-12' }
+                    - { property: name, css_class: 'col-sm-12' }
+                    - { property: price, type: 'number', help: 'Prices are always in euros', css_class: 'col-sm-6' }
+                    - { property: 'ean', label: 'EAN', help: 'EAN 13 valid code. Leave empty if unknown.', css_class: 'col-sm-6' }
+                    - { property: 'enabled', css_class: 'col-sm-12' }
+                    - { property: 'description', css_class: 'col-sm-12' }
     # ...
 ```
 

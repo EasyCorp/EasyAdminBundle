@@ -291,7 +291,7 @@ These are the options that you can define for each field:
     title is the "humanized" version of the property name.
   * `help` (optional): the help message displayed below the form field in the
     `edit`, `new` and `show` views.
-  * `class` (optional): the CSS class applied to the form field widget
+  * `css_class` (optional): the CSS class applied to the form field widget
     container element in the `edit`, `new` and `show` views. For example, when
     using the default Bootstrap based form theme, this value is applied to the
     `<div class="form-group">` element which wraps the label, the widget and

@@ -1,0 +1,76 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-25T16:15:15Z
+
+Then you'll have a potential issue with the [`property`](http://symfony.com/doc/current/reference/forms/types/entity.html#property) option (same for Collections and [`type`](http://symfony.com/doc/current/reference/forms/types/collection.html#type) option).
+
+I'm not sure exposing the type options directly in the field is the best :/
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-25T16:18:02Z
+
+I mean we don't know what will be the next features and available options, and might encounter the same naming issues. A few segmentation in easy_admin config is not bad IMO.
+
+But I agree `class` is a very bad name and this PR is legit.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-25T20:11:34Z
+
+@ogizanagi you are right about the `property` and `type` collisions. I don't care about the `property` one, because we already promote the `__toString()` practice, so that property is useless for us. And regarding the `type` option, I don't think it's that important because for very complex forms you should build the form in a PHP class and use it in the AdminController instead of configuring it in the YAML file.
+
+And regarding the segmentation: it's not that hard, but it's another hurdle that we put for people wishing to learn how to configure the backend. That's why I think that the less different things we define, the better.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-25T20:18:02Z
+
+That will slightly complicate the implementation for us, if we need to determine what are type options and what are our own features options. I don't think it will be clearer in users' mind either. :/
+
+Also, isn't the `css_class` option now redundant ? We can set it thought the `attr` option:
+```php
+fields:
+    - 'id'
+    - { property: 'email', type: 'email', trim: true }
+    - { property: 'interests', expanded: true, multiple: true, attr: { css: 'inline-checkbox' } }
+```
+
+>  I don't care about the property one, because we already promote the __toString() practice
+
+But actually, using `__toString()` isn't really a good practice... Being able to use the `property` would be great IMO.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-25T20:21:55Z
+
+This is only a guess but I strongly think that the YAML configuration options will only be used for super basic features: disabled, readonly, expanded, etc. If your form is complex (or use choice, entity, etc.) it's better to build the form class.
+
+Our `css_class` is applied to the `form-group` element. It's preferred over the `attr` option.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-25T20:45:19Z
+
+Well, you might be right. But, [despite the fact I shared this opinion](https://github.com/javiereguiluz/EasyAdminBundle/pull/217#issuecomment-92503899), as the current ways of creating a form from a proper form class with EasyAdmin aren't really trivial, I don't understand why we should dispense ourselves of a simple way to achieve it, just in order to economize one legitimate configuration level. :smile:
+
+Will you really ask a user to create it's own form class or tweak the easy admin generated form only because he has one field which needs the `property` option ? (Because the `__toString()` method is already used elsewhere and doesn't match this use case, for instance)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-26T06:37:02Z
+
+I'm in favor of renaming "class" to "css_class".
+
+But, I'm totally against the idea of putting all form options in the root field property.
+Shortcuts are good (like "css_class", but form_field_options are related to the form, as well as the form_widget options I proposed some time ago are related only to the twig form widget.
+
+As @ogizanagi said, the class is overridable in the `attr` option, so the shortcut can create some edge cases when the class is overriden.
+
+Plus, separate all "Symfony-native" behaviors in their own attributes is much better for us because there will never be conflicts with "EasyAdmin-native" behaviors implemented in the easy_admin property option.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-26T06:49:08Z
+
+Let's merge this PR to rename the `css_class` option and then I'll rethink again the other topic. Thanks.

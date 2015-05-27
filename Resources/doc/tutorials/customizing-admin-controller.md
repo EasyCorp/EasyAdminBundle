@@ -41,7 +41,7 @@ class AdminController extends BaseAdminController
 
 Extending from the default controller is not enough to override the entire
 backend. You must also **update the routing configuration** to point the
-`admin` route to the new controller.
+`easy_admin` route to the new controller.
 
 Open the `app/config/routing.yml` file and change the value of the `resource`
 option defined by the existing `easy_admin_bundle` route to load your own

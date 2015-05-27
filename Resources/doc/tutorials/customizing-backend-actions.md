@@ -186,13 +186,13 @@ class AdminController extends BaseAdminController
         $this->em->flush();
 
         // redirect to the 'list' view of the given entity
-        return $this->redirectToRoute('admin', array(
+        return $this->redirectToRoute('easy_admin', array(
             'view' => 'list',
             'entity' => $this->request->query->get('entity'),
         ));
 
         // redirect to the 'edit' view of the given entity item
-        return $this->redirectToRoute('admin', array(
+        return $this->redirectToRoute('easy_admin', array(
             'view' => 'edit',
             'id' => $id,
             'entity' => $this->request->query->get('entity'),
@@ -250,7 +250,7 @@ easy_admin:
 ```
 
 Route based actions are displayed as regular links or buttons, but they don't
-point to the usual `admin` route but to the route configured by the action.
+point to the usual `easy_admin` route but to the route configured by the action.
 In addition, the route is passed two parameters in the query string: `entity`
 (the name of the Doctrine entity) and, when available, the `id` of the related
 entity.
@@ -284,13 +284,13 @@ class ProductController extends Controller
         $em->flush();
 
         // redirect to the 'list' view of the given entity
-        return $this->redirectToRoute('admin', array(
+        return $this->redirectToRoute('easy_admin', array(
             'view' => 'list',
             'entity' => $this->request->query->get('entity'),
         ));
 
         // redirect to the 'edit' view of the given entity item
-        return $this->redirectToRoute('admin', array(
+        return $this->redirectToRoute('easy_admin', array(
             'view' => 'edit',
             'id' => $id,
             'entity' => $this->request->query->get('entity'),

@@ -47,6 +47,7 @@ class AdminController extends Controller
     protected $view;
 
     /**
+     * @Route("/", name="easy_admin")
      * @Route("/", name="admin")
      *
      * @param Request $request
@@ -67,7 +68,7 @@ class AdminController extends Controller
 
         // for now, the homepage redirects to the 'list' action and view of the first entity
         if (null === $request->query->get('entity')) {
-            return $this->redirect($this->generateUrl('admin', array(
+            return $this->redirect($this->generateUrl('easy_admin', array(
                 'action' => $action,
                 'entity' => $this->getNameOfTheFirstConfiguredEntity(),
                 'view'   => $this->view,
@@ -220,7 +221,7 @@ class AdminController extends Controller
 
             return !empty($refererUrl)
                 ? $this->redirect(urldecode($refererUrl))
-                : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
+                : $this->redirect($this->generateUrl('easy_admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
@@ -313,7 +314,7 @@ class AdminController extends Controller
 
             $refererUrl = $this->request->query->get('referer', '');
 
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateUrl('easy_admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
         }
 
         $this->dispatch(EasyAdminEvents::POST_NEW, array(
@@ -341,7 +342,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_DELETE);
 
         if ('DELETE' !== $this->request->getMethod()) {
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateUrl('easy_admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
         }
 
         $id = $this->request->query->get('id');
@@ -373,7 +374,7 @@ class AdminController extends Controller
 
         return !empty($refererUrl)
             ? $this->redirect(urldecode($refererUrl))
-            : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
+            : $this->redirect($this->generateUrl('easy_admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
     }
 
     /**
@@ -654,7 +655,7 @@ class AdminController extends Controller
     protected function createDeleteForm($entityName, $entityId)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin', array('action' => 'delete', 'entity' => $entityName, 'id' => $entityId)))
+            ->setAction($this->generateUrl('easy_admin', array('action' => 'delete', 'entity' => $entityName, 'id' => $entityId)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()

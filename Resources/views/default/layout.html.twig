@@ -43,7 +43,7 @@
                         {% set _site_name_length = easyadmin_config('site_name')|length <= 10 ? 'short'
                             : easyadmin_config('site_name')|length <= 12 ? 'medium' : 'long'
                         %}
-                        <a href="{{ path('admin') }}" class="{{ _site_name_length }}">{{ easyadmin_config('site_name')|raw }}</a>
+                        <a href="{{ path('easy_admin') }}" class="{{ _site_name_length }}">{{ easyadmin_config('site_name')|raw }}</a>
                         {% endblock header_logo %}
                     </div>
                     {% endblock navbar_header %}
@@ -55,7 +55,7 @@
                             {% block navigation_items %}
                                 {% for item in easyadmin_config('entities') %}
                                     <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
-                                        <a href="{{ path('admin', { entity: item.name, action: 'list', view: 'list' }) }}">
+                                        <a href="{{ path('easy_admin', { entity: item.name, action: 'list', view: 'list' }) }}">
                                             {{- item.label|trans -}}
                                         </a>
                                     </li>

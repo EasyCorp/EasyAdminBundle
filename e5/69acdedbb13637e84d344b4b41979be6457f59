@@ -1,0 +1,64 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-29T21:30:09Z
+
+Anyone knows why do tests on PHP 5.3 started failing on Travis a few days ago?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-29T21:40:21Z
+
+@javiereguiluz : Actually, @manuelj555 's [suggestion](https://github.com/javiereguiluz/EasyAdminBundle/issues/343#issuecomment-106784193) makes sense to me: `false` in order to disable the label would be better, and more consistent with [Symfony](http://symfony.com/doc/current/reference/forms/types/form.html#label), don't you think ? (But indeed, an empty string should remain an empty string...)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-30T08:26:24Z
+
+Indeed @manuelj555 suggestion makes sense and it's more aligned to Symfony philosophy. But in this case, I prefer to follow Twig philosophy. Let me explain:
+
+We provide just one option (called `label`) that it's used always in the same way and that can produce different results. This improves consistency and reduces the learning curve:
+
+  * Do you want to show the default label? Don't define a label.
+  * Do you want to show a simple label? Just write it: `label: 'My label'`
+  * Do you want to translate the label? Just write the translation key: `label: 'labels.field_name'`
+  * Do you want to display just the icon and not a label? Just write an empty label: `label: ''`
+
+Why do I say that this is aligned to Twig's philosophy? Consider for example the case of the `random()` function. It doesn't matter what you pass to that function (arrays, strings, letters, numbers, etc.), it always does the right thing. In contrast, randomness is chaotic in PHP and you must do (and learn) different techniques to pick random elements in an array, random letters in a string, generate random numbers, etc.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-30T09:26:00Z
+
+But what is the right thing when trying to print `false` in Twig templates ?
+
+Actually, it will render nothing... So... I... guess there is no debate. :smile_cat:
+Except that I still think `false` is more semantic and should be mentioned primarily in the documentation update :)
+
+**false**: opt-out, "Disable the label rendering please."
+**empty string**: "Well, I'll be pleased if you could print nothing."
+
+But I'm quibbling, I know. ^^
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-30T10:57:07Z
+
+Although I don't agree with your comments, the good news is that the changes introduced in this PR allow to set `label: false` and get the same result as `label: ''`
+
+I've also added a new entry in the "Tips and Tricks" tutorial about icon-only actions.
+
+This is ready for the final review. Thanks.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-30T11:09:55Z
+
+Nice :+1:
+
+Does it worth adding a test for `false` ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-30T12:54:23Z
+
+@ogizanagi nice idea. I've added some new tests for checking edge cases.

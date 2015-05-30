@@ -127,5 +127,48 @@ override the default `layout.html.twig` template and empty the
 Read the [Advanced Design Customization] [advanced-design-customization]
 tutorial to learn how to override default templates.
 
+Removing Action Labels and Displaying Just Icons
+------------------------------------------------
+
+By default, the actions showed in the `list` view table only display their
+label (`Edit`, `Show`, etc.):
+
+![Action Labels in Entity Listing](../images/easyadmin-listing-actions-label-only.png)
+
+Adding an icon for each action is as easy as defining their `icon` option:
+
+```yaml
+easy_admin:
+    list:
+        actions:
+            - { name: 'show', icon: 'search' }
+            - { name: 'edit', icon: 'pencil' }
+    # ...
+```
+
+This configuration makes the entity listing looks as follow:
+
+![Action Labels and Icons in Entity Listing](../images/easyadmin-listing-actions-label-and-icon.png)
+
+When displaying entities with lots of information, it may be useful to remove
+the action label and display just their icons. To do so, define an empty
+`label` or set its value to `false`:
+
+```yaml
+easy_admin:
+    list:
+        actions:
+            - { name: 'show', icon: 'search', label: '' }
+            - { name: 'edit', icon: 'pencil', label: '' }
+            # if you prefer, set labels to false
+            # - { name: 'show', icon: 'search', label: false }
+            # - { name: 'edit', icon: 'pencil', label: false }
+    # ...
+```
+
+This configuration makes the entity listing looks as follow:
+
+![Action Icons in Entity Listing](../images/easyadmin-listing-actions-icon-only.png)
+
 [override-admin-controller]: ./customizing-admin-controller.md
 [advanced-design-customization]: ./advanced-design-customization.md

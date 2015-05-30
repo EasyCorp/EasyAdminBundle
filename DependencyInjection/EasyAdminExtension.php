@@ -316,7 +316,8 @@ class EasyAdminExtension extends Extension
             $actionName = $normalizedConfiguration['name'];
 
             // use the special 'action.<action name>' label for the default actions
-            if (!isset($normalizedConfiguration['label']) && in_array($actionName, array('delete', 'edit', 'new', 'search', 'show', 'list'))) {
+            // only if the user hasn't defined a custom label (which can also be an empty string)
+            if (null === $normalizedConfiguration['label'] && in_array($actionName, array('delete', 'edit', 'new', 'search', 'show', 'list'))) {
                 $normalizedConfiguration['label'] = 'action.'.$actionName;
             }
 
@@ -336,7 +337,8 @@ class EasyAdminExtension extends Extension
                 // option is actually added with the right default value. Otherwise,
                 // those options would be 'null' and the template would show some issues
                 if (array_key_exists($actionName, $defaultActionsConfiguration)) {
-                    $normalizedConfiguration = array_filter($normalizedConfiguration); // remove empty/null config options
+                    // remove null config options but maintain empty options (this allows to set an empty label for the action)
+                    $normalizedConfiguration = array_filter($normalizedConfiguration, function($element) { return null !== $element; });
                     $normalizedConfiguration = array_replace($defaultActionsConfiguration[$actionName], $normalizedConfiguration);
                 }
             }

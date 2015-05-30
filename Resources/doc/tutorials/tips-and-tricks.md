@@ -151,8 +151,8 @@ This configuration makes the entity listing looks as follow:
 ![Action Labels and Icons in Entity Listing](../images/easyadmin-listing-actions-label-and-icon.png)
 
 When displaying entities with lots of information, it may be useful to remove
-the action label and display just their icons. To do so, define an empty
-`label` or set its value to `false`:
+the action label and display just their icons. To do so, define an empty string
+for the `label` option or set its value to `false`:
 
 ```yaml
 easy_admin:

@@ -136,18 +136,20 @@
                                     {% set _column_label =  'list.row_actions'|trans(_trans_parameters) %}
                                     <td data-label="{{ _column_label }}" class="actions">
                                     {% block item_actions %}
-                                        {% for _action in _list_item_actions %}
-                                            {% if 'method' == _action.type %}
-                                                {% set _action_href = path('admin', _request_parameters|merge({ action: _action.name, id: _item_id })) %}
-                                            {% elseif 'route' == _action.type %}
-                                                {% set _action_href = path(_action.name, _request_parameters|merge({ action: _action.name, id: _item_id })) %}
-                                            {% endif %}
+                                        {% spaceless %}
+                                            {% for _action in _list_item_actions %}
+                                                {% if 'method' == _action.type %}
+                                                    {% set _action_href = path('admin', _request_parameters|merge({ action: _action.name, id: _item_id })) %}
+                                                {% elseif 'route' == _action.type %}
+                                                    {% set _action_href = path(_action.name, _request_parameters|merge({ action: _action.name, id: _item_id })) %}
+                                                {% endif %}
 
-                                            <a class="{{ _action.css_class|default('') }}" href="{{ _action_href }}">{% spaceless %}
-                                                {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                                {{ _action.label|trans({'%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': _item_id}) }}
-                                            {% endspaceless %}</a>
-                                        {% endfor %}
+                                                <a class="{{ _action.css_class|default('') }}" href="{{ _action_href }}">
+                                                    {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                                                    {{ _action.label|trans({'%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': _item_id}) }}
+                                                </a>
+                                            {% endfor %}
+                                        {% endspaceless %}
                                     {% endblock item_actions %}
                                     </td>
                                 {% endif %}

@@ -21,7 +21,14 @@
 {% endblock %}
 
 {% block content %}
-    {% set _request_parameters = { view: 'list', action: app.request.get('action'), entity: _entity_config.name, sortField: app.request.get('sortField', ''), sortDirection: app.request.get('sortDirection', 'DESC'), page: app.request.get('page', 1) } %}
+    {% set _request_parameters = _request_parameters|default({})|merge({
+        view: 'list',
+        action: app.request.get('action'),
+        entity: _entity_config.name,
+        sortField: app.request.get('sortField', ''),
+        sortDirection: app.request.get('sortDirection', 'DESC'),
+        page: app.request.get('page', 1)
+    }) %}
 
     {% if 'search' == app.request.get('action') %}
         {% set _request_parameters = _request_parameters|merge({ query: app.request.get('query')|default('') }) %}

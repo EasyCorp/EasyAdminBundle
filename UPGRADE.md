@@ -8,7 +8,7 @@ the next version.
 Upgrade to 1.5.3
 ----------------
 
-The `css` option has been renamed to `css_class`.
+The `class` option has been renamed to `css_class`.
 
 Before:
 

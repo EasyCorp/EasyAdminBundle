@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-06-04T08:57:51Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-06-04T09:18:37Z
+
+@Pierstoval thanks for fixing this issue and I'm sorry for all the troubles. However, I don't understand the "blank page" problem. When a Twig variable name is wrong, you are instantly notified by Twig with a good error message (in `dev` environment of course).

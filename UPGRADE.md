@@ -121,6 +121,16 @@ easy_admin:
             label: 'My Fancy Entity!'
 ```
 
+### Changed variables names in twig views
+
+The former `_entity` variable was used to retrieve the current entity configuration. 
+This variable has been renamed to `_entity_config` for convenience and readability reasons.
+
+The old `item` variable was used to carry the currently created/edited entity.
+This variable has been renamed to `entity` for better understandability.
+
+Be sure that you did not override these variables, if so, you just have to change the name.
+
 Upgrade to 1.4.0
 ----------------
 

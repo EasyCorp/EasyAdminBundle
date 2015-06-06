@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-06-02T12:43:08Z
+
+:+1: for this straightforward solution
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-06-02T13:31:42Z
+
+@Pierstoval I like your proposal. What about improving the readability of the template as follows:
+
+```twig
+{% set _request_parameters = _request_parameters|default({})|merge({
+    action: app.request.get('action'),
+    entity: _entity_config.name,
+    page: app.request.get('page', 1)
+    sortDirection: app.request.get('sortDirection', 'DESC'),
+    sortField: app.request.get('sortField', ''),
+    view: 'list',
+}) %}
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-06-02T13:33:31Z
+
+It would be great indeed.
+It might be applicable to other templates vars or function calls.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-06-02T14:23:36Z
+
+Thanks for the suggestion @javiereguiluz , done :)
+
+Got many things to do, but if you're thinking about anything to add to this feature, just ask, I'll do it :)

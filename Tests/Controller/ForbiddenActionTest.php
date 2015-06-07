@@ -14,14 +14,14 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 
-class EmptyBackendTest extends AbstractTestCase
+class ForbiddenActionTest extends AbstractTestCase
 {
-    public function testNoEntityHasBeenConfigured()
+    public function testRequestedActionIsForbidden()
     {
-        $this->initClient(array('environment' => 'empty_backend'));
-        $this->client->request('GET', '/admin/');
+        $this->initClient(array('environment' => 'forbidden_action'));
+        $this->client->request('GET', '/admin/?action=new&entity=Category&view=list');
 
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('NoEntitiesConfiguredException', $this->client->getResponse()->getContent());
+        $this->assertContains('The requested <code>new</code> action is not allowed.', $this->client->getResponse()->getContent());
     }
 }

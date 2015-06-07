@@ -12,20 +12,18 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 
 class EmptyBackendTest extends AbstractTestCase
 {
-    public function testNoEntityHasBennConfigured()
+    public function testNoEntityHasBeenConfigured()
     {
-        $this->initClient(array('environment' => 'empty_backend'));
-        $this->client->request('GET', '/admin');
-
-        $this->assertEquals(301, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('http://localhost/admin/', $this->client->getResponse()->headers->get('Location'));
-
-        $crawler = $this->client->followRedirect();
-
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals("Your backend is empty because you haven't configured\n    any Doctrine entity to manage.", trim($crawler->filter('body.error .container .error-problem p.lead')->text()));
+        try {
+            $this->initClient(array('environment' => 'empty_backend'));
+            $this->client->request('GET', '/admin/');
+        } catch (NoEntitiesConfiguredException $e) {
+            $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
+            $this->assertContains('NoEntitiesConfiguredException', $this->client->getResponse()->getContent());
+        }
     }
 }

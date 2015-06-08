@@ -1,0 +1,27 @@
+easy_admin:
+    disabled_actions:
+        - action1
+    design:
+        assets:
+            css: {  }
+            js: {  }
+        theme: default
+        color_scheme: dark
+        brand_color: '#E67E22'
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+    site_name: 'Easy Admin'
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'
+    list:
+        actions: {  }
+        max_results: 15
+    edit:
+        actions: {  }
+    new:
+        actions: {  }
+    show:
+        actions: {  }
+    entities: {  }

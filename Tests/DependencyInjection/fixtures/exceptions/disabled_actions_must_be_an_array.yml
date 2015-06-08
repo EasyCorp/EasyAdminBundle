@@ -1,0 +1,6 @@
+# TEST
+# the list of disabled actions must be defined as an array (strings are not allowed)
+
+# CONFIGURATION
+easy_admin:
+    disabled_actions: 'action1'

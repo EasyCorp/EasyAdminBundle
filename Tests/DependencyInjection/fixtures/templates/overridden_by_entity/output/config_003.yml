@@ -123,6 +123,7 @@ easy_admin:
                         label: action.edit
                         class: ''
                         icon: edit
+            disabled_actions: {  }
             templates:
                 layout: custom_template/layout.html.twig
                 edit: custom_template/edit.html.twig
@@ -158,6 +159,7 @@ easy_admin:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    disabled_actions: {  }
     list:
         actions: {  }
         max_results: 15

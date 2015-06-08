@@ -141,6 +141,7 @@ easy_admin:
                         label: custom-show-label
                         class: custom-show-class
                         icon: custom-show-icon
+            disabled_actions: {  }
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
                 edit: '@EasyAdmin/default/edit.html.twig'
@@ -185,3 +186,4 @@ easy_admin:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    disabled_actions: {  }

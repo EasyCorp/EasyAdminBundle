@@ -1,0 +1,10 @@
+# TEST
+# disable different actions globally and in the entity
+
+# CONFIGURATION
+easy_admin:
+    disabled_actions: ['action1']
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            disabled_actions: ['action2']

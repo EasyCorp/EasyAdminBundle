@@ -121,6 +121,7 @@ easy_admin:
                         label: 'Custom action for show'
                         class: ''
                         icon: null
+            disabled_actions: {  }
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
                 edit: '@EasyAdmin/default/edit.html.twig'
@@ -165,3 +166,4 @@ easy_admin:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    disabled_actions: {  }

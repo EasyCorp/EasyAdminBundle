@@ -9,23 +9,18 @@
 {% block solution %}
     <ul>
         <li>
-            Change this action for one of the following allowed actions:
-            <code>{{ allowed_actions|join('</code>, <code>')|raw }}</code>.
-        </li>
-        <li>
-            If the action name is correct, make sure it's included in
-            the <code>actions</code> option in the <code>{{ view }}</code>
-            view configuration of your entity.
+            Remove the <code>{{ action }}</code> action from the
+            <code>disabled_actions</code> option.
 
             <pre>
 {{- '' -}}
 easy_admin:
+    disabled_actions: [{{ action }}, ...] # <-- remove it from here (if present)
     entities:
         YourEntity:
             # ...
-            {{ view }}:
-                actions:
-                    ['{{ action }}', ...]
+            disabled_actions:
+                    ['{{ action }}', ...]  # <-- remove it from here (if present)
             # ...
 {{- '' -}}
             </pre>

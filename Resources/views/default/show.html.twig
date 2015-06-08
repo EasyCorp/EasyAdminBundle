@@ -40,7 +40,7 @@
                 {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
                 {% for _action in _show_actions %}
                     {% if 'method' == _action.type %}
-                        {% set _action_href = path('admin', { action: _action.name, view: 'show', entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
+                        {% set _action_href = path('admin', { action: _action.name, entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
                     {% elseif 'route' == _action.type %}
                         {% set _action_href = path(_action.name, { entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
                     {% endif %}

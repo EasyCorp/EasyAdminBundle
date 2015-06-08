@@ -91,6 +91,7 @@ easy_admin:
                         icon: null
             search:
                 fields: {  }
+            disabled_actions: {  }
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
                 edit: '@EasyAdmin/default/edit.html.twig'
@@ -135,6 +136,7 @@ easy_admin:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    disabled_actions: {  }
     list:
         actions: {  }
         max_results: 15

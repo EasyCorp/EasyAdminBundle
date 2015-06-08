@@ -62,11 +62,11 @@ class DefaultBackendTest extends AbstractTestCase
     public function testMainMenuItems()
     {
         $menuItems = array(
-            'Category' => '/admin/?entity=Category&action=list&view=list',
-            'Image' => '/admin/?entity=Image&action=list&view=list',
-            'Purchase' => '/admin/?entity=Purchase&action=list&view=list',
-            'PurchaseItem' => '/admin/?entity=PurchaseItem&action=list&view=list',
-            'Product' => '/admin/?entity=Product&action=list&view=list',
+            'Category' => '/admin/?entity=Category&action=list',
+            'Image' => '/admin/?entity=Image&action=list',
+            'Purchase' => '/admin/?entity=Purchase&action=list',
+            'PurchaseItem' => '/admin/?entity=PurchaseItem&action=list',
+            'Product' => '/admin/?entity=Product&action=list',
         );
 
         $crawler = $this->getBackendHomepage();
@@ -110,7 +110,6 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $hiddenParameters = array(
-            'view' => 'list',
             'action' => 'search',
             'entity' => 'Category',
             'sortField' => 'id',
@@ -134,7 +133,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertEquals('Add Category', trim($crawler->filter('#content-actions a.btn')->text()));
         $this->assertCount(0, $crawler->filter('#content-actions a.btn i'), 'The default "new" button shows no icon.');
-        $this->assertStringStartsWith('/admin/?view=list&action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('#content-actions a.btn')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('#content-actions a.btn')->attr('href'));
     }
 
     public function testListViewItemActions()
@@ -209,8 +208,8 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
 
-        $this->assertStringStartsWith('/admin/?view=list&action=list&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
-        $this->assertStringStartsWith('/admin/?view=list&action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 
     public function testShowViewPageMainMenu()
@@ -270,7 +269,6 @@ class DefaultBackendTest extends AbstractTestCase
             'page' => '2',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'list' view page
@@ -302,7 +300,6 @@ class DefaultBackendTest extends AbstractTestCase
             'page' => '2',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'list' view page
@@ -391,7 +388,6 @@ class DefaultBackendTest extends AbstractTestCase
             'page' => '2',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'list' view page
@@ -473,7 +469,6 @@ class DefaultBackendTest extends AbstractTestCase
             'page' => '2',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'list' view page
@@ -570,8 +565,8 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
 
-        $this->assertStringStartsWith('/admin/?view=list&action=search&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
-        $this->assertStringStartsWith('/admin/?view=list&action=search&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=search&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=search&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 
     public function testSearchViewItemActions()
@@ -591,7 +586,6 @@ class DefaultBackendTest extends AbstractTestCase
             'query' => 'cat',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'search' view page
@@ -617,7 +611,6 @@ class DefaultBackendTest extends AbstractTestCase
         return $this->getBackendPage(array(
             'action' => 'list',
             'entity' => 'Category',
-            'view' => 'list',
         ));
     }
 
@@ -630,7 +623,6 @@ class DefaultBackendTest extends AbstractTestCase
             'action' => 'show',
             'entity' => 'Category',
             'id' => '200',
-            'view' => 'list',
         ));
     }
 
@@ -643,7 +635,6 @@ class DefaultBackendTest extends AbstractTestCase
             'action' => 'edit',
             'entity' => 'Category',
             'id' => '200',
-            'view' => 'list',
         ));
     }
 
@@ -655,7 +646,6 @@ class DefaultBackendTest extends AbstractTestCase
         return $this->getBackendPage(array(
             'action' => 'new',
             'entity' => 'Category',
-            'view' => 'list',
         ));
     }
 
@@ -668,7 +658,6 @@ class DefaultBackendTest extends AbstractTestCase
             'action' => 'search',
             'entity' => 'Category',
             'query' => 'cat',
-            'view' => 'list',
         ));
     }
 }

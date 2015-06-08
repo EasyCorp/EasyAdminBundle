@@ -126,6 +126,7 @@ easy_admin:
                         label: action.edit
                         class: ''
                         icon: edit
+            disabled_actions: {  }
         AnotherTestEntity:
             class: AppBundle\Entity\AnotherTestEntity
             templates:
@@ -240,11 +241,13 @@ easy_admin:
                         label: action.edit
                         class: ''
                         icon: edit
+            disabled_actions: {  }
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    disabled_actions: {  }
     list:
         actions: {  }
         max_results: 15

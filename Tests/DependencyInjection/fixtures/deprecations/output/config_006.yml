@@ -21,6 +21,7 @@ easy_admin:
         date: Y-m-d
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
+    disabled_actions: {  }
     edit:
         actions: {  }
     new:

@@ -14,6 +14,7 @@ easy_admin:
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
     site_name: 'Easy Admin'
+    disabled_actions: {  }
     list:
         actions: {  }
         max_results: 15

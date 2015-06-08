@@ -29,6 +29,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 
 /**
  * Class AdminController.
@@ -55,13 +58,7 @@ class AdminController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $result = $this->initialize($request);
-
-        // initialize() returns a Response object when an error occurs.
-        // This allows to display a detailed error message.
-        if ($result instanceof Response) {
-            return $result;
-        }
+        $this->initialize($request);
 
         $action = $request->query->get('action', 'list');
 
@@ -74,6 +71,14 @@ class AdminController extends Controller
             )));
         }
 
+        if (in_array($action, array('list', 'edit', 'show', 'new')) && !$this->isActionAllowed($action)) {
+            throw new ForbiddenActionException(array(
+                'action' => $action,
+                'allowed_actions' => array_keys($this->entity[$this->view]['actions']),
+                'view' => $this->view,
+            ));
+        }
+
         $customMethodName  = $action.$this->entity['name'].'Action';
         $defaultMethodName = $action.'Action';
 
@@ -84,12 +89,9 @@ class AdminController extends Controller
      * Utility method which initializes the configuration of the entity on which
      * the user is performing the action.
      *
-     * If everything goes right, it returns null. If there is any error, it
-     * returns a 404 error page using a Response object.
-     *
      * @param Request $request
      *
-     * @return Response|null
+     * @return null
      */
     protected function initialize(Request $request)
     {
@@ -98,7 +100,7 @@ class AdminController extends Controller
         $this->config = $this->container->getParameter('easyadmin.config');
 
         if (0 === count($this->config['entities'])) {
-            return $this->render404error('@EasyAdmin/error/no_entities.html.twig');
+            throw new NoEntitiesConfiguredException();
         }
 
         // this condition happens when accessing the backend homepage, which
@@ -108,7 +110,7 @@ class AdminController extends Controller
         }
 
         if (!array_key_exists($entityName, $this->config['entities'])) {
-            return $this->render404error('@EasyAdmin/error/undefined_entity.html.twig', array('entity_name' => $entityName));
+            throw new UndefinedEntityException(array('entity_name' => $entityName));
         }
 
         $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
@@ -154,10 +156,6 @@ class AdminController extends Controller
     {
         $this->dispatch(EasyAdminEvents::PRE_LIST);
 
-        if (!$this->isActionAllowed('list')) {
-            return $this->renderForbiddenActionError('list');
-        }
-
         $fields = $this->entity['list']['fields'];
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
 
@@ -178,10 +176,6 @@ class AdminController extends Controller
     protected function editAction()
     {
         $this->dispatch(EasyAdminEvents::PRE_EDIT);
-
-        if (!$this->isActionAllowed('edit')) {
-            return $this->renderForbiddenActionError('edit');
-        }
 
         if ($this->request->isXmlHttpRequest()) {
             return $this->ajaxEdit();
@@ -243,10 +237,6 @@ class AdminController extends Controller
     {
         $this->dispatch(EasyAdminEvents::PRE_SHOW);
 
-        if (!$this->isActionAllowed('show')) {
-            return $this->renderForbiddenActionError('show');
-        }
-
         $id = $this->request->query->get('id');
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
             throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $id));
@@ -277,10 +267,6 @@ class AdminController extends Controller
     protected function newAction()
     {
         $this->dispatch(EasyAdminEvents::PRE_NEW);
-
-        if (!$this->isActionAllowed('new')) {
-            return $this->renderForbiddenActionError('new');
-        }
 
         if (method_exists($this, $customMethodName = 'createNew'.$this->entity['name'].'Entity')) {
             $entity = $this->{$customMethodName}();
@@ -667,6 +653,7 @@ class AdminController extends Controller
      * @param string $view
      * @param array  $parameters
      *
+     * @deprecated Use an appropriate exception instead of this method.
      * @return Response
      */
     protected function render404error($view, array $parameters = array())
@@ -693,6 +680,7 @@ class AdminController extends Controller
      *
      * @param string $action
      *
+     * @deprecated Use the ForbiddenException instead of this method.
      * @return Response
      */
     protected function renderForbiddenActionError($action)

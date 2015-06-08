@@ -34,7 +34,7 @@
         {% set _request_parameters = _request_parameters|merge({ query: app.request.get('query')|default('') }) %}
     {% endif %}
 
-    {% set _request_parameters = _request_parameters|merge({ referer: path('admin', _request_parameters)|url_encode }) %}
+    {% set _request_parameters = _request_parameters|merge({ referer: path('easy_admin', _request_parameters)|url_encode }) %}
 
     <div class="row">
         <div id="content-header" class="col-sm-12">
@@ -49,7 +49,7 @@
                         {% block new_action %}
                             {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
                             <div id="content-actions">
-                                <a class="btn {{ _action.css_class|default('') }}" href="{{ path('admin', _request_parameters|merge({ action: _action.name })) }}">
+                                <a class="btn {{ _action.css_class|default('') }}" href="{{ path('easy_admin', _request_parameters|merge({ action: _action.name })) }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                     {{ _action.label|default('action.new')|trans(_trans_parameters) }}
                                 </a>
@@ -60,7 +60,7 @@
                     {% if easyadmin_action_is_enabled_for_list_view('search', _entity_config.name) %}
                         {% block search_action %}
                             {% set _action = easyadmin_get_action_for_list_view('search', _entity_config.name) %}
-                            <form id="content-search" class="col-xs-6 col-sm-8 {{ _action.css_class|default('') }}" method="get" action="{{ path('admin') }}">
+                            <form id="content-search" class="col-xs-6 col-sm-8 {{ _action.css_class|default('') }}" method="get" action="{{ path('easy_admin') }}">
                                 <input type="hidden" name="view" value="list">
                                 <input type="hidden" name="action" value="search">
                                 <input type="hidden" name="entity" value="{{ _request_parameters.entity }}">
@@ -99,7 +99,7 @@
                                     {% set _column_label =  metadata.label ? metadata.label|trans(_trans_parameters) : field|humanize %}
 
                                     {% if metadata.sortable %}
-                                        <a href="{{ path('admin', _request_parameters|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
+                                        <a href="{{ path('easy_admin', _request_parameters|merge({ sortField: metadata.property, sortDirection: sortDirection|default('DESC') })) }}">
                                             {% if isSortingField and sortDirection == 'DESC' %}
                                                 <i class="fa fa-caret-up"></i>
                                             {% elseif isSortingField and sortDirection == 'ASC' %}
@@ -146,7 +146,7 @@
                                         {% spaceless %}
                                             {% for _action in _list_item_actions %}
                                                 {% if 'method' == _action.type %}
-                                                    {% set _action_href = path('admin', _request_parameters|merge({ action: _action.name, id: _item_id })) %}
+                                                    {% set _action_href = path('easy_admin', _request_parameters|merge({ action: _action.name, id: _item_id })) %}
                                                 {% elseif 'route' == _action.type %}
                                                     {% set _action_href = path(_action.name, _request_parameters|merge({ action: _action.name, id: _item_id })) %}
                                                 {% endif %}
@@ -196,7 +196,7 @@
                 var columnIndex = $(this).closest('td').index() + 1;
                 var propertyName = $('table th.toggle:nth-child(' + columnIndex + ')').data('property-name');
 
-                var toggleUrl = "{{ path('admin', { action: 'edit', entity: _entity_config.name, view: 'list' })|raw }}"
+                var toggleUrl = "{{ path('easy_admin', { action: 'edit', entity: _entity_config.name, view: 'list' })|raw }}"
                               + "&id=" + $(this).closest('tr').data('id')
                               + "&property=" + propertyName
                               + "&newValue=" + newValue.toString();

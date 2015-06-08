@@ -54,7 +54,7 @@
 
                 {% for _action in _entity_actions %}
                     {% if 'method' == _action.type %}
-                        {% set _action_href = path('admin', { action: _action.name, view: view, entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name) }) %}
+                        {% set _action_href = path('easy_admin', { action: _action.name, view: view, entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name) }) %}
                     {% elseif 'route' == _action.type %}
                         {% set _action_href = path(_action.name, { entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name) }) %}
                     {% endif %}
@@ -83,7 +83,7 @@
                 {% endif %}
 
                 {% if _list_action is defined %}
-                    <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('admin', ({ entity: _entity_config.name, action: _list_action.name, view: view }) ) }}">{% spaceless %}
+                    <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('easy_admin', ({ entity: _entity_config.name, action: _list_action.name, view: view }) ) }}">{% spaceless %}
                         {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
                         {{ _list_action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>

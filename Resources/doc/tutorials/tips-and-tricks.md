@@ -79,7 +79,7 @@ class AdminController extends BaseAdminController
     /**
      * Don't forget to add this route annotation!
      *
-     * @Route("/", name="admin")
+     * @Route("/", name="easy_admin")
      */
     public function indexAction(Request $request)
     {
@@ -98,7 +98,7 @@ class AdminController extends BaseAdminController
 ```
 
 Beware that the `index()` method of the default `AdminController` defines the
-`admin` route, which is used to generate every backend URL. This means that
+`easy_admin` route, which is used to generate every backend URL. This means that
 when overriding the `index()` method in your own controller, you must also
 redefine the `@Route()` annotation. Otherwise, the backend will stop working.
 

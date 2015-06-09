@@ -197,7 +197,7 @@ class EasyAdminExtension extends Extension
             // first, define the disabled actions
             $actionsDisabledByBackend = $backendConfiguration['disabled_actions'];
             $actionsDisabledByEntity = isset($entityConfiguration['disabled_actions']) ? $entityConfiguration['disabled_actions'] : array();
-            $disabledActions = array_merge($actionsDisabledByBackend, $actionsDisabledByEntity);
+            $disabledActions = array_unique(array_merge($actionsDisabledByBackend, $actionsDisabledByEntity));
             $entityConfiguration['disabled_actions'] = $disabledActions;
 
             // second, define the actions of each entity view

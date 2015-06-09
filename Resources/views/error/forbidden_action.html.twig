@@ -15,7 +15,7 @@
             <pre>
 {{- '' -}}
 easy_admin:
-    disabled_actions: [{{ action }}, ...] # <-- remove it from here (if present)
+    disabled_actions: ['{{ action }}', ...] # <-- remove it from here (if present)
     entities:
         YourEntity:
             # ...

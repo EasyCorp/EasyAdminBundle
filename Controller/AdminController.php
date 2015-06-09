@@ -648,8 +648,8 @@ class AdminController extends Controller
     }
 
     /**
-     * Utility method that checks if the given action is allowed for the current
-     * view of the current entity.
+     * Utility method that checks if the given action is allowed for
+     * the current entity.
      *
      * @param string $actionName
      *

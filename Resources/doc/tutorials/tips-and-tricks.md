@@ -110,10 +110,7 @@ won't be able to add, modify or remove any information:
 
 ```yaml
 easy_admin:
-    list:
-        actions: ['-edit', '-new']
-    show:
-        actions: ['-delete', '-edit']
+    disabled_actions: ['delete', 'edit', 'new']
 ```
 
 Unloading the Default JavaScript and Stylesheets

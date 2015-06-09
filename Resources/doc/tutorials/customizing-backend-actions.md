@@ -4,11 +4,61 @@ Customizing Backend Actions
 In this article you'll learn how to disable actions, how to tweak their
 appearance and how to create your own custom actions.
 
+Disable Actions for Some or All Entities
+----------------------------------------
+
+Use the `disabled_actions` option to define the name of the actions disabled
+globally or for some entity. For example, to disable the `show` action for all
+entities, define the following:
+
+```yaml
+easy_admin:
+    disabled_actions: ['show']
+    # ...
+```
+
+When an action is disabled, the backend no longer displays it in any of the
+views. In this example, if you browse any entity listing, you'll no longer see
+the `Show` link next to each item. Moreover, if you try to *hack* the URL to
+access to the `Show` view of some entity, you'll see a *Forbidden Action Error*
+page.
+
+The `disabled_actions` option can also be defined for each entity. If you want
+to disable the `new` action just for the `User` entity, use this configuration:
+
+```yaml
+easy_admin:
+    entities:
+        User:
+            # ...
+            disabled_actions: ['new']
+```
+
+Reload the backend and you'll no longer see the `Add User` button in the `list`
+view of the entity. Again, if you try to *hack* the URL to add a new user,
+you'll see the *Forbidden Action Error* page.
+
+Beware that the values of the `disabled_actions` options are merged. If the
+backend configuration is the following:
+
+```yaml
+easy_admin:
+    disabled_actions: ['show']
+    # ...
+    entities:
+        User:
+            # ...
+            disabled_actions: ['new']
+```
+
+The `User` entity will have both the `new` and the `show` actions disabled.
+
 Configure the Actions Displayed in Each View
 --------------------------------------------
 
-The actions displayed in each view can be configured globally for the entire
-backend or on a per-entity basis.
+Besides disabling actions, you can also configure which actions are displayed
+in each view and how do they look like. Again this configuration can be done
+globally or per-entity.
 
 ### Adding or Removing Actions Globally
 
@@ -79,6 +129,14 @@ will be the following:
   * Actions added by the entity: none
   * Actions removed by the entity: `show`
   * Resulting actions for this entity: `list`, `new`, `search`
+
+> **NOTE**
+>
+> Beware that the `actions` option just defines if an action should be
+> displayed or not, but it doesn't disable the action. In the example above,
+> if you *hack* the URL and change the `action` parameter manually, you can
+> access to the `edit` and `show` actions. Use the `disabled_actions` options
+> to ban those actions entirely.
 
 Customizing the Actions Displayed in Each View
 ----------------------------------------------

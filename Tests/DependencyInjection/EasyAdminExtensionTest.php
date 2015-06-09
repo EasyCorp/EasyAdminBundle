@@ -155,6 +155,15 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/color_scheme_values_are_limited.yml');
     }
 
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Invalid configuration for path "easy_admin.disabled_actions": The disabled_actions option must be an array of action names.
+     */
+    public function testDisabledActionsMustBeAnArray()
+    {
+        $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/disabled_actions_must_be_an_array.yml');
+    }
+
     public function testOverriddenTemplateNamesAreLimited()
     {
         $this->setExpectedExceptionRegExp(

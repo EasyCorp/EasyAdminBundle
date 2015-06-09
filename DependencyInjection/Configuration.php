@@ -186,6 +186,15 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+
+                ->variableNode('disabled_actions')
+                    ->info('The names of the actions disabled for all backend entities.')
+                    ->defaultValue(array())
+                    ->validate()
+                        ->ifTrue(function ($v) { return false === is_array($v); })
+                        ->thenInvalid('The disabled_actions option must be an array of action names.')
+                    ->end()
+                ->end()
             ->end()
         ;
     }

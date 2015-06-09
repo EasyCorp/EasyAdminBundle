@@ -47,8 +47,6 @@ class AdminController extends Controller
     /** @var EntityManager */
     protected $em;
 
-    protected $view;
-
     /**
      * @Route("/", name="admin")
      *
@@ -62,21 +60,16 @@ class AdminController extends Controller
 
         $action = $request->query->get('action', 'list');
 
-        // for now, the homepage redirects to the 'list' action and view of the first entity
+        // for now, the homepage redirects to the 'list' action of the first entity
         if (null === $request->query->get('entity')) {
             return $this->redirect($this->generateUrl('admin', array(
                 'action' => $action,
                 'entity' => $this->getNameOfTheFirstConfiguredEntity(),
-                'view'   => $this->view,
             )));
         }
 
-        if (in_array($action, array('list', 'edit', 'show', 'new')) && !$this->isActionAllowed($action)) {
-            throw new ForbiddenActionException(array(
-                'action' => $action,
-                'allowed_actions' => array_keys($this->entity[$this->view]['actions']),
-                'view' => $this->view,
-            ));
+        if (!$this->isActionAllowed($action)) {
+            throw new ForbiddenActionException(array('action' => $action));
         }
 
         $customMethodName  = $action.$this->entity['name'].'Action';
@@ -126,7 +119,6 @@ class AdminController extends Controller
         $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
 
         $this->request = $request;
-        $this->view = $this->request->query->get('view', 'list');
 
         $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
     }
@@ -138,7 +130,6 @@ class AdminController extends Controller
             'em'      => $this->em,
             'entity'  => $this->entity,
             'request' => $this->request,
-            'view'    => $this->view,
         ), $arguments);
 
         $subject = isset($arguments['paginator']) ? $arguments['paginator'] : $arguments['entity'];
@@ -164,7 +155,6 @@ class AdminController extends Controller
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
             'fields'    => $fields,
-            'view'      => 'list',
         ));
     }
 
@@ -214,7 +204,7 @@ class AdminController extends Controller
 
             return !empty($refererUrl)
                 ? $this->redirect(urldecode($refererUrl))
-                : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
+                : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
         }
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
@@ -224,7 +214,6 @@ class AdminController extends Controller
             'entity_fields' => $fields,
             'entity'        => $entity,
             'delete_form'   => $deleteForm->createView(),
-            'view'          => 'edit',
         ));
     }
 
@@ -254,7 +243,6 @@ class AdminController extends Controller
         return $this->render($this->entity['templates']['show'], array(
             'entity' => $entity,
             'fields' => $fields,
-            'view'   => 'show',
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -299,7 +287,7 @@ class AdminController extends Controller
 
             $refererUrl = $this->request->query->get('referer', '');
 
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'new', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
         }
 
         $this->dispatch(EasyAdminEvents::POST_NEW, array(
@@ -312,7 +300,6 @@ class AdminController extends Controller
             'form'          => $newForm->createView(),
             'entity_fields' => $fields,
             'entity'        => $entity,
-            'view'          => 'new',
         ));
     }
 
@@ -327,7 +314,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_DELETE);
 
         if ('DELETE' !== $this->request->getMethod()) {
-            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
         }
 
         $id = $this->request->query->get('id');
@@ -359,7 +346,7 @@ class AdminController extends Controller
 
         return !empty($refererUrl)
             ? $this->redirect(urldecode($refererUrl))
-            : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'view' => 'list', 'entity' => $this->entity['name'])));
+            : $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
     }
 
     /**
@@ -383,7 +370,6 @@ class AdminController extends Controller
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
             'fields'    => $fields,
-            'view'      => 'search',
         ));
     }
 
@@ -662,21 +648,21 @@ class AdminController extends Controller
     }
 
     /**
-     * Utility method that checks if the given action is allowed for the current
-     * view of the current entity.
+     * Utility method that checks if the given action is allowed for
+     * the current entity.
      *
-     * @param string $action
+     * @param string $actionName
      *
      * @return bool
      */
-    protected function isActionAllowed($action)
+    protected function isActionAllowed($actionName)
     {
-        return array_key_exists($action, $this->entity[$this->view]['actions']);
+        return false === in_array($actionName, $this->entity['disabled_actions'], true);
     }
 
     /**
      * Utility shortcut to render an error when the requested action is not allowed
-     * for the given view of the given entity.
+     * for the given entity.
      *
      * @param string $action
      *
@@ -685,10 +671,7 @@ class AdminController extends Controller
      */
     protected function renderForbiddenActionError($action)
     {
-        $allowedActions = array_keys($this->entity[$this->view]['actions']);
-        $parameters = array('action' => $action, 'allowed_actions' => $allowedActions, 'view' => $this->view);
-
-        return $this->render('@EasyAdmin/error/forbidden_action.html.twig', $parameters, new Response('', 403));
+        return $this->render('@EasyAdmin/error/forbidden_action.html.twig', array('action' => $action), new Response('', 403));
     }
 
     /**

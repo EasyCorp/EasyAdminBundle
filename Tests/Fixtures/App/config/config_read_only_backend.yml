@@ -1,0 +1,7 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    disabled_actions: ['delete', 'edit', 'new']
+    entities:
+        Category:     JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category

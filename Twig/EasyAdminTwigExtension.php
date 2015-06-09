@@ -195,11 +195,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
 
-        return array_key_exists($action, $entityConfiguration[$view]['actions']);
+        return !in_array($action, $entityConfiguration['disabled_actions'])
+            && array_key_exists($action, $entityConfiguration[$view]['actions']);
     }
 
     /**
-     * Checks whether the given 'action' is enabled for the given 'entity'.
+     * Returns the full action configuration for the given 'entity' and 'view'.
      *
      * @param string $action
      * @param string $entityName
@@ -228,6 +229,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getActionsForItem($view, $entityName)
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
+        $disabledActions = $entityConfiguration['disabled_actions'];
         $viewActions = $entityConfiguration[$view]['actions'];
 
         // Each view displays some actions in special ways (e.g. the 'new' button
@@ -241,8 +243,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
         );
         $excludedActions = $actionsExcludedForItems[$view];
 
-        return array_filter($viewActions, function ($action) use ($excludedActions) {
-            return !in_array($action['name'], $excludedActions);
+        return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
+            return !in_array($action['name'], $excludedActions) && !in_array($action['name'], $disabledActions);
         });
     }
 

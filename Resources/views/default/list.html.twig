@@ -22,7 +22,6 @@
 
 {% block content %}
     {% set _request_parameters = _request_parameters|default({})|merge({
-        view: 'list',
         action: app.request.get('action'),
         entity: _entity_config.name,
         sortField: app.request.get('sortField', ''),
@@ -61,7 +60,6 @@
                         {% block search_action %}
                             {% set _action = easyadmin_get_action_for_list_view('search', _entity_config.name) %}
                             <form id="content-search" class="col-xs-6 col-sm-8 {{ _action.css_class|default('') }}" method="get" action="{{ path('admin') }}">
-                                <input type="hidden" name="view" value="list">
                                 <input type="hidden" name="action" value="search">
                                 <input type="hidden" name="entity" value="{{ _request_parameters.entity }}">
                                 <input type="hidden" name="sortField" value="{{ _request_parameters.sortField }}">

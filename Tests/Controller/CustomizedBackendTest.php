@@ -43,7 +43,6 @@ class CustomizedBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $hiddenParameters = array(
-            'view' => 'list',
             'action' => 'search',
             'entity' => 'Category',
             'sortField' => 'id',
@@ -69,7 +68,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertEquals('New Category', trim($crawler->filter('#content-actions a.btn')->text()));
         $this->assertEquals('btn custom_class_new', $crawler->filter('#content-actions a.btn')->attr('class'));
         $this->assertEquals('fa fa-plus-circle', $crawler->filter('#content-actions a.btn i')->attr('class'));
-        $this->assertStringStartsWith('/admin/?view=list&action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('#content-actions a.btn')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('#content-actions a.btn')->attr('href'));
     }
 
     public function testListViewItemActions()
@@ -144,8 +143,8 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
 
-        $this->assertStringStartsWith('/admin/?view=list&action=list&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
-        $this->assertStringStartsWith('/admin/?view=list&action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 
     public function testShowViewPageMainMenu()
@@ -205,7 +204,6 @@ class CustomizedBackendTest extends AbstractTestCase
             'page' => '2',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'list' view page
@@ -237,7 +235,6 @@ class CustomizedBackendTest extends AbstractTestCase
             'page' => '2',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'list' view page
@@ -331,7 +328,6 @@ class CustomizedBackendTest extends AbstractTestCase
             'page' => '2',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'list' view page
@@ -413,7 +409,6 @@ class CustomizedBackendTest extends AbstractTestCase
             'page' => '2',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'list' view page
@@ -510,8 +505,8 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
         $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
 
-        $this->assertStringStartsWith('/admin/?view=list&action=search&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
-        $this->assertStringStartsWith('/admin/?view=list&action=search&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=search&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=search&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 
     public function testSearchViewItemActions()
@@ -531,7 +526,6 @@ class CustomizedBackendTest extends AbstractTestCase
             'query' => 'cat',
             'sortDirection' => 'ASC',
             'sortField' => 'name',
-            'view' => 'list',
         );
 
         // 1. visit a specific 'search' view page
@@ -586,7 +580,6 @@ class CustomizedBackendTest extends AbstractTestCase
             'action' => 'show',
             'entity' => 'Category',
             'id' => '200',
-            'view' => 'list',
         ));
     }
 
@@ -599,7 +592,6 @@ class CustomizedBackendTest extends AbstractTestCase
             'action' => 'edit',
             'entity' => 'Category',
             'id' => '200',
-            'view' => 'list',
         ));
     }
 
@@ -611,7 +603,6 @@ class CustomizedBackendTest extends AbstractTestCase
         return $this->getBackendPage(array(
             'action' => 'new',
             'entity' => 'Category',
-            'view' => 'list',
         ));
     }
 
@@ -624,7 +615,6 @@ class CustomizedBackendTest extends AbstractTestCase
             'action' => 'search',
             'entity' => 'Category',
             'query' => 'cat',
-            'view' => 'list',
         ));
     }
 }

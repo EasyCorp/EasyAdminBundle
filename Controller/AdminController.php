@@ -657,7 +657,7 @@ class AdminController extends Controller
      */
     protected function isActionAllowed($actionName)
     {
-        return false === in_array($actionName, $this->entity['disabled_actions']);
+        return false === in_array($actionName, $this->entity['disabled_actions'], true);
     }
 
     /**

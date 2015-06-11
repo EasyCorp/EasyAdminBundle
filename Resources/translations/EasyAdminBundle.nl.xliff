@@ -9,7 +9,7 @@
             </trans-unit>
             <trans-unit id="action.show">
                 <source>action.show</source>
-                <target>Tonen</target>
+                <target>Bekijk</target>
             </trans-unit>
             <trans-unit id="action.edit">
                 <source>action.edit</source>
@@ -29,11 +29,11 @@
             </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
-                <target>Afkeuren</target>
+                <target>Annuleren</target>
             </trans-unit>
             <trans-unit id="action.list">
                 <source>action.list</source>
-                <target>Terugkeren naar overzicht</target>
+                <target>Terug naar overzicht</target>
             </trans-unit>
 
             <!-- page titles -->
@@ -73,7 +73,7 @@
             <!-- paginator -->
             <trans-unit id="paginator.first">
                 <source>paginator.first</source>
-                <target>Eerst</target>
+                <target>Eerste</target>
             </trans-unit>
             <trans-unit id="paginator.previous">
                 <source>paginator.previous</source>
@@ -85,7 +85,7 @@
             </trans-unit>
             <trans-unit id="paginator.last">
                 <source>paginator.last</source>
-                <target>Laatte</target>
+                <target>Laatste</target>
             </trans-unit>
             <trans-unit id="paginator.counter">
                 <source>paginator.counter</source>
@@ -103,11 +103,11 @@
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>Do you really want to delete this item?</target>
+                <target>Weet je zeker dat je dit item wilt verwijderen?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>There is no undo for this operation.</target>
+                <target>Deze actie kan niet ongedaan worden gemaakt.</target>
             </trans-unit>
         </body>
     </file>

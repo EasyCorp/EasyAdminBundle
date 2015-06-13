@@ -5,6 +5,26 @@ This document describes the backwards incompatible changes introduced by each
 EasyAdminBundle version and the needed changes to be made before upgrading to
 the next version.
 
+Upgrade to 1.5.5
+----------------
+
+In order to improve the consistency of the backend design, all CSS class names
+have been updated to use dashes instead of underscores, to match the syntax
+used by Bootstrap classes. This means that `field_date` is now `field-date`,
+`theme_boostrap...` is now `theme-bootstrap...`, etc.
+
+Moreover, the global `css` class applied to the `<body>` element of each view
+has changed:
+
+| View   | OLD `<body>` CSS class     | NEW `<body>` CSS class
+| ------ | -------------------------- | ---------------------------------------
+| `edit` | `admin edit <entity name>` | `easyadmin edit edit-<entity name>`
+| `list` | `admin list <entity name>` | `easyadmin list list-<entity name>`
+| `new`  | `admin new <entity name>`  | `easyadmin new new-<entity name>`
+| `show` | `admin show <entity name>` | `easyadmin show show-<entity name>`
+
+All these changes only affect you if your backend uses a custom stylesheet.
+
 Upgrade to 1.5.3
 ----------------
 

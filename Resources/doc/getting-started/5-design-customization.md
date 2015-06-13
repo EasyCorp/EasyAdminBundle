@@ -200,4 +200,24 @@ easy_admin:
     # ...
 ```
 
+Your own stylesheets can make use of the `id` and `class` attributes applied to
+the `<body>` element of each backend view. The `id` allows you to target
+specific entity instances:
+
+| View   | `<body>` ID attribute
+| ------ | --------------------------------------------------------------------
+| `edit` | `easyadmin-edit-<entity name>-<entity id>`
+| `list` | `easyadmin-list-<entity name>`
+| `new`  | `easyadmin-new-<entity name>`
+| `show` | `easyadmin-show-<entity name>-<entity id>`
+
+The `class` attribute allows you to target entire sections of the backend:
+
+| View   | `<body>` CSS class
+| ------ | --------------------------------------------------------------------
+| `edit` | `easyadmin edit edit-<entity name>`
+| `list` | `easyadmin list list-<entity name>`
+| `new`  | `easyadmin new new-<entity name>`
+| `show` | `easyadmin show show-<entity name>`
+
 [advanced-design-customization]: ../tutorials/advanced-design-customization.md

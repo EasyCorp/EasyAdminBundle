@@ -243,7 +243,7 @@ class DefaultBackendTest extends AbstractTestCase
         $fieldClasses = array('integer', 'string', 'association');
 
         foreach ($fieldClasses as $i => $cssClass) {
-            $this->assertContains('field_'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
+            $this->assertContains('field-'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
         }
     }
 
@@ -339,7 +339,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testEditViewFormClasses()
     {
         $crawler = $this->requestEditView();
-        $formClasses = array('theme_bootstrap_3_horizontal_layout', 'form-horizontal');
+        $formClasses = array('theme-bootstrap_3_horizontal_layout', 'form-horizontal');
 
         foreach ($formClasses as $cssClass) {
             $this->assertContains($cssClass, trim($crawler->filter('#main form')->eq(0)->attr('class')));
@@ -362,7 +362,7 @@ class DefaultBackendTest extends AbstractTestCase
         $fieldClasses = array('text', 'default');
 
         foreach ($fieldClasses as $i => $cssClass) {
-            $this->assertContains('field_'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
+            $this->assertContains('field-'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
         }
     }
 
@@ -423,7 +423,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testNewViewFormClasses()
     {
         $crawler = $this->requestNewView();
-        $formClasses = array('theme_bootstrap_3_horizontal_layout', 'form-horizontal');
+        $formClasses = array('theme-bootstrap_3_horizontal_layout', 'form-horizontal');
 
         foreach ($formClasses as $cssClass) {
             $this->assertContains($cssClass, trim($crawler->filter('#main form')->eq(0)->attr('class')));
@@ -446,7 +446,7 @@ class DefaultBackendTest extends AbstractTestCase
         $fieldClasses = array('text', 'default');
 
         foreach ($fieldClasses as $i => $cssClass) {
-            $this->assertContains('field_'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
+            $this->assertContains('field-'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
         }
     }
 

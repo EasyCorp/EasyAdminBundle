@@ -5,7 +5,8 @@
 
 {% extends _entity_config.templates.layout %}
 
-{% block body_class 'admin list ' ~ _entity_config.name|lower %}
+{% block body_id 'easyadmin-list-' ~ _entity_config.name %}
+{% block body_class 'list list-' ~ _entity_config.name|lower %}
 
 {% block head_stylesheets %}
     {{ parent() }}

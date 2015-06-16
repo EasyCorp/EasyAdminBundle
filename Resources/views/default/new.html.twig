@@ -6,7 +6,8 @@
 
 {% extends _entity_config.templates.layout %}
 
-{% block body_class 'admin new ' ~ _entity_config.name|lower %}
+{% block body_id 'easyadmin-new-' ~ _entity_config.name %}
+{% block body_class 'new new-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
     {{ _entity_config.new.title|default('new.page_title')|trans(_trans_parameters) }}

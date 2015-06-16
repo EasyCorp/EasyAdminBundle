@@ -1,11 +1,13 @@
 {% trans_default_domain "EasyAdminBundle" %}
 
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
-{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': attribute(entity, _entity_config.primary_key_field_name) } %}
+{% set _entity_id = attribute(entity, _entity_config.primary_key_field_name) %}
+{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': _entity_id } %}
 
 {% extends _entity_config.templates.layout %}
 
-{% block body_class 'admin show ' ~ _entity_config.name|lower %}
+{% block body_id 'easyadmin-show-' ~ _entity_config.name ~ '-' ~ _entity_id %}
+{% block body_class 'show show-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
     {{ _entity_config.show.title|default('show.page_title')|trans(_trans_parameters) }}
@@ -14,7 +16,7 @@
 {% block main %}
     <div class="form-horizontal">
         {% for field, metadata in fields %}
-            <div class="form-group field_{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
+            <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
                 <label class="col-sm-2 control-label">
                     {% if metadata.label %}
                         {{ metadata.label|trans }}

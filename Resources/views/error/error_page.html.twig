@@ -13,9 +13,9 @@
         <link rel="shortcut icon" type="image/png" href="/favicon.png">
     </head>
 
-    <body class="error">
+    <body class="{% block body_class %}error{% endblock %}">
         <div class="container">
-            <h1>Error</h1>
+            <h1>{% block error_title %}Error{% endblock %}</h1>
 
             <div class="error-problem">
                 <p class="lead">
@@ -23,11 +23,13 @@
                 </p>
             </div>
 
+            {% block solution_wrapper %}
             <div class="error-solution">
                 <h2>How to fix this problem</h2>
 
                 {% block solution %}{% endblock %}
             </div>
+            {% endblock %}
         </div>
     </body>
 </html>

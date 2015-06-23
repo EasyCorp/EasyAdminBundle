@@ -483,4 +483,32 @@ class Configurator
     {
         return $this->backendConfig;
     }
+
+    /**
+     * Returns the entire backend configuration or the value corresponding to
+     * the provided key. The dots of the key are automatically transformed into
+     * nested keys. Example: 'assets.css' => $config['assets']['css']
+     *
+     * @param string|null $key
+     *
+     * @return mixed
+     */
+    public function get($key)
+    {
+        $config = $this->getBackendConfig();
+
+        if (!empty($key)) {
+            $parts = explode('.', $key);
+
+            foreach ($parts as $part) {
+                if (!isset($config[$part])) {
+                    $config = null;
+                    break;
+                }
+                $config = $config[$part];
+            }
+        }
+
+        return $config;
+    }
 }

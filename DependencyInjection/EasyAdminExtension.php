@@ -70,6 +70,10 @@ class EasyAdminExtension extends Extension
         $backendConfiguration = $this->processEntityActions($backendConfiguration);
         $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
 
+        if (null === $backendConfiguration['exception_listener']['enabled']) {
+            $backendConfiguration['exception_listener']['enabled'] = $container->getParameter('kernel.debug');
+        }
+
         $container->setParameter('easyadmin.config', $backendConfiguration);
 
         // load bundle's services

@@ -44,9 +44,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     }
 
     /**
-     * Returns the entire backend configuration or the value corresponding to
-     * the provided key. The dots of the key are automatically transformed into
-     * nested keys. Example: 'assets.css' => $config['assets']['css']
+     * @see \JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator::get()
      *
      * @param string|null $key
      *
@@ -54,21 +52,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getBackendConfiguration($key = null)
     {
-        $config = $this->configurator->getBackendConfig();
-
-        if (!empty($key)) {
-            $parts = explode('.', $key);
-
-            foreach ($parts as $part) {
-                if (!isset($config[$part])) {
-                    $config = null;
-                    break;
-                }
-                $config = $config[$part];
-            }
-        }
-
-        return $config;
+        return $this->configurator->get($key);
     }
 
     /**

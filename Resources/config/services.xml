@@ -6,21 +6,27 @@
     <services>
 
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
-            <argument type="service" id="easyadmin.configurator"></argument>
+            <argument type="service" id="easyadmin.configurator" />
             <tag name="twig.extension" />
         </service>
 
         <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
             <argument>%easyadmin.config%</argument>
-            <argument type="service" id="easyadmin.metadata_inspector"></argument>
-            <argument type="service" id="easyadmin.property_reflector"></argument>
+            <argument type="service" id="easyadmin.metadata_inspector" />
+            <argument type="service" id="easyadmin.property_reflector" />
         </service>
 
         <service id="easyadmin.metadata_inspector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector" public="false">
-            <argument type="service" id="doctrine"></argument>
+            <argument type="service" id="doctrine" />
         </service>
 
-        <service id="easyadmin.property_reflector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector" public="false"></service>
+        <service id="easyadmin.property_reflector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector" public="false" />
+
+        <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\Event\ExceptionListener">
+            <argument type="service" id="easyadmin.configurator" />
+            <argument type="service" id="templating.engine.twig" />
+            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="250" />
+        </service>
 
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\Listener\ExceptionListener">
             <argument type="service" id="templating"></argument>

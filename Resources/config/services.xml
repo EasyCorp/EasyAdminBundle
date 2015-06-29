@@ -24,6 +24,7 @@
 
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\Listener\ExceptionListener">
             <argument type="service" id="templating"></argument>
+            <argument>%kernel.debug%</argument>
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
         </service>
     </services>

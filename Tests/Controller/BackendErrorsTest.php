@@ -30,7 +30,6 @@ class BackendErrorsTest extends AbstractTestCase
         ));
 
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('Undefined entity', $crawler->filter('head title')->text());
-        $this->assertEquals("The InexistentEntity entity is not defined in\n    the configuration of your backend.", trim($crawler->filter('body.error .container .error-problem p.lead')->text()));
+        $this->assertContains('The InexistentEntity entity is not defined in the configuration of your backend.', $crawler->filter('head title')->text());
     }
 }

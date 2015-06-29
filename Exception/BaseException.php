@@ -18,6 +18,10 @@ class BaseException extends \Exception
     public function __construct(array $parameters = array())
     {
         $this->parameters = $parameters;
+
+        if (isset($this->parameters['message'])) {
+            parent::__construct(strip_tags($this->parameters['message']));
+        }
     }
 
     public function getParameters()

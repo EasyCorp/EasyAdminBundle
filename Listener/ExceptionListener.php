@@ -19,18 +19,26 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 class ExceptionListener
 {
     private $templating;
+    private $debug;
 
-    public function __construct($templating)
+    public function __construct($templating, $debug)
     {
         $this->templating = $templating;
+        $this->debug = $debug;
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
+        // in 'dev' environment, don't override Symfony's exception pages
+        if (true === $this->debug) {
+            return $event->getException()->getMessage();
+        }
+
         $exceptionTemplates = array(
             'ForbiddenActionException' => '@EasyAdmin/error/forbidden_action.html.twig',
             'NoEntitiesConfigurationException' => '@EasyAdmin/error/no_entities.html.twig',
             'UndefinedEntityException' => '@EasyAdmin/error/undefined_entity.html.twig',
+            'EntityNotFoundException' => '@EasyAdmin/error/entity_not_found.html.twig',
         );
 
         $exception = $event->getException();

@@ -2,10 +2,7 @@
 
 {% block page_title 'Undefined entity' %}
 
-{% block problem %}
-    The <code>{{ entity_name }}</code> entity is not defined in
-    the configuration of your backend.
-{% endblock %}
+{% block problem %}{{ message|raw }}{% endblock %}
 
 {% block solution %}
     <p>

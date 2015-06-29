@@ -727,6 +727,7 @@ body.error .container {
     height: auto;
     margin: 3em auto 2em;
     max-width: 80%;
+    min-height: 200px;
     padding: 0;
 }
 body.error .container h1 {
@@ -747,9 +748,11 @@ body.error .error-solution {
     padding: 15px;
 }
 body.error .error-problem p.lead {
-    border-bottom: 1px solid {{ colors.gray }};
     margin-bottom: 0;
     padding-bottom: 1em;
+}
+body.error .error-solution {
+    border-top: 1px solid {{ colors.gray }};
 }
 body.error .error-solution h2 {
     margin-top: 0;

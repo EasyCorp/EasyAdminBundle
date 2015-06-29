@@ -23,11 +23,13 @@
                 </p>
             </div>
 
-            <div class="error-solution">
-                <h2>How to fix this problem</h2>
+            {% if block('solution') is not empty %}
+                <div class="error-solution">
+                    <h2>How to fix this problem</h2>
 
-                {% block solution %}{% endblock %}
-            </div>
+                    {% block solution %}{% endblock %}
+                </div>
+            {% endif %}
         </div>
     </body>
 </html>

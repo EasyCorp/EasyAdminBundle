@@ -31,6 +31,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 
 /**
@@ -173,7 +174,7 @@ class AdminController extends Controller
 
         $id = $this->request->query->get('id');
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-            throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $id));
+            throw new EntityNotFoundException(array('action' => 'edit', 'entity' => $this->entity, 'entity_id' => $id));
         }
 
         $fields = $this->entity['edit']['fields'];
@@ -228,7 +229,7 @@ class AdminController extends Controller
 
         $id = $this->request->query->get('id');
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-            throw $this->createNotFoundException(sprintf('Unable to find entity (%s #%d).', $this->entity['name'], $id));
+            throw new EntityNotFoundException(array('action' => 'show', 'entity' => $this->entity, 'entity_id' => $id));
         }
 
         $fields = $this->entity['show']['fields'];
@@ -323,7 +324,7 @@ class AdminController extends Controller
 
         if ($form->isValid()) {
             if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-                throw $this->createNotFoundException('The entity to be deleted does not exist.');
+                throw new EntityNotFoundException(array('action' => 'delete', 'entity' => $this->entity, 'entity_id' => $id));
             }
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));

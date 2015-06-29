@@ -52,7 +52,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
         $crawler = $this->requestEditView();
 
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('The requested <code>edit</code> action is not allowed.', $this->client->getResponse()->getContent());
+        $this->assertContains('The requested edit action is not allowed.', $this->client->getResponse()->getContent());
     }
 
     public function testNewActionIsDisabled()
@@ -60,7 +60,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
         $crawler = $this->requestNewView();
 
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('The requested <code>new</code> action is not allowed.', $this->client->getResponse()->getContent());
+        $this->assertContains('The requested new action is not allowed.', $this->client->getResponse()->getContent());
     }
 
     /**

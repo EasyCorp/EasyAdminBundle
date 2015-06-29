@@ -13,4 +13,10 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 
 class UndefinedEntityException extends BaseException
 {
+    public function __construct(array $parameters = array())
+    {
+        parent::__construct($parameters);
+
+        $this->setMessage(sprintf('The <code>%s</code> entity is not defined in the configuration of your backend.', $parameters['entity_name']));
+    }
 }

@@ -2,9 +2,7 @@
 
 {% block page_title 'Forbidden action' %}
 
-{% block problem %}
-    The requested <code>{{ action }}</code> action is not allowed.
-{% endblock %}
+{% block problem %}{{ message|raw }}{% endblock %}
 
 {% block solution %}
     <ul>

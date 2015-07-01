@@ -1,35 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta http-equiv="content-type" content="text/html; charset=utf-8">
-        <meta name="generator" content="EasyAdmin" />
-        <title>{% block page_title %}{% endblock %} | EasyAdmin Error</title>
-        <link href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}" rel="stylesheet">
-        <link href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}" rel="stylesheet">
-        <link rel="stylesheet" href="{{ path('_easyadmin_render_css') }}">
-        <link rel="shortcut icon" type="image/png" href="/favicon.png">
-    </head>
+{% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
+{% extends _entity_config ? _entity_config.templates.layout : '@EasyAdmin/default/layout.html.twig' %}
 
-    <body class="error">
-        <div class="container">
-            <h1>Error</h1>
+{% block body_class 'error' %}
 
-            <div class="error-problem">
-                <p class="lead">
-                    {% block problem %}{% endblock %}
-                </p>
-            </div>
+{% block content %}
+    <div class="error-description">
+        <h1>Error</h1>
 
-            {% if block('solution') is not empty %}
-                <div class="error-solution">
-                    <h2>How to fix this problem</h2>
-
-                    {% block solution %}{% endblock %}
-                </div>
-            {% endif %}
+        <div class="error-problem">
+            <p class="lead">
+                {% block problem %}{% endblock %}
+            </p>
         </div>
-    </body>
-</html>
+
+        {% if block('solution') is not empty %}
+            <div class="error-solution">
+                <h2>How to fix this problem</h2>
+
+                {% block solution %}{% endblock %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

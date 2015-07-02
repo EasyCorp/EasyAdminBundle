@@ -1,0 +1,83 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-06-30T07:07:06Z
+
+With those errors, shouldn't we just use the default layout so the user has access to the back-end without using the "Previous" feature?
+
+Here, the error pages are quite "blocking" the user's workflow :confused:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-06-30T07:09:47Z
+
+@Pierstoval I agree. I don't like the current blocking design. I'm going to try your proposal. Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-06-30T07:50:16Z
+
+If I understand correctly, you display the classic Twig debug page in `dev` env, but in `prod` override the user error pages to show how should be configured EasyAdmin bundle ?
+
+IMO, it does not makes sense, the user does not care about the application configuration or whatever the error is. :/
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-06-30T08:02:34Z
+
+@ogizanagi I know that this behavior is different from what you usually expect from a web application, but let me explain it.
+
+I'm assuming that EasyAdmin is only used to create internal backends. In this restricted scenario, I think it's safe to provide extra information in the error pages. That way, when an error happens, the end-user will email/phone the tech person in charge of this and he/she will say: *"hey, there is an error that says: "The Category entity is not defined". I don't know what that means, but fix it"*. With the information provided, odds are that the tech person can easily fix the problem.
+
+If we don't provide these errors, the same conversation would be: *"Hey, I click on one link and I see a blank page. Fix it."* Or *"Hey, I try to edit a product and see a 404 error page. Fix it."* With this scarce information, the tech person should have to go to the end-user computer, do some tests, read som log files, etc.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-06-30T08:09:22Z
+
+Definitely, we *need* more verbose error pages, may them be in `debug` or not. As @javiereguiluz pointed, a 404 or 500 error page is *never* explaining what happens.
+
+This is a big problem in most Symfony apps: many developers do not customize error pages, so when there's an error, even a `warning` that can still let the script continue, you fall on a "Internal 500 error" page, it's very blocking. Plus, configuring Monolog to send mail is never sufficient enough because there is no backtrace, no information about the request, etc., so a simple "500" error is not enough. Simply explaining "The Category entity with ID = 20 does not exist" is fairly sufficient to indicate the user what he did wrong, or what is going on.
+Adding more datas is *bonus*, as in my PR #313, but it allows then maximum flexibility to the back-end developer that may want more and more verbose errors, especially when the logic is very complex and when you need to know more things about what error is occurring.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-06-30T08:27:41Z
+
+IMO, error pages should be better configured by the developper, in order to show a comprehensive message for the user, but no technical elements should be dumped.
+This is the work of your loggers. And yes, you could have a context within your logs. So I really think it's sufficient :/
+
+However @javiereguiluz arguments are acceptable I think, despite the fact I'm not fan of restricting the target of this bundle :/
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-07-01T18:31:31Z
+
+@ogizanagi I know that I won't change your mind, but let me try it after the last changes submitted to this PR.
+
+-----
+
+**Previous scenario**
+
+When an error occurred, in `dev` mode EasyAdmin displayed its own error pages instead of the Symfony's exception page. This is wrong, because our error pages don't display debug information.
+
+Meanwhile, in `prod` mode we throwed a `404` error for some pages. This means that someone was working on the backend, clicked a wrong link and he/she ended in the 404 error page. The problem is that this page is probably customized for the public part of the website. So one moment you are happily working in the backend ... and a few seconds later you are in the public 404 error page not knowing why or how to go back.
+
+-----
+
+**New scenario**
+
+When an error occurs, in `dev` mode we no longer override Symfony's exception pages:
+
+![dev](https://cloud.githubusercontent.com/assets/73419/8461856/c93649ee-202f-11e5-9b92-fb7ad5206862.png)
+
+Meanwhile, in `prod` we display a custom error page:
+
+![prod](https://cloud.githubusercontent.com/assets/73419/8461853/c5f48e94-202f-11e5-8411-fde68ea10051.png)
+
+It's true that we display some internal information, but never a sensitive data (such as DB password, SQL queries, etc.) This means that if you are working in the backend and some error happens, you just see a clear error message. You probably don't understand anything, but you can simply click on any other main menu link to keep working. And if you have some kind of technical support, you can tell the guy the message of the error page to help him/her solve the issue.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-07-01T19:26:27Z
+
+Makes sense to me :+1:

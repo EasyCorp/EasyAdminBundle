@@ -2,10 +2,7 @@
 
 {% block page_title 'Configuration error' %}
 
-{% block problem %}
-    Your backend is empty because you haven't configured
-    any Doctrine entity to manage.
-{% endblock %}
+{% block problem %}{{ message|raw }}{% endblock %}
 
 {% block solution %}
     <p>

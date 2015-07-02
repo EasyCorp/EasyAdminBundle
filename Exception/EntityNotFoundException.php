@@ -11,12 +11,17 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 
-class ForbiddenActionException extends BaseException
+class EntityNotFoundException extends BaseException
 {
     public function __construct(array $parameters = array())
     {
         parent::__construct($parameters);
 
-        $this->setMessage(sprintf('The requested <code>%s</code> action is not allowed.', $parameters['action']));
+        $this->setMessage(sprintf(
+            'The <code>%s</code> entity with <code>%s = %s</code> does not exist in the database.',
+            $parameters['entity']['name'],
+            $parameters['entity']['primary_key_field_name'],
+            $parameters['entity_id']
+        ));
     }
 }

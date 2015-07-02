@@ -15,8 +15,8 @@ class ForbiddenActionException extends BaseException
 {
     public function __construct(array $parameters = array())
     {
-        $parameters['message'] = sprintf('The requested <code>%s</code> action is not allowed.', $parameters['action']);
-
         parent::__construct($parameters);
+
+        $this->setMessage(sprintf('The requested <code>%s</code> action is not allowed.', $parameters['action']));
     }
 }

@@ -13,19 +13,28 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 
 class BaseException extends \Exception
 {
+    protected $message;
     private $parameters;
+    private $htmlMessage;
 
     public function __construct(array $parameters = array())
     {
         $this->parameters = $parameters;
-
-        if (isset($this->parameters['message'])) {
-            parent::__construct(strip_tags($this->parameters['message']));
-        }
     }
 
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    public function setMessage($message)
+    {
+        $this->htmlMessage = $message;
+        $this->message = strip_tags($message);
+    }
+
+    public function getMessageAsHtml()
+    {
+        return $this->htmlMessage;
     }
 }

@@ -49,7 +49,9 @@ class ExceptionListener
         }
 
         $templatePath = $exceptionTemplates[$exceptionClassName];
-        $response = $this->templating->renderResponse($templatePath, $exception->getParameters());
+        $parameters = array_merge($exception->getParameters(), array('message' => $exception->getMessageAsHtml()));
+        $response = $this->templating->renderResponse($templatePath, $parameters);
+
         $event->setResponse($response);
     }
 }

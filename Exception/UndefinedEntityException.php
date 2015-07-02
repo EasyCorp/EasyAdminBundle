@@ -15,8 +15,8 @@ class UndefinedEntityException extends BaseException
 {
     public function __construct(array $parameters = array())
     {
-        $parameters['message'] = sprintf('The <code>%s</code> entity is not defined in the configuration of your backend.', $parameters['entity_name']);
-
         parent::__construct($parameters);
+
+        $this->setMessage(sprintf('The <code>%s</code> entity is not defined in the configuration of your backend.', $parameters['entity_name']));
     }
 }

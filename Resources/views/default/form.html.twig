@@ -1,43 +1,45 @@
 {% trans_default_domain "EasyAdminBundle" %}
 
 {{ form_start(form, { attr: form.vars.attr|merge({ novalidate: 'novalidate' }) }) }}
-    <div id="form row">
-        {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
-            <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}" />
+    <div class="row">
+        <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}" />
 
+        {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
             {% set _field_metadata = entity_fields[field.vars.name] %}
 
-            {% if _field_metadata['fieldType'] == 'association' %}
-                {{ easyadmin_render_field_for_edit_view(entity, _field_metadata) }}
-            {% else %}
-                {% set _field_label = _field_metadata['label']|default(null) %}
-                {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}
-            {% endif %}
+            <div class="{{ _field_metadata.css_class|default('col-xs-12') }}">
+                {% if _field_metadata['fieldType'] == 'association' %}
+                    {{ easyadmin_render_field_for_edit_view(entity, _field_metadata) }}
+                {% else %}
+                    {% set _field_label = _field_metadata['label']|default(null) %}
+                    {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}
+                {% endif %}
 
-            {% if _field_metadata['fieldType'] == 'collection' %}
-                {% set add_item_javascript %}
-                    $(function() {
-                        if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+                {% if _field_metadata['fieldType'] == 'collection' %}
+                    {% set add_item_javascript %}
+                        $(function() {
+                            if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
-                        var collection = $('#form_{{ field.vars.name|escape('js') }}');
-                        var numItems = collection.children('div.form-group').length;
+                            var collection = $('#form_{{ field.vars.name|escape('js') }}');
+                            var numItems = collection.children('div.form-group').length;
 
-                        var newItem = collection.attr('data-prototype')
-                            .replace(/__name__label__/g, numItems)
-                            .replace(/__name__/g, numItems)
-                        ;
+                            var newItem = collection.attr('data-prototype')
+                                .replace(/__name__label__/g, numItems)
+                                .replace(/__name__/g, numItems)
+                            ;
 
-                        collection.append(newItem);
-                    });
-                {% endset %}
+                            collection.append(newItem);
+                        });
+                    {% endset %}
 
-                <div class="form-group field-collection-action">
-                    <a href="#" onclick="{{ add_item_javascript|raw }}" class="col-sm-12 text-right">
-                        <i class="fa fa-plus-square"></i>
-                        {{ field|length == 0 ? 'Add a new item' : 'Add another item' }}
-                    </a>
-                </div>
-            {% endif %}
+                    <div class="form-group field-collection-action">
+                        <a href="#" onclick="{{ add_item_javascript|raw }}" class="col-sm-12 text-right">
+                            <i class="fa fa-plus-square"></i>
+                            {{ field|length == 0 ? 'Add a new item' : 'Add another item' }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
         {% endfor %}
 
         <div class="form-group">

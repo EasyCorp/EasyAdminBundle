@@ -178,8 +178,10 @@ div.flash-error strong {
 
 /* Labels
    ------------------------------------------------------------------------- */
-.label {
+.label:not([class*=label-]) {
     background: {{ colors.gray_darker }};
+}
+.label {
     color: {{ colors.white }};
     font-size: 11px;
     padding: 2px 4px;

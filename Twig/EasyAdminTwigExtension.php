@@ -17,10 +17,12 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 class EasyAdminTwigExtension extends \Twig_Extension
 {
     private $configurator;
+    private $debug;
 
-    public function __construct(Configurator $configurator)
+    public function __construct(Configurator $configurator, $debug = false)
     {
         $this->configurator = $configurator;
+        $this->debug = $debug;
     }
 
     public function getFunctions()
@@ -111,7 +113,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
         try {
             $fieldType = $fieldMetadata['dataType'];
-            $templateParameters = array('view' => $view, 'value' => $value, 'fieldName' => $fieldName);
+            $templateParameters = array(
+                'view' => $view,
+                'value' => $value,
+                'fieldMetadata' => $fieldMetadata,
+                'item' => $item,
+            );
 
             if (null === $value) {
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
@@ -129,7 +136,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('date', 'datetime', 'datetimetz', 'time', 'bigint', 'integer', 'smallint', 'decimal', 'float'))) {
-                $templateParameters['format'] = isset($fieldMetadata['format']) ? $fieldMetadata['format'] : null;
 
                 return $twig->render($entityConfiguration['templates']['field_'.$fieldType], $templateParameters);
             }
@@ -186,6 +192,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
             // all the other data types: boolean, string, text, toggle
             return $twig->render($entityConfiguration['templates']['field_'.$fieldType], $templateParameters);
         } catch (\Exception $e) {
+            if ($this->debug) {
+                throw $e;
+            }
+
             return $twig->render($entityConfiguration['templates']['label_undefined'], array('view' => $view));
         }
     }

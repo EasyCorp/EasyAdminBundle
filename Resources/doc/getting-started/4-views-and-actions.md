@@ -307,6 +307,8 @@ These are the options that you can define for each field:
         `show` views (as explained later in this chapter).
       * `toggle`, displays a boolean value as a flip switch in the `list`
         and `search` views (as explained later in this chapter).
+        
+    * Your own custom data types ! See [Declare and use a custom data type on-the-fly](/Resources/doc/tutorials/advanced-design-customization.md#declare-and-use-a-custom-data-type-on-the-fly)
 
 ### Translate Property Labels
 

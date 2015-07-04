@@ -285,7 +285,73 @@ variables:
     `list`).
   * `value`, the content of the field being rendered, which can be a variable
     of any type (string, numeric, boolean, array, etc.)
-  * `format`, available only for the date and numeric field types. It defines
-    the formatting that should be applied to the value before displaying it.
+  * `item`, the entity instance.
+  * `fieldMetadata`, the field configured options and processed metadata.
+  
+Therefore, you can do almost anything by overriding the templates used to render a property.
+
+### Add custom logic to existing dataTypes:
+  
+For instance, you might want to translate your entities properties:
+
+```yaml
+# app/config.yml
+Product:
+    class: AppBundle\Entity\Product
+    label: 'Products'
+    list:
+        fields:
+            - id
+            # Make the "name" property translatable on "list" view by adding our own options:
+            - { property: 'name', translatable: { domain: 'messages', placeholders: { ... } } }
+            # ...
+```
+
+Override the `string` data type template:
+
+```twig
+{# app/Resources/views/easy_admin/field_string.html.twig #}
+
+{# Check if the field is defined as translatable #}
+{% if fieldMetadata.translatable is defined %}
+    {% set trans_options = {placeholders: {}, domain: null}|merge(fieldMetadata.translatable) %}
+    {# translate the property value using our custom options #}
+    {{ value|trans(trans_options.placeholders, trans_options.domain) }}
+{% else %}
+    {# if not translatable, simply include the default template #}
+    {{ include('@EasyAdmin/default/field_string.html.twig') }}
+{% endif %}
+```
+
+### Declare and use a custom data type on-the-fly
+
+You can also declare on-the-fly your own data types ! Easyadmin will detect and try to render them using the same template overriding mechanism used to render each classic property :
+
+```yaml
+# app/config.yml
+Product:
+    class: AppBundle\Entity\Product
+    label: 'Products'
+    list:
+        fields:
+            - id
+            # ...
+            - { property: 'tags', type: 'tag_collection', type_options: { labels_cycle: ['primary', 'success', 'info'] } }
+```
+
+Define the default template to use:
+
+```twig
+{# app/Resources/views/easy_admin/field_tag_collection.html.twig #}
+
+{% set default_type_options = { labels_cycle: ['primary'] } %}
+{% set type_options = default_type_options|merge(fieldMetadata.type_options|default({})) %}
+
+{% for tag in value %}
+    <span class="label label-{{ cycle(type_options.labels_cycle, loop.index) }}">{{ tag }}</span>
+{% endfor %}
+```
+
+![Default listing interface](/Resources/doc/images/easyadmin-design-customization-custom-data-types.png)
 
 [chapter-5]: ../getting-started/5-design-customization.md

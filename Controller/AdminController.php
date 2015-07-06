@@ -506,11 +506,17 @@ class AdminController extends Controller
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
     {
+        $dbIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
         $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
 
         $queryConditions = $queryBuilder->expr()->orX();
         $queryParameters = array();
         foreach ($searchableFields as $name => $metadata) {
+            // PostgreSQL doesn't allow to compare strings values with non-string columns (e.g. 'id')
+            if ($dbIsPostgreSql && !in_array($metadata['type'], array('text', 'string'))) {
+                continue;
+            }
+
             if (in_array($metadata['dataType'], array('text', 'string'))) {
                 $queryConditions->add(sprintf('entity.%s LIKE :query', $name));
                 $queryParameters['query'] = '%'.$searchQuery.'%';
@@ -696,5 +702,23 @@ class AdminController extends Controller
         $response->setSharedMaxAge(600);
 
         return $response;
+    }
+
+    /**
+     * Returns true if the data of the given entity are stored in a database
+     * of Type PostgreSQL.
+     *
+     * @param  string  $entityClass
+     * @return boolean
+     */
+    private function isPostgreSqlUsedByEntity($entityClass)
+    {
+        $em = $this->get('doctrine')->getManagerForClass($entityClass);
+        $doctrineConfiguration = $em->getConnection()->getParams();
+        $dbDriver = $doctrineConfiguration['driver'];
+
+        // all these different driver names are allowed by Doctrine DBAL for PostgreSQL
+        // see http://doctrine-dbal.readthedocs.org/en/latest/reference/configuration.html#connecting-using-a-url
+        return in_array($dbDriver, array('pdo_pgsql', 'pgsql', 'postgres', 'postgresql'));
     }
 }

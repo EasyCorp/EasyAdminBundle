@@ -41,6 +41,7 @@ class ExceptionListener
             'EntityNotFoundException' => '@EasyAdmin/error/entity_not_found.html.twig',
         );
 
+        /** @var \JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException */
         $exception = $event->getException();
         $exceptionClassName = basename(str_replace('\\', '/', get_class($exception)));
 

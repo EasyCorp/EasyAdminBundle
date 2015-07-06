@@ -51,8 +51,6 @@ abstract class AbstractTestCase extends WebTestCase
     }
 
     /**
-     * @param array $parameters
-     *
      * @return Crawler
      */
     protected function getBackendHomepage()

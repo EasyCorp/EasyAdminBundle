@@ -565,6 +565,6 @@ class EasyAdminExtension extends Extension
      */
     private function isValidMethodName($name)
     {
-        return preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name, $matches);
+        return 0 !== preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
     }
 }

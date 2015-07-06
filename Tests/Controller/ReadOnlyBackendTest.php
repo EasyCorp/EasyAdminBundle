@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
+use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 
@@ -49,7 +50,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
 
     public function testEditActionIsDisabled()
     {
-        $crawler = $this->requestEditView();
+        $this->requestEditView();
 
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
         $this->assertContains('The requested edit action is not allowed.', $this->client->getResponse()->getContent());
@@ -57,7 +58,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
 
     public function testNewActionIsDisabled()
     {
-        $crawler = $this->requestNewView();
+        $this->requestNewView();
 
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
         $this->assertContains('The requested new action is not allowed.', $this->client->getResponse()->getContent());

@@ -73,7 +73,7 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
         $count = count($chars) - 1;
         $ean13 = '';
         do {
-            $ean13 .= $char = $chars[rand(0, $count)];
+            $ean13 .= $chars[rand(0, $count)];
         } while (strlen($ean13) < 13);
 
         $checksum = 0;

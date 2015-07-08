@@ -32,7 +32,7 @@ class Purchase
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    public $id = null;
+    protected $id = null;
 
     /**
      * The Unique id of the purchase.
@@ -40,7 +40,7 @@ class Purchase
      * @var string
      * @ORM\Column(type="guid")
      */
-    public $guid = null;
+    protected $guid = null;
 
     /**
      * The day of the delivery.
@@ -48,7 +48,7 @@ class Purchase
      * @var \DateTime
      * @ORM\Column(type="date")
      */
-    public $deliverySelected = null;
+    protected $deliverySelected = null;
 
     /**
      * The purchase date in the customer timezone.
@@ -56,7 +56,7 @@ class Purchase
      * @var \DateTime
      * @ORM\Column(type="datetimetz")
      */
-    public $purchaseAt = null;
+    protected $purchaseAt = null;
 
     /**
      * The shipping information.
@@ -64,7 +64,7 @@ class Purchase
      * @var Shipment
      * @ORM\Column(type="object")
      */
-    public $shipping = null;
+    protected $shipping = null;
 
     /**
      * The customer preferred time of the day for the delivery.
@@ -72,7 +72,7 @@ class Purchase
      * @var \DateTime
      * @ORM\Column(type="time")
      */
-    public $preferredDeliveryHour = null;
+    protected $preferredDeliveryHour = null;
 
     /**
      * The customer billing address.
@@ -80,19 +80,19 @@ class Purchase
      * @var array
      * @ORM\Column(type="json_array")
      */
-    public $billingAddress = array();
+    protected $billingAddress = array();
 
     /**
      * Items that have been purchased.
      *
-     * @var OrderItem[]
+     * @var PurchaseItem[]
      * @ORM\ManyToMany(targetEntity="PurchaseItem")
      * @ORM\JoinTable(name="purchase_purchase_item",
      *                  joinColumns={@ORM\JoinColumn(name="purchase_id", referencedColumnName="id")},
      *                  inverseJoinColumns={@ORM\JoinColumn(name="item_id", referencedColumnName="id", unique=true)}
      *                  )
      */
-    public $purchasedItems;
+    protected $purchasedItems;
 
     /**
      * Constructor of the Purchase class.
@@ -162,7 +162,7 @@ class Purchase
     /**
      * Set all items ordered.
      *
-     * @param OrderItem[] $purchasedItems
+     * @param PurchaseItem[] $purchasedItems
      */
     public function setPurchasedItems($purchasedItems)
     {
@@ -172,7 +172,7 @@ class Purchase
     /**
      * Get all ordered items.
      *
-     * @return OrderItem[]
+     * @return PurchaseItem[]
      */
     public function getPurchasedItems()
     {
@@ -237,6 +237,26 @@ class Purchase
     public function getShipping()
     {
         return $this->shipping;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIncrementId()
+    {
+        return $this->incrementId;
+    }
+
+    /**
+     * @param string $incrementId
+     *
+     * @return Purchase
+     */
+    public function setIncrementId($incrementId)
+    {
+        $this->incrementId = $incrementId;
+
+        return $this;
     }
 
     /**

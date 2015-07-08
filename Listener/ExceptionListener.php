@@ -23,6 +23,7 @@ class ExceptionListener
         'NoEntitiesConfigurationException' => '@EasyAdmin/error/no_entities.html.twig',
         'UndefinedEntityException' => '@EasyAdmin/error/undefined_entity.html.twig',
         'EntityNotFoundException' => '@EasyAdmin/error/entity_not_found.html.twig',
+        'InvalidConfigurationException' => '@EasyAdmin/error/invalid_configuration.html.twig',
     );
 
     public function __construct($templating, $debug)
@@ -33,7 +34,7 @@ class ExceptionListener
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        // in 'dev' environment, don't override Symfony's exception pages
+        // in 'debug' mode, don't override Symfony's exception pages
         if (true === $this->debug) {
             return $event->getException()->getMessage();
         }

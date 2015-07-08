@@ -1,0 +1,7 @@
+{% extends '@EasyAdmin/error/error_page.html.twig' %}
+
+{% block page_title 'Invalid configuration' %}
+
+{% block problem %}
+    {{ message|raw|nl2br }}
+{% endblock %}

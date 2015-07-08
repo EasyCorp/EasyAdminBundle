@@ -20,11 +20,14 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\InvalidConfigurationException;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -610,6 +613,17 @@ class AdminController extends Controller
             $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];
             $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
             $formFieldOptions['attr']['field_help'] = $metadata['help'];
+
+            // Adds a custom FormType for this field if the `fieldType` property contains a FormTypeInterface
+            if (isset($metadata['fieldType'])) {
+                if (class_exists($metadata['fieldType'])) {
+                    $formType = new $metadata['fieldType'];
+                    if (!($formType instanceof FormTypeInterface)) {
+                        throw new InvalidConfigurationException('formType', 'an AbstractFormType or a FormTypeInterface', get_class($formType));
+                    }
+                    $metadata['fieldType'] = $formType;
+                }
+            }
 
             $formBuilder->add($name, $metadata['fieldType'], $formFieldOptions);
         }

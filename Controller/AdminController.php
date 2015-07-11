@@ -714,11 +714,7 @@ class AdminController extends Controller
     private function isPostgreSqlUsedByEntity($entityClass)
     {
         $em = $this->get('doctrine')->getManagerForClass($entityClass);
-        $doctrineConfiguration = $em->getConnection()->getParams();
-        $dbDriver = $doctrineConfiguration['driver'];
 
-        // all these different driver names are allowed by Doctrine DBAL for PostgreSQL
-        // see http://doctrine-dbal.readthedocs.org/en/latest/reference/configuration.html#connecting-using-a-url
-        return in_array($dbDriver, array('pdo_pgsql', 'pgsql', 'postgres', 'postgresql'));
+        return $em->getConnection()->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSqlPlatform;
     }
 }

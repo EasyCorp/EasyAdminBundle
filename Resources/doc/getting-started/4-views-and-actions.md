@@ -342,10 +342,10 @@ The built-in templates define the following default translation domain:
 ```
 
 This means that your backend translations must be defined in the
-`app/Resources/views/EasyAdminBundle.en.xlf` file (replace `en` by your locale
-and `xlf` by the desired translation format). When using your own backend
-templates, add the same previous `trans_default_domain` tag or use a different
-translation domain according to your needs.
+`app/Resources/translations/EasyAdminBundle.en.xlf` file (replace `en` by your
+locale and `xlf` by the desired translation format). When using your own
+backend templates, add the same previous `trans_default_domain` tag or use a
+different translation domain according to your needs.
 
 ### Customize Date Format
 

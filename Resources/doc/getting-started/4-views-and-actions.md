@@ -310,8 +310,18 @@ These are the options that you can define for each field:
 
 ### Translate Property Labels
 
-In order to translate the labels to the application language, use translation
-keys instead of contents for the `label` option:
+Before translating the labels, make sure that the `translator` service is
+enabled in the application (projects based on the Symfony Standard Edition
+have it disabled by default):
+
+```yaml
+# app/config/config.yml
+framework:
+    translator: { fallbacks: [ "%locale%" ] }
+```
+
+Then, in order to translate the labels to the application language, use
+translation keys instead of contents for the `label` option:
 
 ```yaml
 # app/config/config.yml

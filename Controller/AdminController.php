@@ -17,6 +17,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
+use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -715,6 +716,6 @@ class AdminController extends Controller
     {
         $em = $this->get('doctrine')->getManagerForClass($entityClass);
 
-        return $em->getConnection()->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSqlPlatform;
+        return $em->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform;
     }
 }

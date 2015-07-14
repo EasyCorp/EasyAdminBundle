@@ -416,10 +416,11 @@ class EasyAdminExtension extends Extension
         $applicationTemplatesDir = $this->kernelRootDir.'/Resources/views';
         $bundleTemplatesDir =  $this->kernelRootDir.'/../vendor/javiereguiluz/easyadmin-bundle/Resources/views';
 
-        $customDataTypesTemplates = $this->computeCustomDataTypesDefaultTemplates($backendConfiguration);
+        $customFieldTypesTemplates = $this->getCustomFieldTypesTemplates($backendConfiguration);
+        $templates = array_merge($this->defaultBackendTemplates, $customFieldTypesTemplates);
 
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
-            foreach (array_merge($this->defaultBackendTemplates, $customDataTypesTemplates) as $templateName => $defaultTemplatePath) {
+            foreach ($templates as $templateName => $defaultTemplatePath) {
                 // 1st level priority: easy_admin.entities.<entityName>.templates.<templateName> config option
                 if (isset($entityConfiguration['templates'][$templateName])) {
                     $template = $entityConfiguration['templates'][$templateName];
@@ -449,27 +450,33 @@ class EasyAdminExtension extends Extension
     }
 
     /**
-     * Find out the custom dataTypes declared implicitly by the user and associate default template.
+     * Returns the template names and paths for the custom field types defined
+     * on-the-fly by the entity for the 'show' and 'list' actions.
      *
      * @param array $backendConfiguration
      *
      * @return array
      */
-    private function computeCustomDataTypesDefaultTemplates(array $backendConfiguration)
+    private function getCustomFieldTypesTemplates(array $backendConfiguration)
     {
-        $customDataTypes = array();
+        $customTemplates = array();
+
+        $defaultFieldTypesTemplates = array_filter($this->defaultBackendTemplates, function ($name, $path) {
+            return 'field_' === substr($name, 0, 6);
+        });
 
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             foreach (array('show', 'list') as $action) {
                 foreach ($entityConfiguration[$action]['fields'] as $fieldName => $fieldConfiguration) {
-                    if (isset($fieldConfiguration['type']) && !in_array($fieldConfiguration['type'], self::$fieldDataTypes)) {
-                        $customDataTypes['field_'.$fieldConfiguration['type']] = '@EasyAdmin/default/field_'.$fieldConfiguration['type'].'.html.twig';
+                    $fieldTemplateName = 'field_'.$fieldConfiguration['type'];
+                    if (isset($fieldConfiguration['type']) && !in_array($fieldTemplateName, $defaultFieldTypesTemplates)) {
+                        $customTemplates[$fieldTemplateName] = '@EasyAdmin/default/field_'.$fieldTemplateName.'.html.twig';
                     }
                 }
             }
         }
 
-        return array_unique($customDataTypes);
+        return array_unique($customTemplates);
     }
 
     /**

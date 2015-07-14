@@ -317,7 +317,7 @@ have it disabled by default):
 ```yaml
 # app/config/config.yml
 framework:
-    translator: { fallbacks: [en] }
+    translator: { fallbacks: [ "%locale%" ] }
 ```
 
 Then, in order to translate the labels to the application language, use

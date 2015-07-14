@@ -413,7 +413,8 @@ class EasyAdminExtension extends Extension
      */
     private function processEntityTemplates(array $backendConfiguration)
     {
-        $applicationTemplateDir = $this->kernelRootDir.'/Resources/views';
+        $applicationTemplatesDir = $this->kernelRootDir.'/Resources/views';
+        $bundleTemplatesDir =  $this->kernelRootDir.'/../vendor/javiereguiluz/easyadmin-bundle/Resources/views';
 
         $customDataTypesTemplates = $this->computeCustomDataTypesDefaultTemplates($backendConfiguration);
 
@@ -426,14 +427,16 @@ class EasyAdminExtension extends Extension
                 } elseif (isset($backendConfiguration['design']['templates'][$templateName])) {
                     $template = $backendConfiguration['design']['templates'][$templateName];
                 // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
-                } elseif (file_exists($applicationTemplateDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
+                } elseif (file_exists($applicationTemplatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
                     $template = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
                 // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-                } elseif (file_exists($applicationTemplateDir.'/easy_admin/'.$templateName.'.html.twig')) {
+                } elseif (file_exists($applicationTemplatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
                     $template = 'easy_admin/'.$templateName.'.html.twig';
                 // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
-                } else {
+                } elseif (file_exists($bundleTemplatesDir.'/default/'.$templateName.'.html.twig')) {
                     $template = $defaultTemplatePath;
+                } else {
+                    throw new \RuntimeException(sprintf('The "%s" entity uses a custom data type called "%s" but its associated template is not defined in "app/resources/views/easy_admin/"', $entityName, str_replace('field_', '', $templateName)));
                 }
 
                 $entityConfiguration['templates'][$templateName] = $template;

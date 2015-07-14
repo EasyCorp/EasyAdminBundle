@@ -288,4 +288,28 @@ variables:
   * `format`, available only for the date and numeric field types. It defines
     the formatting that should be applied to the value before displaying it.
 
+Translating Backend Elements in Custom Templates
+------------------------------------------------
+
+The translations of the default backend elements are defined under the
+`EasyAdminBundle` translation domain. That's why built-in templates include
+the following tag:
+
+```twig
+{% trans_default_domain "EasyAdminBundle" %}
+```
+
+When overriding templates, make sure to add this tag at the top of each file to
+not break the backend internationalization. Of course, you can also define any
+other translation domain and skip the default one in your templates:
+
+```twig
+{{ 'content_to_translate' | trans({}, 'MyCustomTranslationDomain') }}
+```
+
+The above template uses the translations defined in the
+`app/Resources/translations/MyCustomTranslationDomain.en.xlf` file (replace
+`en` by your locale and `xlf` by the desired translation format) instead of the
+default EasyAdmin translations.
+
 [chapter-5]: ../getting-started/5-design-customization.md

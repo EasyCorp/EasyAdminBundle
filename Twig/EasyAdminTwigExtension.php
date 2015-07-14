@@ -116,7 +116,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             $templateParameters = array(
                 'view' => $view,
                 'value' => $value,
-                'fieldMetadata' => $fieldMetadata,
+                'field_options' => $fieldMetadata,
                 'item' => $item,
             );
 
@@ -136,7 +136,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('date', 'datetime', 'datetimetz', 'time', 'bigint', 'integer', 'smallint', 'decimal', 'float'))) {
-
                 return $twig->render($entityConfiguration['templates']['field_'.$fieldType], $templateParameters);
             }
 

@@ -1,0 +1,59 @@
+---------------------------------------------------------------------------
+
+by nzurita at 2015-07-11T09:14:59Z
+
+@javiereguiluz beware, you writed `app/Resources/views/EasyAdminBundle.en.xlf` and it should be `app/Resources/translations/EasyAdminBundle.en.xlf`
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-07-11T11:38:02Z
+
+@nzurita fixed. Thanks!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-07-11T16:54:11Z
+
+I don't agree with the docs, I think it's better to tell the user to store his own translations in another translation domain instead of storing it in the EasyAdmin's one, for consistency reasons.
+
+I'd do this:
+
+```diff
+-This means that your backend translations must be defined in the
+-`app/Resources/translations/EasyAdminBundle.en.xlf` file (replace `en` by your
+-locale and `xlf` by the desired translation format). When using your own
+-backend templates, add the same previous `trans_default_domain` tag or use a
+-different translation domain according to your needs.
++This means that when you override any template, you must add this statement
++at the top of your file.
++If you want to translate your own text and put it in your own files, you can use your
++own translation domain manually in the views, like this:
++```twig
++{{ 'my_text_to_translate' | trans({}, 'MyTranslationDomain') }}
++```
++This way you can save all your translations in the file
++`app/Resources/translations/MyTranslationDomain.en.yml` (replace `en` by your
++locale and `yml` by the desired translation format)
+```
+
+I'd do this because this problem occurs only when one overrides the templates, so basically, it's just explaining people why they think there's a bug when they override a template :)
+
+---------------------------------------------------------------------------
+
+by romaricdrigon at 2015-07-13T10:36:20Z
+
+BTW, also adding a note in doc about that you should have the translator component enabled would be great, as it is not the default from Symfony standard!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-07-13T19:38:26Z
+
+It was written in the first documentation, but when refactoring, I think it was lost during the process :smile:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-07-14T14:22:02Z
+
+@romaricdrigon good point! I agree with you. Thanks.
+
+@Pierstoval thanks for helping me fix all the mistakes. I've reworded the note completely.

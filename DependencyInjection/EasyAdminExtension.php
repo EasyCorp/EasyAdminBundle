@@ -413,10 +413,12 @@ class EasyAdminExtension extends Extension
                 } elseif (file_exists($applicationTemplatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
                     $template = 'easy_admin/'.$templateName.'.html.twig';
                 // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
-                } elseif (file_exists($bundleTemplatesDir.'/default/'.$templateName.'.html.twig')) {
-                    $template = $defaultTemplatePath;
                 } else {
-                    throw new \RuntimeException(sprintf('The "%s" entity uses a custom data type called "%s" but its associated template is not defined in "app/resources/views/easy_admin/"', $entityName, str_replace('field_', '', $templateName)));
+                    if (array_key_exists($templateName, $customFieldTypesTemplates)) {
+                        throw new \RuntimeException(sprintf('The "%s" entity uses a custom data type called "%s" but its associated template is not defined in "app/resources/views/easy_admin/"', $entityName, str_replace('field_', '', $templateName)));
+                    }
+
+                    $template = $defaultTemplatePath;
                 }
 
                 $entityConfiguration['templates'][$templateName] = $template;
@@ -440,16 +442,16 @@ class EasyAdminExtension extends Extension
     {
         $customTemplates = array();
 
-        $defaultFieldTypesTemplates = array_filter($this->defaultBackendTemplates, function ($name, $path) {
-            return 'field_' === substr($name, 0, 6);
-        });
+        // this 'array_flip()' nonsense is needed to apply 'array_filter()' on the keys instead of the values
+        $defaultFieldTypesTemplates = array_flip(array_filter(array_flip($this->defaultBackendTemplates), function ($key) {
+            return 'field_' === substr($key, 0, 6);
+        }));
 
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             foreach (array('show', 'list') as $action) {
                 foreach ($entityConfiguration[$action]['fields'] as $fieldName => $fieldConfiguration) {
-                    $fieldTemplateName = 'field_'.$fieldConfiguration['type'];
-                    if (isset($fieldConfiguration['type']) && !in_array($fieldTemplateName, $defaultFieldTypesTemplates)) {
-                        $customTemplates[$fieldTemplateName] = '@EasyAdmin/default/field_'.$fieldTemplateName.'.html.twig';
+                    if (isset($fieldConfiguration['type']) && !array_key_exists($fieldTemplateName = 'field_'.$fieldConfiguration['type'], $defaultFieldTypesTemplates)) {
+                        $customTemplates[$fieldTemplateName] = '@EasyAdmin/default/'.$fieldTemplateName.'.html.twig';
                     }
                 }
             }

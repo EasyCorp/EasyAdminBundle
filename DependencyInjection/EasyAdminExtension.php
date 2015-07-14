@@ -393,7 +393,6 @@ class EasyAdminExtension extends Extension
     private function processEntityTemplates(array $backendConfiguration)
     {
         $applicationTemplatesDir = $this->kernelRootDir.'/Resources/views';
-        $bundleTemplatesDir =  $this->kernelRootDir.'/../vendor/javiereguiluz/easyadmin-bundle/Resources/views';
 
         $customFieldTypesTemplates = $this->getCustomFieldTypesTemplates($backendConfiguration);
         $templates = array_merge($this->defaultBackendTemplates, $customFieldTypesTemplates);

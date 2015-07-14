@@ -58,27 +58,6 @@ class EasyAdminExtension extends Extension
         'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
     );
 
-    private static $fieldDataTypes = array(
-        'array',
-        'association',
-        'bigint',
-        'boolean',
-        'date',
-        'datetime',
-        'datetimetz',
-        'decimal',
-        'float',
-        'id',
-        'image',
-        'integer',
-        'simple_array',
-        'smallint',
-        'string',
-        'text',
-        'time',
-        'toggle',
-    );
-
     private $kernelRootDir;
 
     public function load(array $configs, ContainerBuilder $container)

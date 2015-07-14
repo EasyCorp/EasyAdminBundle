@@ -291,17 +291,17 @@ variables:
 Translating Backend Elements in Custom Templates
 ------------------------------------------------
 
-This bundle uses the `EasyAdminBundle` translation domain to translate all the
-elements of the interface. That's why built-in templates include the following
-tag:
+The translations of the default backend elements are defined under the
+`EasyAdminBundle` translation domain. That's why built-in templates include
+the following tag:
 
 ```twig
 {% trans_default_domain "EasyAdminBundle" %}
 ```
 
 When overriding templates, make sure to add this tag at the top of each file to
-not break the backend internationalization. You can of course define any other
-translation domain and skip the default one in your templates:
+not break the backend internationalization. Of course, you can also define any
+other translation domain and skip the default one in your templates:
 
 ```twig
 {{ 'content_to_translate' | trans({}, 'MyCustomTranslationDomain') }}

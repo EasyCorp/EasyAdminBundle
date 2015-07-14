@@ -310,8 +310,18 @@ These are the options that you can define for each field:
 
 ### Translate Property Labels
 
-In order to translate the labels to the application language, use translation
-keys instead of contents for the `label` option:
+Before translating the labels, make sure that the `translator` service is
+enabled in the application (projects based on the Symfony Standard Edition
+have it disabled by default):
+
+```yaml
+# app/config/config.yml
+framework:
+    translator: { fallbacks: [en] }
+```
+
+Then, in order to translate the labels to the application language, use
+translation keys instead of contents for the `label` option:
 
 ```yaml
 # app/config/config.yml
@@ -334,18 +344,6 @@ keys for the current language.
 If there is no translation available, it will try to look for those values for
 the default application language. In case no translation is available, the key
 will be displayed so you can easily spot any missing translation.
-
-The built-in templates define the following default translation domain:
-
-```twig
-{% trans_default_domain "EasyAdminBundle" %}
-```
-
-This means that your backend translations must be defined in the
-`app/Resources/translations/EasyAdminBundle.en.xlf` file (replace `en` by your
-locale and `xlf` by the desired translation format). When using your own
-backend templates, add the same previous `trans_default_domain` tag or use a
-different translation domain according to your needs.
 
 ### Customize Date Format
 

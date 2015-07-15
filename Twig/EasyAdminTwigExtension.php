@@ -114,10 +114,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
         try {
             $fieldType = $fieldMetadata['dataType'];
             $templateParameters = array(
-                'view' => $view,
-                'value' => $value,
                 'field_options' => $fieldMetadata,
                 'item' => $item,
+                'value' => $value,
+                'view' => $view,
             );
 
             if (null === $value) {

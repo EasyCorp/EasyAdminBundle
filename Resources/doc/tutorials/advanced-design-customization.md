@@ -281,13 +281,14 @@ about their features.
 Inside the `field_*` and `label_*` templates you have access to the following
 variables:
 
-  * `view`, the name of the view where the field is being rendered (`show` or
-    `list`).
+  * `field_options`, the options configured for this field in the backend
+    configuration file.
+  * `item`, the entity instance.
   * `value`, the content of the field being rendered, which can be a variable
     of any type (string, numeric, boolean, array, etc.)
-  * `item`, the entity instance.
-  * `fieldMetadata`, the field configured options and processed metadata.
-  
+  * `view`, the name of the view where the field is being rendered (`show` or
+    `list`).
+
 Therefore, you can do almost anything by overriding the templates used to render a property.
 
 ### Add custom logic to existing dataTypes:
@@ -313,8 +314,8 @@ Override the `string` data type template:
 {# app/Resources/views/easy_admin/field_string.html.twig #}
 
 {# Check if the field is defined as translatable #}
-{% if fieldMetadata.translatable is defined %}
-    {% set trans_options = {placeholders: {}, domain: null}|merge(fieldMetadata.translatable) %}
+{% if field_options.translatable is defined %}
+    {% set trans_options = {placeholders: {}, domain: null}|merge(field_options.translatable) %}
     {# translate the property value using our custom options #}
     {{ value|trans(trans_options.placeholders, trans_options.domain) }}
 {% else %}

@@ -289,11 +289,49 @@ variables:
   * `view`, the name of the view where the field is being rendered (`show` or
     `list`).
 
-Therefore, you can do almost anything by overriding the templates used to render a property.
+### Rendering Fields with Custom Templates
 
-### Add custom logic to existing dataTypes:
-  
-For instance, you might want to translate your entities properties:
+The default field templates are flexible enough for most backends. However,
+when your backend is very complex, it may be useful to use a custom template to
+define the way some field is rendered in the `list` or `show` views.
+
+To do so, set the `template` option of the field to the name of its custom
+template:
+
+```yaml
+easy_admin:
+    # ...
+    entities:
+        Invoice:
+            list:
+                fields:
+                    - { property: 'total', template: 'invoice_total' }
+```
+
+The above configuration makes the backend to use the `invoice_total.html.twig`
+template instead of the default `field_float.html.twig` template. Custom
+templates are looks for in the following locations (the first existing
+template is used):
+
+  1. `app/Resources/views/easy_admin/<EntityName>/<TemplateName>.html.twig`
+     template.
+  2. `app/Resources/views/easy_admin/<TemplateName>.html.twig`
+     template.
+
+Custom templates receive the same parameters as built-in templates (
+`field_options`, `item`, `value`, `view`).
+
+### Adding Custom Logic to Property Templates
+
+All property templates receive a parameter called `field_options` with the full
+list of options defined in the configuration file for that property. If you
+add custom options, they will also be available in the `field_options`
+parameter. This allows you to add custom logic to templates very easily.
+
+Imagine that you want to translate some text contents in the `list` view. To do
+so, define a custom option called `trans` which indicates if the field content
+should be translated and another option called `catalog` which defines the name
+of the translation catalog to use.
 
 ```yaml
 # app/config.yml
@@ -303,30 +341,29 @@ Product:
     list:
         fields:
             - id
-            # Make the "name" property translatable on "list" view by adding our own options:
-            - { property: 'name', translatable: { domain: 'messages', placeholders: { ... } } }
+            - { property: 'name', trans: true, catalog: 'messages' }
             # ...
 ```
 
-Override the `string` data type template:
+Supposing that the `name` property is of type `string`, you just need to
+override the built-in `field_string.html.twig` template:
 
 ```twig
 {# app/Resources/views/easy_admin/field_string.html.twig #}
 
-{# Check if the field is defined as translatable #}
-{% if field_options.translatable is defined %}
-    {% set trans_options = {placeholders: {}, domain: null}|merge(field_options.translatable) %}
-    {# translate the property value using our custom options #}
-    {{ value|trans(trans_options.placeholders, trans_options.domain) }}
+{% if field_options.trans|default(false) %}
+    {# translate fields defined as "translatable" #}
+    {{ value|trans({}, field_options.domain|default('messages')) }}
 {% else %}
     {# if not translatable, simply include the default template #}
     {{ include('@EasyAdmin/default/field_string.html.twig') }}
 {% endif %}
 ```
 
-### Declare and use a custom data type on-the-fly
-
-You can also declare on-the-fly your own data types ! Easyadmin will detect and try to render them using the same template overriding mechanism used to render each classic property :
+If the custom logic is too complex, it may be better to use your own custom
+template to not mess built-in templates too much. In this example, the
+collection of tags associated with a product are displayed in a way that is too
+customized to use a built-in template:
 
 ```yaml
 # app/config.yml
@@ -337,21 +374,22 @@ Product:
         fields:
             - id
             # ...
-            - { property: 'tags', type: 'tag_collection', type_options: { labels_cycle: ['primary', 'success', 'info'] } }
+            - { property: 'tags', type: 'tag_collection', label_colors: ['primary', 'success', 'info'] }
 ```
 
-Define the default template to use:
+The custom `tag_collection.html.twig` would look as follows:
 
 ```twig
-{# app/Resources/views/easy_admin/field_tag_collection.html.twig #}
+{# app/Resources/views/easy_admin/tag_collection.html.twig #}
 
-{% set default_type_options = { labels_cycle: ['primary'] } %}
-{% set type_options = default_type_options|merge(fieldMetadata.type_options|default({})) %}
+{% set colors = field_options.label_colors|default(['primary']) %}
 
 {% for tag in value %}
-    <span class="label label-{{ cycle(type_options.labels_cycle, loop.index) }}">{{ tag }}</span>
+    <span class="label label-{{ cycle(colors, loop.index) }}">{{ tag }}</span>
 {% endfor %}
 ```
+
+And this field would be rendered in the `list` view as follows:
 
 ![Default listing interface](/Resources/doc/images/easyadmin-design-customization-custom-data-types.png)
 

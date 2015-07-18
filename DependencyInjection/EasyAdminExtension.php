@@ -430,6 +430,12 @@ class EasyAdminExtension extends Extension
                     if (isset($fieldMetadata['template'])) {
                         $templateName = $fieldMetadata['template'];
 
+                        // template name should not contain the .html.twig extension
+                        // however, for usability reasons, we silently fix this issue if needed
+                        if ('.html.twig' === substr($templateName, -10)) {
+                            $templateName = substr($templateName, 0, 10);
+                        }
+
                         // 1st level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
                         if (file_exists($applicationTemplatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
                             $templatePath = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';

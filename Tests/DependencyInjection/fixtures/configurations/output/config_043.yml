@@ -9,6 +9,7 @@ easy_admin:
                         property: field1
                         type: image
                         base_path: /field_img/
+                        template: null
                 actions:
                     show:
                         name: show

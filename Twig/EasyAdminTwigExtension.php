@@ -127,16 +127,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
             // when a virtual field doesn't define it's type, consider it a string
             if (true === $fieldMetadata['virtual'] && null === $fieldType) {
                 $templateParameters['value'] = strval($value);
-
-                return $twig->render($entityConfiguration['templates']['field_text'], $templateParameters);
-            }
-
-            if ('id' === $fieldName) {
-                return $twig->render($entityConfiguration['templates']['field_id'], $templateParameters);
-            }
-
-            if (in_array($fieldType, array('date', 'datetime', 'datetimetz', 'time', 'bigint', 'integer', 'smallint', 'decimal', 'float'))) {
-                return $twig->render($entityConfiguration['templates']['field_'.$fieldType], $templateParameters);
             }
 
             if (in_array($fieldType, array('image'))) {
@@ -149,16 +139,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
                         : '/'.ltrim($value, '/');
                 }
                 $templateParameters['value'] = $imageUrl;
-
-                return $twig->render($entityConfiguration['templates']['field_image'], $templateParameters);
             }
 
-            if (in_array($fieldType, array('array', 'simple_array'))) {
-                if (empty($value)) {
-                    return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
-                }
-
-                return $twig->render($entityConfiguration['templates']['field_'.$fieldType], $templateParameters);
+            if (in_array($fieldType, array('array', 'simple_array')) && empty($value)) {
+                return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
             }
 
             if (in_array($fieldType, array('association'))) {
@@ -188,8 +172,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
             }
 
-            // all the other data types: boolean, string, text, toggle
-            return $twig->render($entityConfiguration['templates']['field_'.$fieldType], $templateParameters);
+            return $twig->render($fieldMetadata['template'], $templateParameters);
         } catch (\Exception $e) {
             if ($this->debug) {
                 throw $e;

@@ -18,6 +18,8 @@ use Symfony\Component\Config\FileLocator;
 
 class EasyAdminExtension extends Extension
 {
+    private $views = array('edit', 'list', 'new', 'show');
+
     private $defaultActionConfiguration = array(
         'name'  => null,     // either the name of a controller method or an application route (it depends on the 'type' option)
         'type'  => 'method', // 'method' if the action is a controller method; 'route' if it's an application route
@@ -201,7 +203,7 @@ class EasyAdminExtension extends Extension
             $entityConfiguration['disabled_actions'] = $disabledActions;
 
             // second, define the actions of each entity view
-            foreach (array('edit', 'list', 'new', 'show') as $view) {
+            foreach ($this->views as $view) {
                 $defaultActions = $this->getDefaultActions($view);
                 $backendActions = isset($backendConfiguration[$view]['actions']) ? $backendConfiguration[$view]['actions'] : array();
                 $backendActions = $this->normalizeActionsConfiguration($backendActions, $defaultActions);
@@ -392,13 +394,11 @@ class EasyAdminExtension extends Extension
      */
     private function processEntityTemplates(array $backendConfiguration)
     {
-        $applicationTemplatesDir = $this->kernelRootDir.'/Resources/views';
+        $templatesDir = $this->kernelRootDir.'/Resources/views';
 
-        $customFieldTypesTemplates = $this->getCustomFieldTypesTemplates($backendConfiguration);
-        $templates = array_merge($this->defaultBackendTemplates, $customFieldTypesTemplates);
-
+        // first, resolve the general template overriding mechanism
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
-            foreach ($templates as $templateName => $defaultTemplatePath) {
+            foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
                 // 1st level priority: easy_admin.entities.<entityName>.templates.<templateName> config option
                 if (isset($entityConfiguration['templates'][$templateName])) {
                     $template = $entityConfiguration['templates'][$templateName];
@@ -406,17 +406,13 @@ class EasyAdminExtension extends Extension
                 } elseif (isset($backendConfiguration['design']['templates'][$templateName])) {
                     $template = $backendConfiguration['design']['templates'][$templateName];
                 // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
-                } elseif (file_exists($applicationTemplatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
+                } elseif (file_exists($templatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
                     $template = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
                 // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-                } elseif (file_exists($applicationTemplatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
+                } elseif (file_exists($templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
                     $template = 'easy_admin/'.$templateName.'.html.twig';
                 // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
                 } else {
-                    if (array_key_exists($templateName, $customFieldTypesTemplates)) {
-                        throw new \RuntimeException(sprintf('The "%s" entity uses a custom data type called "%s" but its associated template is not defined in "app/resources/views/easy_admin/"', $entityName, str_replace('field_', '', $templateName)));
-                    }
-
                     $template = $defaultTemplatePath;
                 }
 
@@ -426,37 +422,37 @@ class EasyAdminExtension extends Extension
             $backendConfiguration['entities'][$entityName] = $entityConfiguration;
         }
 
-        return $backendConfiguration;
-    }
-
-    /**
-     * Returns the template names and paths for the custom field types defined
-     * on-the-fly by the entity for the 'show' and 'list' actions.
-     *
-     * @param array $backendConfiguration
-     *
-     * @return array
-     */
-    private function getCustomFieldTypesTemplates(array $backendConfiguration)
-    {
-        $customTemplates = array();
-
-        // this 'array_flip()' nonsense is needed to apply 'array_filter()' on the keys instead of the values
-        $defaultFieldTypesTemplates = array_flip(array_filter(array_flip($this->defaultBackendTemplates), function ($key) {
-            return 'field_' === substr($key, 0, 6);
-        }));
-
+        // second, walk through all entity fields to determine their specific template
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
-            foreach (array('show', 'list') as $action) {
-                foreach ($entityConfiguration[$action]['fields'] as $fieldName => $fieldConfiguration) {
-                    if (isset($fieldConfiguration['type']) && !array_key_exists($fieldTemplateName = 'field_'.$fieldConfiguration['type'], $defaultFieldTypesTemplates)) {
-                        $customTemplates[$fieldTemplateName] = '@EasyAdmin/default/'.$fieldTemplateName.'.html.twig';
+            foreach (array('list', 'show') as $view) {
+                foreach ($entityConfiguration[$view]['fields'] as $fieldName => $fieldMetadata) {
+                    // if the field defines its own template, resolve its location
+                    if (isset($fieldMetadata['template'])) {
+                        $templateName = $fieldMetadata['template'];
+
+                        // 1st level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
+                        if (file_exists($applicationTemplatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
+                            $templatePath = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
+                        // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
+                        } elseif (file_exists($applicationTemplatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
+                            $templatePath = 'easy_admin/'.$templateName.'.html.twig';
+                        } else {
+                            throw new \RuntimeException(sprintf('The "%s" field of the "%s" entity uses a custom template called "%s" which doesn\'t exist in "app/resources/views/easy_admin/" directory.', $fieldName, $entityName, $templateName));
+                        }
+                    } else {
+                        // At this point, we don't know the exact data type associated with each field.
+                        // The template is initialized to null and it will be resolved at runtime in the Configurator class
+                        $templatePath = null;
                     }
+
+                    $entityConfiguration[$view]['fields'][$fieldName]['template'] = $templatePath;
                 }
             }
+
+            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
         }
 
-        return array_unique($customTemplates);
+        return $backendConfiguration;
     }
 
     /**

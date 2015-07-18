@@ -38,8 +38,10 @@ easy_admin:
                 fields:
                     field5:
                         property: field5
+                        template: null
                     field6:
                         property: field6
+                        template: null
                 actions:
                     show:
                         name: show
@@ -75,8 +77,10 @@ easy_admin:
                 fields:
                     field7:
                         property: field7
+                        template: null
                     field8:
                         property: field8
+                        template: null
                 actions:
                     delete:
                         name: delete

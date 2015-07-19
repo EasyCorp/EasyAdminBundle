@@ -289,14 +289,14 @@ variables:
   * `view`, the name of the view where the field is being rendered (`show` or
     `list`).
 
-### Rendering Fields with Custom Templates
+### Rendering Properties with Custom Templates
 
-The default field templates are flexible enough for most backends. However,
+The default property templates are flexible enough for most backends. However,
 when your backend is very complex, it may be useful to use a custom template to
-define the way some field is rendered in the `list` or `show` views.
+define the way some property is rendered in the `list` or `show` views.
 
-To do so, set the `template` option of the field to the name of its custom
-template:
+To do so, define the name of the custom template in the `template` option of
+the property:
 
 ```yaml
 easy_admin:
@@ -329,9 +329,9 @@ add custom options, they will also be available in the `field_options`
 parameter. This allows you to add custom logic to templates very easily.
 
 Imagine that you want to translate some text contents in the `list` view. To do
-so, define a custom option called `trans` which indicates if the field content
-should be translated and another option called `domain` which defines the name
-of the translation domain to use.
+so, define a custom option called `trans` which indicates if the property
+content should be translated and another option called `domain` which defines
+the name of the translation domain to use.
 
 ```yaml
 # app/config.yml
@@ -362,7 +362,7 @@ override the built-in `field_string.html.twig` template:
 
 If the custom logic is too complex, it may be better to use your own custom
 template to not mess built-in templates too much. In this example, the
-collection of tags associated with a product are displayed in a way that is too
+collection of tags associated with a product is displayed in a way that is too
 customized to use a built-in template:
 
 ```yaml
@@ -389,8 +389,8 @@ The custom `tag_collection.html.twig` would look as follows:
 {% endfor %}
 ```
 
-And this field would be rendered in the `list` view as follows:
+And this property would be rendered in the `list` view as follows:
 
-![Default listing interface](/Resources/doc/images/easyadmin-design-customization-custom-data-types.png)
+![Default listing interface](../images/easyadmin-design-customization-custom-data-types.png)
 
 [chapter-5]: ../getting-started/5-design-customization.md

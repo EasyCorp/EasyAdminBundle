@@ -42,11 +42,11 @@ class CustomFieldTemplateTest extends AbstractTestCase
     /**
      * @return Crawler
      */
-    private function requestListView($entityName = 'Category')
+    private function requestListView()
     {
         return $this->getBackendPage(array(
             'action' => 'list',
-            'entity' => $entityName,
+            'entity' => 'Category',
             'view' => 'list',
         ));
     }
@@ -54,7 +54,7 @@ class CustomFieldTemplateTest extends AbstractTestCase
     /**
      * @return Crawler
      */
-    private function requestShowView($entityName = 'Category')
+    private function requestShowView()
     {
         return $this->getBackendPage(array(
             'action' => 'show',

@@ -308,9 +308,9 @@ easy_admin:
                     - { property: 'total', template: 'invoice_total' }
 ```
 
-The above configuration makes the backend to use the `invoice_total.html.twig`
+The above configuration makes the backend use the `invoice_total.html.twig`
 template instead of the default `field_float.html.twig` template. Custom
-templates are looks for in the following locations (the first existing
+templates are looked for in the following locations (the first existing
 template is used):
 
   1. `app/Resources/views/easy_admin/<EntityName>/<TemplateName>.html.twig`
@@ -330,8 +330,8 @@ parameter. This allows you to add custom logic to templates very easily.
 
 Imagine that you want to translate some text contents in the `list` view. To do
 so, define a custom option called `trans` which indicates if the field content
-should be translated and another option called `catalog` which defines the name
-of the translation catalog to use.
+should be translated and another option called `domain` which defines the name
+of the translation domain to use.
 
 ```yaml
 # app/config.yml
@@ -341,7 +341,7 @@ Product:
     list:
         fields:
             - id
-            - { property: 'name', trans: true, catalog: 'messages' }
+            - { property: 'name', trans: true, domain: 'messages' }
             # ...
 ```
 

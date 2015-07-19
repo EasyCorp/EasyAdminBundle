@@ -443,7 +443,7 @@ class EasyAdminExtension extends Extension
                         } elseif (file_exists($templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
                             $templatePath = 'easy_admin/'.$templateName.'.html.twig';
                         } else {
-                            throw new \RuntimeException(sprintf('The "%s" field of the "%s" entity uses a custom template called "%s" which doesn\'t exist in "app/resources/views/easy_admin/" directory.', $fieldName, $entityName, $templateName));
+                            throw new \RuntimeException(sprintf('The "%s" field of the "%s" entity uses a custom template called "%s" which doesn\'t exist in "app/Resources/views/easy_admin/" directory.', $fieldName, $entityName, $templateName));
                         }
                     } else {
                         // At this point, we don't know the exact data type associated with each field.

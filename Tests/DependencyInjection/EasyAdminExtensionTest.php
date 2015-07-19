@@ -176,7 +176,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage The "id" field of the "TestEntity" entity uses a custom template called "this_template_does_not_exist" which doesn't exist in "app/resources/views/easy_admin/" directory.
+     * @expectedExceptionMessage The "id" field of the "TestEntity" entity uses a custom template called "this_template_does_not_exist" which doesn't exist in "app/Resources/views/easy_admin/" directory.
      */
     public function testCustomFieldTemplateDoesNotExist()
     {

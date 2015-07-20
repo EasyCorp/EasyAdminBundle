@@ -22,6 +22,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -582,9 +585,9 @@ class AdminController extends Controller
      * @param array  $entityProperties
      * @param string $view             The name of the view where this form is used ('new' or 'edit')
      *
-     * @return Form
+     * @return FormBuilder
      */
-    protected function createEntityForm($entity, array $entityProperties, $view)
+    protected function createEntityFormBuilder($entity, array $entityProperties, $view)
     {
         $formCssClass = array_reduce($this->config['design']['form_theme'], function ($previousClass, $formTheme) {
             return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
@@ -615,6 +618,37 @@ class AdminController extends Controller
             $formFieldOptions['attr']['field_help'] = $metadata['help'];
 
             $formBuilder->add($name, $metadata['fieldType'], $formFieldOptions);
+        }
+
+        return $formBuilder;
+    }
+
+    /**
+     * @param object $entity
+     * @param array  $entityProperties
+     * @param string $view
+     *
+     * @return Form
+     * @throws \Exception
+     */
+    protected function createEntityForm($entity, array $entityProperties, $view)
+    {
+        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EntityForm')) {
+            $form = $this->{$customMethodName}($entity, $entityProperties, $view);
+            if (!$form instanceof FormInterface) {
+                throw new \Exception(sprintf(
+                    'The "%s" method must return a FormInterface, "%s" given.',
+                    $customMethodName, is_object($form) ? get_class($form) : gettype($form)
+                ));
+            }
+        }
+
+        $formBuilder = $this->createEntityFormBuilder($entity, $entityProperties, $view);
+        if (!$formBuilder instanceof FormBuilderInterface) {
+            throw new \Exception(sprintf(
+                'The "%s" method must return a FormBuilderInterface, "%s" given.',
+                'createEntityForm', is_object($formBuilder) ? get_class($formBuilder) : gettype($formBuilder)
+            ));
         }
 
         return $formBuilder->getForm();

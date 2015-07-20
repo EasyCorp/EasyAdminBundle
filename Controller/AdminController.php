@@ -22,6 +22,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -559,7 +560,7 @@ class AdminController extends Controller
      */
     protected function createEditForm($entity, array $entityProperties)
     {
-        return $this->createEntityForm($entity, $entityProperties, 'edit');
+        return $this->createEntityFormBuilder($entity, $entityProperties, 'edit')->getForm();
     }
 
     /**
@@ -572,7 +573,7 @@ class AdminController extends Controller
      */
     protected function createNewForm($entity, array $entityProperties)
     {
-        return $this->createEntityForm($entity, $entityProperties, 'new');
+        return $this->createEntityFormBuilder($entity, $entityProperties, 'new')->getForm();
     }
 
     /**
@@ -582,9 +583,9 @@ class AdminController extends Controller
      * @param array  $entityProperties
      * @param string $view             The name of the view where this form is used ('new' or 'edit')
      *
-     * @return Form
+     * @return FormBuilder
      */
-    protected function createEntityForm($entity, array $entityProperties, $view)
+    protected function createEntityFormBuilder($entity, array $entityProperties, $view)
     {
         $formCssClass = array_reduce($this->config['design']['form_theme'], function ($previousClass, $formTheme) {
             return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
@@ -617,7 +618,19 @@ class AdminController extends Controller
             $formBuilder->add($name, $metadata['fieldType'], $formFieldOptions);
         }
 
-        return $formBuilder->getForm();
+        return $formBuilder;
+    }
+
+    /**
+     * @see \JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController::createEntityFormBuilder
+     *
+     * @deprecated since 1.6.0
+     */
+    protected function createEntityForm($entity, array $entityProperties, $view)
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.6.0, Please use the "createEntityFormBuilder" method to construct a fully customizable form.', E_USER_DEPRECATED);
+
+        return $this->createEntityFormBuilder($entity, $entityProperties, $view)->getForm();
     }
 
     /**

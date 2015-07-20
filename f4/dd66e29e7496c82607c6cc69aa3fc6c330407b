@@ -1,0 +1,119 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-07-14T20:38:07Z
+
+@javiereguiluz : Great ! Thanks for taking care of it :smile:
+
+@Pierstoval :
+> I keep thinking creating types on the fly is a bad idea and can also be confusing for users
+
+I cannot understand what is still bothering you outside the confusion there is between `form types` and `data types`, that we tend to **not** make worse, by **not** mutualizing too much code or workflow between the two of them, and establishing a more and more clearer distinction. :smile_cat:
+
+Also, if the "on-fly-capabilty" is too much magic, would you prefer having the list of custom dataTypes declared in the easy_admin config ? It does not bring much, except the ability to eventually change the template location in the config:
+
+```yaml
+easy_admin:
+   custom_data_types:
+        my_custom_type: { template: "..." }
+```
+
+Registering data types through tagged services ? Actually, data types are currently too trivial to get any benefit of it, and will only get heavier to declare.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-07-15T07:21:49Z
+
+What's bothering me is that we already have `type`, `fieldType` and `dataType`, these three are confusing enough, so allowing to create a special `dataType` on the fly that will only change the template used sounds too much for me, especially if it's usable only in `show` and `list`/`search`.
+
+The best, if you want to only change the template, would be to use our already powerful template-override system for every field for every view as a default template, and then add a `field_template` option that would be used to render only this field.
+This way, it can be used for **every** action, including `edit` and `new` where field rendering also needs to be overriden sometimes. For example when you want to add custom javascript to a custom `collection` or `entity` type.
+
+To conclude for this PR:
+* I'm :+1: for:
+  * Using the `translatable` option, and any other optional and custom parameter, and allow it to be injected in the config and therefore in the templates.
+  * Using the `type_options` to customize the Form Type on the fly by adding options to it
+* I'm :-1: for:
+  * Creating `dataTypes` on-the-fly only to change the rendered template, where a simple `template` option would have been very more verbose and explicit in the representation and use of it.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-07-15T09:21:43Z
+
+> This way, it can be used for every action [...]
+
+But I don't want that to be used for every action. Those templates are only for rendering `data types`, which are not in use in `edit` and `new` views which use `form types`.
+A template doing both will be kind of ugly, as they are two very different things.
+
+To change the `form type template`, use form themes.
+The problem however, is that we miss a way to identify the current entity in the form themes. Which could be solved by creating an `EasyAdminFormType` where will belong the form fields generation rather than generating it in the controller.
+Thus, the form `name` will change accordingly to the entity, and form themes can be overridden per entity.
+Plus we could pass to the FormView the different useful vars: `$action`, `$entity`, `ìtem`, ...
+
+**Bonus:** Using a proper form type to generate forms is the occasion to review the way we allow to tweak the form, by taking benefit of the FormEvents and dispatching our custom events, wether than creating/overriding a method in the controller.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-07-15T20:02:01Z
+
+After musing about this, I think @Pierstoval is right. The main problem I see with the on-the-fly field types is that it can collide with our own custom types. Right now we define `image` and `toggle`, but in 2 years we may define 10 custom types.
+
+What if we forget about the on-the-fly types ... but provide something similar. Based on @ogizanagi's comments, we could define the `template` property, so the field can define the name of the template to use to render its value:
+
+```yaml
+# ORIGINAL proposal
+Product:
+    class: AppBundle\Entity\Product
+    label: 'Products'
+    list:
+        fields:
+            - id
+            # ...
+            - { property: 'tags', type: 'tag_collection', type_options: { labels_cycle: ['primary', 'success', 'info'] } }
+
+# NEW proposal
+Product:
+    class: AppBundle\Entity\Product
+    label: 'Products'
+    list:
+        fields:
+            - id
+            # ...
+            - { property: 'tags', template: 'tag_collection', type_options: { labels_cycle: ['primary', 'success', 'info'] } }
+```
+
+When the `template` property is set, EasyAdmin looks for the following templates and in this order:
+
+  * `app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig`
+  * `app/Resources/views/easy_admin/<templateName>.html.twig`
+  * If none of the two above templates exist, throw a configuration error.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-07-15T20:13:37Z
+
+> The main problem I see with the on-the-fly field types is that it can collide with our own custom types. Right now we define image and toggle, but in 2 years we may define 10 custom types.
+
+That's only a matter of naming, and it isn't a big deal. Right now third-party bundles provide many symfony custom form types, and there isn't so much collision.
+
+However, the `template` idea seems a good one. :+1:
+Will the dataType of the field have a specific value then, or will it keep be guessed ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-07-15T20:18:39Z
+
+The dataType would be guessed ... and ignored. Its value doesn't matter because we'll use the template that you defined or throw an error. So it doesn't matter if it's a string or boolean, we'll never use the `field_string`, `field_boolean`, etc. templates.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-07-15T20:29:46Z
+
+Sure, but why not setting the `dataType` to `custom`, or whatever is chosen, if the guessed type does not make any sense ?
+It might have a utility one day, does not cost anything, and avoid slightly modifying the Twig extension to avoid entering into other data type cases.
+Thus, custom fields will remains being a proper `dataType` with an additionnal `template` option.  :smiley:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-07-18T17:42:18Z
+
+This PR is ready for the final review. The documentation has been reworded for the new way this feature is implemented. Tests have been fixed too, but I need to add some new tests. Thanks!

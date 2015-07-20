@@ -296,6 +296,9 @@ These are the options that you can define for each field:
     using the default Bootstrap based form theme, this value is applied to the
     `<div class="form-group">` element which wraps the label, the widget and
     the error messages of the field.
+  * `template` (optional): the name of the custom template used to render the
+    contents of the field in the `list` and `show` views. This option is fully
+    explained in the [Advanced Design Customization] [advanced-design-customization] tutorial.
   * `type` (optional): the type of data displayed in the `list`, `search` and
     `show` views and the form widget displayed in the `edit` and `new` views.
     These are the supported types:
@@ -307,6 +310,12 @@ These are the options that you can define for each field:
         `show` views (as explained later in this chapter).
       * `toggle`, displays a boolean value as a flip switch in the `list`
         and `search` views (as explained later in this chapter).
+
+In addition to these "official" options, you can define any custom option for
+the fields. These custom options are passed to the template that renders each
+field, allowing to create very powerful backend customizations, as explained
+in the [Advanced Design Customization] [advanced-design-customization]
+tutorial.
 
 ### Translate Property Labels
 
@@ -653,3 +662,4 @@ article of the official Symfony documentation to learn how to define custom
 form types.
 
 [custom-actions]: ../tutorials/customizing-backend-actions.md
+[advanced-design-customization]: ../tutorials/advanced-design-customization.md

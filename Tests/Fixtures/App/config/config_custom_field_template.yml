@@ -1,0 +1,25 @@
+imports:
+    - { resource: config.yml }
+
+framework:
+    # This file overrides the EasyAdmin controller
+    router: { resource: "%kernel.root_dir%/config/routing_override.yml" }
+
+easy_admin:
+    entities:
+        Category:
+            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            label: 'Categories'
+            list:
+                fields:
+                    - { property: 'name', template: 'custom_field_template', custom_option: 'custom_list_value' }
+                    # Template name should NOT contain the .html.twig suffix. However, the
+                    # application should silently fix this error and work as expected
+                    - { property: 'id', template: 'custom_field_template.html.twig' }
+
+            show:
+                fields:
+                    - { property: 'name', template: 'custom_field_template', custom_option: 'custom_show_value' }
+                    # Template name should NOT contain the .html.twig suffix. However, the
+                    # application should silently fix this error and work as expected
+                    - { property: 'id', template: 'custom_field_template.html.twig' }

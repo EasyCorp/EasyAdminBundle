@@ -17,10 +17,12 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 class EasyAdminTwigExtension extends \Twig_Extension
 {
     private $configurator;
+    private $debug;
 
-    public function __construct(Configurator $configurator)
+    public function __construct(Configurator $configurator, $debug = false)
     {
         $this->configurator = $configurator;
+        $this->debug = $debug;
     }
 
     public function getFunctions()
@@ -111,22 +113,20 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
         try {
             $fieldType = $fieldMetadata['dataType'];
+            $templateParameters = array(
+                'field_options' => $fieldMetadata,
+                'item' => $item,
+                'value' => $value,
+                'view' => $view,
+            );
 
             if (null === $value) {
-                return $twig->render($entityConfiguration['templates']['label_null'], array('view' => $view));
+                return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
             }
 
             // when a virtual field doesn't define it's type, consider it a string
             if (true === $fieldMetadata['virtual'] && null === $fieldType) {
-                return $twig->render($entityConfiguration['templates']['field_text'], array('value' => strval($value), 'view' => $view));
-            }
-
-            if ('id' === $fieldName) {
-                return $twig->render($entityConfiguration['templates']['field_id'], array('value' => $value, 'view' => $view));
-            }
-
-            if (in_array($fieldType, array('date', 'datetime', 'datetimetz', 'time', 'bigint', 'integer', 'smallint', 'decimal', 'float'))) {
-                return $twig->render($entityConfiguration['templates']['field_'.$fieldType], array('value' => $value, 'view' => $view, 'format' => isset($fieldMetadata['format']) ? $fieldMetadata['format'] : null));
+                $templateParameters['value'] = strval($value);
             }
 
             if (in_array($fieldType, array('image'))) {
@@ -138,21 +138,16 @@ class EasyAdminTwigExtension extends \Twig_Extension
                         ? rtrim($fieldMetadata['base_path'], '/').'/'.ltrim($value, '/')
                         : '/'.ltrim($value, '/');
                 }
-
-                return $twig->render($entityConfiguration['templates']['field_image'], array('value' => $imageUrl, 'view' => $view));
+                $templateParameters['value'] = $imageUrl;
             }
 
-            if (in_array($fieldType, array('array', 'simple_array'))) {
-                if (empty($value)) {
-                    return $twig->render($entityConfiguration['templates']['label_empty']);
-                }
-
-                return $twig->render($entityConfiguration['templates']['field_'.$fieldType], array('value' => $value, 'view' => $view));
+            if (in_array($fieldType, array('array', 'simple_array')) && empty($value)) {
+                return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
             }
 
             if (in_array($fieldType, array('association'))) {
                 if ($value instanceof PersistentCollection) {
-                    return $twig->render($entityConfiguration['templates']['field_association'], array('value' => $value, 'view' => $view));
+                    return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
                 }
 
                 $associatedEntityClassParts = explode('\\', $fieldMetadata['targetEntity']);
@@ -163,22 +158,26 @@ class EasyAdminTwigExtension extends \Twig_Extension
                     $associatedEntityPrimaryKey = $associatedEntityConfig['primary_key_field_name'];
                 } catch (\Exception $e) {
                     // if the entity isn't managed by EasyAdmin, don't link to it and just display its raw value
-                    return $twig->render($entityConfiguration['templates']['field_association'], array('value' => $value, 'view' => $view));
+                    return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
                 }
 
                 $primaryKeyGetter = 'get'.ucfirst($associatedEntityPrimaryKey);
                 if (method_exists($value, $primaryKeyGetter)) {
                     $linkParameters = array('entity' => $associatedEntityClassName, 'action' => 'show', 'view' => $view, 'id' => $value->$primaryKeyGetter());
+                    $templateParameters['link_parameters'] = $linkParameters;
 
-                    return $twig->render($entityConfiguration['templates']['field_association'], array('value' => $value, 'link_parameters' => $linkParameters, 'view' => $view));
+                    return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
                 }
 
-                return $twig->render($entityConfiguration['templates']['field_association'], array('value' => $value, 'view' => $view));
+                return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
             }
 
-            // all the other data types: boolean, string, text, toggle
-            return $twig->render($entityConfiguration['templates']['field_'.$fieldType], array('value' => $value, 'view' => $view));
+            return $twig->render($fieldMetadata['template'], $templateParameters);
         } catch (\Exception $e) {
+            if ($this->debug) {
+                throw $e;
+            }
+
             return $twig->render($entityConfiguration['templates']['label_undefined'], array('view' => $view));
         }
     }

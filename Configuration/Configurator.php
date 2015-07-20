@@ -34,6 +34,7 @@ class Configurator
         'dataType'  => null,  // Data type (text, date, integer, boolean, ...) of the Doctrine property associated with the field
         'virtual'   => false, // is a virtual field or a real Doctrine entity property?
         'sortable'  => true,  // listings can be sorted according to the values of this field
+        'template'  => null,  // the path of the template used to render the field in 'show' and 'list' views
     );
 
     private $doctrineTypeToFormTypeMap = array(
@@ -103,6 +104,8 @@ class Configurator
         $entityConfiguration['search']['fields'] = $this->getFieldsForSearchAction($entityConfiguration);
 
         $entityConfiguration = $this->introspectGettersAndSetters($entityConfiguration);
+
+        $entityConfiguration = $this->processFieldTemplates($entityConfiguration);
 
         $this->entitiesConfig[$entityName] = $entityConfiguration;
 
@@ -452,6 +455,40 @@ class Configurator
                 $fieldConfiguration['canBeSet'] = $setter || $isPublic;
 
                 $entityConfiguration[$view]['fields'][$fieldName] = $fieldConfiguration;
+            }
+        }
+
+        return $entityConfiguration;
+    }
+
+
+    /**
+     * Determines the template used to render each backend element. This is not
+     * trivial because templates can depend on the entity displayed and they
+     * define an advanced override mechanism.
+     *
+     * @param array $entityConfiguration
+     *
+     * @return array
+     */
+    private function processFieldTemplates(array $entityConfiguration)
+    {
+        foreach (array('list', 'show') as $view) {
+            foreach ($entityConfiguration[$view]['fields'] as $fieldName => $fieldMetadata) {
+                if (null !== $fieldMetadata['template']) {
+                    continue;
+                }
+
+                // this prevents the template from displaying the 'id' primary key formatted as a number
+                if ('id' === $fieldName) {
+                    $template = $entityConfiguration['templates']['field_id'];
+                } elseif (array_key_exists('field_'.$fieldMetadata['type'], $entityConfiguration['templates'])) {
+                    $template = $entityConfiguration['templates']['field_'.$fieldMetadata['type']];
+                } else {
+                    $template = $entityConfiguration['templates']['label_undefined'];
+                }
+
+                $entityConfiguration[$view]['fields'][$fieldName]['template'] = $template;
             }
         }
 

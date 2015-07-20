@@ -175,6 +175,15 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
     }
 
     /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage The "id" field of the "TestEntity" entity uses a custom template called "this_template_does_not_exist" which doesn't exist in "app/Resources/views/easy_admin/" directory.
+     */
+    public function testCustomFieldTemplateDoesNotExist()
+    {
+        $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/custom_field_template_does_not_exist.yml');
+    }
+
+    /**
      * Tests the template overriding mechanism when a given entity defines
      * its own custom templates in app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig files
      * See EasyAdminExtension::processEntityTemplates().

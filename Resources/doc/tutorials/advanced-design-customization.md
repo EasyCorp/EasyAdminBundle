@@ -281,12 +281,117 @@ about their features.
 Inside the `field_*` and `label_*` templates you have access to the following
 variables:
 
-  * `view`, the name of the view where the field is being rendered (`show` or
-    `list`).
+  * `field_options`, the options configured for this field in the backend
+    configuration file.
+  * `item`, the entity instance.
   * `value`, the content of the field being rendered, which can be a variable
     of any type (string, numeric, boolean, array, etc.)
-  * `format`, available only for the date and numeric field types. It defines
-    the formatting that should be applied to the value before displaying it.
+  * `view`, the name of the view where the field is being rendered (`show` or
+    `list`).
+
+### Rendering Properties with Custom Templates
+
+The default property templates are flexible enough for most backends. However,
+when your backend is very complex, it may be useful to use a custom template to
+define the way some property is rendered in the `list` or `show` views.
+
+To do so, define the name of the custom template in the `template` option of
+the property:
+
+```yaml
+easy_admin:
+    # ...
+    entities:
+        Invoice:
+            list:
+                fields:
+                    - { property: 'total', template: 'invoice_total' }
+```
+
+The above configuration makes the backend use the `invoice_total.html.twig`
+template instead of the default `field_float.html.twig` template. Custom
+templates are looked for in the following locations (the first existing
+template is used):
+
+  1. `app/Resources/views/easy_admin/<EntityName>/<TemplateName>.html.twig`
+     template.
+  2. `app/Resources/views/easy_admin/<TemplateName>.html.twig`
+     template.
+
+Custom templates receive the same parameters as built-in templates (
+`field_options`, `item`, `value`, `view`).
+
+### Adding Custom Logic to Property Templates
+
+All property templates receive a parameter called `field_options` with the full
+list of options defined in the configuration file for that property. If you
+add custom options, they will also be available in the `field_options`
+parameter. This allows you to add custom logic to templates very easily.
+
+Imagine that you want to translate some text contents in the `list` view. To do
+so, define a custom option called `trans` which indicates if the property
+content should be translated and another option called `domain` which defines
+the name of the translation domain to use.
+
+```yaml
+# app/config.yml
+Product:
+    class: AppBundle\Entity\Product
+    label: 'Products'
+    list:
+        fields:
+            - id
+            - { property: 'name', trans: true, domain: 'messages' }
+            # ...
+```
+
+Supposing that the `name` property is of type `string`, you just need to
+override the built-in `field_string.html.twig` template:
+
+```twig
+{# app/Resources/views/easy_admin/field_string.html.twig #}
+
+{% if field_options.trans|default(false) %}
+    {# translate fields defined as "translatable" #}
+    {{ value|trans({}, field_options.domain|default('messages')) }}
+{% else %}
+    {# if not translatable, simply include the default template #}
+    {{ include('@EasyAdmin/default/field_string.html.twig') }}
+{% endif %}
+```
+
+If the custom logic is too complex, it may be better to use your own custom
+template to not mess built-in templates too much. In this example, the
+collection of tags associated with a product is displayed in a way that is too
+customized to use a built-in template:
+
+```yaml
+# app/config.yml
+Product:
+    class: AppBundle\Entity\Product
+    label: 'Products'
+    list:
+        fields:
+            - id
+            # ...
+            - { property: 'tags', type: 'tag_collection', label_colors: ['primary', 'success', 'info'] }
+```
+
+The custom `tag_collection.html.twig` would look as follows:
+
+```twig
+{# app/Resources/views/easy_admin/tag_collection.html.twig #}
+
+{% set colors = field_options.label_colors|default(['primary']) %}
+
+{% for tag in value %}
+    <span class="label label-{{ cycle(colors, loop.index) }}">{{ tag }}</span>
+{% endfor %}
+```
+
+And this property would be rendered in the `list` view as follows:
+
+![Default listing interface](../images/easyadmin-design-customization-custom-data-types.png)
 
 Translating Backend Elements in Custom Templates
 ------------------------------------------------

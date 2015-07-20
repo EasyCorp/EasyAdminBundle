@@ -19,6 +19,11 @@
     {% endblock entity_form %}
 {% endblock %}
 
+{% block head_stylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2.min.css') }}">
+    {{ parent() }}
+{% endblock %}
+
 {% block body_javascript %}
     {{ parent() }}
 
@@ -26,6 +31,15 @@
     <script type="text/javascript">
         $(function() {
             $('#new-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
+        });
+    </script>
+
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#main form select').select2({
+                theme: 'bootstrap'
+            });
         });
     </script>
 {% endblock %}

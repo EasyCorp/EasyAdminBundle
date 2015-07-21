@@ -54,6 +54,11 @@
     {% endblock delete_form %}
 {% endblock %}
 
+{% block head_stylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2.min.css') }}">
+    {{ parent() }}
+{% endblock %}
+
 {% block body_javascript %}
     {{ parent() }}
 
@@ -69,6 +74,15 @@
                     .one('click', '#modal-delete-button', function (e) {
                         $('#delete-form').trigger('submit');
                     });
+            });
+        });
+    </script>
+
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.min.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#main form select').select2({
+                theme: 'bootstrap'
             });
         });
     </script>

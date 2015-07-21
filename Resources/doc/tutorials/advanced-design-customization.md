@@ -374,7 +374,7 @@ Product:
         fields:
             - id
             # ...
-            - { property: 'tags', type: 'tag_collection', label_colors: ['primary', 'success', 'info'] }
+            - { property: 'tags', template: 'tag_collection', label_colors: ['primary', 'success', 'info'] }
 ```
 
 The custom `tag_collection.html.twig` would look as follows:

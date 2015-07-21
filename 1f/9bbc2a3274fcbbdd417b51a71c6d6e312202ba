@@ -1,0 +1,38 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-07-20T20:38:57Z
+
+Awesome !!
+
+Does it work with `multiple` selects?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-07-20T20:40:12Z
+
+@Pierstoval yes, the widget works with multiple selects ... but our bundle does not because we don't support many-to-many relations :cry: That is my top-priority feature in my list right now.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-07-20T20:40:51Z
+
+Actually, many-to-many should work normally with multiple selects :confused:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-07-20T20:43:05Z
+
+Nice ! :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-07-20T20:43:09Z
+
+I don't understand yor last comment. Anyway, this PR is in fact "a trojan horse", because Select2 also supports autocompletion and AJAX-loading ... which is another feature that I'd like to provide sooner than later.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-07-20T20:46:05Z
+
+@javiereguiluz : Also, we should be able to choose which widget to use. Sometime checkboxes or radio buttons might be more appropriated.
+But we talked about all of those problematics in the mentioned issue :smile:

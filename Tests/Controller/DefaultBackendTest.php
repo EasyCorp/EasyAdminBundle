@@ -85,9 +85,9 @@ class DefaultBackendTest extends AbstractTestCase
         $this->client->request('GET', '/admin/_css/admin.css');
 
         $this->assertEquals('text/css; charset=UTF-8', $this->client->getResponse()->headers->get('Content-Type'));
-        $this->assertEquals(19, substr_count($this->client->getResponse()->getContent(), '#E67E22'), 'The admin.css file uses the default brand color.');
+        $this->assertEquals(20, substr_count($this->client->getResponse()->getContent(), '#E67E22'), 'The admin.css file uses the default brand color.');
         // #222222 color is only used by the "dark" color scheme, not the "light" one
-        $this->assertEquals(15, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');
+        $this->assertEquals(16, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');
     }
 
     public function testListViewMainMenu()

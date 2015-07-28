@@ -23,6 +23,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -560,7 +562,7 @@ class AdminController extends Controller
      */
     protected function createEditForm($entity, array $entityProperties)
     {
-        return $this->createEntityFormBuilder($entity, $entityProperties, 'edit')->getForm();
+        return $this->createEntityForm($entity, $entityProperties, 'edit');
     }
 
     /**
@@ -573,7 +575,7 @@ class AdminController extends Controller
      */
     protected function createNewForm($entity, array $entityProperties)
     {
-        return $this->createEntityFormBuilder($entity, $entityProperties, 'new')->getForm();
+        return $this->createEntityForm($entity, $entityProperties, 'new');
     }
 
     /**
@@ -622,15 +624,34 @@ class AdminController extends Controller
     }
 
     /**
-     * @see \JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController::createEntityFormBuilder
+     * @param object $entity
+     * @param array  $entityProperties
+     * @param string $view
      *
-     * @deprecated since 1.6.0
+     * @return Form
+     * @throws \Exception
      */
     protected function createEntityForm($entity, array $entityProperties, $view)
     {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.6.0, Please use the "createEntityFormBuilder" method to construct a fully customizable form.', E_USER_DEPRECATED);
+        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EntityForm')) {
+            $form = $this->{$customMethodName}($entity, $entityProperties, $view);
+            if (!$form instanceof FormInterface) {
+                throw new \Exception(sprintf(
+                    'The "%s" method must return a FormInterface, "%s" given.',
+                    $customMethodName, is_object($form) ? get_class($form) : gettype($form)
+                ));
+            }
+        }
 
-        return $this->createEntityFormBuilder($entity, $entityProperties, $view)->getForm();
+        $formBuilder = $this->createEntityFormBuilder($entity, $entityProperties, $view);
+        if (!$formBuilder instanceof FormBuilderInterface) {
+            throw new \Exception(sprintf(
+                'The "%s" method must return a FormBuilderInterface, "%s" given.',
+                'createEntityForm', is_object($formBuilder) ? get_class($formBuilder) : gettype($formBuilder)
+            ));
+        }
+
+        return $formBuilder->getForm();
     }
 
     /**

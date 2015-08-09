@@ -68,10 +68,11 @@
                 <div id="header-footer" class="navbar-right">
                     {% block header_footer %}
                         {% if app.user %}
+                            {% set logout_route = easyadmin_config('logout_route') %}
                             <div id="header-security">
                                 <p>
                                     <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as'|trans }}</span></small>
-                                    {{ app.user.username|default('Unnamed User') }}
+                                    <a href="{{ path(logout_route) }}">{{ app.user.username|default('Unnamed User') }}</a>
                                 </p>
                             </div>
                         {% endif %}

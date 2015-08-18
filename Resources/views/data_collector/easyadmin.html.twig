@@ -1,0 +1,51 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set profiler_markup_version = profiler_markup_version|default(1) %}
+
+    {% set icon %}
+        {% set icon_fill_color = profiler_markup_version == 1 ? '#222' : '#AAA' %}
+        <span class="icon" style="vertical-align: middle">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { fill_color: icon_fill_color }) }}</span>
+        <span class="sf-toolbar-value sf-toolbar-status">{{ collector.numEntities }}</span>
+    {% endset %}
+
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        <b>EasyAdmin</b>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>Managed entities</b>
+        <span>{{ collector.numEntities }}</span>
+    </div>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+{% endblock %}
+
+
+{% block menu %}
+    <span class="label">
+        <span class="icon">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { height: 32 }) }}</span>
+        <strong>EasyAdmin</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <h2>Basic configuration</h2>
+    {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.basicConfiguration }) }}
+
+    <h2>Formats configuration</h2>
+    {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.formatsConfiguration }) }}
+
+    <h2>Design configuration</h2>
+    {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.designConfiguration }) }}
+
+    <h2>Actions configuration</h2>
+    {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.actionsConfiguration }) }}
+
+    <h2>Entities configuration <small>({{ collector.numEntities }})</small></h2>
+    {% for entityName, entityConfiguration in collector.entitiesConfiguration %}
+        <h3>{{ entityName }} <span>entity</span></h3>
+        {{ include('@WebProfiler/Profiler/table.html.twig', { data: entityConfiguration }) }}
+    {% endfor %}
+{% endblock %}

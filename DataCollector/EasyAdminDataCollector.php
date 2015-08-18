@@ -32,7 +32,7 @@ class EasyAdminDataCollector extends DataCollector
                 'site_name' => $this->backendConfiguration['site_name'],
             ),
             'config_formats' => $this->backendConfiguration['formats'],
-            'config_design' => count($this->backendConfiguration['design']),
+            'config_design' => $this->backendConfiguration['design'],
             'config_actions' => array(
                 'disabled_actions' => $this->backendConfiguration['disabled_actions'],
                 'list' => $this->backendConfiguration['list'],

@@ -14,33 +14,43 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\DataCollector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
 class EasyAdminDataCollector extends DataCollector
 {
-    private $backendConfiguration;
+    private $configurator;
 
-    public function __construct($backendConfiguration = array())
+    public function __construct(Configurator $configurator)
     {
-        $this->backendConfiguration = $backendConfiguration;
+        $this->configurator = $configurator;
     }
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
+        $backendConfiguration = $this->configurator->getBackendConfig();
+        $entityName = $request->query->get('entity');
+        $currentEntityConfiguration = $entityName ? $backendConfiguration['entities'][$entityName] : null;
+
         $this->data = array(
-            'num_entities' => count($this->backendConfiguration['entities']),
-            'config_basic' => array(
-                'site_name' => $this->backendConfiguration['site_name'],
-            ),
-            'config_formats' => $this->backendConfiguration['formats'],
-            'config_design' => $this->backendConfiguration['design'],
-            'config_actions' => array(
-                'disabled_actions' => $this->backendConfiguration['disabled_actions'],
-                'list' => $this->backendConfiguration['list'],
-                'edit' => $this->backendConfiguration['edit'],
-                'new' => $this->backendConfiguration['new'],
-                'show' => $this->backendConfiguration['show'],
-            ),
-            'config_entities' => $this->backendConfiguration['entities'],
+            'num_entities' => count($backendConfiguration['entities']),
+            'request_parameters' => $this->getEasyAdminParameters($request),
+            'current_entity_configuration' => $currentEntityConfiguration,
+            'backend_configuration' => $backendConfiguration,
+        );
+    }
+
+    private function getEasyAdminParameters(Request $request)
+    {
+        if ('admin' !== $request->attributes->get('_route')) {
+            return;
+        }
+
+        return array(
+            'action' => $request->query->get('action'),
+            'entity' => $request->query->get('entity'),
+            'id' => $request->query->get('id'),
+            'sort_field' => $request->query->get('sortField'),
+            'sort_direction' => $request->query->get('sortDirection'),
         );
     }
 
@@ -49,29 +59,19 @@ class EasyAdminDataCollector extends DataCollector
         return $this->data['num_entities'];
     }
 
-    public function getBasicConfiguration()
+    public function getRequestParameters()
     {
-        return $this->data['config_basic'];
+        return $this->data['request_parameters'];
     }
 
-    public function getFormatsConfiguration()
+    public function getCurrentEntityConfiguration()
     {
-        return $this->data['config_formats'];
+        return $this->data['current_entity_configuration'];
     }
 
-    public function getDesignConfiguration()
+    public function getBackendConfiguration()
     {
-        return $this->data['config_design'];
-    }
-
-    public function getActionsConfiguration()
-    {
-        return $this->data['config_actions'];
-    }
-
-    public function getEntitiesConfiguration()
-    {
-        return $this->data['config_entities'];
+        return $this->data['backend_configuration'];
     }
 
     public function getName()

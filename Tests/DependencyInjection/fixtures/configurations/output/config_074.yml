@@ -121,6 +121,7 @@ easy_admin:
         brand_color: '#E67E22'
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+    cache: false
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d

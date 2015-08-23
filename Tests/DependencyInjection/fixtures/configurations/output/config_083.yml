@@ -124,6 +124,7 @@ easy_admin:
                 label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
                 label_null: '@EasyAdmin/default/label_null.html.twig'
                 label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
+    cache: false
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d

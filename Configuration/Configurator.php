@@ -11,10 +11,11 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
+use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 
 class Configurator
 {
@@ -23,6 +24,8 @@ class Configurator
     private $inspector;
     private $reflector;
     private $defaultEntityFields = array();
+    /** @var Cache */
+    private $cache;
 
     private $defaultEntityFieldConfiguration = array(
         'class'     => null,  // CSS class or classes applied to form field
@@ -59,11 +62,12 @@ class Configurator
         'time' => 'time',
     );
 
-    public function __construct(array $backendConfig, EntityMetadataInspector $inspector, ClassPropertyReflector $reflector)
+    public function __construct(array $backendConfig, EntityMetadataInspector $inspector, ClassPropertyReflector $reflector, Cache $cache = null)
     {
         $this->backendConfig = $backendConfig;
         $this->inspector = $inspector;
         $this->reflector = $reflector;
+        $this->cache = $cache;
     }
 
     /**
@@ -77,8 +81,12 @@ class Configurator
      */
     public function getEntityConfiguration($entityName)
     {
-        // if the configuration has already been processed for the given entity, reuse it
+        // if the configuration has already been fetched for the given entity during the request, reuse it
         if (isset($this->entitiesConfig[$entityName])) {
+            return $this->entitiesConfig[$entityName];
+        }
+        // If the configuration has already been processed and cached for the given entity, reuse it
+        if ($this->cache && ($this->entitiesConfig[$entityName] = $this->cache->fetch($entityName))) {
             return $this->entitiesConfig[$entityName];
         }
 
@@ -107,9 +115,11 @@ class Configurator
 
         $entityConfiguration = $this->processFieldTemplates($entityConfiguration);
 
-        $this->entitiesConfig[$entityName] = $entityConfiguration;
+        if ($this->cache) {
+            $this->cache->save($entityName, $entityConfiguration);
+        }
 
-        return $entityConfiguration;
+        return $this->entitiesConfig[$entityName] = $entityConfiguration;
     }
 
     /**

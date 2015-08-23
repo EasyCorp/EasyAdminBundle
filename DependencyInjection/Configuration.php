@@ -22,6 +22,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('easy_admin');
 
+        $this->addCacheSection($rootNode);
         $this->addDeprecationsSection($rootNode);
         $this->addGlobalOptionsSection($rootNode);
         $this->addDesignSection($rootNode);
@@ -366,6 +367,19 @@ class Configuration implements ConfigurationInterface
                 ->variableNode('entities')
                     ->defaultValue(array())
                     ->info('The list of entities to manage in the administration zone.')
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addCacheSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
+                ->scalarNode('cache')
+                    ->treatNullLike(false)
+                    ->defaultFalse()
+                    ->info('The caching service to use. Set to "easyadmin.configurator.cache.apc" to enable APC caching.')
                 ->end()
             ->end()
         ;

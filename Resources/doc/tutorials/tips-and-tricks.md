@@ -58,6 +58,16 @@ your Doctrine entities.
 This simple metadata cache configuration can improve your backend performance
 between 20% and 30% depending on the complexity and number of your entities.
 
+EasyAdmin also computes data regarding to your configuration, but this process is done only once per request.
+However, you can enable easyadmin cache in order to compute this only once in production:
+```yaml
+# app/config/config_prod.yml
+easy_admin:
+    cache: easyadmin.configurator.cache.apc # EasyAdmin provided cache implementation
+```
+EasyAdmin provides a base implementation of an APCu cache. But you can provide your own, based on the [`doctrine/cache`
+package](https://github.com/doctrine/cache).
+
 Use a Custom Dashboard as the Index Page of the Backend
 -------------------------------------------------------
 

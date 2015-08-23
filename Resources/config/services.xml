@@ -3,28 +3,49 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <services>
+    <parameters>
+        <parameter key="easyadmin.configurator.cache.prefix" />
+    </parameters>
 
+    <services>
+        <!-- Cache -->
+        <service id="easyadmin.configurator.cache.apc" class="Doctrine\Common\Cache\ApcCache" public="false">
+            <call method="setNamespace">
+                <argument>%easyadmin.configurator.cache.prefix%</argument>
+            </call>
+        </service>
+
+        <service id="easyadmin.cache_warmer" class="JavierEguiluz\Bundle\EasyAdminBundle\CacheWarmer\CacheWarmer" public="false">
+            <argument type="service" id="easyadmin.configurator" />
+            <argument type="service" on-invalid="null"/> <!--cache service -->
+            <tag name="kernel.cache_clearer" />
+            <tag name="kernel.cache_warmer" />
+        </service>
+
+        <!-- Twig -->
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
-            <argument type="service" id="easyadmin.configurator"></argument>
+            <argument type="service" id="easyadmin.configurator" />
             <argument>%kernel.debug%</argument>
             <tag name="twig.extension" />
         </service>
 
+        <!-- Configurator -->
         <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
             <argument>%easyadmin.config%</argument>
-            <argument type="service" id="easyadmin.metadata_inspector"></argument>
-            <argument type="service" id="easyadmin.property_reflector"></argument>
+            <argument type="service" id="easyadmin.metadata_inspector" />
+            <argument type="service" id="easyadmin.property_reflector" />
+            <argument type="service" on-invalid="null"/> <!--cache service -->
         </service>
 
         <service id="easyadmin.metadata_inspector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector" public="false">
-            <argument type="service" id="doctrine"></argument>
+            <argument type="service" id="doctrine" />
         </service>
 
-        <service id="easyadmin.property_reflector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector" public="false"></service>
+        <service id="easyadmin.property_reflector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector" public="false" />
 
+        <!-- Exception listener -->
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\Listener\ExceptionListener">
-            <argument type="service" id="templating"></argument>
+            <argument type="service" id="templating" />
             <argument>%kernel.debug%</argument>
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
         </service>

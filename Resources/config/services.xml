@@ -17,7 +17,7 @@
 
         <service id="easyadmin.cache_warmer" class="JavierEguiluz\Bundle\EasyAdminBundle\CacheWarmer\CacheWarmer" public="false">
             <argument type="service" id="easyadmin.configurator" />
-            <argument type="service" on-invalid="null"/> <!--cache service -->
+            <argument>null</argument> <!--cache service -->
             <tag name="kernel.cache_clearer" />
             <tag name="kernel.cache_warmer" />
         </service>
@@ -34,7 +34,7 @@
             <argument>%easyadmin.config%</argument>
             <argument type="service" id="easyadmin.metadata_inspector" />
             <argument type="service" id="easyadmin.property_reflector" />
-            <argument type="service" on-invalid="null"/> <!--cache service -->
+            <argument>null</argument> <!--cache service -->
         </service>
 
         <service id="easyadmin.metadata_inspector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector" public="false">

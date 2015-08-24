@@ -32,6 +32,7 @@
         <service id="easyadmin.translation.entity_extractor" class="JavierEguiluz\Bundle\EasyAdminBundle\Translation\EntityExtractor">
             <argument>%easyadmin.config%</argument>
             <argument type="service" id="easyadmin.configurator"></argument>
+            <argument>EasyAdminBundle</argument>            
             <tag name="jms_translation.extractor" alias="easyadmin_translation_entity_extractor" />
         </service>
     </services>

@@ -14,17 +14,20 @@ class EntityExtractor implements ExtractorInterface
 {
     protected $backendConfiguration;
     protected $configurator;
+    protected $domain;
 
     /**
      * Constructor
      *
      * @param array        $backendConfiguration
      * @param Configurator $configurator
+     * @param string       $domain
      */
-    public function __construct($backendConfiguration, Configurator $configurator)
+    public function __construct($backendConfiguration, Configurator $configurator, $domain)
     {
         $this->backendConfiguration = $backendConfiguration;
         $this->configurator = $configurator;
+        $this->domain = $domain;
     }
 
     /**
@@ -68,7 +71,7 @@ class EntityExtractor implements ExtractorInterface
         $uniqueLabels = array_unique($labels);
 
         foreach ($uniqueLabels as $uniqueLabel) {
-            $message = new Message($uniqueLabel);
+            $message = new Message($uniqueLabel, $this->domain);
             $catalogue->add($message);
         }
 

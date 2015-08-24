@@ -109,14 +109,6 @@
                 <source>delete_modal.content</source>
                 <target>Aktion kann nicht rückgängig gemacht werden.</target>
             </trans-unit>
-            <trans-unit id="action.add_new_item">
-                <source>action.add_new_item</source>
-                <target>Add a new item</target>
-            </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Add another item</target>
-            </trans-unit>
         </body>
     </file>
 </xliff>

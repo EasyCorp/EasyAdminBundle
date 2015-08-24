@@ -81,7 +81,7 @@ class EntityExtractor implements ExtractorInterface
     /**
      * Get the list of entities
      *
-     * @return [string] The list of entities
+     * @return string[] The list of entities
      */
     protected function getEntities()
     {
@@ -93,7 +93,7 @@ class EntityExtractor implements ExtractorInterface
     /**
      * Get all fields label of all views
      *
-     * @param [string] $entityConfiguration
+     * @param string[] $entityConfiguration
      *
      */
     protected function getAllFieldsLabels($entityConfiguration)
@@ -114,7 +114,7 @@ class EntityExtractor implements ExtractorInterface
 
     /**
      *
-     * @param [string] $entityConfiguration
+     * @param string[] $entityConfiguration
      * @param string $view
      */
     protected function getViewFieldLabels($entityConfiguration, $view)

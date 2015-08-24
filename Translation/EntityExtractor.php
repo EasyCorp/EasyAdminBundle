@@ -35,7 +35,7 @@ class EntityExtractor implements ExtractorInterface
      *
      * @return MessageCatalogue
      */
-    function extract()
+    public function extract()
     {
         $catalogue = new MessageCatalogue();
 
@@ -81,7 +81,7 @@ class EntityExtractor implements ExtractorInterface
     /**
      * Get the list of entities
      *
-     * @return array:String The list of entities
+     * @return [string] The list of entities
      */
     protected function getEntities()
     {
@@ -93,7 +93,7 @@ class EntityExtractor implements ExtractorInterface
     /**
      * Get all fields label of all views
      *
-     * @param type $entityConfiguration
+     * @param [string] $entityConfiguration
      *
      */
     protected function getAllFieldsLabels($entityConfiguration)
@@ -114,8 +114,8 @@ class EntityExtractor implements ExtractorInterface
 
     /**
      *
-     * @param type $entityConfiguration
-     * @param type $view
+     * @param [string] $entityConfiguration
+     * @param string $view
      */
     protected function getViewFieldLabels($entityConfiguration, $view)
     {

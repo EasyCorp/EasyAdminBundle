@@ -23,7 +23,7 @@ class EntityExtractor implements ExtractorInterface
      * @param Configurator $configurator
      * @param string       $domain
      */
-    public function __construct($backendConfiguration, Configurator $configurator, $domain)
+    public function __construct(array $backendConfiguration, Configurator $configurator, $domain)
     {
         $this->backendConfiguration = $backendConfiguration;
         $this->configurator = $configurator;

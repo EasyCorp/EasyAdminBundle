@@ -353,6 +353,17 @@ class Configurator
                 );
             }
 
+            //is the automatic translation is enabled
+            $automaticTranslation = $this->backendConfig['automatic_translation'];
+
+            if ($automaticTranslation) {
+                //no label were specified in configuration
+                if ($normalizedConfiguration['label'] === null) {
+                    //we use the "entity.field.fieldName" for the translation
+                    $normalizedConfiguration['label'] = $entityConfiguration['name'].'.field.'.$fieldName;
+                }
+            }
+
             // virtual fields and associations different from *-to-one cannot be sorted in listings
             $isToManyAssociation = 'association' === $normalizedConfiguration['type']
                 && in_array($normalizedConfiguration['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY));

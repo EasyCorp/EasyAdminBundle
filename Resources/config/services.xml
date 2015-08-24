@@ -28,5 +28,11 @@
             <argument>%kernel.debug%</argument>
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
         </service>
+        
+        <service id="easyadmin.translation.entity_extractor" class="JavierEguiluz\Bundle\EasyAdminBundle\Translation\EntityExtractor">
+            <argument>%easyadmin.config%</argument>
+            <argument type="service" id="easyadmin.configurator"></argument>
+            <tag name="jms_translation.extractor" alias="easyadmin_translation_entity_extractor" />
+        </service>
     </services>
 </container>

@@ -29,3 +29,4 @@ easy_admin:
     show:
         actions: {  }
     entities: {  }
+    automatic_translation: false

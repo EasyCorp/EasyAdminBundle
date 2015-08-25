@@ -142,3 +142,4 @@ easy_admin:
         max_results: 15
     new:
         actions: {  }
+    automatic_translation: false

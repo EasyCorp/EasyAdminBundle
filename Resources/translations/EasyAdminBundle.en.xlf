@@ -109,6 +109,14 @@
                 <source>delete_modal.content</source>
                 <target>There is no undo for this operation.</target>
             </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>ERRORS</target>
+            </trans-unit>
+            <trans-unit id="error">
+                <source>error</source>
+                <target>ERROR</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

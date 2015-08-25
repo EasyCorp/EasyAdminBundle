@@ -118,11 +118,7 @@
                 <target>Add another item</target>
             <trans-unit id="errors">
                 <source>errors</source>
-                <target>ERRORS</target>
-            </trans-unit>
-            <trans-unit id="error">
-                <source>error</source>
-                <target>ERROR</target>
+                <target>{1}ERROR|]1,Inf]ERRORS</target>
             </trans-unit>
         </body>
     </file>

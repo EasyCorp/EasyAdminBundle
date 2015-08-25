@@ -143,3 +143,4 @@ easy_admin:
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
     disabled_actions: {  }
+    automatic_translation: false

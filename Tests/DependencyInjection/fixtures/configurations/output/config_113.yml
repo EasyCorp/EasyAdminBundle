@@ -1,8 +1,4 @@
 easy_admin:
-    edit:
-        actions:
-            - '-delete'
-            - '-list'
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity
@@ -11,6 +7,12 @@ easy_admin:
             edit:
                 fields: {  }
                 actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
                     list:
                         name: list
                         type: method
@@ -131,8 +133,11 @@ easy_admin:
     list:
         actions: {  }
         max_results: 15
+    edit:
+        actions: {  }
     new:
         actions: {  }
     show:
         actions: {  }
-    automatic_translation: false
+    automatic_translation: true
+

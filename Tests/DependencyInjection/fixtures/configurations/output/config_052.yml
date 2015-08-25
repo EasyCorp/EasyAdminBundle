@@ -140,3 +140,4 @@ easy_admin:
         actions: {  }
     show:
         actions: {  }
+    automatic_translation: false

@@ -130,3 +130,4 @@ easy_admin:
         actions: {  }
     new:
         actions: {  }
+    automatic_translation: false

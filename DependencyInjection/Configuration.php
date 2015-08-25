@@ -161,6 +161,11 @@ class Configuration implements ConfigurationInterface
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
 
+                ->booleanNode('automatic_translation')
+                    ->defaultFalse()
+                    ->info('A translation is automatically generated for all fields.')
+                ->end()
+
                 ->arrayNode('formats')
                     ->performNoDeepMerging()
                     ->addDefaultsIfNotSet()

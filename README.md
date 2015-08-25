@@ -158,6 +158,7 @@ Advanced Tutorials
   * [Advanced Design Customization](Resources/doc/tutorials/advanced-design-customization.md)
   * [Tips and Tricks](Resources/doc/tutorials/tips-and-tricks.md)
   * [Configuration Reference](Resources/doc/tutorials/configuration-reference.md)
+  * [Automatic Translations](Resources/doc/tutorials/automatic-translations.md)
 
 -----
 

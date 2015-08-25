@@ -1,0 +1,143 @@
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            label: TestEntity
+            name: TestEntity
+            edit:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            list:
+                fields: {  }
+                actions:
+                    show:
+                        name: show
+                        type: method
+                        label: action.show
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: null
+                    search:
+                        name: search
+                        type: method
+                        label: action.search
+                        class: ''
+                        icon: null
+                    new:
+                        name: new
+                        type: method
+                        label: action.new
+                        class: ''
+                        icon: null
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            new:
+                fields: {  }
+                actions:
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+            search:
+                fields: {  }
+            show:
+                fields: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        class: ''
+                        icon: edit
+            disabled_actions: {  }
+            templates:
+                layout: '@EasyAdmin/default/layout.html.twig'
+                edit: '@EasyAdmin/default/edit.html.twig'
+                list: '@EasyAdmin/default/list.html.twig'
+                new: '@EasyAdmin/default/new.html.twig'
+                show: '@EasyAdmin/default/show.html.twig'
+                form: '@EasyAdmin/default/form.html.twig'
+                paginator: '@EasyAdmin/default/paginator.html.twig'
+                field_array: '@EasyAdmin/default/field_array.html.twig'
+                field_association: '@EasyAdmin/default/field_association.html.twig'
+                field_bigint: '@EasyAdmin/default/field_bigint.html.twig'
+                field_boolean: '@EasyAdmin/default/field_boolean.html.twig'
+                field_date: '@EasyAdmin/default/field_date.html.twig'
+                field_datetime: '@EasyAdmin/default/field_datetime.html.twig'
+                field_datetimetz: '@EasyAdmin/default/field_datetimetz.html.twig'
+                field_decimal: '@EasyAdmin/default/field_decimal.html.twig'
+                field_float: '@EasyAdmin/default/field_float.html.twig'
+                field_id: '@EasyAdmin/default/field_id.html.twig'
+                field_image: '@EasyAdmin/default/field_image.html.twig'
+                field_integer: '@EasyAdmin/default/field_integer.html.twig'
+                field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
+                field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
+                field_string: '@EasyAdmin/default/field_string.html.twig'
+                field_text: '@EasyAdmin/default/field_text.html.twig'
+                field_time: '@EasyAdmin/default/field_time.html.twig'
+                field_toggle: '@EasyAdmin/default/field_toggle.html.twig'
+                label_empty: '@EasyAdmin/default/label_empty.html.twig'
+                label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
+                label_null: '@EasyAdmin/default/label_null.html.twig'
+                label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
+    design:
+        assets:
+            css: {  }
+            js: {  }
+        theme: default
+        color_scheme: dark
+        brand_color: '#E67E22'
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+    site_name: 'Easy Admin'
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'
+    disabled_actions: {  }
+    list:
+        actions: {  }
+        max_results: 15
+    edit:
+        actions: {  }
+    new:
+        actions: {  }
+    show:
+        actions: {  }
+    automatic_translation: true
+

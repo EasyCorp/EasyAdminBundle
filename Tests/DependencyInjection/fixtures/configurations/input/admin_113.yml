@@ -1,0 +1,8 @@
+# TEST
+# test the automatic_translation configuration
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        - AppBundle\Entity\TestEntity
+    automatic_translation: true

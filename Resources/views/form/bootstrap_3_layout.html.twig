@@ -243,7 +243,7 @@
         </div>
     {% elseif errors|length == 1 %}
         <div class="error-block">
-            <span class="label label-danger">{{ 'errors'|trans }}</span> {{ errors|first.message }}
+            <span class="label label-danger">{{ 'error'|trans }}</span> {{ errors|first.message }}
         </div>
     {% endif %}
 {% endblock form_errors %}

@@ -21,13 +21,13 @@ An entity `Object` has a `name` attribute.
 The views will try to translate `Object.field.name` text. (in list/new/...)
 
 
-# Extraction with JMSTranslationBundle
+# Extraction
 
-An extractor for the JMSTranslationBundle allows to get automatically these translations.
+An extractor allows to get automatically these translations.
 
-Run the extract andenable the `easyadmin_translation_entity_extractor` extractor.
+Run the ` translation:update` command of symfony, it will dump the translations in app/Resources/translations/EasyAdminBundle.en.yml
 
 Example:
 
-        php app/console translation:extract --config=app --enable-extractor=easyadmin_translation_entity_extractor
+        php app/console translation:update --dump-messages --force en
 

@@ -2,19 +2,22 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Translation;
 
-use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Model\MessageCatalogue;
-use JMS\TranslationBundle\Translation\ExtractorInterface;
+use Symfony\Component\Translation\MessageCatalogue;
+
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use Symfony\Component\Translation\Extractor\ExtractorInterface;
 
 /**
  * The extractor for the automatic translations
+ *
+ * ref: easyadmin.translation.entity_extractor
  */
 class EntityExtractor implements ExtractorInterface
 {
     protected $backendConfiguration;
     protected $configurator;
     protected $domain;
+    protected $prefix;
 
     /**
      * Constructor
@@ -31,19 +34,30 @@ class EntityExtractor implements ExtractorInterface
     }
 
     /**
+     * Set the prefix
+     *
+     * @param string $prefix
+     */
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
+    }
+
+    /**
      * Extract translations
+     *
+     * @param type             $directory
+     * @param MessageCatalogue $catalogue
      *
      * @return MessageCatalogue
      */
-    public function extract()
+    public function extract($directory, MessageCatalogue $catalogue)
     {
-        $catalogue = new MessageCatalogue();
-
         $automaticTranslation = $this->backendConfiguration['automatic_translation'];
 
         //we extract only if the automatic translations
         if ($automaticTranslation) {
-            $catalogue = $this->getTranslations();
+            $this->addTranslations($catalogue);
         }
 
         return $catalogue;
@@ -54,9 +68,8 @@ class EntityExtractor implements ExtractorInterface
      *
      * @return MessageCatalogue
      */
-    protected function getTranslations()
+    protected function addTranslations(MessageCatalogue $catalogue)
     {
-        $catalogue = new MessageCatalogue();
         $labels = array();
 
         $entities = $this->getEntities();
@@ -70,10 +83,13 @@ class EntityExtractor implements ExtractorInterface
         //avoid doublons
         $uniqueLabels = array_unique($labels);
 
+        $messages = array();
+
         foreach ($uniqueLabels as $uniqueLabel) {
-            $message = new Message($uniqueLabel, $this->domain);
-            $catalogue->add($message);
+            $messages[$uniqueLabel] = $uniqueLabel;
         }
+
+        $catalogue->add($messages, $this->domain);
 
         return $catalogue;
     }

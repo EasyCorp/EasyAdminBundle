@@ -2,77 +2,51 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Translation;
 
-use Symfony\Component\Translation\MessageCatalogue;
-
-use Symfony\Component\Translation\Extractor\ExtractorInterface;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
 /**
  * The extractor for the automatic translations
  *
- * ref: easyadmin.translation.entity_extractor
+ * ref: easyadmin.translation.entity_translation
  */
-class EntityExtractor implements ExtractorInterface
+class EntityTranslation
 {
-    protected $domain;
-    protected $entityExtractor;
-    protected $prefix;
-
+    protected $backendConfiguration;
+    protected $configurator;
 
     /**
      * Constructor
      *
-     * @param EntityExtractor $entityExtractor
-     * @param string          $domain
+     * @param array        $backendConfiguration
+     * @param Configurator $configurator
      */
-    public function __construct(EntityTranslation $entityExtractor, $domain)
+    public function __construct(array $backendConfiguration, Configurator $configurator)
     {
-        $this->entityExtractor = $entityExtractor;
-        $this->domain = $domain;
-    }
-
-    /**
-     * Set the prefix
-     *
-     * @param string $prefix
-     */
-    public function setPrefix($prefix)
-    {
-        $this->prefix = $prefix;
-    }
-
-    /**
-     * Extract translations
-     *
-     * @param type             $directory
-     * @param MessageCatalogue $catalogue
-     *
-     * @return MessageCatalogue
-     */
-    public function extract($directory, MessageCatalogue $catalogue)
-    {
-        $this->addTranslations($catalogue);
-
-        return $catalogue;
+        $this->backendConfiguration = $backendConfiguration;
+        $this->configurator = $configurator;
     }
 
     /**
      * Get the translations
      *
-     * @return MessageCatalogue
+     * @return string[] The translations
      */
-    protected function addTranslations(MessageCatalogue $catalogue)
+    public function getTranslations()
     {
-        $labels = $this->entityExtractor->getTranslations();
+        $labels = array();
 
-        $messages = array();
+        $entities = $this->getEntities();
 
-        foreach ($labels as $label) {
-            $messages[$label] = $label;
+        foreach ($entities as $entity) {
+            $entityConfiguration = $this->configurator->getEntityConfiguration($entity);
+            $entityLabels = $this->getAllFieldsLabels($entityConfiguration);
+            $labels = array_merge($labels, $entityLabels);
         }
 
-        $catalogue->add($messages, $this->domain);
+        //avoid doublons
+        $uniqueLabels = array_unique($labels);
 
-        return $catalogue;
+        return $uniqueLabels;
     }
 
     /**

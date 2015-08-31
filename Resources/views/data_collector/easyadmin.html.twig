@@ -25,7 +25,7 @@
 
 
 {% block menu %}
-    <span class="label">
+    <span class="label status-{{ not collector.requestParameters ? 'disabled' }}">
         <span class="icon">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { height: 32 }) }}</span>
         <strong>EasyAdmin</strong>
     </span>

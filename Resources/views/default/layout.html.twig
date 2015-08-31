@@ -71,7 +71,7 @@
                             <div id="header-security">
                                 <p>
                                     <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as'|trans }}</span></small>
-                                    {{ app.user.username|default('Unnamed User') }}
+                                    <a href="{{ logout_path() }}">{{ app.user.username|default('Unnamed User') }}</a>
                                 </p>
                             </div>
                         {% endif %}
@@ -86,6 +86,7 @@
                 <div class="row">
                     <div id="content-header" class="col-sm-12">
                         {% block content_header %}
+                            {{ include('@EasyAdmin/default/notification.html.twig') }}
                             <div class="row">
                                 <div class="col-sm-6">
                                     <h1 class="title">{% block content_title %}{% endblock %}</h1>

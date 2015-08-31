@@ -160,7 +160,6 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('Easy Admin')
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
-
                 ->arrayNode('formats')
                     ->performNoDeepMerging()
                     ->addDefaultsIfNotSet()

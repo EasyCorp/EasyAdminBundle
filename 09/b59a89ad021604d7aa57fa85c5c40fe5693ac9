@@ -1,0 +1,180 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-18T19:05:44Z
+
+Great !
+Regarding the configuration panel, do you think you can use the var dumper's output and javascript to display it ? (in order to collapse/expand and navigate into the configuration easily)
+
+But what about printing the current entity configuration if available (from the Request and `Configurator`) ? Otherwise, a static dump of the configuration does not makes really sense for a collector.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-18T19:14:57Z
+
+I'm not fan of using the var dumper for this use, because it's a "development" feature :confused:
+Plus, it's not compatible with SF2.3, as the var dumper component is only on SF2.6+
+
+Wouldn't it be useful to show computed elements for the user to understand how some fields are analyzed?
+
+For example, show what the user specified for each field, and show the result of the flexible configuration system based on the user's datas.
+It could be good especially for form fields which are the most flexible.
+
+For the output, what about a simple `Yaml` output inside a `<pre>` tag? It's probably the simplest and the most readable :smile:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-18T19:24:09Z
+
+@Pierstoval : The data collectors are development features too, so I don't really understand your comment.
+But I indeed forget about the 2.3 version.
+
+> Wouldn't it be useful to show computed elements for the user to understand how some fields are analyzed?
+>
+> For example, show what the user specified for each field, and show the result of the flexible configuration system based on the user's datas.
+
+For sure, I maintain that a static configuration dump does not make sense for a collector, so it should brings something to the user per request.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-18T19:51:39Z
+
+What I am talking about is not a "per-request" information.
+
+Actually, I don't know if a collector can gather more than the configuration itself, and if we can show a per-request information, we can show the entire config on the profiler.
+
+I don't know... I'm hesitating between showing global conf (formats, design, etc.) with all entities (base + computed) , or global conf with only the entity used in the request.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-08-20T19:56:14Z
+
+I've listened to you and I've changed everything. Now we display the most important request parameters related to EasyAdmin and then, the configuration of the current entity and the full processed backend configuration.
+
+This is how it looks in the old Symfony Profiler:
+
+![easy_admin_profiler_old](https://cloud.githubusercontent.com/assets/73419/9394040/269a29c0-4786-11e5-891c-52eb77748d62.png)
+
+This is how it looks in the new Symfony Profiler:
+
+![easyadmin_profiler_new](https://cloud.githubusercontent.com/assets/73419/9394046/2a11f614-4786-11e5-9dbc-f603d73a5bc3.png)
+
+This is how it looks when the request isn't related to EasyAdmin:
+
+![easyadmin_profiler_empty](https://cloud.githubusercontent.com/assets/73419/9394049/32f5d200-4786-11e5-8d8c-a9401266b4bc.png)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-20T20:03:12Z
+
+This makes much more sense :+1:
+And once again, amazing work on the Profiler new design :smiley:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-20T20:03:49Z
+
+Totally agree, for now I don't see anything to add :smile:
+
+We may look in the future for new features :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-20T20:11:39Z
+
+On another hand, this feature makes me think about the `Configurator` service. I don't know if it deserves an issue for now, but I can't remember what was really needed at runtime to get the fully processed configuration ? This certainly deserves some cache, at least on production and doesn't need to be computed on each request ??
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-08-21T06:08:53Z
+
+@ogizanagi it's needed because we instrospect the database to complete the entity metadata. This is better done at runtime. We'll add a cache in the future, but for now it's enough with the per-request cache that we have (configuration is only parsed once per entity per request).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-21T09:36:03Z
+
+It's to be noted that the whole configuration is stored in the container, therefore in the xml file in the cache, so there's a big difference between **processing** and **using** the config. Processing it is made in the extension, using it is from a service (and from the twig extension, therefore needing the service)
+
+For the metadatas, they're cached by doctrine, so we don't need to worry about it that much (and it's a per-request behavior, so it's not a problem).
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-21T09:45:26Z
+
+@Pierstoval : I'm talking about the entities configuration processed and used from the `Configurator`.
+Once a call to `getEntityConfiguration($entityName)` for a given entity has been made, there is no need to recompute it on each request, it'll remains the same. For now, as said @javiereguiluz , there is only a per-request cache layer.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-21T09:48:04Z
+
+What would be interesting in modifying the configuration after it's been processed?
+I have no use case in mind :confused:
+Edit: It's like adding a behavior similar to the "compiler pass" system, but in our easyadmin config, it's quite strange...
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-21T09:51:42Z
+
+> What would be interesting in modifying the configuration after it's been processed?
+
+I'm not talking about **modifying** the processed configuration, but **adding a cache layer at least in production**, like APCu for storing the processed configuration between requests.
+Or, forget about the `Configurator` class, and make everything within the extension / compiler passes in order to store it in the cached container.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-21T09:53:04Z
+
+The processed configuration has no need to be cached more, because it's already stored in the container (it's nothing more than the `%easyadmin.config%` parameter...), so any cache layer caching the container will also cache the procesed config, IIRC
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-21T09:56:10Z
+
+I think you totally misunderstood me, or am I missing something ???
+
+See https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Configuration/Configurator.php#L69-L113
+
+This is called again and again on each request, uselessly, as it will always returns the same processed entity configuration. There is nothing specific to the request.
+So, IMO, it should be cached between requests. (the `$entitiesConfig` property currently handles a per-request cache).
+
+This is not stored in the cached container, on the contrary to the `%easyadmin.config%` parameter.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-08-21T10:05:48Z
+
+@Pierstoval I know it may be confusing, but the configuration is divided in two parts: the one we can compute and process before executing the application and the one we need to process during runtime (this one is related to the actual database information provided by Doctrine).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-21T12:44:00Z
+
+Oh yeah I totally misunderstood, sorry for that :confused: :sob:
+
+I think we should compute all this "runtime" configuration once the service is instantiated, or called (we may call an `initialize` function or something) , sorry for the misunderstanding :no_mouth:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-21T14:07:22Z
+
+@Pierstoval : No worries :smile:
+
+In order to have a quite straightforward solution, without much modifications, I would recommend using [Doctrine cache](https://github.com/doctrine/cache/blob/master/lib/Doctrine/Common/Cache/Cache.php) directly within the `Configurator` class, in order to simply have to inject it in the prod env to have an efficient cache.
+
+It'll simply require to indicate a cache service to use in the `config_prod.yml`, and we can provide a base APCu one:
+```yaml
+easy_admin:
+    cache: easy_admin.configurator.cache.apc
+```
+
+It's used for instance in the [DunglasApiBundle for metadata](https://github.com/dunglas/DunglasApiBundle/blob/master/Mapping/Factory/ClassMetadataFactory.php#L51-L89).
+https://github.com/dunglas/DunglasApiBundle/blob/master/Resources/doc/performance.md
+
+Of course it will have no great impact on the new profiler panel described in this issue, as it will not track changes in the configuration as the cached container does in debug, and I'm surely digressing from the topic again, but I think it'll be the most straightforward solution for now. :smile:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-08-31T19:42:53Z
+
+Thank you all for your comments and reviews. I'm going to merge it as it is now ... but once we raise our minimum version to Symfony 2.7 in May 2016, I'll implement @ogizanagi's idea to use a VarDumper dump to easily collapse the sections of the YAML configuration.

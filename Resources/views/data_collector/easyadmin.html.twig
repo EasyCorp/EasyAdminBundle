@@ -1,0 +1,91 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set profiler_markup_version = profiler_markup_version|default(1) %}
+
+    {% set icon %}
+        {% set icon_fill_color = profiler_markup_version == 1 ? '#222' : '#AAA' %}
+        {% set icon_height = profiler_markup_version == 1 ? '26' : '24' %}
+        <span class="icon" style="vertical-align: middle">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { fill_color: icon_fill_color, height: icon_height }) }}</span>
+        <span class="sf-toolbar-value sf-toolbar-status">{{ collector.numEntities }}</span>
+    {% endset %}
+
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        <b>EasyAdmin</b>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>Managed entities</b>
+        <span>{{ collector.numEntities }}</span>
+    </div>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+{% endblock %}
+
+
+{% block menu %}
+    <span class="label status-{{ not collector.requestParameters ? 'disabled' }}">
+        <span class="icon">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { height: 32 }) }}</span>
+        <strong>EasyAdmin</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    {% set profiler_markup_version = profiler_markup_version|default(1) %}
+
+    <h2>EasyAdmin</h2>
+
+    {% if profiler_markup_version == 1 %}
+
+        <h3>Request Parameters</h3>
+        {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.requestParameters }) }}
+
+    {% else %}
+
+        {% if collector.requestParameters %}
+        <div class="metrics">
+            <div class="metric">
+                <span class="value">{{ collector.requestParameters.action }}</span>
+                <span class="label">Action</span>
+            </div>
+
+            <div class="metric">
+                <span class="value">{{ collector.requestParameters.entity }}</span>
+                <span class="label">Entity Name</span>
+            </div>
+
+            {% if collector.requestParameters.id %}
+                <div class="metric">
+                    <span class="value">{{ collector.requestParameters.id }}</span>
+                    <span class="label">ID</span>
+                </div>
+            {% else %}
+                <div class="metric">
+                    <span class="value">{{ collector.requestParameters.sort_field }} <span class="unit">({{ collector.requestParameters.sort_direction }})</span></span>
+                    <span class="label">Sorting</span>
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    {% endif %}
+
+    <div class="tabs">
+        <div class="tab">
+            <h3 class="tab-title">Entity Configuration</h3>
+            <div class="tab-content">
+                <pre class="sf-dump" style="{{ profiler_markup_version == 1 ? '' : 'color: #E0E0E0"' }}">{{ collector.currentEntityConfiguration|yaml_dump(3, false)|replace({ '%array% ' : '' }) }}</pre>
+            </div>
+
+            <br>
+        </div>
+
+        <div class="tab">
+            <h3 class="tab-title">Full Backend Configuration</h3>
+            <div class="tab-content">
+                <pre class="sf-dump" style="{{ profiler_markup_version == 1 ? '' : 'color: #E0E0E0"' }}">{{ collector.backendConfiguration|yaml_dump(5, false)|replace({ '%array% ' : '' }) }}</pre>
+            </div>
+        </div>
+    </div>
+{% endblock %}

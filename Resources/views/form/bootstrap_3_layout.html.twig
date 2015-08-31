@@ -232,18 +232,20 @@
 {# Errors #}
 
 {% block form_errors %}
-    {% if errors|length > 1 %}
+    {# Set it once to avoid using the filter multiple times #}
+    {% set errorCount = errors|length %}
+    {% if errorCount >= 1 %}
         <div class="error-block">
-            <span class="label label-danger">{{ errors|length }} ERRORS</span>
+        <span class="label label-danger">{{ 'errors'|transchoice(errorCount) }}</span>
+        {% if errorCount > 1 %}
             <ul>
-                {% for error in errors %}
-                    <li>{{ error.message }}</li>
-                {% endfor %}
+            {% for error in errors %}
+                <li>{{ error.message }}</li>
+            {% endfor %}
             </ul>
-        </div>
-    {% elseif errors|length == 1 %}
-        <div class="error-block">
-            <span class="label label-danger">ERROR</span> {{ errors|first.message }}
+        {% elseif errorCount == 1 %}
+            {{ errors|first.message }}
+        {% endif %}
         </div>
     {% endif %}
 {% endblock form_errors %}

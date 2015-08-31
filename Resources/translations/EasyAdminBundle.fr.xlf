@@ -109,6 +109,10 @@
                 <source>delete_modal.content</source>
                 <target>Cette action est irréversible.</target>
             </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>{1}ERREUR|]1,Inf]ERREURS</target>
+            </trans-unit>            
         </body>
     </file>
 </xliff>

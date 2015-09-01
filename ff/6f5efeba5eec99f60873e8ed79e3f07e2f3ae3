@@ -1,0 +1,53 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-24T18:07:36Z
+
+There is no need to provide missing translation IMO. It prevents using the translator local fallback.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-24T19:39:35Z
+
+First, @ogizanagi is right, and second, I don't see where `actions.add_another_item` is used :confused:
+
+---------------------------------------------------------------------------
+
+by thomasbeaujean at 2015-08-24T19:52:00Z
+
+I removed the translatios that were not needed. Thanks for the advice.
+
+The actions.add_another_item is in the form Resources/views/default/form.html.twig.
+It is the link that add a row (a js action) when an entity has a oneToMany relationship.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-24T20:13:26Z
+
+Bly me I did not see the twig form template update.
+
+Could you fix your commits so the user is linked to you on Github? It's better to show contributors in the eponym page :wink:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-08-24T20:21:05Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by thomasbeaujean at 2015-08-24T20:33:18Z
+
+I fixed the linked to my account.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-08-24T20:35:48Z
+
+Great!
+When @javiereguiluz's ready I think he can merge this.
+
+---------------------------------------------------------------------------
+
+by thomasbeaujean at 2015-08-24T20:43:32Z
+
+Thank you for your time.

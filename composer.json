@@ -23,13 +23,14 @@
         "symfony/twig-bundle"           : "~2.3",
         "symfony/security-bundle"       : "~2.3",
         "symfony/validator"             : "~2.3",
+        "symfony/dependency-injection"  : "~2.3",
         "symfony/finder"                : "~2.3",
         "symfony/form"                  : "~2.3",
         "doctrine/orm"                  : "~2.3",
         "doctrine/doctrine-bundle"      : "~1.2",
-        "twig/extensions"               : "~1.0",
         "sensio/distribution-bundle"    : "~2.3|~3.0|~4.0",
         "sensio/framework-extra-bundle" : "~3.0,>=3.0.2",
+        "twig/extensions"               : "~1.0",
         "twig/twig"                     : "~1.12,>=1.12.2"
     },
     "require-dev": {

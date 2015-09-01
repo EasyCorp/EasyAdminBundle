@@ -382,6 +382,8 @@ class AdminController extends Controller
      */
     protected function ajaxEdit()
     {
+        $this->dispatch(EasyAdminEvents::PRE_EDIT);
+
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw new \Exception('The entity does not exist.');
         }
@@ -398,6 +400,8 @@ class AdminController extends Controller
         }
 
         $newValue = ('true' === strtolower($this->request->query->get('newValue'))) ? true : false;
+
+        $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $newValue));
         if (null !== $setter = $propertyMetadata['setter']) {
             $entity->{$setter}($newValue);
         } else {
@@ -405,6 +409,9 @@ class AdminController extends Controller
         }
 
         $this->em->flush();
+        $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity, 'newValue' => $newValue));
+
+        $this->dispatch(EasyAdminEvents::POST_EDIT);
 
         return new Response((string) $newValue);
     }

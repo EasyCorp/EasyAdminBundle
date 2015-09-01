@@ -36,7 +36,8 @@
         "phpunit/phpunit"                   : "~4.4",
         "doctrine/doctrine-fixtures-bundle" : "~2.2",
         "symfony/css-selector"              : "~2.3",
-        "symfony/browser-kit"               : "~2.3"
+        "symfony/browser-kit"               : "~2.3",
+        "symfony/console"                   : "~2.3"
     },
     "autoload": {
         "psr-4": { "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "" }

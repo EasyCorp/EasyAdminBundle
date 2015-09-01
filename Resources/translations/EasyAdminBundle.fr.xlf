@@ -118,8 +118,8 @@
                 <target>Ajouter un autre élément</target>
             <trans-unit id="errors">
                 <source>errors</source>
-                <target>{1}ERREUR|]1,Inf]ERREURS</target>
-            </trans-unit>            
+                <target>Erreur|Erreurs</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

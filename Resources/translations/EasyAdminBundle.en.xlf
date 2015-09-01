@@ -116,6 +116,7 @@
             <trans-unit id="action.add_another_item">
                 <source>action.add_another_item</source>
                 <target>Add another item</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Error|Errors</target>

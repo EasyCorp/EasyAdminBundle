@@ -507,21 +507,24 @@ class AdminController extends Controller
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
     {
-        $dbIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
+        $databaseIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
         $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
 
         $queryConditions = $queryBuilder->expr()->orX();
         $queryParameters = array();
         foreach ($searchableFields as $name => $metadata) {
-            // PostgreSQL doesn't allow to compare strings values with non-string columns (e.g. 'id')
-            if ($dbIsPostgreSql && !in_array($metadata['type'], array('text', 'string'))) {
-                continue;
-            }
-
-            if (in_array($metadata['dataType'], array('text', 'string'))) {
+            if (is_numeric($searchQuery)) {
+                $queryConditions->add(sprintf('entity.%s = :query', $name));
+                $queryParameters['query'] = $searchQuery;
+            } elseif (in_array($metadata['dataType'], array('text', 'string'))) {
                 $queryConditions->add(sprintf('entity.%s LIKE :query', $name));
                 $queryParameters['query'] = '%'.$searchQuery.'%';
             } else {
+                // PostgreSQL doesn't allow to compare strings values with non-string columns (e.g. 'id')
+                if ($databaseIsPostgreSql) {
+                    continue;
+                }
+
                 $queryConditions->add(sprintf('entity.%s IN (:words)', $name));
                 $queryParameters['words'] = explode(' ', $searchQuery);
             }

@@ -1,13 +1,11 @@
-{% block flash_messages %}
-    {% if app.session.started %}
-        <div id="flash-messages">
-            {% for label, messages in app.session.flashbag.all %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+{% if app.session.started %}
+    <div id="flash-messages">
+        {% for label, messages in app.session.flashbag.all %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
             {% endfor %}
-        </div>
-    {% endif %}
-{% endblock %}
+        {% endfor %}
+    </div>
+{% endif %}

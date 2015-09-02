@@ -513,14 +513,17 @@ class AdminController extends Controller
         $queryConditions = $queryBuilder->expr()->orX();
         $queryParameters = array();
         foreach ($searchableFields as $name => $metadata) {
-            if (is_numeric($searchQuery)) {
-                $queryConditions->add(sprintf('entity.%s = :query', $name));
-                $queryParameters['query'] = $searchQuery;
-            } elseif (in_array($metadata['dataType'], array('text', 'string'))) {
-                $queryConditions->add(sprintf('entity.%s LIKE :query', $name));
-                $queryParameters['query'] = '%'.$searchQuery.'%';
+            $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));
+            $isTextField = in_array($metadata['dataType'], array('string', 'text', 'guid'));
+
+            if (is_numeric($searchQuery) && $isNumericField) {
+                $queryConditions->add(sprintf('entity.%s = :exact_query', $name));
+                $queryParameters['exact_query'] = 0 + $searchQuery; // adding '0' turns the string into a numeric value
+            } elseif ($isTextField) {
+                $queryConditions->add(sprintf('entity.%s LIKE :fuzzy_query', $name));
+                $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
             } else {
-                // PostgreSQL doesn't allow to compare strings values with non-string columns (e.g. 'id')
+                // PostgreSQL doesn't allow to compare string values with non-string columns (e.g. 'id')
                 if ($databaseIsPostgreSql) {
                     continue;
                 }

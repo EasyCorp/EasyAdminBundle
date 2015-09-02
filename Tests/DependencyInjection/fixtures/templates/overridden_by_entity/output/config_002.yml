@@ -32,6 +32,7 @@ easy_admin:
                 new: custom_template/new.html.twig
                 paginator: custom_template/paginator.html.twig
                 show: custom_template/show.html.twig
+                flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
             label: TestEntity
             name: TestEntity
             edit:

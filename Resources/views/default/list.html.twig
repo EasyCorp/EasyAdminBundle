@@ -36,9 +36,7 @@
 
     {% set _request_parameters = _request_parameters|merge({ referer: path('admin', _request_parameters)|url_encode }) %}
 
-    {% block flash_messages %}
-        {{ include(_entity_config.templates.flash_messages) }}
-    {% endblock flash_messages %}
+    {% block flash_messages %}{{ parent() }}{% endblock flash_messages %}
 
     <div class="row">
         <div id="content-header" class="col-sm-12">

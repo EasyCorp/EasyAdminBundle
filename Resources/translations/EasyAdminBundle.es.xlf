@@ -109,6 +109,10 @@
                 <source>delete_modal.content</source>
                 <target>Esta acción no se puede deshacer.</target>
             </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>Error|Errores</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -22,9 +22,9 @@
         "symfony/doctrine-bridge"       : "~2.3",
         "symfony/twig-bridge"           : "~2.3",
         "symfony/twig-bundle"           : "~2.3",
-        "symfony/security-bundle"       : "~2.3",
         "symfony/validator"             : "~2.3",
         "symfony/dependency-injection"  : "~2.3",
+        "symfony/event-dispatcher"      : "~2.3",
         "symfony/config"                : "~2.3",
         "symfony/finder"                : "~2.3",
         "symfony/form"                  : "~2.3",
@@ -42,7 +42,12 @@
         "symfony/css-selector"              : "~2.3",
         "symfony/browser-kit"               : "~2.3",
         "symfony/dom-crawler"               : "~2.3",
+        "symfony/security-bundle"           : "~2.3",
+        "symfony/security"                  : "~2.3",
         "symfony/console"                   : "~2.3"
+    },
+    "suggest": {
+        "symfony/security-bundle"           : "To get the benefits from the security and view logged user name in the navigation bar."
     },
     "autoload": {
         "psr-4": { "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "" }

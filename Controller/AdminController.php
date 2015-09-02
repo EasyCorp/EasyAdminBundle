@@ -22,6 +22,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -615,11 +616,43 @@ class AdminController extends Controller
             }
         }
 
+        //if the repeated options has been activated
+        if (isset($metadata['repeated']) && (true === $metadata['repeated'])) {
+            $fieldType = 'repeated';
+            $formFieldOptions = $this->getFieldRepeatedOptions($metadata);
+        }
+
         $formFieldOptions['attr']['field_type'] = $fieldType;
         $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
         $formFieldOptions['attr']['field_help'] = $metadata['help'];
 
         $formBuilder->add($name, $fieldType, $formFieldOptions);
+    }
+
+    /**
+     * Get the options required for a repeated field
+     *
+     * @param array $metadata
+     *
+     * @return array
+     */
+    protected function getFieldRepeatedOptions(array $metadata)
+    {
+        $formFieldOptions = array(
+            'type' => $metadata['fieldType'],
+            'options' => array('required' => true),
+            'first_options'  => array('label' => $metadata['label']),
+        );
+
+        if (isset($metadata['repeated_label'])) {
+            $formFieldOptions['second_options'] = array('label' => $metadata['repeated_label']);
+        }
+
+        if (isset($metadata['invalid_message'])) {
+            $formFieldOptions['invalid_message'] = $metadata['invalid_message'];
+        }
+
+        return $formFieldOptions;
     }
 
     /**

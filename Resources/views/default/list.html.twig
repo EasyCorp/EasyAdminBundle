@@ -39,6 +39,7 @@
     <div class="row">
         <div id="content-header" class="col-sm-12">
             {% block content_header %}
+            {{ include('@EasyAdmin/default/notification.html.twig') }}
             <div class="row">
                 <div class="col-xs-12 col-sm-5">
                     <h1 class="title">{{ block('content_title') }}</h1>

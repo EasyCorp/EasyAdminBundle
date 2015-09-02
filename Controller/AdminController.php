@@ -583,28 +583,43 @@ class AdminController extends Controller
         ));
 
         foreach ($entityProperties as $name => $metadata) {
-            $formFieldOptions = array();
-
-            if ('association' === $metadata['fieldType'] && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
-                continue;
-            }
-
-            if ('collection' === $metadata['fieldType']) {
-                $formFieldOptions = array('allow_add' => true, 'allow_delete' => true);
-
-                if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
-                    $formFieldOptions['delete_empty'] = true;
-                }
-            }
-
-            $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];
-            $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
-            $formFieldOptions['attr']['field_help'] = $metadata['help'];
-
-            $formBuilder->add($name, $metadata['fieldType'], $formFieldOptions);
+            $this->createEntityFormField($formBuilder, $name, $metadata);
         }
 
         return $formBuilder->getForm();
+    }
+
+    /**
+     * Create a field for a create form
+     *
+     * @param FormBuilder $formBuilder
+     * @param string        $name
+     * @param array       $metadata
+     * @return null
+     */
+    protected function createEntityFormField(FormBuilder $formBuilder, $name, array $metadata)
+    {
+        $formFieldOptions = array();
+
+        $fieldType = $metadata['fieldType'];
+
+        if ('association' === $fieldType && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
+            return;
+        }
+
+        if ('collection' === $fieldType) {
+            $formFieldOptions = array('allow_add' => true, 'allow_delete' => true);
+
+            if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
+                $formFieldOptions['delete_empty'] = true;
+            }
+        }
+
+        $formFieldOptions['attr']['field_type'] = $fieldType;
+        $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
+        $formFieldOptions['attr']['field_help'] = $metadata['help'];
+
+        $formBuilder->add($name, $fieldType, $formFieldOptions);
     }
 
     /**

@@ -131,6 +131,7 @@ easy_admin:
                 new: custom_template/new.html.twig
                 show: custom_template/show.html.twig
                 form: custom_template/form.html.twig
+                flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
                 paginator: custom_template/paginator.html.twig
                 field_array: custom_template/field_array.html.twig
                 field_association: custom_template/field_association.html.twig

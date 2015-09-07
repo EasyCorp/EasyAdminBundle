@@ -2,10 +2,9 @@
 
 {{ form_start(form, { attr: form.vars.attr|merge({ novalidate: 'novalidate' }) }) }}
     {% if form.vars.errors|length > 0 %}
-        <div class="alert alert-danger">
-            {{ form_errors(form) }}
-        </div>
+        {{ form_errors(form) }}
     {% endif %}
+
     <div class="row">
         <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}" />
 

@@ -1,0 +1,20 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-07T10:23:51Z
+
+Your idea is good, but actually I think it could've been better to hard code a css class to inject into the form, like `easyadmin_form`, and use this class directly in JS.
+Do you think you can update your PR to do this?
+
+---------------------------------------------------------------------------
+
+by thomasbeaujean at 2015-09-07T12:28:15Z
+
+@Pierstoval I do not understand why using a css class would be better than using directly the form name.
+
+Furthermore, using a css class would not allow having two forms in the same page.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-07T12:47:16Z
+
+No you're right, I forgot that the JS is used only in the `<a>` tag. We should provide a better way of doing this, but it works.

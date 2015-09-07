@@ -1,9 +1,11 @@
 {% trans_default_domain "EasyAdminBundle" %}
 
 {{ form_start(form, { attr: form.vars.attr|merge({ novalidate: 'novalidate' }) }) }}
-    <div class="alert alert-danger">
-        {{ form_errors(form) }}
-    </div>
+    {% if form.vars.errors|length > 0 %}
+        <div class="alert alert-danger">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
     <div class="row">
         <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}" />
 

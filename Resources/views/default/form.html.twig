@@ -6,7 +6,6 @@
 
         {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
             {% set _field_metadata = entity_fields[field.vars.name] %}
-
             <div class="{{ _field_metadata.css_class|default('col-xs-12') }}">
                 {% if _field_metadata['fieldType'] == 'association' %}
                     {{ easyadmin_render_field_for_edit_view(entity, _field_metadata) }}
@@ -20,7 +19,7 @@
                         $(function() {
                             if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
-                            var collection = $('#form_{{ field.vars.name|escape('js') }}');
+                            var collection = $('#{{ form.vars.name }}_{{ field.vars.name|escape('js') }}');
                             var numItems = collection.children('div.form-group').length;
 
                             var newItem = collection.attr('data-prototype')

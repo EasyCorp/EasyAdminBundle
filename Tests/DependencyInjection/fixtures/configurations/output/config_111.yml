@@ -95,6 +95,7 @@ easy_admin:
                 new: '@EasyAdmin/default/new.html.twig'
                 show: '@EasyAdmin/default/show.html.twig'
                 form: '@EasyAdmin/default/form.html.twig'
+                flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
                 paginator: '@EasyAdmin/default/paginator.html.twig'
                 field_array: '@EasyAdmin/default/field_array.html.twig'
                 field_association: '@EasyAdmin/default/field_association.html.twig'

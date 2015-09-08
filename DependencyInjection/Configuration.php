@@ -277,6 +277,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('new')->info('Used to render the page where new entities are created')->end()
                                 ->scalarNode('show')->info('Used to render the contents stored by a given entity')->end()
                                 ->scalarNode('form')->info('Used to render the form displayed in the new and edit pages')->end()
+                                ->scalarNode('flash_messages')->info('Used to render the notification area were flash messages are displayed')->end()
                                 ->scalarNode('paginator')->info('Used to render the paginator in the list page')->end()
                                 ->scalarNode('field_array')->info('Used to render array field types')->end()
                                 ->scalarNode('field_association')->info('Used to render fields that store Doctrine associations')->end()

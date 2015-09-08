@@ -125,7 +125,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
     }
 
-    private function dispatch($eventName, array $arguments = array())
+    protected function dispatch($eventName, array $arguments = array())
     {
         $arguments = array_replace(array(
             'config'  => $this->config,
@@ -382,6 +382,8 @@ class AdminController extends Controller
      */
     protected function ajaxEdit()
     {
+        $this->dispatch(EasyAdminEvents::PRE_EDIT);
+
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw new \Exception('The entity does not exist.');
         }
@@ -398,6 +400,8 @@ class AdminController extends Controller
         }
 
         $newValue = ('true' === strtolower($this->request->query->get('newValue'))) ? true : false;
+
+        $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $newValue));
         if (null !== $setter = $propertyMetadata['setter']) {
             $entity->{$setter}($newValue);
         } else {
@@ -405,6 +409,9 @@ class AdminController extends Controller
         }
 
         $this->em->flush();
+        $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity, 'newValue' => $newValue));
+
+        $this->dispatch(EasyAdminEvents::POST_EDIT);
 
         return new Response((string) $newValue);
     }
@@ -507,21 +514,27 @@ class AdminController extends Controller
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
     {
-        $dbIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
+        $databaseIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
         $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
 
         $queryConditions = $queryBuilder->expr()->orX();
         $queryParameters = array();
         foreach ($searchableFields as $name => $metadata) {
-            // PostgreSQL doesn't allow to compare strings values with non-string columns (e.g. 'id')
-            if ($dbIsPostgreSql && !in_array($metadata['type'], array('text', 'string'))) {
-                continue;
-            }
+            $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));
+            $isTextField = in_array($metadata['dataType'], array('string', 'text', 'guid'));
 
-            if (in_array($metadata['dataType'], array('text', 'string'))) {
-                $queryConditions->add(sprintf('entity.%s LIKE :query', $name));
-                $queryParameters['query'] = '%'.$searchQuery.'%';
+            if (is_numeric($searchQuery) && $isNumericField) {
+                $queryConditions->add(sprintf('entity.%s = :exact_query', $name));
+                $queryParameters['exact_query'] = 0 + $searchQuery; // adding '0' turns the string into a numeric value
+            } elseif ($isTextField) {
+                $queryConditions->add(sprintf('entity.%s LIKE :fuzzy_query', $name));
+                $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
             } else {
+                // PostgreSQL doesn't allow to compare string values with non-string columns (e.g. 'id')
+                if ($databaseIsPostgreSql) {
+                    continue;
+                }
+
                 $queryConditions->add(sprintf('entity.%s IN (:words)', $name));
                 $queryParameters['words'] = explode(' ', $searchQuery);
             }

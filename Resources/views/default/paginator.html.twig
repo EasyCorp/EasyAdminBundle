@@ -1,9 +1,10 @@
-{% trans_default_domain "EasyAdminBundle" %}
+{% trans_default_domain 'EasyAdminBundle' %}
+
 {% if paginator.haveToPaginate %}
     <div class="list-pagination">
         <div class="row">
             <div class="col-sm-2 hidden-xs" class="list-pagination-counter">
-                {{ 'paginator.counter'|trans({"%start%": paginator.currentPageOffsetStart, "%end%": paginator.currentPageOffsetEnd, "%results%": paginator.nbResults})|raw }}
+                {{ 'paginator.counter'|trans({ '%start%': paginator.currentPageOffsetStart, '%end%': paginator.currentPageOffsetEnd, '%results%': paginator.nbResults})|raw }}
             </div>
 
             <div class="col-xs-12 col-sm-10">

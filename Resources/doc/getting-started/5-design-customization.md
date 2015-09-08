@@ -126,11 +126,10 @@ easy_admin:
 
 ### Multiple-Column Forms
 
-EasyAdmin doesn't provide any mechanism to create multi-column form layouts.
-However, you can use the `css_class` form field to create these advanced
-layouts. The `css_class` value is applied to the parent `<div>` element which
-contains the field label, the field widget, the field help and the optional
-field errors:
+EasyAdmin doesn't support multi-column form layouts. However, you can use the
+`css_class` form field to create these advanced layouts. The `css_class` value
+is applied to the parent `<div>` element which contains the field label, the
+field widget, the field help and the optional field errors:
 
 ![Multi-column form](../images/easyadmin-form-multi-column.png)
 
@@ -200,24 +199,24 @@ easy_admin:
     # ...
 ```
 
-Your own stylesheets can make use of the `id` and `class` attributes applied to
-the `<body>` element of each backend view. The `id` allows you to target
+Custom stylesheets can make use of the `id` and `class` attributes applied to
+the `<body>` element of each backend page. The `id` allows you to target
 specific entity instances:
 
 | View   | `<body>` ID attribute
 | ------ | --------------------------------------------------------------------
-| `edit` | `easyadmin-edit-<entity name>-<entity id>`
-| `list` | `easyadmin-list-<entity name>`
-| `new`  | `easyadmin-new-<entity name>`
-| `show` | `easyadmin-show-<entity name>-<entity id>`
+| `edit` | `easyadmin-edit-<entity_name>-<entity_id>`
+| `list` | `easyadmin-list-<entity_name>`
+| `new`  | `easyadmin-new-<entity_name>`
+| `show` | `easyadmin-show-<entity_name>-<entity_id>`
 
 The `class` attribute allows you to target entire sections of the backend:
 
 | View   | `<body>` CSS class
 | ------ | --------------------------------------------------------------------
-| `edit` | `easyadmin edit edit-<entity name>`
-| `list` | `easyadmin list list-<entity name>`
-| `new`  | `easyadmin new new-<entity name>`
-| `show` | `easyadmin show show-<entity name>`
+| `edit` | `easyadmin edit edit-<entity_name>`
+| `list` | `easyadmin list list-<entity_name>`
+| `new`  | `easyadmin new new-<entity_name>`
+| `show` | `easyadmin show show-<entity_name>`
 
 [advanced-design-customization]: ../tutorials/advanced-design-customization.md

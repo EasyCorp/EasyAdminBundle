@@ -1,5 +1,13 @@
 language: php
 
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - hhvm
+
 sudo: false
 
 cache:
@@ -15,37 +23,36 @@ matrix:
   fast_finish: true
   include:
     - php: 5.3
-    - php: 5.3
-      env: deps="low"
-    - php: 5.4
-    - php: 5.5
+      env: COMPOSER_FLAGS="--prefer-lowest"
     - php: 5.6
+      env: SYMFONY_VERSION=2.3.*
     - php: 5.6
-      env: SYMFONY_VERSION="2.3.x"
+      env: SYMFONY_VERSION=2.7.*
     - php: 5.6
-      env: SYMFONY_VERSION="2.6.x"
+      env: SYMFONY_VERSION=2.8.*@dev
     - php: 5.6
-      env: SYMFONY_VERSION="2.7.x"
+      env: SYMFONY_VERSION="3.0.x-dev as 2.8"
     - php: 5.6
-      env: SYMFONY_VERSION="2.8.x-dev"
-    - php: hhvm
-    - php: nightly
+      env: TWIG_VERSION="2.0.x-dev"
   allow_failures:
     - php: hhvm
-    - php: nightly
-    - env: SYMFONY_VERSION="2.7.x-dev"
-    - env: SYMFONY_VERSION="2.8.x-dev"
+    - env: SYMFONY_VERSION=2.8.*@dev
+    - env: SYMFONY_VERSION="3.0.x-dev as 2.8"
 
 before_install:
-  - if [ "$(phpenv version-name)" = "5.3" ]; then echo 'memory_limit = 1280M' >> ~/.phpenv/versions/5.3/etc/conf.d/travis.ini; fi
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update symfony/symfony:$SYMFONY_VERSION; fi
+  - if [[ "$SYMFONY_VERSION" = "" ]] && [[ "$TWIG_VERSION" = "" ]] && [[ "$TRAVIS_PHP_VERSION" =~ 5.[45] ]] && [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then export skip="yes"; fi;
+  - if [[ "$skip" != "yes" ]]; then composer selfupdate; fi
+  - if [[ "$skip" != "yes" && "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
+  - if [[ "$skip" != "yes" && "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
+  - if [[ "$skip" != "yes" && "$SYMFONY_VERSION" != "2.7.*" && "$TRAVIS_PHP_VERSION" != 7.0 && "$TRAVIS_PHP_VERSION" != hhvm ]]; then phpenv config-rm xdebug.ini; fi;
 
 install:
-  - if [ "$deps" = "low" ]; then composer update --prefer-lowest; fi
-  - if [ "$deps" != "low" ]; then composer install; fi
-  - composer require --dev satooshi/php-coveralls:~0.6
+  - if [[ "$skip" != "yes" ]]; then composer update --prefer-dist --no-interaction $COMPOSER_FLAGS; fi
+  - if [[ "$skip" != "yes" && "$SYMFONY_VERSION" == "2.7.*" ]]; then composer require --dev satooshi/php-coveralls:~0.6; fi
 
-script: phpunit --coverage-text --coverage-clover build/logs/clover.xml
+script:
+  - if [[ "$skip" != "yes" && "$SYMFONY_VERSION" == "2.7.*" ]]; then phpunit --coverage-text --coverage-clover build/logs/clover.xml; else if [[ "$skip" != "yes" ]]; then phpunit; fi; fi
+  - if [[ "$skip" = "yes" ]]; then echo "Skipping matrix entry for pull requests"; fi
 
 after_success: |
-    if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;
+    if [[ "$SYMFONY_VERSION" == "2.7.*" ]]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;

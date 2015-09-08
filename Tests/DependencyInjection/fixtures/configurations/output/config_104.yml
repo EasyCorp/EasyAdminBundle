@@ -45,6 +45,7 @@ easy_admin:
             name: TestEntity
             edit:
                 fields: {  }
+                form_options: {  }
                 actions:
                     delete:
                         name: delete
@@ -93,6 +94,7 @@ easy_admin:
                         icon: null
             new:
                 fields: {  }
+                form_options: {  }
                 actions:
                     list:
                         name: list
@@ -131,6 +133,7 @@ easy_admin:
                 new: custom_template/new.html.twig
                 show: custom_template/show.html.twig
                 form: custom_template/form.html.twig
+                flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
                 paginator: custom_template/paginator.html.twig
                 field_array: custom_template/field_array.html.twig
                 field_association: custom_template/field_association.html.twig
@@ -144,6 +147,7 @@ easy_admin:
                 field_id: custom_template/field_id.html.twig
                 field_image: custom_template/field_image.html.twig
                 field_integer: custom_template/field_integer.html.twig
+                field_raw: '@EasyAdmin/default/field_raw.html.twig'
                 field_simple_array: custom_template/field_simple_array.html.twig
                 field_smallint: custom_template/field_smallint.html.twig
                 field_string: custom_template/field_string.html.twig

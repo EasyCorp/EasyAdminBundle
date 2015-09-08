@@ -1,4 +1,3 @@
-{% trans_default_domain "EasyAdminBundle" %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -70,7 +69,7 @@
                         {% if app.user %}
                             <div id="header-security">
                                 <p>
-                                    <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as'|trans }}</span></small>
+                                    <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span></small>
                                     {{ app.user.username|default('Unnamed User') }}
                                 </p>
                             </div>
@@ -83,6 +82,10 @@
 
         <div id="content" class="col-lg-10 col-lg-offset-2">
             {% block content %}
+                {% block flash_messages %}
+                    {{ include(_entity_config.templates.flash_messages) }}
+                {% endblock flash_messages %}
+
                 <div class="row">
                     <div id="content-header" class="col-sm-12">
                         {% block content_header %}

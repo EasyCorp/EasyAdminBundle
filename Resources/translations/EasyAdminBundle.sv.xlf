@@ -2,40 +2,6 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
     <file source-language="en" target-language="sv" datatype="plaintext" original="file.ext">
         <body>
-            <!-- generic actions displayed on buttons and links -->
-            <trans-unit id="action.new">
-                <source>action.new</source>
-                <target>Skapa %entity_name%</target>
-            </trans-unit>
-            <trans-unit id="action.show">
-                <source>action.show</source>
-                <target>Visa</target>
-            </trans-unit>
-            <trans-unit id="action.edit">
-                <source>action.edit</source>
-                <target>Redigera</target>
-            </trans-unit>
-            <trans-unit id="action.search">
-                <source>action.search</source>
-                <target>Sök</target>
-            </trans-unit>
-            <trans-unit id="action.delete">
-                <source>action.delete</source>
-                <target>Ta bort</target>
-            </trans-unit>
-            <trans-unit id="action.save">
-                <source>action.save</source>
-                <target>Spara ändringar</target>
-            </trans-unit>
-            <trans-unit id="action.cancel">
-                <source>action.cancel</source>
-                <target>Avbryt</target>
-            </trans-unit>
-            <trans-unit id="action.list">
-                <source>action.list</source>
-                <target>Åter till lista</target>
-            </trans-unit>
-
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>

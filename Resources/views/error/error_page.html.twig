@@ -1,5 +1,9 @@
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
-{% extends _entity_config ? _entity_config.templates.layout : '@EasyAdmin/default/layout.html.twig' %}
+{% extends [
+    _entity_config.templates.layout|default(''),
+    easyadmin_config('design.templates.layout'),
+    '@EasyAdmin/default/layout.html.twig'
+] %}
 
 {% block body_class 'error' %}
 
@@ -12,13 +16,5 @@
                 {% block problem %}{% endblock %}
             </p>
         </div>
-
-        {% if block('solution') is not empty %}
-            <div class="error-solution">
-                <h2>How to fix this problem</h2>
-
-                {% block solution %}{% endblock %}
-            </div>
-        {% endif %}
     </div>
 {% endblock %}

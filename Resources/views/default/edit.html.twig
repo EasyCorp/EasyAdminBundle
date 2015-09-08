@@ -1,4 +1,3 @@
-{% trans_default_domain "EasyAdminBundle" %}
 {% form_theme form with easyadmin_config('design.form_theme') %}
 
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
@@ -11,7 +10,8 @@
 {% block body_class 'edit edit-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
-    {{ _entity_config.edit.title|default('edit.page_title')|trans(_trans_parameters) }}
+    {% set _default_title = 'edit.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
+    {{ _entity_config.edit.title|default(_default_title)|trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}
@@ -32,8 +32,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <h4>{{ 'delete_modal.title'|trans(_trans_parameters) }}</h4>
-                        <p>{{ 'delete_modal.content'|trans(_trans_parameters) }}</p>
+                        <h4>{{ 'delete_modal.title'|trans(_trans_parameters, 'EasyAdminBundle') }}</h4>
+                        <p>{{ 'delete_modal.content'|trans(_trans_parameters, 'EasyAdminBundle') }}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" data-dismiss="modal" class="btn">

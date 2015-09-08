@@ -184,8 +184,9 @@ div.flash-error strong {
 }
 .label {
     color: {{ colors.white }};
+    display: inline-block;
     font-size: 11px;
-    padding: 2px 4px;
+    padding: 4px;
     text-transform: uppercase;
 }
 .label-success {
@@ -201,12 +202,19 @@ div.flash-error strong {
     color: {{ colors.text }};
 }
 
+/* this makes boolean labels to be of the same width for most languages */
+.boolean .label,
+.toggle .label {
+    min-width: 33px;
+}
+
 /* Switches / toggles
    ------------------------------------------------------------------------- */
 .toggle .btn {
     border-radius: 3px;
     font-size: 11px;
     font-weight: bold;
+    text-transform: uppercase;
 }
 .toggle .toggle.btn-success {
     border-color: {{ colors.success }};
@@ -238,6 +246,11 @@ div.flash-error strong {
     height: 18px;
     margin-top: 1px;
     margin-right: 5px;
+}
+.toggle .toggle-on.btn-xs,
+.toggle .toggle-off.btn-xs {
+    padding-left: 4px;
+    text-align: center;
 }
 
 /* Badges

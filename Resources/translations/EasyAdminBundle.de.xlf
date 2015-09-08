@@ -2,40 +2,6 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
     <file source-language="en" target-language="de" datatype="plaintext" original="file.ext">
         <body>
-            <!-- generic actions displayed on buttons and links -->
-            <trans-unit id="action.new">
-                <source>action.new</source>
-                <target>%entity_name% erstellen</target>
-            </trans-unit>
-            <trans-unit id="action.show">
-                <source>action.show</source>
-                <target>Anzeigen</target>
-            </trans-unit>
-            <trans-unit id="action.edit">
-                <source>action.edit</source>
-                <target>Ändern</target>
-            </trans-unit>
-            <trans-unit id="action.search">
-                <source>action.search</source>
-                <target>Suchen</target>
-            </trans-unit>
-            <trans-unit id="action.delete">
-                <source>action.delete</source>
-                <target>Löschen</target>
-            </trans-unit>
-            <trans-unit id="action.save">
-                <source>action.save</source>
-                <target>Änderungen speichern</target>
-            </trans-unit>
-            <trans-unit id="action.cancel">
-                <source>action.cancel</source>
-                <target>Abbrechen</target>
-            </trans-unit>
-            <trans-unit id="action.list">
-                <source>action.list</source>
-                <target>Zurück zur Übersicht</target>
-            </trans-unit>
-
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
@@ -92,6 +58,32 @@
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> von <strong>%results%</strong>]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Ja</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>Nein</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Leer</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Null</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Nicht zugreifbar</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Es gibt keine Getter-Methode für diese Eigenschaft oder die Eigenschaft ist nicht public.</target>
+            </trans-unit>
+
             <!-- misc. elements -->
             <trans-unit id="header.close">
                 <source>header.close</source>
@@ -108,6 +100,22 @@
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
                 <target>Aktion kann nicht rückgängig gemacht werden.</target>
+            </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Ein neues Element hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Ein weiteres Element hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Element entfernen</target>
+            </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>Fehler</target>
             </trans-unit>
         </body>
     </file>

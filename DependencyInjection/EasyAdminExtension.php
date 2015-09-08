@@ -35,6 +35,7 @@ class EasyAdminExtension extends Extension
         'new' => '@EasyAdmin/default/new.html.twig',
         'show' => '@EasyAdmin/default/show.html.twig',
         'form' => '@EasyAdmin/default/form.html.twig',
+        'flash_messages' => '@EasyAdmin/default/flash_messages.html.twig',
         'paginator' => '@EasyAdmin/default/paginator.html.twig',
         'field_array' => '@EasyAdmin/default/field_array.html.twig',
         'field_association' => '@EasyAdmin/default/field_association.html.twig',
@@ -48,6 +49,7 @@ class EasyAdminExtension extends Extension
         'field_id' => '@EasyAdmin/default/field_id.html.twig',
         'field_image' => '@EasyAdmin/default/field_image.html.twig',
         'field_integer' => '@EasyAdmin/default/field_integer.html.twig',
+        'field_raw' => '@EasyAdmin/default/field_raw.html.twig',
         'field_simple_array' => '@EasyAdmin/default/field_simple_array.html.twig',
         'field_smallint' => '@EasyAdmin/default/field_smallint.html.twig',
         'field_string' => '@EasyAdmin/default/field_string.html.twig',
@@ -497,6 +499,10 @@ class EasyAdminExtension extends Extension
 
                 if (count($config[$view]['fields']) > 0) {
                     $config[$view]['fields'] = $this->normalizeFieldsConfiguration($config[$view]['fields'], $view, $entityConfiguration);
+                }
+
+                if (in_array($view, array('edit', 'new')) && !isset($config[$view]['form_options'])) {
+                    $config[$view]['form_options'] = array();
                 }
             }
 

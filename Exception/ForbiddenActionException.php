@@ -17,6 +17,9 @@ class ForbiddenActionException extends BaseException
     {
         parent::__construct($parameters);
 
-        $this->setMessage(sprintf('The requested <code>%s</code> action is not allowed.', $parameters['action']));
+        $message = sprintf("ERROR: the requested '%s' action is not allowed for the '%s' entity.\n\n", $parameters['action'], $parameters['entity']);
+        $message .= sprintf("Solution: remove the '%s' action from the 'disabled_actions' option, which can be configured globally for the entire backend or locally for the '%s' entity.\n\n", $parameters['action'], $parameters['entity']);
+
+        $this->setMessage($message);
     }
 }

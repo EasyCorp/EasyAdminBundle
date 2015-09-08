@@ -2,40 +2,6 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
     <file source-language="en" target-language="es" datatype="plaintext" original="file.ext">
         <body>
-            <!-- generic actions displayed on buttons and links -->
-            <trans-unit id="action.new">
-                <source>action.new</source>
-                <target>Crear %entity_name%</target>
-            </trans-unit>
-            <trans-unit id="action.show">
-                <source>action.show</source>
-                <target>Ver</target>
-            </trans-unit>
-            <trans-unit id="action.edit">
-                <source>action.edit</source>
-                <target>Modificar</target>
-            </trans-unit>
-            <trans-unit id="action.search">
-                <source>action.search</source>
-                <target>Buscar</target>
-            </trans-unit>
-            <trans-unit id="action.delete">
-                <source>action.delete</source>
-                <target>Borrar</target>
-            </trans-unit>
-            <trans-unit id="action.save">
-                <source>action.save</source>
-                <target>Guardar cambios</target>
-            </trans-unit>
-            <trans-unit id="action.cancel">
-                <source>action.cancel</source>
-                <target>Cancelar</target>
-            </trans-unit>
-            <trans-unit id="action.list">
-                <source>action.list</source>
-                <target>Volver al listado</target>
-            </trans-unit>
-
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
@@ -92,6 +58,32 @@
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> de <strong>%results%</strong>]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Si</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>No</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Vacío</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Null</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Inaccessible</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Este campo no tiene un método getter o la propiedad asociada no es pública</target>
+            </trans-unit>
+
             <!-- misc. elements -->
             <trans-unit id="header.close">
                 <source>header.close</source>
@@ -108,6 +100,18 @@
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
                 <target>Esta acción no se puede deshacer.</target>
+            </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Añadir un elemento</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Añadir otro elemento</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Eliminar este elemento</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>

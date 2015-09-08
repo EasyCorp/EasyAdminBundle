@@ -22,6 +22,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,10 +74,10 @@ class AdminController extends Controller
         }
 
         if (!$this->isActionAllowed($action)) {
-            throw new ForbiddenActionException(array('action' => $action));
+            throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
         }
 
-        $customMethodName  = $action.$this->entity['name'].'Action';
+        $customMethodName = $action.$this->entity['name'].'Action';
         $defaultMethodName = $action.'Action';
 
         return method_exists($this, $customMethodName) ? $this->{$customMethodName}() : $this->{$defaultMethodName}();
@@ -85,8 +88,6 @@ class AdminController extends Controller
      * the user is performing the action.
      *
      * @param Request $request
-     *
-     * @return null
      */
     protected function initialize(Request $request)
     {
@@ -125,12 +126,12 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
     }
 
-    private function dispatch($eventName, array $arguments = array())
+    protected function dispatch($eventName, array $arguments = array())
     {
         $arguments = array_replace(array(
-            'config'  => $this->config,
-            'em'      => $this->em,
-            'entity'  => $this->entity,
+            'config' => $this->config,
+            'em' => $this->em,
+            'entity' => $this->entity,
             'request' => $this->request,
         ), $arguments);
 
@@ -156,7 +157,7 @@ class AdminController extends Controller
 
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
-            'fields'    => $fields,
+            'fields' => $fields,
         ));
     }
 
@@ -174,9 +175,7 @@ class AdminController extends Controller
         }
 
         $id = $this->request->query->get('id');
-        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-            throw new EntityNotFoundException(array('action' => 'edit', 'entity' => $this->entity, 'entity_id' => $id));
-        }
+        $entity = $this->findCurrentEntity();
 
         $fields = $this->entity['edit']['fields'];
 
@@ -212,10 +211,10 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::POST_EDIT);
 
         return $this->render($this->entity['templates']['edit'], array(
-            'form'          => $editForm->createView(),
+            'form' => $editForm->createView(),
             'entity_fields' => $fields,
-            'entity'        => $entity,
-            'delete_form'   => $deleteForm->createView(),
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),
         ));
     }
 
@@ -229,9 +228,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_SHOW);
 
         $id = $this->request->query->get('id');
-        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-            throw new EntityNotFoundException(array('action' => 'show', 'entity' => $this->entity, 'entity_id' => $id));
-        }
+        $entity = $this->findCurrentEntity();
 
         $fields = $this->entity['show']['fields'];
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
@@ -287,8 +284,6 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $entity));
 
-            $refererUrl = $this->request->query->get('referer', '');
-
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
         }
 
@@ -299,9 +294,9 @@ class AdminController extends Controller
         ));
 
         return $this->render($this->entity['templates']['new'], array(
-            'form'          => $newForm->createView(),
+            'form' => $newForm->createView(),
             'entity_fields' => $fields,
-            'entity'        => $entity,
+            'entity' => $entity,
         ));
     }
 
@@ -324,9 +319,7 @@ class AdminController extends Controller
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-                throw new EntityNotFoundException(array('action' => 'delete', 'entity' => $this->entity, 'entity_id' => $id));
-            }
+            $entity = $this->findCurrentEntity();
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));
 
@@ -371,7 +364,7 @@ class AdminController extends Controller
 
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
-            'fields'    => $fields,
+            'fields' => $fields,
         ));
     }
 
@@ -382,6 +375,8 @@ class AdminController extends Controller
      */
     protected function ajaxEdit()
     {
+        $this->dispatch(EasyAdminEvents::PRE_EDIT);
+
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($this->request->query->get('id'))) {
             throw new \Exception('The entity does not exist.');
         }
@@ -398,6 +393,8 @@ class AdminController extends Controller
         }
 
         $newValue = ('true' === strtolower($this->request->query->get('newValue'))) ? true : false;
+
+        $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $newValue));
         if (null !== $setter = $propertyMetadata['setter']) {
             $entity->{$setter}($newValue);
         } else {
@@ -405,6 +402,9 @@ class AdminController extends Controller
         }
 
         $this->em->flush();
+        $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity, 'newValue' => $newValue));
+
+        $this->dispatch(EasyAdminEvents::POST_EDIT);
 
         return new Response((string) $newValue);
     }
@@ -428,8 +428,6 @@ class AdminController extends Controller
      * created before persisting it.
      *
      * @param object $entity
-     *
-     * @return null
      */
     protected function prePersistEntity($entity)
     {
@@ -440,8 +438,6 @@ class AdminController extends Controller
      * edited before persisting it.
      *
      * @param object $entity
-     *
-     * @return null
      */
     protected function preUpdateEntity($entity)
     {
@@ -452,8 +448,6 @@ class AdminController extends Controller
      * deleted before removing it.
      *
      * @param object $entity
-     *
-     * @return null
      */
     protected function preRemoveEntity($entity)
     {
@@ -507,21 +501,27 @@ class AdminController extends Controller
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
     {
-        $dbIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
+        $databaseIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
         $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
 
         $queryConditions = $queryBuilder->expr()->orX();
         $queryParameters = array();
         foreach ($searchableFields as $name => $metadata) {
-            // PostgreSQL doesn't allow to compare strings values with non-string columns (e.g. 'id')
-            if ($dbIsPostgreSql && !in_array($metadata['type'], array('text', 'string'))) {
-                continue;
-            }
+            $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));
+            $isTextField = in_array($metadata['dataType'], array('string', 'text', 'guid'));
 
-            if (in_array($metadata['dataType'], array('text', 'string'))) {
-                $queryConditions->add(sprintf('entity.%s LIKE :query', $name));
-                $queryParameters['query'] = '%'.$searchQuery.'%';
+            if (is_numeric($searchQuery) && $isNumericField) {
+                $queryConditions->add(sprintf('entity.%s = :exact_query', $name));
+                $queryParameters['exact_query'] = 0 + $searchQuery; // adding '0' turns the string into a numeric value
+            } elseif ($isTextField) {
+                $queryConditions->add(sprintf('entity.%s LIKE :fuzzy_query', $name));
+                $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
             } else {
+                // PostgreSQL doesn't allow to compare string values with non-string columns (e.g. 'id')
+                if ($databaseIsPostgreSql) {
+                    continue;
+                }
+
                 $queryConditions->add(sprintf('entity.%s IN (:words)', $name));
                 $queryParameters['words'] = explode(' ', $searchQuery);
             }
@@ -563,37 +563,47 @@ class AdminController extends Controller
     }
 
     /**
-     * Creates the form used to create or edit an entity.
+     * Creates the form builder of the form used to create or edit the given entity.
      *
      * @param object $entity
      * @param array  $entityProperties
      * @param string $view             The name of the view where this form is used ('new' or 'edit')
      *
-     * @return Form
+     * @return FormBuilder
      */
-    protected function createEntityForm($entity, array $entityProperties, $view)
+    protected function createEntityFormBuilder($entity, array $entityProperties, $view)
     {
         $formCssClass = array_reduce($this->config['design']['form_theme'], function ($previousClass, $formTheme) {
             return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
         });
 
-        $formBuilder = $this->createFormBuilder($entity, array(
+        $formOptions = array_replace_recursive(array(
             'data_class' => $this->entity['class'],
             'attr' => array('class' => $formCssClass, 'id' => $view.'-form'),
-        ));
+        ), $this->entity[$view]['form_options']);
+
+        $formBuilder = $this->createFormBuilder($entity, $formOptions);
 
         foreach ($entityProperties as $name => $metadata) {
-            $formFieldOptions = array();
+            $formFieldOptions = $metadata['type_options'];
 
             if ('association' === $metadata['fieldType'] && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
                 continue;
             }
 
             if ('collection' === $metadata['fieldType']) {
-                $formFieldOptions = array('allow_add' => true, 'allow_delete' => true);
+                if (!isset($formFieldOptions['allow_add'])) {
+                    $formFieldOptions['allow_add'] = true;
+                }
+
+                if (!isset($formFieldOptions['allow_delete'])) {
+                    $formFieldOptions['allow_delete'] = true;
+                }
 
                 if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
-                    $formFieldOptions['delete_empty'] = true;
+                    if (!isset($formFieldOptions['delete_empty'])) {
+                        $formFieldOptions['delete_empty'] = true;
+                    }
                 }
             }
 
@@ -602,6 +612,46 @@ class AdminController extends Controller
             $formFieldOptions['attr']['field_help'] = $metadata['help'];
 
             $formBuilder->add($name, $metadata['fieldType'], $formFieldOptions);
+        }
+
+        return $formBuilder;
+    }
+
+    /**
+     * Creates the form object used to create or edit the given entity.
+     *
+     * @param object $entity
+     * @param array  $entityProperties
+     * @param string $view
+     *
+     * @return Form
+     *
+     * @throws \Exception
+     */
+    protected function createEntityForm($entity, array $entityProperties, $view)
+    {
+        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EntityForm')) {
+            $form = $this->{$customMethodName}($entity, $entityProperties, $view);
+            if (!$form instanceof FormInterface) {
+                throw new \Exception(sprintf(
+                    'The "%s" method must return a FormInterface, "%s" given.',
+                    $customMethodName, is_object($form) ? get_class($form) : gettype($form)
+                ));
+            }
+            return $form;
+        }
+
+        if (method_exists($this, $customBuilderMethodName = 'create'.$this->entity['name'].'EntityFormBuilder')) {
+            $formBuilder = $this->{$customBuilderMethodName}($entity, $entityProperties, $view);
+        } else {
+            $formBuilder = $this->createEntityFormBuilder($entity, $entityProperties, $view);
+        }
+
+        if (!$formBuilder instanceof FormBuilderInterface) {
+            throw new \Exception(sprintf(
+                'The "%s" method must return a FormBuilderInterface, "%s" given.',
+                'createEntityForm', is_object($formBuilder) ? get_class($formBuilder) : gettype($formBuilder)
+            ));
         }
 
         return $formBuilder->getForm();
@@ -648,6 +698,7 @@ class AdminController extends Controller
      * @param array  $parameters
      *
      * @deprecated Use an appropriate exception instead of this method.
+     *
      * @return Response
      */
     protected function render404error($view, array $parameters = array())
@@ -675,6 +726,7 @@ class AdminController extends Controller
      * @param string $action
      *
      * @deprecated Use the ForbiddenException instead of this method.
+     *
      * @return Response
      */
     protected function renderForbiddenActionError($action)
@@ -709,13 +761,33 @@ class AdminController extends Controller
      * Returns true if the data of the given entity are stored in a database
      * of Type PostgreSQL.
      *
-     * @param  string  $entityClass
-     * @return boolean
+     * @param string $entityClass
+     *
+     * @return bool
      */
     private function isPostgreSqlUsedByEntity($entityClass)
     {
         $em = $this->get('doctrine')->getManagerForClass($entityClass);
 
         return $em->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform;
+    }
+
+    /**
+     * Looks for the objet that corresponds to the selected 'id' of the current
+     * entity. No parameters are required because all the information is stored
+     * globally in the class.
+     *
+     * @return object The entity
+     *
+     * @throws EntityNotFoundException
+     */
+    private function findCurrentEntity()
+    {
+        $id = $this->request->query->get('id');
+        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
+            throw new EntityNotFoundException(array('entity' => $this->entity, 'entity_id' => $id));
+        }
+
+        return $entity;
     }
 }

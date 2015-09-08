@@ -1,1 +1,2 @@
-<span class="label label-{{ value == true ? 'success' : 'danger' }}">{{ value == true ? 'YES' : 'NO' }}</span>
+{% trans_default_domain "EasyAdminBundle" %}
+<span class="label label-{{ value == true ? 'success' : 'danger' }}">{{ ('boolean.'~(value == true ? 'true' : 'false'))|trans }}</span>

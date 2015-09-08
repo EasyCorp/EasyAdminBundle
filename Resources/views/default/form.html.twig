@@ -1,12 +1,15 @@
 {% trans_default_domain "EasyAdminBundle" %}
 
 {{ form_start(form, { attr: form.vars.attr|merge({ novalidate: 'novalidate' }) }) }}
+    {% if form.vars.errors|length > 0 %}
+        {{ form_errors(form) }}
+    {% endif %}
+
     <div class="row">
         <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}" />
 
         {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
             {% set _field_metadata = entity_fields[field.vars.name] %}
-
             <div class="{{ _field_metadata.css_class|default('col-xs-12') }}">
                 {% if _field_metadata['fieldType'] == 'association' %}
                     {{ easyadmin_render_field_for_edit_view(entity, _field_metadata) }}
@@ -20,7 +23,7 @@
                         $(function() {
                             if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
-                            var collection = $('#form_{{ field.vars.name|escape('js') }}');
+                            var collection = $('#{{ form.vars.name }}_{{ field.vars.name|escape('js') }}');
                             var numItems = collection.children('div.form-group').length;
 
                             var newItem = collection.attr('data-prototype')

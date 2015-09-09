@@ -92,6 +92,32 @@
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> de <strong>%results%</strong>]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Si</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>No</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Vacío</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Null</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Inaccessible</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Este campo no tiene un método getter o la propiedad asociada no es pública</target>
+            </trans-unit>
+
             <!-- misc. elements -->
             <trans-unit id="header.close">
                 <source>header.close</source>

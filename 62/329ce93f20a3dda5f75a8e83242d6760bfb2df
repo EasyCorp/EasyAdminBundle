@@ -1,0 +1,30 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-08T12:59:02Z
+
+Do you have a screenshot of how it renders?
+
+---------------------------------------------------------------------------
+
+by thomasbeaujean at 2015-09-08T13:09:08Z
+
+The display:
+![image](https://cloud.githubusercontent.com/assets/5817919/9735467/5b9aae56-563b-11e5-9f7f-3fd5099979b8.png)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-08T13:15:28Z
+
+Sounds good to me
+
+---------------------------------------------------------------------------
+
+by thomasbeaujean at 2015-09-09T07:24:00Z
+
+@javiereguiluz I agree with you, I will go for your snippet. I did not want to modify too much the previous code.(the previous 2 ternary operators)
+
+---------------------------------------------------------------------------
+
+by thomasbeaujean at 2015-09-09T07:29:27Z
+
+Update done

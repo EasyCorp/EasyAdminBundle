@@ -111,7 +111,7 @@
             </trans-unit>
             <trans-unit id="label.inaccessible">
                 <source>label.inaccessible</source>
-                <target>inaccessible</target>
+                <target>Inaccessible</target>
             </trans-unit>
             <trans-unit id="label.inaccessible.explanation">
                 <source>label.inaccessible.explanation</source>

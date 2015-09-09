@@ -101,6 +101,22 @@
                 <source>label.false</source>
                 <target>No</target>
             </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Empty</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Null</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>inaccessible</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Getter method does not exist for this field or the property is not public</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="header.close">

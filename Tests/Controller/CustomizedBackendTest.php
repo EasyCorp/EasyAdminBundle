@@ -547,11 +547,11 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView('Product');
 
-        $this->assertCount(15, $crawler->filter('.table tbody td:contains("inaccessible")'));
+        $this->assertCount(15, $crawler->filter('.table tbody td:contains("Inaccessible")'));
 
-        $this->assertEquals('thisFieldIsVirtual', $crawler->filter('.table tbody td:contains("inaccessible")')->first()->attr('data-label'));
+        $this->assertEquals('thisFieldIsVirtual', $crawler->filter('.table tbody td:contains("Inaccessible")')->first()->attr('data-label'));
 
-        $firstVirtualField = $crawler->filter('.table tbody td:contains("inaccessible") span')->first();
+        $firstVirtualField = $crawler->filter('.table tbody td:contains("Inaccessible") span')->first();
         $this->assertEquals('label label-danger', $firstVirtualField->attr('class'));
         $this->assertEquals(
             'Getter method does not exist for this field or the property is not public',

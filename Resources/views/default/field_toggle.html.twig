@@ -1,8 +1,12 @@
+{% trans_default_domain "EasyAdminBundle" %}
+
 {% if view == 'show' %}
-    <span class="label label-{{ value == true ? 'success' : 'danger' }}">{{ value == true ? 'YES' : 'NO' }}</span>
+    <span class="label label-{{ value == true ? 'success' : 'danger' }}">
+        {{ value == true ? 'label.true'|trans : 'label.false'|trans }}
+    </span>
 {% else %}
     <input type="checkbox" {{ value == true ? 'checked' : '' }}
        data-toggle="toggle" data-size="mini"
        data-onstyle="success" data-offstyle="danger"
-       data-on="YES" data-off="NO">
+       data-on="{{ 'label.true'|trans }}" data-off="{{ 'label.false'|trans }}">
 {% endif %}

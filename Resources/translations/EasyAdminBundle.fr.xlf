@@ -92,6 +92,16 @@
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> sur <strong>%results%</strong>]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Oui</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>Non</target>
+            </trans-unit>
+
             <!-- misc. elements -->
             <trans-unit id="header.close">
                 <source>header.close</source>
@@ -120,14 +130,6 @@
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Erreur|Erreurs</target>
-            </trans-unit>
-            <trans-unit id="boolean.true">
-                <source>boolean.true</source>
-                <target>Oui</target>
-            </trans-unit>
-            <trans-unit id="boolean.false">
-                <source>boolean.false</source>
-                <target>Non</target>
             </trans-unit>
         </body>
     </file>

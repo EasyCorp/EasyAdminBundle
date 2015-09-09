@@ -125,7 +125,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
     }
 
-    private function dispatch($eventName, array $arguments = array())
+    protected function dispatch($eventName, array $arguments = array())
     {
         $arguments = array_replace(array(
             'config'  => $this->config,

@@ -121,6 +121,14 @@
                 <source>errors</source>
                 <target>Error|Errors</target>
             </trans-unit>
+            <trans-unit id="boolean.true">
+                <source>boolean.true</source>
+                <target>Yes</target>
+            </trans-unit>
+            <trans-unit id="boolean.false">
+                <source>boolean.false</source>
+                <target>No</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -131,6 +131,10 @@
                 <source>errors</source>
                 <target>Error|Errors</target>
             </trans-unit>
+            <trans-unit id="null.label">
+                <source>null.label</source>
+                <target>None</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

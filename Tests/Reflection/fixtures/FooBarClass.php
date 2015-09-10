@@ -107,38 +107,38 @@ class FooBarClass
     public $publicPropertyWithHasserWithoutGetterWithoutSetter;
     public function hasPublicPropertyWithHasserWithoutGetterWithoutSetter()
     {
-        return $this->publicPropertyWithHasserWithoutGetterWithSetter;
+        return $this->publicPropertyWithHasserWithoutGetterWithoutSetter;
     }
 
     protected $protectedPropertyWithHasserWithoutGetterWithoutSetter;
     public function hasProtectedPropertyWithHasserWithoutGetterWithoutSetter()
     {
-        return $this->protectedPropertyWithHasserWithoutGetterWithSetter;
+        return $this->protectedPropertyWithHasserWithoutGetterWithoutSetter;
     }
 
     private $privatePropertyWithHasserWithoutGetterWithoutSetter;
     public function hasPrivatePropertyWithHasserWithoutGetterWithoutSetter()
     {
-        return $this->privatePropertyWithHasserWithoutGetterWithSetter;
+        return $this->privatePropertyWithHasserWithoutGetterWithoutSetter;
     }
 
     // CamelCase - Issers but not getters or setters or hassers
-    public $publicPropertyWithIsserWithoutHasserWithoutGetterWithSetter;
-    public function isPublicPropertyWithIsserWithoutHasserWithoutGetterWithSetter()
+    public $publicPropertyWithIsserWithoutHasserWithoutGetterWithoutSetter;
+    public function isPublicPropertyWithIsserWithoutHasserWithoutGetterWithoutSetter()
     {
-        return $this->publicPropertyWithIsserWithoutHasserWithoutGetterWithSetter;
+        return $this->publicPropertyWithIsserWithoutHasserWithoutGetterWithoutSetter;
     }
 
-    protected $protectedPropertyWithIsserWithoutHasserWithoutGetterWithSetter;
-    public function isProtectedPropertyWithIsserWithoutHasserWithoutGetterWithSetter()
+    protected $protectedPropertyWithIsserWithoutHasserWithoutGetterWithoutSetter;
+    public function isProtectedPropertyWithIsserWithoutHasserWithoutGetterWithoutSetter()
     {
-        return $this->protectedPropertyWithIsserWithoutHasserWithoutGetterWithSetter;
+        return $this->protectedPropertyWithIsserWithoutHasserWithoutGetterWithoutSetter;
     }
 
-    private $privatePropertyWithIsserWithoutHasserWithoutGetterWithSetter;
-    public function isPrivatePropertyWithIsserWithoutHasserWithoutGetterWithSetter()
+    private $privatePropertyWithIsserWithoutHasserWithoutGetterWithoutSetter;
+    public function isPrivatePropertyWithIsserWithoutHasserWithoutGetterWithoutSetter()
     {
-        return $this->privatePropertyWithIsserWithoutHasserWithoutGetterWithSetter;
+        return $this->privatePropertyWithIsserWithoutHasserWithoutGetterWithoutSetter;
     }
 
     // snake_case - No getters and no setters
@@ -232,40 +232,40 @@ class FooBarClass
     }
 
     // snake_case - Hassers but not getters or setters
-    public $snake_case_public_property_with_hasser_without_getter_with_setter;
-    public function hasSnakeCasePublicPropertyWithHasserWithoutGetterWithSetter()
+    public $snake_case_public_property_with_hasser_without_getter_without_setter;
+    public function hasSnakeCasePublicPropertyWithHasserWithoutGetterWithoutSetter()
     {
-        return $this->snake_case_public_property_with_hasser_without_getter_with_setter;
+        return $this->snake_case_public_property_with_hasser_without_getter_without_setter;
     }
 
-    protected $snake_case_protected_property_with_hasser_without_getter_with_setter;
-    public function hasSnakeCaseProtectedPropertyWithHasserWithoutGetterWithSetter()
+    protected $snake_case_protected_property_with_hasser_without_getter_without_setter;
+    public function hasSnakeCaseProtectedPropertyWithHasserWithoutGetterWithoutSetter()
     {
-        return $this->snake_case_protected_property_with_hasser_without_getter_with_setter;
+        return $this->snake_case_protected_property_with_hasser_without_getter_without_setter;
     }
 
-    private $snake_case_private_property_with_hasser_without_getter_with_setter;
-    public function hasSnakeCasePrivatePropertyWithHasserWithoutGetterWithSetter()
+    private $snake_case_private_property_with_hasser_without_getter_without_setter;
+    public function hasSnakeCasePrivatePropertyWithHasserWithoutGetterWithoutSetter()
     {
-        return $this->snake_case_private_property_with_hasser_without_getter_with_setter;
+        return $this->snake_case_private_property_with_hasser_without_getter_without_setter;
     }
 
     // snake_case - Issers but not getters or setters or hassers
-    public $snake_case_public_property_with_isser_without_hasser_without_getter_with_setter;
-    public function isSnakeCasePublicPropertyWithIsserWithoutHasserWithoutGetterWithSetter()
+    public $snake_case_public_property_with_isser_without_hasser_without_getter_without_setter;
+    public function isSnakeCasePublicPropertyWithIsserWithoutHasserWithoutGetterWithoutSetter()
     {
-        return $this->snake_case_public_property_with_isser_without_hasser_without_getter_with_setter;
+        return $this->snake_case_public_property_with_isser_without_hasser_without_getter_without_setter;
     }
 
-    protected $snake_case_protected_property_with_isser_without_hasser_without_getter_with_setter;
-    public function isSnakeCaseProtectedPropertyWithIsserWithoutHasserWithoutGetterWithSetter()
+    protected $snake_case_protected_property_with_isser_without_hasser_without_getter_without_setter;
+    public function isSnakeCaseProtectedPropertyWithIsserWithoutHasserWithoutGetterWithoutSetter()
     {
-        return $this->snake_case_protected_property_with_isser_without_hasser_without_getter_with_setter;
+        return $this->snake_case_protected_property_with_isser_without_hasser_without_getter_without_setter;
     }
 
-    private $snake_case_private_property_with_isser_without_hasser_without_getter_with_setter;
-    public function isSnakeCasePrivatePropertyWithIsserWithoutHasserWithoutGetterWithSetter()
+    private $snake_case_private_property_with_isser_without_hasser_without_getter_without_setter;
+    public function isSnakeCasePrivatePropertyWithIsserWithoutHasserWithoutGetterWithoutSetter()
     {
-        return $this->snake_case_private_property_with_isser_without_hasser_without_getter_with_setter;
+        return $this->snake_case_private_property_with_isser_without_hasser_without_getter_without_setter;
     }
 }

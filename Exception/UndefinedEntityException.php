@@ -17,7 +17,7 @@ class UndefinedEntityException extends BaseException
     {
         parent::__construct($parameters);
 
-        $message = sprintf("ERROR: the '%s' entity is not defined in the configuration of your backend..\n\n", $parameters['entity_name']);
+        $message = sprintf("ERROR: the '%s' entity is not defined in the configuration of your backend.\n\n", $parameters['entity_name']);
         $message .= sprintf("Solution: open your 'app/config/config.yml' file and add the '%s' entity to the list of entities managed by EasyAdmin.\n\n", $parameters['entity_name']);
 
         $this->setMessage($message);

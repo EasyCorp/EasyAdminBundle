@@ -20,6 +20,13 @@ class ExceptionListener
 {
     private $templating;
     private $debug;
+    private $exceptionTemplates = array(
+        'ForbiddenActionException' => '@EasyAdmin/error/forbidden_action.html.twig',
+        'NoEntitiesConfigurationException' => '@EasyAdmin/error/no_entities.html.twig',
+        'UndefinedEntityException' => '@EasyAdmin/error/undefined_entity.html.twig',
+        'EntityNotFoundException' => '@EasyAdmin/error/entity_not_found.html.twig',
+    );
+
 
     public function __construct($templating, $debug)
     {
@@ -34,23 +41,16 @@ class ExceptionListener
             return $event->getException()->getMessage();
         }
 
-        $exceptionTemplates = array(
-            'ForbiddenActionException' => '@EasyAdmin/error/forbidden_action.html.twig',
-            'NoEntitiesConfigurationException' => '@EasyAdmin/error/no_entities.html.twig',
-            'UndefinedEntityException' => '@EasyAdmin/error/undefined_entity.html.twig',
-            'EntityNotFoundException' => '@EasyAdmin/error/entity_not_found.html.twig',
-        );
-
         /** @var \JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException */
         $exception = $event->getException();
         $exceptionClassName = basename(str_replace('\\', '/', get_class($exception)));
 
-        if (!array_key_exists($exceptionClassName, $exceptionTemplates)) {
+        if (!array_key_exists($exceptionClassName, $this->exceptionTemplates)) {
             return;
         }
 
-        $templatePath = $exceptionTemplates[$exceptionClassName];
-        $parameters = array_merge($exception->getParameters(), array('message' => $exception->getMessageAsHtml()));
+        $templatePath = $this->exceptionTemplates[$exceptionClassName];
+        $parameters = array_merge($exception->getParameters(), array('message' => $exception->getMessage()));
         $response = $this->templating->renderResponse($templatePath, $parameters);
 
         $event->setResponse($response);

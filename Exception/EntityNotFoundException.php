@@ -17,11 +17,8 @@ class EntityNotFoundException extends BaseException
     {
         parent::__construct($parameters);
 
-        $this->setMessage(sprintf(
-            'The <code>%s</code> entity with <code>%s = %s</code> does not exist in the database.',
-            $parameters['entity']['name'],
-            $parameters['entity']['primary_key_field_name'],
-            $parameters['entity_id']
-        ));
+        $message = sprintf("ERROR: the '%s' entity with '%s = %s' does not exist in the database.\n\n", $parameters['entity']['name'], $parameters['entity']['primary_key_field_name'], $parameters['entity_id']);
+
+        $this->setMessage($message);
     }
 }

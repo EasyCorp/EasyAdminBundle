@@ -71,7 +71,7 @@ class AdminController extends Controller
         }
 
         if (!$this->isActionAllowed($action)) {
-            throw new ForbiddenActionException(array('action' => $action));
+            throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
         }
 
         $customMethodName  = $action.$this->entity['name'].'Action';

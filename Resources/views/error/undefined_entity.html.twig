@@ -1,24 +1,7 @@
 {% extends '@EasyAdmin/error/error_page.html.twig' %}
 
-{% block page_title 'Undefined entity' %}
+{% block page_title 'ERROR - Undefined entity' %}
 
-{% block problem %}{{ message|raw }}{% endblock %}
-
-{% block solution %}
-    <p>
-        Open your <code>app/config/config.yml</code> file and add the
-        <code>{{ entity_name }}</code> entity to the list of entities
-        managed by EasyAdmin.
-    </p>
-
-    <pre>
-{{- '' -}}
-# app/config/config.yml
-easy_admin:
-    entities:
-        # ...
-        {{ entity_name }}:
-            class: AppBundle\Entity\{{ entity_name }}
-{{- '' -}}
-    </pre>
+{% block problem %}
+    <code>{{ entity_name }}</code> is not configured in this backend.
 {% endblock %}

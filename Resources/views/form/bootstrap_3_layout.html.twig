@@ -230,7 +230,6 @@
 {%- endblock radio_row %}
 
 {# Errors #}
-
 {% block form_errors %}
     {% set error_count = errors|length %}
     {% if error_count >= 1 %}
@@ -248,3 +247,24 @@
         </div>
     {% endif %}
 {% endblock form_errors %}
+
+{%- block form_widget_compound -%}
+    {% if form.parent.vars.allow_delete is defined and form.parent.vars.allow_delete %}
+        {% set remove_item_javascript %}
+            $(function() {
+                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+                var containerDiv = $('#{{ form.vars.id }}').parents('.form-group:first');
+
+                containerDiv.remove();
+            });
+        {% endset %}
+        <div class="form-group">
+            <a href="#" onclick="{{ remove_item_javascript|raw }}" class="col-sm-12 text-right">
+                <i class="fa fa-remove"></i>
+                {{ 'action.remove_item'|trans }}
+            </a>
+        </div>
+    {% endif %}
+
+    {{ parent() }}
+{%- endblock form_widget_compound -%}

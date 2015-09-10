@@ -127,6 +127,10 @@
                 <source>action.add_another_item</source>
                 <target>Ajouter un autre élément</target>
             </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Supprimer l'élément</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Erreur|Erreurs</target>

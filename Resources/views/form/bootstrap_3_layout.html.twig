@@ -249,6 +249,7 @@
 {% endblock form_errors %}
 
 {%- block form_widget_compound -%}
+    {{ parent() }}
     {% if form.parent.vars.allow_delete is defined and form.parent.vars.allow_delete %}
         {% set remove_item_javascript %}
             $(function() {
@@ -265,6 +266,4 @@
             </a>
         </div>
     {% endif %}
-
-    {{ parent() }}
 {%- endblock form_widget_compound -%}

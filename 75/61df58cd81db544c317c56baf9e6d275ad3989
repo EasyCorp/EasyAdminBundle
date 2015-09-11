@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-11T07:17:53Z
+
+`isSnakeCaseProtectedPropertyWithIsserWithoutHasserWithoutGetterWithoutSetter`
+Omg, this is harsh :stuck_out_tongue:
+
+I'm :+1: for this feature, but have to wait until the build succeeds :D
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-11T07:25:52Z
+
+@Pierstoval the word you are looking for is "repugnant". I don't like it at all, but the test does it job and it's useful for the bundle, so I won't look back :)
+
+The test suite already passes, except for this error with `deps = low`:
+
+```
+PHP Warning:  Unexpected character in input:  '' (ASCII=18) state=0 in
+/home/travis/build/javiereguiluz/EasyAdminBundle/vendor/symfony/symfony
+/src/Symfony/Bridge/Twig/Extension/CodeExtension.php on line 140
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-11T07:32:46Z
+
+@javiereguiluz : see my comment about this issue: https://github.com/javiereguiluz/EasyAdminBundle/pull/438#issuecomment-138384007
+However, it's actually strange we didn't get this issue before with the current `composer.json` :confused:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-11T20:38:46Z
+
+@ogizanagi thanks for the info. I'll take care of it in the other PR about tweaking the dependencies.

@@ -139,9 +139,6 @@ class Configurator
         // introspect fields for entity associations (except many-to-many)
         foreach ($entityMetadata->associationMappings as $fieldName => $associationMetadata) {
             if (ClassMetadataInfo::MANY_TO_MANY !== $associationMetadata['type']) {
-                // field names are tweaked this way to simplify Twig templates and extensions
-                $fieldName = str_replace('_', '', $fieldName);
-
                 $entityPropertiesMetadata[$fieldName] = array(
                     'type'            => 'association',
                     'associationType' => $associationMetadata['type'],

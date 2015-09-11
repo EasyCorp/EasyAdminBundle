@@ -1,28 +1,7 @@
 {% extends '@EasyAdmin/error/error_page.html.twig' %}
 
-{% block page_title 'Forbidden action' %}
+{% block page_title 'ERROR - Forbidden action' %}
 
-{% block problem %}{{ message|raw }}{% endblock %}
-
-{% block solution %}
-    <ul>
-        <li>
-            Remove the <code>{{ action }}</code> action from the
-            <code>disabled_actions</code> option.
-
-            <pre>
-{{- '' -}}
-easy_admin:
-    disabled_actions: ['{{ action }}', ...] # <-- remove it from here (if present)
-    entities:
-        YourEntity:
-            # ...
-            disabled_actions:
-                    ['{{ action }}', ...]  # <-- remove it from here (if present)
-            # ...
-{{- '' -}}
-            </pre>
-        </li>
-    </ul>
-
+{% block problem %}
+    The <code>{{ action }}</code> action is not allowed for <strong>{{ entity }}</strong>.
 {% endblock %}

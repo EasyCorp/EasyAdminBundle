@@ -1,5 +1,8 @@
 {% extends '@EasyAdmin/error/error_page.html.twig' %}
 
-{% block page_title 'Entity Not Found' %}
+{% block page_title 'ERROR - Entity Not Found' %}
 
-{% block problem %}{{ message|raw }}{% endblock %}
+{% block problem %}
+    The <code>{{ entity.name }}</code> with <code>{{ entity_id }}</code>
+    identifier couldn't be found in the database.
+{% endblock %}

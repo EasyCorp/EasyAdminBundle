@@ -35,10 +35,10 @@ class ClassPropertyReflector
             'is'.ucfirst($propertyName),
             $propertyName,
             'has'.ucfirst($propertyName),
-            'get'.ucfirst($camelCasedPropertyName),
-            'is'.ucfirst($camelCasedPropertyName),
+            'get'.$camelCasedPropertyName,
+            'is'.$camelCasedPropertyName,
             $camelCasedPropertyName,
-            'has'.ucfirst($camelCasedPropertyName),
+            'has'.$camelCasedPropertyName,
         );
 
         return $this->getFirstExistingMethod($classNamespace, $getterMethods);
@@ -59,8 +59,8 @@ class ClassPropertyReflector
         $setterMethods = array(
             'set'.ucfirst($propertyName),
             'setIs'.ucfirst($propertyName),
-            'set'.ucfirst($camelCasedPropertyName),
-            'setIs'.ucfirst($camelCasedPropertyName),
+            'set'.$camelCasedPropertyName,
+            'setIs'.$camelCasedPropertyName,
         );
 
         return $this->getFirstExistingMethod($classNamespace, $setterMethods);

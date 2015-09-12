@@ -250,7 +250,7 @@
 
 {%- block form_widget_compound -%}
     {{ parent() }}
-    {% if form.parent.vars.allow_delete is defined and form.parent.vars.allow_delete %}
+    {% if form.parent.vars.allow_delete|default(false) %}
         {% set remove_item_javascript %}
             $(function() {
                 if(event.preventDefault) event.preventDefault(); else event.returnValue = false;

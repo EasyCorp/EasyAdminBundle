@@ -38,7 +38,7 @@ matrix:
 
 before_install:
   - if [ "$(phpenv version-name)" = "5.3" ]; then echo 'memory_limit = -1' >> ~/.phpenv/versions/5.3/etc/conf.d/travis.ini; fi
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update symfony/symfony:$SYMFONY_VERSION; fi
+  - if [ "$SYMFONY_VERSION" != "" ]; then mv composer.json composer.json.backup && cat composer.json.backup | sed -e "s/\(symfony[^:]*[:].\"\)\~2\.3/\\1$SYMFONY_VERSION/g" > composer.json; fi
 
 install:
   - if [ "$deps" = "low" ]; then composer update --prefer-lowest; fi

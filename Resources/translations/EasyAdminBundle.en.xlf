@@ -143,6 +143,10 @@
                 <source>action.add_another_item</source>
                 <target>Add another item</target>
             </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Remove the item</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Error|Errors</target>

@@ -250,15 +250,21 @@
 
 {%- block form_widget_compound -%}
     {{ parent() }}
+
     {% if form.parent.vars.allow_delete|default(false) %}
         {% set remove_item_javascript %}
             $(function() {
-                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
-                var containerDiv = $('#{{ form.vars.id }}').parents('.form-group:first');
+                if(event.preventDefault) {
+                    event.preventDefault();
+                } else {
+                    event.returnValue = false;
+                }
 
+                var containerDiv = $('#{{ form.vars.id }}').parents('.form-group:first');
                 containerDiv.remove();
             });
         {% endset %}
+
         <div class="form-group">
             <a href="#" onclick="{{ remove_item_javascript|raw }}" class="col-sm-12 text-right">
                 <i class="fa fa-remove"></i>

@@ -174,9 +174,7 @@ class AdminController extends Controller
         }
 
         $id = $this->request->query->get('id');
-        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-            throw new EntityNotFoundException(array('action' => 'edit', 'entity' => $this->entity, 'entity_id' => $id));
-        }
+        $entity = $this->findCurrentEntity();
 
         $fields = $this->entity['edit']['fields'];
 
@@ -229,9 +227,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_SHOW);
 
         $id = $this->request->query->get('id');
-        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-            throw new EntityNotFoundException(array('action' => 'show', 'entity' => $this->entity, 'entity_id' => $id));
-        }
+        $entity = $this->findCurrentEntity();
 
         $fields = $this->entity['show']['fields'];
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
@@ -287,8 +283,6 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $entity));
 
-            $refererUrl = $this->request->query->get('referer', '');
-
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
         }
 
@@ -324,9 +318,7 @@ class AdminController extends Controller
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-                throw new EntityNotFoundException(array('action' => 'delete', 'entity' => $this->entity, 'entity_id' => $id));
-            }
+            $entity = $this->findCurrentEntity();
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));
 
@@ -730,5 +722,24 @@ class AdminController extends Controller
         $em = $this->get('doctrine')->getManagerForClass($entityClass);
 
         return $em->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform;
+    }
+
+    /**
+     * Looks for the objet that corresponds to the selected 'id' of the current
+     * entity. No parameters are required because all the information is stored
+     * globally in the class.
+     *
+     * @return object The entity
+     *
+     * @throws EntityNotFoundException
+     */
+    private function findCurrentEntity()
+    {
+        $id = $this->request->query->get('id');
+        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
+            throw new EntityNotFoundException(array('entity' => $this->entity, 'entity_id' => $id));
+        }
+
+        return $entity;
     }
 }

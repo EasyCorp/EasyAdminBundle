@@ -1,5 +1,13 @@
 language: php
 
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - hhvm
+
 sudo: false
 
 cache:
@@ -16,36 +24,30 @@ matrix:
   include:
     - php: 5.3
     - php: 5.3
-      env: deps="low"
-    - php: 5.4
-    - php: 5.5
+      env: COMPOSER_FLAGS="--prefer-lowest"
     - php: 5.6
+      env: SYMFONY_VERSION=2.3.*
     - php: 5.6
-      env: SYMFONY_VERSION="2.3.x"
+      env: SYMFONY_VERSION=2.7.*
     - php: 5.6
-      env: SYMFONY_VERSION="2.6.x"
+      env: SYMFONY_VERSION=2.8.*@dev
     - php: 5.6
-      env: SYMFONY_VERSION="2.7.x"
-    - php: 5.6
-      env: SYMFONY_VERSION="2.8.x-dev"
-    - php: hhvm
-    - php: nightly
+      env: SYMFONY_VERSION="3.0.x-dev as 2.8"
   allow_failures:
     - php: hhvm
-    - php: nightly
-    - env: SYMFONY_VERSION="2.7.x-dev"
-    - env: SYMFONY_VERSION="2.8.x-dev"
+    - env: SYMFONY_VERSION=2.8.*@dev
+    - env: SYMFONY_VERSION="3.0.x-dev as 2.8"
 
 before_install:
-  - if [ "$(phpenv version-name)" = "5.3" ]; then echo 'memory_limit = -1' >> ~/.phpenv/versions/5.3/etc/conf.d/travis.ini; fi
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update symfony/symfony:$SYMFONY_VERSION; fi
+  - composer selfupdate
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
 
 install:
-  - if [ "$deps" = "low" ]; then composer update --prefer-lowest; fi
-  - if [ "$deps" != "low" ]; then composer install; fi
+  - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
   - composer require --dev satooshi/php-coveralls:~0.6
 
-script: phpunit --coverage-text --coverage-clover build/logs/clover.xml
+script:
+  - phpunit --coverage-text --coverage-clover build/logs/clover.xml
 
 after_success: |
     if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;

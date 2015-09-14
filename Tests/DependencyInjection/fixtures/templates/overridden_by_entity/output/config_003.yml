@@ -155,6 +155,7 @@ easy_admin:
                 label_inaccessible: custom_template/label_inaccessible.html.twig
                 label_null: custom_template/label_null.html.twig
                 label_undefined: custom_template/label_undefined.html.twig
+    cache: false
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d

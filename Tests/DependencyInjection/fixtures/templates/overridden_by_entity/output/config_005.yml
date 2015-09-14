@@ -13,6 +13,7 @@ easy_admin:
         assets:
             css: {  }
             js: {  }
+    cache: false
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity

@@ -11,10 +11,11 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection;
 
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class EasyAdminExtension extends Extension
 {
@@ -78,6 +79,19 @@ class EasyAdminExtension extends Extension
         // load bundle's services
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+
+        // Cache
+        if (isset($backendConfiguration['cache']) && $backendConfiguration['cache']) {
+            $container->setParameter(
+                'easyadmin.configurator.cache.prefix',
+                'easyadmin_' . hash('sha256', $container->getParameter('kernel.root_dir'))
+            );
+            $cacheServiceReference = new Reference($backendConfiguration['cache']);
+            $container->getDefinition('easyadmin.configurator')->replaceArgument(3, $cacheServiceReference);
+            $container->getDefinition('easyadmin.cache_warmer')->replaceArgument(1, $cacheServiceReference);
+        } else {
+            $container->removeDefinition('easyadmin.cache_warmer');
+        }
     }
 
     /**

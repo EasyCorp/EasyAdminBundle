@@ -155,6 +155,7 @@ easy_admin:
                         class: ''
                         icon: edit
             disabled_actions: {  }
+    cache: false
     site_name: 'Easy Admin'
     formats:
         date: Y-m-d

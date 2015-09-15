@@ -284,7 +284,11 @@ class AdminController extends Controller
             return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->entity['name'])));
         }
 
-        $this->dispatch(EasyAdminEvents::POST_NEW, array('entity' => $entity, 'entity_fields' => $fields, 'form' => $newForm));
+        $this->dispatch(EasyAdminEvents::POST_NEW, array(
+            'entity_fields' => $fields,
+            'form' => $newForm,
+            'entity' => $entity,
+        ));
 
         return $this->render($this->entity['templates']['new'], array(
             'form' => $newForm->createView(),

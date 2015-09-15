@@ -74,7 +74,7 @@ class AdminController extends Controller
             throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
         }
 
-        $customMethodName  = $action.$this->entity['name'].'Action';
+        $customMethodName = $action.$this->entity['name'].'Action';
         $defaultMethodName = $action.'Action';
 
         return method_exists($this, $customMethodName) ? $this->{$customMethodName}() : $this->{$defaultMethodName}();
@@ -85,8 +85,6 @@ class AdminController extends Controller
      * the user is performing the action.
      *
      * @param Request $request
-     *
-     * @return null
      */
     protected function initialize(Request $request)
     {
@@ -128,9 +126,9 @@ class AdminController extends Controller
     protected function dispatch($eventName, array $arguments = array())
     {
         $arguments = array_replace(array(
-            'config'  => $this->config,
-            'em'      => $this->em,
-            'entity'  => $this->entity,
+            'config' => $this->config,
+            'em' => $this->em,
+            'entity' => $this->entity,
             'request' => $this->request,
         ), $arguments);
 
@@ -156,7 +154,7 @@ class AdminController extends Controller
 
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
-            'fields'    => $fields,
+            'fields' => $fields,
         ));
     }
 
@@ -210,10 +208,10 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::POST_EDIT);
 
         return $this->render($this->entity['templates']['edit'], array(
-            'form'          => $editForm->createView(),
+            'form' => $editForm->createView(),
             'entity_fields' => $fields,
-            'entity'        => $entity,
-            'delete_form'   => $deleteForm->createView(),
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),
         ));
     }
 
@@ -293,9 +291,9 @@ class AdminController extends Controller
         ));
 
         return $this->render($this->entity['templates']['new'], array(
-            'form'          => $newForm->createView(),
+            'form' => $newForm->createView(),
             'entity_fields' => $fields,
-            'entity'        => $entity,
+            'entity' => $entity,
         ));
     }
 
@@ -363,7 +361,7 @@ class AdminController extends Controller
 
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
-            'fields'    => $fields,
+            'fields' => $fields,
         ));
     }
 
@@ -427,8 +425,6 @@ class AdminController extends Controller
      * created before persisting it.
      *
      * @param object $entity
-     *
-     * @return null
      */
     protected function prePersistEntity($entity)
     {
@@ -439,8 +435,6 @@ class AdminController extends Controller
      * edited before persisting it.
      *
      * @param object $entity
-     *
-     * @return null
      */
     protected function preUpdateEntity($entity)
     {
@@ -451,8 +445,6 @@ class AdminController extends Controller
      * deleted before removing it.
      *
      * @param object $entity
-     *
-     * @return null
      */
     protected function preRemoveEntity($entity)
     {
@@ -653,6 +645,7 @@ class AdminController extends Controller
      * @param array  $parameters
      *
      * @deprecated Use an appropriate exception instead of this method.
+     *
      * @return Response
      */
     protected function render404error($view, array $parameters = array())
@@ -680,6 +673,7 @@ class AdminController extends Controller
      * @param string $action
      *
      * @deprecated Use the ForbiddenException instead of this method.
+     *
      * @return Response
      */
     protected function renderForbiddenActionError($action)
@@ -714,8 +708,9 @@ class AdminController extends Controller
      * Returns true if the data of the given entity are stored in a database
      * of Type PostgreSQL.
      *
-     * @param  string  $entityClass
-     * @return boolean
+     * @param string $entityClass
+     *
+     * @return bool
      */
     private function isPostgreSqlUsedByEntity($entityClass)
     {

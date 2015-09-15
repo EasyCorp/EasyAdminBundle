@@ -17,5 +17,4 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdmin
 
 class AdminController extends EasyAdminController
 {
-
 }

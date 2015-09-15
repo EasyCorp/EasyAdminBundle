@@ -21,17 +21,17 @@ class FooBarClass
     // CamelCase - Methods with the same name as properties
     public $publicPropertyWithSameNameMethod;
     public function publicPropertyWithSameNameMethod() {
-        return $publicPropertyWithSameNameMethod;
+        return $this->publicPropertyWithSameNameMethod;
     }
 
     protected $protectedPropertyWithSameNameMethod;
     public function protectedPropertyWithSameNameMethod() {
-        return $protectedPropertyWithSameNameMethod;
+        return $this->protectedPropertyWithSameNameMethod;
     }
 
     private $privatePropertyWithSameNameMethod;
     public function privatePropertyWithSameNameMethod() {
-        return $privatePropertyWithSameNameMethod;
+        return $this->privatePropertyWithSameNameMethod;
     }
 
     // CamelCase - Getters but no setters
@@ -149,17 +149,17 @@ class FooBarClass
     // snake_case - Methods with the same name as properties
     public $snake_case_public_property_with_same_name_method;
     public function snake_case_public_property_with_same_name_method() {
-        return $snake_case_public_property_with_same_name_method;
+        return $this->snake_case_public_property_with_same_name_method;
     }
 
     protected $snake_case_protected_property_with_same_name_method;
     public function snake_case_protected_property_with_same_name_method() {
-        return $snake_case_protected_property_with_same_name_method;
+        return $this->snake_case_protected_property_with_same_name_method;
     }
 
     private $snake_case_private_property_with_same_name_method;
     public function snake_case_private_property_with_same_name_method() {
-        return $snake_case_private_property_with_same_name_method;
+        return $this->snake_case_private_property_with_same_name_method;
     }
 
     // snake_case - Getters but no setters

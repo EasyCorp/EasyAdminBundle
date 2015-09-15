@@ -12,9 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Listener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfigurationException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 
 class ExceptionListener
 {

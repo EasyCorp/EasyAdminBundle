@@ -1,0 +1,191 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-07T19:45:38Z
+
+Must add `symfony/css-selector` too
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-07T20:11:43Z
+
+Closing it in favor of #432.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-07T20:22:27Z
+
+~~The installed twig version for the failing build is `v1.12.2`. Kind of strange to me as the `TwigBridge` requirement says `"twig/twig": "~1.20|~2.0"` in 2.3.
+I think you might try to fix this ? It might be related given the stacktrace.~~
+
+~~Hmmm, btw, the `symfony/twig-bridge` installed version is wrong (2.2) too.~~
+
+**Edit:** I looked at the branches instead of the tagged versions. This seems actually correct.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-07T20:43:26Z
+
+Adding the `symfony/twig-bridge: ~2.3` requirement seems to solve most of the issues:
+
+````
+...Uncaught PHP Exception JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException: "The InexistentEntity entity is not defined in the configuration of your backend." at /EasyAdminBundle/Controller/AdminController.php line 108
+............................................................  63 / 255 ( 24%)
+..........................................Uncaught PHP Exception JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException: "Your backend is empty because you haven't configured any Doctrine entity to manage." at /EasyAdminBundle/Controller/AdminController.php line 98
+....Uncaught PHP Exception JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException: "The requested edit action is not allowed." at /EasyAdminBundle/Controller/AdminController.php line 74
+.Uncaught PHP Exception JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException: "The requested new action is not allowed." at /EasyAdminBundle/Controller/AdminController.php line 74
+..........SS.... 126 / 255 ( 49%)
+SSS....SS....S................................................. 189 / 255 ( 74%)
+............................................................... 252 / 255 ( 98%)
+...
+
+Time: 7.24 seconds, Memory: 333.75Mb
+
+OK, but incomplete, skipped, or risky tests!
+Tests: 255, Assertions: 440, Skipped: 8.
+```
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-07T21:20:23Z
+
+Hope it'll solve _every_ problem :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-07T21:22:18Z
+
+Actually I don't know why exceptions are not converted to proper exception pages instead of being thrown like this, and I didn't investigate a lot, but it seems to be the only ones :)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-07T21:23:51Z
+
+I had this problem on another repo, I didn't remember how I solved it. I don't even remember having solved it :stuck_out_tongue:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-07T21:24:55Z
+
+... That helps a lot :smile_cat:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-07T22:03:24Z
+
+For the record: https://travis-ci.org/ogizanagi/EasyAdminBundle/builds/79192251 (no need for an umpteenth PR I guess)
+
+The 2.3 requirement for the TwigBridge wasn't enough (but it works on my computer. PHP 5.6 however).
+I fell on https://github.com/symfony/symfony/pull/8721 which seems to solve the issue we got here.
+(There are still the uncaught exceptions however)
+
+```diff
+# composer.json
++ "symfony/twig-bridge": "^2.3.4"
+```
+Should solve the issue (at least for the `Warning: Unexpected character in input: [...]` thing on the `low` deps build)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-13T18:56:50Z
+
+Lots of new errors appear after the latest changes:
+
+### PHP 5.3 / deps = low
+
+PHP Fatal error:  Class 'Doctrine\Common\Inflector\Inflector' not found in /home/travis/build/javiereguiluz/EasyAdminBundle/Reflection/ClassPropertyReflector.php on line 31
+
+### PHP 5.6 / Symfony 2.3.x
+
+This error is repeated lots of times:
+
+Argument 1 passed to Symfony\Bridge\Twig\Extension\SecurityExtension::__construct() must be an instance of Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface, instance of Symfony\Component\Security\Core\SecurityContext given, called in /home/travis/build/javiereguiluz/EasyAdminBundle/build/cache/default_backend/AppDefault_backendDebugProjectContainer.php on line 2496 and defined
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-13T19:07:24Z
+
+For the `Inflector` problem, we require `doctrine/common:^2.4.0`.
+Haven't investigated on the Security problem, but I guess it might be a problem coming from the fact that the security has been split in symfony 2.4 so there might be some strange regressions...
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-13T19:33:11Z
+
+The issue for the `PHP 5.6 / Symfony 2.3.x` built about security is due to the fact the `symfony/twig-bridge (v2.7.4)` is installed where [we asked](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/.travis.yml#L41) for symfony components to be installed as the `2.3.x` version:
+```yaml
+if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update symfony/symfony:$SYMFONY_VERSION; fi
+```
+
+The result in the `vendor/symfony` dir is:
+```
+├── symfony
+│   ├── ...
+│   └── src
+│       └── Symfony
+│           ├── Bridge
+│           │   ├── ...
+│           │   └── Twig
+│           ├── Bundle
+│           │   ├── FrameworkBundle
+│           │   ├── SecurityBundle
+│           │   ├── TwigBundle
+│           │   └── ...
+│           └── Component
+│               ├── BrowserKit
+│               └── ...
+└── twig-bridge
+    ├── AppVariable.php
+    ├── CHANGELOG.md
+    ├── ...
+    ├── composer.json
+    └── phpunit.xml.dist
+```
+
+and the `vendor/composer/autoload_psr4.php` file reference this mapping:
+```php
+array(
+    // ...
+    'Symfony\\Bridge\\Twig\\' => array($vendorDir . '/symfony/twig-bridge'),
+);
+```
+
+The `symfony/twig-bridge` installed in the 2.7.4 version is taken over the 2.3 one installed with `symfony/symfony`.
+
+So we cannot work like this with Travis (requiring the whole framework as it is currently done) :confused:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-13T19:38:22Z
+
+We could with a `composer remove symfony/twig-bridge`
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-13T19:52:28Z
+
+We could do that indeed. But what about the identified `2.3.4` requirement for the `symfony/twig-bridge` (it should not fail though, as it only failed with the PHP 5.3 build) ?
+Also, in a real application requiring `symfony/symfony` in the 2.3 version, will we encounter the same issue as in the tests (two `twig-bridge` cohabiting in different versions) ? I should have missed something...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-14T06:41:05Z
+
+@Pierstoval thanks to your suggested change, that error disappeared. But we still have the other problem and as mentioned by @ogizanagi, it looks not that easy to solve.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-14T06:47:16Z
+
+In fda0e3a I'm testing a new Travis configuration borrowed from the one used by our friends at FOSUserBundle: https://github.com/FriendsOfSymfony/FOSUserBundle/blob/master/.travis.yml
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-14T08:08:43Z
+
+After the last changes, everything is green again. To be honest, I don't know if this is luck, or if the new config is wrong or if we finally fixed the problem.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-14T08:16:11Z
+
+So, the issue was only about the `2.3.x` and `2.3.*` difference ?

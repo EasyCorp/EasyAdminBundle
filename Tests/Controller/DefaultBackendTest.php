@@ -76,7 +76,7 @@ class DefaultBackendTest extends AbstractTestCase
             $this->assertEquals($label, $crawler->filter('#header-menu li a')->eq($i)->text());
             $this->assertEquals($url, $crawler->filter('#header-menu li a')->eq($i)->attr('href'));
 
-            $i++;
+            ++$i;
         }
     }
 
@@ -123,7 +123,7 @@ class DefaultBackendTest extends AbstractTestCase
             $this->assertEquals($name, $crawler->filter('#content-search input[type=hidden]')->eq($i)->attr('name'));
             $this->assertEquals($value, $crawler->filter('#content-search input[type=hidden]')->eq($i)->attr('value'));
 
-            $i++;
+            ++$i;
         }
     }
 

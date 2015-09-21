@@ -71,7 +71,7 @@ class EntityTranslation
     {
         $labels = array();
 
-        $views = array('edit', 'list', 'new', 'search', 'show');
+        $views = array('edit', 'list', 'new', 'search', 'show', 'title');
 
         foreach ($views as $view) {
             $viewLabels = $this->getViewFieldLabels($entityConfiguration, $view);

@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-24T16:35:16Z
+
+Thanks for updating these dependencies. I just have a minor comment: these permissions should not be changed:
+
+![executable_file](https://cloud.githubusercontent.com/assets/73419/10079544/fa3e2914-62ea-11e5-8a6d-e5ac15b84e54.png)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-24T18:55:45Z
+
+Oh yeah, I don't know why it changed, imma fix this soon
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-24T19:01:47Z
+
+Fixed in  2709bff :)

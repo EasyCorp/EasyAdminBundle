@@ -24,7 +24,6 @@ class ExceptionListener
         'EntityNotFoundException' => '@EasyAdmin/error/entity_not_found.html.twig',
     );
 
-
     public function __construct($templating, $debug)
     {
         $this->templating = $templating;

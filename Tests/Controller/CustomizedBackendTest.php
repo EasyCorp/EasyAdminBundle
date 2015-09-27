@@ -57,7 +57,7 @@ class CustomizedBackendTest extends AbstractTestCase
             $this->assertEquals($name, $crawler->filter('#content-search input[type=hidden]')->eq($i)->attr('name'));
             $this->assertEquals($value, $crawler->filter('#content-search input[type=hidden]')->eq($i)->attr('value'));
 
-            $i++;
+            ++$i;
         }
     }
 

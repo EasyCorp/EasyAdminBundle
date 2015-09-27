@@ -1,0 +1,55 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-27T15:40:55Z
+
+Why not use `==` comparisons?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-27T15:43:45Z
+
+I don't know. I copied this code from Symfony 2.6 to make it available in Symfony 2.3. I guess the original author would have decided this for some reason.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-27T15:46:52Z
+
+Because `same as` also checks the type: http://twigfiddle.com/vhm4ch (If that was the question ?)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-27T16:55:53Z
+
+In your fiddle it's `==` that checks the type
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-27T16:59:03Z
+
+@Pierstoval : On the contrary:
+- In the first example, I test if 0 is strictly equal to `false`, which isn't, because of the type check.
+So it returns `ok` (because it is the expected behavior).
+- In the second sample, I check if 0 is equal to `false`, which is true, because there is no type check.
+So it returns `ko` (because it is wrong, most of the time not the expected behavior).
+
+`same as` is the equivalent of PHP `===`.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-27T18:05:14Z
+
+You're right, I misunderstood, but actually it's the `ok` and `ko` that should be reverted ("true" equalling "ko" sounds strange to me)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-27T18:24:58Z
+
+@Pierstoval : I understand why this is confusing :smile:
+`ko` in this case would actually meant the "test" failed as it doesn't match the expected behavior.
+I updated the fiddle to be more obvious in case someone get back on this.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-27T18:25:38Z
+
+Thanks for updating the fiddle :)

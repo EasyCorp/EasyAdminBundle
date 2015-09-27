@@ -33,7 +33,7 @@
         "symfony/http-kernel"           : "~2.3",
         "symfony/twig-bridge"           : "^2.3.4",
         "twig/extensions"               : "~1.0",
-        "twig/twig"                     : "~1.12,>=1.12.2"
+        "twig/twig"                     : "~1.14"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle" : "~2.2",

@@ -38,7 +38,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
      */
     public function testBackendConfigurations($inputFixtureFilepath, $outputFixtureFilepath)
     {
-        if ('2' === Kernel::MAJOR_VERSION && '3' === Kernel::MINOR_VERSION && !$this->isTestCompatibleWithYamlComponent($inputFixtureFilepath)) {
+        if (2 === Kernel::MAJOR_VERSION && 3 === Kernel::MINOR_VERSION && !$this->isTestCompatibleWithYamlComponent($inputFixtureFilepath)) {
             $this->markTestSkipped('The YAML component does not ignore duplicate keys in Symfony 2.3.');
         }
 

@@ -32,6 +32,8 @@ matrix:
       env: SYMFONY_VERSION=2.8.*@dev
     - php: 5.6
       env: SYMFONY_VERSION="3.0.x-dev as 2.8"
+    - php: 5.6
+      env: TWIG_VERSION="2.0.x-dev"
   allow_failures:
     - php: hhvm
     - env: SYMFONY_VERSION=2.8.*@dev
@@ -40,6 +42,7 @@ matrix:
 before_install:
   - composer selfupdate
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
+  - if [ "$TWIG_VERSION" != "" ]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
 
 install:
   - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS

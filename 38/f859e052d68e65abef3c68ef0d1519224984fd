@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-29T18:14:29Z
+
+The failed tests are related to Symfony 2.3.x version and seems unrelated to this change. I'm investigating the cause of the error.

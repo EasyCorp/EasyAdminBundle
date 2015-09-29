@@ -1,0 +1,18 @@
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-09-29T18:41:54Z
+
+looks like this change does not fix everything
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-29T18:44:06Z
+
+I can't understand why :confused: Those tests should be skipped for 2.3 version.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-29T18:50:07Z
+
+Well, it fails for the `--prefer-lowest` flagged build, because the mentioned commit has been introduced since `v2.3.33` version and up only.
+Installed version of `symfony/http-kernel` is `v2.3.0` in Travis for this build.

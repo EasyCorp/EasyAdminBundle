@@ -4,8 +4,6 @@
     | default('@EasyAdmin/default/layout.html.twig')
 %}
 
-{% extends _entity_config ? _entity_config.templates.layout : (easyadmin_config('design.templates.layout')|default('@EasyAdmin/default/layout.html.twig') %}
-
 {% block body_class 'error' %}
 
 {% block content %}

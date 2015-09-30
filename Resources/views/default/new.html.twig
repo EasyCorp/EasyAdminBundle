@@ -1,4 +1,3 @@
-{% trans_default_domain "EasyAdminBundle" %}
 {% form_theme form with easyadmin_config('design.form_theme') %}
 
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
@@ -10,7 +9,8 @@
 {% block body_class 'new new-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
-    {{ _entity_config.new.title|default('new.page_title')|trans(_trans_parameters) }}
+    {% set _default_page_title = 'new.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
+    {{ _entity_config.new.title|default(_default_page_title) }}
 {% endblock %}
 
 {% block main %}

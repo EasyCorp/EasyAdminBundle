@@ -11,7 +11,7 @@
 
 {% block content_title %}
     {% set _default_page_title = 'edit.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-    {{ _entity_config.edit.title|default(_default_page_title) }}
+    {{ _entity_config.edit.title|default(_default_page_title)|trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}
@@ -45,7 +45,7 @@
                             <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
                                 {% if _delete_action.icon %}<i class="fa fa-{{ _delete_action.icon }}"></i>{% endif %}
                                 {% set _default_action_label = 'action.delete'|trans(_trans_parameters, 'EasyAdminBundle') %}
-                                {{ _delete_action.label|default(_default_action_label) }}
+                                {{ _delete_action.label|default(_default_action_label)|trans(_trans_parameters) }}
                             </button>
                         {% endif %}
                     </div>

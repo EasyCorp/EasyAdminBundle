@@ -10,7 +10,7 @@
 
 {% block content_title %}
     {% set _default_page_title = 'new.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-    {{ _entity_config.new.title|default(_default_page_title) }}
+    {{ _entity_config.new.title|default(_default_page_title)|trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}

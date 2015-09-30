@@ -73,8 +73,7 @@
                         {% set _action = easyadmin_get_action_for_edit_view('delete', _entity_config.name) %}
                         <button type="button" id="button-delete" class="btn {{ _action.css_class|default('btn-danger') }}">
                             {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                            {% set _default_action_label = 'action.delete'|trans(_trans_parameters, 'EasyAdminBundle') %}
-                            {{ _action.label|default(_default_action_label)|trans(_trans_parameters) }}
+                            {{ _action.label|default('action.delete')|trans(_trans_parameters, 'EasyAdminBundle')|trans(_trans_parameters) }}
                         </button>
                     {% endif %}
                 {% endif %}
@@ -89,8 +88,7 @@
                 {% if _list_action is defined %}
                     <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('admin', ({ entity: _entity_config.name, action: _list_action.name, view: view }) ) }}">{% spaceless %}
                         {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
-                        {% set _default_action_label = 'action.list'|trans(_trans_parameters, 'EasyAdminBundle') %}
-                        {{ _list_action.label|default(_default_action_label)|trans(_trans_parameters) }}
+                        {{ _list_action.label|default('action.list')|trans(_trans_parameters, 'EasyAdminBundle')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>
                 {% endif %}
             {% endblock item_actions %}

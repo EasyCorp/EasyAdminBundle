@@ -44,8 +44,7 @@
                             {% set _delete_action = easyadmin_get_action_for_edit_view('delete', _entity_config.name) %}
                             <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
                                 {% if _delete_action.icon %}<i class="fa fa-{{ _delete_action.icon }}"></i>{% endif %}
-                                {% set _default_action_label = 'action.delete'|trans(_trans_parameters, 'EasyAdminBundle') %}
-                                {{ _delete_action.label|default(_default_action_label)|trans(_trans_parameters) }}
+                                {{ _delete_action.label|default('action.delete')|trans(_trans_parameters, 'EasyAdminBundle')|trans(_trans_parameters) }}
                             </button>
                         {% endif %}
                     </div>

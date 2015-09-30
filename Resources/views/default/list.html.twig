@@ -52,8 +52,7 @@
                             <div id="content-actions">
                                 <a class="btn {{ _action.css_class|default('') }}" href="{{ path('admin', _request_parameters|merge({ action: _action.name })) }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                    {% set _default_action_label = 'action.new'|trans(_trans_parameters, 'EasyAdminBundle') %}
-                                    {{ _action.label|default(_default_action_label)|trans(_trans_parameters) }}
+                                    {{ _action.label|default('action.new')|trans(_trans_parameters, 'EasyAdminBundle')|trans(_trans_parameters) }}
                                 </a>
                             </div>
                         {% endblock new_action %}
@@ -68,8 +67,7 @@
                                 <input type="hidden" name="sortField" value="{{ _request_parameters.sortField }}">
                                 <input type="hidden" name="sortDirection" value="{{ _request_parameters.sortDirection }}">
                                 <div class="input-group">
-                                    {% set _default_action_label = 'action.search'|trans(_trans_parameters, 'EasyAdminBundle') %}
-                                    <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ _action.label|default(_default_action_label)|trans(_trans_parameters) }}" value="{{ app.request.get('query')|default('') }}">
+                                    <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters, 'EasyAdminBundle')|trans(_trans_parameters) }}" value="{{ app.request.get('query')|default('') }}">
                                 </div>
                             </form>
                         {% endblock search_action %}

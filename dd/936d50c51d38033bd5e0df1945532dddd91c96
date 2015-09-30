@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-30T12:42:35Z
+
+@Pierstoval thanks for this improvement. Since the condition is now very long, what about chaining `default` filters instead?
+
+```twig
+{% extends _entity_config.templates.layout|default(easyadmin_config('design.templates.layout')|default('@EasyAdmin/default/layout.html.twig') %}
+```
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-30T14:33:58Z
+
+What about wrapping the instructions for more readability as in e064909 ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-30T14:49:52Z
+
+I like it. And what about using fallback templates?
+
+```twig
+{% extends [
+    _entity_config.templates.layout|default(''),
+    easyadmin_config('design.templates.layout'),
+    '@EasyAdmin/default/layout.html.twig'
+] %}
+```
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-30T14:52:03Z
+
+I did not know this syntax, it sounds much better!

@@ -93,7 +93,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * property doesn't exist or its value is not accessible. This ensures that
      * the function never generates a warning or error message when calling it.
      *
-     * @param string $view          The vie in which the item is being rendered
+     * @param string $view          The view in which the item is being rendered
      * @param string $entityName    The name of the entity associated with the item
      * @param object $item          The item which is being rendered
      * @param array  $fieldMetadata The metadata of the actual field being rendered
@@ -119,6 +119,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 'value' => $value,
                 'view' => $view,
             );
+
+            // if the template path doesn't start with '@EasyAdmin/' it's a custom template; use it
+            if ('@EasyAdmin/' !== substr($fieldMetadata['template'], 0, 11)) {
+                return $twig->render($fieldMetadata['template'], $templateParameters);
+            }
 
             if (null === $value) {
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);

@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-10-01T12:04:58Z
+
+In #469 , I thought about the intermediate PHP versions that in most case would be useless to test for each PR. In https://github.com/symfony/symfony/pull/16047 something similar has been merged.
+
+What do you think ?

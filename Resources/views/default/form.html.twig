@@ -36,7 +36,7 @@
                     <div class="form-group field-collection-action">
                         <a href="#" onclick="{{ add_item_javascript|raw }}" class="col-sm-12 text-right">
                             <i class="fa fa-plus-square"></i>
-                            {{ field|length == 0 ? 'action.add_new_item'|trans(domain = 'EasyAdminBundle') : 'action.add_another_item'|trans(domain = 'EasyAdminBundle') }}
+                            {{ (field|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans }}
                         </a>
                     </div>
                 {% endif %}
@@ -48,7 +48,7 @@
             {% block item_actions %}
                 {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
                 <button type="submit" class="btn">
-                    <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, 'EasyAdminBundle') }}
+                    <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters) }}
                 </button>
 
                 {% set _entity_actions = (view == 'new')
@@ -64,7 +64,7 @@
 
                     <a class="btn {{ _action.css_class|default('') }}" href="{{ _action_href }}">
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                        {{ _action.label|easyadmin_trans(_trans_parameters) }}
+                        {{ _action.label|trans(_trans_parameters) }}
                     </a>
                 {% endfor %}
 
@@ -73,7 +73,7 @@
                         {% set _action = easyadmin_get_action_for_edit_view('delete', _entity_config.name) %}
                         <button type="button" id="button-delete" class="btn {{ _action.css_class|default('btn-danger') }}">
                             {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                            {{ _action.label|default('action.delete')|easyadmin_trans(_trans_parameters) }}
+                            {{ _action.label|default('action.delete')|trans(_trans_parameters) }}
                         </button>
                     {% endif %}
                 {% endif %}
@@ -88,7 +88,7 @@
                 {% if _list_action is defined %}
                     <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('admin', ({ entity: _entity_config.name, action: _list_action.name, view: view }) ) }}">{% spaceless %}
                         {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
-                        {{ _list_action.label|default('action.list')|easyadmin_trans(_trans_parameters) }}
+                        {{ _list_action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>
                 {% endif %}
             {% endblock item_actions %}

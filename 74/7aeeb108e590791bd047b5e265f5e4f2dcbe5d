@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-01T19:21:56Z
+
+@xabbuh thanks a lot for this improvement. It looks like "black magic" to me, but it works like a charm:
+
+![travis_builds](https://cloud.githubusercontent.com/assets/73419/10231333/6bfec044-6882-11e5-951c-160c9729b3a7.png)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-01T19:34:05Z
+
+Test pass correctly, but it seems that `xdebug.ini` is removed for all versions, not all except 5.6 + 2.7:
+
+![xdebug](https://cloud.githubusercontent.com/assets/73419/10231644/22708c76-6884-11e5-8898-c6bfbe00195e.png)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-01T19:56:56Z
+
+Great! Everything green and everything incredibly fast. Thanks a lot @xabbuh.

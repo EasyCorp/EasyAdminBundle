@@ -41,16 +41,16 @@ matrix:
 
 before_install:
   - composer selfupdate
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
-  - if [ "$TWIG_VERSION" != "" ]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
-  - if [ "$SYMFONY_VERSION" != 2.7.* && "$TRAVIS_PHP_VERSION" != 7.0 ]; then phpenv config-rm xdebug.ini; fi;
+  - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
+  - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
+  - if [[ "$SYMFONY_VERSION" != 2.7.* && "$TRAVIS_PHP_VERSION" != 7.0 ]]; then phpenv config-rm xdebug.ini; fi;
 
 install:
   - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
   - composer require --dev satooshi/php-coveralls:~0.6
 
 script:
-  - if [ "$SYMFONY_VERSION" = 2.7.* ]; then phpunit --coverage-text --coverage-clover build/logs/clover.xml; else phpunit; fi;
+  - if [[ "$SYMFONY_VERSION" == 2.7.* ]]; then phpunit --coverage-text --coverage-clover build/logs/clover.xml; else phpunit; fi;
 
 after_success: |
-    if [ "$SYMFONY_VERSION" = 2.7.* ]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;
+    if [[ "$SYMFONY_VERSION" == 2.7.* ]]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;

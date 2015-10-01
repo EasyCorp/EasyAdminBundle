@@ -10,8 +10,7 @@
 {% block body_class 'edit edit-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
-    {% set _default_page_title = 'edit.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-    {{ _entity_config.edit.title|default(_default_page_title)|trans(_trans_parameters) }}
+    {{ _entity_config.edit.title|default('edit.page_title')|easyadmin_trans(_trans_parameters) }}
 {% endblock %}
 
 {% block main %}
@@ -32,19 +31,19 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <h4>{{ 'delete_modal.title'|trans(_trans_parameters, 'EasyAdminBundle') }}</h4>
-                        <p>{{ 'delete_modal.content'|trans(_trans_parameters, 'EasyAdminBundle') }}</p>
+                        <h4>{{ 'delete_modal.title'|easyadmin_trans(_trans_parameters) }}</h4>
+                        <p>{{ 'delete_modal.content'|easyadmin_trans(_trans_parameters) }}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" data-dismiss="modal" class="btn">
-                            {{ 'action.cancel'|trans(_trans_parameters, 'EasyAdminBundle') }}
+                            {{ 'action.cancel'|easyadmin_trans(_trans_parameters) }}
                         </button>
 
                         {% if easyadmin_action_is_enabled_for_edit_view('delete', _entity_config.name) %}
                             {% set _delete_action = easyadmin_get_action_for_edit_view('delete', _entity_config.name) %}
                             <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
                                 {% if _delete_action.icon %}<i class="fa fa-{{ _delete_action.icon }}"></i>{% endif %}
-                                {{ _delete_action.label|default('action.delete')|trans(_trans_parameters, 'EasyAdminBundle')|trans(_trans_parameters) }}
+                                {{ _delete_action.label|default('action.delete')|easyadmin_trans(_trans_parameters) }}
                             </button>
                         {% endif %}
                     </div>

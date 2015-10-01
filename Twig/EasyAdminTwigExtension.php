@@ -12,16 +12,19 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\PersistentCollection;
+use Symfony\Component\Translation\Translator;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
 class EasyAdminTwigExtension extends \Twig_Extension
 {
     private $configurator;
+    private $translator;
     private $debug;
 
-    public function __construct(Configurator $configurator, $debug = false)
+    public function __construct(Configurator $configurator, Translator $translator, $debug = false)
     {
         $this->configurator = $configurator;
+        $this->translator = $translator;
         $this->debug = $debug;
     }
 
@@ -42,6 +45,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFilter('easyadmin_truncate', array($this, 'truncateText'), array('needs_environment' => true)),
             new \Twig_SimpleFilter('easyadmin_urldecode', 'urldecode'),
+            new \Twig_SimpleFilter('easyadmin_trans', array($this, 'translateText'), array('is_safe' => array('html'))),
         );
     }
 
@@ -289,6 +293,14 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         return $value;
+    }
+
+    public function translateText($value, $transParameters)
+    {
+        $firstPassTranslation = $this->translator->trans($value, $transParameters, 'EasyAdminBundle');
+        $secondPassTranslation = $this->translator->trans($firstPassTranslation, $transParameters);
+
+        return $secondPassTranslation;
     }
 
     public function getName()

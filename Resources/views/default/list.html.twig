@@ -15,8 +15,7 @@
     {% if 'search' == app.request.get('action') %}
         {{ 'search.page_title'|transchoice(count = paginator.nbResults, domain = 'EasyAdminBundle')|raw }}
     {% else %}
-        {% set _default_page_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-        {{ _entity_config.list.title|default(_default_page_title)|trans(_trans_parameters) }}
+        {{ _entity_config.list.title|default('list.page_title')|easyadmin_trans(_trans_parameters) }}
     {% endif %}
 {% endblock %}
 
@@ -52,7 +51,7 @@
                             <div id="content-actions">
                                 <a class="btn {{ _action.css_class|default('') }}" href="{{ path('admin', _request_parameters|merge({ action: _action.name })) }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                    {{ _action.label|default('action.new')|trans(_trans_parameters, 'EasyAdminBundle')|trans(_trans_parameters) }}
+                                    {{ _action.label|default('action.new')|easyadmin_trans(_trans_parameters) }}
                                 </a>
                             </div>
                         {% endblock new_action %}
@@ -67,7 +66,7 @@
                                 <input type="hidden" name="sortField" value="{{ _request_parameters.sortField }}">
                                 <input type="hidden" name="sortDirection" value="{{ _request_parameters.sortDirection }}">
                                 <div class="input-group">
-                                    <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters, 'EasyAdminBundle')|trans(_trans_parameters) }}" value="{{ app.request.get('query')|default('') }}">
+                                    <input class="form-control" id="content-search-query" type="search" name="query" placeholder="{{ _action.label|default('action.search')|easyadmin_trans(_trans_parameters) }}" value="{{ app.request.get('query')|default('') }}">
                                 </div>
                             </form>
                         {% endblock search_action %}
@@ -154,7 +153,7 @@
                                                 <a class="{{ _action.css_class|default('') }}" href="{{ _action_href }}">
                                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                                     {% set _action_trans_parameters = _trans_parameters|merge({ '%entity_id%': _item_id }) %}
-                                                    {{ _action.label|trans(_action_trans_parameters, 'EasyAdminBundle')|trans(_action_trans_parameters) }}
+                                                    {{ _action.label|easyadmin_trans(_action_trans_parameters) }}
                                                 </a>
                                             {% endfor %}
                                         {% endspaceless %}

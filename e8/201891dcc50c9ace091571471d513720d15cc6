@@ -1,0 +1,72 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-30T19:51:07Z
+
+Forget the question (2) ... it was a problem with my local setup. Everything works as expected.
+
+Regarding the question (1), tests fail if I don't do the double translation, first using our domain and then the default domain.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-30T19:51:53Z
+
+I'm not fan of the translationception when you use the filter twice, it's really too much for me to understand.
+
+About the actions, I think we should put them all in the `messages` domain and then provide a default `messages.{locale}.xlf` file in the bundle to have them "defaulted", and for the users to be more familiar with the translation system: Actions in "messages", everything else is under EasyAdminBundle.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-30T20:18:50Z
+
+I acknowledge that the solution is not beautiful ... but it now works as expected. If anyone has experience dealing with this kind of translations, please share your thoughts. Thanks.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-09-30T22:00:52Z
+
+Would at least hiding the translationception in a custom Twig filter be more elegant ? (It has its own drawbacks, but...)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-01T18:51:40Z
+
+OK, I've just committed a new filter called `easyadmin_trans` which does the double translation. I have to add some docs, etc. but it can be reviewed.
+
+This is how translation works right now:
+
+  * If the string belongs to the bundle, we use `{% trans_default_domain 'EasyAdminBundle' %}` or `|trans(domain = 'EasyAdminBundle')` depending on the template.
+  * If the string belongs to the application, we use `|trans`
+  * If the string can belong to us or the application (for instance the page title or the action label) we use the new `|easyadmin_trans` which does the double-pass translation, first with our domain `EasyAdminBundle` and then with the default `messages` domain.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-10-01T19:00:12Z
+
+Looks so ugly to me... A simple `trans` filter with the correct domain would have been largely sufficient...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-01T19:26:56Z
+
+@Pierstoval do you think it's better to split our translations in two files? The `EasyAdminBundle` one with most of the strings and a new small `messages` file with the action labels (Edit, Show, Delete, etc.) ?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-10-01T19:32:54Z
+
+> do you think it's better to split our translations in two files
+
+Yes, totally, because `messages` is already used in most translated apps, so it could be much better too store the words right here, even if we change the translation id a bit.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-01T19:56:07Z
+
+Here it is the new implementation:
+
+  * In `EasyAdminBundle.xx.xlf` we define most of our strings.
+  * In the new `messages.xx.xlf` file we define just the name of the actions.
+  * We now use `|trans` for most of the contents.
+  * When something is exclusive to our bundle, we use `{% trans_default_domain 'EasyAdminBundle' %}` or `|trans(domain = 'EasyAdminBundle')` depending on the template.
+
+So there is nothing custom. We just use the default Symfony + Twig features.

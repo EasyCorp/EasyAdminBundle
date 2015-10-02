@@ -223,11 +223,11 @@ Customize the Properties Appearance
 
 By default, properties are displayed with the most appropriate appearance
 according to their data types and their labels are generated automatically
-based on their property name (e.g. if the property name is `published`, the 
+based on their property name (e.g. if the property name is `published`, the
 label will be `Published` and if the name is `dateOfBirth`, the label will be
 `Date of birth`).
 
-In order to customize the appearance of the properties,use the following 
+In order to customize the appearance of the properties,use the following
 expanded field configuration:
 
 ```yaml
@@ -310,6 +310,9 @@ These are the options that you can define for each field:
         `show` views (as explained later in this chapter).
       * `toggle`, displays a boolean value as a flip switch in the `list`
         and `search` views (as explained later in this chapter).
+      * `raw`, displays the value unescaped (thanks to the `raw` Twig filter),
+        which is useful when the content stores HTML code that must be rendered
+        instead of displayed as HTML tags (as explained later in this chapter).
 
 In addition to these "official" options, you can define any custom option for
 the fields. These custom options are passed to the template that renders each
@@ -472,8 +475,8 @@ be modified:
 
 ### Customize Image Properties
 
-If some property stores the URL of an image, you can show the actual image in 
-the `list`, `search` and `show` views instead of its URL. Just set the type of 
+If some property stores the URL of an image, you can show the actual image in
+the `list`, `search` and `show` views instead of its URL. Just set the type of
 the property to `image`:
 
 ```yaml
@@ -538,6 +541,25 @@ easy_admin:
 The base paths defined for a property always have priority over the one defined
 globally for the entity.
 
+### Displaying Raw Values
+
+All the string-based values are escaped before displaying them. For that reason,
+if the value stores HTML content, you'll see the HTML tags instead of the rendered
+HTML content. In case you want to display the rendered content, set the type of
+the property to `raw`:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            list:
+                fields:
+                    - { property: 'features', type: 'raw' }
+                    # ...
+    # ...
+```
+
 List View Configuration
 -----------------------
 
@@ -581,7 +603,7 @@ Edit and New Views Configuration
 ### The Special Form View
 
 The `edit` and `new` views are pretty similar, so most of the times you apply
-the same customization to them. Instead of duplicating the configuration for 
+the same customization to them. Instead of duplicating the configuration for
 both views, you can use the special `form` view:
 
 ```yaml

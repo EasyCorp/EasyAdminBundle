@@ -72,6 +72,7 @@ easy_admin:
                 paginator: custom_entity_template/paginator.html.twig
                 show: custom_entity_template/show.html.twig
                 flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
+                field_raw: '@EasyAdmin/default/field_raw.html.twig'
             label: TestEntity
             name: TestEntity
             edit:

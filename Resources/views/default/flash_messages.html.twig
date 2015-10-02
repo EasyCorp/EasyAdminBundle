@@ -1,4 +1,4 @@
-{% if app.session.started %}
+{% if app.session is not null and app.session.started %}
     <div id="flash-messages">
         {% for label, messages in app.session.flashbag.all %}
             {% for message in messages %}

@@ -447,7 +447,7 @@ class CustomizedBackendTest extends AbstractTestCase
         try {
             $profile = $this->client->getProfile();
             /** @var FormDataCollector $formCollector */
-            $formData = $profiler->getCollector('form')->getData();
+            $formData = $profile->getCollector('form')->getData();
             $categoryFields = $formData['forms']['form']['children'];
             $this->assertSame($categoryFields['name']['errors'][0]['message'], 'This value should not be null.');
         } catch (\Exception $e) {

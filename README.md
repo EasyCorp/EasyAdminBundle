@@ -36,10 +36,6 @@ with unprecedented simplicity.
 Documentation
 -------------
 
-Providing good documentation is a top priority for us. That's why EasyAdmin has
-more lines of documentation than lines of code and we never add undocumented
-features.
-
 #### Getting Started Guide
 
   * [Chapter 1 - Installation](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/1-installation.md)

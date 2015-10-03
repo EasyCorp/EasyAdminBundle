@@ -11,6 +11,12 @@
             <div class="{{ _field_metadata.css_class|default('col-xs-12') }}">
                 {% if _field_metadata['fieldType'] == 'association' %}
                     {{ easyadmin_render_field_for_edit_view(entity, _field_metadata) }}
+                {% elseif _field_metadata['repeated'] is defined and _field_metadata['repeated'] == true %}
+                    {% set _field_label = field.first.vars.label|default('') %}
+                    {{ form_row(field.first, { label: _field_label|trans(_trans_parameters) }) }}
+
+                    {% set _field_label = field.second.vars.label|default('form.repeated.seize_again') %}
+                    {{ form_row(field.second, { label: _field_label|trans(_trans_parameters) }) }}
                 {% else %}
                     {% set _field_label = _field_metadata['label']|default(null) %}
                     {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}

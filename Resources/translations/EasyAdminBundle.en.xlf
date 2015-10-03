@@ -117,6 +117,12 @@
                 <source>errors</source>
                 <target>Error|Errors</target>
             </trans-unit>
+
+            <!-- form labels -->
+            <trans-unit id="form.repeated.seize_again">
+                <source>form.repeated.seize_again</source>
+                <target>Seize again</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

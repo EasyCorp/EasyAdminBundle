@@ -22,6 +22,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -580,28 +581,75 @@ class AdminController extends Controller
         ));
 
         foreach ($entityProperties as $name => $metadata) {
-            $formFieldOptions = array();
-
-            if ('association' === $metadata['fieldType'] && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
-                continue;
-            }
-
-            if ('collection' === $metadata['fieldType']) {
-                $formFieldOptions = array('allow_add' => true, 'allow_delete' => true);
-
-                if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
-                    $formFieldOptions['delete_empty'] = true;
-                }
-            }
-
-            $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];
-            $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
-            $formFieldOptions['attr']['field_help'] = $metadata['help'];
-
-            $formBuilder->add($name, $metadata['fieldType'], $formFieldOptions);
+            $this->createEntityFormField($formBuilder, $name, $metadata);
         }
 
         return $formBuilder->getForm();
+    }
+
+    /**
+     * Create a field for a create form
+     *
+     * @param FormBuilder $formBuilder
+     * @param string        $name
+     * @param array       $metadata
+     * @return null
+     */
+    protected function createEntityFormField(FormBuilder $formBuilder, $name, array $metadata)
+    {
+        $formFieldOptions = array();
+
+        $fieldType = $metadata['fieldType'];
+
+        if ('association' === $fieldType && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
+            return;
+        }
+
+        if ('collection' === $fieldType) {
+            $formFieldOptions = array('allow_add' => true, 'allow_delete' => true);
+
+            if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
+                $formFieldOptions['delete_empty'] = true;
+            }
+        }
+
+        //if the repeated options has been activated
+        if (isset($metadata['repeated']) && (true === $metadata['repeated'])) {
+            $fieldType = 'repeated';
+            $formFieldOptions = $this->getFieldRepeatedOptions($metadata);
+        }
+
+        $formFieldOptions['attr']['field_type'] = $fieldType;
+        $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
+        $formFieldOptions['attr']['field_help'] = $metadata['help'];
+
+        $formBuilder->add($name, $fieldType, $formFieldOptions);
+    }
+
+    /**
+     * Get the options required for a repeated field
+     *
+     * @param array $metadata
+     *
+     * @return array
+     */
+    protected function getFieldRepeatedOptions(array $metadata)
+    {
+        $formFieldOptions = array(
+            'type' => $metadata['fieldType'],
+            'options' => array('required' => true),
+            'first_options'  => array('label' => $metadata['label']),
+        );
+
+        if (isset($metadata['repeated_label'])) {
+            $formFieldOptions['second_options'] = array('label' => $metadata['repeated_label']);
+        }
+
+        if (isset($metadata['invalid_message'])) {
+            $formFieldOptions['invalid_message'] = $metadata['invalid_message'];
+        }
+
+        return $formFieldOptions;
     }
 
     /**

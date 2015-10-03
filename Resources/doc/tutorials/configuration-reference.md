@@ -101,6 +101,30 @@ easy_admin:
                     - { property: 'category', label: 'Commercial Category' }
 ```
 
+
+Advanced Configuration with Repeated Field Configuration
+---------------------------------------------------------
+
+This advanced configuration allows to use a repeat field:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            label: Inventory
+            class: AppBundle\Entity\Product
+            list:
+                fields: ['id', 'username', 'password']
+            form:
+                fields:
+                    - username
+                    - { property: 'password', type: 'password', repeated: true, invalid_message: 'Inventory.password.repeated.invalid', repeated_label: 'Inventory.password.second.label'}
+
+```
+
+The invalid_message and repeated_label properties are optionnals.
+
+
 Combining Different Configuration Formats
 -----------------------------------------
 

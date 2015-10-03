@@ -450,7 +450,7 @@ class CustomizedBackendTest extends AbstractTestCase
             $data = $formCollector->getData();
             $categoryFields = $data['forms']['form']['children'];
             $this->assertSame($categoryFields['name']['errors'][0]['message'], 'This value should not be null.');
-        } catch (\InvalidArgumentException $e) {
+        } catch (\Exception $e) {
             // TODO: remove this condition when support for Symfony 2.3 is dropped
             // In Symfony 2.3 FormDataCollector does not exist. Search in response content.
             $this->assertContains('This value should not be null.', $crawler->filter('.error-block')->first()->text());

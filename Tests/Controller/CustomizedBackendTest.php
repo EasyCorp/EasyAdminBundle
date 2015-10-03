@@ -445,10 +445,10 @@ class CustomizedBackendTest extends AbstractTestCase
 
         // test validation groups
         try {
+            $profile = $this->client->getProfile();
             /** @var FormDataCollector $formCollector */
-            $formCollector = $this->client->getProfile()->getCollector('form');
-            $data = $formCollector->getData();
-            $categoryFields = $data['forms']['form']['children'];
+            $formData = $profiler->getCollector('form')->getData();
+            $categoryFields = $formData['forms']['form']['children'];
             $this->assertSame($categoryFields['name']['errors'][0]['message'], 'This value should not be null.');
         } catch (\Exception $e) {
             // TODO: remove this condition when support for Symfony 2.3 is dropped

@@ -28,8 +28,8 @@ class EasyAdminDataCollector extends DataCollector
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         $backendConfiguration = $this->configurator->getBackendConfig();
-        $entityName = $request->query->get('entity');
-        $currentEntityConfiguration = $entityName ? $backendConfiguration['entities'][$entityName] : null;
+        $entityName = $request->query->get('entity', null);
+        $currentEntityConfiguration = array_key_exists($entityName, $backendConfiguration['entities']) ? $backendConfiguration['entities'][$entityName] : array();
 
         $this->data = array(
             'num_entities' => count($backendConfiguration['entities']),

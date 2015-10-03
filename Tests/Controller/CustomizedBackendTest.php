@@ -429,31 +429,29 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testNewCustomFormOptions()
     {
-        $parameters = array(
-            'action' => 'new',
-            'entity' => 'Category',
-        );
+        $this->client->enableProfiler();
 
-        $crawler = $this->getBackendPage($parameters);
+        $crawler = $this->requestNewView();
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
 
-        // Check `novalidate` attribute:
+        // test 'novalidate' attribute
         $this->assertSame('novalidate', $crawler->filter('#new-form')->first()->attr('novalidate'));
+
         $form = $crawler->selectButton('Save changes')->form();
         $form->remove('category[name]');
-        $this->client->enableProfiler();
         $crawler = $this->client->submit($form);
+
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
 
-        // Test validation groups
+        // test validation groups
+        $profile = $this->client->getProfile();
         try {
-            /** @var FormDataCollector $formCollector */
-            $formCollector = $this->client->getProfile()->getCollector('form');
-            $data = $formCollector->getData();
-            $categoryFields = $data['forms']['form']['children'];
+            $formData = $profile->getCollector('form')->getData();
+            $categoryFields = $formData['forms']['form']['children'];
             $this->assertSame($categoryFields['name']['errors'][0]['message'], 'This value should not be null.');
-        } catch (\InvalidArgumentException $ex) {
-            // FormDataCollector does not exist. Search in response content.
+        } catch (\Exception $e) {
+            // TODO: remove this condition when support for Symfony 2.3 is dropped
+            // In Symfony 2.3 FormDataCollector does not exist. Search in response content.
             $this->assertContains('This value should not be null.', $crawler->filter('.error-block')->first()->text());
         }
     }

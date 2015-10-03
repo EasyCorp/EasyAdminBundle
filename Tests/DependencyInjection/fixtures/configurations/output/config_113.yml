@@ -128,6 +128,8 @@ easy_admin:
                 label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
                 label_null: '@EasyAdmin/default/label_null.html.twig'
                 label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
+                flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
+                field_raw: '@EasyAdmin/default/field_raw.html.twig'
     design:
         assets:
             css: {  }

@@ -313,12 +313,32 @@ These are the options that you can define for each field:
       * `raw`, displays the value unescaped (thanks to the `raw` Twig filter),
         which is useful when the content stores HTML code that must be rendered
         instead of displayed as HTML tags (as explained later in this chapter).
+  * `type_options` (optional), a hash which can define the value of any of the
+    valid options defined by the Symfony Form type associated with the field.
 
-In addition to these "official" options, you can define any custom option for
-the fields. These custom options are passed to the template that renders each
-field, allowing to create very powerful backend customizations, as explained
-in the [Advanced Design Customization] [advanced-design-customization]
-tutorial.
+The `type_options` is the most powerful option because it literally comprises
+tens of options suited for each form type:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields:
+                    - 'id'
+                    - { property: 'email', type: 'email', type_options: { trim: true } }
+                    - { property: 'interests', type_options: { expanded: true, multiple: true } }
+                    - { property: 'updated_at', type_options: { read_only: true } }
+```
+
+Read the [Symfony Form type reference](http://symfony.com/doc/current/reference/forms/types.html)
+to learn about all the available options, their usage and allowed values.
+
+> In addition to these options defined by EasyAdmin, you can pass any custom
+> option to the form fields. This way you can create very powerful backend
+> customizations, as explained in the
+> [Advanced Design Customization] [advanced-design-customization] tutorial.
 
 ### Translate Property Labels
 

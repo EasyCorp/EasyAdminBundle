@@ -582,17 +582,25 @@ class AdminController extends Controller
         $formBuilder = $this->createFormBuilder($entity, $formOptions);
 
         foreach ($entityProperties as $name => $metadata) {
-            $formFieldOptions = array();
+            $formFieldOptions = $metadata['type_options'];
 
             if ('association' === $metadata['fieldType'] && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
                 continue;
             }
 
             if ('collection' === $metadata['fieldType']) {
-                $formFieldOptions = array('allow_add' => true, 'allow_delete' => true);
+                if (!isset($formFieldOptions['allow_add'])) {
+                    $formFieldOptions['allow_add'] = true;
+                }
+
+                if (!isset($formFieldOptions['allow_delete'])) {
+                    $formFieldOptions['allow_delete'] = true;
+                }
 
                 if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
-                    $formFieldOptions['delete_empty'] = true;
+                    if (!isset($formFieldOptions['delete_empty'])) {
+                        $formFieldOptions['delete_empty'] = true;
+                    }
                 }
             }
 

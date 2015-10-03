@@ -36,11 +36,11 @@ with unprecedented simplicity.
 Documentation
 -------------
 
-We believe that a project is as good as its documentation. That's why EasyAdmin
-has more lines of documentation than lines of code and we never merge undocumented
+Providing good documentation is a top priority for us. That's why EasyAdmin has
+more lines of documentation than lines of code and we never add undocumented
 features.
 
-### Getting Started Guide
+#### Getting Started Guide
 
   * [Chapter 1 - Installation](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/1-installation.md)
   * [Chapter 2 - Your First Backend](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/2-first-backend.md)
@@ -49,7 +49,7 @@ features.
   * [Chapter 5 - Backend Design Customization](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/5-design-customization.md)
   * [Chapter 6 - About this Project](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/6-about-this-project.md)
 
-### Advanced Tutorials
+#### Advanced Tutorials
 
   * [Customizing Backend Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/customizing-backend-actions.md)
   * [Customizing AdminController](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/customizing-admin-controller.md)
@@ -57,15 +57,11 @@ features.
   * [Tips and Tricks](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/tips-and-tricks.md)
   * [Configuration Reference](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/configuration-reference.md)
 
------
+> **❮ NOTE ❯** you are reading the documentation of the bundle's **development**
+> version. You can also [read the documentation of the latest stable version ➜]
+> (https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.6.2/).
 
-**❮ NOTE ❯** you are reading the documentation of the bundle's **development**
-version. You can also [read the documentation of the latest stable version ➜]
-(https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.6.2/).
-
------
-
-### Demo Application
+#### Demo Application
 
 [easy-admin-demo](https://github.com/javiereguiluz/easy-admin-demo) is a simple
 Symfony application created to showcase EasyAdmin features.

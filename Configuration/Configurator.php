@@ -35,7 +35,7 @@ class Configurator
         'virtual'   => false, // is a virtual field or a real Doctrine entity property?
         'sortable'  => true,  // listings can be sorted according to the values of this field
         'template'  => null,  // the path of the template used to render the field in 'show' and 'list' views
-        'type_options' => array(), // the Symfony Form Type options used to build the form field
+        'type_options' => array(), // the options passed to the Symfony Form type used to render the form field
     );
 
     private $doctrineTypeToFormTypeMap = array(

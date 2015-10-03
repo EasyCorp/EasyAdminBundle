@@ -121,10 +121,10 @@ entity:
 # app/config/config.yml
 easy_admin:
     entities:
-        Customers: 
+        Customers:
             label: 'Active Clients'
             class: AppBundle\Entity\Customer
-        Orders: 
+        Orders:
             label: 'Pending Orders'
             class: AppBundle\Entity\Order
 ```
@@ -137,6 +137,10 @@ is usually configured in the `locale` option of the `app/config/parameters.yml`
 file. The current version of EasyAdmin supports tens of languages and we're
 actively looking for more translations contributed by the community.
 
+The strings that belong to the bundle interface are translated using the
+special `EasyAdminBundle` translation domain. The rest of the strings, such as
+the property names, are translated using the default `messages` domain.
+
 Customize the Translation of the Main Menu Items
 ------------------------------------------------
 
@@ -148,10 +152,10 @@ use translation keys instead of contents in the configuration file:
 # app/config/config.yml
 easy_admin:
     entities:
-        Customers: 
+        Customers:
             label: app.customers
             class: AppBundle\Entity\Customer
-        Orders: 
+        Orders:
             label: app.orders
             class: AppBundle\Entity\Order
 ```
@@ -164,7 +168,7 @@ menu items translated.
 Restrict the Access to the Backend
 ----------------------------------
 
-EasyAdmin doesn't provide any security related feature because it relies on 
+EasyAdmin doesn't provide any security related feature because it relies on
 the underlying Symfony security features. In case you need it, checkout the
 [Security Chapter](http://symfony.com/doc/current/book/security.html) of the
 official Symfony documentation to learn how to restrict the access to the

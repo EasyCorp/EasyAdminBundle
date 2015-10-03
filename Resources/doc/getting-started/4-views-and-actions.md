@@ -683,5 +683,32 @@ This problem is solved defining a custom `utcdatetime` Form Type. Read the
 article of the official Symfony documentation to learn how to define custom
 form types.
 
+### Applying Custom Options for Entity Forms
+
+By default, EasyAdmin only sets the `data_class` option in the forms built to
+create and edit entities. If you need to pass custom options to any form, define
+the `form_options` option under the `edit`, `new` or `form` options:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                form_options: { validation_groups: ['Default', 'my_validation_group'] }
+    # ...
+```
+
+This configuration makes EasyAdmin to generate the form for the `edit` and `new`
+views of the `Customer` entity using this PHP code:
+
+```php
+$form = $this->createFormBuilder($entity, array(
+    'data_class' => 'AppBundle\Entity\Customer',
+    'validation_groups' => array('Default', 'my_validation_group'),
+))
+-> ...
+```
+
 [custom-actions]: ../tutorials/customizing-backend-actions.md
 [advanced-design-customization]: ../tutorials/advanced-design-customization.md

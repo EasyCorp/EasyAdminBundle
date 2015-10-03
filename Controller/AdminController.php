@@ -574,7 +574,7 @@ class AdminController extends Controller
             return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
         });
 
-        $formOptions = array_replace(array(
+        $formOptions = array_replace_recursive(array(
             'data_class' => $this->entity['class'],
             'attr' => array('class' => $formCssClass, 'id' => $view.'-form'),
         ), $this->entity[$view]['form_options']);

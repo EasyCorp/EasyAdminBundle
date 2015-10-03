@@ -145,6 +145,7 @@ easy_admin:
                 field_id: custom_template/field_id.html.twig
                 field_image: custom_template/field_image.html.twig
                 field_integer: custom_template/field_integer.html.twig
+                field_raw: '@EasyAdmin/default/field_raw.html.twig'
                 field_simple_array: custom_template/field_simple_array.html.twig
                 field_smallint: custom_template/field_smallint.html.twig
                 field_string: custom_template/field_string.html.twig

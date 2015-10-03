@@ -79,6 +79,17 @@ class Product
     protected $features = array();
 
     /**
+     * Features of the product as a formatted HTML content.
+     * Example:<pre><ul>
+     *     <li><strong>Size</strong>: 13cm x 15cm x 6cm</li>
+     *     <li><strong>Bluetooth</strong>: 4.1</li>
+     * </ul></pre>
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    protected $htmlFeatures = '';
+
+    /**
      * The price of the product.
      *
      * @var float
@@ -248,6 +259,26 @@ class Product
     public function getFeatures()
     {
         return $this->features;
+    }
+
+    /**
+     * Set the list of HTML features.
+     *
+     * @param string $htmlFeatures
+     */
+    public function setHtmlFeatures($htmlFeatures)
+    {
+        $this->htmlFeatures = $htmlFeatures;
+    }
+
+    /**
+     * Get all product HTML features.
+     *
+     * @return string
+     */
+    public function getHtmlFeatures()
+    {
+        return $this->htmlFeatures;
     }
 
     /**

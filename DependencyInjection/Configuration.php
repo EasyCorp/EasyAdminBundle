@@ -291,6 +291,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('field_id')->info('Used to render the field called "id". This avoids formatting its value as any other regular number (with decimals and thousand separators) ')->end()
                                 ->scalarNode('field_image')->info('Used to render image field types (a special type that displays the image contents)')->end()
                                 ->scalarNode('field_integer')->info('Used to render integer field types')->end()
+                                ->scalarNode('field_raw')->info('Used to render unescaped values')->end()
                                 ->scalarNode('field_simple_array')->info('Used to render simple array field types')->end()
                                 ->scalarNode('field_smallint')->info('Used to render smallint field types')->end()
                                 ->scalarNode('field_string')->info('Used to render string field types')->end()

@@ -13,7 +13,7 @@ easy_admin:
             new:
                 fields:
                     - { property: 'name', type_options: { read_only: true } }
-                    - { property: 'parent', type_options: { placeholder: 'Select a category...', multiple: false, expanded: true } }
+                    - { property: 'parent', type_options: { multiple: false, expanded: true } }
             edit:
                 fields:
                     - { property: 'name', type_options: { label_attr: { class: 'col-sm-6' }, attr: { class: 'col-sm-6' } } }

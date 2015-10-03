@@ -27,10 +27,9 @@ class TypeOptionsTest extends AbstractTestCase
     {
         $crawler = $this->requestNewView();
 
-        $this->assertEquals('readonly', $crawler->filter('#main form #form_name')->eq(0)->attr('readonly'));
+        $this->assertEquals('readonly', $crawler->filter('#main form #form_name')->attr('readonly'));
 
         $this->assertCount(201, $crawler->filter('#main form #form_parent input[type=radio]'));
-        $this->assertEquals('Select a category...', $crawler->filter('#main form #form_parent div.radio')->eq(0)->text());
     }
 
     public function testEditViewTypeOptions()

@@ -444,9 +444,8 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
 
         // test validation groups
+        $profile = $this->client->getProfile();
         try {
-            $profile = $this->client->getProfile();
-            /** @var FormDataCollector $formCollector */
             $formData = $profile->getCollector('form')->getData();
             $categoryFields = $formData['forms']['form']['children'];
             $this->assertSame($categoryFields['name']['errors'][0]['message'], 'This value should not be null.');

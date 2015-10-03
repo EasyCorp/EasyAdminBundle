@@ -12,7 +12,7 @@ easy_admin:
             label: 'Categories'
             new:
                 fields:
-                    - { property: 'name', type_options: { read_only: true } }
+                    - { property: 'name', type_options: { disabled: true } }
                     - { property: 'parent', type_options: { placeholder: 'Select a category...', multiple: false, expanded: true } }
             edit:
                 fields:

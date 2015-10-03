@@ -1,0 +1,39 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-21T10:25:26Z
+
+Sounds good to me to use `form_options` here, and `form_field_option` in the fields configuration
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-21T12:15:38Z
+
+I added a functional test adding `validation_groups` and `novalidate` html form attribute this morning, but I reverted it as the `FormDataCollector` I used in order to retrieve form validation errors isn't available with symfony <2.4.
+I've re-added it with an alternative for 2.3 only. In case we drop the support one day, we'll just have to get rid of the `try/catch` block.
+Tests should be ok now.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-22T12:14:16Z
+
+Rebased on master, since Tests structure has changed recently.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-06-12T18:56:48Z
+
+So maybe a small rebase to check everything is correct, followed by a merge is good?
+@javiereguiluz I know you have plenty of work but I think this feature and #323 are quite awaited...
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-06-12T19:47:07Z
+
+Phew! Accidentally removed the functional tests because I made those changes on another computer and didn't retrieve my last changes before push force for rebase...
+Github API saved me. As it might help one day : `https://api.github.com/repos/<user>/<repo>/events` (Allow to retrieve almost any commit)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-06-12T20:03:50Z
+
+@Pierstoval the only blocking issue is that I'm still thinking about this and the other realted PR to see what's the best way to implement this. But I'll make some decission soon.

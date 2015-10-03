@@ -122,6 +122,7 @@ easy_admin:
                         class: ''
                         icon: null
                 fields: {  }
+                form_options: {  }
             show:
                 actions:
                     delete:
@@ -224,6 +225,7 @@ easy_admin:
                         class: ''
                         icon: null
                 fields: {  }
+                form_options: {  }
             label: TestEntity
             name: TestEntity
             search:

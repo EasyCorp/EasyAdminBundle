@@ -11,10 +11,12 @@ easy_admin:
                         class: ''
                         icon: null
                 fields: {  }
+                form_options: {  }
             label: TestEntity
             name: TestEntity
             edit:
                 fields: {  }
+                form_options: {  }
                 actions:
                     delete:
                         name: delete

@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
+use Symfony\Component\Form\Extension\DataCollector\FormDataCollector;
 
 class CustomizedBackendTest extends AbstractTestCase
 {
@@ -424,6 +425,37 @@ class CustomizedBackendTest extends AbstractTestCase
         parse_str($queryString, $refererParameters);
 
         $this->assertEquals($parameters, $refererParameters);
+    }
+
+    public function testNewCustomFormOptions()
+    {
+        $parameters = array(
+            'action' => 'new',
+            'entity' => 'Category',
+        );
+
+        $crawler = $this->getBackendPage($parameters);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+
+        // Check `novalidate` attribute:
+        $this->assertSame('novalidate', $crawler->filter('#new-form')->first()->attr('novalidate'));
+        $form = $crawler->selectButton('Save changes')->form();
+        $form->remove('category[name]');
+        $this->client->enableProfiler();
+        $crawler = $this->client->submit($form);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+
+        // Test validation groups
+        try {
+            /** @var FormDataCollector $formCollector */
+            $formCollector = $this->client->getProfile()->getCollector('form');
+            $data = $formCollector->getData();
+            $categoryFields = $data['forms']['form']['children'];
+            $this->assertSame($categoryFields['name']['errors'][0]['message'], 'This value should not be null.');
+        } catch (\InvalidArgumentException $ex) {
+            // FormDataCollector does not exist. Search in response content.
+            $this->assertContains('This value should not be null.', $crawler->filter('.error-block')->first()->text());
+        }
     }
 
     public function testSearchViewPageMainMenu()

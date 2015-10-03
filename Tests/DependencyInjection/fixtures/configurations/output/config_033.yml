@@ -8,6 +8,7 @@ easy_admin:
                         property: field1
                     field2:
                         property: field2
+                form_options: {  }
                 actions:
                     delete:
                         name: delete
@@ -58,6 +59,7 @@ easy_admin:
                         icon: null
             new:
                 fields: {  }
+                form_options: {  }
                 actions:
                     list:
                         name: list

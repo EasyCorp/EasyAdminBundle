@@ -2,7 +2,15 @@ easy_admin:
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity
-            edit:
+            form:
+                form_options:
+                    validation_groups:
+                        - Default
+            new:
+                form_options:
+                    validation_groups:
+                        - Register
+                fields: {  }
                 actions:
                     list:
                         name: list
@@ -10,8 +18,24 @@ easy_admin:
                         label: action.list
                         class: ''
                         icon: null
+            edit:
+                form_options:
+                    validation_groups:
+                        - Update
                 fields: {  }
-                form_options: {  }
+                actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        class: ''
+                        icon: trash
+                    list:
+                        name: list
+                        type: method
+                        label: action.list
+                        class: ''
+                        icon: null
             label: TestEntity
             name: TestEntity
             list:
@@ -41,16 +65,6 @@ easy_admin:
                         label: action.new
                         class: ''
                         icon: null
-                    list:
-                        name: list
-                        type: method
-                        label: action.list
-                        class: ''
-                        icon: null
-            new:
-                fields: {  }
-                form_options: {  }
-                actions:
                     list:
                         name: list
                         type: method
@@ -88,7 +102,6 @@ easy_admin:
                 new: '@EasyAdmin/default/new.html.twig'
                 show: '@EasyAdmin/default/show.html.twig'
                 form: '@EasyAdmin/default/form.html.twig'
-                flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
                 paginator: '@EasyAdmin/default/paginator.html.twig'
                 field_array: '@EasyAdmin/default/field_array.html.twig'
                 field_association: '@EasyAdmin/default/field_association.html.twig'
@@ -102,7 +115,6 @@ easy_admin:
                 field_id: '@EasyAdmin/default/field_id.html.twig'
                 field_image: '@EasyAdmin/default/field_image.html.twig'
                 field_integer: '@EasyAdmin/default/field_integer.html.twig'
-                field_raw: '@EasyAdmin/default/field_raw.html.twig'
                 field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
                 field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
                 field_string: '@EasyAdmin/default/field_string.html.twig'

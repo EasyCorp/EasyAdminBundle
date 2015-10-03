@@ -1,0 +1,108 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-20T16:21:12Z
+
+~~IMO, `type_options` looks like we try to change default type options. In Symfony universe, a form "type" is something global and reusable. An instance of this form type will lead to the creation of a form element. I understand it in the context, but `form_options` was good enough I think. ^^'~~
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-05-20T16:52:42Z
+
+Changing the default type options is exactly what we try to do. Hence the name of the option. But maybe I didn't understand your comment.
+
+And I'm not sure if `form_options` is a good name, because it seems like you are setting the options for the entire form instead of the form field.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-05-20T18:32:07Z
+
+Well, forget about my comment.
+What I meant is by naming it `type_options`, we might think we're setting globally options that will be used every time for this type. (i.e: "Changing the default prototype" => if I set the `required` option to `false` for the `text` type, everywhere in my application (at least easyadmin part), the text type will have the `required` option set to `false`).
+
+But technically, we're indeed configuring a `FormTypeInterface` instance, which is in charge of using a `FormBuilderInterface` instance in order to build a `FormInterface` instance. In any case, we're not configuring the form itself, but the way it is built. So my arguments are invalid.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-05-20T19:25:21Z
+
+If you want something more explicit indicating that the property belongs to the form, you can use `form_field_option`, which is longer, but very verbose.
+
+For the rest, what you propose @javiereguiluz that is related to #217 , in fact I don't know at the moment if it works.
+Have you tried using something like `type_options: { attr: { class: "hidden" }, disabled: true }` and checked the generated html ?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-06-12T18:58:46Z
+
+So, where are we with this PR ?
+I think it needs a little rebase to check everything is ok and then merge it, like #326. If we need to clean this feature in the future, we can find other workarounds later :-)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-06-23T10:12:28Z
+
+@javiereguiluz, as of #366, this PR needs to be merged soon IMO ;)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-07-10T13:34:27Z
+
+@javiereguiluz I know you might be busy at the moment, but can you check this PR ?
+I'm starting to need it in some of my backends, and workarounds for this behavior are quite ugly (and not very stable...).
+Plus, it'd be great for an 1.6 version to have this feature and @ogizanagi #326's one when released
+
+---------------------------------------------------------------------------
+
+by romaricdrigon at 2015-07-13T12:18:22Z
+
+Hi all,
+
+What's the status of this PR?
+Setting form options is really a big deal. It is a very common use case and is needed by a lot of persons.
+Worst case scenario, there were other PR that were ready but declined for this one, if this one is not ready got for #304 at least.
+
+---------------------------------------------------------------------------
+
+by romaricdrigon at 2015-08-05T08:06:24Z
+
+Is it still active or dead?
+If dead, at least #304 should be merged...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-08-05T08:27:59Z
+
+@romaricdrigon it's not dead ... but right now I have no time to work on this because I'm fully committed to redesigning the Symfony Profiler. I'll be back soon :)
+
+---------------------------------------------------------------------------
+
+by romaricdrigon at 2015-08-05T12:34:54Z
+
+Good to know :)
+Though it would be nice to still have that one going forward. Is it only a question of rebase/fixing conflicts to have that one merged?
+
+---------------------------------------------------------------------------
+
+by asterion at 2015-08-16T00:25:25Z
+
+:+1:  :smile:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-02T18:40:30Z
+
+Still waiting :confounded:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-09-27T18:17:53Z
+
+25 days since my last ping.
+
+A friend of mine does need many of the features that are still upcoming and awaiting for reviews, especially this one.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-09-27T18:21:36Z
+
+I'm really sorry but I have too much work and I can't review this change carefully. Next week is going to be even worse because we are days away from the most important "feature freeze" in Symfony's history. I'm 100% focused on Symfony at the moment.

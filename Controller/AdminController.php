@@ -563,7 +563,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Creates the form used to create or edit an entity.
+     * Creates the form builder of the form used to create or edit the given entity.
      *
      * @param object $entity
      * @param array  $entityProperties
@@ -618,11 +618,14 @@ class AdminController extends Controller
     }
 
     /**
+     * Creates the form object used to create or edit the given entity.
+     *
      * @param object $entity
      * @param array  $entityProperties
      * @param string $view
      *
      * @return Form
+     *
      * @throws \Exception
      */
     protected function createEntityForm($entity, array $entityProperties, $view)

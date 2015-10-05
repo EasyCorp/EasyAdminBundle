@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-07-21T20:32:18Z
+
+This would be a BC break for people having overridden the `createEntityForm()` method, right (it's not called anymore)?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-07-22T07:20:55Z
+
+Em... You're right. Gotta find a solution maybe :confused:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-07-28T16:25:28Z
+
+Rebased on master, and found a solution @xabbuh .
+
+Instead of doing silly things, I made something much better: not force anyone to use the formBuilder system, and only take account of the formBuilder as a simple "new layer" used by the `createEntityForm` method.
+
+Does it seem good?

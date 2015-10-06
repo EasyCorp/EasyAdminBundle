@@ -638,6 +638,7 @@ class AdminController extends Controller
                     $customMethodName, is_object($form) ? get_class($form) : gettype($form)
                 ));
             }
+            return $form;
         }
 
         $formBuilder = $this->createEntityFormBuilder($entity, $entityProperties, $view);

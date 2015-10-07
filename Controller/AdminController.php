@@ -638,9 +638,15 @@ class AdminController extends Controller
                     $customMethodName, is_object($form) ? get_class($form) : gettype($form)
                 ));
             }
+            return $form;
         }
 
-        $formBuilder = $this->createEntityFormBuilder($entity, $entityProperties, $view);
+        if (method_exists($this, $customBuilderMethodName = 'create'.$this->entity['name'].'EntityFormBuilder')) {
+            $formBuilder = $this->{$customBuilderMethodName}($entity, $entityProperties, $view);
+        } else {
+            $formBuilder = $this->createEntityFormBuilder($entity, $entityProperties, $view);
+        }
+
         if (!$formBuilder instanceof FormBuilderInterface) {
             throw new \Exception(sprintf(
                 'The "%s" method must return a FormBuilderInterface, "%s" given.',

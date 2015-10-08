@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Listener;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionListener
@@ -41,7 +42,7 @@ class ExceptionListener
         $exception = $event->getException();
         $exceptionClassName = basename(str_replace('\\', '/', get_class($exception)));
 
-        if (!array_key_exists($exceptionClassName, $this->exceptionTemplates)) {
+        if (!$exception instanceof BaseException || !array_key_exists($exceptionClassName, $this->exceptionTemplates)) {
             return;
         }
 

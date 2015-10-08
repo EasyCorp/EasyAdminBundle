@@ -18,8 +18,8 @@ in the [Composer documentation](https://getcomposer.org/doc/00-intro.md).
 
 ### Step 2: Enable the Bundle
 
-Then, enable the bundle by adding the following line in the `app/AppKernel.php`
-file of your Symfony application:
+Then, enable the bundle by adding it to the list of registered bundles in the
+`app/AppKernel.php` file of your project:
 
 ```php
 <?php
@@ -42,8 +42,8 @@ class AppKernel extends Kernel
 
 ### Step 3: Load the Routes of the Bundle
 
-Open your main routing configuration file (usually `app/config/routing.yml`)
-and copy the following four lines at the very beginning of it:
+Load the routes of the bundle by adding this configuration at the very beginning
+of the `app/config/routing.yml` file:
 
 ```yaml
 # app/config/routing.yml
@@ -57,9 +57,9 @@ easy_admin_bundle:
 
 ### Step 4: Prepare the Web Assets of the Bundle
 
-This bundle includes several CSS, JavaScript and font files which are used in
-the backend interface. Execute the following command to make those assets
-available in your Symfony application:
+This bundle uses several CSS, JavaScript and font files to create the backend
+interfaces. Execute the following command to make those assets available in your
+Symfony application:
 
 ```cli
 php app/console assets:install --symlink

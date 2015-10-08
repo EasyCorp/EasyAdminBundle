@@ -4,11 +4,11 @@ Chapter 4. Views and Actions
 Introduction to Views and Actions
 ---------------------------------
 
-Backends consist of **views** and **actions**. The **view** is the page where
-you are (`list`, `edit`, `show`, etc.) and the **action** is what you want to
-do next (`search`, `delete`, etc.)
+EasyAdmin backends consist of **views** and **actions**. The **view** is the
+page where you are (`list`, `edit`, `show`, etc.) and the **action** is what
+you want to do next (`search`, `delete`, etc.)
 
-EasyAdmin defines five different **views** for each entity: `edit`, `list`,
+There are five different **views** defined for each entity: `edit`, `list`,
 `new`, `search` and `show`. The `list` view is mandatory for all entities, but
 the rest of the views can be disabled if needed as explained in this chapter.
 
@@ -58,9 +58,9 @@ to configure and/or disable default actions and how to create your own actions.
 Common View Configuration
 -------------------------
 
-In this section you'll learn all the common configuration that can be applied
+In this section you'll learn about the configuration options that can be applied
 to all views. The examples will use the `list` view, but you can replace it
-with any other view (`edit`, `new`, `show`, `search`). In the next sections
+with any other view (`edit`, `new`, `show`, `search`). In the following sections
 you'll learn the specific configuration options available for each view.
 
 ### Customize the Title of the Page
@@ -89,9 +89,9 @@ The `title` content can include the following special variables:
     to configure the entity in the backend configuration file. In the example
     above, this value would be `Customer`.
   * `%entity_id%`, resolves to the value of the primary key of the entity being
-    edited or showed. Obviously, this variable is only available for the `show`
-    and `edit` views. Even if the option is called `entity_id`, it also works
-    for primary keys with names different from `id`.
+    edited or showed. This variable is only available for the `show` and `edit`
+    views. Even if the option is called `entity_id`, it also works for primary
+    keys with names different from `id`.
 
 Beware that, in Symfony applications, YAML values enclosed with `%` and `%`
 have a special meaning. To avoid any issue, use two consecutive `%` characters
@@ -110,9 +110,9 @@ easy_admin:
 
 ### Customize the Properties Displayed
 
-By default, the `edit`, `new` and `show` views display all the entity
-properties, but the `list` and `search` views make some "smart guesses" to
-decide which columns to display to make listings look "good enough".
+By default, the `edit`, `new` and `show` views display all the entity properties.
+The `list` and `search` views make some "smart guesses" to decide which columns
+to display to make listings look good.
 
 Use the `fields` option to explicitly set the properties to display in each
 view:
@@ -128,16 +128,15 @@ easy_admin:
     # ...
 ```
 
-This option can also be used to reorder the way properties are displayed, which
-is specially important for the `edit`, `new` and `show` views (by default these
-views display the properties in the same order as defined in the related
-Doctrine entity).
+This option is useful to reorder the way properties are displayed. By default
+properties are displayed in the same order as defined in the related Doctrine
+entity.
 
 If any of the properties is an association with another entity, the `edit` and
-`new` views will display it as a `<select>` list. The values displayed in this
-list will be the values returned by the magic `__toString()` PHP method.
-Define this method in all your entities to avoid errors and to define the
-textual representation of the entity.
+`new` views render it as a `<select>` list. The elements displayed in this list
+are the values returned by the `__toString()` PHP method. Define this method
+in all your entities to avoid errors and to define the textual representation
+of the entity.
 
 ### Virtual Properties
 
@@ -147,7 +146,8 @@ properties, you may want to just display a column called `Name` with both
 values merged. These are called *virtual properties* because they don't really
 exist as Doctrine entity properties.
 
-First, add this new virtual property (`name`) to the entity configuration:
+The first step to use a virtual property is to add it to the entity configuration
+as any other property:
 
 ```yaml
 easy_admin:
@@ -182,27 +182,16 @@ class Customer
 ```
 
 That's it. Reload your backend and now you'll see the value of this virtual
-property. These virtual properties can also be used in the `edit` and `new`
-views, as long as you define a *setter* method for them.
+property. Virtual properties also work for the `edit` and `new` views, as long
+as you define a *setter* method for them (`setName()` in the example above).
 
-By default, these virtual properties are displayed as text contents. If your
-virtual property is a *boolean* value or a date, use the `type` option to set
-a more appropriate data type:
+By default, virtual properties are displayed as text contents. If your virtual
+property is a *boolean* value or a date, use the `type` option to set a more
+appropriate data type:
 
 ```yaml
-# in this example, the virtual properties 'is_eligible' and 'last_contact' will
-# be considered strings, even if they return boolean and DateTime values
-# respectively
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields: ['id', 'is_eligible', 'last_contact']
-    # ...
-
-# in this example, the virtual properties 'is_eligible' and 'last_contact' will
-# be displayed as a boolean and a DateTime value respectively
+# in this example, the virtual properties 'is_eligible' and 'last_contact' define
+# their 'type' option to avoid displaying them as regular text contents
 easy_admin:
     entities:
         Customer:
@@ -215,20 +204,20 @@ easy_admin:
     # ...
 ```
 
-The only significant limitation of virtual properties is that you cannot sort
-listings using these fields.
+The main limitation of virtual properties is that you cannot sort listings
+using these fields.
 
 Customize the Properties Appearance
 -----------------------------------
 
 By default, properties are displayed with the most appropriate appearance
-according to their data types and their labels are generated automatically
+according to their data types. Besides, their labels are generated automatically
 based on their property name (e.g. if the property name is `published`, the
 label will be `Published` and if the name is `dateOfBirth`, the label will be
 `Date of birth`).
 
-In order to customize the appearance of the properties,use the following
-expanded field configuration:
+In order to customize the appearance of the properties, use the following
+extended field configuration:
 
 ```yaml
 # app/config/config.yml
@@ -245,7 +234,7 @@ Instead of using a string to define the name of the property (e.g. `email`) you
 have to define a hash with the name of the property (`property: 'email'`) and
 the custom label you want to display (`label: 'Contact'`).
 
-If your view contain lots of properties and most of them define their own
+If your view contains lots of properties and most of them define their own
 custom label, consider using the alternative YAML syntax for sequences to
 improve the legibility of your backend configuration. The following example is
 equivalent to the above example:
@@ -264,31 +253,17 @@ easy_admin:
     # ...
 ```
 
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            form:
-                fields:
-                    - 'id'
-                    - { property: 'email', type: 'email', label: 'Contact' }
-                    - { property: 'code', type: 'number', label: 'Customer Code', class: 'input-lg' }
-                    - { property: 'notes', help: 'Use this field to add private notes and comments about the client' }
-                    - { property: 'zone', type: 'country' }
-    # ...
-```
-
 These are the options that you can define for each field:
 
   * `property` (mandatory): the name of the Doctrine property which you want to
     display (in `list`, `search` and `show` views), set (in `new` view) or
     modify (in `edit` view). Properties can be real (they exist as Doctrine
     properties) or "virtual" (they just define getter/setter methods). The
-    `property` option is the only mandatory option when using the expanded
+    `property` option is the only mandatory option when using the extended
     field configuration format.
   * `label` (optional): the title displayed for the property. The default
-    title is the "humanized" version of the property name.
+    title is the "humanized" version of the property name
+    (e.g. 'fieldName' is transformed into 'Field name').
   * `help` (optional): the help message displayed below the form field in the
     `edit`, `new` and `show` views.
   * `css_class` (optional): the CSS class applied to the form field widget
@@ -302,18 +277,16 @@ These are the options that you can define for each field:
   * `type` (optional): the type of data displayed in the `list`, `search` and
     `show` views and the form widget displayed in the `edit` and `new` views.
     These are the supported types:
-
     * All the [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
     * Custom EasyAdmin types:
-
-      * `image`, displays inline images in the `list`, `search` and
-        `show` views (as explained later in this chapter).
-      * `toggle`, displays a boolean value as a flip switch in the `list`
-        and `search` views (as explained later in this chapter).
-      * `raw`, displays the value unescaped (thanks to the `raw` Twig filter),
-        which is useful when the content stores HTML code that must be rendered
+      * `image`, displays inline images in the `list`, `search` and `show` views
+        (as explained later in this chapter).
+      * `toggle`, displays a boolean value as a flip switch in the `list` and
+        `search` views (as explained later in this chapter).
+      * `raw`, displays the value unescaped (using the `raw` Twig filter), which
+        is useful when the content stores HTML code that must be rendered
         instead of displayed as HTML tags (as explained later in this chapter).
-  * `type_options` (optional), a hash which can define the value of any of the
+  * `type_options` (optional), a hash which defines the value of any of the
     valid options defined by the Symfony Form type associated with the field.
 
 The `type_options` is the most powerful option because it literally comprises
@@ -335,8 +308,8 @@ easy_admin:
 Read the [Symfony Form type reference](http://symfony.com/doc/current/reference/forms/types.html)
 to learn about all the available options, their usage and allowed values.
 
-> In addition to these options defined by EasyAdmin, you can pass any custom
-> option to the form fields. This way you can create very powerful backend
+> In addition to these options defined by EasyAdmin, you can define any custom
+> option for the fields. This way you can create very powerful backend
 > customizations, as explained in the
 > [Advanced Design Customization] [advanced-design-customization] tutorial.
 
@@ -381,7 +354,7 @@ will be displayed so you can easily spot any missing translation.
 
 By default, these are the formats applied to date properties (read the
 [date configuration options](http://php.net/manual/en/function.date.php) page
-in the PHP manual in case you don't know the meaning of these options):
+in the PHP manual in case you don't know the meaning of these formats):
 
   * `date`: `Y-m-d`
   * `time`:  `H:i:s`
@@ -463,14 +436,14 @@ easy_admin:
 ### Customize Boolean Properties
 
 By default, when an entity is editable its boolean properties are displayed in
-listings as flip switches that allow to toggle their values very easily:
+`list` view as flip switches that allow to toggle their values very easily:
 
 ![Advanced boolean fields](../images/easyadmin-boolean-field-toggle.gif)
 
 When you change the value of any boolean property, EasyAdmin makes an Ajax
 request to actually change that value in the database. If something goes
-wrong, the switch will automatically return to its original value and it will
-also be disabled until the page is refreshed to avoid further issues:
+wrong, the switch automatically returns to its original value and it disables
+itself until the page is refreshed to avoid further issues:
 
 ![Boolean field behavior when an error happens](../images/easyadmin-boolean-field-toggle-error.gif)
 
@@ -489,7 +462,7 @@ easy_admin:
 ```
 
 Now the boolean value will be rendered as a simple label and its value cannot
-be modified:
+be modified from the `list` view:
 
 ![Boolean field displayed as a label](../images/easyadmin-boolean-field-label.png)
 
@@ -511,10 +484,10 @@ easy_admin:
     # ...
 ```
 
-The `photo` property will be displayed as a `<img>` HTML element whose `src`
-attribute is the value of the property. If your application stores relative
-paths, the image may not be displayed correctly. In those cases, define the
-`base_path` option to set the path to be prefixed to the image:
+In this example, the `photo` property is displayed as a `<img>` HTML element
+whose `src` attribute is the value of the property. If your application stores
+relative paths, define the `base_path` option to set the path to be prefixed
+to the image path:
 
 ```yaml
 easy_admin:

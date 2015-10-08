@@ -65,13 +65,7 @@ Symfony application created to showcase EasyAdmin features.
 Installation
 ------------
 
-Installing EasyAdmin requires you to edit two files and execute two console
-commands:
-
 ### Step 1: Download the Bundle
-
-Open a command console, enter your project directory and execute the
-following command to download the latest stable version of this bundle:
 
 ```bash
 $ composer require javiereguiluz/easyadmin-bundle
@@ -81,9 +75,6 @@ This command requires you to have Composer installed globally, as explained
 in the [Composer documentation](https://getcomposer.org/doc/00-intro.md).
 
 ### Step 2: Enable the Bundle
-
-Then, enable the bundle by adding the following line in the `app/AppKernel.php`
-file of your Symfony application:
 
 ```php
 <?php
@@ -106,9 +97,6 @@ class AppKernel extends Kernel
 
 ### Step 3: Load the Routes of the Bundle
 
-Open your main routing configuration file (usually `app/config/routing.yml`)
-and copy the following four lines at the very beginning of it:
-
 ```yaml
 # app/config/routing.yml
 easy_admin_bundle:
@@ -121,10 +109,6 @@ easy_admin_bundle:
 
 ### Step 4: Prepare the Web Assets of the Bundle
 
-This bundle includes several CSS, JavaScript and font files which are used in
-the backend interface. Execute the following command to make those assets
-available in your Symfony application:
-
 ```cli
 php app/console assets:install --symlink
 ```
@@ -134,13 +118,12 @@ That's it! Now everything is ready to create your first admin backend.
 Your First Backend
 ------------------
 
-Creating your first backend will take you around 30 seconds because you just
-have to create a simple configuration file.
+Creating your first backend will take you less than 30 seconds. Let's suppose
+that your Symfony application defines three Doctrine ORM entities called
+`Customer`, `Order` and `Product`.
 
-Let's suppose that you already have defined in your Symfony application three
-Doctrine ORM entities called `Customer`, `Order` and `Product`. Open your main
-application configuration file (usually `app/config/config.yml`) and add the
-following configuration:
+Creating the backend for those entities just require you to add the following
+configuration in the `app/config/config.yml` file:
 
 ```yaml
 # app/config/config.yml

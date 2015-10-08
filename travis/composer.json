@@ -1,0 +1,39 @@
+{
+    "require": {
+        "php"                           : ">=5.3.0",
+        "doctrine/common"               : "^2.4.0",
+        "doctrine/doctrine-bundle"      : "~1.2",
+        "doctrine/orm"                  : "~2.3",
+        "pagerfanta/pagerfanta"         : "~1.0,>=1.0.1",
+        "sensio/distribution-bundle"    : "~2.3|~3.0|~4.0",
+        "sensio/framework-extra-bundle" : "~3.0,>=3.0.2",
+        "symfony/config"                : "%SYMFONY_VERSION%",
+        "symfony/dependency-injection"  : "%SYMFONY_VERSION%",
+        "symfony/doctrine-bridge"       : "%SYMFONY_VERSION%",
+        "symfony/event-dispatcher"      : "%SYMFONY_VERSION%",
+        "symfony/form"                  : "%SYMFONY_VERSION%",
+        "symfony/framework-bundle"      : "%SYMFONY_VERSION%",
+        "symfony/http-foundation"       : "%SYMFONY_VERSION%",
+        "symfony/http-kernel"           : "%SYMFONY_VERSION%",
+        "symfony/twig-bridge"           : "%SYMFONY_VERSION%,>=2.3.4",
+        "twig/extensions"               : "~1.0",
+        "twig/twig"                     : "~1.14,>=1.14.2|~2.0"
+    },
+    "require-dev": {
+        "doctrine/doctrine-fixtures-bundle" : "~2.2",
+        "phpunit/phpunit"                   : "~4.4",
+        "symfony/browser-kit"               : "%SYMFONY_VERSION%",
+        "symfony/console"                   : "%SYMFONY_VERSION%",
+        "symfony/css-selector"              : "%SYMFONY_VERSION%",
+        "symfony/dom-crawler"               : "%SYMFONY_VERSION%",
+        "symfony/finder"                    : "%SYMFONY_VERSION%",
+        "symfony/security-bundle"           : "%SYMFONY_VERSION%",
+        "symfony/twig-bundle"               : "%SYMFONY_VERSION%",
+        "symfony/validator"                 : "%SYMFONY_VERSION%",
+        "symfony/yaml"                      : "%SYMFONY_VERSION%"
+    },
+    "autoload": {
+        "psr-4": { "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "" }
+    }
+}
+

@@ -57,4 +57,21 @@ abstract class AbstractTestCase extends WebTestCase
     {
         return $this->getBackendPage(array('entity' => 'Category', 'view' => 'list'));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected static function bootKernel(array $options = array())
+    {
+        // Because `bootKernel` does cool things but it does not exist in SF2.3
+        if (method_exists('\Symfony\Bundle\FrameworkBundle\Test\KernelTestCase', 'bootKernel')) {
+            parent::bootKernel($options);
+            return;
+        }
+
+        static::ensureKernelShutdown();
+
+        static::$kernel = static::createKernel($options);
+        static::$kernel->boot();
+    }
 }

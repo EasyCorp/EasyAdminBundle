@@ -616,7 +616,9 @@ class AdminController extends Controller
 
             // Adds a custom FormType for this field if the `fieldType` property contains a FormTypeInterface
             if (isset($metadata['fieldType'])) {
+
                 $formType = null;
+
                 if (class_exists($metadata['fieldType'])) {
                     // If the "type" or "fieldType" is a class, we create a new instance of it
                     $formType = new $metadata['fieldType'];
@@ -624,6 +626,7 @@ class AdminController extends Controller
                     // If the type starts with "@", we try to retrive the associated service.
                     $formType = $this->get(substr($metadata['fieldType'], 1));
                 }
+
                 if ($formType) {
                     if (!($formType instanceof FormTypeInterface)) {
                         throw new InvalidConfigurationException('formType', 'an AbstractFormType or a FormTypeInterface', get_class($formType));
@@ -688,6 +691,8 @@ class AdminController extends Controller
     protected function getNameOfTheFirstConfiguredEntity()
     {
         $entityNames = array_keys($this->config['entities']);
+
+
 
         return $entityNames[0];
     }
@@ -802,7 +807,7 @@ class AdminController extends Controller
      *
      * @throws EntityNotFoundException
      */
-    private function findCurrentEntity()
+    protected function findCurrentEntity()
     {
         $id = $this->request->query->get('id');
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {

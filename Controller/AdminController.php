@@ -616,8 +616,15 @@ class AdminController extends Controller
 
             // Adds a custom FormType for this field if the `fieldType` property contains a FormTypeInterface
             if (isset($metadata['fieldType'])) {
+                $formType = null;
                 if (class_exists($metadata['fieldType'])) {
+                    // If the "type" or "fieldType" is a class, we create a new instance of it
                     $formType = new $metadata['fieldType'];
+                } elseif (strpos($metadata['fieldType'], '@') === 0) {
+                    // If the type starts with "@", we try to retrive the associated service.
+                    $formType = $this->get(substr($metadata['fieldType'], 1));
+                }
+                if ($formType) {
                     if (!($formType instanceof FormTypeInterface)) {
                         throw new InvalidConfigurationException('formType', 'an AbstractFormType or a FormTypeInterface', get_class($formType));
                     }

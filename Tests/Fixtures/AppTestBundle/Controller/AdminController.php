@@ -12,9 +12,30 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
 
+/**
+ * Class AdminController
+ * Many methods are only here to make the method public
+ *   so they can be unit tested
+ */
 class AdminController extends EasyAdminController
 {
+
+    public $entity;
+
+    public function initialize(Request $request)
+    {
+        parent::initialize($request);
+    }
+
+    public function createEntityFormBuilder($entity, array $entityProperties, $view)
+    {
+        return parent::createEntityFormBuilder($entity, $entityProperties, $view);
+    }
+
+    public function findCurrentEntity()
+    {
+        return parent::findCurrentEntity();
+    }
 }

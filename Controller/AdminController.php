@@ -20,11 +20,14 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\InvalidConfigurationException;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -611,6 +614,27 @@ class AdminController extends Controller
             $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
             $formFieldOptions['attr']['field_help'] = $metadata['help'];
 
+            // Adds a custom FormType for this field if the `fieldType` property contains a FormTypeInterface
+            if (isset($metadata['fieldType'])) {
+
+                $formType = null;
+
+                if (class_exists($metadata['fieldType'])) {
+                    // If the "type" or "fieldType" is a class, we create a new instance of it
+                    $formType = new $metadata['fieldType'];
+                } elseif (strpos($metadata['fieldType'], '@') === 0) {
+                    // If the type starts with "@", we try to retrive the associated service.
+                    $formType = $this->get(substr($metadata['fieldType'], 1));
+                }
+
+                if ($formType) {
+                    if (!($formType instanceof FormTypeInterface)) {
+                        throw new InvalidConfigurationException('formType', 'an AbstractFormType or a FormTypeInterface', get_class($formType));
+                    }
+                    $metadata['fieldType'] = $formType;
+                }
+            }
+
             $formBuilder->add($name, $metadata['fieldType'], $formFieldOptions);
         }
 
@@ -667,6 +691,8 @@ class AdminController extends Controller
     protected function getNameOfTheFirstConfiguredEntity()
     {
         $entityNames = array_keys($this->config['entities']);
+
+
 
         return $entityNames[0];
     }
@@ -781,7 +807,7 @@ class AdminController extends Controller
      *
      * @throws EntityNotFoundException
      */
-    private function findCurrentEntity()
+    protected function findCurrentEntity()
     {
         $id = $this->request->query->get('id');
         if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {

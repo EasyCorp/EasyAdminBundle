@@ -1,0 +1,30 @@
+imports:
+    - { resource: config.yml }
+
+# Let's imagine we want to setup valid country codes in parameters.yml
+parameters:
+    country_codes_iso: { FRA: France, USA: "United States", DEU: Germany, ESP: Spain }
+
+# We register the service and inject the codes into it
+services:
+    country_code:
+        class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Form\CountryCodeType
+        arguments:
+            - %country_codes_iso%
+
+easy_admin:
+    entities:
+        Customer:
+            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Customer
+            label: 'Categories'
+            form:
+                fields:
+                    # Simple string
+                    - { property: 'firstName', type: 'string' }
+                    - { property: 'lastName', type: 'string' }
+
+                    # The real class extending AbstractType
+                    - { property: 'address', type: 'JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\AddressType' }
+
+                    # The service to get in the container for this form type
+                    - { property: 'countryCode', type: '@country_code' }

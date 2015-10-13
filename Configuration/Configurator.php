@@ -338,16 +338,13 @@ class Configurator
                         'id' => false,
                         'label' => $fieldName,
                         'sortable' => false,
+                        // if the 'type' is not set explicitly for a virtual field,
+                        // consider it as a string, so the backend displays its contents
+                        'type' => 'text',
                         'virtual' => true,
                     ),
                     $fieldConfiguration
                 );
-
-                // if the 'type' is not set explicitly for a virtual field,
-                // consider it as a string, so the backend displays its contents
-                if (null === $normalizedConfiguration['type']) {
-                    $normalizedConfiguration['type'] = 'text';
-                }
             } else {
                 // this is a regular field that exists as a property of the related Doctrine entity
                 $normalizedConfiguration = array_replace(

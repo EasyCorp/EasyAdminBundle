@@ -1,5 +1,4 @@
 {% use "form_div_layout.html.twig" %}
-{% trans_default_domain "EasyAdminBundle" %}
 
 {# Widgets #}
 
@@ -234,7 +233,7 @@
     {% set error_count = errors|length %}
     {% if error_count >= 1 %}
         <div class="error-block">
-            <span class="label label-danger">{{ 'errors'|transchoice(error_count) }}</span>
+            <span class="label label-danger">{{ 'errors'|transchoice(error_count, domain = 'EasyAdminBundle') }}</span>
             {% if error_count == 1 %}
                 {{ errors|first.message }}
             {% else %}

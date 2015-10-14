@@ -35,6 +35,18 @@
                 <source>action.list</source>
                 <target>Retour à la liste</target>
             </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Ajouter un nouvel élément</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Ajouter un autre élément</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Supprimer l'élément</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

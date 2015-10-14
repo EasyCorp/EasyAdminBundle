@@ -81,8 +81,8 @@
     <script src="{{ asset('bundles/easyadmin/javascript/select2.min.js') }}"></script>
     <script type="text/javascript">
         $(function() {
-            // enable Select2 for all <select> dropdown, except those related to date and time
-            $('#main form select:not([name*="[date]"], [name*="[time]"])').select2({
+            // Select2 widget is only enabled for the <select> elements which explicitly ask for it
+            $('#main form select[data-use-js-widget]').select2({
                 theme: 'bootstrap'
             });
         });

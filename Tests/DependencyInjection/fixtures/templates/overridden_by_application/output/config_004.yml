@@ -6,6 +6,7 @@ easy_admin:
             name: TestEntity
             edit:
                 fields: {  }
+                form_options: {  }
                 actions:
                     delete:
                         name: delete
@@ -54,6 +55,7 @@ easy_admin:
                         icon: null
             new:
                 fields: {  }
+                form_options: {  }
                 actions:
                     list:
                         name: list
@@ -106,6 +108,7 @@ easy_admin:
                 field_id: '@EasyAdmin/default/field_id.html.twig'
                 field_image: '@EasyAdmin/default/field_image.html.twig'
                 field_integer: '@EasyAdmin/default/field_integer.html.twig'
+                field_raw: '@EasyAdmin/default/field_raw.html.twig'
                 field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
                 field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
                 field_string: easy_admin/field_string.html.twig
@@ -122,6 +125,7 @@ easy_admin:
             name: AnotherTestEntity
             edit:
                 fields: {  }
+                form_options: {  }
                 actions:
                     delete:
                         name: delete
@@ -170,6 +174,7 @@ easy_admin:
                         icon: null
             new:
                 fields: {  }
+                form_options: {  }
                 actions:
                     list:
                         name: list
@@ -222,6 +227,7 @@ easy_admin:
                 field_id: '@EasyAdmin/default/field_id.html.twig'
                 field_image: '@EasyAdmin/default/field_image.html.twig'
                 field_integer: '@EasyAdmin/default/field_integer.html.twig'
+                field_raw: '@EasyAdmin/default/field_raw.html.twig'
                 field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
                 field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
                 field_string: easy_admin/AnotherTestEntity/field_string.html.twig

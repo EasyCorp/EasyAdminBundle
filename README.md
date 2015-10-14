@@ -33,16 +33,39 @@ with unprecedented simplicity.
   * All kinds of entity associations are supported, except `many-to-many`.
   * Entities using inheritance are not supported.
 
+Documentation
+-------------
+
+#### Getting Started Guide
+
+  * [Chapter 1 - Installation](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/1-installation.md)
+  * [Chapter 2 - Your First Backend](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/2-first-backend.md)
+  * [Chapter 3 - Backend Configuration](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/3-backend-configuration.md)
+  * [Chapter 4 - Views and Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/4-views-and-actions.md)
+  * [Chapter 5 - Backend Design Customization](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/5-design-customization.md)
+  * [Chapter 6 - About this Project](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/6-about-this-project.md)
+
+#### Advanced Tutorials
+
+  * [Customizing Backend Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/customizing-backend-actions.md)
+  * [Customizing AdminController](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/customizing-admin-controller.md)
+  * [Advanced Design Customization](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/advanced-design-customization.md)
+  * [Tips and Tricks](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/tips-and-tricks.md)
+  * [Configuration Reference](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/configuration-reference.md)
+
+> **❮ NOTE ❯** you are reading the documentation of the bundle's **development**
+> version. You can also [read the documentation of the latest stable version ➜]
+> (https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.7.1/).
+
+#### Demo Application
+
+[easy-admin-demo](https://github.com/javiereguiluz/easy-admin-demo) is a simple
+Symfony application created to showcase EasyAdmin features.
+
 Installation
 ------------
 
-Installing EasyAdmin requires you to edit two files and execute two console
-commands:
-
 ### Step 1: Download the Bundle
-
-Open a command console, enter your project directory and execute the
-following command to download the latest stable version of this bundle:
 
 ```bash
 $ composer require javiereguiluz/easyadmin-bundle
@@ -52,9 +75,6 @@ This command requires you to have Composer installed globally, as explained
 in the [Composer documentation](https://getcomposer.org/doc/00-intro.md).
 
 ### Step 2: Enable the Bundle
-
-Then, enable the bundle by adding the following line in the `app/AppKernel.php`
-file of your Symfony application:
 
 ```php
 <?php
@@ -77,9 +97,6 @@ class AppKernel extends Kernel
 
 ### Step 3: Load the Routes of the Bundle
 
-Open your main routing configuration file (usually `app/config/routing.yml`)
-and copy the following four lines at the very beginning of it:
-
 ```yaml
 # app/config/routing.yml
 easy_admin_bundle:
@@ -92,10 +109,6 @@ easy_admin_bundle:
 
 ### Step 4: Prepare the Web Assets of the Bundle
 
-This bundle includes several CSS, JavaScript and font files which are used in
-the backend interface. Execute the following command to make those assets
-available in your Symfony application:
-
 ```cli
 php app/console assets:install --symlink
 ```
@@ -105,13 +118,12 @@ That's it! Now everything is ready to create your first admin backend.
 Your First Backend
 ------------------
 
-Creating your first backend will take you around 30 seconds because you just
-have to create a simple configuration file.
+Creating your first backend will take you less than 30 seconds. Let's suppose
+that your Symfony application defines three Doctrine ORM entities called
+`Customer`, `Order` and `Product`.
 
-Let's suppose that you already have defined in your Symfony application three
-Doctrine ORM entities called `Customer`, `Order` and `Product`. Open your main
-application configuration file (usually `app/config/config.yml`) and add the
-following configuration:
+Creating the backend for those entities just require you to add the following
+configuration in the `app/config/config.yml` file:
 
 ```yaml
 # app/config/config.yml
@@ -126,7 +138,7 @@ easy_admin:
 Browse the `/admin` URL in your Symfony application and you'll get access to
 the admin backend:
 
-![Default listing interface](Resources/doc/images/easyadmin-list-view.png)
+![Default listing interface](https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-list-view.png)
 
 Creating a backend is that simple because EasyAdmin doesn't generate any code.
 All resources are served on-the-fly to ensure an exceptional developer
@@ -137,35 +149,6 @@ your admin backend look "good enough". This may be acceptable for simple
 backends and rapid prototypes, but most of the times, you need to customize
 some parts of the backend. Keep reading the rest of the documentation to learn
 how to do it.
-
------
-
-Getting Started Guide
----------------------
-
-  * [Chapter 1 - Installation](Resources/doc/getting-started/1-installation.md)
-  * [Chapter 2 - Your First Backend](Resources/doc/getting-started/2-first-backend.md)
-  * [Chapter 3 - Backend Configuration](Resources/doc/getting-started/3-backend-configuration.md)
-  * [Chapter 4 - Views and Actions](Resources/doc/getting-started/4-views-and-actions.md)
-  * [Chapter 5 - Backend Design Customization](Resources/doc/getting-started/5-design-customization.md)
-  * [Chapter 6 - About this Project](Resources/doc/getting-started/6-about-this-project.md)
-
-Advanced Tutorials
-------------------
-
-  * [Customizing Backend Actions](Resources/doc/tutorials/customizing-backend-actions.md)
-  * [Customizing AdminController](Resources/doc/tutorials/customizing-admin-controller.md)
-  * [Advanced Design Customization](Resources/doc/tutorials/advanced-design-customization.md)
-  * [Tips and Tricks](Resources/doc/tutorials/tips-and-tricks.md)
-  * [Configuration Reference](Resources/doc/tutorials/configuration-reference.md)
-
------
-
-**❮ NOTE ❯** you are reading the documentation of the bundle's **development** 
-version. You can also [read the documentation of the latest stable version ➜]
-(https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.5.5/).
-
------
 
 License
 -------

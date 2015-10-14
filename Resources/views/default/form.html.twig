@@ -1,5 +1,3 @@
-{% trans_default_domain "EasyAdminBundle" %}
-
 {{ form_start(form, { attr: form.vars.attr|merge({ novalidate: 'novalidate' }) }) }}
     {% if form.vars.errors|length > 0 %}
         {{ form_errors(form) }}
@@ -38,7 +36,7 @@
                     <div class="form-group field-collection-action">
                         <a href="#" onclick="{{ add_item_javascript|raw }}" class="col-sm-12 text-right">
                             <i class="fa fa-plus-square"></i>
-                            {{ field|length == 0 ? 'action.add_new_item'|trans : 'action.add_another_item'|trans }}
+                            {{ (field|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans }}
                         </a>
                     </div>
                 {% endif %}

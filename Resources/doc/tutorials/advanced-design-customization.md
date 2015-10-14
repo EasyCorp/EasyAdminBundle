@@ -226,6 +226,8 @@ Doctrine data type and are self-explanatory):
   * `field_image`, related to the special `image` type defined by EasyAdmin
     used to display the contents of an image.
   * `field_integer`
+  * `field_raw`, renders the value of the property without applying any escape
+    mechanism.
   * `field_simple_array`
   * `field_smallint`
   * `field_string`

@@ -38,8 +38,9 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
      */
     public function testBackendConfigurations($inputFixtureFilepath, $outputFixtureFilepath)
     {
-        if ('2' === Kernel::MAJOR_VERSION && '3' === Kernel::MINOR_VERSION && !$this->isTestCompatibleWithYamlComponent($inputFixtureFilepath)) {
-            $this->markTestSkipped('The YAML component does not ignore duplicate keys in Symfony 2.3.');
+        $isSymfony23 = 2 == Kernel::MAJOR_VERSION && 3 == Kernel::MINOR_VERSION;
+        if ($isSymfony23 && !$this->isTestCompatibleWithSymfony23($inputFixtureFilepath)) {
+            $this->markTestSkipped('This test is not compatible with Symfony 2.3 because the YAML component of that version does not ignore duplicate keys.');
         }
 
         $this->parseConfigurationFile($inputFixtureFilepath);
@@ -245,7 +246,7 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
         $this->assertEquals($expectedConfiguration['easy_admin'], $actualConfiguration);
     }
 
-    private function isTestCompatibleWithYamlComponent($filepath)
+    private function isTestCompatibleWithSymfony23($filepath)
     {
         $incompatibleTests = array(
             'configurations/input/admin_007.yml',

@@ -35,6 +35,7 @@ class Configurator
         'virtual'   => false, // is a virtual field or a real Doctrine entity property?
         'sortable'  => true,  // listings can be sorted according to the values of this field
         'template'  => null,  // the path of the template used to render the field in 'show' and 'list' views
+        'type_options' => array(), // the options passed to the Symfony Form type used to render the form field
     );
 
     private $doctrineTypeToFormTypeMap = array(
@@ -139,9 +140,6 @@ class Configurator
         // introspect fields for entity associations (except many-to-many)
         foreach ($entityMetadata->associationMappings as $fieldName => $associationMetadata) {
             if (ClassMetadataInfo::MANY_TO_MANY !== $associationMetadata['type']) {
-                // field names are tweaked this way to simplify Twig templates and extensions
-                $fieldName = str_replace('_', '', $fieldName);
-
                 $entityPropertiesMetadata[$fieldName] = array(
                     'type'            => 'association',
                     'associationType' => $associationMetadata['type'],
@@ -340,6 +338,9 @@ class Configurator
                         'id' => false,
                         'label' => $fieldName,
                         'sortable' => false,
+                        // if the 'type' is not set explicitly for a virtual field,
+                        // consider it as a string, so the backend displays its contents
+                        'type' => 'text',
                         'virtual' => true,
                     ),
                     $fieldConfiguration

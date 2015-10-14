@@ -1,0 +1,9 @@
+# if the special 'form' view is defined, use its options to complete 'new' and 'edit' actions 'form_options'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            form:
+                form_options: { validation_groups: ['Default', 'my_validation_group'] }

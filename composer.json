@@ -17,18 +17,36 @@
     ],
     "require": {
         "php"                           : ">=5.3.0",
-        "pagerfanta/pagerfanta"         : "~1.0,>=1.0.1",
-        "symfony/symfony"               : "~2.3",
-        "doctrine/orm"                  : "~2.3",
+        "doctrine/common"               : "^2.4.0",
         "doctrine/doctrine-bundle"      : "~1.2",
-        "twig/extensions"               : "~1.0",
+        "doctrine/orm"                  : "~2.3",
+        "pagerfanta/pagerfanta"         : "~1.0,>=1.0.1",
         "sensio/distribution-bundle"    : "~2.3|~3.0|~4.0",
         "sensio/framework-extra-bundle" : "~3.0,>=3.0.2",
-        "twig/twig"                     : "~1.12,>=1.12.2"
+        "symfony/config"                : "~2.3",
+        "symfony/dependency-injection"  : "~2.3",
+        "symfony/doctrine-bridge"       : "~2.3",
+        "symfony/event-dispatcher"      : "~2.3",
+        "symfony/form"                  : "~2.3",
+        "symfony/framework-bundle"      : "~2.3",
+        "symfony/http-foundation"       : "~2.3",
+        "symfony/http-kernel"           : "~2.3",
+        "symfony/twig-bridge"           : "^2.3.4",
+        "twig/extensions"               : "~1.0",
+        "twig/twig"                     : "~1.14,>=1.14.2|~2.0"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle" : "~2.2",
         "phpunit/phpunit"                   : "~4.4",
-        "doctrine/doctrine-fixtures-bundle" : "~2.2"
+        "symfony/browser-kit"               : "~2.3",
+        "symfony/console"                   : "~2.3",
+        "symfony/css-selector"              : "~2.3",
+        "symfony/dom-crawler"               : "~2.3",
+        "symfony/finder"                    : "~2.3",
+        "symfony/security-bundle"           : "~2.3",
+        "symfony/twig-bundle"               : "~2.3",
+        "symfony/validator"                 : "~2.3",
+        "symfony/yaml"                      : "~2.3"
     },
     "autoload": {
         "psr-4": { "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "" }

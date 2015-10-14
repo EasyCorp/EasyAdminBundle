@@ -1,24 +1,7 @@
 {% extends '@EasyAdmin/error/error_page.html.twig' %}
 
-{% block page_title 'Configuration error' %}
+{% block page_title 'ERROR - Configuration error' %}
 
-{% block problem %}{{ message|raw }}{% endblock %}
-
-{% block solution %}
-    <p>
-        Open your <code>app/config/config.yml</code> file and add the following
-        configuration, replacing the name of the displayed entities by
-        your own application entities:
-    </p>
-
-    <pre>
-{{- '' -}}
-# app/config/config.yml
-easy_admin:
-    entities:
-        - AppBundle\Entity\Customer
-        - AppBundle\Entity\Order
-        - AppBundle\Entity\Product
-{{- '' -}}
-    </pre>
+{% block problem %}
+    The configuration of this backend is empty.
 {% endblock %}

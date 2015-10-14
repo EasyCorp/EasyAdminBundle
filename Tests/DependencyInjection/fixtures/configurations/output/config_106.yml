@@ -72,10 +72,12 @@ easy_admin:
                 paginator: custom_entity_template/paginator.html.twig
                 show: custom_entity_template/show.html.twig
                 flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
+                field_raw: '@EasyAdmin/default/field_raw.html.twig'
             label: TestEntity
             name: TestEntity
             edit:
                 fields: {  }
+                form_options: {  }
                 actions:
                     delete:
                         name: delete
@@ -124,6 +126,7 @@ easy_admin:
                         icon: null
             new:
                 fields: {  }
+                form_options: {  }
                 actions:
                     list:
                         name: list

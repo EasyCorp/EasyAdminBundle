@@ -13,8 +13,8 @@ to do extreme backend customizations using PHP methods and Twig templates.
 Expanded Configuration Format
 -----------------------------
 
-The simple backend created in the previous chapter used a compact configuration
-like the following:
+The simple backend created in the previous chapter used the following compact
+configuration syntax:
 
 ```yaml
 # app/config/config.yml
@@ -25,8 +25,8 @@ easy_admin:
         - AppBundle\Entity\Product
 ```
 
-When you start customizing the backend, instead of the compact configuration
-format, you must use the expanded format:
+In order to customize the backend, you must use the extended configuration
+syntax instead:
 
 ```yaml
 # app/config/config.yml
@@ -40,22 +40,21 @@ easy_admin:
             class: AppBundle\Entity\Product
 ```
 
-The expanded configuration format allows to configure lots of options for each
-entity, as explained the following chapters. This format requires you to set
-the name of the entity as the key of the YAML hash used to configure the
-entities. The entity name must be unique in the backend and it's recommended to
-use the CamelCase syntax (e.g. `BlogPost` and not `blog_post` or `blogPost`).
+The extended configuration syntax allows to configure lots of options for each
+entity. Entities are configured as elements under the `entities` key. The name
+of the entities are used as the YAML keys. These names must be unique in the
+backend and it's recommended to use the CamelCase syntax (e.g. `BlogPost` and
+not `blog_post` or `blogPost`).
 
-Refer to the [Configuration Reference] [config-reference] tutorial to check
-out all the available configuration formats.
+Refer to the [Configuration Reference] [config-reference] for the full details
+of the configuration syntax.
 
 Customize the URL Used to Access the Backend
 --------------------------------------------
 
-By default, your backend will be accessible at the `/admin` URI of your Symfony
+By default, the backend will be accessible at the `/admin` URL of your Symfony
 application. This value is defined in the `prefix` option when loading the
-routes of the bundle. You are free to change its value to meet your own backend
-requirements:
+routes of the bundle. Change its value to meet your own backend requirements:
 
 ```yaml
 # app/config/routing.yml
@@ -80,7 +79,7 @@ easy_admin:
     # ...
 ```
 
-The value of this option is displayed with the `raw` Twig filter. This means
+The contents of this option are not escaped before displaying them. This means
 that you can use any HTML markup to display the name exactly as you are
 required to meet your company or organization needs:
 
@@ -114,17 +113,16 @@ Customize the Label of the Main Menu Items
 ------------------------------------------
 
 By default, main menu items display the name of their associated entity. If you
-want to customize any menu item, define the `label` option of its related
-entity:
+want to customize any menu item, define the `label` option of its related entity:
 
 ```yaml
 # app/config/config.yml
 easy_admin:
     entities:
-        Customers: 
+        Customers:
             label: 'Active Clients'
             class: AppBundle\Entity\Customer
-        Orders: 
+        Orders:
             label: 'Pending Orders'
             class: AppBundle\Entity\Order
 ```
@@ -137,6 +135,20 @@ is usually configured in the `locale` option of the `app/config/parameters.yml`
 file. The current version of EasyAdmin supports tens of languages and we're
 actively looking for more translations contributed by the community.
 
+The strings that belong to the bundle interface are translated using the
+special `EasyAdminBundle` translation domain. The rest of the strings, such as
+the property names, are translated using the default `messages` domain.
+
+In addition, make sure that the `translator` service is enabled in the
+application (projects based on the Symfony Standard Edition have it disabled
+by default):
+
+```yaml
+# app/config/config.yml
+framework:
+    translator: { fallbacks: [ "%locale%" ] }
+```
+
 Customize the Translation of the Main Menu Items
 ------------------------------------------------
 
@@ -148,10 +160,10 @@ use translation keys instead of contents in the configuration file:
 # app/config/config.yml
 easy_admin:
     entities:
-        Customers: 
+        Customers:
             label: app.customers
             class: AppBundle\Entity\Customer
-        Orders: 
+        Orders:
             label: app.orders
             class: AppBundle\Entity\Order
 ```
@@ -164,7 +176,7 @@ menu items translated.
 Restrict the Access to the Backend
 ----------------------------------
 
-EasyAdmin doesn't provide any security related feature because it relies on 
+EasyAdmin doesn't provide any security related feature because it relies on
 the underlying Symfony security features. In case you need it, checkout the
 [Security Chapter](http://symfony.com/doc/current/book/security.html) of the
 official Symfony documentation to learn how to restrict the access to the

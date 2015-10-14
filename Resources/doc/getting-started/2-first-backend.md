@@ -1,13 +1,12 @@
 Chapter 2. Your First Backend
 =============================
 
-Creating your first backend will take you around 30 seconds, because you just
-have to create a simple configuration file.
+Creating your first backend will take you less than 30 seconds. Let's suppose
+that your Symfony application defines three Doctrine ORM entities called
+`Customer`, `Order` and `Product`.
 
-Let's suppose that you already have defined in your Symfony application three
-Doctrine ORM entities called `Customer`, `Order` and `Product`. Open your main
-application configuration file (usually `app/config/config.yml`) and add the
-following configuration:
+Creating the backend for those entities just require you to add the following
+configuration in the `app/config/config.yml` file:
 
 ```yaml
 # app/config/config.yml

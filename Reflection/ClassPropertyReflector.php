@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Reflection;
 
+use Doctrine\Common\Inflector\Inflector;
+
 /**
  * Introspects information about the properties of the given class.
  */
@@ -26,11 +28,17 @@ class ClassPropertyReflector
      */
     public function getGetter($classNamespace, $propertyName)
     {
+        $camelCasedPropertyName = Inflector::classify($propertyName);
+
         $getterMethods = array(
             'get'.ucfirst($propertyName),
             'is'.ucfirst($propertyName),
             $propertyName,
             'has'.ucfirst($propertyName),
+            'get'.$camelCasedPropertyName,
+            'is'.$camelCasedPropertyName,
+            $camelCasedPropertyName,
+            'has'.$camelCasedPropertyName,
         );
 
         return $this->getFirstExistingMethod($classNamespace, $getterMethods);
@@ -46,10 +54,13 @@ class ClassPropertyReflector
      */
     public function getSetter($classNamespace, $propertyName)
     {
+        $camelCasedPropertyName = Inflector::classify($propertyName);
+
         $setterMethods = array(
             'set'.ucfirst($propertyName),
             'setIs'.ucfirst($propertyName),
-            $propertyName,
+            'set'.$camelCasedPropertyName,
+            'setIs'.$camelCasedPropertyName,
         );
 
         return $this->getFirstExistingMethod($classNamespace, $setterMethods);

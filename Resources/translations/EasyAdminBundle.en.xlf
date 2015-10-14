@@ -2,40 +2,6 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
     <file source-language="en" target-language="en" datatype="plaintext" original="file.ext">
         <body>
-            <!-- generic actions displayed on buttons and links -->
-            <trans-unit id="action.new">
-                <source>action.new</source>
-                <target>Add %entity_name%</target>
-            </trans-unit>
-            <trans-unit id="action.show">
-                <source>action.show</source>
-                <target>Show</target>
-            </trans-unit>
-            <trans-unit id="action.edit">
-                <source>action.edit</source>
-                <target>Edit</target>
-            </trans-unit>
-            <trans-unit id="action.search">
-                <source>action.search</source>
-                <target>Search</target>
-            </trans-unit>
-            <trans-unit id="action.delete">
-                <source>action.delete</source>
-                <target>Delete</target>
-            </trans-unit>
-            <trans-unit id="action.save">
-                <source>action.save</source>
-                <target>Save changes</target>
-            </trans-unit>
-            <trans-unit id="action.cancel">
-                <source>action.cancel</source>
-                <target>Cancel</target>
-            </trans-unit>
-            <trans-unit id="action.list">
-                <source>action.list</source>
-                <target>Back to listing</target>
-            </trans-unit>
-
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
@@ -101,6 +67,22 @@
                 <source>label.false</source>
                 <target>No</target>
             </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Empty</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Null</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Inaccessible</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Getter method does not exist for this field or the property is not public</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="header.close">
@@ -126,6 +108,10 @@
             <trans-unit id="action.add_another_item">
                 <source>action.add_another_item</source>
                 <target>Add another item</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Remove the item</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>

@@ -165,12 +165,12 @@
         {% if parent_label_class is defined %}
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) %}
         {% endif %}
-        {% if label is not sameas(false) and label is empty %}
+        {% if label is not same as(false) and label is empty %}
             {% set label = name|humanize %}
         {% endif %}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
             {{- widget|raw -}}
-            {{- label is not sameas(false) ? label|trans({}, translation_domain) -}}
+            {{- label is not same as(false) ? label|trans({}, translation_domain) -}}
         </label>
     {% endif %}
 {% endblock checkbox_radio_label %}
@@ -230,7 +230,6 @@
 {%- endblock radio_row %}
 
 {# Errors #}
-
 {% block form_errors %}
     {% set error_count = errors|length %}
     {% if error_count >= 1 %}
@@ -248,3 +247,29 @@
         </div>
     {% endif %}
 {% endblock form_errors %}
+
+{%- block form_widget_compound -%}
+    {{ parent() }}
+
+    {% if form.parent.vars.allow_delete|default(false) %}
+        {% set remove_item_javascript %}
+            $(function() {
+                if(event.preventDefault) {
+                    event.preventDefault();
+                } else {
+                    event.returnValue = false;
+                }
+
+                var containerDiv = $('#{{ form.vars.id }}').parents('.form-group:first');
+                containerDiv.remove();
+            });
+        {% endset %}
+
+        <div class="form-group">
+            <a href="#" onclick="{{ remove_item_javascript|raw }}" class="col-sm-12 text-right">
+                <i class="fa fa-remove"></i>
+                {{ 'action.remove_item'|trans }}
+            </a>
+        </div>
+    {% endif %}
+{%- endblock form_widget_compound -%}

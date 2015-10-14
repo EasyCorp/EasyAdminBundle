@@ -14,6 +14,7 @@ easy_admin:
                     field2:
                         property: field2
                 custom_option: 'another custom value'
+                form_options: {  }
                 actions:
                     list:
                         name: list
@@ -28,6 +29,7 @@ easy_admin:
                     field4:
                         property: field4
                 custom_option: 'custom value'
+                form_options: {  }
                 actions:
                     delete:
                         name: delete
@@ -121,6 +123,7 @@ easy_admin:
                 field_id: '@EasyAdmin/default/field_id.html.twig'
                 field_image: '@EasyAdmin/default/field_image.html.twig'
                 field_integer: '@EasyAdmin/default/field_integer.html.twig'
+                field_raw: '@EasyAdmin/default/field_raw.html.twig'
                 field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
                 field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
                 field_string: '@EasyAdmin/default/field_string.html.twig'

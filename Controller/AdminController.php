@@ -587,8 +587,15 @@ class AdminController extends Controller
         foreach ($entityProperties as $name => $metadata) {
             $formFieldOptions = $metadata['type_options'];
 
-            if ('association' === $metadata['fieldType'] && in_array($metadata['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY))) {
-                continue;
+            if ('association' === $metadata['type']) {
+                // *-to-many associations are not supported yet
+                $toManyAssociations = array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY);
+                if (in_array($metadata['associationType'], $toManyAssociations)) {
+                    continue;
+                }
+
+                // supported associations are displayed using advanced JavaScript widgets
+                $formFieldOptions['attr']['data-widget'] = 'select2';
             }
 
             if ('collection' === $metadata['fieldType']) {

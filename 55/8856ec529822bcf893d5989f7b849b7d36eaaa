@@ -1,0 +1,48 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-10-14T16:01:08Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-14T20:29:47Z
+
+@ogizanagi asks whether we should use a CSS class (e.g. `<select class="use-js-widget ..." ...>`) instead of an HTML attribute (e.g. `<select data-use-js-widget="true" ...>`). I don't have a clear answer for this. Anyone would like to share his opinion about this? What do other similar bundles do to resolve this issue? Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-10-14T21:13:55Z
+
+IMHO, `data-` attributes are used in this context in order to set configuration for js plugins, directly from the html markup. Not especially to identify them.
+
+But some examples:
+- Bootstrap uses the `data-toogle` attribute with several values (`collapse`, `tooltip`, `popover`, `tab`)... but can we say it is kind of in order to set a behavior, so that would be part of the "configuration" ? Besides, I don't remember any usage of a `class` as a markup for enabling a js plugin...
+- This [Bootstrap datepicker](https://bootstrap-datepicker.readthedocs.org/en/latest/) use a `data-provide="datepicker"` attribute & value in order to initialized datepicker plugins from html markup.
+- [MopaBootstrapBundle](https://github.com/phiamo/MopaBootstrapBundle/blob/master/Resources/views/Form/fields.html.twig#L288) actually directly uses this very same  `data-provide="datepicker"` attribute & value in his form theme.
+
+I looked at some other js widgets like this [color picker](http://mjolnic.com/bootstrap-colorpicker/) but most of them doesn't seem to have an autoinitialization.
+
+Everything seems against my vision, but that's only for auto-initialization of widgets. Most configuration examples uses html classes for their selectors. For instance, Bootstrap Datepicker:
+```js
+$('.datepicker').datepicker({
+    format: 'mm/dd/yyyy',
+    startDate: '-3d'
+})
+```
+
+Keeping the `data` attribute would make sense, but maybe by using the `data-provide="select2"` one instead of `data-use-js-widget="true"` ?
+
+It's a shame the Select2 doesn't seem to define a way to auto-initialize widgets from the html markup, that would have solved the issue :sweat_smile:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-16T16:06:57Z
+
+@ogizanagi thanks a lot for your investigation about the best practices to solve this. Ultimately I decided to use `date-widget="select2"` This gives us unlimited flexibility to switch the widget in the future. I'll merge this change soon unless someone doesn't agree with it. Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-10-16T16:30:03Z
+
+:+1: Perfect.

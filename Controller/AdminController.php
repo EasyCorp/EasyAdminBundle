@@ -595,7 +595,7 @@ class AdminController extends Controller
                 }
 
                 // supported associations are displayed using advanced JavaScript widgets
-                $formFieldOptions['attr']['data-use-js-widget'] = 'true';
+                $formFieldOptions['attr']['data-widget'] = 'select2';
             }
 
             if ('collection' === $metadata['fieldType']) {

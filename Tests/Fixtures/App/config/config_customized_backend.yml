@@ -48,7 +48,7 @@ easy_admin:
                     - { name: 'delete', label: 'Remove', icon: 'minus-circle' }
                     - { name: 'list', label: 'Return to listing', icon: 'list' }
             new:
-                form_options: { validation_groups: ['Default', 'Validate'], attr: { novalidate: ~ } }
+                form_options: { validation_groups: ['Default', 'Validate'], attr: { novalidate: 'novalidate' } }
         Image:
             class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Image
             label: 'Images'

@@ -19,7 +19,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
@@ -35,7 +34,6 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 
 /**
@@ -175,7 +173,8 @@ class AdminController extends Controller
         }
 
         $id = $this->request->query->get('id');
-        $entity = $this->findCurrentEntity();
+        $easyadmin = $this->request->attributes->get('easyadmin');
+        $entity = $easyadmin['item'];
 
         $fields = $this->entity['edit']['fields'];
 
@@ -228,7 +227,8 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_SHOW);
 
         $id = $this->request->query->get('id');
-        $entity = $this->findCurrentEntity();
+        $easyadmin = $this->request->attributes->get('easyadmin');
+        $entity = $easyadmin['item'];
 
         $fields = $this->entity['show']['fields'];
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
@@ -260,6 +260,10 @@ class AdminController extends Controller
         } else {
             $entity = $this->createNewEntity();
         }
+
+        $easyadmin = $this->request->attributes->get('easyadmin');
+        $easyadmin['item'] = $entity;
+        $this->request->attributes->set('easyadmin', $easyadmin);
 
         $fields = $this->entity['new']['fields'];
 
@@ -566,62 +570,17 @@ class AdminController extends Controller
      * Creates the form builder of the form used to create or edit the given entity.
      *
      * @param object $entity
-     * @param array  $entityProperties
-     * @param string $view             The name of the view where this form is used ('new' or 'edit')
+     * @param string $view   The name of the view where this form is used ('new' or 'edit')
      *
      * @return FormBuilder
      */
-    protected function createEntityFormBuilder($entity, array $entityProperties, $view)
+    protected function createEntityFormBuilder($entity, $view)
     {
-        $formCssClass = array_reduce($this->config['design']['form_theme'], function ($previousClass, $formTheme) {
-            return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
-        });
+        $formOptions = $this->entity[$view]['form_options'];
+        $formOptions['entity'] = $this->entity['name'];
+        $formOptions['view'] = $view;
 
-        $formOptions = array_replace_recursive(array(
-            'data_class' => $this->entity['class'],
-            'attr' => array('class' => $formCssClass, 'id' => $view.'-form'),
-        ), $this->entity[$view]['form_options']);
-
-        $formBuilder = $this->createFormBuilder($entity, $formOptions);
-
-        foreach ($entityProperties as $name => $metadata) {
-            $formFieldOptions = $metadata['type_options'];
-
-            if ('association' === $metadata['type']) {
-                // *-to-many associations are not supported yet
-                $toManyAssociations = array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY);
-                if (in_array($metadata['associationType'], $toManyAssociations)) {
-                    continue;
-                }
-
-                // supported associations are displayed using advanced JavaScript widgets
-                $formFieldOptions['attr']['data-widget'] = 'select2';
-            }
-
-            if ('collection' === $metadata['fieldType']) {
-                if (!isset($formFieldOptions['allow_add'])) {
-                    $formFieldOptions['allow_add'] = true;
-                }
-
-                if (!isset($formFieldOptions['allow_delete'])) {
-                    $formFieldOptions['allow_delete'] = true;
-                }
-
-                if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
-                    if (!isset($formFieldOptions['delete_empty'])) {
-                        $formFieldOptions['delete_empty'] = true;
-                    }
-                }
-            }
-
-            $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];
-            $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
-            $formFieldOptions['attr']['field_help'] = $metadata['help'];
-
-            $formBuilder->add($name, $metadata['fieldType'], $formFieldOptions);
-        }
-
-        return $formBuilder;
+        return $this->get('form.factory')->createNamedBuilder('form', 'easyadmin', $entity, $formOptions);
     }
 
     /**
@@ -652,7 +611,7 @@ class AdminController extends Controller
         if (method_exists($this, $customBuilderMethodName = 'create'.$this->entity['name'].'EntityFormBuilder')) {
             $formBuilder = $this->{$customBuilderMethodName}($entity, $entityProperties, $view);
         } else {
-            $formBuilder = $this->createEntityFormBuilder($entity, $entityProperties, $view);
+            $formBuilder = $this->createEntityFormBuilder($entity, $view);
         }
 
         if (!$formBuilder instanceof FormBuilderInterface) {
@@ -778,24 +737,5 @@ class AdminController extends Controller
         $em = $this->get('doctrine')->getManagerForClass($entityClass);
 
         return $em->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform;
-    }
-
-    /**
-     * Looks for the objet that corresponds to the selected 'id' of the current
-     * entity. No parameters are required because all the information is stored
-     * globally in the class.
-     *
-     * @return object The entity
-     *
-     * @throws EntityNotFoundException
-     */
-    private function findCurrentEntity()
-    {
-        $id = $this->request->query->get('id');
-        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-            throw new EntityNotFoundException(array('entity' => $this->entity, 'entity_id' => $id));
-        }
-
-        return $entity;
     }
 }

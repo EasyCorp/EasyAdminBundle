@@ -462,7 +462,6 @@ class Configurator
         return $entityConfiguration;
     }
 
-
     /**
      * Determines the template used to render each backend element. This is not
      * trivial because templates can depend on the entity displayed and they

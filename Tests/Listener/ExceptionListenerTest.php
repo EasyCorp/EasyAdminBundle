@@ -50,9 +50,9 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             array(
                 'entity' => array(
                     'name' => 'Test',
-                    'primary_key_field_name' => 'Test key'
+                    'primary_key_field_name' => 'Test key',
                 ),
-                'entity_id' => 2
+                'entity_id' => 2,
             )
         );
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
@@ -78,7 +78,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldNotCatchExceptionsWithSameName()
     {
-        $exception = new EntityNotFoundException;
+        $exception = new EntityNotFoundException();
         $event = $this->getEventExceptionThatShouldNotBeCalled($exception);
         $templating = $this->getTemplating();
         $debug = false;

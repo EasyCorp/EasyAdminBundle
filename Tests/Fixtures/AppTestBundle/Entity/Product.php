@@ -84,6 +84,7 @@ class Product
      *     <li><strong>Size</strong>: 13cm x 15cm x 6cm</li>
      *     <li><strong>Bluetooth</strong>: 4.1</li>
      * </ul></pre>
+     *
      * @var string
      * @ORM\Column(type="string")
      */

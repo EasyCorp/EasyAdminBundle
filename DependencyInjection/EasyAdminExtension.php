@@ -349,7 +349,7 @@ class EasyAdminExtension extends Extension
                 // those options would be 'null' and the template would show some issues
                 if (array_key_exists($actionName, $defaultActionsConfiguration)) {
                     // remove null config options but maintain empty options (this allows to set an empty label for the action)
-                    $normalizedConfiguration = array_filter($normalizedConfiguration, function($element) { return null !== $element; });
+                    $normalizedConfiguration = array_filter($normalizedConfiguration, function ($element) { return null !== $element; });
                     $normalizedConfiguration = array_replace($defaultActionsConfiguration[$actionName], $normalizedConfiguration);
                 }
             }
@@ -605,8 +605,9 @@ class EasyAdminExtension extends Extension
     /**
      * Checks whether the given string is valid as a PHP method name.
      *
-     * @param  string  $name
-     * @return boolean
+     * @param string $name
+     *
+     * @return bool
      */
     private function isValidMethodName($name)
     {

@@ -38,7 +38,6 @@ class ExceptionListener
             return $event->getException()->getMessage();
         }
 
-        /** @var \JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException */
         $exception = $event->getException();
         $exceptionClassName = basename(str_replace('\\', '/', get_class($exception)));
 

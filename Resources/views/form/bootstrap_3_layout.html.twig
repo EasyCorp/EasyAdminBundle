@@ -178,19 +178,19 @@
 {# Rows #}
 
 {% block form_row -%}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ form.vars.attr.field_type|default('default') }} {{ form.vars.attr.field_css_class|default('') }}">
+    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
         {{- form_label(form) -}}
         {{- form_widget(form) -}}
         {{- form_errors(form) -}}
 
-        {% if form.vars.attr.field_help|default('') != '' %}
-            <span class="help-block"><i class="fa fa-info-circle"></i> {{ form.vars.attr.field_help|trans|raw }}</span>
+        {% if attr.field_help|default('') != '' %}
+            <span class="help-block"><i class="fa fa-info-circle"></i> {{ attr.field_help|trans|raw }}</span>
         {% endif %}
     </div>
 {%- endblock form_row %}
 
 {% block button_row -%}
-    <div class="form-group field-{{ form.vars.attr.field_type|default('default') }} {{ form.vars.attr.field_css_class|default('') }}">
+    <div class="form-group field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
         {{- form_widget(form) -}}
     </div>
 {%- endblock button_row %}
@@ -216,14 +216,14 @@
 {%- endblock datetime_row %}
 
 {% block checkbox_row -%}
-    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ form.vars.attr.field_type|default('default') }} {{ form.vars.attr.field_css_class|default('') }}">
+    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
         {{- form_widget(form) -}}
         {{- form_errors(form) -}}
     </div>
 {%- endblock checkbox_row %}
 
 {% block radio_row -%}
-    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ form.vars.attr.field_type|default('default') }} {{ form.vars.attr.field_css_class|default('') }}">
+    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
         {{- form_widget(form) -}}
         {{- form_errors(form) -}}
     </div>
@@ -260,7 +260,7 @@
                     event.returnValue = false;
                 }
 
-                var containerDiv = $('#{{ form.vars.id }}').parents('.form-group:first');
+                var containerDiv = $('#{{ id }}').parents('.form-group:first');
                 containerDiv.remove();
             });
         {% endset %}

@@ -34,7 +34,6 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 
 /**
@@ -174,7 +173,8 @@ class AdminController extends Controller
         }
 
         $id = $this->request->query->get('id');
-        $entity = $this->findCurrentEntity();
+        $easyadmin = $this->request->attributes->get('easyadmin');
+        $entity = $easyadmin['item'];
 
         $fields = $this->entity['edit']['fields'];
 
@@ -227,7 +227,8 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_SHOW);
 
         $id = $this->request->query->get('id');
-        $entity = $this->findCurrentEntity();
+        $easyadmin = $this->request->attributes->get('easyadmin');
+        $entity = $easyadmin['item'];
 
         $fields = $this->entity['show']['fields'];
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
@@ -259,6 +260,10 @@ class AdminController extends Controller
         } else {
             $entity = $this->createNewEntity();
         }
+
+        $easyadmin = $this->request->attributes->get('easyadmin');
+        $easyadmin['item'] = $entity;
+        $this->request->attributes->set('easyadmin', $easyadmin);
 
         $fields = $this->entity['new']['fields'];
 
@@ -732,24 +737,5 @@ class AdminController extends Controller
         $em = $this->get('doctrine')->getManagerForClass($entityClass);
 
         return $em->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform;
-    }
-
-    /**
-     * Looks for the objet that corresponds to the selected 'id' of the current
-     * entity. No parameters are required because all the information is stored
-     * globally in the class.
-     *
-     * @return object The entity
-     *
-     * @throws EntityNotFoundException
-     */
-    private function findCurrentEntity()
-    {
-        $id = $this->request->query->get('id');
-        if (!$entity = $this->em->getRepository($this->entity['class'])->find($id)) {
-            throw new EntityNotFoundException(array('entity' => $this->entity, 'entity_id' => $id));
-        }
-
-        return $entity;
     }
 }

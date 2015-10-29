@@ -273,3 +273,33 @@
         </div>
     {% endif %}
 {%- endblock form_widget_compound -%}
+
+{% block collection_row %}
+    {{ block('form_row') }}
+
+    {% if allow_add|default(false) %}
+        {% set js_add_item %}
+            $(function() {
+                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+                var collection = $('#{{ form.vars.id }}');
+                var numItems = collection.children('div.form-group').length;
+
+                var newItem = collection.attr('data-prototype')
+                    .replace(/\>__name__label__\</g, '>' + numItems + '<')
+                    .replace(/_{{ form.vars.name}}___name__/g, numItems)
+                    .replace(/{{ form.vars.name}}\]\[__name__\]/g, '{{ form.vars.name}}][' + numItems + ']')
+                ;
+
+                collection.append(newItem);
+            });
+        {% endset %}
+
+        <div class="form-group field-collection-action">
+            <a href="#" onclick="{{ js_add_item|raw }}" class="col-sm-12 text-right">
+                <i class="fa fa-plus-square"></i>
+                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}

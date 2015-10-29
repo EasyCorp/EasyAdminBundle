@@ -6,13 +6,7 @@
     <div class="row">
         <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}" />
 
-        {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
-            {% set _field_metadata = entity_fields[field.vars.name] %}
-            <div class="{{ _field_metadata.css_class|default('col-xs-12') }}">
-                {% set _field_label = _field_metadata['label']|default(null) %}
-                {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}
-            </div>
-        {% endfor %}
+        {{ form_rest(form) }}
 
         <div class="col-xs-12">
             <div class="form-group">

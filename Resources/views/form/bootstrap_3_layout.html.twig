@@ -178,16 +178,56 @@
 {# Rows #}
 
 {% block form_row -%}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
-        {{- form_label(form) -}}
-        {{- form_widget(form) -}}
-        {{- form_errors(form) -}}
+    {% if easyadmin.field|default(false) %}
+        <div class="{{ easyadmin.field.css_class|default('col-xs-12') }}">
+    {% endif %}
+        <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
 
-        {% if attr.field_help|default('') != '' %}
-            <span class="help-block"><i class="fa fa-info-circle"></i> {{ attr.field_help|trans|raw }}</span>
-        {% endif %}
-    </div>
+            {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
+            {% set _field_label = easyadmin.field['label']|default(null) %}
+
+            {{- form_label(form, _field_label|trans(_trans_parameters)) -}}
+            {{- form_widget(form) -}}
+            {{- form_errors(form) -}}
+
+            {% if attr.field_help|default('') != '' %}
+                <span class="help-block"><i class="fa fa-info-circle"></i> {{ attr.field_help|trans|raw }}</span>
+            {% endif %}
+        </div>
+    {% if easyadmin.field|default(false) %}
+        </div>
+    {% endif %}
 {%- endblock form_row %}
+
+{% block collection_row %}
+    {{ block('form_row') }}
+
+    {% if allow_add|default(false) %}
+        {% set js_add_item %}
+            $(function() {
+                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+                var collection = $('#{{ id }}');
+                var numItems = collection.children('div.form-group').length;
+
+                var newItem = collection.attr('data-prototype')
+                    .replace(/\>__name__label__\</g, '>' + numItems + '<')
+                    .replace(/_{{ name }}___name__/g, '_{{ name }}_' + numItems)
+                    .replace(/{{ name }}\]\[__name__\]/g, '{{ name }}][' + numItems + ']')
+                ;
+
+                collection.append(newItem);
+            });
+        {% endset %}
+
+        <div class="form-group field-collection-action">
+            <a href="#" onclick="{{ js_add_item|raw }}" class="col-sm-12 text-right">
+                <i class="fa fa-plus-square"></i>
+                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
+            </a>
+        </div>
+    {% endif %}
+{% endblock collection_row %}
 
 {% block button_row -%}
     <div class="form-group field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
@@ -273,33 +313,3 @@
         </div>
     {% endif %}
 {%- endblock form_widget_compound -%}
-
-{% block collection_row %}
-    {{ block('form_row') }}
-
-    {% if allow_add|default(false) %}
-        {% set js_add_item %}
-            $(function() {
-                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
-
-                var collection = $('#{{ id }}');
-                var numItems = collection.children('div.form-group').length;
-
-                var newItem = collection.attr('data-prototype')
-                    .replace(/\>__name__label__\</g, '>' + numItems + '<')
-                    .replace(/_{{ name }}___name__/g, '_{{ name }}_' + numItems)
-                    .replace(/{{ name }}\]\[__name__\]/g, '{{ name }}][' + numItems + ']')
-                ;
-
-                collection.append(newItem);
-            });
-        {% endset %}
-
-        <div class="form-group field-collection-action">
-            <a href="#" onclick="{{ js_add_item|raw }}" class="col-sm-12 text-right">
-                <i class="fa fa-plus-square"></i>
-                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
-            </a>
-        </div>
-    {% endif %}
-{% endblock %}

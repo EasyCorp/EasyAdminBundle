@@ -26,17 +26,27 @@ col-sm-2
 
 {% block form_row -%}
 {% spaceless %}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
-        {{ form_label(form) }}
-        <div class="{{ block('form_group_class') }}">
-            {{ form_widget(form) }}
-            {{ form_errors(form) }}
+    {% if easyadmin.field|default(false) %}
+        <div class="{{ easyadmin.field.css_class|default('col-xs-12') }}">
+    {% endif %}
+        <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
 
-            {% if attr.field_help|default('') != '' %}
-                <span class="help-block"><i class="fa fa-info-circle"></i> {{ attr.field_help|trans|raw }}</span>
-            {% endif %}
+            {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
+            {% set _field_label = easyadmin.field['label']|default(null) %}
+
+            {{ form_label(form, _field_label|trans(_trans_parameters)) }}
+            <div class="{{ block('form_group_class') }}">
+                {{ form_widget(form) }}
+                {{ form_errors(form) }}
+
+                {% if attr.field_help|default('') != '' %}
+                    <span class="help-block"><i class="fa fa-info-circle"></i> {{ form.vars.attr.field_help|trans|raw }}</span>
+                {% endif %}
+            </div>
         </div>
-    </div>
+    {% if easyadmin.field|default(false) %}
+        </div>
+    {% endif %}
 {% endspaceless %}
 {%- endblock form_row %}
 

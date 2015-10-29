@@ -38,6 +38,7 @@ class ExceptionListener
             return $event->getException()->getMessage();
         }
 
+        /** @var BaseException $exception */
         $exception = $event->getException();
         $exceptionClassName = basename(str_replace('\\', '/', get_class($exception)));
 

@@ -26,27 +26,21 @@ col-sm-2
 
 {% block form_row -%}
 {% spaceless %}
-    {% if easyadmin.field|default(false) %}
-        <div class="{{ easyadmin.field.css_class|default('col-xs-12') }}">
-    {% endif %}
-        <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
+    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
 
-            {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
-            {% set _field_label = easyadmin.field['label']|default(null) %}
+        {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
+        {% set _field_label = easyadmin.field['label']|default(null) %}
 
-            {{ form_label(form, _field_label|trans(_trans_parameters)) }}
-            <div class="{{ block('form_group_class') }}">
-                {{ form_widget(form) }}
-                {{ form_errors(form) }}
+        {{ form_label(form, _field_label|trans(_trans_parameters)) }}
+        <div class="{{ block('form_group_class') }}">
+            {{ form_widget(form) }}
+            {{ form_errors(form) }}
 
-                {% if attr.field_help|default('') != '' %}
-                    <span class="help-block"><i class="fa fa-info-circle"></i> {{ form.vars.attr.field_help|trans|raw }}</span>
-                {% endif %}
-            </div>
+            {% if attr.field_help|default('') != '' %}
+                <span class="help-block"><i class="fa fa-info-circle"></i> {{ attr.field_help|trans|raw }}</span>
+            {% endif %}
         </div>
-    {% if easyadmin.field|default(false) %}
-        </div>
-    {% endif %}
+    </div>
 {% endspaceless %}
 {%- endblock form_row %}
 

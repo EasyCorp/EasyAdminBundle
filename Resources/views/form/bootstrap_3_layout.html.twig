@@ -282,13 +282,13 @@
             $(function() {
                 if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
-                var collection = $('#{{ form.vars.id }}');
+                var collection = $('#{{ id }}');
                 var numItems = collection.children('div.form-group').length;
 
                 var newItem = collection.attr('data-prototype')
                     .replace(/\>__name__label__\</g, '>' + numItems + '<')
-                    .replace(/_{{ form.vars.name}}___name__/g, '_{{ form.vars.name}}_' + numItems)
-                    .replace(/{{ form.vars.name}}\]\[__name__\]/g, '{{ form.vars.name}}][' + numItems + ']')
+                    .replace(/_{{ name }}___name__/g, '_{{ name }}_' + numItems)
+                    .replace(/{{ name }}\]\[__name__\]/g, '{{ name }}][' + numItems + ']')
                 ;
 
                 collection.append(newItem);

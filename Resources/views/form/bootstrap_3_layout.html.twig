@@ -287,7 +287,7 @@
 
                 var newItem = collection.attr('data-prototype')
                     .replace(/\>__name__label__\</g, '>' + numItems + '<')
-                    .replace(/_{{ form.vars.name}}___name__/g, numItems)
+                    .replace(/_{{ form.vars.name}}___name__/g, '_{{ form.vars.name}}_' + numItems)
                     .replace(/{{ form.vars.name}}\]\[__name__\]/g, '{{ form.vars.name}}][' + numItems + ']')
                 ;
 

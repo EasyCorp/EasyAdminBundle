@@ -18,13 +18,13 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
 
 class Configurator
 {
-    private $backendConfig = array();
-    private $entitiesConfig = array();
-    private $inspector;
-    private $reflector;
-    private $defaultEntityFields = array();
+    protected $backendConfig = array();
+    protected $entitiesConfig = array();
+    protected $inspector;
+    protected $reflector;
+    protected $defaultEntityFields = array();
 
-    private $defaultEntityFieldConfiguration = array(
+    protected $defaultEntityFieldConfiguration = array(
         'class'     => null,  // CSS class or classes applied to form field
         'format'    => null,  // date/time/datetime/number format applied to form field value
         'help'      => null,  // form field help message
@@ -38,7 +38,7 @@ class Configurator
         'type_options' => array(), // the options passed to the Symfony Form type used to render the form field
     );
 
-    private $doctrineTypeToFormTypeMap = array(
+    protected $doctrineTypeToFormTypeMap = array(
         'array' => 'collection',
         'association' => null,
         'bigint' => 'text',
@@ -121,7 +121,7 @@ class Configurator
      *
      * @return array The entity properties metadata provided by Doctrine
      */
-    private function processEntityPropertiesMetadata(ClassMetadata $entityMetadata)
+    protected function processEntityPropertiesMetadata(ClassMetadata $entityMetadata)
     {
         $entityPropertiesMetadata = array();
 
@@ -161,7 +161,7 @@ class Configurator
      *
      * @return array The list of fields to show and their metadata
      */
-    private function getFieldsForListView(array $entityConfiguration)
+    protected function getFieldsForListView(array $entityConfiguration)
     {
         if (0 === count($entityConfiguration['list']['fields'])) {
             $entityConfiguration['list']['fields'] = $this->filterListFieldsBasedOnSmartGuesses($this->defaultEntityFields);
@@ -177,7 +177,7 @@ class Configurator
      *
      * @return array The list of fields to show and their metadata
      */
-    private function getFieldsForShowView(array $entityConfiguration)
+    protected function getFieldsForShowView(array $entityConfiguration)
     {
         if (0 === count($entityConfiguration['show']['fields'])) {
             $entityConfiguration['show']['fields'] = $this->defaultEntityFields;
@@ -211,7 +211,7 @@ class Configurator
      *
      * @return array The list of fields to use for the search
      */
-    private function getFieldsForSearchAction(array $entityConfiguration)
+    protected function getFieldsForSearchAction(array $entityConfiguration)
     {
         if (0 === count($entityConfiguration['search']['fields'])) {
             $excludedFieldNames = array();
@@ -230,7 +230,7 @@ class Configurator
      *
      * @return array The array of fields
      */
-    private function createFieldsFromEntityProperties($entityProperties)
+    protected function createFieldsFromEntityProperties($entityProperties)
     {
         $fields = array();
 
@@ -256,7 +256,7 @@ class Configurator
      *
      * @return array The list of fields to display
      */
-    private function filterListFieldsBasedOnSmartGuesses(array $entityFields)
+    protected function filterListFieldsBasedOnSmartGuesses(array $entityFields)
     {
         // empirical guess: listings with more than 7 fields look ugly
         $maxListFields = 7;
@@ -294,7 +294,7 @@ class Configurator
      *
      * @return array The filtered list of fields
      */
-    private function filterFieldsByNameAndType(array $fields, array $excludedFieldNames, array $excludedFieldTypes)
+    protected function filterFieldsByNameAndType(array $fields, array $excludedFieldNames, array $excludedFieldTypes)
     {
         $filteredFields = array();
 
@@ -316,7 +316,7 @@ class Configurator
      *
      * @return array The complete field configuration
      */
-    private function normalizeFieldsConfiguration($view, $entityConfiguration)
+    protected function normalizeFieldsConfiguration($view, $entityConfiguration)
     {
         $configuration = array();
         $fieldsConfiguration = $entityConfiguration[$view]['fields'];
@@ -414,7 +414,7 @@ class Configurator
      *
      * @return string The format that should be applied to the field value
      */
-    private function getFieldFormat($fieldType)
+    protected function getFieldFormat($fieldType)
     {
         if (in_array($fieldType, array('date', 'time', 'datetime', 'datetimetz'))) {
             // make 'datetimetz' use the same format as 'datetime'
@@ -437,7 +437,7 @@ class Configurator
      *
      * @return array
      */
-    private function introspectGettersAndSetters($entityConfiguration)
+    protected function introspectGettersAndSetters($entityConfiguration)
     {
         foreach (array('new', 'edit', 'list', 'show', 'search') as $view) {
             $fieldsConfiguration = $entityConfiguration[$view]['fields'];
@@ -471,7 +471,7 @@ class Configurator
      *
      * @return array
      */
-    private function processFieldTemplates(array $entityConfiguration)
+    protected function processFieldTemplates(array $entityConfiguration)
     {
         foreach (array('list', 'show') as $view) {
             foreach ($entityConfiguration[$view]['fields'] as $fieldName => $fieldMetadata) {
@@ -502,7 +502,7 @@ class Configurator
      *
      * @return string
      */
-    private function getFormTypeFromDoctrineType($doctrineType)
+    protected function getFormTypeFromDoctrineType($doctrineType)
     {
         // don't change this array_key_exists() by isset() because the Doctrine
         // type map can return 'null' values that should be treated like that

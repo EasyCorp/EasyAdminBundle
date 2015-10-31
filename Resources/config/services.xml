@@ -3,15 +3,18 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <services>
+    <parameters>
+        <parameter key="easyadmin.configurator.class">JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator</parameter>
+    </parameters>
 
+    <services>
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.configurator" />
             <argument>%kernel.debug%</argument>
             <tag name="twig.extension" />
         </service>
 
-        <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
+        <service id="easyadmin.configurator" class="%easyadmin.configurator.class%">
             <argument>%easyadmin.config%</argument>
             <argument type="service" id="easyadmin.metadata_inspector" />
             <argument type="service" id="easyadmin.property_reflector" />

@@ -1,0 +1,76 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-10-29T10:58:49Z
+
+I wish there could be a proper phpunit test to check whether the collection button appears correctly for nested collections :confused:
+
+But by the way, nice implementation
+
+---------------------------------------------------------------------------
+
+by thomasbeaujean at 2015-10-29T11:11:18Z
+
+I thought that my modification was enough but it appears I still got a JS issue. The JS is still not generic enough for several nested levels.
+Please do not consider this PR while I do not have fully check this issue.
+@Pierstoval Ok, I will try to add a test for the main usage
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-10-29T11:13:00Z
+
+Great ! Indirectly move another step forward to https://github.com/javiereguiluz/EasyAdminBundle/issues/499#issuecomment-151653895 :)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-10-29T11:14:58Z
+
+Plus, shouldn't this code be written also in `bootstrap_3_layout.html.twig`? You might consider putting this feature inside an include, or even in a twig macro.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-10-29T11:17:26Z
+
+And part of the `collection_row/widget` instead of `form_row` ?
+
+---------------------------------------------------------------------------
+
+by thomasbeaujean at 2015-10-30T09:28:18Z
+
+Thank you for these good advices.
+
+As suggested:
+* I renamed the add_item_javascript to js_add_item
+* I add block collection_row
+* I put the code in bootstrap_3_layout.html.twig
+
+And I finally could manage to fix my js issue.
+
+# The identifiers
+So if you have two nested forms, the strings to replace are like the following:
+
+*  __ name__label__
+* some_form_entityOne_0_entityTwo___name__
+* commitment_type_form[entityOne][0][entityTwo][0][name]
+
+## The previous behaviour
+
+You add an element, the __ name __ are replaced by the the item index.
+So __ name __ is replaced by 0.
+
+You want to add a sub item, the  some_form_entityOne_0_entityTwo___name__ has already been replaced by some_form_entityOne_0_entityTwo_0, and in the js.
+
+I want to add a second sub item, and all the 0 are replaced by 0, I get a some_form_entityOne_1_entityTwo_1 instead of some_form_entityOne_0_entityTwo_1.
+
+In the second level case, the __ name __ is the parent index (0, 1 etc.), so before, the code tried to replace the parent index by the child index (replace 0 by 1 for example).
+The first level of nested form had already replace all the __ name __ by its index.
+
+# The solution
+To avoid this behaviour, I modified the "replace" in order to be more specific in the search using the name of the property.
+
+## The modification in the js
+
++ .replace(/\>__ name__label__\</g, '>' + numItems + '<')
++ .replace(/_{{ form.vars.name}}___name__/g, numItems)
++ .replace(/{{ form.vars.name}}\]\[__name__\]/g, '{{ form.vars.name}}][' + numItems + ']')
+
+I hope my explanation is clear enough.

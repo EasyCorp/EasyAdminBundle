@@ -91,8 +91,8 @@ class EasyAdminFormType extends AbstractType
                     return $entityConfig['class'];
                 },
             ))
-            ->setNormalizer('attr',
-                 function (Options $options, $value) use ($config) {
+            ->setNormalizers(array(
+                'attr' => function (Options $options, $value) use ($config) {
                     $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
                         return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
                     });
@@ -101,8 +101,8 @@ class EasyAdminFormType extends AbstractType
                         'class' => $formCssClass,
                         'id' => $options['view'].'-form',
                     ), $value);
-                }
-            )
+                },
+            ))
             ->setRequired(array('entity', 'view'));
     }
 

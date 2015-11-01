@@ -34,5 +34,11 @@
             <tag name="data_collector" template="@EasyAdmin/data_collector/easyadmin.html.twig" id="easyadmin" />
         </service>
 
+        <service id="easyadmin.form.type" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType">
+            <argument type="service" id="easyadmin.configurator" />
+            <argument>%easyadmin.config%</argument>
+            <tag name="form.type" alias="easyadmin" />
+        </service>
+
     </services>
 </container>

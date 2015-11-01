@@ -93,12 +93,15 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * property doesn't exist or its value is not accessible. This ensures that
      * the function never generates a warning or error message when calling it.
      *
-     * @param string $view          The view in which the item is being rendered
-     * @param string $entityName    The name of the entity associated with the item
-     * @param object $item          The item which is being rendered
-     * @param array  $fieldMetadata The metadata of the actual field being rendered
+     * @param \Twig_Environment $twig
+     * @param string            $view          The view in which the item is being rendered
+     * @param string            $entityName    The name of the entity associated with the item
+     * @param object            $item          The item which is being rendered
+     * @param array             $fieldMetadata The metadata of the actual field being rendered
      *
      * @return string
+     *
+     * @throws \Exception
      */
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
@@ -190,6 +193,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * Checks whether the given 'action' is enabled for the given 'entity'.
      *
+     * @param string $view
      * @param string $action
      * @param string $entityName
      *
@@ -206,6 +210,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * Returns the full action configuration for the given 'entity' and 'view'.
      *
+     * @param string $view
      * @param string $action
      * @param string $entityName
      *
@@ -226,6 +231,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * entire view (e.g. 'new' action in 'list' view) and other default actions
      * are treated in a special way (e.g. 'delete' action in 'edit'/'show' views).
      *
+     * @param string $view
      * @param string $entityName
      *
      * @return array

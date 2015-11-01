@@ -56,6 +56,10 @@ class AdminController extends Controller
      * @param Request $request
      *
      * @return RedirectResponse|Response
+     *
+     * @throws ForbiddenActionException
+     * @throws NoEntitiesConfiguredException
+     * @throws UndefinedEntityException
      */
     public function indexAction(Request $request)
     {
@@ -86,6 +90,9 @@ class AdminController extends Controller
      * the user is performing the action.
      *
      * @param Request $request
+     *
+     * @throws NoEntitiesConfiguredException
+     * @throws UndefinedEntityException
      */
     protected function initialize(Request $request)
     {
@@ -323,7 +330,8 @@ class AdminController extends Controller
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            $entity = $this->findCurrentEntity();
+            $easyadmin = $this->request->attributes->get('easyadmin');
+            $entity = $easyadmin['item'];
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));
 

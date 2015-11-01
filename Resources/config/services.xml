@@ -22,7 +22,7 @@
 
         <service id="easyadmin.property_reflector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector" public="false" />
 
-        <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\Listener\ExceptionListener">
+        <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
             <argument type="service" id="templating" />
             <argument>%kernel.debug%</argument>
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
@@ -46,7 +46,7 @@
             <tag name="form.type_extension" alias="form" />
         </service>
 
-        <service id="easyadmin.listener.request_post_initialize" class="JavierEguiluz\Bundle\EasyAdminBundle\Listener\RequestPostInitializeListener">
+        <service id="easyadmin.listener.request_post_initialize" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener">
             <argument type="service" id="doctrine" />
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />

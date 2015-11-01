@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Listener;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;

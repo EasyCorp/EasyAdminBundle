@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Listener;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\EventListener;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Listener\ExceptionListener;
+use JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException as EasyEntityNotFoundException;
 
 class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
@@ -86,4 +86,8 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new ExceptionListener($templating, $debug);
         $listener->onKernelException($event);
     }
+}
+
+class EntityNotFoundException extends \Exception
+{
 }

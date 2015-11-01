@@ -15,31 +15,6 @@
                     {% set _field_label = _field_metadata['label']|default(null) %}
                     {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}
                 {% endif %}
-
-                {% if _field_metadata['fieldType'] == 'collection' %}
-                    {% set add_item_javascript %}
-                        $(function() {
-                            if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
-
-                            var collection = $('#{{ form.vars.name }}_{{ field.vars.name|escape('js') }}');
-                            var numItems = collection.children('div.form-group').length;
-
-                            var newItem = collection.attr('data-prototype')
-                                .replace(/__name__label__/g, numItems)
-                                .replace(/__name__/g, numItems)
-                            ;
-
-                            collection.append(newItem);
-                        });
-                    {% endset %}
-
-                    <div class="form-group field-collection-action">
-                        <a href="#" onclick="{{ add_item_javascript|raw }}" class="col-sm-12 text-right">
-                            <i class="fa fa-plus-square"></i>
-                            {{ (field|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans(_trans_parameters, 'EasyAdminBundle') }}
-                        </a>
-                    </div>
-                {% endif %}
             </div>
         {% endfor %}
 

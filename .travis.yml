@@ -38,6 +38,7 @@ matrix:
     - php: hhvm
     - env: SYMFONY_VERSION=2.8.*@dev
     - env: SYMFONY_VERSION="3.0.x-dev as 2.8"
+    - env: TWIG_VERSION="2.0.x-dev"
 
 before_install:
   - if [[ "$SYMFONY_VERSION" = "" ]] && [[ "$TWIG_VERSION" = "" ]] && [[ "$TRAVIS_PHP_VERSION" =~ 5.[45] ]] && [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then export skip="yes"; fi;

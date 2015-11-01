@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-30T17:02:58Z
+
+:+1: I love it!  Can we hide in the output the long list of files checked: https://travis-ci.org/ogizanagi/EasyAdminBundle/jobs/88381185#L1189 ?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-10-30T17:04:27Z
+
+@javiereguiluz : I was actually doing this change at the moment :smile: Done. (`-v`instead of `-vvv`)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-10-30T17:05:19Z
+
+Nice!

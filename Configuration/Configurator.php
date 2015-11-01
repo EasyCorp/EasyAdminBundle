@@ -209,6 +209,7 @@ class Configurator
     /**
      * Returns the list of entity fields on which the search query is performed.
      *
+     * @param array $entityConfiguration
      * @return array The list of fields to use for the search
      */
     private function getFieldsForSearchAction(array $entityConfiguration)

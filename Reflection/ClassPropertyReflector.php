@@ -83,6 +83,7 @@ class ClassPropertyReflector
                 return $method;
             }
         }
+        return null;
     }
 
     /**

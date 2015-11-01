@@ -12,10 +12,12 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionListener
 {
+    /** @var  EngineInterface */
     private $templating;
     private $debug;
     private $exceptionTemplates = array(

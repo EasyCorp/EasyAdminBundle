@@ -179,7 +179,11 @@
 
 {% block form_row -%}
     <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
-        {{- form_label(form) -}}
+
+        {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
+        {% set _field_label = easyadmin.field['label']|default(null) %}
+
+        {{- form_label(form, _field_label|trans(_trans_parameters)) -}}
         {{- form_widget(form) -}}
         {{- form_errors(form) -}}
 
@@ -188,6 +192,36 @@
         {% endif %}
     </div>
 {%- endblock form_row %}
+
+{% block collection_row %}
+    {{ block('form_row') }}
+
+    {% if allow_add|default(false) %}
+        {% set js_add_item %}
+            $(function() {
+                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+                var collection = $('#{{ id }}');
+                var numItems = collection.children('div.form-group').length;
+
+                var newItem = collection.attr('data-prototype')
+                    .replace(/\>__name__label__\</g, '>' + numItems + '<')
+                    .replace(/_{{ name }}___name__/g, '_{{ name }}_' + numItems)
+                    .replace(/{{ name }}\]\[__name__\]/g, '{{ name }}][' + numItems + ']')
+                ;
+
+                collection.append(newItem);
+            });
+        {% endset %}
+
+        <div class="form-group field-collection-action">
+            <a href="#" onclick="{{ js_add_item|raw }}" class="col-sm-12 text-right">
+                <i class="fa fa-plus-square"></i>
+                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
+            </a>
+        </div>
+    {% endif %}
+{% endblock collection_row %}
 
 {% block button_row -%}
     <div class="form-group field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
@@ -274,32 +308,78 @@
     {% endif %}
 {%- endblock form_widget_compound -%}
 
-{% block collection_row %}
-    {{ block('form_row') }}
+{# Easy admin form type #}
+{% block easyadmin_widget %}
 
-    {% if allow_add|default(false) %}
-        {% set js_add_item %}
-            $(function() {
-                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
 
-                var collection = $('#{{ id }}');
-                var numItems = collection.children('div.form-group').length;
-
-                var newItem = collection.attr('data-prototype')
-                    .replace(/\>__name__label__\</g, '>' + numItems + '<')
-                    .replace(/_{{ name }}___name__/g, '_{{ name }}_' + numItems)
-                    .replace(/{{ name }}\]\[__name__\]/g, '{{ name }}][' + numItems + ']')
-                ;
-
-                collection.append(newItem);
-            });
-        {% endset %}
-
-        <div class="form-group field-collection-action">
-            <a href="#" onclick="{{ js_add_item|raw }}" class="col-sm-12 text-right">
-                <i class="fa fa-plus-square"></i>
-                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
-            </a>
-        </div>
+    {% if form.vars.errors|length > 0 %}
+        {{ form_errors(form) }}
     {% endif %}
-{% endblock %}
+
+    <div class="row">
+        <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
+
+        {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
+            <div class="{{ field.vars.easyadmin.field.css_class|default('col-xs-12') }}">
+                {{ form_row(field) }}
+            </div>
+        {% endfor %}
+
+        <div class="col-xs-12">
+            <div class="form-group">
+                <div id="form-actions-row">
+                    {% block item_actions %}
+                        {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
+                        <button type="submit" class="btn">
+                            <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, 'messages') }}
+                        </button>
+    
+                        {% set _entity_actions = (easyadmin.view == 'new')
+                        ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
+                        : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
+    
+                        {% for _action in _entity_actions %}
+                            {% if 'method' == _action.type %}
+                                {% set _action_href = path('admin', { action: _action.name, view: view, entity: easyadmin.entity.name, id: attribute(entity, easyadmin.entity.primary_key_field_name) }) %}
+                            {% elseif 'route' == _action.type %}
+                                {% set _action_href = path(_action.name, { entity: easyadmin.entity.name, id: attribute(entity, easyadmin.entity.primary_key_field_name) }) %}
+                            {% endif %}
+    
+                            <a class="btn {{ _action.css_class|default('') }}" href="{{ _action_href }}">
+                                {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                                {{ _action.label|trans(_trans_parameters) }}
+                            </a>
+                        {% endfor %}
+    
+                        {% if easyadmin.view == 'edit' %}
+                            {% if easyadmin_action_is_enabled_for_edit_view('delete', easyadmin.entity.name) %}
+                                {% set _action = easyadmin_get_action_for_edit_view('delete', easyadmin.entity.name) %}
+                                <button type="button" id="button-delete"
+                                        class="btn {{ _action.css_class|default('btn-danger') }}">
+                                    {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                                    {{ _action.label|default('action.delete')|trans(_trans_parameters, 'messages') }}
+                                </button>
+                            {% endif %}
+                        {% endif %}
+    
+                        {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
+                        {% if easyadmin.view == 'new' and easyadmin_action_is_enabled_for_new_view('list', easyadmin.entity.name) %}
+                            {% set _list_action = easyadmin_get_action_for_new_view('list', easyadmin.entity.name) %}
+                        {% elseif easyadmin.view == 'edit' and easyadmin_action_is_enabled_for_edit_view('list', easyadmin.entity.name) %}
+                            {% set _list_action = easyadmin_get_action_for_edit_view('list', easyadmin.entity.name) %}
+                        {% endif %}
+    
+                        {% if _list_action is defined %}
+                            <a class="btn btn-secondary"
+                               href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('admin', ({ entity: easyadmin.entity.name, action: _list_action.name, view: easyadmin.view }) ) }}">{% spaceless %}
+                                    {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
+                                    {{ _list_action.label|default('action.list')|trans(_trans_parameters, 'messages') }}
+                                {% endspaceless %}</a>
+                        {% endif %}
+                    {% endblock item_actions %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock easyadmin_widget %}

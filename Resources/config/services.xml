@@ -4,7 +4,6 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.configurator" />
             <argument>%kernel.debug%</argument>
@@ -40,5 +39,19 @@
             <tag name="form.type" alias="easyadmin" />
         </service>
 
+        <service id="easyadmin.form.type.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension">
+            <call method="setRequest">
+                <argument type="service" id="request" on-invalid="null" strict="false" />
+            </call>
+            <tag name="form.type_extension" alias="form" />
+        </service>
+
+        <service id="easyadmin.listener.request_post_initialize" class="JavierEguiluz\Bundle\EasyAdminBundle\Listener\RequestPostInitializeListener">
+            <argument type="service" id="doctrine" />
+            <call method="setRequest">
+                <argument type="service" id="request" on-invalid="null" strict="false" />
+            </call>
+            <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />
+        </service>
     </services>
 </container>

@@ -9,12 +9,8 @@
         {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
             {% set _field_metadata = entity_fields[field.vars.name] %}
             <div class="{{ _field_metadata.css_class|default('col-xs-12') }}">
-                {% if _field_metadata['fieldType'] == 'association' %}
-                    {{ easyadmin_render_field_for_edit_view(entity, _field_metadata) }}
-                {% else %}
-                    {% set _field_label = _field_metadata['label']|default(null) %}
-                    {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}
-                {% endif %}
+                {% set _field_label = _field_metadata['label']|default(null) %}
+                {{ form_row(field, { label: _field_label|trans(_trans_parameters) }) }}
             </div>
         {% endfor %}
 

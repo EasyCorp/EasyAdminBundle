@@ -323,7 +323,8 @@ class AdminController extends Controller
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            $entity = $this->findCurrentEntity();
+            $easyadmin = $this->request->attributes->get('easyadmin');
+            $entity = $easyadmin['item'];
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));
 

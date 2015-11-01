@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-10-28T13:56:54Z
+
+I think we should rename these "types" variables.
+
+Having `formType` and `displayType` sounds much better than `dataType` and `fieldType` which can be very VERY confusing IMO.
+
+That said, I don't know at all if this statement is reachable.
+
+If only we could have code coverage for twig :p
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-01T09:57:50Z
+
+It is probably worth mentioning it: This code has been implicitly removed too in https://github.com/ogizanagi/EasyAdminBundle/commit/b39e791dda995120c3bead40660ff2615ec69c97#diff-6997b7569a6653793883d17b6dd2ff3cL13 (see #512).

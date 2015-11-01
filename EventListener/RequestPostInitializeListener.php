@@ -1,6 +1,6 @@
 <?php
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Listener;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;

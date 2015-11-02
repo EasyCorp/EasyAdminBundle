@@ -11,7 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
@@ -96,6 +95,7 @@ class Configurator
 
         $entityConfiguration = $this->backendConfig['entities'][$entityName];
 
+        /** @var ClassMetadataInfo $entityMetadata */
         $entityMetadata = $this->inspector->getEntityMetadata($entityConfiguration['class']);
         $entityConfiguration['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
 
@@ -124,11 +124,11 @@ class Configurator
      * Takes the entity metadata introspected via Doctrine and completes its
      * contents to simplify data processing for the rest of the application.
      *
-     * @param ClassMetadata $entityMetadata The entity metadata introspected via Doctrine
+     * @param ClassMetadataInfo $entityMetadata The entity metadata introspected via Doctrine
      *
      * @return array The entity properties metadata provided by Doctrine
      */
-    private function processEntityPropertiesMetadata(ClassMetadata $entityMetadata)
+    private function processEntityPropertiesMetadata(ClassMetadataInfo $entityMetadata)
     {
         $entityPropertiesMetadata = array();
 

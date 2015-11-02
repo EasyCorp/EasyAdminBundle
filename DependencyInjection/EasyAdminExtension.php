@@ -628,6 +628,6 @@ class EasyAdminExtension extends Extension
     {
         $entityNames = array_keys($backendConfiguration['entities']);
 
-        return $entityNames[0];
+        return isset($entityNames[0]) ? $entityNames[0] : null;
     }
 }

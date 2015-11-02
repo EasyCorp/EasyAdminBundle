@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Adds some custom attributes to the request object to store information
  * related to EasyAdmin.
  *
- * @author Maxime Steinhausser
+ * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class RequestPostInitializeListener
 {

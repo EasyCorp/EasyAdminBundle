@@ -334,24 +334,24 @@
                         <button type="submit" class="btn">
                             <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, 'messages') }}
                         </button>
-    
+
                         {% set _entity_actions = (easyadmin.view == 'new')
                         ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
                         : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
-    
+
                         {% for _action in _entity_actions %}
                             {% if 'method' == _action.type %}
-                                {% set _action_href = path('admin', { action: _action.name, view: view, entity: easyadmin.entity.name, id: attribute(entity, easyadmin.entity.primary_key_field_name) }) %}
+                                {% set _action_href = path('easyadmin', { action: _action.name, view: view, entity: easyadmin.entity.name, id: attribute(entity, easyadmin.entity.primary_key_field_name) }) %}
                             {% elseif 'route' == _action.type %}
                                 {% set _action_href = path(_action.name, { entity: easyadmin.entity.name, id: attribute(entity, easyadmin.entity.primary_key_field_name) }) %}
                             {% endif %}
-    
+
                             <a class="btn {{ _action.css_class|default('') }}" href="{{ _action_href }}">
                                 {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                 {{ _action.label|trans(_trans_parameters) }}
                             </a>
                         {% endfor %}
-    
+
                         {% if easyadmin.view == 'edit' %}
                             {% if easyadmin_action_is_enabled_for_edit_view('delete', easyadmin.entity.name) %}
                                 {% set _action = easyadmin_get_action_for_edit_view('delete', easyadmin.entity.name) %}
@@ -362,17 +362,17 @@
                                 </button>
                             {% endif %}
                         {% endif %}
-    
+
                         {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
                         {% if easyadmin.view == 'new' and easyadmin_action_is_enabled_for_new_view('list', easyadmin.entity.name) %}
                             {% set _list_action = easyadmin_get_action_for_new_view('list', easyadmin.entity.name) %}
                         {% elseif easyadmin.view == 'edit' and easyadmin_action_is_enabled_for_edit_view('list', easyadmin.entity.name) %}
                             {% set _list_action = easyadmin_get_action_for_edit_view('list', easyadmin.entity.name) %}
                         {% endif %}
-    
+
                         {% if _list_action is defined %}
                             <a class="btn btn-secondary"
-                               href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('admin', ({ entity: easyadmin.entity.name, action: _list_action.name, view: easyadmin.view }) ) }}">{% spaceless %}
+                               href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('easyadmin', ({ entity: easyadmin.entity.name, action: _list_action.name, view: easyadmin.view }) ) }}">{% spaceless %}
                                     {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
                                     {{ _list_action.label|default('action.list')|trans(_trans_parameters, 'messages') }}
                                 {% endspaceless %}</a>

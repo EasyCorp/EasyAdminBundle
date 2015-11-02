@@ -5,6 +5,16 @@ This document describes the backwards incompatible changes introduced by each
 EasyAdminBundle version and the needed changes to be made before upgrading to
 the next version.
 
+Upgrade to 2.0.0
+----------------
+
+The route used to generate every backend URL is now called `easyadmin` instead
+of `admin`. This change has been introduce to prevent collisions with your
+existing backend routes, where is common to use the `admin` route name.
+
+In order to upgrade, you just need to replace `admin` by `easyadmin` in all
+`path()`, `generateUrl()` and `redirectToRoute()` calls.
+
 Upgrade to 1.5.5
 ----------------
 
@@ -143,7 +153,7 @@ easy_admin:
 
 ### Changed variables names in twig views
 
-The former `_entity` variable was used to retrieve the current entity configuration. 
+The former `_entity` variable was used to retrieve the current entity configuration.
 This variable has been renamed to `_entity_config` for convenience and readability reasons.
 
 The old `item` variable was used to carry the currently created/edited entity.
@@ -157,7 +167,7 @@ Upgrade to 1.4.0
 These changes affect you only if you have customized any of the following
 templates in your backend:
 
-1) `form/entity_form.html.twig` template has been renamed to `form.html.twig` 
+1) `form/entity_form.html.twig` template has been renamed to `form.html.twig`
 2) `_list_paginator.html.twig` template has been renamed to `_paginator.html.twig`
 3) `_flashes.html.twig` template has been removed because it wasn't used in any other template
 

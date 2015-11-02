@@ -47,7 +47,8 @@ class EasyAdminDataCollector extends DataCollector
 
     private function getEasyAdminParameters(Request $request)
     {
-        if ('admin' !== $request->attributes->get('_route')) {
+        // 'admin' is the deprecated route name that will be removed in version 2.0.
+        if (!in_array($request->attributes->get('_route'), array('easyadmin', 'admin'))) {
             return;
         }
 

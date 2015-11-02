@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-02T19:26:01Z
+
+:ok_hand:
+
+There is no authorship on [EasyAdminTwigExtension](https://github.com/javiereguiluz/EasyAdminBundle/blob/add_phpdoc/Twig/EasyAdminTwigExtension.php)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-02T20:56:05Z
+
+@javiereguiluz If you want you can put "my" authorship in test classes, but being mentioned as a contributor is sufficient to me, having my names on classes is just a bonus :laughing:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-02T21:19:09Z
+
+@Pierstoval the thing is that Symfony doesn't allow to add `@author` on the classes related to tests. I'm sorry ... but I'll try to do something to compensate you :)

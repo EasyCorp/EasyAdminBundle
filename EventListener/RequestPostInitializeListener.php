@@ -48,7 +48,8 @@ class RequestPostInitializeListener
             return;
         }
 
-        if ('admin' === $this->request->attributes->get('_route')) {
+        if ('admin' === $this->request->attributes->get('_route')
+            && 'AppBundle\Controller\AdminController::indexAction' === $this->request->attributes->get('_controller')) {
             trigger_error('The "admin" route is deprecated since version 1.8.0 and it will be removed in 2.0.0. Use the "easyadmin" route instead.', E_USER_DEPRECATED);
         }
 

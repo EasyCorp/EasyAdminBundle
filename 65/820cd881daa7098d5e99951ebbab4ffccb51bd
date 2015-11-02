@@ -1,0 +1,148 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-02T20:30:01Z
+
+What do you think about triggering a `E_USER_DEPRECATED` if the `admin` route is used ? That'll allow to identify remaining usages in the application.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-02T20:42:53Z
+
+Forget about my last comment, as there is no "easy way" for doing this except by decorating the `UrlGenerator`...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-02T20:47:59Z
+
+@ogizanagi too late ... I already did it in 9fbb99f
+
+![deprecation_message](https://cloud.githubusercontent.com/assets/73419/10893864/5dc9e336-81ab-11e5-8f7a-8fede6c44c2e.png)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-02T20:51:59Z
+
+@javiereguiluz : I don't understand... The deprecation is only about using the `admin` route for url generation. When accessing the easyadmin pages, the new `easyadmin` route name should be returned otherwise this fix isn't right. Or am I wrong ?
+
+What I suggested was to throw a `E_USER_DEPRECATED` when trying to generate an url with `admin` route name. But that's impossible, even by decorating the `UrlGenerator`, because someone could have a valid `admin` route in his application.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-02T20:54:16Z
+
+Then you should check that both `$routeName === 'admin'` and `$_controller === AdminController::class` are evaluated to true to trigger this deprecation error.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-02T20:56:05Z
+
+@ogizanagi you are not wrong ... but we are looking at the same problem from different sides. You want to trigger a deprecation message when `admin` route **is being used** to generate the URL (which is very complex to do). I''m triggering the deprecation when `admin` route **has been used** to generate the URL.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-02T20:58:31Z
+
+But actually, as the routes are generated sequentially, there's a problem : both routes have the same pattern, so even if you generate the url, it's about **accessing** the url that will potentially trigger the error.
+Which one between `admin` and `easyadmin` will be triggered ?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-02T21:00:00Z
+
+@Pierstoval : exactly. There is no way to distinguish which route name has been used from the `route` request attribute here.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-02T21:01:29Z
+
+There is a way : remove the "admin" route, add a kernel listener and check if the route name is `admin` and resolve the controller manually before Symfony throws a 404 exception.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-02T21:01:31Z
+
+When the `UrlMatcher` try to find a route for `/`, it will stop at the first encountered matching `Route` instance. It will not say what route name has been used for generating the link to this page by the `UrlGenerator`.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-02T21:01:53Z
+
+@ogizanagi @Pierstoval I don't understand you. The `_route` attribute stores the route name. If your template uses `path('admin')`, the `_route` will be `admin` and the deprecation message will be triggered. If you use `path('easyadmin')`, no message will be triggered. Same goes for `generateUrl()` and `redirectToRoute().
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-02T21:03:16Z
+
+@javiereguiluz Not exactly. `{{ path('admin') }}` will let the browser load a `{admin_prefix}/` route. Then the `UrlMatcher` will search for the first occurrence of the `/` path, which will be the `admin` route. So there'll always be a deprecation error (or, in another order, always be `easyadmin` route and never trigger deprecation error).
+There's no real link between *generating* an url and *accessing* an url.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-02T21:04:03Z
+
+@javiereguiluz : `path('admin')` will generate the `/` url. When the user will click on the url, there is nothing about the route name in the HTTP request made by the browser.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-02T21:05:27Z
+
+OK, I understand now what you want to say :cry:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-02T21:07:08Z
+
+Still I prefer to add this option in a `CHANGELOG` and force the feature removal in 2.0 instead of trying to find a workaround that will probably create edge cases (plus, users CAN rename the route when overriding the controller, so we have no control over it).
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-02T21:07:55Z
+
+@Pierstoval :
+> There is a way : remove the "admin" route, add a kernel listener and check if the route name is admin and resolve the controller manually before Symfony throws a 404 exception.
+
+If you remove the `admin` route, there is no way to know that the route name was `admin` :smile:
+
+LET'S IGNORE my https://github.com/javiereguiluz/EasyAdminBundle/pull/529#issuecomment-153147602.
+Sorry for the confusion :sweat_smile:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-02T21:09:30Z
+
+> If you remove the `admin` route, there is no way to know that the route name was admin :smile:
+
+When executing the `kernel.request` listener as last listener, you may "know" which route and controller is resolved. Then, if the route name is `admin` and the controller is an instance of the `AdminController`, you can throw a deprecation notice. Else, you don't have to do anything :)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-02T21:10:41Z
+
+It can happen if the developer has overriden the `AdminController` and kept the route name.
+
+But as I said this can generate a huge edge cases because the user's controller will use `admin` route, and the non-overriden templates will use `easyadmin` therefore not execute the user's controller.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-02T21:17:07Z
+
+I tried to do the following in the exception listener:
+
+```php
+if ($event->getException() instanceof RouteNotFoundException and 'admin' === $event->getRequest->attributes->get('_route')) {
+  / ...
+```
+
+But I agree about the edge cases. So let's forge about the deprecation message for now. Thanks for guiding me through this. I appreciate it!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-02T21:18:24Z
+
+If only I had more time I'd propose many more features, but I'm happy to review when I can :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-02T21:29:43Z
+
+@Pierstoval that's fine! Thanks for helping us whenever you can.

@@ -17,7 +17,7 @@
                         </li>
                     {% else %}
                         <li>
-                            <a href="{{ path('admin', _request_parameters|merge({ page: 1 }) ) }}">
+                            <a href="{{ path('easyadmin', _request_parameters|merge({ page: 1 }) ) }}">
                                 <i class="fa fa-angle-double-left"></i> {{ 'paginator.first'|trans }}
                             </a>
                         </li>
@@ -25,7 +25,7 @@
 
                     {% if paginator.hasPreviousPage %}
                         <li>
-                            <a href="{{ path('admin', _request_parameters|merge({ page: paginator.previousPage }) ) }}">
+                            <a href="{{ path('easyadmin', _request_parameters|merge({ page: paginator.previousPage }) ) }}">
                                 <i class="fa fa-angle-left"></i> {{ 'paginator.previous'|trans }}
                             </a>
                         </li>
@@ -39,7 +39,7 @@
 
                     {% if paginator.hasNextPage %}
                         <li>
-                            <a href="{{ path('admin', _request_parameters|merge({ page: paginator.nextPage }) ) }}">
+                            <a href="{{ path('easyadmin', _request_parameters|merge({ page: paginator.nextPage }) ) }}">
                                 {{ 'paginator.next'|trans }} <i class="fa fa-angle-right"></i>
                             </a>
                         </li>
@@ -53,7 +53,7 @@
 
                     {% if paginator.currentPage < paginator.nbPages %}
                         <li>
-                            <a href="{{ path('admin', _request_parameters|merge({ page: paginator.nbPages }) ) }}">
+                            <a href="{{ path('easyadmin', _request_parameters|merge({ page: paginator.nbPages }) ) }}">
                                 {{ 'paginator.last'|trans }} <i class="fa fa-angle-double-right"></i>
                             </a>
                         </li>

@@ -146,3 +146,4 @@ easy_admin:
         max_results: 15
     new:
         actions: {  }
+    default_entity_name: TestEntity

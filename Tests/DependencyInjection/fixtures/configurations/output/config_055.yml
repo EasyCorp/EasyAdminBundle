@@ -139,3 +139,4 @@ easy_admin:
         actions: {  }
     new:
         actions: {  }
+    default_entity_name: TestEntity

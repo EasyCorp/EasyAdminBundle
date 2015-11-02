@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * Custom form type that deals with some of the logic used to render the
  * forms used to create and edit EasyAdmin entities.
  *
- * @author Maxime Steinhausser
+ * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class EasyAdminFormType extends AbstractType
 {

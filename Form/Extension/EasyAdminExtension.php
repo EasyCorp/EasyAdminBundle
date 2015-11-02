@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Extension that injects EasyAdmin related information in the view used to
  * render the form.
  *
- * @author Maxime Steinhausser
+ * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class EasyAdminExtension extends AbstractTypeExtension
 {

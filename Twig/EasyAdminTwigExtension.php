@@ -14,6 +14,11 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 use Doctrine\ORM\PersistentCollection;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
+/**
+ * Defines the filters and functions used to render the bundle's templates.
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 class EasyAdminTwigExtension extends \Twig_Extension
 {
     private $configurator;

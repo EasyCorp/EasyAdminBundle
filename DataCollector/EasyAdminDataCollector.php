@@ -16,6 +16,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
+/**
+ * Collects information about the requests related to EasyAdmin and displays
+ * it both in the web debug toolbar and in the profiler.
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 class EasyAdminDataCollector extends DataCollector
 {
     private $configurator;

@@ -15,6 +15,8 @@ use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Introspects information about the properties of the given class.
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class ClassPropertyReflector
 {

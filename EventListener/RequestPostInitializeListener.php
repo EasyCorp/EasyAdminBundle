@@ -7,6 +7,12 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Adds some custom attributes to the request object to store information
+ * related to EasyAdmin.
+ *
+ * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
+ */
 class RequestPostInitializeListener
 {
     /** @var Request|null */

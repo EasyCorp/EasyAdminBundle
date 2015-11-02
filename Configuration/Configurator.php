@@ -16,6 +16,13 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
 
+/**
+ * Completes the entities configuration with the information that can only be
+ * determined during runtime, not during the container compilation phase (most
+ * of the entities configuration is resolved in EasyAdminExtension class)
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 class Configurator
 {
     private $backendConfig = array();

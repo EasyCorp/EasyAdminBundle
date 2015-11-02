@@ -11,6 +11,9 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 class EntityNotFoundException extends BaseException
 {
     public function __construct(array $parameters = array())

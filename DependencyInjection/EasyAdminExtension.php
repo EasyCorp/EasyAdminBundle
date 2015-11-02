@@ -16,6 +16,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
 
+/**
+ * Resolves all the backend configuration values and most of the entities
+ * configuration. The information that must resolved during runtime is handled
+ * by the Configurator class.
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 class EasyAdminExtension extends Extension
 {
     private $views = array('edit', 'list', 'new', 'show');

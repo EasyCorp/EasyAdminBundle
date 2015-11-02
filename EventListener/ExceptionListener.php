@@ -14,6 +14,12 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
+/**
+ * This listener allows to display customized error pages in the production
+ * environment.
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 class ExceptionListener
 {
     private $templating;

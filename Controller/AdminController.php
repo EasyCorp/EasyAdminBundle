@@ -7,12 +7,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
- * Some parts of this file are copied and/or inspired by the
- * DoctrineCRUDGenerator included in the SensioGeneratorBundle.
- *   License: MIT License
- *   Copyright: (c) Fabien Potencier <fabien@symfony.com>
- *   Source: https://github.com/sensiolabs/SensioGeneratorBundle
  */
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
@@ -37,7 +31,9 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 
 /**
- * Class AdminController.
+ * The controller used to render all the default EasyAdmin actions.
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class AdminController extends Controller
 {

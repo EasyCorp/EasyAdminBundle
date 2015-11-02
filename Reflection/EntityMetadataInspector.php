@@ -16,6 +16,8 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
  * Introspects information about the properties of the given entity class.
+ *
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class EntityMetadataInspector
 {

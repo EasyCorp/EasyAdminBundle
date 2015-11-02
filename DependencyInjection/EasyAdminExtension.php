@@ -620,7 +620,7 @@ class EasyAdminExtension extends Extension
      * mainly used to redirect the homepage of the backend to the listing of the
      * first configured entity.
      *
-     * @param  array $backendConfiguration
+     * @param array $backendConfiguration
      *
      * @return string
      */

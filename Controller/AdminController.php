@@ -57,16 +57,11 @@ class AdminController extends Controller
     {
         $this->initialize($request);
 
-        $action = $request->query->get('action', 'list');
-
-        // for now, the homepage redirects to the 'list' action of the first entity
         if (null === $request->query->get('entity')) {
-            return $this->redirect($this->generateUrl('admin', array(
-                'action' => $action,
-                'entity' => $this->getNameOfTheFirstConfiguredEntity(),
-            )));
+            return $this->redirect($this->generateUrl('admin', array('action' => 'list', 'entity' => $this->config['default_entity_name'])));
         }
 
+        $action = $request->query->get('action', 'list');
         if (!$this->isActionAllowed($action)) {
             throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
         }
@@ -619,20 +614,6 @@ class AdminController extends Controller
         }
 
         return $formBuilder->getForm();
-    }
-
-    /**
-     * It returns the name of the first entity configured in the backend. It's
-     * mainly used to redirect the homepage of the backend to the listing of the
-     * first configured entity.
-     *
-     * @return mixed
-     */
-    protected function getNameOfTheFirstConfiguredEntity()
-    {
-        $entityNames = array_keys($this->config['entities']);
-
-        return $entityNames[0];
     }
 
     /**

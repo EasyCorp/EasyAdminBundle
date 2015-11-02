@@ -29,3 +29,4 @@ easy_admin:
     show:
         actions: {  }
     entities: {  }
+    default_entity_name: null

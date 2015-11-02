@@ -167,3 +167,4 @@ easy_admin:
         time: 'H:i:s'
         datetime: 'F j, Y H:i'
     disabled_actions: {  }
+    default_entity_name: TestEntity

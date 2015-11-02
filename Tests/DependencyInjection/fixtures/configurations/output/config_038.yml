@@ -158,3 +158,4 @@ easy_admin:
         actions: {  }
     show:
         actions: {  }
+    default_entity_name: TestEntity

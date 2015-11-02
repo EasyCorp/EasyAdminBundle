@@ -73,6 +73,7 @@ class EasyAdminExtension extends Extension
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
         $backendConfiguration = $this->processEntityActions($backendConfiguration);
         $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
+        $backendConfiguration['default_entity_name'] = $this->getFirstEntityName($backendConfiguration);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
 
@@ -612,5 +613,21 @@ class EasyAdminExtension extends Extension
     private function isValidMethodName($name)
     {
         return 0 !== preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
+    }
+
+    /**
+     * It returns the name of the first entity configured in the backend. It's
+     * mainly used to redirect the homepage of the backend to the listing of the
+     * first configured entity.
+     *
+     * @param  array $backendConfiguration
+     *
+     * @return string
+     */
+    private function getFirstEntityName(array $backendConfiguration)
+    {
+        $entityNames = array_keys($backendConfiguration['entities']);
+
+        return $entityNames[0];
     }
 }

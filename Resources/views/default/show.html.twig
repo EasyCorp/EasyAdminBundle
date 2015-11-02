@@ -37,7 +37,7 @@
                 {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
                 {% for _action in _show_actions %}
                     {% if 'method' == _action.type %}
-                        {% set _action_href = path('admin', { action: _action.name, entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
+                        {% set _action_href = path('easyadmin', { action: _action.name, entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
                     {% elseif 'route' == _action.type %}
                         {% set _action_href = path(_action.name, { entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
                     {% endif %}
@@ -59,7 +59,7 @@
                 {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
                 {% if easyadmin_action_is_enabled_for_show_view('list', _entity_config.name) %}
                     {% set _action = easyadmin_get_action_for_show_view('list', _entity_config.name) %}
-                    <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('admin', ({ entity: _entity_config.name, action: _action.name, view: 'show' })) }}">{% spaceless %}
+                    <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('easyadmin', ({ entity: _entity_config.name, action: _action.name, view: 'show' })) }}">{% spaceless %}
                         {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                         {{ _action.label|default('action.list')|trans(_trans_parameters) }}
                     {% endspaceless %}</a>

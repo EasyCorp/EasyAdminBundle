@@ -98,9 +98,9 @@ class AdminController extends BaseAdminController
 ```
 
 Beware that the `index()` method of the default `AdminController` defines the
-`admin` route, which is used to generate every backend URL. This means that
+`easyadmin` route, which is used to generate every backend URL. This means that
 when overriding the `index()` method in your own controller, you must also
-redefine the `@Route()` annotation. Otherwise, the backend will stop working.
+add the `@Route()` annotation. Otherwise, the backend will stop working.
 
 Create a Read-Only Backend
 --------------------------

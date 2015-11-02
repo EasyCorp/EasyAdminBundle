@@ -73,7 +73,7 @@ easy_admin:
 
 The value of the `actions` option is merged with the default action
 configuration. This means that in the example above, the `edit` view of all
-entities will include the `list`, `delete` and `show` actions (the first two 
+entities will include the `list`, `delete` and `show` actions (the first two
 are the default actions and the last one is explicitly configured).
 
 Instead of adding new actions, sometimes you want to remove them. To do so, use
@@ -213,8 +213,8 @@ click on any of those links, you'll see an error because the `restockAction()`
 method is not defined in the AdminController.
 
 Therefore, the next step is to create a custom `AdminController` in your
-Symfony application and to make it extend from the base AdminController 
-provided by EasyAdmin. This process will take you less than a minute and it's 
+Symfony application and to make it extend from the base AdminController
+provided by EasyAdmin. This process will take you less than a minute and it's
 explained in detail in the *Customization Based on Controller Methods* section
 in the [Customizing AdminController tutorial] [customizing-admin-controller].
 
@@ -244,7 +244,7 @@ class AdminController extends BaseAdminController
         $this->em->flush();
 
         // redirect to the 'list' view of the given entity
-        return $this->redirectToRoute('admin', array(
+        return $this->redirectToRoute('easyadmin', array(
             'view' => 'list',
             'entity' => $this->request->query->get('entity'),
         ));
@@ -308,7 +308,7 @@ easy_admin:
 ```
 
 Route based actions are displayed as regular links or buttons, but they don't
-point to the usual `admin` route but to the route configured by the action.
+point to the usual `easyadmin` route but to the route configured by the action.
 In addition, the route is passed two parameters in the query string: `entity`
 (the name of the Doctrine entity) and, when available, the `id` of the related
 entity.
@@ -342,13 +342,13 @@ class ProductController extends Controller
         $em->flush();
 
         // redirect to the 'list' view of the given entity
-        return $this->redirectToRoute('admin', array(
+        return $this->redirectToRoute('easyadmin', array(
             'view' => 'list',
             'entity' => $this->request->query->get('entity'),
         ));
 
         // redirect to the 'edit' view of the given entity item
-        return $this->redirectToRoute('admin', array(
+        return $this->redirectToRoute('easyadmin', array(
             'view' => 'edit',
             'id' => $id,
             'entity' => $this->request->query->get('entity'),

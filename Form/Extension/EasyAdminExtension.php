@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the EasyAdminBundle.
+ *
+ * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
@@ -7,6 +16,12 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Extension that injects EasyAdmin related information in the view used to
+ * render the form.
+ *
+ * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
+ */
 class EasyAdminExtension extends AbstractTypeExtension
 {
     /** @var Request|null */

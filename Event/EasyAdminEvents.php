@@ -11,6 +11,9 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Event;
 
+/**
+ * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ */
 final class EasyAdminEvents
 {
     // Events related to initialization

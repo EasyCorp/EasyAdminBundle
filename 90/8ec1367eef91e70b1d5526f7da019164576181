@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-03T18:02:32Z
+
+Another issue IMO was the `EntityMetadataInspector` constructor typehinting `Symfony\Bridge\Doctrine\ManagerRegistry` instead of `Doctrine\Bundle\DoctrineBundle\Registry`, which is what is really injected when using the `doctrine` service. That explains the wrong import of `ClassMetadata` in the first place.

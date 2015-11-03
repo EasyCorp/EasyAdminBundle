@@ -11,7 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;

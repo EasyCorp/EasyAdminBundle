@@ -2,7 +2,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -40,7 +40,7 @@ class EasyAdminFormType extends AbstractType
 
             if ('association' === $metadata['type']) {
                 // *-to-many associations are not supported yet
-                $toManyAssociations = array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY);
+                $toManyAssociations = array(ClassMetadata::ONE_TO_MANY, ClassMetadata::MANY_TO_MANY);
                 if (in_array($metadata['associationType'], $toManyAssociations)) {
                     continue;
                 }

@@ -11,8 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
 
@@ -139,7 +138,7 @@ class Configurator
 
         // introspect fields for entity associations (except many-to-many)
         foreach ($entityMetadata->associationMappings as $fieldName => $associationMetadata) {
-            if (ClassMetadataInfo::MANY_TO_MANY !== $associationMetadata['type']) {
+            if (ClassMetadata::MANY_TO_MANY !== $associationMetadata['type']) {
                 $entityPropertiesMetadata[$fieldName] = array(
                     'type'            => 'association',
                     'associationType' => $associationMetadata['type'],
@@ -356,7 +355,7 @@ class Configurator
 
             // virtual fields and associations different from *-to-one cannot be sorted in listings
             $isToManyAssociation = 'association' === $normalizedConfiguration['type']
-                && in_array($normalizedConfiguration['associationType'], array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY));
+                && in_array($normalizedConfiguration['associationType'], array(ClassMetadata::ONE_TO_MANY, ClassMetadata::MANY_TO_MANY));
             if (true === $normalizedConfiguration['virtual'] || $isToManyAssociation) {
                 $normalizedConfiguration['sortable'] = false;
             }

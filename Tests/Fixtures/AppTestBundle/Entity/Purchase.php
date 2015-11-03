@@ -85,7 +85,7 @@ class Purchase
     /**
      * Items that have been purchased.
      *
-     * @var OrderItem[]
+     * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity="PurchaseItem")
      * @ORM\JoinTable(name="purchase_purchase_item",
      *                  joinColumns={@ORM\JoinColumn(name="purchase_id", referencedColumnName="id")},
@@ -100,13 +100,11 @@ class Purchase
      */
     public function __construct()
     {
-        //Initialize purchasedItems as a Doctrine Collection
         $this->purchasedItems = new ArrayCollection();
-        //Initialize purchaseAt to now (useful for new order, override by existing one)
         $this->purchaseAt = new \DateTime();
         $this->deliverySelected = new \DateTime('+2 days');
         $this->preferredDeliveryHour = new \DateTime('14:00');
-        $this->incrementId = $this->generateIncrementId();
+        $this->id = $this->generateIncrementId();
     }
 
     /**
@@ -162,7 +160,7 @@ class Purchase
     /**
      * Set all items ordered.
      *
-     * @param OrderItem[] $purchasedItems
+     * @param ArrayCollection $purchasedItems
      */
     public function setPurchasedItems($purchasedItems)
     {
@@ -172,7 +170,7 @@ class Purchase
     /**
      * Get all ordered items.
      *
-     * @return OrderItem[]
+     * @return ArrayCollection
      */
     public function getPurchasedItems()
     {
@@ -256,6 +254,6 @@ class Purchase
     /** {@inheritdoc} */
     public function __toString()
     {
-        return 'Purchase #'.$this->getIncrementId();
+        return 'Purchase #'.$this->getId();
     }
 }

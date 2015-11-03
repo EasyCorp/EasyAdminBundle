@@ -118,7 +118,7 @@ class Product
      * List of categories where the products is
      * (Owning side).
      *
-     * @var Category[]
+     * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity="Category", inversedBy="products")
      * @ORM\JoinTable(name="product_category")
      */
@@ -138,9 +138,7 @@ class Product
      */
     public function __construct()
     {
-        //Initialize categories as a Doctrine Collection
         $this->categories = new ArrayCollection();
-        //Initialize createdAt to now (useful for new product, override by existing one)
         $this->createdAt = new \DateTime();
     }
 
@@ -150,7 +148,7 @@ class Product
      *
      * @param Category $category The category to associate
      */
-    public function addCategory($category)
+    public function addCategory(Category $category)
     {
         $category->addProduct($this);
 
@@ -165,7 +163,7 @@ class Product
      *
      * @param Category $category The category to disassociate
      */
-    public function removeCategory($category)
+    public function removeCategory(Category $category)
     {
         $category->removeProduct($this);
         $this->categories->removeElement($category);
@@ -365,7 +363,7 @@ class Product
     /**
      * Get all associated categories.
      *
-     * @return Category[]
+     * @return ArrayCollection
      */
     public function getCategories()
     {
@@ -375,7 +373,7 @@ class Product
     /**
      * Set all categories of the product.
      *
-     * @param Category[] $categories
+     * @param ArrayCollection $categories
      */
     public function setCategories($categories)
     {

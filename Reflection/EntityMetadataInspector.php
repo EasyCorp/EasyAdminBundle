@@ -11,19 +11,19 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Reflection;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
  * Introspects information about the properties of the given entity class.
  */
 class EntityMetadataInspector
 {
-    private $doctrineManager;
+    private $doctrine;
 
-    public function __construct(ManagerRegistry $manager)
+    public function __construct(Registry $doctrine)
     {
-        $this->doctrineManager = $manager;
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -36,7 +36,7 @@ class EntityMetadataInspector
      */
     public function getEntityMetadata($entityClass)
     {
-        $em = $this->doctrineManager->getManagerForClass($entityClass);
+        $em = $this->doctrine->getManagerForClass($entityClass);
 
         return $em->getMetadataFactory()->getMetadataFor($entityClass);
     }

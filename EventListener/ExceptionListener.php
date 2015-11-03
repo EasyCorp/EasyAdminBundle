@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * This listener allows to display customized error pages in the production
@@ -25,10 +26,10 @@ class ExceptionListener
     private $templating;
     private $debug;
     private $exceptionTemplates = array(
-        'ForbiddenActionException' => '@EasyAdmin/error/forbidden_action.html.twig',
-        'NoEntitiesConfigurationException' => '@EasyAdmin/error/no_entities.html.twig',
-        'UndefinedEntityException' => '@EasyAdmin/error/undefined_entity.html.twig',
-        'EntityNotFoundException' => '@EasyAdmin/error/entity_not_found.html.twig',
+        'ForbiddenActionException' => array('template' => '@EasyAdmin/error/forbidden_action.html.twig', 'status' => 403),
+        'NoEntitiesConfigurationException' => array('template' => '@EasyAdmin/error/no_entities.html.twig', 'status' => 500),
+        'UndefinedEntityException' => array('template' => '@EasyAdmin/error/undefined_entity.html.twig', 'status' => 500),
+        'EntityNotFoundException' => array('template' => '@EasyAdmin/error/entity_not_found.html.twig', 'status' => 404),
     );
 
     public function __construct($templating, $debug)
@@ -52,9 +53,11 @@ class ExceptionListener
             return;
         }
 
-        $templatePath = $this->exceptionTemplates[$exceptionClassName];
+        $templatePath = $this->exceptionTemplates[$exceptionClassName]['template'];
+        $reponseStatusCode = $this->exceptionTemplates[$exceptionClassName]['status'];
         $parameters = array_merge($exception->getParameters(), array('message' => $exception->getMessage()));
-        $response = $this->templating->renderResponse($templatePath, $parameters);
+
+        $response = $this->templating->renderResponse($templatePath, $parameters, new Response('', $reponseStatusCode));
 
         $event->setResponse($response);
     }

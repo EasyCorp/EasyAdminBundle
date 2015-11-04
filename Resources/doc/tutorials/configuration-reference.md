@@ -1,154 +1,104 @@
 Configuration Reference
 =======================
 
-Depending on the complexity and the customization of your backend, you can use
-different configuration formats.
+Simplest Backend Configuration
+------------------------------
 
-Simple Configuration with No Custom Menu Labels
------------------------------------------------
-
-This is the simplest configuration and is best used to create a prototype in a
-few seconds. Just list the classes of the entities to manage in the backend:
+Useful only for creating backend prototypes in a few seconds:
 
 ```yaml
 easy_admin:
     entities:
         - AppBundle\Entity\Customer
         - AppBundle\Entity\Product
+        # ...
 ```
 
-Simple Configuration with Custom Entity Names
----------------------------------------------
+Full Backend Configuration
+--------------------------
 
-This configuration format allows to set explicitly the entity names as the
-keys of the YAML configuration file. These entity names are used in buttons,
-page titles and the main menu labels:
+* [easy_admin](#easy_admin)
+  * [site_name](#site_name)
+  * [formats](#formats)
+    * [date](#date)
+    * [time](#time)
+    * [datetime](#datetime)
+    * [number](#number)
+  * [disabled_actions](#disabled_actions)
+
+### easy_admin
+
+This is the root key for the entire backend configuration. All the other options
+are defined under this key.
+
+### site_name
+
+(**default value**: `'Easy Admin'`, **type**: string)
+
+The name displayed as the title of the administration zone (e.g. your company
+name, the project name, etc.) This value is displayed in the backend "as is", so
+you can include HTML tags and they will be rendered as HTML content (e.g.
+`<strong>ACME</strong>`).
+
+### formats
+
+This is the parent key of the four options that configure the formats used to
+display dates and numbers.
+
+#### date
+
+(**default value**: `'Y-m-d'`, **type**: string)
+
+The format applied in the `list` and `show` views to display the properties of
+type `date`. This format doesn't affect to `time` and `datetime` properties.
+The value must be a valid PHP date format according to the syntax options defined
+in http://php.net/date
+
+#### time
+
+(**default value**: `'H:i:s'`, **type**: string)
+
+The format applied in the `list` and `show` views to display the properties of
+type `time`. This format doesn't affect to `date` and `datetime` properties.
+The value must be a valid PHP time format according to the syntax options defined
+in http://php.net/date
+
+#### datetime
+
+(**default value**: `'F j, Y H:i'`, **type**: string)
+
+The format applied in the `list` and `show` views to display the properties of
+type `datetime`. This format doesn't affect to `date` and `time` properties.
+The value must be a valid PHP time format according to the syntax options defined
+in http://php.net/date
+
+#### number
+
+(**default value**: none, **type**: string)
+
+The format applied in the `list` and `show` views to display the numeric
+properties. The value must be a format according to the syntax options defined
+in http://php.net/sprintf
+
+#### disabled_actions
+
+(**default value**: empty array, **type**: array)
+
+The names of the actions disabled for all backend entities. This value can be
+overridden in a entity-by-entity basis, so you can disable some actions globally
+and then reenable some of them for some entities. Example:
 
 ```yaml
 easy_admin:
-    entities:
-        Customer:  AppBundle\Entity\Customer
-        Inventory: AppBundle\Entity\Product
+    disabled_actions: ['new', 'edit']
+    # ...
 ```
 
-Advanced Configuration with no Property Configuration
------------------------------------------------------
 
-This configuration format allows to control which properties, and in which
-order, are shown in the views. Just use the `fields` option in the `edit`,
-`list`, `new` and `show` views:
 
 ```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields: ['id', 'name', 'email']
-        Product:
-            label: Inventory
-            class: AppBundle\Entity\Product
-            list:
-                fields: ['id', 'code', 'description', 'price']
-            edit:
-                fields: ['code', 'description', 'price', 'category']
-            new:
-                fields: ['code', 'description', 'price', 'category']
-```
-
-If the `edit` and `new` configuration is the same, use instead the special
-`form` view, which will be applied to both of them:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields: ['id', 'name', 'email']
-        Product:
-            label: Inventory
-            class: AppBundle\Entity\Product
-            list:
-                fields: ['id', 'code', 'description', 'price']
-            form:
-                fields: ['code', 'description', 'price', 'category']
-```
-
-Advanced Configuration with Custom Property Configuration
----------------------------------------------------------
-
-This is the most advanced configuration format and it allows you to control the
-type, style, help message and label displayed for each property:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields: ['id', 'name', { property: 'email', label: 'Contact Info' }]
-        Product:
-            label: Inventory
-            class: AppBundle\Entity\Product
-            list:
-                fields: ['id', 'code', 'description', 'price']
-            form:
-                fields:
-                    - { property: 'code', help: 'Alphanumeric characters only' }
-                    - { property: 'description', type: 'textarea' }
-                    - { property: 'price', type: 'number', css_class: 'input-lg' }
-                    - { property: 'category', label: 'Commercial Category' }
-```
-
-Combining Different Configuration Formats
------------------------------------------
-
-The previous configuration formats can also be combined. This is useful to use
-the default configuration when it's convenient and to customize it when needed:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:  AppBundle\Entity\Customer
-        Product:
-            label: Inventory
-            class: AppBundle\Entity\Product
-            list:
-                fields: ['id', 'code', 'description', 'price']
-            form:
-                fields:
-                    - { property: 'code', help: 'Alphanumeric characters only' }
-                    - { property: 'description', type: 'textarea' }
-                    - { property: 'price', type: 'number', css_class: 'input-lg' }
-                    - { property: 'category', label: 'Commercial Category' }
-```
-
-Full configuration reference
-----------------------------
-
-```yaml
-# app/config/config.yml
-easy_admin:
-
-    # The name displayed as the title of the administration zone (e.g. company name, project name).
-    site_name:            'Easy Admin'
-    formats:
-
-        # The PHP date format applied to "date" field types.
-        date:                 Y-m-d # Example: d/m/Y (see http://php.net/manual/en/function.date.php)
-
-        # The PHP time format applied to "time" field types.
-        time:                 'H:i:s' # Example: h:i a (see http://php.net/date)
-
-        # The PHP date/time format applied to "datetime" field types.
-        datetime:             'F j, Y H:i' # Example: l, F jS Y / h:i (see http://php.net/date)
-
-        # The sprintf-compatible format applied to numeric values.
-        number:               ~ # Example: %.2d (see http://php.net/sprintf)
 
     # The names of the actions disabled for all backend entities.
-    disabled_actions:     []
     design:
 
         # The theme used to render the backend pages. For now this value can only be "default".
@@ -306,3 +256,102 @@ easy_admin:
 
 
 ```
+
+Deprecated Configuration Options
+--------------------------------
+
+
+
+Advanced Configuration with no Property Configuration
+-----------------------------------------------------
+
+This configuration format allows to control which properties, and in which
+order, are shown in the views. Just use the `fields` option in the `edit`,
+`list`, `new` and `show` views:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: ['id', 'name', 'email']
+        Product:
+            label: Inventory
+            class: AppBundle\Entity\Product
+            list:
+                fields: ['id', 'code', 'description', 'price']
+            edit:
+                fields: ['code', 'description', 'price', 'category']
+            new:
+                fields: ['code', 'description', 'price', 'category']
+```
+
+If the `edit` and `new` configuration is the same, use instead the special
+`form` view, which will be applied to both of them:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: ['id', 'name', 'email']
+        Product:
+            label: Inventory
+            class: AppBundle\Entity\Product
+            list:
+                fields: ['id', 'code', 'description', 'price']
+            form:
+                fields: ['code', 'description', 'price', 'category']
+```
+
+Advanced Configuration with Custom Property Configuration
+---------------------------------------------------------
+
+This is the most advanced configuration format and it allows you to control the
+type, style, help message and label displayed for each property:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            list:
+                fields: ['id', 'name', { property: 'email', label: 'Contact Info' }]
+        Product:
+            label: Inventory
+            class: AppBundle\Entity\Product
+            list:
+                fields: ['id', 'code', 'description', 'price']
+            form:
+                fields:
+                    - { property: 'code', help: 'Alphanumeric characters only' }
+                    - { property: 'description', type: 'textarea' }
+                    - { property: 'price', type: 'number', css_class: 'input-lg' }
+                    - { property: 'category', label: 'Commercial Category' }
+```
+
+Combining Different Configuration Formats
+-----------------------------------------
+
+The previous configuration formats can also be combined. This is useful to use
+the default configuration when it's convenient and to customize it when needed:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:  AppBundle\Entity\Customer
+        Product:
+            label: Inventory
+            class: AppBundle\Entity\Product
+            list:
+                fields: ['id', 'code', 'description', 'price']
+            form:
+                fields:
+                    - { property: 'code', help: 'Alphanumeric characters only' }
+                    - { property: 'description', type: 'textarea' }
+                    - { property: 'price', type: 'number', css_class: 'input-lg' }
+                    - { property: 'category', label: 'Commercial Category' }
+```
+

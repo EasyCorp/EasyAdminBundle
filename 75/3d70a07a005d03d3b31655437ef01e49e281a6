@@ -1,0 +1,12 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-04T17:07:39Z
+
+I also add the possibility to force what is configured in the easyadmin configuration for this field to be properly taken into account.
+So `required` will be set to `false` by default, unless there is something else explicitly configured.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-04T17:11:14Z
+
+:+1: this is **exactly** the behaviour that I think it's correct when dealing with checkboxs. Absolutely perfect! Thanks.

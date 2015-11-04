@@ -78,6 +78,8 @@ class EasyAdminFormType extends AbstractType
                         $formFieldOptions['delete_empty'] = true;
                     }
                 }
+            } elseif ('checkbox' === $metadata['fieldType'] && !isset($formFieldOptions['required'])) {
+                $formFieldOptions['required'] = false;
             }
 
             $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];

@@ -387,7 +387,7 @@ class AdminController extends Controller
             throw new \Exception(sprintf('The "%s" property is not a switchable toggle.', $propertyName));
         }
 
-        if (!$propertyMetadata['canBeSet']) {
+        if (!$propertyMetadata['isWritable']) {
             throw new \Exception(sprintf('It\'s not possible to toggle the value of the "%s" boolean property of the "%s" entity.', $propertyName, $this->entity['name']));
         }
 

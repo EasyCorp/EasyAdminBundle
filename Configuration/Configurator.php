@@ -470,8 +470,8 @@ class Configurator
                 $isPublic = $this->reflector->isPublic($entityConfiguration['class'], $fieldName);
                 $fieldConfiguration['isPublic'] = $isPublic;
 
-                $fieldConfiguration['canBeGet'] = $getter || $isPublic;
-                $fieldConfiguration['canBeSet'] = $setter || $isPublic;
+                $fieldConfiguration['isReadable'] = $getter || $isPublic;
+                $fieldConfiguration['isWritable'] = $setter || $isPublic;
 
                 $entityConfiguration[$view]['fields'][$fieldName] = $fieldConfiguration;
             }

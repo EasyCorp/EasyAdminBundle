@@ -109,7 +109,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
 
-        if (!$fieldMetadata['canBeGet']) {
+        if (!$fieldMetadata['isReadable']) {
             return $twig->render($entityConfiguration['templates']['label_inaccessible'], array('view' => $view));
         }
 

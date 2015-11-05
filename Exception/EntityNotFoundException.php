@@ -20,6 +20,9 @@ class EntityNotFoundException extends BaseException
     {
         parent::__construct($parameters);
 
+        $this->setTemplatePath('@EasyAdmin/error/entity_not_found.html.twig');
+        $this->setHttpStatusCode(404);
+
         $message = sprintf("ERROR: the '%s' entity with '%s = %s' does not exist in the database.\n\n", $parameters['entity']['name'], $parameters['entity']['primary_key_field_name'], $parameters['entity_id']);
 
         $this->setMessage($message);

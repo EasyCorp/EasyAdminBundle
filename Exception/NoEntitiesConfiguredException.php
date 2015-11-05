@@ -20,6 +20,9 @@ class NoEntitiesConfiguredException extends BaseException
     {
         parent::__construct($parameters);
 
+        $this->setTemplatePath('@EasyAdmin/error/no_entities.html.twig');
+        $this->setHttpStatusCode(500);
+
         $message = "ERROR: your backend is empty because you haven't configured any Doctrine entity to manage.\n\n";
         $message .= "Solution: open your 'app/config/config.yml' file and configure the backend under the 'easy_admin' key.\n\n";
 

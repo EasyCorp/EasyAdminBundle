@@ -18,6 +18,8 @@ class BaseException extends \Exception
 {
     protected $message;
     private $parameters;
+    private $templatePath;
+    private $httpStatusCode;
 
     public function __construct(array $parameters = array())
     {
@@ -32,5 +34,25 @@ class BaseException extends \Exception
     public function setMessage($message)
     {
         $this->message = $message;
+    }
+
+    public function getTemplatePath()
+    {
+        return $this->templatePath;
+    }
+
+    public function setTemplatePath($path)
+    {
+        $this->templatePath = $path;
+    }
+
+    public function getHttpStatusCode()
+    {
+        return $this->httpStatusCode;
+    }
+
+    public function setHttpStatusCode($code)
+    {
+        $this->httpStatusCode = $code;
     }
 }

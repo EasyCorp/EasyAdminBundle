@@ -34,6 +34,16 @@ Full Backend Configuration
       * [css](#css)
       * [js](#js)
     * [templates](#templates)
+  * [list](#list)
+      [actions](#actions)
+      [max_results](#max_results)
+  * [edit](#edit)
+      [actions](#actions)
+  * [new](#new)
+      [actions](#actions)
+  * [show](#show)
+      [actions](#actions)
+  * [entities](#entities)
 
 ### easy_admin
 
@@ -223,6 +233,12 @@ you must override the `<head>` part of the layout template using a custom templa
 
 (**default value**: none, **type**: strings, **values**: any valid Twig template path)
 
+> **NOTE**
+> This option is too advanced for most backends. Don't use it unless you are
+> customizing most of the backend templates. If you need to customize just one
+> fragment of the layout or the way some field is displayed, use the method
+> explained in: [Advanced Design Customization](advanced-design-customization.md)
+
 This option allows to redefine the template used to render each backend element,
 from the global layout to the micro-templates used to render each form field type.
 For example, to use your own template to display the properties of type `boolean`
@@ -326,52 +342,119 @@ The `label_*` and `field_*` templates are only applied in the `list` and `show`
 templates. In order to customize the fields of the forms displayed in the `new`
 and `edit` views, use the `easy_admin.design.form_theme` option.
 
+### list
+
+Defines the options applied globally for the `list` view of all entities.
+
+#### actions
+
+(**default value**: empty array, **type**: array)
+
+TODO ...
+
+#### max_results
+
+(**default value**: 15, **type**: integer)
+
+The maximum number of rows displayed in the `list` view and in the search result
+page.
+
+### edit
+
+Defines the options applied globally for the `edit` view of all entities. The
+only option available for now is the one that defines which actions are displayed
+in the `edit` view.
+
+### new
+
+Defines the options applied globally for the `new` view of all entities. The
+only option available for now is the one that defines which actions are displayed
+in the `new` view.
+
+### show
+
+Defines the options applied globally for the `show` view of all entities. The
+only option available for now is the one that defines which actions are displayed
+in the `show` view.
+
+### entities
+
+(**default value**: empty array, **type**: array)
 
 
 
-
-```
-    list:
-
-        # The list of actions enabled in the "list" view.
-        actions:              []
-
-        # The maximum number of items to show on listing and search pages.
-        max_results:          15
-    edit:
-
-        # The list of actions enabled in the "edit" view.
-        actions:              []
-    new:
-
-        # The list of actions enabled in the "new" view.
-        actions:              []
-    show:
-
-        # The list of actions enabled in the "show" view.
-        actions:              []
-
-    # The list of entities to manage in the administration zone.
-    entities:             []
-
-    # DEPRECATED: use the "actions" option of the "list" view.
-    list_actions:         ~
-
-    # DEPRECATED: use "max_results" option under the "list" global key.
-    list_max_results:     ~
-    assets:
-
-        # DEPRECATED: use the "design -> assets -> css" option.
-        css:                  []
-
-        # DEPRECATED: use the "design -> assets -> js" option.
-        js:                   []
-
-
-```
 
 Deprecated Configuration Options
 --------------------------------
+
+EasyAdmin handles deprecated options transparently, so your backend will keep
+working even if your configuration is outdated. However, it's a good practice to
+not use these deprecated options:
+
+### list_actions
+
+```yaml
+# DEPRECATED
+easy_admin:
+    list_actions: ['new', 'edit']
+    # ...
+
+# USE THIS INSTEAD
+easy_admin:
+    list:
+        actions: ['new', 'edit']
+    # ...
+```
+
+### list_max_results
+
+```yaml
+# DEPRECATED
+easy_admin:
+    list_max_results: 20
+    # ...
+
+# USE THIS INSTEAD
+easy_admin:
+    list:
+        max_results: 20
+    # ...
+```
+
+### assets.css
+
+```yaml
+# DEPRECATED
+easy_admin:
+    assets:
+        css: ['/bundles/app/custom_backend.css']
+    # ...
+
+# USE THIS INSTEAD
+easy_admin:
+    design:
+        assets:
+            css: ['/bundles/app/custom_backend.css']
+    # ...
+```
+
+#### assets.js
+
+```yaml
+# DEPRECATED
+easy_admin:
+    assets:
+        js: ['/bundles/app/custom_widgets.js']
+    # ...
+
+# USE THIS INSTEAD
+easy_admin:
+    design:
+        assets:
+            js: ['/bundles/app/custom_widgets.js']
+    # ...
+```
+
 
 
 
@@ -444,27 +527,3 @@ easy_admin:
                     - { property: 'price', type: 'number', css_class: 'input-lg' }
                     - { property: 'category', label: 'Commercial Category' }
 ```
-
-Combining Different Configuration Formats
------------------------------------------
-
-The previous configuration formats can also be combined. This is useful to use
-the default configuration when it's convenient and to customize it when needed:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:  AppBundle\Entity\Customer
-        Product:
-            label: Inventory
-            class: AppBundle\Entity\Product
-            list:
-                fields: ['id', 'code', 'description', 'price']
-            form:
-                fields:
-                    - { property: 'code', help: 'Alphanumeric characters only' }
-                    - { property: 'description', type: 'textarea' }
-                    - { property: 'price', type: 'number', css_class: 'input-lg' }
-                    - { property: 'category', label: 'Commercial Category' }
-```
-

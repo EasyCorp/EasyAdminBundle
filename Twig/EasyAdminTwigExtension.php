@@ -156,27 +156,27 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('association'))) {
+                // if the value is a collection, pass it to the template
                 if ($value instanceof PersistentCollection) {
                     return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
                 }
 
-                $associatedEntityClassParts = explode('\\', $fieldMetadata['targetEntity']);
-                $associatedEntityClassName = end($associatedEntityClassParts);
-
-                try {
-                    $associatedEntityConfig = $this->configurator->getEntityConfiguration($associatedEntityClassName);
-                    $associatedEntityPrimaryKey = $associatedEntityConfig['primary_key_field_name'];
-                } catch (\InvalidArgumentException $e) {
-                    // if the entity isn't managed by EasyAdmin, don't link to it and just display its raw value
+                // if the target entity isn't managed by EasyAdmin, display its value without a link
+                if (null === $targetEntityConfig = $this->getTargetEntityConfig($fieldMetadata)) {
                     return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
                 }
 
-                $primaryKeyGetter = 'get'.ucfirst($associatedEntityPrimaryKey);
-                if (method_exists($value, $primaryKeyGetter)) {
-                    $linkParameters = array('entity' => $associatedEntityClassName, 'action' => 'show', 'view' => $view, 'id' => $value->$primaryKeyGetter());
-                    $templateParameters['link_parameters'] = $linkParameters;
+                $primaryKeyGetter = 'get'.ucfirst($targetEntityConfig['primary_key_field_name']);
+                if (method_exists($value, '__toString')) {
+                    $templateParameters['value'] = (string) $value;
+                } elseif (method_exists($value, $primaryKeyGetter)) {
+                    $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $value->$primaryKeyGetter());
+                }
 
-                    return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
+                // if the target entity has a primary key getter, it's displayed
+                // as a link pointing to its 'show' view
+                if (method_exists($value, $primaryKeyGetter)) {
+                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['class'], 'action' => 'show', 'view' => $view, 'id' => $value->$primaryKeyGetter());
                 }
 
                 return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
@@ -294,6 +294,23 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         return $value;
+    }
+
+
+    /**
+     * It returns the full configuration of the target entity associated with
+     * the given field.
+     *
+     * @param  array $fieldMetadata
+     *
+     * @return array|null
+     */
+    private function getTargetEntityConfig(array $fieldMetadata)
+    {
+        $targetEntityClassParts = explode('\\', $fieldMetadata['targetEntity']);
+        $targetEntityClassName = end($targetEntityClassParts);
+
+        return $this->getEntityConfiguration($targetEntityClassName);
     }
 
     public function getName()

@@ -74,6 +74,16 @@ class Configurator
     }
 
     /**
+     * Exposes the backend configuration to any external method that needs it.
+     *
+     * @return array
+     */
+    public function getBackendConfig()
+    {
+        return $this->backendConfig;
+    }
+
+    /**
      * Processes and returns the full configuration for the given entity name.
      * This configuration includes all the information about the form fields
      * and properties of the entity.
@@ -81,6 +91,8 @@ class Configurator
      * @param string $entityName
      *
      * @return array The full entity configuration
+     *
+     * @throws \InvalidArgumentException when the entity isn't managed by EasyAdmin
      */
     public function getEntityConfiguration($entityName)
     {
@@ -201,7 +213,7 @@ class Configurator
      *
      * @return array The list of fields to show and their metadata
      */
-    protected function getFieldsForFormBasedViews($view, array $entityConfiguration)
+    private function getFieldsForFormBasedViews($view, array $entityConfiguration)
     {
         if (0 === count($entityConfiguration[$view]['fields'])) {
             $excludedFieldNames = array($entityConfiguration['primary_key_field_name']);
@@ -515,15 +527,5 @@ class Configurator
         return array_key_exists($doctrineType, $this->doctrineTypeToFormTypeMap)
             ? $this->doctrineTypeToFormTypeMap[$doctrineType]
             : $doctrineType;
-    }
-
-    /**
-     * Exposes the backend configuration to any external method that needs it.
-     *
-     * @return array
-     */
-    public function getBackendConfig()
-    {
-        return $this->backendConfig;
     }
 }

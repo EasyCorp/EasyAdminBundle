@@ -161,7 +161,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                     return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
                 }
 
-                $targetEntityClassName = $this->getClassFromNamespace($fieldMetadata['targetEntity']);
+                $targetEntityClassName = $this->getClassShortName($fieldMetadata['targetEntity']);
                 $targetEntityConfig = $this->getEntityConfiguration($targetEntityClassName);
                 $targetEntityPrimaryKeyGetter = (null !== $targetEntityConfig) ? 'get'.ucfirst($targetEntityConfig['primary_key_field_name']) : null;
 
@@ -169,10 +169,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 // associated value (this depends on the target entity methods)
                 if (method_exists($value, '__toString')) {
                     $templateParameters['value'] = (string) $value;
-                } elseif (false && method_exists($value, $targetEntityPrimaryKeyGetter)) {
+                } elseif (method_exists($value, $targetEntityPrimaryKeyGetter)) {
                     $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $value->$targetEntityPrimaryKeyGetter());
                 } else {
-                    $templateParameters['value'] = $this->getClassFromNamespace(get_class($value));
+                    $templateParameters['value'] = $this->getClassShortName(get_class($value));
                 }
 
                 // if the target entity has a primary key getter, it's displayed
@@ -303,13 +303,13 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * It returns the last part of the fully qualified class name
      * (e.g. 'AppBundle\Entity\User' -> 'User')
      *
-     * @param  string $fullyQualifiedClassName
+     * @param  string $fqcn
      *
      * @return string
      */
-    private function getClassFromNamespace($fullyQualifiedClassName)
+    private function getClassShortName($fqcn)
     {
-        $classParts = explode('\\', $fullyQualifiedClassName);
+        $classParts = explode('\\', $fqcn);
         $className = end($classParts);
 
         return $className;

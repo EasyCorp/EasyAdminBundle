@@ -49,12 +49,8 @@ class ExceptionListener extends BaseExceptionListener
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
-        if (!$exception instanceof BaseException) {
-            return;
-        }
 
-        // in 'dev' environment, don't override Symfony's exception pages
-        if (true === $this->debug) {
+        if (!$exception instanceof BaseException || true === $this->debug) {
             return;
         }
 
@@ -106,7 +102,7 @@ class ExceptionListener extends BaseExceptionListener
     /**
      * {@inheritdoc}
      */
-    protected function logException(\Exception $exception, $message)
+    protected function logException(\Exception $exception, $message, $original = true)
     {
         if (null !== $this->logger) {
             /** @var BaseException $exception */

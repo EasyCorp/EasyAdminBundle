@@ -53,7 +53,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * Returns the entire backend configuration or the value corresponding to
      * the provided key. The dots of the key are automatically transformed into
-     * nested keys. Example: 'assets.css' => $config['assets']['css']
+     * nested keys. Example: 'assets.css' => $config['assets']['css'].
      *
      * @param string|null $key
      *
@@ -249,7 +249,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
         $actionsExcludedForItems = array(
             'list' => array('delete', 'list', 'new', 'search'),
             'edit' => array('list', 'delete'),
-            'new'  => array('list'),
+            'new' => array('list'),
             'show' => array('list', 'delete'),
         );
         $excludedActions = $actionsExcludedForItems[$view];
@@ -298,10 +298,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
         return $value;
     }
 
-
     /**
      * It returns the last part of the fully qualified class name
-     * (e.g. 'AppBundle\Entity\User' -> 'User')
+     * (e.g. 'AppBundle\Entity\User' -> 'User').
      *
      * @param string $fqcn
      *

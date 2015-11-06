@@ -17,7 +17,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 class BaseException extends \RuntimeException
 {
     protected $message;
-    private $parameters;
     private $templatePath;
     private $httpStatusCode;
 

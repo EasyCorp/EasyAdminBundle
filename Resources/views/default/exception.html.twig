@@ -6,15 +6,14 @@
 ] %}
 
 {% block body_class 'error' %}
+{% block page_title 'ERROR' %}
 
 {% block content %}
     <div class="error-description">
         <h1>Error</h1>
 
-        <div class="error-problem">
-            <p class="lead">
-                {% block problem %}{% endblock %}
-            </p>
+        <div class="error-message">
+            <p class="lead">{{ error_message }}</p>
         </div>
     </div>
 {% endblock %}

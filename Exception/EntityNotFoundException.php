@@ -18,10 +18,9 @@ class EntityNotFoundException extends BaseException
 {
     public function __construct(array $parameters = array())
     {
-        $templatePath = '@EasyAdmin/error/entity_not_found.html.twig';
-        $httpStatusCode = 404;
-        $errorMessage = sprintf("ERROR: the '%s' entity with '%s = %s' does not exist in the database.", $parameters['entity']['name'], $parameters['entity']['primary_key_field_name'], $parameters['entity_id']);
+        $errorMessage = sprintf('The "%s" entity with "%s = %s" does not exist in the database.', $parameters['entity']['name'], $parameters['entity']['primary_key_field_name'], $parameters['entity_id']);
+        $proposedSolution = sprintf('Check that the mentioned entity hasn\'t been deleted by mistake.');
 
-        parent::__construct($errorMessage, $templatePath, $httpStatusCode);
+        parent::__construct($errorMessage, $proposedSolution, 404);
     }
 }

@@ -17,24 +17,24 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 class BaseException extends \RuntimeException
 {
     protected $message;
-    private $templatePath;
+    private $publicErrorMessage;
     private $httpStatusCode;
 
     /**
      * @param string $errorMessage
-     * @param string $templatePath
+     * @param string $proposedSolution
      * @param int    $httpStatusCode
      */
-    public function __construct($errorMessage, $templatePath, $httpStatusCode = 500)
+    public function __construct($publicErrorMessage, $proposedSolution = '', $httpStatusCode = 500)
     {
-        $this->message = $errorMessage;
-        $this->templatePath = $templatePath;
         $this->httpStatusCode = $httpStatusCode;
+        $this->publicErrorMessage = $publicErrorMessage;
+        $this->message = sprintf('Error: %s Solution: %s', $publicErrorMessage, $proposedSolution);
     }
 
-    public function getTemplatePath()
+    public function getPublicErrorMessage()
     {
-        return $this->templatePath;
+        return $this->publicErrorMessage;
     }
 
     public function getHttpStatusCode()

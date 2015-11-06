@@ -107,7 +107,7 @@ class ExceptionListener extends BaseExceptionListener
     {
         if (null !== $this->logger) {
             /** @var BaseException $exception */
-            if ($exception->getHttpStatusCode() >= 500) {
+            if ($exception->getStatusCode() >= 500) {
                 $this->logger->critical($message, array('exception' => $exception));
             } else {
                 $this->logger->error($message, array('exception' => $exception));

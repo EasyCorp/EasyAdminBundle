@@ -16,7 +16,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
  */
 class BaseException extends \RuntimeException
 {
+    // this is the full error message displayed only in 'dev' environment
     protected $message;
+    // this is the error message that can be safely displayed to end users
     private $publicErrorMessage;
     private $httpStatusCode;
 

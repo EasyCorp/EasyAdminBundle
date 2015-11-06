@@ -28,6 +28,7 @@ use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
  * environment.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class ExceptionListener extends BaseExceptionListener
 {

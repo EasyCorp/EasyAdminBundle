@@ -477,7 +477,7 @@ class AdminController extends Controller
             $query->orderBy('entity.'.$sortField, $sortDirection);
         }
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($query, false));
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($query, false, false));
         $paginator->setMaxPerPage($maxPerPage);
         $paginator->setCurrentPage($page);
 

@@ -1,11 +1,21 @@
 <?php
 
+/*
+ * This file is part of the EasyAdminBundle.
+ *
+ * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
 use Symfony\Component\Debug\Exception\FlattenException as BaseFlattenException;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
+/**
+ * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
+ */
 class FlattenException extends BaseFlattenException
 {
     /** @var string */

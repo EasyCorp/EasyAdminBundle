@@ -13,6 +13,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\EventListener;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException as EasyEntityNotFoundException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -38,6 +41,10 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
                            ->getMock();
         $event->method('getException')
                 ->willReturn($exception);
+        $event->method('getRequest')
+                ->willReturn(new Request());
+        $event->method('getKernel')
+                ->willReturn(new TestKernel());
         $event->expects($this->once())
               ->method('setResponse');
 
@@ -90,4 +97,12 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
 class EntityNotFoundException extends \Exception
 {
+}
+
+class TestKernel implements HttpKernelInterface
+{
+    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
+    {
+        return new Response('foo');
+    }
 }

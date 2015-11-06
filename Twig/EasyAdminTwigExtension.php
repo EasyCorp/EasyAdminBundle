@@ -53,7 +53,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * Returns the entire backend configuration or the value corresponding to
      * the provided key. The dots of the key are automatically transformed into
-     * nested keys. Example: 'assets.css' => $config['assets']['css']
+     * nested keys. Example: 'assets.css' => $config['assets']['css'].
      *
      * @param string|null $key
      *
@@ -156,27 +156,29 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (in_array($fieldType, array('association'))) {
+                // if the associated value is a collection, pass it to the template
                 if ($value instanceof PersistentCollection) {
                     return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
                 }
 
-                $associatedEntityClassParts = explode('\\', $fieldMetadata['targetEntity']);
-                $associatedEntityClassName = end($associatedEntityClassParts);
+                $targetEntityClassName = $this->getClassShortName($fieldMetadata['targetEntity']);
+                $targetEntityConfig = $this->getEntityConfiguration($targetEntityClassName);
+                $targetEntityPrimaryKeyGetter = (null !== $targetEntityConfig) ? 'get'.ucfirst($targetEntityConfig['primary_key_field_name']) : null;
 
-                try {
-                    $associatedEntityConfig = $this->configurator->getEntityConfiguration($associatedEntityClassName);
-                    $associatedEntityPrimaryKey = $associatedEntityConfig['primary_key_field_name'];
-                } catch (\InvalidArgumentException $e) {
-                    // if the entity isn't managed by EasyAdmin, don't link to it and just display its raw value
-                    return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
+                // get the most appropriate string representation for the
+                // associated value (this depends on the target entity methods)
+                if (method_exists($value, '__toString')) {
+                    $templateParameters['value'] = (string) $value;
+                } elseif (method_exists($value, $targetEntityPrimaryKeyGetter)) {
+                    $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $value->$targetEntityPrimaryKeyGetter());
+                } else {
+                    $templateParameters['value'] = $this->getClassShortName(get_class($value));
                 }
 
-                $primaryKeyGetter = 'get'.ucfirst($associatedEntityPrimaryKey);
-                if (method_exists($value, $primaryKeyGetter)) {
-                    $linkParameters = array('entity' => $associatedEntityClassName, 'action' => 'show', 'view' => $view, 'id' => $value->$primaryKeyGetter());
-                    $templateParameters['link_parameters'] = $linkParameters;
-
-                    return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
+                // if the target entity has a primary key getter, it's displayed
+                // as a link pointing to its 'show' view
+                if (method_exists($value, $targetEntityPrimaryKeyGetter)) {
+                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['class'], 'action' => 'show', 'view' => $view, 'id' => $value->$targetEntityPrimaryKeyGetter());
                 }
 
                 return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
@@ -247,7 +249,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
         $actionsExcludedForItems = array(
             'list' => array('delete', 'list', 'new', 'search'),
             'edit' => array('list', 'delete'),
-            'new'  => array('list'),
+            'new' => array('list'),
             'show' => array('list', 'delete'),
         );
         $excludedActions = $actionsExcludedForItems[$view];
@@ -294,6 +296,22 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         return $value;
+    }
+
+    /**
+     * It returns the last part of the fully qualified class name
+     * (e.g. 'AppBundle\Entity\User' -> 'User').
+     *
+     * @param string $fqcn
+     *
+     * @return string
+     */
+    private function getClassShortName($fqcn)
+    {
+        $classParts = explode('\\', $fqcn);
+        $className = end($classParts);
+
+        return $className;
     }
 
     public function getName()

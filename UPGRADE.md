@@ -15,6 +15,25 @@ existing backend routes, where is common to use the `admin` route name.
 In order to upgrade, you just need to replace `admin` by `easyadmin` in all
 `path()`, `generateUrl()` and `redirectToRoute()` calls.
 
+Upgrade to 1.8.0
+----------------
+
+The options that define if a entity property is readable and/or writable have
+changed their name to match the names used by Symfony:
+
+```php
+// Before
+$propertyMetadata['canBeGet'];
+$propertyMetadata['canBeSet'];
+
+// After
+$propertyMetadata['isReadable'];
+$propertyMetadata['isWritable'];
+```
+
+This only affects you if you make a very advance use of the bundle and override
+lots of its functionalities.
+
 Upgrade to 1.5.5
 ----------------
 

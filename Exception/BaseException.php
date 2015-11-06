@@ -16,10 +16,10 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
  */
 class BaseException extends \RuntimeException
 {
-    // this is the full error message displayed only in 'dev' environment
-    protected $message;
     // this is the error message that can be safely displayed to end users
-    private $publicErrorMessage;
+    protected $message;
+    // this is the full error message displayed only in 'dev' environment
+    private $errorMessageAndSolution;
     // the HTTP status code of the Response created for the exception
     private $statusCode;
 
@@ -31,13 +31,13 @@ class BaseException extends \RuntimeException
     public function __construct($publicErrorMessage, $proposedSolution = '', $statusCode = 500)
     {
         $this->statusCode = $statusCode;
-        $this->publicErrorMessage = $publicErrorMessage;
-        $this->message = sprintf('Error: %s Solution: %s', $publicErrorMessage, $proposedSolution);
+        $this->message = $publicErrorMessage;
+        $this->errorMessageAndSolution = sprintf('Error: %s Solution: %s', $publicErrorMessage, $proposedSolution);
     }
 
-    public function getPublicErrorMessage()
+    public function getErrorMessageAndSolution()
     {
-        return $this->publicErrorMessage;
+        return $this->errorMessageAndSolution;
     }
 
     public function getStatusCode()

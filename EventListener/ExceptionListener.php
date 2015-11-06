@@ -50,8 +50,12 @@ class ExceptionListener extends BaseExceptionListener
     {
         $exception = $event->getException();
 
-        if (!$exception instanceof BaseException || true === $this->debug) {
+        if (!$exception instanceof BaseException) {
             return;
+        }
+
+        if (true === $this->debug) {
+            return $exception->getErrorMessageAndSolution();
         }
 
         if (3 !== Kernel::RELEASE_VERSION) {
@@ -93,8 +97,8 @@ class ExceptionListener extends BaseExceptionListener
     public function showExceptionPageAction(FlattenException $exception)
     {
         return $this->templating->renderResponse(
-            $exception->getTemplatePath(),
-            array_merge($exception->getParameters(), array('message' => $exception->getMessage())),
+            '@EasyAdmin/default/exception.html.twig',
+            array('error_message' => $exception->getMessage()),
             Response::create()->setStatusCode($exception->getStatusCode())
         );
     }

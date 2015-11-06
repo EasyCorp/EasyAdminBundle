@@ -14,14 +14,25 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class BaseException extends \Exception
+class BaseException extends \RuntimeException
 {
     protected $message;
     private $parameters;
+    private $templatePath;
+    private $httpStatusCode;
 
-    public function __construct(array $parameters = array())
+    /**
+     * @param string $errorMessage
+     * @param array  $parameters
+     * @param string $templatePath
+     * @param int    $httpStatusCode
+     */
+    public function __construct($errorMessage, array $parameters, $templatePath, $httpStatusCode = 500)
     {
+        $this->message = $errorMessage;
         $this->parameters = $parameters;
+        $this->templatePath = $templatePath;
+        $this->httpStatusCode = $httpStatusCode;
     }
 
     public function getParameters()
@@ -29,8 +40,13 @@ class BaseException extends \Exception
         return $this->parameters;
     }
 
-    public function setMessage($message)
+    public function getTemplatePath()
     {
-        $this->message = $message;
+        return $this->templatePath;
+    }
+
+    public function getHttpStatusCode()
+    {
+        return $this->httpStatusCode;
     }
 }

@@ -59,7 +59,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $templating = $this->getTemplating();
         $debug = false;
 
-        $listener = new ExceptionListener($templating, $debug);
+        $listener = new ExceptionListener($templating, $debug, 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 
@@ -83,7 +83,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $templating = $this->getTemplating();
         $debug = false;
 
-        $listener = new ExceptionListener($templating, $debug);
+        $listener = new ExceptionListener($templating, $debug, 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 }

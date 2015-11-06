@@ -67,10 +67,10 @@ class RequestPostInitializeListener
      */
     private function findCurrentItem(array $entity, $id)
     {
-        if (!$entity = $this->doctrine->getRepository($entity['class'])->find($id)) {
+        if (!$item = $this->doctrine->getRepository($entity['class'])->find($id)) {
             throw new EntityNotFoundException(array('entity' => $entity, 'entity_id' => $id));
         }
 
-        return $entity;
+        return $item;
     }
 }

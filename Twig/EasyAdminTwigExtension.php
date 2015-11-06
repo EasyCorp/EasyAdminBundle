@@ -303,7 +303,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * It returns the last part of the fully qualified class name
      * (e.g. 'AppBundle\Entity\User' -> 'User')
      *
-     * @param  string $fqcn
+     * @param string $fqcn
      *
      * @return string
      */

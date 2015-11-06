@@ -19,26 +19,18 @@ use Symfony\Component\Debug\Exception\FlattenException as BaseFlattenException;
 class FlattenException extends BaseFlattenException
 {
     /** @var string */
-    private $templatePath;
-
-    /** @var array */
-    private $parameters;
+    private $safeMessage;
 
     public static function create(\Exception $exception, $statusCode = null, array $headers = array())
     {
         if (!$exception instanceof BaseException) {
-            throw new \RuntimeException(sprintf(
-                'You should only try to create an instance of "%s" with a "JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException" instance, or subclass. "%s" given.',
-                __CLASS__,
-                get_class($exception)
-            ));
+            throw new \RuntimeException(sprintf('You should only try to create an instance of "%s" with a "JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException" instance, or subclass. "%s" given.', __CLASS__, get_class($exception)));
         }
 
         /** @var FlattenException $e */
         $e = parent::create($exception, $statusCode, $headers);
-        $e->setStatusCode($exception->getHttpStatusCode());
-        $e->setTemplatePath($exception->getTemplatePath());
-        $e->setParameters($exception->getParameters());
+        $e->setStatusCode($exception->getStatusCode());
+        $e->setSafeMessage($exception->getSafeMessage());
 
         return $e;
     }
@@ -46,32 +38,16 @@ class FlattenException extends BaseFlattenException
     /**
      * @return string
      */
-    public function getTemplatePath()
+    public function getSafeMessage()
     {
-        return $this->templatePath;
+        return $this->safeMessage;
     }
 
     /**
-     * @param string $templatePath
+     * @param string $safeMessage
      */
-    public function setTemplatePath($templatePath)
+    public function setSafeMessage($safeMessage)
     {
-        $this->templatePath = $templatePath;
-    }
-
-    /**
-     * @return array
-     */
-    public function getParameters()
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * @param array $parameters
-     */
-    public function setParameters(array $parameters)
-    {
-        $this->parameters = $parameters;
+        $this->safeMessage = $safeMessage;
     }
 }

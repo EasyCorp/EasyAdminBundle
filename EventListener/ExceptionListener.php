@@ -46,6 +46,9 @@ class ExceptionListener extends BaseExceptionListener
         parent::__construct($controller, $logger);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
@@ -54,38 +57,10 @@ class ExceptionListener extends BaseExceptionListener
             return;
         }
 
-        if (3 !== Kernel::RELEASE_VERSION) {
+        if (!$this->isLegacySymfony()) {
             parent::onKernelException($event);
         } else {
-            /* For BC reasons with 2.3, we need to duplicate this entirely
-            from Symfony\Component\HttpKernel\EventListener\ExceptionListener.
-            Once sf 2.3 support is dropped, we can remove this else block and condition */
-            $request = $event->getRequest();
-
-            $this->logException($exception, sprintf('Uncaught PHP Exception %s: "%s" at %s line %s', get_class($exception), $exception->getMessage(), $exception->getFile(), $exception->getLine()));
-
-            $request = $this->duplicateRequest($exception, $request);
-
-            try {
-                $response = $event->getKernel()->handle($request, HttpKernelInterface::SUB_REQUEST, false);
-            } catch (\Exception $e) {
-                $this->logException($e, sprintf('Exception thrown when handling an exception (%s: %s at %s line %s)', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
-
-                $wrapper = $e;
-
-                while ($prev = $wrapper->getPrevious()) {
-                    if ($exception === $wrapper = $prev) {
-                        throw $e;
-                    }
-                }
-
-                $prev = new \ReflectionProperty('Exception', 'previous');
-                $prev->setAccessible(true);
-                $prev->setValue($wrapper, $exception);
-
-                throw $e;
-            }
-
+            $response = $this->legacyOnKernelException($event);
             $event->setResponse($response);
         }
     }
@@ -93,8 +68,8 @@ class ExceptionListener extends BaseExceptionListener
     public function showExceptionPageAction(FlattenException $exception)
     {
         return $this->templating->renderResponse(
-            $exception->getTemplatePath(),
-            array_merge($exception->getParameters(), array('message' => $exception->getMessage())),
+            '@EasyAdmin/default/exception.html.twig',
+            array('exception' => $exception),
             Response::create()->setStatusCode($exception->getStatusCode())
         );
     }
@@ -106,7 +81,7 @@ class ExceptionListener extends BaseExceptionListener
     {
         if (null !== $this->logger) {
             /** @var BaseException $exception */
-            if ($exception->getHttpStatusCode() >= 500) {
+            if ($exception->getStatusCode() >= 500) {
                 $this->logger->critical($message, array('exception' => $exception));
             } else {
                 $this->logger->error($message, array('exception' => $exception));
@@ -119,23 +94,82 @@ class ExceptionListener extends BaseExceptionListener
      */
     protected function duplicateRequest(\Exception $exception, Request $request)
     {
-        if (3 !== Kernel::RELEASE_VERSION) {
+        if (!$this->isLegacySymfony()) {
             $request = parent::duplicateRequest($exception, $request);
         } else {
-            /* For BC reasons with 2.3, we need to duplicate this entirely
-            from Symfony\Component\HttpKernel\EventListener\ExceptionListener.
-            Once sf 2.3 support is dropped, we can remove this else block and condition */
-            $attributes = array(
-                '_controller' => $this->controller,
-                'logger' => $this->logger instanceof DebugLoggerInterface ? $this->logger : null,
-                'format' => $request->getRequestFormat(),
-            );
-            $request = $request->duplicate(null, null, $attributes);
-            $request->setMethod('GET');
+            $request = $this->legacyDuplicateRequest($request);
         }
 
         $request->attributes->set('exception', FlattenException::create($exception));
 
         return $request;
+    }
+
+    /**
+     * Utility method needed for BC reasons with Symfony 2.3
+     * Code copied from Symfony\Component\HttpKernel\EventListener\ExceptionListener
+     *
+     * @param GetResponseForExceptionEvent $event
+     *
+     * @return Response
+     */
+    private function legacyOnKernelException(GetResponseForExceptionEvent $event)
+    {
+        $exception = $event->getException();
+
+        $this->logException($exception, sprintf('Uncaught PHP Exception %s: "%s" at %s line %s', get_class($exception), $exception->getMessage(), $exception->getFile(), $exception->getLine()));
+
+        $request = $this->duplicateRequest($exception, $event->getRequest());
+
+        try {
+            return $event->getKernel()->handle($request, HttpKernelInterface::SUB_REQUEST, false);
+        } catch (\Exception $e) {
+            $this->logException($e, sprintf('Exception thrown when handling an exception (%s: %s at %s line %s)', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
+
+            $wrapper = $e;
+
+            while ($prev = $wrapper->getPrevious()) {
+                if ($exception === $wrapper = $prev) {
+                    throw $e;
+                }
+            }
+
+            $prev = new \ReflectionProperty('Exception', 'previous');
+            $prev->setAccessible(true);
+            $prev->setValue($wrapper, $exception);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Utility method needed for BC reasons with Symfony 2.3
+     * Code copied from Symfony\Component\HttpKernel\EventListener\ExceptionListener.
+     *
+     * @param Request $request
+     *
+     * @return Request
+     */
+    private function legacyDuplicateRequest(Request $request)
+    {
+        $attributes = array(
+            '_controller' => $this->controller,
+            'logger' => $this->logger instanceof DebugLoggerInterface ? $this->logger : null,
+            'format' => $request->getRequestFormat(),
+        );
+        $request = $request->duplicate(null, null, $attributes);
+        $request->setMethod('GET');
+
+        return $request;
+    }
+
+    /**
+     * Returns true if Symfony version is considered legacy (e.g. 2.3)
+     *
+     * @return bool
+     */
+    private function isLegacySymfony()
+    {
+        return 2 === Kernel::MAJOR_VERSION && 3 === Kernel::MINOR_VERSION;
     }
 }

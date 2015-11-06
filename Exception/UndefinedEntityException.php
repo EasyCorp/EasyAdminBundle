@@ -19,9 +19,8 @@ class UndefinedEntityException extends BaseException
     public function __construct(array $parameters = array())
     {
         $templatePath = '@EasyAdmin/error/undefined_entity.html.twig';
-        $errorMessage = sprintf("ERROR: the '%s' entity is not defined in the configuration of your backend.\n\n", $parameters['entity_name']);
-        $errorMessage .= sprintf("Solution: open your 'app/config/config.yml' file and add the '%s' entity to the list of entities managed by EasyAdmin.", $parameters['entity_name']);
+        $errorMessage = sprintf("ERROR: the '%s' entity is not defined in the configuration of your backend.\n\nSolution: open your 'app/config/config.yml' file and add the '%s' entity to the list of entities managed by EasyAdmin.", $parameters['entity_name'], $parameters['entity_name']);
 
-        parent::__construct($errorMessage, $parameters, $templatePath);
+        parent::__construct($errorMessage, $templatePath);
     }
 }

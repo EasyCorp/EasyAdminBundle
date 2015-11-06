@@ -22,6 +22,6 @@ class EntityNotFoundException extends BaseException
         $httpStatusCode = 404;
         $errorMessage = sprintf("ERROR: the '%s' entity with '%s = %s' does not exist in the database.", $parameters['entity']['name'], $parameters['entity']['primary_key_field_name'], $parameters['entity_id']);
 
-        parent::__construct($errorMessage, $parameters, $templatePath, $httpStatusCode);
+        parent::__construct($errorMessage, $templatePath, $httpStatusCode);
     }
 }

@@ -23,21 +23,14 @@ class BaseException extends \RuntimeException
 
     /**
      * @param string $errorMessage
-     * @param array  $parameters
      * @param string $templatePath
      * @param int    $httpStatusCode
      */
-    public function __construct($errorMessage, array $parameters, $templatePath, $httpStatusCode = 500)
+    public function __construct($errorMessage, $templatePath, $httpStatusCode = 500)
     {
         $this->message = $errorMessage;
-        $this->parameters = $parameters;
         $this->templatePath = $templatePath;
         $this->httpStatusCode = $httpStatusCode;
-    }
-
-    public function getParameters()
-    {
-        return $this->parameters;
     }
 
     public function getTemplatePath()

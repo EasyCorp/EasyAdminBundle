@@ -18,14 +18,12 @@ class ForbiddenActionException extends BaseException
 {
     public function __construct(array $parameters = array())
     {
-        parent::__construct($parameters);
+        $templatePath = '@EasyAdmin/error/forbidden_action.html.twig';
+        $httpStatusCode = 403;
 
-        $this->setTemplatePath('@EasyAdmin/error/forbidden_action.html.twig');
-        $this->setHttpStatusCode(403);
+        $errorMessage = sprintf("ERROR: the requested '%s' action is not allowed for the '%s' entity.\n\n", $parameters['action'], $parameters['entity']);
+        $errorMessage .= sprintf("Solution: remove the '%s' action from the 'disabled_actions' option, which can be configured globally for the entire backend or locally for the '%s' entity.", $parameters['action'], $parameters['entity']);
 
-        $message = sprintf("ERROR: the requested '%s' action is not allowed for the '%s' entity.\n\n", $parameters['action'], $parameters['entity']);
-        $message .= sprintf("Solution: remove the '%s' action from the 'disabled_actions' option, which can be configured globally for the entire backend or locally for the '%s' entity.\n\n", $parameters['action'], $parameters['entity']);
-
-        $this->setMessage($message);
+        parent::__construct($errorMessage, $parameters, $templatePath, $httpStatusCode);
     }
 }

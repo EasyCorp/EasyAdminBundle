@@ -15,7 +15,6 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\FlattenException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -39,7 +38,7 @@ class ExceptionListener extends BaseExceptionListener
     /** @var bool */
     private $debug;
 
-    public function __construct(TwigEngine $templating, $debug, $controller, LoggerInterface $logger = null)
+    public function __construct(EngineInterface $templating, $debug, $controller, LoggerInterface $logger = null)
     {
         $this->templating = $templating;
         $this->debug = $debug;

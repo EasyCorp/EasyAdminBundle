@@ -24,11 +24,8 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
             ->disableOriginalConstructor()
             ->getMock();
-        $templating = $this->getMockBuilder('\stdClass')
-            ->disableOriginalConstructor()
-            ->setMethods(array('renderResponse'))
-            ->getMock();
-        $templating->method('renderResponse')->willReturn($response);
+        $templating = $this->getMockForAbstractClass('Symfony\Bundle\FrameworkBundle\Templating\EngineInterface');
+        $templating->method('renderResponse')->will($this->returnValue($response));
 
         return $templating;
     }

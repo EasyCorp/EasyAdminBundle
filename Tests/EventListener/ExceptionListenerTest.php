@@ -22,14 +22,13 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     private function getTemplating()
     {
         $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
-                         ->disableOriginalConstructor()
-                         ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
         $templating = $this->getMockBuilder('\stdClass')
-                           ->disableOriginalConstructor()
-                           ->setMethods(array('renderResponse'))
-                           ->getMock();
-        $templating->method('renderResponse')
-                   ->willReturn($response);
+            ->disableOriginalConstructor()
+            ->setMethods(array('renderResponse'))
+            ->getMock();
+        $templating->method('renderResponse')->willReturn($response);
 
         return $templating;
     }
@@ -37,31 +36,25 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     private function getEventExceptionThatShouldBeCalledOnce($exception)
     {
         $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
-                           ->disableOriginalConstructor()
-                           ->getMock();
-        $event->method('getException')
-                ->willReturn($exception);
-        $event->method('getRequest')
-                ->willReturn(new Request());
-        $event->method('getKernel')
-                ->willReturn(new TestKernel());
-        $event->expects($this->once())
-              ->method('setResponse');
+            ->disableOriginalConstructor()
+            ->getMock();
+        $event->method('getException')->willReturn($exception);
+        $event->method('getRequest')->willReturn(new Request());
+        $event->method('getKernel')->willReturn(new TestKernel());
+        $event->expects($this->once())->method('setResponse');
 
         return $event;
     }
 
     public function testCatchBaseExceptions()
     {
-        $exception = new EasyEntityNotFoundException(
-            array(
-                'entity' => array(
-                    'name' => 'Test',
-                    'primary_key_field_name' => 'Test key',
-                ),
-                'entity_id' => 2,
-            )
-        );
+        $exception = new EasyEntityNotFoundException(array(
+            'entity' => array(
+                'name' => 'Test',
+                'primary_key_field_name' => 'Test key',
+            ),
+            'entity_id' => 2,
+        ));
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
         $templating = $this->getTemplating();
         $debug = false;
@@ -73,12 +66,10 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     private function getEventExceptionThatShouldNotBeCalled($exception)
     {
         $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
-                           ->disableOriginalConstructor()
-                           ->getMock();
-        $event->method('getException')
-                ->willReturn($exception);
-        $event->expects($this->never())
-              ->method('setResponse');
+            ->disableOriginalConstructor()
+            ->getMock();
+        $event->method('getException')->willReturn($exception);
+        $event->expects($this->never())->method('setResponse');
 
         return $event;
     }

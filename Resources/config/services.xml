@@ -24,7 +24,6 @@
 
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
             <argument type="service" id="templating" />
-            <argument>%kernel.debug%</argument>
             <argument type="string">easyadmin.listener.exception:showExceptionPageAction</argument>
             <argument type="service" id="logger" on-invalid="null" />
             <tag name="monolog.logger" channel="request" />

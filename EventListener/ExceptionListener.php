@@ -35,13 +35,9 @@ class ExceptionListener extends BaseExceptionListener
     /** @var EngineInterface */
     private $templating;
 
-    /** @var bool */
-    private $debug;
-
-    public function __construct(EngineInterface $templating, $debug, $controller, LoggerInterface $logger = null)
+    public function __construct(EngineInterface $templating, $controller, LoggerInterface $logger = null)
     {
         $this->templating = $templating;
-        $this->debug = $debug;
 
         parent::__construct($controller, $logger);
     }
@@ -50,7 +46,7 @@ class ExceptionListener extends BaseExceptionListener
     {
         $exception = $event->getException();
 
-        if (!$exception instanceof BaseException || true === $this->debug) {
+        if (!$exception instanceof BaseException) {
             return;
         }
 

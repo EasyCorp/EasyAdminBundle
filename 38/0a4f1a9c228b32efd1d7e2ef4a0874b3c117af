@@ -1,0 +1,113 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-07T11:06:06Z
+
+I'm :+1: for this !
+However, I don't find the method name explicit. It only acts differently on the entity name. But I can't really find a better name.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-07T11:39:49Z
+
+Could you replace `???` by `{entityName}`?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-07T11:43:15Z
+
+Actually I think that using 2 variables is much better, just use `$prefix` and `$suffix`, it's easier to handle and is a bit better in terms of performance (just concatenate instead of replacing).
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-07T11:49:10Z
+
+@Pierstoval : I thought about that too (the `{entityName}` placeholder), but I came to the conclusion it would only make sense if there was some other placeholders available. Here, it's only about the entity name. So I think a more accurate method name would be enough (e.g: `executeMethodForEntity`, but this is ugly).
+
+About the `$prefix` and `$suffix`suggestion, do you mean:
+```php
+function executeDynamicMethod($$prefix = '', $suffix = '', array $arguments = array())
+{
+    // [...]
+}
+
+// [...]
+
+$this->executeDynamicMethod('preUpdate', 'Entity', array($entity));
+```
+? I'm not convinced. I find it less evident.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-07T13:32:47Z
+
+About prefix and suffix, this is exactly what I mean :)
+
+If you find this less evident, I think we should then introduce a BC break and use the EntityName as a single suffix, like this:
+
+```php
+function executeDynamicMethod($method = '', array $arguments = array())
+{
+    $overriden = $method.ucfirst($this->entity['name']);
+    $methodToExecute = method_exists($this, $overriden)
+        ? $overriden
+        : $method;
+
+    return call_user_func_array(array($this, $method), $arguments);
+}
+
+// [...]
+
+$this->executeDynamicMethod('preUpdateEntity', array($entity));
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-07T14:02:41Z
+
+What if we use the well-known notation of "generics" from C++, Java, etc.
+
+```php
+// BEFORE
+$editForm = $this->executeDynamicMethod('create???EditForm', array($entity, $fields));
+
+// AFTER
+$editForm = $this->executeGenericMethod('create<EntityName>EditForm', array($entity, $fields));
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-07T14:06:44Z
+
+That's the same "issue" as for placeholders with `{}` to me. But why not, if you prefer it. It has nothing much to do with generics appart from the notation though. ^^'
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-07T14:18:48Z
+
+I really don't like it, as @ogizanagi says, it's very strange to have a unique placeholder...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-07T14:23:08Z
+
+OK, I've decided to do the following:
+
+  * Call the method `executeDynamicMethod()`
+  * Use the `<..>` notation because:
+    * It's easier to understand when reading the code. Example: which method executes `create???EditForm()`? And now: which method executes `create<EntityName>EditForm()`?
+    * I prefer to use `<...>` because it's a very common notation in programming languages. The `{...}` notation is worse because it could be mistaken with the `{{ ... }}` Twig notation and with the function/method enclosing brackets.
+    * We already use that notation in our documentation.
+
+In any case, this is a utility method defined as a private class method. So we can change it at any point without breaking anything.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-07T14:25:41Z
+
+I wish we could find a proper change for a potential 2.0 branch, because for example "createEditForm" I sometimes forget whether it's `create<EntityName>EditForm` or `createEdit<EntityName>Form`, so having the entity name as suffix seems much better to me, and much easier to understand...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-07T14:28:48Z
+
+@Pierstoval I agree with you.

@@ -87,6 +87,11 @@ class EasyAdminExtension extends Extension
         // load bundle's services
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+
+        // Don't register our exception listener if debug is enabled
+        if ($container->getParameter('kernel.debug')) {
+            $container->removeDefinition('easyadmin.listener.exception');
+        }
     }
 
     /**

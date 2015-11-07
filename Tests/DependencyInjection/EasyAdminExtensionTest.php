@@ -30,7 +30,20 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
     public function setUp()
     {
         $this->container = new ContainerBuilder();
+        $this->container->setParameter('kernel.debug', false);
         $this->loader = new EasyAdminExtension();
+    }
+
+    public function testEasyAdminExceptionListenerIsRemovedOnDebug()
+    {
+        $this->container->getParameterBag()->add(array(
+            'kernel.debug' => true,
+            'kernel.root_dir' => __DIR__,
+        ));
+
+        $this->loader->load(array(), $this->container);
+
+        $this->assertFalse($this->container->has('easyadmin.listener.exception'));
     }
 
     /**

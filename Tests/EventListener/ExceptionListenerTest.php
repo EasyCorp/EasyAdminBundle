@@ -54,9 +54,8 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         ));
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
         $templating = $this->getTemplating();
-        $debug = false;
 
-        $listener = new ExceptionListener($templating, $debug, 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($templating, 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 
@@ -76,9 +75,8 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $exception = new EntityNotFoundException();
         $event = $this->getEventExceptionThatShouldNotBeCalled($exception);
         $templating = $this->getTemplating();
-        $debug = false;
 
-        $listener = new ExceptionListener($templating, $debug, 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($templating, 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 }

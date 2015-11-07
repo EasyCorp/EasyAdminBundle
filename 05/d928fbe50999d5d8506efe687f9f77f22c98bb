@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-05T19:55:14Z
+
+:+1:  ^^'
+
+Also I think it would make sense for the `BaseException` to extend `\RuntimeException` instead of `\Exception`.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-07T09:39:25Z
+
+This PR is now "finished". I've removed all the error templates and exception classes have been simplified. We now just have an `exception.html.twig` template to display all exceptions.

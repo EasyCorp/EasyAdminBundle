@@ -693,15 +693,15 @@ class AdminController extends Controller
      * does not exist, it executes the regular method.
      *
      * For example:
-     *   executeDynamicMethod('create<EntityName>Entity') and $this->entity['name'] = 'User'
+     *   executeDynamicMethod('create<EntityName>Entity') and the entity name is 'User'
      *   if 'createUserEntity()' exists, execute it; otherwise execute 'createEntity()'
      *
-     * @param string $methodName The name of the method (enclsoing dynamic parts with <> angle brackets)
-     * @param array  $arguments  The arguments passed to the executed method
+     * @param string $methodNamePattern The pattern of the method name (dynamic parts are enclosed with <> angle brackets)
+     * @param array  $arguments         The arguments passed to the executed method
      *
      * @return mixed
      */
-    private function executeDynamicMethod($methodName, array $arguments = array())
+    private function executeDynamicMethod($methodNamePattern, array $arguments = array())
     {
         $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
         if (!method_exists($this, $methodName)) {

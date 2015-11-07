@@ -69,7 +69,7 @@ class AdminController extends Controller
             throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
         }
 
-        return $this->executeDynamicMethod($action.'???Action');
+        return $this->executeDynamicMethod($action.'<EntityName>Action');
     }
 
     /**
@@ -169,14 +169,14 @@ class AdminController extends Controller
 
         $fields = $this->entity['edit']['fields'];
 
-        $editForm = $this->executeDynamicMethod('create???EditForm', array($entity, $fields));
+        $editForm = $this->executeDynamicMethod('create<EntityName>EditForm', array($entity, $fields));
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
         $editForm->handleRequest($this->request);
         if ($editForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity));
 
-            $this->executeDynamicMethod('preUpdate???Entity', array($entity));
+            $this->executeDynamicMethod('preUpdate<EntityName>Entity', array($entity));
             $this->em->flush();
 
             $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity));
@@ -236,7 +236,7 @@ class AdminController extends Controller
     {
         $this->dispatch(EasyAdminEvents::PRE_NEW);
 
-        $entity = $this->executeDynamicMethod('createNew???Entity');
+        $entity = $this->executeDynamicMethod('createNew<EntityName>Entity');
 
         $easyadmin = $this->request->attributes->get('easyadmin');
         $easyadmin['item'] = $entity;
@@ -244,13 +244,13 @@ class AdminController extends Controller
 
         $fields = $this->entity['new']['fields'];
 
-        $newForm = $this->executeDynamicMethod('create???NewForm', array($entity, $fields));
+        $newForm = $this->executeDynamicMethod('create<EntityName>NewForm', array($entity, $fields));
 
         $newForm->handleRequest($this->request);
         if ($newForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, array('entity' => $entity));
 
-            $this->executeDynamicMethod('prePersist???Entity', array($entity));
+            $this->executeDynamicMethod('prePersist<EntityName>Entity', array($entity));
 
             $this->em->persist($entity);
             $this->em->flush();
@@ -297,7 +297,7 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));
 
-            $this->executeDynamicMethod('preRemove???Entity', array($entity));
+            $this->executeDynamicMethod('preRemove<EntityName>Entity', array($entity));
 
             $this->em->remove($entity);
             $this->em->flush();
@@ -574,7 +574,7 @@ class AdminController extends Controller
             return $form;
         }
 
-        $formBuilder = $this->executeDynamicMethod('create???EntityFormBuilder', array($entity, $view));
+        $formBuilder = $this->executeDynamicMethod('create<EntityName>EntityFormBuilder', array($entity, $view));
 
         if (!$formBuilder instanceof FormBuilderInterface) {
             throw new \Exception(sprintf(
@@ -693,19 +693,19 @@ class AdminController extends Controller
      * does not exist, it executes the regular method.
      *
      * For example:
-     *   executeDynamicMethod('create???Entity') and $this->entity['name'] = 'User'
+     *   executeDynamicMethod('create<EntityName>Entity') and $this->entity['name'] = 'User'
      *   if 'createUserEntity()' exists, execute it; otherwise execute 'createEntity()'
      *
-     * @param string $methodNamePattern The name of the method, replacing dynamic parts with '???'
-     * @param array  $arguments         The arguments passed to the executed method
+     * @param string $methodName The name of the method (enclsoing dynamic parts with <> angle brackets)
+     * @param array  $arguments  The arguments passed to the executed method
      *
      * @return mixed
      */
-    private function executeDynamicMethod($methodNamePattern, array $arguments = array())
+    private function executeDynamicMethod($methodName, array $arguments = array())
     {
-        $methodName = str_replace('???', $this->entity['name'], $methodNamePattern);
+        $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
         if (!method_exists($this, $methodName)) {
-            $methodName = str_replace('???', '', $methodNamePattern);
+            $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }
 
         return call_user_func_array(array($this, $methodName), $arguments);

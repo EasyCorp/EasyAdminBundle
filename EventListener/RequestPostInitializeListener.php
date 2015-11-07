@@ -58,19 +58,19 @@ class RequestPostInitializeListener
     /**
      * Looks for the object that corresponds to the selected 'id' of the current entity.
      *
-     * @param array $entity
-     * @param mixed $id
+     * @param array $entityConfig
+     * @param mixed $itemId
      *
      * @return object The entity
      *
      * @throws EntityNotFoundException
      */
-    private function findCurrentItem(array $entity, $id)
+    private function findCurrentItem(array $entityConfig, $itemId)
     {
-        if (!$item = $this->doctrine->getRepository($entity['class'])->find($id)) {
-            throw new EntityNotFoundException(array('entity' => $entity, 'entity_id' => $id));
+        if (null === $entity = $this->doctrine->getRepository($entityConfig['class'])->find($itemId)) {
+            throw new EntityNotFoundException(array('entity' => $entityConfig, 'entity_id' => $itemId));
         }
 
-        return $item;
+        return $entity;
     }
 }

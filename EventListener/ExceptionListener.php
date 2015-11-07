@@ -57,7 +57,7 @@ class ExceptionListener extends BaseExceptionListener
             return;
         }
 
-        if (3 !== Kernel::RELEASE_VERSION) {
+        if (3 !== Kernel::MINOR_VERSION) {
             parent::onKernelException($event);
         } else {
             /* For BC reasons with 2.3, we need to duplicate this entirely
@@ -122,7 +122,7 @@ class ExceptionListener extends BaseExceptionListener
      */
     protected function duplicateRequest(\Exception $exception, Request $request)
     {
-        if (3 !== Kernel::RELEASE_VERSION) {
+        if (3 !== Kernel::MINOR_VERSION) {
             $request = parent::duplicateRequest($exception, $request);
         } else {
             /* For BC reasons with 2.3, we need to duplicate this entirely

@@ -109,7 +109,7 @@ class ExceptionListener extends BaseExceptionListener
      * Utility method needed for BC reasons with Symfony 2.3
      * Code copied from Symfony\Component\HttpKernel\EventListener\ExceptionListener
      *
-     * @param  GetResponseForExceptionEvent $event
+     * @param GetResponseForExceptionEvent $event
      *
      * @return Response
      */
@@ -146,7 +146,7 @@ class ExceptionListener extends BaseExceptionListener
      * Utility method needed for BC reasons with Symfony 2.3
      * Code copied from Symfony\Component\HttpKernel\EventListener\ExceptionListener.
      *
-     * @param  Request $request [description]
+     * @param Request $request
      *
      * @return Request
      */
@@ -166,7 +166,7 @@ class ExceptionListener extends BaseExceptionListener
     /**
      * Returns true if Symfony version is considered legacy (e.g. 2.3)
      *
-     * @return boolean
+     * @return bool
      */
     private function isLegacySymfony()
     {

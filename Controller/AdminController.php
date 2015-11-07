@@ -69,10 +69,7 @@ class AdminController extends Controller
             throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
         }
 
-        $customMethodName = $action.$this->entity['name'].'Action';
-        $defaultMethodName = $action.'Action';
-
-        return method_exists($this, $customMethodName) ? $this->{$customMethodName}() : $this->{$defaultMethodName}();
+        return $this->executeDynamicMethod($action.'<EntityName>Action');
     }
 
     /**
@@ -172,24 +169,14 @@ class AdminController extends Controller
 
         $fields = $this->entity['edit']['fields'];
 
-        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EditForm')) {
-            $editForm = $this->{$customMethodName}($entity, $fields);
-        } else {
-            $editForm = $this->createEditForm($entity, $fields);
-        }
-
+        $editForm = $this->executeDynamicMethod('create<EntityName>EditForm', array($entity, $fields));
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
         $editForm->handleRequest($this->request);
         if ($editForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity));
 
-            if (method_exists($this, $customMethodName = 'preUpdate'.$this->entity['name'].'Entity')) {
-                $this->{$customMethodName}($entity);
-            } else {
-                $this->preUpdateEntity($entity);
-            }
-
+            $this->executeDynamicMethod('preUpdate<EntityName>Entity', array($entity));
             $this->em->flush();
 
             $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity));
@@ -249,11 +236,7 @@ class AdminController extends Controller
     {
         $this->dispatch(EasyAdminEvents::PRE_NEW);
 
-        if (method_exists($this, $customMethodName = 'createNew'.$this->entity['name'].'Entity')) {
-            $entity = $this->{$customMethodName}();
-        } else {
-            $entity = $this->createNewEntity();
-        }
+        $entity = $this->executeDynamicMethod('createNew<EntityName>Entity');
 
         $easyadmin = $this->request->attributes->get('easyadmin');
         $easyadmin['item'] = $entity;
@@ -261,21 +244,13 @@ class AdminController extends Controller
 
         $fields = $this->entity['new']['fields'];
 
-        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'NewForm')) {
-            $newForm = $this->{$customMethodName}($entity, $fields);
-        } else {
-            $newForm = $this->createNewForm($entity, $fields);
-        }
+        $newForm = $this->executeDynamicMethod('create<EntityName>NewForm', array($entity, $fields));
 
         $newForm->handleRequest($this->request);
         if ($newForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, array('entity' => $entity));
 
-            if (method_exists($this, $customMethodName = 'prePersist'.$this->entity['name'].'Entity')) {
-                $this->{$customMethodName}($entity);
-            } else {
-                $this->prePersistEntity($entity);
-            }
+            $this->executeDynamicMethod('prePersist<EntityName>Entity', array($entity));
 
             $this->em->persist($entity);
             $this->em->flush();
@@ -322,11 +297,7 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, array('entity' => $entity));
 
-            if (method_exists($this, $customMethodName = 'preRemove'.$this->entity['name'].'Entity')) {
-                $this->{$customMethodName}($entity);
-            } else {
-                $this->preRemoveEntity($entity);
-            }
+            $this->executeDynamicMethod('preRemove<EntityName>Entity', array($entity));
 
             $this->em->remove($entity);
             $this->em->flush();
@@ -603,11 +574,7 @@ class AdminController extends Controller
             return $form;
         }
 
-        if (method_exists($this, $customBuilderMethodName = 'create'.$this->entity['name'].'EntityFormBuilder')) {
-            $formBuilder = $this->{$customBuilderMethodName}($entity, $entityProperties, $view);
-        } else {
-            $formBuilder = $this->createEntityFormBuilder($entity, $view);
-        }
+        $formBuilder = $this->executeDynamicMethod('create<EntityName>EntityFormBuilder', array($entity, $view));
 
         if (!$formBuilder instanceof FormBuilderInterface) {
             throw new \Exception(sprintf(
@@ -718,5 +685,29 @@ class AdminController extends Controller
         $em = $this->get('doctrine')->getManagerForClass($entityClass);
 
         return $em->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform;
+    }
+
+    /**
+     * Given a method name pattern, it looks for the customized version of that
+     * method (based on the entity name) and executes it. If the custom method
+     * does not exist, it executes the regular method.
+     *
+     * For example:
+     *   executeDynamicMethod('create<EntityName>Entity') and the entity name is 'User'
+     *   if 'createUserEntity()' exists, execute it; otherwise execute 'createEntity()'
+     *
+     * @param string $methodNamePattern The pattern of the method name (dynamic parts are enclosed with <> angle brackets)
+     * @param array  $arguments         The arguments passed to the executed method
+     *
+     * @return mixed
+     */
+    private function executeDynamicMethod($methodNamePattern, array $arguments = array())
+    {
+        $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
+        if (!method_exists($this, $methodName)) {
+            $methodName = str_replace('<EntityName>', '', $methodNamePattern);
+        }
+
+        return call_user_func_array(array($this, $methodName), $arguments);
     }
 }

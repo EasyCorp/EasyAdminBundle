@@ -41,4 +41,8 @@ final class EasyAdminEvents
     const POST_UPDATE = 'easy_admin.post_update';
     const PRE_REMOVE = 'easy_admin.pre_remove';
     const POST_REMOVE = 'easy_admin.post_remove';
+
+    // Events related to Doctrine Query Builder usage
+    const POST_LIST_QUERY_BUILDER = 'easy_admin.post_list_query_builder';
+    const POST_SEARCH_QUERY_BUILDER = 'easy_admin.post_search_query_builder';
 }

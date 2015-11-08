@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
@@ -437,24 +438,43 @@ class AdminController extends Controller
      */
     protected function findAll($entityClass, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null)
     {
-        $query = $this->em->createQueryBuilder()
-            ->select('entity')
-            ->from($entityClass, 'entity')
-        ;
-
-        if (null !== $sortField) {
-            if (empty($sortDirection) || !in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
-                $sortDirection = 'DESC';
-            }
-
-            $query->orderBy('entity.'.$sortField, $sortDirection);
+        if (empty($sortDirection) || !in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
+            $sortDirection = 'DESC';
         }
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($query, false, false));
+        $queryBuilder = $this->executeDynamicMethod('create<EntityName>ListQueryBuilder', array($entityClass, $sortDirection, $sortField));
+
+        $this->dispatch(EasyAdminEvents::POST_LIST_QUERY_BUILDER, array(
+            'query_builder' => $queryBuilder,
+            'sort_field' => $sortField,
+            'sort_direction' => $sortDirection,
+        ));
+
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, false, false));
         $paginator->setMaxPerPage($maxPerPage);
         $paginator->setCurrentPage($page);
 
         return $paginator;
+    }
+
+    /**
+     * Creates Query Builder instance for all the records.
+     *
+     * @param string      $entityClass
+     * @param string      $sortDirection
+     * @param string|null $sortField
+     *
+     * @return QueryBuilder The Query Builder instance
+     */
+    protected function createListQueryBuilder($entityClass, $sortDirection, $sortField = null)
+    {
+        $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
+
+        if (null !== $sortField) {
+            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection);
+        }
+
+        return $queryBuilder;
     }
 
     /**
@@ -470,6 +490,32 @@ class AdminController extends Controller
      * @return Pagerfanta The paginated query results
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
+    {
+        $queryBuilder = $this->executeDynamicMethod('create<EntityName>SearchQueryBuilder', array($entityClass, $searchQuery, $searchableFields));
+
+        $this->dispatch(EasyAdminEvents::POST_SEARCH_QUERY_BUILDER, array(
+            'query_builder' => $queryBuilder,
+            'search_query' => $searchQuery,
+            'searchable_fields' => $searchableFields,
+        ));
+
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, false, false));
+        $paginator->setMaxPerPage($maxPerPage);
+        $paginator->setCurrentPage($page);
+
+        return $paginator;
+    }
+
+    /**
+     * Creates Query Builder instance for search query.
+     *
+     * @param string $entityClass
+     * @param string $searchQuery
+     * @param array  $searchableFields
+     *
+     * @return QueryBuilder The Query Builder instance
+     */
+    protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields)
     {
         $databaseIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
         $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
@@ -499,11 +545,7 @@ class AdminController extends Controller
 
         $queryBuilder->add('where', $queryConditions)->setParameters($queryParameters);
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, false));
-        $paginator->setMaxPerPage($maxPerPage);
-        $paginator->setCurrentPage($page);
-
-        return $paginator;
+        return $queryBuilder;
     }
 
     /**

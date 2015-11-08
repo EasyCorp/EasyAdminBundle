@@ -1,0 +1,56 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-05T20:56:20Z
+
+I think it is a good idea, and the event is the simplest thing we can do. But actually I'm not sure this is the greatest thing to use an event for such kind of things.
+
+I know the bundle's approach is far from tagged services & co, but I would love to see the `AdminController` less cluttered and have proper data providers and query extensions services for this (similar to what exists in the [DunglasApiBundle](https://github.com/dunglas/DunglasApiBundle/blob/master/Doctrine/Orm/DataProvider.php) if you already had the opportunity to have a look to it).
+It will perhaps even lead the way to an EasyAdminBundle able to support multiple data sources, not only Doctrine ORM. (But there is a lot of abstraction work that needs to be achieved for that)
+
+I'm not against the event for now, but I think this is something we should think of in the future.
+
+However, what about a simple new method in the `AdminController` class, that will allow to tweak the query builder instance ?
+
+---------------------------------------------------------------------------
+
+by tiraeth at 2015-11-06T12:15:30Z
+
+@ogizanagi I think the ``DataProvider`` approach will be nice to have in EasyAdminBundle. This depends on you guys, but I think that for now, this small event addon can help users be sure that when they update the library, things won't break. It gives the flexibility that is necessary here + don't introduce other philosophy and — IMO — is inline with how EasyAdminBundle currently works :-)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-06T12:20:52Z
+
+Right. But actually the bundle approach for now is mostly about extending the AdminController.
+
+Let's ask @javiereguiluz and @Pierstoval about that :)
+
+---------------------------------------------------------------------------
+
+by tiraeth at 2015-11-06T12:29:32Z
+
+@ogizanagi @javiereguiluz @Pierstoval added ``AdminController`` methods :-)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-06T12:34:30Z
+
+I totally agree the methods you added, did not review in deep terms but the fact that the methods are "customizable" is great to me (I still want to "standardize" this to allow customizing any method for any entity)
+
+---------------------------------------------------------------------------
+
+by tiraeth at 2015-11-06T12:38:06Z
+
+Rebased to single commit, fixed FQCN and missing ``return`` statement ;-) Also, I kept events for extendability in case someone wants to use them.
+
+---------------------------------------------------------------------------
+
+by tiraeth at 2015-11-07T20:07:47Z
+
+@ogizanagi @Pierstoval I rebased with ``javiereguiluz/master`` for quicker merge. Also, updated ``AdminController`` to include #548 fix in both ``DoctrineORMAdapter `` constructors.
+
+---------------------------------------------------------------------------
+
+by tiraeth at 2015-11-07T20:13:29Z
+
+And used ``executeDynamicMethod`` ;-)

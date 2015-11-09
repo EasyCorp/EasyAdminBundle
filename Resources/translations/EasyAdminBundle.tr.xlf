@@ -103,7 +103,7 @@
             </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
-                <target>Yeni öğe ekle/target>
+                <target>Yeni öğe ekle</target>
             </trans-unit>
             <trans-unit id="action.add_another_item">
                 <source>action.add_another_item</source>

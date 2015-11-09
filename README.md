@@ -55,7 +55,7 @@ Documentation
 
 > **❮ NOTE ❯** you are reading the documentation of the bundle's **development**
 > version. You can also [read the documentation of the latest stable version ➜]
-> (https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.8.0/).
+> (https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.8.1/).
 
 #### Demo Application
 

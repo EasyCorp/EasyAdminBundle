@@ -178,7 +178,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 // if the target entity has a primary key getter, it's displayed
                 // as a link pointing to its 'show' view
                 if (method_exists($value, $targetEntityPrimaryKeyGetter)) {
-                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['class'], 'action' => 'show', 'view' => $view, 'id' => $value->$targetEntityPrimaryKeyGetter());
+                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'view' => $view, 'id' => $value->$targetEntityPrimaryKeyGetter());
                 }
 
                 return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);

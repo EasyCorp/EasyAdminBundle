@@ -640,12 +640,18 @@ class AdminController extends Controller
      */
     protected function createDeleteForm($entityName, $entityId)
     {
-        return $this->createFormBuilder()
+        $formBuilder = $this->createFormBuilder()
             ->setAction($this->generateUrl('easyadmin', array('action' => 'delete', 'entity' => $entityName, 'id' => $entityId)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
         ;
+
+        if ($this->isLegacySymfonyForm()) {
+            $formBuilder->add('submit', 'submit', array('label' => 'Delete'));
+        } else {
+            $formBuilder->add('submit', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', array('label' => 'Delete'));
+        }
+
+        return $formBuilder->getForm();
     }
 
     /**
@@ -751,5 +757,10 @@ class AdminController extends Controller
         }
 
         return call_user_func_array(array($this, $methodName), $arguments);
+    }
+
+    private function isLegacySymfonyForm()
+    {
+        return false === method_exists('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', 'getBlockPrefix');
     }
 }

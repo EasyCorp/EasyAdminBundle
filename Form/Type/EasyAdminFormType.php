@@ -96,7 +96,11 @@ class EasyAdminFormType extends AbstractType
             $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
             $formFieldOptions['attr']['field_help'] = $metadata['help'];
 
-            $builder->add($name, $metadata['fieldType'], $formFieldOptions);
+            if ($this->isLegacySymfonyForm()) {
+                $builder->add($name, $metadata['fieldType'], $formFieldOptions);
+            } else {
+                $builder->add($name, $this->getFullFormType($metadata['fieldType']), $formFieldOptions);
+            }
         }
     }
 
@@ -118,7 +122,10 @@ class EasyAdminFormType extends AbstractType
                     return $entityConfig['class'];
                 },
             ))
-            ->setNormalizers(array(
+            ->setRequired(array('entity', 'view'));
+
+        if ($this->isLegacySymfonyForm()) {
+            $resolver->setNormalizers(array(
                 'attr' => function (Options $options, $value) use ($config) {
                     $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
                         return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
@@ -129,8 +136,19 @@ class EasyAdminFormType extends AbstractType
                         'id' => $options['view'].'-form',
                     ), $value);
                 },
-            ))
-            ->setRequired(array('entity', 'view'));
+            ));
+        } else {
+            $resolver->setNormalizer('attr', function (Options $options, $value) use ($config) {
+                $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
+                    return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
+                });
+
+                return array_replace_recursive(array(
+                    'class' => $formCssClass,
+                    'id' => $options['view'].'-form',
+                ), $value);
+            });
+        }
     }
 
     // BC for SF < 2.7
@@ -144,6 +162,21 @@ class EasyAdminFormType extends AbstractType
      */
     public function getName()
     {
-        return 'easyadmin';
+        return $this->isLegacySymfonyForm() ? 'easyadmin' : 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType';
+    }
+
+    private function isLegacySymfonyForm()
+    {
+        return false === method_exists($this, 'getBlockPrefix');
+    }
+
+    private function getFullFormType($shortType)
+    {
+        $typesMap = array(
+            'submit' => 'Symfony\Component\Form\Extension\Core\Type\SubmitType',
+            'text' => 'Symfony\Component\Form\Extension\Core\Type\TextType',
+        );
+
+        return array_key_exists($shortType, $typesMap) ? $typesMap[$shortType] : $shortType;
     }
 }

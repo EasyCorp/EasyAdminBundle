@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormTypeGuesserInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -33,14 +34,19 @@ class EasyAdminFormType extends AbstractType
     /** @var array */
     private $config;
 
+    /** @var FormTypeGuesserInterface */
+    private $guesser;
+
     /**
-     * @param Configurator $configurator
-     * @param array        $config
+     * @param Configurator             $configurator
+     * @param array                    $config
+     * @param FormTypeGuesserInterface $guesser
      */
-    public function __construct(Configurator $configurator, array $config)
+    public function __construct(Configurator $configurator, array $config, FormTypeGuesserInterface $guesser)
     {
         $this->configurator = $configurator;
         $this->config = $config;
+        $this->guesser = $guesser;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -80,6 +86,10 @@ class EasyAdminFormType extends AbstractType
                 }
             } elseif ('checkbox' === $metadata['fieldType'] && !isset($formFieldOptions['required'])) {
                 $formFieldOptions['required'] = false;
+            }
+
+            if (!isset($formFieldOptions['required'])) {
+                $formFieldOptions['required'] = $this->guesser->guessRequired($builder->getOption('data_class'), $name)->getValue();
             }
 
             $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];

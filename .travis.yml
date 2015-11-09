@@ -20,6 +20,7 @@ env:
     - deps="no"
     - SYMFONY_VERSION=""
     - PHP_CS="no"
+    - SYMFONY_DEPRECATIONS_HELPER=weak
 
 matrix:
   fast_finish: true

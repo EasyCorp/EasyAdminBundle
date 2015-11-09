@@ -65,6 +65,7 @@ class EasyAdminExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'form';
+        return class_exists('Symfony\Component\Form\Util\StringUtil')
+            ? 'Symfony\Component\Form\Extension\Core\Type\FormType' : 'form';
     }
 }

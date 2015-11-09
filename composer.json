@@ -43,6 +43,7 @@
         "symfony/css-selector"              : "~2.3|~3.0",
         "symfony/dom-crawler"               : "~2.3|~3.0",
         "symfony/finder"                    : "~2.3|~3.0",
+        "symfony/phpunit-bridge"            : "^2.7",
         "symfony/security-bundle"           : "~2.3|~3.0",
         "symfony/twig-bundle"               : "~2.3|~3.0",
         "symfony/validator"                 : "~2.3|~3.0",
@@ -52,4 +53,3 @@
         "psr-4": { "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "" }
     }
 }
-

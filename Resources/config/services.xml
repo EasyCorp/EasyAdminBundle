@@ -46,7 +46,7 @@
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>
-            <tag name="form.type_extension" alias="form" />
+            <tag name="form.type_extension" extended-type="Symfony\Component\Form\Extension\Core\Type\FormType" />
         </service>
 
         <service id="easyadmin.listener.request_post_initialize" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener">

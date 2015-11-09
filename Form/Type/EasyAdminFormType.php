@@ -162,7 +162,7 @@ class EasyAdminFormType extends AbstractType
      */
     public function getName()
     {
-        return $this->isLegacySymfonyForm() ? 'easyadmin' : 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType';
+        return 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType';
     }
 
     private function isLegacySymfonyForm()
@@ -175,6 +175,7 @@ class EasyAdminFormType extends AbstractType
         $typesMap = array(
             'submit' => 'Symfony\Component\Form\Extension\Core\Type\SubmitType',
             'text' => 'Symfony\Component\Form\Extension\Core\Type\TextType',
+            'integer' => 'Symfony\Component\Form\Extension\Core\Type\IntegerType',
         );
 
         return array_key_exists($shortType, $typesMap) ? $typesMap[$shortType] : $shortType;

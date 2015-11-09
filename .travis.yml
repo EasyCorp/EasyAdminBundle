@@ -32,11 +32,9 @@ matrix:
     - php: 5.6
       env: SYMFONY_VERSION=2.7.*
     - php: 5.6
-      env: SYMFONY_VERSION=2.8.*@dev
-      env: SYMFONY_DEPRECATIONS_HELPER=strict
+      env: SYMFONY_VERSION=2.8.*@dev SYMFONY_DEPRECATIONS_HELPER=strict
     - php: 5.6
-      env: SYMFONY_VERSION="3.0.x-dev as 2.8"
-      env: SYMFONY_DEPRECATIONS_HELPER=strict
+      env: SYMFONY_VERSION="3.0.x-dev as 2.8" SYMFONY_DEPRECATIONS_HELPER=strict
     - php: 5.6
       env: TWIG_VERSION="2.0.x-dev"
   allow_failures:

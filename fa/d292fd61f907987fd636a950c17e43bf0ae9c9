@@ -1,0 +1,53 @@
+---------------------------------------------------------------------------
+
+by WouterJ at 2015-11-09T16:46:46Z
+
+@javiereguiluz to make your life easier, I recommend to install `symfony/phpunit-bridge` in the 2.8 test. This will catch all deprecated feature usages and reports them nicely. After you've fixed all deprecation notices, the 3.0 build should pass (otherwise, create a issue/PR to Symfony to report a missing deprecation notice)
+
+---------------------------------------------------------------------------
+
+by WouterJ at 2015-11-09T19:42:21Z
+
+You also have to change the `getExtendedType()` method to return the FQCN on 2.8+ (e.g. by checking `class_exists('Symfony\Component\Form\Util\StringUtil')`).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-09T19:43:30Z
+
+@WouterJ right now I was trying to solve that problem. Thanks for the tip!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-09T21:07:51Z
+
+This line in the [AdminController](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Controller/AdminController.php#L646) must be fixed too (if not already spotted).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-09T21:27:40Z
+
+@ogizanagi thanks! I've changed that too, but still have some issues. I'll take a look tomorrow because I'm pretty frustrated at the moment :(
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-10T12:43:35Z
+
+I've done a lot of changes regarding forms ... but I'm running in circles: nothing works and I don't know why. If someone has some time to look into this, please help me spotting the error. Thanks.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-10T14:19:26Z
+
+@javiereguiluz : If you could have a look at #566 . I think this could help for most of the form issues.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-10T21:38:45Z
+
+Don't panic ... but I've broken the tests fo 2.8/3.0 somehow :fearful:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-10T21:52:51Z
+
+Back to green! Merging it before I break things again :sweat_smile:

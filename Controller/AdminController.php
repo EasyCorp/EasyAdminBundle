@@ -764,6 +764,6 @@ class AdminController extends Controller
 
     private function isLegacySymfonyForm()
     {
-        return false === method_exists('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', 'getBlockPrefix');
+        return false === class_exists('Symfony\Component\Form\Util\StringUtil');
     }
 }

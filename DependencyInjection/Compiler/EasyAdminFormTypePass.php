@@ -47,6 +47,6 @@ class EasyAdminFormTypePass implements CompilerPassInterface
      */
     private function useLegacyFormComponent()
     {
-        return false === class_exists('Symfony\Component\Form\Util\StringUtil');
+        return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
     }
 }

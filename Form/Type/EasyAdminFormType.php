@@ -188,7 +188,7 @@ class EasyAdminFormType extends AbstractType
      */
     private function useLegacyFormComponent()
     {
-        return false === class_exists('Symfony\Component\Form\Util\StringUtil');
+        return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
     }
 
     /**

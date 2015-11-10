@@ -96,7 +96,7 @@ class EasyAdminFormType extends AbstractType
             $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
             $formFieldOptions['attr']['field_help'] = $metadata['help'];
 
-            $formFieldType = $this->useLegacyFormComponent() ? $metadata['fieldType'] : $this->getFullFormType($metadata['fieldType']);
+            $formFieldType = $this->useLegacyFormComponent() ? $metadata['fieldType'] : $this->getFormTypeFqcn($metadata['fieldType']);
             $builder->add($name, $formFieldType, $formFieldOptions);
         }
     }
@@ -135,15 +135,33 @@ class EasyAdminFormType extends AbstractType
         $this->configureOptions($resolver);
     }
 
-    private function getFullFormType($shortType)
+    /**
+     * It returns the FQCN of the given short type.
+     * Example: 'text' -> 'Symfony\Component\Form\Extension\Core\Type\TextType'
+     *
+     * @param string $shortType
+     *
+     * @return string
+     */
+    private function getFormTypeFqcn($shortType)
     {
-        $typesMap = array(
-            'submit' => 'Symfony\Component\Form\Extension\Core\Type\SubmitType',
-            'text' => 'Symfony\Component\Form\Extension\Core\Type\TextType',
-            'integer' => 'Symfony\Component\Form\Extension\Core\Type\IntegerType',
+        $typeNames = array(
+            'base', 'birthday', 'button', 'checkbox', 'choice', 'collection',
+            'country', 'currency', 'datetime', 'date', 'email', 'file', 'form',
+            'hidden', 'integer', 'language', 'money', 'number', 'password',
+            'percent', 'radio', 'repeated', 'reset', 'search', 'submit',
+            'textarea', 'text', 'time', 'timezone', 'url'
         );
 
-        return array_key_exists($shortType, $typesMap) ? $typesMap[$shortType] : $shortType;
+        if (!array_key_exists($shortType, $typeNames)) {
+            return $shortType;
+        }
+
+        // take into account the irregular class name for 'datetime' type
+        $typeClassName = 'datetime' === $shortType ? 'DateTime' : ucfirst($shortType);
+        $typeFqcn = sprintf('Symfony\\Component\\Form\\Extension\\Core\\Type\\%sType', $typeClassName);
+
+        return $typeFqcn;
     }
 
     /**

@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-10T07:25:17Z
+
+:+1: this is excellent!! Very nice work! Thanks @ogizanagi.
+
+About the compiler pass ... it should probably not be very long or complex, so maybe it could make sense.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-10T08:30:12Z
+
+Here we go for the compiler pass. I chose to retrieve manually type guessers services by tags instead of getting the `FormTypeGuesserChain` instance created by the `form.extension` service, as I find it more explicit.
+
+Let me know which option suits you better.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-10T11:59:35Z
+
+I like your proposal for being more explicit. @ogizanagi thanks for this new feature!

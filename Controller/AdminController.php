@@ -642,7 +642,8 @@ class AdminController extends Controller
      */
     protected function createDeleteForm($entityName, $entityId)
     {
-        $formBuilder = $this->createFormBuilder()
+        /** @var FormBuilder $formBuilder */
+        $formBuilder = $this->get('form.factory')->createNamedBuilder('delete_form')
             ->setAction($this->generateUrl('easyadmin', array('action' => 'delete', 'entity' => $entityName, 'id' => $entityId)))
             ->setMethod('DELETE')
         ;
@@ -763,6 +764,6 @@ class AdminController extends Controller
 
     private function isLegacySymfonyForm()
     {
-        return false === method_exists('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', 'getBlockPrefix');
+        return false === class_exists('Symfony\Component\Form\Util\StringUtil');
     }
 }

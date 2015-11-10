@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Adds some custom attributes to the request object to store information
@@ -18,15 +19,20 @@ class RequestPostInitializeListener
     /** @var Request|null */
     private $request;
 
+    /** @var Request|null */
+    private $requestStack;
+
     /** @var Registry */
     private $doctrine;
 
     /**
-     * @param Registry $doctrine
+     * @param Registry     $doctrine
+     * @param RequestStack $requestStack
      */
-    public function __construct(Registry $doctrine)
+    public function __construct(Registry $doctrine, RequestStack $requestStack = null)
     {
         $this->doctrine = $doctrine;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -44,6 +50,10 @@ class RequestPostInitializeListener
 
     public function initializeRequest(GenericEvent $event)
     {
+        if ($this->requestStack !== null) {
+            $this->request = $this->requestStack->getCurrentRequest();
+        }
+
         if (null === $this->request) {
             return;
         }

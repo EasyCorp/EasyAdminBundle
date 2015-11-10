@@ -96,11 +96,8 @@ class EasyAdminFormType extends AbstractType
             $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
             $formFieldOptions['attr']['field_help'] = $metadata['help'];
 
-            if ($this->isLegacySymfonyForm()) {
-                $builder->add($name, $metadata['fieldType'], $formFieldOptions);
-            } else {
-                $builder->add($name, $this->getFullFormType($metadata['fieldType']), $formFieldOptions);
-            }
+            $formFieldType = $this->useLegacyFormComponent() ? $metadata['fieldType'] : $this->getFullFormType($metadata['fieldType']);
+            $builder->add($name, $formFieldType, $formFieldOptions);
         }
     }
 
@@ -124,30 +121,11 @@ class EasyAdminFormType extends AbstractType
             ))
             ->setRequired(array('entity', 'view'));
 
+        $formAttributes = $this->getFormAttributes($options, $value, $config);
         if ($this->isLegacySymfonyForm()) {
-            $resolver->setNormalizers(array(
-                'attr' => function (Options $options, $value) use ($config) {
-                    $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
-                        return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
-                    });
-
-                    return array_replace_recursive(array(
-                        'class' => $formCssClass,
-                        'id' => $options['view'].'-form',
-                    ), $value);
-                },
-            ));
+            $resolver->setNormalizers(array('attr' => $formAttributes));
         } else {
-            $resolver->setNormalizer('attr', function (Options $options, $value) use ($config) {
-                $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
-                    return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
-                });
-
-                return array_replace_recursive(array(
-                    'class' => $formCssClass,
-                    'id' => $options['view'].'-form',
-                ), $value);
-            });
+            $resolver->setNormalizer('attr', $formAttributes);
         }
     }
 
@@ -155,6 +133,39 @@ class EasyAdminFormType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $this->configureOptions($resolver);
+    }
+
+    private function getFullFormType($shortType)
+    {
+        $typesMap = array(
+            'submit' => 'Symfony\Component\Form\Extension\Core\Type\SubmitType',
+            'text' => 'Symfony\Component\Form\Extension\Core\Type\TextType',
+            'integer' => 'Symfony\Component\Form\Extension\Core\Type\IntegerType',
+        );
+
+        return array_key_exists($shortType, $typesMap) ? $typesMap[$shortType] : $shortType;
+    }
+
+    /**
+     * Returns true if the legacy Form component is being used by the application.
+     *
+     * @return bool
+     */
+    private function useLegacyFormComponent()
+    {
+        return false === class_exists('Symfony\Component\Form\Util\StringUtil');
+    }
+
+    private function getFormAttributes(Options $options, $value, $config)
+    {
+        $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
+            return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
+        });
+
+        return array_replace_recursive(array(
+            'class' => $formCssClass,
+            'id' => $options['view'].'-form',
+        ), $value);
     }
 
     /**
@@ -171,21 +182,5 @@ class EasyAdminFormType extends AbstractType
     public function getName()
     {
         return $this->getBlockPrefix();
-    }
-
-    private function isLegacySymfonyForm()
-    {
-        return false === class_exists('Symfony\Component\Form\Util\StringUtil');
-    }
-
-    private function getFullFormType($shortType)
-    {
-        $typesMap = array(
-            'submit' => 'Symfony\Component\Form\Extension\Core\Type\SubmitType',
-            'text' => 'Symfony\Component\Form\Extension\Core\Type\TextType',
-            'integer' => 'Symfony\Component\Form\Extension\Core\Type\IntegerType',
-        );
-
-        return array_key_exists($shortType, $typesMap) ? $typesMap[$shortType] : $shortType;
     }
 }

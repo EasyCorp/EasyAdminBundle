@@ -28,20 +28,24 @@ class EasyAdminFormTypePass implements CompilerPassInterface
     {
         $formTypeDefinition = $container->getDefinition('easyadmin.form.type');
 
-        $guessers = array_map(function ($guesserId) {
-            return new Reference($guesserId);
-        }, array_keys($container->findTaggedServiceIds('form.type_guesser')));
+        $guesserIds = array_keys($container->findTaggedServiceIds('form.type_guesser'));
+        $guessers = array_map(function ($id) { return new Reference($id); }, $guesserIds);
         $guesserChain = new Definition('Symfony\Component\Form\FormTypeGuesserChain', array($guessers));
 
         $formTypeDefinition->replaceArgument(2, $guesserChain);
 
-        if (!$this->isLegacySymfonyForm()) {
+        if (!$this->useLegacyFormComponent()) {
             $formTypeDefinition->clearTag('form.type');
             $formTypeDefinition->addTag('form.type');
         }
     }
 
-    private function isLegacySymfonyForm()
+    /**
+     * Returns true if the legacy Form component is being used by the application.
+     *
+     * @return bool
+     */
+    private function useLegacyFormComponent()
     {
         return false === class_exists('Symfony\Component\Form\Util\StringUtil');
     }

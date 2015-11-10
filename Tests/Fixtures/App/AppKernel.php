@@ -34,7 +34,7 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
 
-        if (Kernel::MAJOR_VERSION === 3) {
+        if ($this->isSymfony3()) {
             $loader->load(function (ContainerBuilder $container) {
                 $container->loadFromExtension('framework', array(
                     'assets' => null,
@@ -57,5 +57,10 @@ class AppKernel extends Kernel
     public function getLogDir()
     {
         return __DIR__.'/../../../build/kernel_logs/'.$this->getEnvironment();
+    }
+
+    private function isSymfony3()
+    {
+        return 3 === Kernel::MAJOR_VERSION;
     }
 }

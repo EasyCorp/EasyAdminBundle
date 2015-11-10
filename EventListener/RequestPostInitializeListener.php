@@ -50,7 +50,7 @@ class RequestPostInitializeListener
 
     public function initializeRequest(GenericEvent $event)
     {
-        if ($this->requestStack !== null) {
+        if (null !== $this->requestStack) {
             $this->request = $this->requestStack->getCurrentRequest();
         }
 

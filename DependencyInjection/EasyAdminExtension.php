@@ -96,8 +96,9 @@ class EasyAdminExtension extends Extension
             $container->removeDefinition('easyadmin.listener.exception');
         }
 
-        // Request stack BC
-        if (Kernel::VERSION_ID < 20400) {
+        // BC for Symfony 2.3 and Request Stack
+        $isRequestStackAvailable = Kernel::VERSION_ID >= 20400;
+        if (!$isRequestStackAvailable) {
             $needsSetRequestMethodCall = array('easyadmin.listener.request_post_initialize', 'easyadmin.form.type.extension');
             foreach ($needsSetRequestMethodCall as $serviceId) {
                 $definition = $container->getDefinition($serviceId);

@@ -43,7 +43,7 @@ class EasyAdminExtension extends AbstractTypeExtension
 
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        if ($this->requestStack !== null) {
+        if (null !== this->requestStack) {
             $this->request = $this->requestStack->getCurrentRequest();
         }
 
@@ -83,7 +83,16 @@ class EasyAdminExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return class_exists('Symfony\Component\Form\Util\StringUtil')
-            ? 'Symfony\Component\Form\Extension\Core\Type\FormType' : 'form';
+        return $this->useLegacyFormComponent() ? 'form' : 'Symfony\Component\Form\Extension\Core\Type\FormType';
+    }
+
+    /**
+     * Returns true if the legacy Form component is being used by the application.
+     *
+     * @return bool
+     */
+    private function useLegacyFormComponent()
+    {
+        return false === class_exists('Symfony\Component\Form\Util\StringUtil');
     }
 }

@@ -588,7 +588,7 @@ class AdminController extends Controller
         $formOptions['entity'] = $this->entity['name'];
         $formOptions['view'] = $view;
 
-        $formType = $this->isLegacySymfonyForm() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
+        $formType = $this->useLegacyFormComponent() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
 
         return $this->get('form.factory')->createNamedBuilder('form', $formType, $entity, $formOptions);
     }
@@ -648,11 +648,8 @@ class AdminController extends Controller
             ->setMethod('DELETE')
         ;
 
-        if ($this->isLegacySymfonyForm()) {
-            $formBuilder->add('submit', 'submit', array('label' => 'Delete'));
-        } else {
-            $formBuilder->add('submit', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', array('label' => 'Delete'));
-        }
+        $submitButtonType = $this->useLegacyFormComponent() ? 'submit' : 'Symfony\\Component\\Form\\Extension\\Core\\Type\\SubmitType';
+        $formBuilder->add('submit', $submitButtonType, array('label' => 'Delete'));
 
         return $formBuilder->getForm();
     }
@@ -762,7 +759,12 @@ class AdminController extends Controller
         return call_user_func_array(array($this, $methodName), $arguments);
     }
 
-    private function isLegacySymfonyForm()
+    /**
+     * Returns true if the legacy Form component is being used by the application.
+     *
+     * @return bool
+     */
+    private function useLegacyFormComponent()
     {
         return false === class_exists('Symfony\Component\Form\Util\StringUtil');
     }

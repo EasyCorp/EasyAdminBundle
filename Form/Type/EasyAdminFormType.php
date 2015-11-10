@@ -170,7 +170,7 @@ class EasyAdminFormType extends AbstractType
      */
     public function getName()
     {
-        return $this->isLegacySymfonyForm() ? $this->getBlockPrefix() : parent::getName();
+        return $this->getBlockPrefix();
     }
 
     private function isLegacySymfonyForm()

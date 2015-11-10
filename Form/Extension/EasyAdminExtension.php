@@ -15,6 +15,7 @@ use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Extension that injects EasyAdmin related information in the view used to
@@ -27,8 +28,25 @@ class EasyAdminExtension extends AbstractTypeExtension
     /** @var Request|null */
     private $request;
 
+    /** @var Request|null */
+    private $requestStack;
+
+    /**
+     * EasyAdminExtension constructor.
+     *
+     * @param RequestStack|null $requestStack
+     */
+    public function __construct(RequestStack $requestStack = null)
+    {
+        $this->requestStack = $requestStack;
+    }
+
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
+        if (null !== $this->requestStack) {
+            $this->request = $this->requestStack->getCurrentRequest();
+        }
+
         if (null === $this->request) {
             return;
         }
@@ -65,6 +83,16 @@ class EasyAdminExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'form';
+        return $this->useLegacyFormComponent() ? 'form' : 'Symfony\Component\Form\Extension\Core\Type\FormType';
+    }
+
+    /**
+     * Returns true if the legacy Form component is being used by the application.
+     *
+     * @return bool
+     */
+    private function useLegacyFormComponent()
+    {
+        return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
     }
 }

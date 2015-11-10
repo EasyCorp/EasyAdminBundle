@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
@@ -32,6 +33,14 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+
+        if ($this->isSymfony3()) {
+            $loader->load(function (ContainerBuilder $container) {
+                $container->loadFromExtension('framework', array(
+                    'assets' => null,
+                ));
+            });
+        }
     }
 
     /**
@@ -48,5 +57,10 @@ class AppKernel extends Kernel
     public function getLogDir()
     {
         return __DIR__.'/../../../build/kernel_logs/'.$this->getEnvironment();
+    }
+
+    private function isSymfony3()
+    {
+        return 3 === Kernel::MAJOR_VERSION;
     }
 }

@@ -11,7 +11,6 @@ framework:
     test:            ~
     router:          { resource: "%kernel.root_dir%/config/routing_base.yml" }
     form:            true
-    csrf_protection: false
     validation:      { enable_annotations: true }
     templating:      { engines: ['twig'] }
     profiler:

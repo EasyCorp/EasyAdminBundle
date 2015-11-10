@@ -27,7 +27,7 @@ class TypeOptionsTest extends AbstractTestCase
     {
         $crawler = $this->requestNewView();
 
-        $this->assertEquals('readonly', $crawler->filter('#main form #form_name')->attr('readonly'));
+        $this->assertEquals('Lorem Ipsum', $crawler->filter('#main form #form_name')->attr('value'));
 
         $this->assertCount(201, $crawler->filter('#main form #form_parent input[type=radio]'));
     }

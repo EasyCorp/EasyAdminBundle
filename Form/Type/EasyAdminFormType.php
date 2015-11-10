@@ -121,7 +121,7 @@ class EasyAdminFormType extends AbstractType
             ))
             ->setRequired(array('entity', 'view'));
 
-        if ($this->isLegacySymfonyForm()) {
+        if ($this->useLegacyFormComponent()) {
             $resolver->setNormalizers(array('attr' => function (Options $options, $value) use ($config) {
                 $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
                     return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);

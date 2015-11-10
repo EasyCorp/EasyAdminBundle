@@ -170,7 +170,7 @@ class EasyAdminFormType extends AbstractType
             'textarea', 'text', 'time', 'timezone', 'url',
         );
 
-        if (!array_key_exists($shortType, $typeNames)) {
+        if (!in_array($shortType, $typeNames)) {
             return $shortType;
         }
 

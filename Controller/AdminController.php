@@ -588,7 +588,9 @@ class AdminController extends Controller
         $formOptions['entity'] = $this->entity['name'];
         $formOptions['view'] = $view;
 
-        return $this->get('form.factory')->createNamedBuilder('form', 'easyadmin', $entity, $formOptions);
+        $formType = $this->isLegacySymfonyForm() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
+
+        return $this->get('form.factory')->createNamedBuilder('form', $formType, $entity, $formOptions);
     }
 
     /**

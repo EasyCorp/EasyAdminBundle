@@ -1,0 +1,99 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-10T14:25:11Z
+
+Seems to be ok appart from the `getName` deprecation: https://travis-ci.org/ogizanagi/EasyAdminBundle/jobs/90314675#L452 and the `asset` issue in 3.0.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-10T14:47:48Z
+
+How can the `getName()` issue be solved? If I remove it, pre-3.0 fails; if I keep it, 3.0 fails.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-10T14:50:44Z
+
+@javiereguiluz : Done ;) (It's fixed by using both `getBlockPrefix` and `getName` in the form type)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-10T19:03:45Z
+
+Thank you guys for your help!! I was rying to solve the last issue related to the `@asset()` function in Symfony 3. Sadly I cannot update the [easy admin demo application](https://github.com/javiereguiluz/easy-admin-demo) to Symfony 3. Nothing works for me :sob:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-10T19:13:40Z
+
+@javiereguiluz : I'm on the `asset` issue. Hum, actually...I was, but the solution is pretty simple: add `framework.assets: ~` in the tests config files (because in 3.0, framework bundle's [Configuration class](https://github.com/symfony/symfony/blob/2.8/src/Symfony/Bundle/FrameworkBundle/DependencyInjection/Configuration.php#L48-L122) does not behave exactly the same way... and the `framework.assets` is not configured anymore by default).
+
+Here is the diff between the two same configurations used in tests in 2.8 and 3.0:
+
+```diff
+< array:23 [
+---
+> array:21 [
+22,23c22,23
+<       "enabled" => null
+<       "field_name" => null
+---
+>       "enabled" => false
+>       "field_name" => "_token"
+47c47
+<   "profiler" => array:8 [
+---
+>   "profiler" => array:5 [
+53,55d52
+<     "username" => ""
+<     "password" => ""
+<     "lifetime" => 86400
+69,72d65
+<   "csrf_protection" => array:2 [
+<     "enabled" => false
+<     "field_name" => "_token"
+<   ]
+99,105d91
+<   "assets" => array:5 [
+<     "version" => null
+<     "version_format" => "%%s?%%s"
+<     "base_path" => ""
+<     "base_urls" => []
+<     "packages" => []
+<   ]
+111c97
+```
+
+But actually, that lead me to a lot of other strange unrelated issues...
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-10T19:43:13Z
+
+I've just pushed a [new commit](https://github.com/javiereguiluz/EasyAdminBundle/commit/fc7639a67ee5a119a01daeaf9f10de6d72977ecd) fixing the BC layer supporting 2.3 `request` vs `request_stack` service.
+But as you can see on Travis, adding the `framework.assets` option in previous commit was not the proper solution, as it is not recognized on 2.3.
+
+About https://github.com/javiereguiluz/EasyAdminBundle/commit/fc7639a67ee5a119a01daeaf9f10de6d72977ecd, I can check if the `RequestStack` class exists instead, or the `request_stack` service (in a compiler pass) instead, if you prefer it.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-10T20:20:43Z
+
+Yay \o/ :tada:
+
+Looks like we are now 3.0 compatible ! :sparkles: _(at least that's what tests say)_
+
+There is certainly some stuff to do in order to polish that, but I think it can be merge in #562
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-10T20:24:11Z
+
+:tada: :tada: :tada: :tada: :tada: :tada: :tada: :tada: :tada:
+@ogizanagi you are the best!! And the master of the Symfony Forms too!!
+
+---------------------------------------------------------------------------
+
+by WouterJ at 2015-11-10T20:24:18Z
+
+Good job @ogizanagi!

@@ -38,6 +38,7 @@
         <service id="easyadmin.form.type" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType">
             <argument type="service" id="easyadmin.configurator" />
             <argument>%easyadmin.config%</argument>
+            <argument /> <!-- type guesser chain -->
             <tag name="form.type" alias="easyadmin" />
         </service>
 

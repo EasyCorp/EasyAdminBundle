@@ -383,3 +383,7 @@
         </div>
     </div>
 {% endblock easyadmin_widget %}
+
+{% block easy_admin_form_widget %}
+    {{- block('easyadmin_widget') }}
+{% endblock easy_admin_form_widget %}

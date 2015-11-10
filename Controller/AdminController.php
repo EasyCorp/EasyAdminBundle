@@ -642,7 +642,8 @@ class AdminController extends Controller
      */
     protected function createDeleteForm($entityName, $entityId)
     {
-        $formBuilder = $this->createFormBuilder()
+        /** @var FormBuilder $formBuilder */
+        $formBuilder = $this->get('form.factory')->createNamedBuilder('delete_form')
             ->setAction($this->generateUrl('easyadmin', array('action' => 'delete', 'entity' => $entityName, 'id' => $entityId)))
             ->setMethod('DELETE')
         ;

@@ -121,11 +121,28 @@ class EasyAdminFormType extends AbstractType
             ))
             ->setRequired(array('entity', 'view'));
 
-        $formAttributes = $this->getFormAttributes($options, $value, $config);
         if ($this->isLegacySymfonyForm()) {
-            $resolver->setNormalizers(array('attr' => $formAttributes));
+            $resolver->setNormalizers(array('attr' => function (Options $options, $value) use ($config) {
+                $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
+                    return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
+                });
+
+                return array_replace_recursive(array(
+                    'class' => $formCssClass,
+                    'id' => $options['view'].'-form',
+                ), $value);
+            }));
         } else {
-            $resolver->setNormalizer('attr', $formAttributes);
+            $resolver->setNormalizer('attr', function (Options $options, $value) use ($config) {
+                $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
+                    return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
+                });
+
+                return array_replace_recursive(array(
+                    'class' => $formCssClass,
+                    'id' => $options['view'].'-form',
+                ), $value);
+            });
         }
     }
 
@@ -172,18 +189,6 @@ class EasyAdminFormType extends AbstractType
     private function useLegacyFormComponent()
     {
         return false === class_exists('Symfony\Component\Form\Util\StringUtil');
-    }
-
-    private function getFormAttributes(Options $options, $value, $config)
-    {
-        $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
-            return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
-        });
-
-        return array_replace_recursive(array(
-            'class' => $formCssClass,
-            'id' => $options['view'].'-form',
-        ), $value);
     }
 
     /**

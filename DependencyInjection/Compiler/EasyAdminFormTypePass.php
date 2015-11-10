@@ -35,12 +35,14 @@ class EasyAdminFormTypePass implements CompilerPassInterface
 
         $formTypeDefinition->replaceArgument(2, $guesserChain);
 
-        $formTypeAlias = $this->isLegacySymfonyForm() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
-        $formTypeDefinition->setTags(array('form.type' => array(array('alias' => $formTypeAlias))));
+        if (!$this->isLegacySymfonyForm()) {
+            $formTypeDefinition->clearTag('form.type');
+            $formTypeDefinition->addTag('form.type');
+        }
     }
 
     private function isLegacySymfonyForm()
     {
-        return false === method_exists('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', 'getBlockPrefix');
+        return false === class_exists('Symfony\Component\Form\Util\StringUtil');
     }
 }

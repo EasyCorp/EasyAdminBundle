@@ -12,7 +12,7 @@ easy_admin:
             label: 'Categories'
             new:
                 fields:
-                    - { property: 'name', type_options: { read_only: true } }
+                    - { property: 'name', type_options: { data: 'Lorem Ipsum' } }
                     - { property: 'parent', type_options: { multiple: false, expanded: true } }
             edit:
                 fields:

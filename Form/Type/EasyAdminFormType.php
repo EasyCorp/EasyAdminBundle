@@ -162,7 +162,7 @@ class EasyAdminFormType extends AbstractType
      */
     public function getName()
     {
-        return 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType';
+        return $this->isLegacySymfonyForm() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
     }
 
     private function isLegacySymfonyForm()

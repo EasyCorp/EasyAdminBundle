@@ -43,7 +43,7 @@ class EasyAdminExtension extends AbstractTypeExtension
 
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        if (null !== this->requestStack) {
+        if (null !== $this->requestStack) {
             $this->request = $this->requestStack->getCurrentRequest();
         }
 

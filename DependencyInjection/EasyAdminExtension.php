@@ -11,10 +11,13 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Resolves all the backend configuration values and most of the entities
@@ -91,6 +94,15 @@ class EasyAdminExtension extends Extension
         // Don't register our exception listener if debug is enabled
         if ($container->getParameter('kernel.debug')) {
             $container->removeDefinition('easyadmin.listener.exception');
+        }
+
+        // Request stack BC
+        if (Kernel::VERSION_ID < 20400) {
+            $needsSetRequestMethodCall = array('easyadmin.listener.request_post_initialize', 'easyadmin.form.type.extension');
+            foreach ($needsSetRequestMethodCall as $serviceId) {
+                $definition = $container->getDefinition($serviceId);
+                $definition->addMethodCall('setRequest', array(new Reference('request', ContainerInterface::NULL_ON_INVALID_REFERENCE, false)));
+            }
         }
     }
 

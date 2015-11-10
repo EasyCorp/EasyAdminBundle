@@ -39,7 +39,7 @@
             <argument type="service" id="easyadmin.configurator" />
             <argument>%easyadmin.config%</argument>
             <argument /> <!-- type guesser chain -->
-            <tag name="form.type" alias="easyadmin" />
+            <tag name="form.type" />
         </service>
 
         <service id="easyadmin.form.type.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension">

@@ -150,7 +150,7 @@ class EasyAdminFormType extends AbstractType
             'country', 'currency', 'datetime', 'date', 'email', 'file', 'form',
             'hidden', 'integer', 'language', 'money', 'number', 'password',
             'percent', 'radio', 'repeated', 'reset', 'search', 'submit',
-            'textarea', 'text', 'time', 'timezone', 'url'
+            'textarea', 'text', 'time', 'timezone', 'url',
         );
 
         if (!array_key_exists($shortType, $typeNames)) {

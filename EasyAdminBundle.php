@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Class EasyAdminBundle.
+ * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class EasyAdminBundle extends Bundle
 {

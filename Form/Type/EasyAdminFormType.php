@@ -157,6 +157,9 @@ class EasyAdminFormType extends AbstractType
         $this->configureOptions($resolver);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getBlockPrefix()
     {
         return 'easyadmin';
@@ -167,7 +170,7 @@ class EasyAdminFormType extends AbstractType
      */
     public function getName()
     {
-        return $this->isLegacySymfonyForm() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
+        return $this->isLegacySymfonyForm() ? $this->getBlockPrefix() : parent::getName();
     }
 
     private function isLegacySymfonyForm()

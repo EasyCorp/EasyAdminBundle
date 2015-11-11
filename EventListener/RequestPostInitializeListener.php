@@ -19,15 +19,15 @@ class RequestPostInitializeListener
     /** @var Request|null */
     private $request;
 
-    /** @var Request|null */
+    /** @var RequestStack|null */
     private $requestStack;
 
     /** @var Registry */
     private $doctrine;
 
     /**
-     * @param Registry     $doctrine
-     * @param RequestStack $requestStack
+     * @param Registry          $doctrine
+     * @param RequestStack|null $requestStack
      */
     public function __construct(Registry $doctrine, RequestStack $requestStack = null)
     {

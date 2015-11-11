@@ -14,6 +14,14 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
+use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
@@ -22,14 +30,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Pagerfanta\Pagerfanta;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 
 /**
  * The controller used to render all the default EasyAdmin actions.
@@ -71,6 +71,30 @@ class AdminController extends Controller
         }
 
         return $this->executeDynamicMethod($action.'<EntityName>Action');
+    }
+
+    /**
+     * It renders the main CSS applied to the backend design. This controller
+     * allows to generate dynamic CSS files that use variables without the need
+     * to set up a CSS preprocessing toolchain.
+     *
+     * @Route("/_css/admin.css", name="_easyadmin_render_css")
+     *
+     * @return Response
+     */
+    public function renderCssAction()
+    {
+        $config = $this->container->getParameter('easyadmin.config');
+
+        $cssContent = $this->renderView('@EasyAdmin/css/admin.css.twig', array(
+            'brand_color' => $config['design']['brand_color'],
+            'color_scheme' => $config['design']['color_scheme'],
+        ));
+
+        return Response::create($cssContent, 200, array('Content-Type' => 'text/css'))
+            ->setPublic()
+            ->setSharedMaxAge(600)
+            ;
     }
 
     /**
@@ -695,29 +719,6 @@ class AdminController extends Controller
     protected function renderForbiddenActionError($action)
     {
         return $this->render('@EasyAdmin/error/forbidden_action.html.twig', array('action' => $action), new Response('', 403));
-    }
-
-    /**
-     * It renders the main CSS applied to the backend design. This controller
-     * allows to generate dynamic CSS files that use variables without the need
-     * to set up a CSS preprocessing toolchain.
-     *
-     * @Route("/_css/admin.css", name="_easyadmin_render_css")
-     */
-    public function renderCssAction()
-    {
-        $config = $this->container->getParameter('easyadmin.config');
-
-        $cssContent = $this->renderView('@EasyAdmin/css/admin.css.twig', array(
-            'brand_color' => $config['design']['brand_color'],
-            'color_scheme' => $config['design']['color_scheme'],
-        ));
-
-        $response = new Response($cssContent, 200, array('Content-Type' => 'text/css'));
-        $response->setPublic();
-        $response->setSharedMaxAge(600);
-
-        return $response;
     }
 
     /**

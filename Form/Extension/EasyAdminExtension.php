@@ -28,12 +28,10 @@ class EasyAdminExtension extends AbstractTypeExtension
     /** @var Request|null */
     private $request;
 
-    /** @var Request|null */
+    /** @var RequestStack|null */
     private $requestStack;
 
     /**
-     * EasyAdminExtension constructor.
-     *
      * @param RequestStack|null $requestStack
      */
     public function __construct(RequestStack $requestStack = null)
@@ -41,6 +39,9 @@ class EasyAdminExtension extends AbstractTypeExtension
         $this->requestStack = $requestStack;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         if (null !== $this->requestStack) {
@@ -83,7 +84,7 @@ class EasyAdminExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return $this->useLegacyFormComponent() ? 'form' : 'Symfony\Component\Form\Extension\Core\Type\FormType';
+        return $this->useLegacyFormComponent() ? 'form' : 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType';
     }
 
     /**

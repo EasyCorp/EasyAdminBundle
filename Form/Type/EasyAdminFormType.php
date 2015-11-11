@@ -16,6 +16,7 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormTypeGuesserInterface;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -49,6 +50,9 @@ class EasyAdminFormType extends AbstractType
         $this->guesser = $guesser;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $entity = $options['entity'];
@@ -79,7 +83,7 @@ class EasyAdminFormType extends AbstractType
                     $formFieldOptions['allow_delete'] = true;
                 }
 
-                if (version_compare(\Symfony\Component\HttpKernel\Kernel::VERSION, '2.5.0', '>=')) {
+                if (version_compare(Kernel::VERSION, '2.5.0', '>=')) {
                     if (!isset($formFieldOptions['delete_empty'])) {
                         $formFieldOptions['delete_empty'] = true;
                     }
@@ -122,27 +126,9 @@ class EasyAdminFormType extends AbstractType
             ->setRequired(array('entity', 'view'));
 
         if ($this->useLegacyFormComponent()) {
-            $resolver->setNormalizers(array('attr' => function (Options $options, $value) use ($config) {
-                $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
-                    return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
-                });
-
-                return array_replace_recursive(array(
-                    'class' => $formCssClass,
-                    'id' => $options['view'].'-form',
-                ), $value);
-            }));
+            $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer($config)));
         } else {
-            $resolver->setNormalizer('attr', function (Options $options, $value) use ($config) {
-                $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
-                    return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
-                });
-
-                return array_replace_recursive(array(
-                    'class' => $formCssClass,
-                    'id' => $options['view'].'-form',
-                ), $value);
-            });
+            $resolver->setNormalizer('attr', $this->getAttributesNormalizer($config));
         }
     }
 
@@ -150,6 +136,43 @@ class EasyAdminFormType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'easyadmin';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    /**
+     * Returns a closure normalizing the form html attributes.
+     *
+     * @param array $config
+     *
+     * @return \Closure
+     */
+    private function getAttributesNormalizer(array $config)
+    {
+        return function (Options $options, $value) use ($config) {
+            $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
+                return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
+            });
+
+            return array_replace_recursive(array(
+                'class' => $formCssClass,
+                'id' => $options['view'].'-form',
+            ), $value);
+        };
     }
 
     /**
@@ -189,21 +212,5 @@ class EasyAdminFormType extends AbstractType
     private function useLegacyFormComponent()
     {
         return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
-    {
-        return 'easyadmin';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
     }
 }

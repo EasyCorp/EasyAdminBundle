@@ -74,6 +74,9 @@ class EasyAdminExtension extends Extension
 
     private $kernelRootDir;
 
+    /**
+     * {@inheritdoc}
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $this->kernelRootDir = $container->getParameter('kernel.root_dir');
@@ -96,15 +99,7 @@ class EasyAdminExtension extends Extension
             $container->removeDefinition('easyadmin.listener.exception');
         }
 
-        // BC for Symfony 2.3 and Request Stack
-        $isRequestStackAvailable = Kernel::VERSION_ID >= 20400;
-        if (!$isRequestStackAvailable) {
-            $needsSetRequestMethodCall = array('easyadmin.listener.request_post_initialize', 'easyadmin.form.type.extension');
-            foreach ($needsSetRequestMethodCall as $serviceId) {
-                $definition = $container->getDefinition($serviceId);
-                $definition->addMethodCall('setRequest', array(new Reference('request', ContainerInterface::NULL_ON_INVALID_REFERENCE, false)));
-            }
-        }
+        $this->ensureBackwardCompatibility($container);
     }
 
     /**
@@ -219,7 +214,7 @@ class EasyAdminExtension extends Extension
      *
      * @return array
      */
-    public function processEntityActions(array $backendConfiguration)
+    private function processEntityActions(array $backendConfiguration)
     {
         $entitiesConfiguration = array();
 
@@ -654,5 +649,38 @@ class EasyAdminExtension extends Extension
         $entityNames = array_keys($backendConfiguration['entities']);
 
         return isset($entityNames[0]) ? $entityNames[0] : null;
+    }
+
+    /**
+     * Makes some tweaks in order to ensure backward compatibilities
+     * with supported versions of Symfony components.
+     *
+     * @param ContainerBuilder $container
+     */
+    private function ensureBackwardCompatibility(ContainerBuilder $container)
+    {
+        // BC for Symfony 2.3 and Request Stack
+        $isRequestStackAvailable = version_compare(Kernel::VERSION, '2.4.0', '>=');
+        if (!$isRequestStackAvailable) {
+            $needsSetRequestMethodCall = array('easyadmin.listener.request_post_initialize', 'easyadmin.form.type.extension');
+            foreach ($needsSetRequestMethodCall as $serviceId) {
+                $container
+                    ->getDefinition($serviceId)
+                    ->addMethodCall('setRequest', array(
+                        new Reference('request', ContainerInterface::NULL_ON_INVALID_REFERENCE, false),
+                    ))
+                ;
+            }
+        }
+
+        // BC for legacy form component
+        $useLegacyFormComponent = false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
+        if (!$useLegacyFormComponent) {
+            $container
+                ->getDefinition('easyadmin.form.type')
+                ->clearTag('form.type')
+                ->addTag('form.type')
+            ;
+        }
     }
 }

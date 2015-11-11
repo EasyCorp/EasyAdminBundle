@@ -250,7 +250,7 @@ class AdminController extends BaseAdminController
         ));
 
         // redirect to the 'edit' view of the given entity item
-        return $this->redirectToRoute('admin', array(
+        return $this->redirectToRoute('easyadmin', array(
             'view' => 'edit',
             'id' => $id,
             'entity' => $this->request->query->get('entity'),

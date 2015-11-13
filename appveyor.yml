@@ -23,7 +23,8 @@ install:
   - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
   - echo memory_limit=1G >> php.ini
-  - cd c:\projects\easyadmin-bundle  - php -r "readfile('http://getcomposer.org/installer');" | php
+  - cd c:\projects\easyadmin-bundle
+  - php -r "readfile('http://getcomposer.org/installer');" | php
   - php composer.phar update %COMPOSER_FLAGS% --prefer-source --no-interaction --no-progress
 
 test_script:

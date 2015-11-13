@@ -6,6 +6,9 @@ cache:
 
 init:
   - SET PATH=C:\Program Files\OpenSSL;c:\tools\php;%PATH%
+    - SET COMPOSER_NO_INTERACTION=1
+    - SET SYMFONY_DEPRECATIONS_HELPER=strict
+    - SET ANSICON=121x90 (121x90)
 
 environment:
   matrix:
@@ -19,13 +22,15 @@ install:
   - copy php.ini-production php.ini /Y
   - echo date.timezone="UTC" >> php.ini
   - echo extension_dir=ext >> php.ini
-  - echo extension=php_openssl.dll >> php.ini
-  - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
+  - echo extension=php_mbstring.dll >> php.ini
+  - echo extension=php_openssl.dll >> php.ini
+  - echo extension=php_pdo.dll >> php.ini
+  - echo extension=php_pdo_sqlite.dll >> php.ini
   - echo memory_limit=1G >> php.ini
   - cd c:\projects\easyadmin-bundle
-  - php -r "readfile('http://getcomposer.org/installer');" | php
-  - php composer.phar update %COMPOSER_FLAGS% --prefer-source --no-interaction --no-progress
+  - appveyor DownloadFile https://getcomposer.org/composer.phar
+  - php composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress
 
 test_script:
   - cd c:\projects\easyadmin-bundle

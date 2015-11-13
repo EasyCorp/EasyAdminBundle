@@ -29,3 +29,4 @@ install:
 test_script:
   - cd c:\projects\easyadmin-bundle
   - vendor\bin\phpunit.bat --verbose
+

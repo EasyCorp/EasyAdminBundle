@@ -25,7 +25,6 @@ install:
   - echo extension=php_fileinfo.dll >> php.ini
   - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_openssl.dll >> php.ini
-  - echo extension=php_pdo.dll >> php.ini
   - echo extension=php_pdo_sqlite.dll >> php.ini
   - echo memory_limit=1G >> php.ini
   - cd c:\projects\easyadmin-bundle

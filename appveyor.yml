@@ -29,7 +29,7 @@ install:
   - echo extension=php_pdo_sqlite.dll >> php.ini
   - echo memory_limit=1G >> php.ini
   - cd c:\projects\easyadmin-bundle
-  - appveyor DownloadFile https://getcomposer.org/composer.phar
+  - php -r "readfile('http://getcomposer.org/installer');" | php
   - php composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress
 
 test_script:

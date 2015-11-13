@@ -1,52 +1,31 @@
 build: false
-shallow_clone: true
 platform: x86
-clone_folder: c:\projects\easyadminbundle
-
+clone_folder: c:\projects\easyadmin-bundle
 cache:
-    - c:\php -> appveyor.yml
-    - .phpunit -> phpunit
+  - '%LOCALAPPDATA%\Composer\files'
 
 init:
-    - SET PATH=c:\php;%PATH%
-    - SET COMPOSER_NO_INTERACTION=1
-    - SET SYMFONY_DEPRECATIONS_HELPER=strict
-    - SET PHP=1
-    - SET ANSICON=121x90 (121x90)
+  - SET PATH=C:\Program Files\OpenSSL;c:\tools\php;%PATH%
+
+environment:
+  matrix:
+    - COMPOSER_FLAGS: ""
+    - COMPOSER_FLAGS: --prefer-lowest --prefer-stable
 
 install:
-    - IF EXIST c:\php (SET PHP=0) ELSE (mkdir c:\php)
-    - cd c:\php
-    - IF %PHP%==1 appveyor DownloadFile http://windows.php.net/downloads/releases/archives/php-5.3.11-nts-Win32-VC9-x86.zip
-    - IF %PHP%==1 7z x php-5.3.11-nts-Win32-VC9-x86.zip -y >nul
-    - IF %PHP%==1 del /Q *.zip
-    - IF %PHP%==1 cd ext
-    - IF %PHP%==1 appveyor DownloadFile http://windows.php.net/downloads/pecl/releases/apcu/4.0.7/php_apcu-4.0.7-5.3-nts-vc9-x86.zip
-    - IF %PHP%==1 7z x php_apcu-4.0.7-5.3-nts-vc9-x86.zip -y >nul
-    - IF %PHP%==1 del /Q *.zip
-    - IF %PHP%==1 cd ..
-    - IF %PHP%==1 echo @php %%~dp0composer.phar %%* > composer.bat
-    - IF %PHP%==1 copy /Y php.ini-development php.ini-min
-    - IF %PHP%==1 echo max_execution_time=1200 >> php.ini-min
-    - IF %PHP%==1 echo date.timezone="UTC" >> php.ini-min
-    - IF %PHP%==1 echo extension_dir=ext >> php.ini-min
-    - IF %PHP%==1 echo extension=php_openssl.dll >> php.ini-min
-    - IF %PHP%==1 copy /Y php.ini-min php.ini-max
-    - IF %PHP%==1 echo extension=php_apcu.dll >> php.ini-max
-    - IF %PHP%==1 echo apc.enable_cli=1 >> php.ini-max
-    - IF %PHP%==1 echo extension=php_mbstring.dll >> php.ini-max
-    - IF %PHP%==1 echo extension=php_fileinfo.dll >> php.ini-max
-    - IF %PHP%==1 echo extension=php_pdo_sqlite.dll >> php.ini-max
-    - appveyor DownloadFile https://getcomposer.org/composer.phar
-    - copy /Y php.ini-max php.ini
-    - cd c:\projects\easyadminbundle
-    - php phpunit install
-    - IF %APPVEYOR_REPO_BRANCH%==master (SET COMPOSER_ROOT_VERSION=dev-master) ELSE (SET COMPOSER_ROOT_VERSION=%APPVEYOR_REPO_BRANCH%.x-dev)
-    - composer update --prefer-source --no-progress --ansi
+  - cinst -y OpenSSL.Light
+  - cinst -y php
+  - cd c:\tools\php
+  - copy php.ini-production php.ini /Y
+  - echo date.timezone="UTC" >> php.ini
+  - echo extension_dir=ext >> php.ini
+  - echo extension=php_openssl.dll >> php.ini
+  - echo extension=php_mbstring.dll >> php.ini
+  - echo extension=php_fileinfo.dll >> php.ini
+  - echo memory_limit=1G >> php.ini
+  - cd c:\projects\easyadmin-bundle  - php -r "readfile('http://getcomposer.org/installer');" | php
+  - php composer.phar update %COMPOSER_FLAGS% --prefer-source --no-interaction --no-progress
 
 test_script:
-    - cd c:\projects\easyadminbundle
-    - SET X=0
-    - copy /Y c:\php\php.ini-min c:\php\php.ini
-    - php phpunit || SET X=1
-    - exit %X%
+  - cd c:\projects\easyadmin-bundle
+  - vendor\bin\phpunit.bat --verbose

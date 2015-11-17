@@ -25,20 +25,8 @@ class InternationalizationTest extends AbstractTestCase
 
     public function testLanguageDefinedByLayout()
     {
-        $crawler = $this->requestListView();
+        $crawler = $this->getBackendHomepage();
 
         $this->assertEquals('fr', trim($crawler->filter('html')->attr('lang')));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView($entityName = 'Category')
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => $entityName,
-            'view' => 'list',
-        ));
     }
 }

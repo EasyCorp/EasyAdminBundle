@@ -35,6 +35,13 @@ class DefaultBackendTest extends AbstractTestCase
         );
     }
 
+    public function testLanguageDefinedByLayout()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $this->assertEquals('en', trim($crawler->filter('html')->attr('lang')));
+    }
+
     public function testDefaultCssFilesAreLinked()
     {
         $cssFiles = array(

@@ -155,18 +155,16 @@ class Configurator
             $entityPropertiesMetadata[$fieldName] = $fieldMetadata;
         }
 
-        // introspect fields for entity associations (except many-to-many)
+        // introspect fields for entity associations
         foreach ($entityMetadata->associationMappings as $fieldName => $associationMetadata) {
-            if (ClassMetadata::MANY_TO_MANY !== $associationMetadata['type']) {
-                $entityPropertiesMetadata[$fieldName] = array(
-                    'type'            => 'association',
-                    'associationType' => $associationMetadata['type'],
-                    'fieldName'       => $fieldName,
-                    'fetch'           => $associationMetadata['fetch'],
-                    'isOwningSide'    => $associationMetadata['isOwningSide'],
-                    'targetEntity'    => $associationMetadata['targetEntity'],
-                );
-            }
+            $entityPropertiesMetadata[$fieldName] = array(
+                'type'            => 'association',
+                'associationType' => $associationMetadata['type'],
+                'fieldName'       => $fieldName,
+                'fetch'           => $associationMetadata['fetch'],
+                'isOwningSide'    => $associationMetadata['isOwningSide'],
+                'targetEntity'    => $associationMetadata['targetEntity'],
+            );
         }
 
         return $entityPropertiesMetadata;

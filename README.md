@@ -31,7 +31,7 @@ with unprecedented simplicity.
   * Symfony 2.3+ applications (Silex not supported).
   * Doctrine ORM entities (Doctrine ODM and Propel not supported).
   * Entities with simple primary keys (composite keys not supported).
-  * All kinds of entity associations are supported, except `many-to-many`.
+  * All kinds of entity associations are supported.
   * Entities using inheritance are not supported.
 
 Documentation

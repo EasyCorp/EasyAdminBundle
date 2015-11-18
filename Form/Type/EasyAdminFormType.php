@@ -92,7 +92,9 @@ class EasyAdminFormType extends AbstractType
             }
 
             if (!isset($formFieldOptions['required'])) {
-                $formFieldOptions['required'] = $this->guesser->guessRequired($builder->getOption('data_class'), $name)->getValue();
+                if (null !== $guessRequired = $this->guesser->guessRequired($builder->getOption('data_class'), $name)) {
+                    $formFieldOptions['required'] = $guessRequired->getValue();
+                }
             }
 
             $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];

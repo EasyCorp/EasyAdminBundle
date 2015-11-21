@@ -1,0 +1,5 @@
+{% if view == 'show' %}
+    {{ value }}
+{% else %}
+    {{ value|easyadmin_truncate(7) }}
+{% endif %}

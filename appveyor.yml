@@ -5,7 +5,7 @@ cache:
     - '%LOCALAPPDATA%\Composer\files'
 
 init:
-    - SET PATH=C:\Program Files\OpenSSL;c:\tools\php;%PATH%
+    - SET PATH=C:\Program Files\OpenSSL;c:\php;%PATH%
     - SET COMPOSER_NO_INTERACTION=1
     - SET SYMFONY_DEPRECATIONS_HELPER=strict
     - SET ANSICON=121x90 (121x90)
@@ -46,7 +46,7 @@ install:
     - appveyor DownloadFile https://getcomposer.org/composer.phar
     - copy /Y php.ini-max php.ini
     - cd c:\projects\easyadmin-bundle
-    - c:\php\composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
+    - composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
 
 test_script:
     - cd c:\projects\easyadmin-bundle

@@ -2,36 +2,57 @@ build: false
 platform: x86
 clone_folder: c:\projects\easyadmin-bundle
 cache:
-  - '%LOCALAPPDATA%\Composer\files'
+    - '%LOCALAPPDATA%\Composer\files'
 
 init:
-  - SET PATH=C:\Program Files\OpenSSL;c:\tools\php;%PATH%
-  - SET COMPOSER_NO_INTERACTION=1
-  - SET SYMFONY_DEPRECATIONS_HELPER=strict
-  - SET ANSICON=121x90 (121x90)
+    - SET PATH=C:\Program Files\OpenSSL;c:\tools\php;%PATH%
+    - SET COMPOSER_NO_INTERACTION=1
+    - SET SYMFONY_DEPRECATIONS_HELPER=strict
+    - SET ANSICON=121x90 (121x90)
 
 environment:
-  matrix:
-    - COMPOSER_FLAGS: ""
-    - COMPOSER_FLAGS: --prefer-lowest --prefer-stable
+    matrix:
+        - COMPOSER_FLAGS: ""
+        - COMPOSER_FLAGS: --prefer-lowest --prefer-stable
 
 install:
-  - cinst -y OpenSSL.Light
-  - cinst -y php
-  - cd c:\tools\php
-  - copy php.ini-production php.ini /Y
-  - echo date.timezone="UTC" >> php.ini
-  - echo extension_dir=ext >> php.ini
-  - echo extension=php_fileinfo.dll >> php.ini
-  - echo extension=php_mbstring.dll >> php.ini
-  - echo extension=php_openssl.dll >> php.ini
-  - echo extension=php_pdo_sqlite.dll >> php.ini
-  - echo memory_limit=1G >> php.ini
-  - cd c:\projects\easyadmin-bundle
-  - php -r "readfile('http://getcomposer.org/installer');" | php
-  - php composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress
+    - IF EXIST c:\php (SET PHP=0) ELSE (mkdir c:\php)
+    - cd c:\php
+    - appveyor DownloadFile http://windows.php.net/downloads/releases/archives/php-5.3.11-nts-Win32-VC9-x86.zip
+    - 7z x php-5.3.11-nts-Win32-VC9-x86.zip -y >nul
+    - appveyor DownloadFile http://nebm.ist.utl.pt/~glopes/misc/intl_win/ICU-51.2-dlls.zip
+    - 7z x ICU-51.2-dlls.zip -y >nul
+    - del /Q *.zip
+    - cd ext
+    - appveyor DownloadFile http://nebm.ist.utl.pt/~glopes/misc/intl_win/php_intl-3.0.0-5.3-nts-vc9-x86.zip
+    - 7z x php_intl-3.0.0-5.3-nts-vc9-x86.zip -y >nul
+    - appveyor DownloadFile http://windows.php.net/downloads/pecl/releases/apcu/4.0.7/php_apcu-4.0.7-5.3-nts-vc9-x86.zip
+    - 7z x php_apcu-4.0.7-5.3-nts-vc9-x86.zip -y >nul
+    - del /Q *.zip
+    - cd ..
+    - echo @php %%~dp0composer.phar %%* > composer.bat
+    - copy /Y php.ini-development php.ini-min
+    - echo max_execution_time=1200 >> php.ini-min
+    - echo date.timezone="UTC" >> php.ini-min
+    - echo extension_dir=ext >> php.ini-min
+    - echo extension=php_openssl.dll >> php.ini-min
+    - copy /Y php.ini-min php.ini-max
+    - echo extension=php_apcu.dll >> php.ini-max
+    - echo apc.enable_cli=1 >> php.ini-max
+    - echo extension=php_intl.dll >> php.ini-max
+    - echo extension=php_mbstring.dll >> php.ini-max
+    - echo extension=php_fileinfo.dll >> php.ini-max
+    - echo extension=php_pdo_sqlite.dll >> php.ini-max
+    - appveyor DownloadFile https://getcomposer.org/composer.phar
+    - copy /Y php.ini-max php.ini
+    - cd c:\projects\easyadmin-bundle
+    - composer update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
 
 test_script:
-  - cd c:\projects\easyadmin-bundle
-  - vendor\bin\phpunit.bat --verbose
-
+    - cd c:\projects\easyadmin-bundle
+    - SET X=0
+    - copy /Y c:\php\php.ini-min c:\php\php.ini
+    - php phpunit || SET X=1
+    - copy /Y c:\php\php.ini-max c:\php\php.ini
+    - php phpunit || SET X=1
+    - exit %X%

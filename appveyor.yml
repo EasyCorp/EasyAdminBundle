@@ -18,6 +18,7 @@ install:
     - IF EXIST c:\php (SET PHP=0) ELSE (mkdir c:\php)
     - cd c:\php
     - appveyor DownloadFile https://phar.phpunit.de/phpunit.phar
+    - appveyor DownloadFile https://getcomposer.org/composer.phar
     - appveyor DownloadFile http://windows.php.net/downloads/releases/archives/php-5.3.11-nts-Win32-VC9-x86.zip
     - 7z x php-5.3.11-nts-Win32-VC9-x86.zip -y >nul
     - appveyor DownloadFile http://nebm.ist.utl.pt/~glopes/misc/intl_win/ICU-51.2-dlls.zip
@@ -36,15 +37,12 @@ install:
     - echo date.timezone="UTC" >> php.ini
     - echo extension_dir=ext >> php.ini
     - echo extension=php_openssl.dll >> php.ini
-    - copy /Y php.ini php.ini
     - echo extension=php_apcu.dll >> php.ini
     - echo apc.enable_cli=1 >> php.ini
     - echo extension=php_intl.dll >> php.ini
     - echo extension=php_mbstring.dll >> php.ini
     - echo extension=php_fileinfo.dll >> php.ini
     - echo extension=php_pdo_sqlite.dll >> php.ini
-    - appveyor DownloadFile https://getcomposer.org/composer.phar
-    - copy /Y php.ini php.ini
     - cd c:\projects\easyadmin-bundle
     - composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
 

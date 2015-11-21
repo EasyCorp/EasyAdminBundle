@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-21T15:49:42Z
+
+The frame with a dashed border is more related to an "drag & drop upload" than a list. For me, a simple gray text "No item in the list" sounds much better to me than a framed box :confused:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-21T15:50:35Z
+
+I agree with @Pierstoval . A simple label would be great.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-21T16:08:01Z
+
+I've changed it for a simple label:
+
+![empty_label](https://cloud.githubusercontent.com/assets/73419/11319313/5e03a3ac-9072-11e5-805f-37c309c11a11.png)

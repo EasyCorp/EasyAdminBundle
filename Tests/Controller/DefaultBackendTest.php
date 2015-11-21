@@ -163,7 +163,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testListViewTableColumnLabels()
     {
         $crawler = $this->requestListView();
-        $columnLabels = array('ID', 'Name', 'Parent', 'Actions');
+        $columnLabels = array('ID', 'Name', 'Products', 'Parent', 'Actions');
 
         foreach ($columnLabels as $i => $label) {
             $this->assertEquals($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
@@ -173,7 +173,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testListViewTableColumnAttributes()
     {
         $crawler = $this->requestListView();
-        $columnAttributes = array('id', 'name', 'parent');
+        $columnAttributes = array('id', 'name', 'products', 'parent');
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertEquals($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
@@ -199,7 +199,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testListViewTableRowAttributes()
     {
         $crawler = $this->requestListView();
-        $columnAttributes = array('ID', 'Name', 'Parent');
+        $columnAttributes = array('ID', 'Name', 'Products', 'Parent');
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertEquals($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
@@ -237,7 +237,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testShowViewFieldLabels()
     {
         $crawler = $this->requestShowView();
-        $fieldLabels = array('ID', 'Name', 'Parent');
+        $fieldLabels = array('ID', 'Name', 'Products', 'Parent');
 
         foreach ($fieldLabels as $i => $label) {
             $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
@@ -356,7 +356,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testEditViewFieldLabels()
     {
         $crawler = $this->requestEditView();
-        $fieldLabels = array('Name', 'Parent');
+        $fieldLabels = array('Name', 'Products', 'Parent');
 
         foreach ($fieldLabels as $i => $label) {
             $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
@@ -440,7 +440,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testNewViewFieldLabels()
     {
         $crawler = $this->requestNewView();
-        $fieldLabels = array('Name', 'Parent');
+        $fieldLabels = array('Name', 'Products', 'Parent');
 
         foreach ($fieldLabels as $i => $label) {
             $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
@@ -520,7 +520,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testSearchViewTableColumnLabels()
     {
         $crawler = $this->requestSearchView();
-        $columnLabels = array('ID', 'Name', 'Parent', 'Actions');
+        $columnLabels = array('ID', 'Name', 'Products', 'Parent', 'Actions');
 
         foreach ($columnLabels as $i => $label) {
             $this->assertEquals($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
@@ -530,7 +530,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testSearchViewTableColumnAttributes()
     {
         $crawler = $this->requestSearchView();
-        $columnAttributes = array('id', 'name', 'parent');
+        $columnAttributes = array('id', 'name', 'products', 'parent');
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertEquals($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
@@ -556,7 +556,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testSearchViewTableRowAttributes()
     {
         $crawler = $this->requestSearchView();
-        $columnAttributes = array('ID', 'Name', 'Parent');
+        $columnAttributes = array('ID', 'Name', 'Products', 'Parent');
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertEquals($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));

@@ -49,6 +49,5 @@ install:
 test_script:
     - cd c:\projects\easyadmin-bundle
     - SET X=0
-    - copy /Y c:\php\php.ini c:\php\php.ini
     - c:\php\phpunit.phar || SET X=1
     - exit %X%

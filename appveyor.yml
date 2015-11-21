@@ -18,6 +18,7 @@ environment:
 install:
     - IF EXIST c:\php (SET PHP=0) ELSE (mkdir c:\php)
     - cd c:\php
+    - appveyor DownloadFile https://phar.phpunit.de/phpunit.phar
     - appveyor DownloadFile http://windows.php.net/downloads/releases/archives/php-5.3.11-nts-Win32-VC9-x86.zip
     - 7z x php-5.3.11-nts-Win32-VC9-x86.zip -y >nul
     - appveyor DownloadFile http://nebm.ist.utl.pt/~glopes/misc/intl_win/ICU-51.2-dlls.zip
@@ -29,7 +30,6 @@ install:
     - appveyor DownloadFile http://windows.php.net/downloads/pecl/releases/apcu/4.0.7/php_apcu-4.0.7-5.3-nts-vc9-x86.zip
     - 7z x php_apcu-4.0.7-5.3-nts-vc9-x86.zip -y >nul
     - del /Q *.zip
-    - appveyor DownloadFile https://phar.phpunit.de/phpunit.phar
     - cd ..
     - echo @php %%~dp0composer.phar %%* > composer.bat
     - copy /Y php.ini-development php.ini-min

@@ -46,7 +46,7 @@ install:
     - appveyor DownloadFile https://getcomposer.org/composer.phar
     - copy /Y php.ini-max php.ini
     - cd c:\projects\easyadmin-bundle
-    - composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
+    - php composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
 
 test_script:
     - cd c:\projects\easyadmin-bundle

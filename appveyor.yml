@@ -5,7 +5,7 @@ cache:
     - '%LOCALAPPDATA%\Composer\files'
 
 init:
-    - SET PATH=C:\Program Files\OpenSSL;c:\php;%PATH%
+    - SET PATH=c:\php;%PATH%
     - SET COMPOSER_NO_INTERACTION=1
     - SET SYMFONY_DEPRECATIONS_HELPER=strict
     - SET ANSICON=121x90 (121x90)
@@ -53,7 +53,7 @@ test_script:
     - cd c:\projects\easyadmin-bundle
     - SET X=0
     - copy /Y c:\php\php.ini-min c:\php\php.ini
-    - phpunit.phar || SET X=1
+    - c:\php\phpunit.phar || SET X=1
     - copy /Y c:\php\php.ini-max c:\php\php.ini
-    - phpunit.phar || SET X=1
+    - c:\php\phpunit.phar || SET X=1
     - exit %X%

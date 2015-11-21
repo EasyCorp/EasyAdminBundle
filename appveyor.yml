@@ -16,11 +16,11 @@ install:
     - IF EXIST c:\php (SET PHP=0) ELSE (mkdir c:\php)
     - cd c:\php
     - appveyor DownloadFile https://getcomposer.org/composer.phar
+    - echo @php %%~dp0composer.phar %%* > composer.bat
     - appveyor DownloadFile https://phar.phpunit.de/phpunit-4.8.15.phar
+    - echo @php %%~dp0phpunit-4.8.15.phar %%* > phpunit.bat
     - appveyor DownloadFile http://windows.php.net/downloads/releases/archives/php-5.3.11-nts-Win32-VC9-x86.zip
     - 7z x php-5.3.11-nts-Win32-VC9-x86.zip -y >nul
-    - echo @php %%~dp0composer.phar %%* > composer.bat
-    - echo @php %%~dp0phpunit-4.8.15.phar %%* > phpunit.bat
     - copy /Y php.ini-development php.ini
     - echo max_execution_time=1200 >> php.ini
     - echo date.timezone="UTC" >> php.ini

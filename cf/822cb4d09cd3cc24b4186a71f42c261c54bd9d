@@ -1,0 +1,39 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-18T16:06:22Z
+
+Seems good to me, obviously needs a lot of testing, I'm gonna test your branch in my own backends in the next days to be sure everything works properly :)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2015-11-18T17:21:34Z
+
+Fixing CI issues.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-18T19:03:52Z
+
+@yceruto forget about the AppVeyor errors because they are broken (I just enabled the tests on Windows but I didn't look into the actual errors).
+
+For the tests mentioned by @Pierstoval I'm planning to finish the [easy-admin-demo](https://github.com/javiereguiluz/easy-admin-demo) application to configure the remaining *-to-many Doctrine relations, so we can test a real application. But I can't work on that until the weekend.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2015-11-18T19:19:45Z
+
+@javiereguiluz Perfect! :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-21T14:39:19Z
+
+I've updated the [EasyAdmin Demo application](https://github.com/javiereguiluz/easy-admin-demo) and tested this Pull Request changes. Everything works perfectly, both for one-to-many relations:
+
+![one-to-many](https://cloud.githubusercontent.com/assets/73419/11318912/ea5d59ae-9065-11e5-974d-21e77efcfe05.gif)
+
+And for many-to-many:
+
+![many-to-many](https://cloud.githubusercontent.com/assets/73419/11318914/f17ceff6-9065-11e5-926c-c9acd132f149.gif)
+
+I'd like to merge this as is ... and then improve the way relations are displayed in the `show` view.

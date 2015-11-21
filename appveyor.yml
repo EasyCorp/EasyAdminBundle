@@ -1,8 +1,7 @@
 build: false
+shallow_clone: true
 platform: x86
 clone_folder: c:\projects\easyadmin-bundle
-cache:
-    - '%LOCALAPPDATA%\Composer\files'
 
 init:
     - SET PATH=c:\php;%PATH%
@@ -32,28 +31,26 @@ install:
     - del /Q *.zip
     - cd ..
     - echo @php %%~dp0composer.phar %%* > composer.bat
-    - copy /Y php.ini-development php.ini-min
-    - echo max_execution_time=1200 >> php.ini-min
-    - echo date.timezone="UTC" >> php.ini-min
-    - echo extension_dir=ext >> php.ini-min
-    - echo extension=php_openssl.dll >> php.ini-min
-    - copy /Y php.ini-min php.ini-max
-    - echo extension=php_apcu.dll >> php.ini-max
-    - echo apc.enable_cli=1 >> php.ini-max
-    - echo extension=php_intl.dll >> php.ini-max
-    - echo extension=php_mbstring.dll >> php.ini-max
-    - echo extension=php_fileinfo.dll >> php.ini-max
-    - echo extension=php_pdo_sqlite.dll >> php.ini-max
+    - copy /Y php.ini-development php.ini
+    - echo max_execution_time=1200 >> php.ini
+    - echo date.timezone="UTC" >> php.ini
+    - echo extension_dir=ext >> php.ini
+    - echo extension=php_openssl.dll >> php.ini
+    - copy /Y php.ini php.ini
+    - echo extension=php_apcu.dll >> php.ini
+    - echo apc.enable_cli=1 >> php.ini
+    - echo extension=php_intl.dll >> php.ini
+    - echo extension=php_mbstring.dll >> php.ini
+    - echo extension=php_fileinfo.dll >> php.ini
+    - echo extension=php_pdo_sqlite.dll >> php.ini
     - appveyor DownloadFile https://getcomposer.org/composer.phar
-    - copy /Y php.ini-max php.ini
+    - copy /Y php.ini php.ini
     - cd c:\projects\easyadmin-bundle
     - composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
 
 test_script:
     - cd c:\projects\easyadmin-bundle
     - SET X=0
-    - copy /Y c:\php\php.ini-min c:\php\php.ini
-    - c:\php\phpunit.phar || SET X=1
-    - copy /Y c:\php\php.ini-max c:\php\php.ini
+    - copy /Y c:\php\php.ini c:\php\php.ini
     - c:\php\phpunit.phar || SET X=1
     - exit %X%

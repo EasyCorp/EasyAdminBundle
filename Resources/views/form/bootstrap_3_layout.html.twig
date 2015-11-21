@@ -199,7 +199,7 @@
     {% if allow_add|default(false) %}
         {% set js_add_item %}
             $(function() {
-                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+                if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
                 $('#{{ id }}').prev('.empty').remove();
 
@@ -296,7 +296,7 @@
     {% if form.parent.vars.allow_delete|default(false) %}
         {% set remove_item_javascript %}
             $(function() {
-                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+                if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
                 var containerDiv = $('#{{ id }}').parents('.form-group:first');
                 containerDiv.remove();

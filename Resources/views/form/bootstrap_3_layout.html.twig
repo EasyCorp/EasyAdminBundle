@@ -199,10 +199,12 @@
     {% if allow_add|default(false) %}
         {% set js_add_item %}
             $(function() {
-                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
+                if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
                 var collection = $('#{{ id }}');
                 var numItems = collection.children('div.form-group').length;
+
+                collection.prev('.collection-empty').remove();
 
                 var newItem = collection.attr('data-prototype')
                     .replace(/\>__name__label__\</g, '>' + numItems + '<')
@@ -283,16 +285,18 @@
 {% endblock form_errors %}
 
 {%- block form_widget_compound -%}
+    {% if value is empty %}
+        <div class="empty collection-empty">
+            <span class="label label-empty">{{ 'label.empty'|trans({}, 'EasyAdminBundle') }}</span>
+        </div>
+    {% endif %}
+
     {{ parent() }}
 
     {% if form.parent.vars.allow_delete|default(false) %}
         {% set remove_item_javascript %}
             $(function() {
-                if(event.preventDefault) {
-                    event.preventDefault();
-                } else {
-                    event.returnValue = false;
-                }
+                if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
                 var containerDiv = $('#{{ id }}').parents('.form-group:first');
                 containerDiv.remove();

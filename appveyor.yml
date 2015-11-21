@@ -44,9 +44,10 @@ install:
     - echo extension=php_fileinfo.dll >> php.ini-max
     - echo extension=php_pdo_sqlite.dll >> php.ini-max
     - appveyor DownloadFile https://getcomposer.org/composer.phar
+    - copy /Y composer.phar c:\projects\easyadmin-bundle\composer
     - copy /Y php.ini-max php.ini
     - cd c:\projects\easyadmin-bundle
-    - php composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
+    - composer update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
 
 test_script:
     - cd c:\projects\easyadmin-bundle

@@ -75,6 +75,10 @@
                 <source>label.null</source>
                 <target>Null</target>
             </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>PHP Object</target>
+            </trans-unit>
             <trans-unit id="label.inaccessible">
                 <source>label.inaccessible</source>
                 <target>Inaccessible</target>

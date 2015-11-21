@@ -29,6 +29,7 @@ install:
     - appveyor DownloadFile http://windows.php.net/downloads/pecl/releases/apcu/4.0.7/php_apcu-4.0.7-5.3-nts-vc9-x86.zip
     - 7z x php_apcu-4.0.7-5.3-nts-vc9-x86.zip -y >nul
     - del /Q *.zip
+    - appveyor DownloadFile https://phar.phpunit.de/phpunit.phar
     - cd ..
     - echo @php %%~dp0composer.phar %%* > composer.bat
     - copy /Y php.ini-development php.ini-min
@@ -52,7 +53,7 @@ test_script:
     - cd c:\projects\easyadmin-bundle
     - SET X=0
     - copy /Y c:\php\php.ini-min c:\php\php.ini
-    - php phpunit || SET X=1
+    - phpunit.phar || SET X=1
     - copy /Y c:\php\php.ini-max c:\php\php.ini
-    - php phpunit || SET X=1
+    - phpunit.phar || SET X=1
     - exit %X%

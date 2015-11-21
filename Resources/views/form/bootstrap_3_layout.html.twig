@@ -201,6 +201,8 @@
             $(function() {
                 if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
+                $('#{{ id }}').prev('.empty').remove();
+
                 var collection = $('#{{ id }}');
                 var numItems = collection.children('div.form-group').length;
 
@@ -283,16 +285,16 @@
 {% endblock form_errors %}
 
 {%- block form_widget_compound -%}
+    {% if value is empty %}
+        <div class="empty">{{ 'label.empty'|trans(domain = 'EasyAdminBundle') }}</div>
+    {% endif %}
+
     {{ parent() }}
 
     {% if form.parent.vars.allow_delete|default(false) %}
         {% set remove_item_javascript %}
             $(function() {
-                if(event.preventDefault) {
-                    event.preventDefault();
-                } else {
-                    event.returnValue = false;
-                }
+                if(event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
                 var containerDiv = $('#{{ id }}').parents('.form-group:first');
                 containerDiv.remove();

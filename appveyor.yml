@@ -29,7 +29,7 @@ install:
     - echo extension=php_mbstring.dll >> php.ini
     - echo extension=php_pdo_sqlite.dll >> php.ini
     - cd c:\projects\easyadmin-bundle
-    - composer.phar update %COMPOSER_FLAGS% --prefer-source --no-progress --ansi
+    - composer.phar update %COMPOSER_FLAGS% --prefer-source --ansi
 
 test_script:
     - phpunit-4.8.15.phar

@@ -1,0 +1,12 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-21T10:59:30Z
+
+Nice :+1:
+What about a modal for displaying full object/json content by clicking on the label ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-21T11:11:16Z
+
+The full `json_array` contents are displayed in the `show` view. And regarding the `object` type ... we'd need something like the VarDumper to correctly dump any object content. Given how weird is that type, I'd say to leave it for the future.

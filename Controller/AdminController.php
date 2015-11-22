@@ -193,7 +193,7 @@ class AdminController extends Controller
             $fieldsMetadata = $this->entity['list']['fields'];
 
             if (!isset($fieldsMetadata[$property]) || 'toggle' != $fieldsMetadata[$property]['dataType']) {
-                throw new \Exception(sprintf('The "%s" property is not a switchable toggle.', $property));
+                throw new \Exception(sprintf('The type of the "%s" property is not "toggle".', $property));
             }
 
             $this->updateEntityProperty($entity, $property, $newValue);

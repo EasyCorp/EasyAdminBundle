@@ -1,0 +1,223 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-21T20:05:56Z
+
+:+1: for this: field names should **never** be changed.
+
+---------------------------------------------------------------------------
+
+by relvis at 2015-11-21T21:20:40Z
+
+Hi there, sorry to interrupt, I have something similar, I got this Entity property:
+
+```
+class Post
+{
+  ...
+
+  /**
+     * @var boolean
+     * @ORM\Column(name="published", type="boolean")
+     */
+    protected $published = 1;
+
+   ...
+}
+```
+
+Then, in my config.yml, at ``` easy_admin ``` section:
+
+```
+Blog:
+    label: 'Posts list'
+    class: MyCompany\MyBundle\Entity\Post
+    list:
+        fields: ['title', 'published']
+    new:
+        fields:
+          - 'title'
+          - 'summary'
+          - 'body'
+          - { property: 'published', type: 'boolean' }
+```
+
+When I try to create a new Blog Post, I got this:
+
+```
+Could not load type "boolean"
+```
+
+Is this a bug or maybe an issue I have?
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-21T21:28:22Z
+
+@relvis I cannot reproduce the bug. Are you using some "edge" Symfony version (2.8, 3.0)? Are you using the latest version of this bundle? (we changed some things needed to be compatible with latest Symfony Form changes).
+
+---------------------------------------------------------------------------
+
+by relvis at 2015-11-21T22:12:14Z
+
+I am using Symfony 2.7.6 and 1.9.1 for easy_admin. Am I using a wrong version?
+
+Thanks once again!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-21T22:20:37Z
+
+Shouldn't the field be either `checkbox` or `toggle` ? I don't remember :confused:
+
+---------------------------------------------------------------------------
+
+by relvis at 2015-11-21T22:33:19Z
+
+I am using ```toggle``` for the list, something like:
+
+```yaml
+Blog:
+            label: 'Posts list'
+            class: MyCompanyt\MyBundle\Entity\Post
+            list:
+                fields:
+                    - 'title'
+                    - { property: 'published', type: 'toggle' }
+```
+
+And it is working perfect, the ```new``` and ```edit``` are the one who have problems.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-21T22:58:26Z
+
+Can you try `checkbox`? As the `type` property in `edit`, `new` and `form` actions corresponds to the form type, `boolean` should not exist natively, contrary to `checkbox` for which you can find documentation [here](http://symfony.com/doc/current/reference/forms/types/checkbox.html)
+
+---------------------------------------------------------------------------
+
+by relvis at 2015-11-21T23:33:11Z
+
+I tried this:
+
+```yaml
+Blog:
+            label: 'Posts list'
+            class: MyCompany\MyBundle\Entity\Post
+            list:
+                fields:
+                    - 'title'
+                    - { property: 'published', type: 'checkbox' }
+            edit:
+                fields:
+                    - 'title'
+                    - 'summary'
+                    - 'body'
+                    - { property: 'published', type: 'checkbox' }
+            new:
+                fields:
+                    - 'title'
+                    - 'summary'
+                    - 'body'
+                    - { property: 'published', type: 'checkbox' }
+```
+
+And I get this error:
+
+```
+Unable to transform value for property path "published": Expected a Boolean
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-22T00:32:43Z
+
+@relvis But your property isn't initialized with a boolean as we can see in your https://github.com/javiereguiluz/EasyAdminBundle/pull/585#issuecomment-158682997:
+
+```php
+class Post
+{
+  ...
+
+  /**
+     * @var boolean
+     * @ORM\Column(name="published", type="boolean")
+     */
+    protected $published = 1; // <-- Here, "1" isn't a boolean. Should be true instead.
+
+   ...
+}
+```
+
+Is it expected ?
+
+Also, the `checkbox` type is only for `new`, `edit` and `form` actions. Not for `list` nor `show` (where you should use `boolean` or `toggle`).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-22T08:52:30Z
+
+@relvis please do the following test: add this code in the 72th line of the `Controller/AdminController.php` class, just before the `return` of the `indexAction()` method:
+
+```php
+dump($this->entity['edit']['fields']); exit;
+```
+
+Whe configuring the backend as follows:
+
+```yaml
+Blog:
+    # ...
+    edit:
+        fields: ['title', 'published']
+```
+
+You should see the `published` field treated as boolean:
+
+![boolean_type](https://cloud.githubusercontent.com/assets/73419/11322838/9af4dd4e-90fe-11e5-981f-5fa8322c1112.png)
+
+If the type is `text`, `string`, etc. "someone" is guessing the type of this property wrongly (maybe it's because you use `1` instead of `true` as pointed by @ogizanagi).
+
+Test again setting the type of `published` to `checkbox` and see if it works:
+
+```yaml
+Blog:
+    # ...
+    edit:
+        fields: ['title', { property: 'published', type: 'checkbox' }]
+```
+
+---------------------------------------------------------------------------
+
+by relvis at 2015-11-22T14:29:27Z
+
+Hi guys, thanks for your reply, I tried the @ogizanagi workaround and it worked, I had
+
+```
+/**
+     * @var boolean
+     * @ORM\Column(name="published", type="boolean")
+     */
+    protected $published = 1;
+```
+
+in my Post entity and I changed to
+
+```
+    protected $published = true;
+```
+
+and it worked.
+
+@javiereguiluz, I no needed to test your suggestion, but thanks a lot!
+
+PD: Is there a place where I can ask few questions about the plugin?
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-22T14:34:30Z
+
+@relvis if you have lots of small and related questions, it's better to create a single issue with all of them. If not, please open a new issue for each question or feature request.

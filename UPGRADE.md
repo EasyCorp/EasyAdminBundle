@@ -15,6 +15,14 @@ existing backend routes, where is common to use the `admin` route name.
 In order to upgrade, you just need to replace `admin` by `easyadmin` in all
 `path()`, `generateUrl()` and `redirectToRoute()` calls.
 
+Upgrade to 1.9.2
+----------------
+
+ * The `ajaxEdit()` method of the `AdminController` has been removed. This method
+   had nothing to do with editing an entity via Ajax. It was just used to toggle
+   the value of boolean properties. It has been replaced by a private method
+   called `toggleBooleanProperty()`.
+
 Upgrade to 1.8.0
 ----------------
 

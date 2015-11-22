@@ -149,9 +149,6 @@ class Configurator
 
         // introspect regular entity fields
         foreach ($entityMetadata->fieldMappings as $fieldName => $fieldMetadata) {
-            // field names are tweaked this way to simplify Twig templates and extensions
-            $fieldName = str_replace('_', '', $fieldName);
-
             $entityPropertiesMetadata[$fieldName] = $fieldMetadata;
         }
 

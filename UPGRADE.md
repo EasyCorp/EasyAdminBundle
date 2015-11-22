@@ -8,12 +8,19 @@ the next version.
 Upgrade to 2.0.0
 ----------------
 
-The route used to generate every backend URL is now called `easyadmin` instead
-of `admin`. This change has been introduce to prevent collisions with your
-existing backend routes, where is common to use the `admin` route name.
+ * The route used to generate every backend URL is now called `easyadmin` instead
+   of `admin`. This change has been introduce to prevent collisions with your
+   existing backend routes, where is common to use the `admin` route name.
 
-In order to upgrade, you just need to replace `admin` by `easyadmin` in all
-`path()`, `generateUrl()` and `redirectToRoute()` calls.
+   In order to upgrade, you just need to replace `admin` by `easyadmin` in all
+   `path()`, `generateUrl()` and `redirectToRoute()` calls.
+
+Upgrade to 1.9.2
+----------------
+
+ * The `render404error()` utility method has been removed from `AdminController`.
+   This method was no longer used since we started throwing custom exceptions
+   when an error occurs.
 
 Upgrade to 1.8.0
 ----------------

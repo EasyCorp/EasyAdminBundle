@@ -679,21 +679,6 @@ class AdminController extends Controller
     }
 
     /**
-     * Utility shortcut to render a template as a 404 error page.
-     *
-     * @param string $view
-     * @param array  $parameters
-     *
-     * @deprecated Use an appropriate exception instead of this method.
-     *
-     * @return Response
-     */
-    protected function render404error($view, array $parameters = array())
-    {
-        return $this->render($view, $parameters, new Response('', 404));
-    }
-
-    /**
      * Utility method that checks if the given action is allowed for
      * the current entity.
      *

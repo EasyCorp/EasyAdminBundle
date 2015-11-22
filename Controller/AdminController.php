@@ -188,8 +188,17 @@ class AdminController extends Controller
         $easyadmin = $this->request->attributes->get('easyadmin');
         $entity = $easyadmin['item'];
 
-        if ($this->request->isXmlHttpRequest() && $this->request->query->has('property')) {
-            return $this->toggleBooleanProperty($entity, $this->request->query->get('property'), $this->request->query->get('newValue'));
+        if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
+            $newValue = ('true' === $this->request->query->get('newValue')) ? true : false;
+            $fieldsMetadata = $this->entity['list']['fields'];
+
+            if (!isset($fieldsMetadata[$property]) || 'toggle' != $fieldsMetadata[$property]['dataType']) {
+                throw new \Exception(sprintf('The "%s" property is not a switchable toggle.', $property));
+            }
+
+            $this->updateEntityProperty($entity, $property, $newValue);
+
+            return new Response((string) $newValue);
         }
 
         $fields = $this->entity['edit']['fields'];
@@ -364,46 +373,34 @@ class AdminController extends Controller
     }
 
     /**
-     * It toggles the value of a boolean property for the given entity by setting
-     * it to the given new value. It's used for the "flip switches" displayed in
-     * the 'list' view.
+     * It updates the value of some property of some entity to the new given value.
      *
-     * @param mixed  $entity       The instance of the entity to modify
-     * @param string $propertyName The name of the property to change
-     * @param bool   $newValue     The new value of the property
-     *
-     * @return Response
+     * @param mixed  $entity   The instance of the entity to modify
+     * @param string $property The name of the property to change
+     * @param bool   $value    The new value of the property
      */
-    private function toggleBooleanProperty($entity, $propertyName, $newValue)
+    private function updateEntityProperty($entity, $property, $value)
     {
         $entityConfig = $this->entity;
         $fieldsMetadata = $entityConfig['list']['fields'];
 
-        if (!isset($fieldsMetadata[$propertyName]) || 'toggle' != $fieldsMetadata[$propertyName]['dataType']) {
-            throw new \Exception(sprintf('The "%s" property is not a switchable toggle.', $propertyName));
+        if (!$fieldsMetadata[$property]['isWritable']) {
+            throw new \Exception(sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
         }
 
-        if (!$fieldsMetadata[$propertyName]['isWritable']) {
-            throw new \Exception(sprintf('The "%s" boolean property of the "%s" entity is not writable.', $propertyName, $entityConfig['name']));
-        }
+        $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $value));
 
-        $newValue = ('true' === $newValue) ? true : false;
-
-        $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $newValue));
-
-        if (null !== $setter = $fieldsMetadata[$propertyName]['setter']) {
-            $entity->{$setter}($newValue);
+        if (null !== $setter = $fieldsMetadata[$property]['setter']) {
+            $entity->{$setter}($value);
         } else {
-            $entity->{$propertyName} = $newValue;
+            $entity->{$property} = $value;
         }
 
         $this->em->persist($entity);
         $this->em->flush();
-        $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity, 'newValue' => $newValue));
+        $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity, 'newValue' => $value));
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
-
-        return new Response((string) $newValue);
     }
 
     /**

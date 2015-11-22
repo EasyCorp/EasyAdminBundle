@@ -198,7 +198,6 @@
 
                 var toggleUrl = "{{ path('easyadmin', { action: 'edit', entity: _entity_config.name, view: 'list' })|raw }}"
                               + "&id=" + $(this).closest('tr').data('id')
-                              + '&widget=toggle'
                               + "&property=" + propertyName
                               + "&newValue=" + newValue.toString();
 

@@ -188,7 +188,7 @@ class AdminController extends Controller
         $easyadmin = $this->request->attributes->get('easyadmin');
         $entity = $easyadmin['item'];
 
-        if ($this->request->isXmlHttpRequest() && 'toggle' === $this->request->query->get('widget')) {
+        if ($this->request->isXmlHttpRequest() && $this->request->query->has('property')) {
             return $this->toggleBooleanProperty($entity, $this->request->query->get('property'), $this->request->query->get('newValue'));
         }
 

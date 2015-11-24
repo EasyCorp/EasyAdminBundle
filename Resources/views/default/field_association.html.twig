@@ -1,5 +1,9 @@
 {% if value is iterable %}
-    <span class="badge">{{ value|length }}</span>
+    {% if 'show' == view %}
+        {{ value|join(', ') }}
+    {% else %}
+        <span class="badge">{{ value|length }}</span>
+    {% endif %}
 {% elseif link_parameters is defined %}
     <a href="{{ path('easyadmin', link_parameters|merge({ referer: app.request.requestUri })) }}">{{ value|easyadmin_truncate }}</a>
 {% else %}

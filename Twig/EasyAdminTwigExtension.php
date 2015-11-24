@@ -125,11 +125,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 'view' => $view,
             );
 
-            // if the template path doesn't start with '@EasyAdmin/' it's a custom template; use it
-            if ('@EasyAdmin/' !== substr($fieldMetadata['template'], 0, 11)) {
-                return $twig->render($fieldMetadata['template'], $templateParameters);
-            }
-
             if (null === $value) {
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
             }
@@ -155,12 +150,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
             }
 
-            if (in_array($fieldType, array('association'))) {
-                // if the associated value is a collection, pass it to the template
-                if ($value instanceof PersistentCollection) {
-                    return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
-                }
-
+            if (in_array($fieldType, array('association')) && !$value instanceof PersistentCollection) {
                 $targetEntityClassName = $this->getClassShortName($fieldMetadata['targetEntity']);
                 $targetEntityConfig = $this->getEntityConfiguration($targetEntityClassName);
                 $targetEntityPrimaryKeyGetter = (null !== $targetEntityConfig) ? 'get'.ucfirst($targetEntityConfig['primary_key_field_name']) : null;
@@ -180,8 +170,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 if (method_exists($value, $targetEntityPrimaryKeyGetter)) {
                     $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'view' => $view, 'id' => $value->$targetEntityPrimaryKeyGetter());
                 }
-
-                return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
             }
 
             return $twig->render($fieldMetadata['template'], $templateParameters);

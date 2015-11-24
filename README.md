@@ -8,6 +8,10 @@ to learn about the new features and read the [UPGRADE guide](https://github.com/
 EasyAdmin
 =========
 
+![Vote for EasyAdminBundle as the Best 2015 Symfony Bundle](https://cloud.githubusercontent.com/assets/73419/11368497/7465835a-92ba-11e5-8550-90a9e9ef93f7.png)
+
+-----
+
 [![Build Status](https://travis-ci.org/javiereguiluz/EasyAdminBundle.svg?branch=master)](https://travis-ci.org/javiereguiluz/EasyAdminBundle)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/a3bfb8d9-7b2d-47ab-a95f-382af395bd51/mini.png)](https://insight.sensiolabs.com/projects/a3bfb8d9-7b2d-47ab-a95f-382af395bd51)
 [![Coverage Status](https://coveralls.io/repos/javiereguiluz/EasyAdminBundle/badge.svg?branch=master)](https://coveralls.io/r/javiereguiluz/EasyAdminBundle?branch=master)

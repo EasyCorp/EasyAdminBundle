@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-24T08:08:36Z
+
+@ogizanagi thanks for this fix. I've tested it and it "almost works". I get this error:
+
+![error](https://cloud.githubusercontent.com/assets/73419/11361051/80920296-928a-11e5-9b3a-986002444754.png)
+
+Why?  Because some many-to-many associations are wrongly displayed with the `field_text` template (which is the default one) instead of `field_association`
+
+Why?  Because they are treated as "virtual" fields.
+
+Why?  Because your PR may not be rebased to the latest changes. In https://github.com/ogizanagi/EasyAdminBundle/blob/fix_590/Configuration/Configurator.php#L160, the lines 160 and 169 should be deleted (in the master branch they are gone).
+
+Why? Because this was a leftover of when we didnt support *-to-many associations and this was recently fixed.
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-24T10:45:07Z
+
+Eh eh :sweat_smile: Thank you very much for the feedback.
+The PR is now rebased in case someone else want to try it. Hope it'll be the only issue.

@@ -22,9 +22,6 @@ Upgrade to 1.9.2
    This method was no longer used since we started throwing custom exceptions
    when an error occurs.
 
-Upgrade to 1.9.2
-----------------
-
  * The `ajaxEdit()` method of the `AdminController` has been removed. This method
    had nothing to do with editing an entity via Ajax. It was just used to toggle
    the value of boolean properties. It has been replaced by a private method

@@ -8,7 +8,7 @@ to learn about the new features and read the [UPGRADE guide](https://github.com/
 EasyAdmin
 =========
 
-![Vote for EasyAdminBundle as the Best 2015 Symfony Bundle](https://cloud.githubusercontent.com/assets/73419/11368497/7465835a-92ba-11e5-8550-90a9e9ef93f7.png)
+[![Vote for EasyAdminBundle as the Best 2015 Symfony Bundle](https://cloud.githubusercontent.com/assets/73419/11368497/7465835a-92ba-11e5-8550-90a9e9ef93f7.png)](http://awards.symfony.com)
 
 -----
 

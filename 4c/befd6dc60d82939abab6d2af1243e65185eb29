@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-06T15:43:04Z
+
+:+1: Really nice !
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-18T21:09:54Z
+
+Note to improve docs: explain somehow which public methods are used to read/write properties when the properties are private. See https://github.com/javiereguiluz/EasyAdminBundle/issues/579
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-11-18T21:32:05Z
+
+A simple link on the ORM documentation would be enough. Having getters and setters is the recommended way of using entities.

@@ -345,9 +345,9 @@
 
                         {% for _action in _entity_actions %}
                             {% if 'method' == _action.type %}
-                                {% set _action_href = path('easyadmin', { action: _action.name, view: view, entity: easyadmin.entity.name, id: attribute(entity, easyadmin.entity.primary_key_field_name) }) %}
+                                {% set _action_href = path('easyadmin', { action: _action.name, view: easyadmin.view, entity: easyadmin.entity.name, id: attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) }) %}
                             {% elseif 'route' == _action.type %}
-                                {% set _action_href = path(_action.name, { entity: easyadmin.entity.name, id: attribute(entity, easyadmin.entity.primary_key_field_name) }) %}
+                                {% set _action_href = path(_action.name, { entity: easyadmin.entity.name, id: attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) }) %}
                             {% endif %}
 
                             <a class="btn {{ _action.css_class|default('') }}" href="{{ _action_href }}">

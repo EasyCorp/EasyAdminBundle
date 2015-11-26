@@ -4,7 +4,9 @@ Configuration Reference
 Simplest Backend Configuration
 ------------------------------
 
-Useful only for creating backend prototypes in a few seconds:
+Useful only for creating backend prototypes in a few seconds (just define the
+`entities` option and list the fully qualified class names of the entities to
+manage):
 
 ```yaml
 easy_admin:
@@ -16,6 +18,9 @@ easy_admin:
 
 Full Backend Configuration
 --------------------------
+
+This section describes the entire list of configuration options available to
+customize your backends.
 
 * [easy_admin](#easy_admin)
   * [site_name](#site_name)
@@ -55,9 +60,22 @@ are defined under this key.
 (**default value**: `'Easy Admin'`, **type**: string)
 
 The name displayed as the title of the administration zone (e.g. your company
-name, the project name, etc.) This value is displayed in the backend "as is", so
-you can include HTML tags and they will be rendered as HTML content (e.g.
-`<strong>ACME</strong>`).
+name, the project name, etc.) Example:
+
+```yaml
+easy_admin:
+    site_name: 'ACME Inc.'
+    # ...
+```
+
+This value is displayed in the backend "as is", so you can include HTML tags and
+they will be rendered as HTML content. Example:
+
+```yaml
+easy_admin:
+    site_name: '<strong>ACME</strong>'
+    # ...
+```
 
 ### formats
 
@@ -71,7 +89,14 @@ display dates and numbers.
 The format applied in the `list` and `show` views to display the properties of
 type `date`. This format doesn't affect to `time` and `datetime` properties.
 The value must be a valid PHP date format according to the syntax options defined
-in http://php.net/date
+in http://php.net/date. Example:
+
+```yaml
+easy_admin:
+    formats:
+        date: 'd/m/Y'
+    # ...
+```
 
 #### time
 
@@ -80,7 +105,14 @@ in http://php.net/date
 The format applied in the `list` and `show` views to display the properties of
 type `time`. This format doesn't affect to `date` and `datetime` properties.
 The value must be a valid PHP time format according to the syntax options defined
-in http://php.net/date
+in http://php.net/date. Example:
+
+```yaml
+easy_admin:
+    formats:
+        time: 'h:i A e'
+    # ...
+```
 
 #### datetime
 
@@ -89,7 +121,14 @@ in http://php.net/date
 The format applied in the `list` and `show` views to display the properties of
 type `datetime`. This format doesn't affect to `date` and `time` properties.
 The value must be a valid PHP time format according to the syntax options defined
-in http://php.net/date
+in http://php.net/date. Example:
+
+```yaml
+easy_admin:
+    formats:
+        datetime: 'd/m/Y h:i A e'
+    # ...
+```
 
 #### number
 
@@ -97,7 +136,14 @@ in http://php.net/date
 
 The format applied in the `list` and `show` views to display the numeric
 properties. The value must be a format according to the syntax options defined
-in http://php.net/sprintf
+in http://php.net/sprintf. Example:
+
+```yaml
+easy_admin:
+    formats:
+        number: '%0.2f'
+    # ...
+```
 
 #### disabled_actions
 
@@ -105,7 +151,7 @@ in http://php.net/sprintf
 
 The names of the actions disabled for all backend entities. This value can be
 overridden in a entity-by-entity basis, so you can disable some actions globally
-and then reenable some of them for some entities. Example:
+and then re-enable some of them for some entities. Example:
 
 ```yaml
 easy_admin:
@@ -131,7 +177,14 @@ safely ignore it.
 (**default value**: `'dark'`, **type**: string, **values**: `'dark'` or `'light'`)
 
 It defines the colors used in the backend design. If you find the default `dark`
-color scheme too dark, try the `light` color scheme.
+color scheme too dark, try the `light` color scheme. Example:
+
+```yaml
+easy_admin:
+    design:
+        color_scheme: 'light'
+    # ...
+```
 
 #### brand_color
 
@@ -140,10 +193,24 @@ expression to define a color)
 
 This is the color used to highlight important elements of the backend, such as
 the site name, links and buttons. Use the main color of your company or project
-to create a backend that matches your branding perfectly.
+to create a backend that matches your branding perfectly. Example:
+
+```yaml
+easy_admin:
+    design:
+        color_scheme: '#3B5998'
+    # ...
+```
 
 This value can be define using any valid CSS expression to define a color, so
-you can even use semi-transparent colors.
+you can even use semi-transparent colors. Example:
+
+```yaml
+easy_admin:
+    design:
+        color_scheme: 'rgba(59, 89, 152, 0.5)'
+    # ...
+```
 
 #### form_theme
 
@@ -157,12 +224,17 @@ which displays the form fields using the default horizontal Bootstrap 3 design.
 The `'vertical'` value is a shortcut of `@EasyAdmin/form/bootstrap_3_layout.html.twig`
 which displays the form fields using the more common vertical Bootstrap 3 design.
 This style is better than `'horizontal'` when you want to increase the space
-available to edit the property values.
+available to edit the property values. Example:
 
-Moreover, you can use your own form theme (or themes) just by defining the path
-to those templates.
+```yaml
+easy_admin:
+    design:
+        form_theme: 'vertical'
+    # ...
+```
 
-Example of using one form theme:
+Moreover, you can use your own form theme just by defining the path to its
+templates. Example:
 
 ```yaml
 easy_admin:
@@ -171,7 +243,7 @@ easy_admin:
     # ...
 ```
 
-Example of using several form themes:
+You can even use several form themes at the same time. Example:
 
 ```yaml
 easy_admin:
@@ -350,7 +422,23 @@ Defines the options applied globally for the `list` view of all entities.
 
 (**default value**: empty array, **type**: array)
 
-TODO ...
+Defines the actions available in the `list` view, which can be built-in actions
+(`edit`, `list`, `new`, `search`, `show`) or [custom actions](customizing-backend-actions.md).
+
+```yaml
+easy_admin:
+    list:
+        actions: ['new', 'show', 'myAction', 'myOtherAction']
+```
+
+The actions defined in this option are added to the default ones for each view.
+To remove an action, add it to this list prepending its name with a dash (`-`):
+
+```yaml
+easy_admin:
+    list:
+        actions: ['-new', '-show', 'myAction', 'myOtherAction']
+```
 
 #### max_results
 
@@ -362,27 +450,26 @@ page.
 ### edit
 
 Defines the options applied globally for the `edit` view of all entities. The
-only option available for now is the one that defines which actions are displayed
-in the `edit` view.
+only option available for now is called `actions`, which defines the actions
+enabled for this view, as explained above for the `list` view.
 
 ### new
 
 Defines the options applied globally for the `new` view of all entities. The
-only option available for now is the one that defines which actions are displayed
-in the `new` view.
+only option available for now is called `actions`, which defines the actions
+enabled for this view, as explained above for the `list` view.
 
 ### show
 
 Defines the options applied globally for the `show` view of all entities. The
-only option available for now is the one that defines which actions are displayed
-in the `show` view.
+only option available for now is called `actions`, which defines the actions
+enabled for this view, as explained above for the `list` view.
 
 ### entities
 
 (**default value**: empty array, **type**: array)
 
-
-
+Defines the list of entities managed by the bundle.
 
 Deprecated Configuration Options
 --------------------------------
@@ -453,77 +540,4 @@ easy_admin:
         assets:
             js: ['/bundles/app/custom_widgets.js']
     # ...
-```
-
-
-
-
-Advanced Configuration with no Property Configuration
------------------------------------------------------
-
-This configuration format allows to control which properties, and in which
-order, are shown in the views. Just use the `fields` option in the `edit`,
-`list`, `new` and `show` views:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields: ['id', 'name', 'email']
-        Product:
-            label: Inventory
-            class: AppBundle\Entity\Product
-            list:
-                fields: ['id', 'code', 'description', 'price']
-            edit:
-                fields: ['code', 'description', 'price', 'category']
-            new:
-                fields: ['code', 'description', 'price', 'category']
-```
-
-If the `edit` and `new` configuration is the same, use instead the special
-`form` view, which will be applied to both of them:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields: ['id', 'name', 'email']
-        Product:
-            label: Inventory
-            class: AppBundle\Entity\Product
-            list:
-                fields: ['id', 'code', 'description', 'price']
-            form:
-                fields: ['code', 'description', 'price', 'category']
-```
-
-Advanced Configuration with Custom Property Configuration
----------------------------------------------------------
-
-This is the most advanced configuration format and it allows you to control the
-type, style, help message and label displayed for each property:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields: ['id', 'name', { property: 'email', label: 'Contact Info' }]
-        Product:
-            label: Inventory
-            class: AppBundle\Entity\Product
-            list:
-                fields: ['id', 'code', 'description', 'price']
-            form:
-                fields:
-                    - { property: 'code', help: 'Alphanumeric characters only' }
-                    - { property: 'description', type: 'textarea' }
-                    - { property: 'price', type: 'number', css_class: 'input-lg' }
-                    - { property: 'category', label: 'Commercial Category' }
 ```

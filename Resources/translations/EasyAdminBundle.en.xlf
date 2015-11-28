@@ -75,6 +75,10 @@
                 <source>label.null</source>
                 <target>Null</target>
             </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Leave empty</target>
+            </trans-unit>
             <trans-unit id="label.object">
                 <source>label.object</source>
                 <target>PHP Object</target>

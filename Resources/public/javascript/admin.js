@@ -9,6 +9,7 @@ $(function () {
 
     mainMenuDropShadow.apply(mainMenu);
     mainMenuResponsiveCollapse();
+    createNullableControls();
 });
 
 function mainMenuDropShadow() {
@@ -31,4 +32,16 @@ function mainMenuResponsiveCollapse() {
     } else {
         mainMenuItems.flexMenu({ 'undo': true });
     }
+}
+
+function createNullableControls() {
+    var fnNullDates = function() {
+        var checkbox = $(this);
+
+        checkbox.closest('.form-group').find('select').each(function() {
+            $(this).prop('disabled', checkbox.is(':checked'))
+        });
+    };
+
+    $('.nullable-control :checkbox').bind('change', fnNullDates).each(fnNullDates);
 }

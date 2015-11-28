@@ -26,7 +26,8 @@ col-sm-2
 
 {% block form_row -%}
 {% spaceless %}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
+    {% set _field_type = attr.field_type|default('default') %}
+    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ _field_type }} {{ attr.field_css_class|default('') }}">
 
         {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
         {% set _field_label = easyadmin.field['label']|default(null) %}
@@ -34,6 +35,16 @@ col-sm-2
         {{ form_label(form, _field_label|trans(_trans_parameters)) }}
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}
+
+            {% if _field_type in ['datetime', 'datetimetz', 'date', 'time'] and easyadmin.field.nullable %}
+                <div class="nullable-control">
+                    <label>
+                        <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
+                        {{ ('label.nullable_' ~ _field_type)|trans({}, 'EasyAdminBundle')}}
+                    </label>
+                </div>
+            {% endif %}
+
             {{ form_errors(form) }}
 
             {% if attr.field_help|default('') != '' %}

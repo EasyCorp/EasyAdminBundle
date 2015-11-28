@@ -75,6 +75,22 @@
                 <source>label.null</source>
                 <target>Null</target>
             </trans-unit>
+            <trans-unit id="label.nullable_date">
+                <source>label.nullable_date</source>
+                <target>Desactivar fecha</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_time">
+                <source>label.nullable_time</source>
+                <target>Desactivar hora</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_datetime">
+                <source>label.nullable_datetime</source>
+                <target>Desactivar fecha y hora</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_datetimetz">
+                <source>label.nullable_datetimetz</source>
+                <target>Desactivar fecha y hora</target>
+            </trans-unit>
             <trans-unit id="label.object">
                 <source>label.object</source>
                 <target>Objecto PHP</target>

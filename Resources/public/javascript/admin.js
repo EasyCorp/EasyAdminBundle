@@ -39,7 +39,13 @@ function createNullableControls() {
         var checkbox = $(this);
 
         checkbox.closest('.form-group').find('select').each(function() {
-            $(this).prop('disabled', checkbox.is(':checked'))
+            var formFiledIsDisabled = checkbox.is(':checked');
+            $(this).prop('disabled', formFiledIsDisabled);
+
+            if (formFiledIsDisabled) {
+                $(this).not(':has(option[value=""])').prepend('<option value=""></option>');
+                $(this).val('');
+            }
         });
     };
 

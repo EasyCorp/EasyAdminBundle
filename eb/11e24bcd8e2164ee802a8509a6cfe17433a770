@@ -1,0 +1,64 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-28T10:57:16Z
+
+Great ! Thanks for taking care of this ! My only concerns were about the fact this would be convenient for any nullable type. But for now, we only have the `datetime` type which is composed of multiple html inputs and wasn't very convenient to set to null quickly. So this is a perfect start.
+
+About the label: What do you think about `Empty`, `Is empty` or `Set empty` ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-28T11:27:46Z
+
+@ogizanagi I agree with you. I tried to make the code (ariable names, HTML classes, etc.) as future-proof as possible to improve this feature in the future.
+
+About the label, I'm going to think about "empty". It's very human-friendly and easy to understand. Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-28T12:00:44Z
+
+I've updated the label to *"Leave empty"*:
+
+![leave_empty](https://cloud.githubusercontent.com/assets/73419/11451708/f5b31dc4-95cf-11e5-97d4-854fe2297d56.png)
+
+And here it is in action:
+
+![nullable_field](https://cloud.githubusercontent.com/assets/73419/11451710/fae93580-95cf-11e5-9376-6ddade9978fb.gif)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-28T12:12:27Z
+
+@javiereguiluz : I think you can forget about my comments for now and merge this as it is. But we'll eventually encounter those issues later.
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-28T14:03:43Z
+
+I've updated the code to display the `<select>` empty. I think this improves a lot the user experience. But I'd like to know your opinions. Thanks!
+
+![nullable_field_empty](https://cloud.githubusercontent.com/assets/73419/11452231/29ba7eb2-95e1-11e5-8d68-129743313065.gif)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-28T14:53:21Z
+
+I think it is actually better for user experience and worse at the same time :laughing:
+This is due to my concerns in https://github.com/javiereguiluz/EasyAdminBundle/pull/607#discussion_r46079545 but I like the `<select>` widgets being empty...or maybe it'll be better to hide all `<select>` widgets (without reseting them) ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-28T15:09:54Z
+
+Here it is the latest version in action:
+
+![nullable_field_animated](https://cloud.githubusercontent.com/assets/73419/11452516/6dc2d8ee-95ea-11e5-9cab-c51bfef42fc6.gif)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-28T15:14:33Z
+
+:+1: :sparkles:

@@ -43,8 +43,9 @@ function createNullableControls() {
             $(this).prop('disabled', formFiledIsDisabled);
 
             if (formFiledIsDisabled) {
-                $(this).not(':has(option[value=""])').prepend('<option value=""></option>');
-                $(this).val('');
+                $(this).parent().slideUp({ duration: 200 });
+            } else {
+                $(this).parent().slideDown({ duration: 200 });
             }
         });
     };

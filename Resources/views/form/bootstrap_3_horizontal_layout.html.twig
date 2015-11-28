@@ -40,7 +40,7 @@ col-sm-2
                 <div class="nullable-control">
                     <label>
                         <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
-                        {{ ('label.nullable_' ~ _field_type)|trans({}, 'EasyAdminBundle')}}
+                        {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}
                     </label>
                 </div>
             {% endif %}

@@ -85,10 +85,9 @@ class EasyAdminDataCollector extends DataCollector
     }
 
     /**
-     * It dumps the contents of the given variable using the VarDumper component
-     * (this avoids requiring the DebugBundle which defines the dump() Twig function).
-     * It fallbacks to Yaml dumper or var_export() if VarDumper component is not
-     * available.
+     * It dumps the contents of the given variable. It tries several dumpers in
+     * turn (VarDumper component, Yaml::dump, etc.) and if none is available, it
+     * fallbacks to PHP's var_export().
      *
      * @param mixed $variable
      *

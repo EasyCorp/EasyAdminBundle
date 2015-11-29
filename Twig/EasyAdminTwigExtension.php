@@ -13,6 +13,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\PersistentCollection;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use Symfony\Component\VarDumper\Cloner\VarCloner();
+use Symfony\Component\VarDumper\Dumper\HtmlDumper();
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Defines the filters and functions used to render the bundle's templates.
@@ -261,12 +264,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function dump($variable)
     {
         if (class_exists('Symfony\Component\VarDumper\Dumper\HtmlDumper')) {
-            $cloner = new \Symfony\Component\VarDumper\Cloner\VarCloner();
-            $dumper = new \Symfony\Component\VarDumper\Dumper\HtmlDumper();
+            $cloner = new VarCloner();
+            $dumper = new HtmlDumper();
 
             return $dumper->dump($cloner->cloneVar($variable));
         } elseif (class_exists('Symfony\Component\Yaml\Yaml')) {
-            return sprintf('<pre class="sf-dump">%s</pre>', \Symfony\Component\Yaml\Yaml::dump((array) $variable, 1024));
+            return sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
         } else {
             return sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));
         }

@@ -75,7 +75,7 @@
         <div class="tab">
             <h3 class="tab-title">Current Entity Configuration</h3>
             <div class="tab-content">
-                {{ easyadmin_dump(collector.currentEntityConfiguration) }}
+                {{ collector.dump(collector.currentEntityConfiguration) }}
             </div>
 
             <br>
@@ -86,18 +86,18 @@
             <div class="tab-content">
 
                 <h4>Basic Configuration</h4>
-                {{ easyadmin_dump({
+                {{ collector.dump({
                     'site_name': collector.backendConfiguration['site_name'],
                     'formats': collector.backendConfiguration['formats']
                 }) }}
 
                 <h4>Design Configuration</h4>
-                {{ easyadmin_dump({
+                {{ collector.dump({
                     'design': collector.backendConfiguration['design']
                 }) }}
 
                 <h4>Actions Configuration</h4>
-                {{ easyadmin_dump({
+                {{ collector.dump({
                     'disabled_actions': collector.backendConfiguration['disabled_actions'],
                     'list': collector.backendConfiguration['list'],
                     'edit': collector.backendConfiguration['edit'],
@@ -106,12 +106,12 @@
                 }) }}
 
                 <h4>Entities Configuration</h4>
-                {{ easyadmin_dump({
+                {{ collector.dump({
                     'entities': collector.backendConfiguration['entities']
                 }) }}
 
                 <h4>Full Backend Configuration</h4>
-                {{ easyadmin_dump({
+                {{ collector.dump({
                     'easy_admin': collector.backendConfiguration
                 }) }}
             </div>

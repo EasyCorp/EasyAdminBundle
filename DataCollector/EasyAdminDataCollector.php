@@ -15,6 +15,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use Symfony\Component\VarDumper\Cloner\VarCloner;
+use Symfony\Component\VarDumper\Dumper\HtmlDumper;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Collects information about the requests related to EasyAdmin and displays
@@ -79,6 +82,30 @@ class EasyAdminDataCollector extends DataCollector
     public function getBackendConfiguration()
     {
         return $this->data['backend_configuration'];
+    }
+
+    /**
+     * It dumps the contents of the given variable using the VarDumper component
+     * (this avoids requiring the DebugBundle which defines the dump() Twig function).
+     * It fallbacks to Yaml dumper or var_export() if VarDumper component is not
+     * available.
+     *
+     * @param mixed $variable
+     *
+     * @return string
+     */
+    public function dump($variable)
+    {
+        if (class_exists('Symfony\Component\VarDumper\Dumper\HtmlDumper')) {
+            $cloner = new VarCloner();
+            $dumper = new HtmlDumper();
+
+            return $dumper->dump($cloner->cloneVar($variable));
+        } elseif (class_exists('Symfony\Component\Yaml\Yaml')) {
+            return sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
+        } else {
+            return sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));
+        }
     }
 
     public function getName()

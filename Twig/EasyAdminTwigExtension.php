@@ -13,9 +13,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\PersistentCollection;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
-use Symfony\Component\VarDumper\Cloner\VarCloner;
-use Symfony\Component\VarDumper\Dumper\HtmlDumper;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Defines the filters and functions used to render the bundle's templates.
@@ -42,7 +39,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
             new \Twig_SimpleFunction('easyadmin_action_is_enabled_for_*_view', array($this, 'isActionEnabled')),
             new \Twig_SimpleFunction('easyadmin_get_action_for_*_view', array($this, 'getActionConfiguration')),
             new \Twig_SimpleFunction('easyadmin_get_actions_for_*_item', array($this, 'getActionsForItem')),
-            new \Twig_SimpleFunction('easyadmin_dump', array($this, 'dump'), array('is_safe' => array('html'))),
         );
     }
 
@@ -249,30 +245,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
         return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
             return !in_array($action['name'], $excludedActions) && !in_array($action['name'], $disabledActions);
         });
-    }
-
-    /**
-     * It dumps the contents of the given variable using the VarDumper component
-     * (this avoids requiring the DebugBundle which defines the dump() Twig function).
-     * It fallbacks to Yaml dumper or var_export() if VarDumper component is not
-     * available.
-     *
-     * @param mixed $variable
-     *
-     * @return string
-     */
-    public function dump($variable)
-    {
-        if (class_exists('Symfony\Component\VarDumper\Dumper\HtmlDumper')) {
-            $cloner = new VarCloner();
-            $dumper = new HtmlDumper();
-
-            return $dumper->dump($cloner->cloneVar($variable));
-        } elseif (class_exists('Symfony\Component\Yaml\Yaml')) {
-            return sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
-        } else {
-            return sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));
-        }
     }
 
     /*

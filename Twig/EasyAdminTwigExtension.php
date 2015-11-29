@@ -13,8 +13,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\PersistentCollection;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
-use Symfony\Component\VarDumper\Cloner\VarCloner();
-use Symfony\Component\VarDumper\Dumper\HtmlDumper();
+use Symfony\Component\VarDumper\Cloner\VarCloner;
+use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 use Symfony\Component\Yaml\Yaml;
 
 /**

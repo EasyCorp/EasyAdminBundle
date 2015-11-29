@@ -71,11 +71,11 @@
 
     {% endif %}
 
-    <div class="tabs">
+    <div class="sf-tabs">
         <div class="tab">
-            <h3 class="tab-title">Entity Configuration</h3>
+            <h3 class="tab-title">Current Entity Configuration</h3>
             <div class="tab-content">
-                <pre class="sf-dump" style="{{ profiler_markup_version == 1 ? '' : 'color: #E0E0E0"' }}">{{ collector.currentEntityConfiguration|yaml_dump(3, false)|replace({ '%array% ' : '' }) }}</pre>
+                {{ easyadmin_dump(collector.currentEntityConfiguration) }}
             </div>
 
             <br>
@@ -84,7 +84,36 @@
         <div class="tab">
             <h3 class="tab-title">Full Backend Configuration</h3>
             <div class="tab-content">
-                <pre class="sf-dump" style="{{ profiler_markup_version == 1 ? '' : 'color: #E0E0E0"' }}">{{ collector.backendConfiguration|yaml_dump(5, false)|replace({ '%array% ' : '' }) }}</pre>
+
+                <h4>Basic Configuration</h4>
+                {{ easyadmin_dump({
+                    'site_name': collector.backendConfiguration['site_name'],
+                    'formats': collector.backendConfiguration['formats']
+                }) }}
+
+                <h4>Design Configuration</h4>
+                {{ easyadmin_dump({
+                    'design': collector.backendConfiguration['design']
+                }) }}
+
+                <h4>Actions Configuration</h4>
+                {{ easyadmin_dump({
+                    'disabled_actions': collector.backendConfiguration['disabled_actions'],
+                    'list': collector.backendConfiguration['list'],
+                    'edit': collector.backendConfiguration['edit'],
+                    'new': collector.backendConfiguration['new'],
+                    'show': collector.backendConfiguration['show'],
+                }) }}
+
+                <h4>Entities Configuration</h4>
+                {{ easyadmin_dump({
+                    'entities': collector.backendConfiguration['entities']
+                }) }}
+
+                <h4>Full Backend Configuration</h4>
+                {{ easyadmin_dump({
+                    'easy_admin': collector.backendConfiguration
+                }) }}
             </div>
         </div>
     </div>

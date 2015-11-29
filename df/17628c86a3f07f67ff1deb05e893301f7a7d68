@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-29T18:03:37Z
+
+Yaaaaay \o/ :tada:
+
+...But the `symfony/var-dumper` is only available since 2.6, right ? That was the whole issue when we talked about it :/
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-29T18:04:12Z
+
+(Since 2.6, updated. Sorry for double posting)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-11-29T18:29:51Z
+
+@ogizanagi you are right. Thanks for reminiding it to me.
+
+I've added two fallbacks based on Yaml dumper and on var_export();
+
+### Yaml dumper fallback
+
+![yaml_fallback](https://cloud.githubusercontent.com/assets/73419/11459118/819fbbf8-96cf-11e5-90ff-174699d69f4d.png)
+
+### var_export() fallback
+
+![var_export_fallback](https://cloud.githubusercontent.com/assets/73419/11459120/8414827e-96cf-11e5-84ae-09037e8df940.png)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-11-29T18:42:10Z
+
+Those fallbacks are great :+1:

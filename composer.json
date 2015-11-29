@@ -32,6 +32,7 @@
         "symfony/http-foundation"       : "~2.3|~3.0",
         "symfony/http-kernel"           : "~2.3|~3.0",
         "symfony/twig-bridge"           : "^2.3.4",
+        "symfony/var-dumper"            : "~2.3|~3.0",
         "twig/extensions"               : "~1.0",
         "twig/twig"                     : "~1.14,>=1.14.2|~2.0"
     },

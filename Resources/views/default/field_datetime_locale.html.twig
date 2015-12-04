@@ -1,0 +1,14 @@
+{# The Intl Extension for Twig must be enabled to use this feature. In services.yml add
+services:
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+            - { name: twig.extension }
+
+In EasyAdmin config file use ICU date patterns - http://userguide.icu-project.org/formatparse/datetime
+Example:
+easy_admin:
+    formats:
+        datetime: 'cccc, d MMMM Y '' '' hh:mm'
+#}
+{{ value|localizeddate('none', 'none', null, null,field_options.format)|title}}

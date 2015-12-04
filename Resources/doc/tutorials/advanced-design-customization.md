@@ -217,6 +217,7 @@ Doctrine data type and are self-explanatory):
   * `field_boolean`
   * `field_date`
   * `field_datetime`
+  * `field_datetime_locale`
   * `field_datetimetz`
   * `field_decimal`
   * `field_float`

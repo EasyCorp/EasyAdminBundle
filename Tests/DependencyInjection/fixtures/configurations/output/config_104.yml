@@ -8,6 +8,7 @@ easy_admin:
             field_boolean: custom_template/field_boolean.html.twig
             field_date: custom_template/field_date.html.twig
             field_datetime: custom_template/field_datetime.html.twig
+            field_datetime_locale: custom_template/field_datetime_locale.html.twig
             field_datetimetz: custom_template/field_datetimetz.html.twig
             field_decimal: custom_template/field_decimal.html.twig
             field_float: custom_template/field_float.html.twig
@@ -141,6 +142,7 @@ easy_admin:
                 field_boolean: custom_template/field_boolean.html.twig
                 field_date: custom_template/field_date.html.twig
                 field_datetime: custom_template/field_datetime.html.twig
+                field_datetime_locale: custom_template/field_datetime_locale.html.twig
                 field_datetimetz: custom_template/field_datetimetz.html.twig
                 field_decimal: custom_template/field_decimal.html.twig
                 field_float: custom_template/field_float.html.twig

@@ -369,6 +369,8 @@ easy_admin:
             field_date: '...'
             # Used to render datetime field types
             field_datetime: '...'
+            # Used to render datetime with locale field types
+            field_datetime_locale: '...'
             # Used to render datetimetz field types
             field_datetimetz: '...'
             # Used to render decimal field types

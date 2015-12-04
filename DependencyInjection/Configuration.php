@@ -290,6 +290,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('field_boolean')->info('Used to render boolean field types')->end()
                                 ->scalarNode('field_date')->info('Used to render date field types')->end()
                                 ->scalarNode('field_datetime')->info('Used to render datetime field types')->end()
+                                ->scalarNode('field_datetime_locale')->info('Used to render datetime with locale field types')->end()
                                 ->scalarNode('field_datetimetz')->info('Used to render datetimetz field types')->end()
                                 ->scalarNode('field_decimal')->info('Used to render decimal field types')->end()
                                 ->scalarNode('field_float')->info('Used to render float field types')->end()

@@ -11,7 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
-use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 
 /**
@@ -134,7 +134,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 $templateParameters['value'] = strval($value);
             }
 
-            if (in_array($fieldType, array('image'))) {
+            if ('image' === $fieldType) {
                 // absolute URLs (http or https) and protocol-relative URLs (//) are rendered unmodified
                 if (1 === preg_match('/^(http[s]?|\/\/).*/i', $value)) {
                     $imageUrl = $value;
@@ -150,7 +150,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
             }
 
-            if (in_array($fieldType, array('association')) && !$value instanceof PersistentCollection) {
+            if ('association' === $fieldType && $fieldMetadata['associationType'] & ClassMetadata::TO_ONE) {
                 $targetEntityClassName = $this->getClassShortName($fieldMetadata['targetEntity']);
                 $targetEntityConfig = $this->getEntityConfiguration($targetEntityClassName);
                 $targetEntityPrimaryKeyGetter = (null !== $targetEntityConfig) ? 'get'.ucfirst($targetEntityConfig['primary_key_field_name']) : null;

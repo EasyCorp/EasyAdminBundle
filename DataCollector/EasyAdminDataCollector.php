@@ -95,16 +95,20 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function dump($variable)
     {
+        $dumpedData = '';
         if (class_exists('Symfony\Component\VarDumper\Dumper\HtmlDumper')) {
             $cloner = new VarCloner();
             $dumper = new HtmlDumper();
 
-            return $dumper->dump($cloner->cloneVar($variable));
+            $dumper->dump($cloner->cloneVar($variable), $output = fopen('php://memory', 'r+b'));
+            $dumpedData = stream_get_contents($output, -1, 0);
         } elseif (class_exists('Symfony\Component\Yaml\Yaml')) {
-            return sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
+            $dumpedData = sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
         } else {
-            return sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));
+            $dumpedData = sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));
         }
+
+        return $dumpedData;
     }
 
     public function getName()

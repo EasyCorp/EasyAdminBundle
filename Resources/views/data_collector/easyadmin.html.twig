@@ -75,7 +75,7 @@
         <div class="tab">
             <h3 class="tab-title">Current Entity Configuration</h3>
             <div class="tab-content">
-                {{ collector.dump(collector.currentEntityConfiguration) }}
+                {{ collector.dump(collector.currentEntityConfiguration)|raw }}
             </div>
 
             <br>
@@ -89,12 +89,12 @@
                 {{ collector.dump({
                     'site_name': collector.backendConfiguration['site_name'],
                     'formats': collector.backendConfiguration['formats']
-                }) }}
+                })|raw }}
 
                 <h4>Design Configuration</h4>
                 {{ collector.dump({
                     'design': collector.backendConfiguration['design']
-                }) }}
+                })|raw }}
 
                 <h4>Actions Configuration</h4>
                 {{ collector.dump({
@@ -103,17 +103,17 @@
                     'edit': collector.backendConfiguration['edit'],
                     'new': collector.backendConfiguration['new'],
                     'show': collector.backendConfiguration['show'],
-                }) }}
+                })|raw }}
 
                 <h4>Entities Configuration</h4>
                 {{ collector.dump({
                     'entities': collector.backendConfiguration['entities']
-                }) }}
+                })|raw }}
 
                 <h4>Full Backend Configuration</h4>
                 {{ collector.dump({
                     'easy_admin': collector.backendConfiguration
-                }) }}
+                })|raw }}
             </div>
         </div>
     </div>

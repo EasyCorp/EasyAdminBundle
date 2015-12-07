@@ -20,7 +20,7 @@ env:
     - deps="no"
     - SYMFONY_VERSION=""
     - PHP_CS="no"
-    - SYMFONY_DEPRECATIONS_HELPER=weak
+    - SYMFONY_DEPRECATIONS_HELPER=strict
 
 matrix:
   fast_finish: true
@@ -32,16 +32,13 @@ matrix:
     - php: 5.6
       env: SYMFONY_VERSION=2.7.*
     - php: 5.6
-      env: SYMFONY_VERSION=2.8.* SYMFONY_DEPRECATIONS_HELPER=strict
+      env: SYMFONY_VERSION=2.8.*
     - php: 5.6
       env: SYMFONY_VERSION=3.0.* SYMFONY_DEPRECATIONS_HELPER=strict
-    - php: 5.6
-      env: SYMFONY_VERSION="dev-master as 3.1" SYMFONY_DEPRECATIONS_HELPER=strict
     - php: 5.6
       env: TWIG_VERSION="2.0.x-dev"
   allow_failures:
     - php: hhvm
-    - env: SYMFONY_VERSION="dev-master as 3.1"
     - env: TWIG_VERSION="2.0.x-dev"
 
 before_install:

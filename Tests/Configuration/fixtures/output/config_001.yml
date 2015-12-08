@@ -1,4 +1,4 @@
-class: AppBundle\Entity\TestEntity
+class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration\TestEntity
 label: TestEntity
 name: TestEntity
 edit:

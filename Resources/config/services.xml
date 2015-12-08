@@ -6,6 +6,7 @@
     <services>
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.configurator" />
+            <argument type="service" id="property_accessor" />
             <argument>%kernel.debug%</argument>
             <tag name="twig.extension" />
         </service>
@@ -13,7 +14,7 @@
         <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
             <argument>%easyadmin.config%</argument>
             <argument type="service" id="easyadmin.metadata_inspector" />
-            <argument type="service" id="easyadmin.property_reflector" />
+            <argument type="service" id="property_accessor" />
         </service>
 
         <service id="easyadmin.metadata_inspector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector" public="false">

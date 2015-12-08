@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Defines the filters and functions used to render the bundle's templates.
@@ -22,11 +23,13 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 class EasyAdminTwigExtension extends \Twig_Extension
 {
     private $configurator;
+    private $accessor;
     private $debug;
 
-    public function __construct(Configurator $configurator, $debug = false)
+    public function __construct(Configurator $configurator, PropertyAccessor $accessor, $debug = false)
     {
         $this->configurator = $configurator;
+        $this->accessor = $accessor;
         $this->debug = $debug;
     }
 
@@ -114,7 +117,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         $fieldName = $fieldMetadata['property'];
-        $value = (null !== $getter = $fieldMetadata['getter']) ? $item->{$getter}() : $item->{$fieldName};
+        $value = $this->accessor->getValue($item, $fieldName);
 
         try {
             $fieldType = $fieldMetadata['dataType'];

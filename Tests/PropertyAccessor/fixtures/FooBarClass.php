@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Reflection\fixtures;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\PropertyAccessor\fixtures;
 
 class FooBarClass
 {

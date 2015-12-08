@@ -390,11 +390,7 @@ class AdminController extends Controller
 
         $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $value));
 
-        if (null !== $setter = $fieldsMetadata[$property]['setter']) {
-            $entity->{$setter}($value);
-        } else {
-            $entity->{$property} = $value;
-        }
+        $this->get('property_accessor')->setValue($entity, $value);
 
         $this->em->persist($entity);
         $this->em->flush();

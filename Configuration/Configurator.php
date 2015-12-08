@@ -14,6 +14,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Completes the entities configuration with the information that can only be
@@ -66,11 +67,11 @@ class Configurator
         'time' => 'time',
     );
 
-    public function __construct(array $backendConfig, EntityMetadataInspector $inspector, ClassPropertyReflector $reflector)
+    public function __construct(array $backendConfig, EntityMetadataInspector $inspector, PropertyAccessor $accessor)
     {
         $this->backendConfig = $backendConfig;
         $this->inspector = $inspector;
-        $this->reflector = $reflector;
+        $this->accessor = $accessor;
     }
 
     /**
@@ -452,21 +453,14 @@ class Configurator
      */
     private function introspectGettersAndSetters($entityConfiguration)
     {
+        $instance = new $entityConfiguration['class'];
+
         foreach (array('new', 'edit', 'list', 'show', 'search') as $view) {
             $fieldsConfiguration = $entityConfiguration[$view]['fields'];
 
             foreach ($fieldsConfiguration as $fieldName => $fieldConfiguration) {
-                $getter = $this->reflector->getGetter($entityConfiguration['class'], $fieldName);
-                $fieldConfiguration['getter'] = $getter;
-
-                $setter = $this->reflector->getSetter($entityConfiguration['class'], $fieldName);
-                $fieldConfiguration['setter'] = $setter;
-
-                $isPublic = $this->reflector->isPublic($entityConfiguration['class'], $fieldName);
-                $fieldConfiguration['isPublic'] = $isPublic;
-
-                $fieldConfiguration['isReadable'] = $getter || $isPublic;
-                $fieldConfiguration['isWritable'] = $setter || $isPublic;
+                $fieldConfiguration['isReadable'] = $this->accessor->isReadable($instance , $fieldName);
+                $fieldConfiguration['isWritable'] = $this->accessor->isWritable($instance, $fieldName);
 
                 $entityConfiguration[$view]['fields'][$fieldName] = $fieldConfiguration;
             }

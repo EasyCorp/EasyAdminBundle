@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-07T20:48:50Z
+
+@ogizanagi your fix looks great. However, there seems to be an error with PHP CS Fixer and PHP 5.3. But I cannot see the details, only a "Segmentation fault" error message :disappointed:
+
+![segmentation_fault](https://cloud.githubusercontent.com/assets/73419/11639279/36fb5f54-9d2c-11e5-92f1-434986d33168.png)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-07T20:59:29Z
+
+@javiereguiluz : yeah... I saw that :confused:
+The same happened [on my own fork's Travis](https://travis-ci.org/ogizanagi/EasyAdminBundle/builds/95427749). So I doubt this is only bad luck.
+But I can't actually figure out from where it comes, and once again, I doubt this is related to those changes... :/
+
+All I know is that 139 exit code stands for `Segmentation violation`, which we already know thanks to the `Segmentation fault` message above, and doesn't help much...
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-07T21:23:05Z
+
+@javiereguiluz : We could switch to StyleCI for CS checks.
+But as you can see [here](https://styleci.io/analyses/8ArBPX) and in https://github.com/ogizanagi/EasyAdminBundle/pull/1, it seems there is some extra rules I can't figure out how to disable (I don't know [which fixers](https://styleci.readme.io/docs/fixers) are incriminated)

@@ -34,7 +34,7 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
         $inspectorStub->method('getEntityMetadata')->willReturn($entityMetadataStub);
         $this->inspector = $inspectorStub;
 
-        $accessorStub = $this->getMockBuilder('Symfony\Component\PropertyAccess\PropertyAccessor')->disableOriginalConstructor()->getMock();
+        $accessorStub = $this->getMockBuilder('Symfony\Component\PropertyAccess\PropertyAccessor')->getMock();
         $this->accessor = $accessorStub;
     }
 
@@ -45,8 +45,10 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     {
         $backendConfig = Yaml::parse(file_get_contents($inputFixtureFilepath));
         $backendConfig['easy_admin']['entities'] = $this->extension->getEntitiesConfiguration($backendConfig['easy_admin']['entities']);
+
         $configurator = new Configurator($backendConfig['easy_admin'], $this->inspector, $this->accessor);
         $configuration = $configurator->getEntityConfiguration('TestEntity');
+
         // Yaml component dumps empty arrays as hashes, fix it to increase configuration readability
         $yamlConfiguration = str_replace('{  }', '[]', Yaml::dump($configuration));
 
@@ -82,4 +84,9 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
         $configurator = new Configurator($backendConfig, $this->inspector, $this->accessor);
         $configurator->getEntityConfiguration('UnmanagedEntity');
     }
+}
+
+
+class TestEntity {
+    // empty class needed for test fixtures
 }

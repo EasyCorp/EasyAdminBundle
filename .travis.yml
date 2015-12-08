@@ -34,7 +34,7 @@ matrix:
     - php: 5.6
       env: SYMFONY_VERSION=2.8.*
     - php: 5.6
-      env: SYMFONY_VERSION=3.0.* SYMFONY_DEPRECATIONS_HELPER=strict
+      env: SYMFONY_VERSION=3.0.*
     - php: 5.6
       env: TWIG_VERSION="2.0.x-dev"
   allow_failures:
@@ -53,13 +53,13 @@ before_install:
 install:
   - if [[ "$PHP_CS" == "yes" ]]; then curl http://get.sensiolabs.org/php-cs-fixer.phar -o php-cs-fixer; fi;
   - if [[ "$skip" != "yes" ]]; then composer update --prefer-dist --no-interaction $COMPOSER_FLAGS; fi
-  - if [[ "$skip" != "yes" && "$SYMFONY_VERSION" == "2.8.*" && "$TRAVIS_PHP_VERSION" == 7.0 ]]; then composer require --dev satooshi/php-coveralls:~0.6; fi
+  - if [[ "$skip" != "yes" && "$TRAVIS_PHP_VERSION" == 7.0 ]]; then composer require --dev satooshi/php-coveralls:~0.6; fi
 
 script:
-  - if [[ "$skip" != "yes" && "$SYMFONY_VERSION" == "2.8.*" && "$TRAVIS_PHP_VERSION" == 7.0 ]]; then phpunit --coverage-text --coverage-clover build/logs/clover.xml; else if [[ "$skip" != "yes" ]]; then phpunit; fi; fi
+  - if [[ "$skip" != "yes" && "$TRAVIS_PHP_VERSION" == 7.0 ]]; then phpunit --coverage-text --coverage-clover build/logs/clover.xml; else if [[ "$skip" != "yes" ]]; then phpunit; fi; fi
   - if [[ "$skip" = "yes" ]]; then echo "Skipping matrix entry for pull requests"; fi
   - if [[ "$PHP_CS" == "yes" ]]; then php php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
   - if [[ "$PHP_CS" == "yes" ]]; then mv ./.php_cs.cache $HOME/.app/cache/.php_cs.cache; fi;
 
 after_success: |
-    if [[ "$SYMFONY_VERSION" == "2.8.*" ]]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;
+    if [[ "$TRAVIS_PHP_VERSION" == 7.0 ]]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;

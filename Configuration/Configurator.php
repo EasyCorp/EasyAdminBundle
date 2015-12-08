@@ -13,7 +13,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
-use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -28,7 +27,7 @@ class Configurator
     private $backendConfig = array();
     private $entitiesConfig = array();
     private $inspector;
-    private $reflector;
+    private $accessor;
     private $defaultEntityFields = array();
 
     private $defaultEntityFieldConfiguration = array(

@@ -156,22 +156,22 @@ class EasyAdminTwigExtension extends \Twig_Extension
             if ('association' === $fieldType && ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE)) {
                 $targetEntityClassName = $this->getClassShortName($fieldMetadata['targetEntity']);
                 $targetEntityConfig = $this->getEntityConfiguration($targetEntityClassName);
-                $targetEntityPrimaryKeyGetter = (null !== $targetEntityConfig) ? 'get'.ucfirst($targetEntityConfig['primary_key_field_name']) : null;
+                $primaryKeyIsReadable = $this->accessor->isReadable($value, $targetEntityConfig['primary_key_field_name']);
 
                 // get the most appropriate string representation for the
                 // associated value (this depends on the target entity methods)
                 if (method_exists($value, '__toString')) {
                     $templateParameters['value'] = (string) $value;
-                } elseif (method_exists($value, $targetEntityPrimaryKeyGetter)) {
-                    $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $value->$targetEntityPrimaryKeyGetter());
+                } elseif ($primaryKeyIsReadable) {
+                    $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $this->accessor->getValue($value, $targetEntityConfig['primary_key_field_name']));
                 } else {
-                    $templateParameters['value'] = $this->getClassShortName(get_class($value));
+                    $templateParameters['value'] = $targetEntityClassName;
                 }
 
                 // if the target entity has a primary key getter, it's displayed
                 // as a link pointing to its 'show' view
-                if (method_exists($value, $targetEntityPrimaryKeyGetter)) {
-                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'view' => $view, 'id' => $value->$targetEntityPrimaryKeyGetter());
+                if ($primaryKeyIsReadable) {
+                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'view' => $view, 'id' => $this->accessor->getValue($value, $targetEntityConfig['primary_key_field_name']));
                 }
             }
 

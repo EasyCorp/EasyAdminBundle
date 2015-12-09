@@ -1,0 +1,51 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-07T13:32:59Z
+
+IIRC, SF2.7 uses the `dump` method which makes use of the great Debug component, this is why we don't have this issue in SF2.3
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-07T13:50:42Z
+
+@Pierstoval : My bad. You're right. What induced me in error is that the `dump` method of the `HtmlDumper` doesn't return anything. So this `return` is useless [here](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/DataCollector/EasyAdminDataCollector.php#L102), and nothing has to be marked as safe then when the `var-dumper` component is used.
+Thanks for giving me the right track! :)
+
+So this PR is still needed for 2.3 OR if the `symfony/var-dumper` component is unavailable.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-07T13:56:31Z
+
+Can't a simple `<pre>` tag solve the issue?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-07T14:16:23Z
+
+@Pierstoval : There is already a `<pre>` tag. But anyway, this tag won't mark the string as safe ^^'
+
+Here is my suggestion in ba0b1ab to make the behavior of `EasyAdminDataCollector::dump` consistent (i.e: always return a string instead of using `php://output` directly in case of the `symfony/var-dumper`).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-07T18:58:06Z
+
+@ogizanagi thanks for investigating this issue and for providing a very nice solution!
+
+What I don't understand is the error showed by Travis:
+
+![test_error](https://cloud.githubusercontent.com/assets/73419/11636512/c5a4efa0-9d1c-11e5-854d-1dfd4f79afe4.png)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-07T19:02:30Z
+
+@javiereguiluz : This isn't related and is here since days (you can see the same for other PRs).
+I haven't dig into it yet, but it seems that the `ChoiceView` class has changed of namespace. I don't know yet if it's a Symfony issue, or us failing to comply something.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-07T19:03:29Z
+
+@ogizanagi thanks, I'm going to investigate it right now.

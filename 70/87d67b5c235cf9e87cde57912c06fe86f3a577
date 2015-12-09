@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-09T20:59:04Z
+
+Thanks for this nice change. The `PersistentCollection` check not only was ugly since day one but it also looked like a hack.

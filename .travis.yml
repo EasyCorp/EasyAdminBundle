@@ -20,7 +20,7 @@ env:
     - deps="no"
     - SYMFONY_VERSION=""
     - PHP_CS="no"
-    - SYMFONY_DEPRECATIONS_HELPER=strict
+    - SYMFONY_DEPRECATIONS_HELPER=weak
 
 matrix:
   fast_finish: true
@@ -43,6 +43,7 @@ matrix:
 
 before_install:
   - if [[ "$TRAVIS_PHP_VERSION" =~ 5.3 ]] && [[ "$COMPOSER_FLAGS" != "--prefer-lowest" ]]; then export PHP_CS="no"; fi;
+  - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == "3.0.*" ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
   - if [[ "$PHP_CS" == "yes" ]]; then mv $HOME/.app/cache/.php_cs.cache ./.php_cs.cache 2>/dev/null || true; fi;
   - if [[ "$SYMFONY_VERSION" = "" ]] && [[ "$TWIG_VERSION" = "" ]] && [[ "$TRAVIS_PHP_VERSION" =~ 5.[45] ]] && [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then export skip="yes"; fi;
   - if [[ "$skip" != "yes" ]]; then composer selfupdate; fi

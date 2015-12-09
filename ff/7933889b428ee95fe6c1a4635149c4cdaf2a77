@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-07T20:32:42Z
+
+@xabbuh I have a question: is it a common practice to add the `dev-master` version of Symfony in the test matrix (and allow it to fail) or is it better to leave it out for now until the next Symfony version release is closer? Thanks.
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-12-07T20:35:14Z
+
+@javiereguiluz I think that's simply a matter of taste. Personally I would not use it yet to keep the build matrix smaller (and thus gaining faster builds).
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-07T20:50:42Z
+
+Is it feasible to (and should we) execute the code coverage on the PHP7 build in order to make it faster ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-07T20:51:44Z
+
+@ogizanagi I'm going to try to do that. Let's see if it works.

@@ -64,8 +64,7 @@ class EasyAdminFormType extends AbstractType
             $formFieldOptions = $metadata['type_options'];
 
             if ('association' === $metadata['type']) {
-                $toManyAssociations = array(ClassMetadata::ONE_TO_MANY, ClassMetadata::MANY_TO_MANY);
-                if (in_array($metadata['associationType'], $toManyAssociations)) {
+                if ($metadata['associationType'] & ClassMetadata::TO_MANY) {
                     $formFieldOptions['attr']['multiple'] = true;
                 }
 

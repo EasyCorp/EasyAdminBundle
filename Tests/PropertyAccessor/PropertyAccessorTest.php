@@ -24,6 +24,10 @@ class PropertyAccessorTest extends \PHPUnit_Framework_TestCase
         $accessor = new PropertyAccessor();
         $object = new FooBarClass();
 
+        if (!method_exists($accessor, 'isWritable')) {
+            $this->markTestSkipped('PropertyAccessor::isWritable method is not available in Symfony 2.3.');
+        }
+
         $this->assertSame($expectedResult, $accessor->isWritable($object, $property));
     }
 
@@ -82,6 +86,10 @@ class PropertyAccessorTest extends \PHPUnit_Framework_TestCase
     {
         $accessor = new PropertyAccessor();
         $object = new FooBarClass();
+
+    if (!method_exists($accessor, 'isReadable')) {
+            $this->markTestSkipped('PropertyAccessor::isReadable method is not available in Symfony 2.3.');
+        }
 
         $this->assertSame($expectedResult, $accessor->isReadable($object, $property));
     }

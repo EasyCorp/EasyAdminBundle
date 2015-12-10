@@ -164,7 +164,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 } else {
                     try {
                         // if the target entity has a readable primary key, we
-                        // dsiplay a link pointing to its 'show' view
+                        // display a link pointing to its 'show' view
                         $primaryKeyValue = $this->accessor->getValue($value, $targetEntityConfig['primary_key_field_name']);
                         $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
                         $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'view' => $view, 'id' => $primaryKeyValue);

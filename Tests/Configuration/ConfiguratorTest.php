@@ -21,7 +21,6 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
 {
     private $extension;
     private $inspector;
-    private $reflector;
 
     public function setUp()
     {
@@ -33,9 +32,6 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
         $inspectorStub = $this->getMockBuilder('JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector')->disableOriginalConstructor()->getMock();
         $inspectorStub->method('getEntityMetadata')->willReturn($entityMetadataStub);
         $this->inspector = $inspectorStub;
-
-        $reflectorStub = $this->getMockBuilder('JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector')->disableOriginalConstructor()->getMock();
-        $this->reflector = $reflectorStub;
     }
 
     /**
@@ -45,8 +41,10 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     {
         $backendConfig = Yaml::parse(file_get_contents($inputFixtureFilepath));
         $backendConfig['easy_admin']['entities'] = $this->extension->getEntitiesConfiguration($backendConfig['easy_admin']['entities']);
-        $configurator = new Configurator($backendConfig['easy_admin'], $this->inspector, $this->reflector);
+
+        $configurator = new Configurator($backendConfig['easy_admin'], $this->inspector);
         $configuration = $configurator->getEntityConfiguration('TestEntity');
+
         // Yaml component dumps empty arrays as hashes, fix it to increase configuration readability
         $yamlConfiguration = str_replace('{  }', '[]', Yaml::dump($configuration));
 
@@ -68,7 +66,7 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     public function testEmptyConfiguration()
     {
         $backendConfig = array('easy_admin' => null);
-        $configurator = new Configurator($backendConfig, $this->inspector, $this->reflector);
+        $configurator = new Configurator($backendConfig, $this->inspector);
         $configurator->getEntityConfiguration('TestEntity');
     }
 
@@ -79,7 +77,12 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     public function testAccessingAnUnmanagedEntity()
     {
         $backendConfig = array('easy_admin' => array('entities' => array('AppBundle\\Entity\\TestEntity')));
-        $configurator = new Configurator($backendConfig, $this->inspector, $this->reflector);
+        $configurator = new Configurator($backendConfig, $this->inspector);
         $configurator->getEntityConfiguration('UnmanagedEntity');
     }
+}
+
+
+class TestEntity {
+    // empty class needed for test fixtures
 }

@@ -1,0 +1,52 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2015-12-08T22:05:31Z
+
+@javiereguiluz I guess this leads to improved performance too? https://github.com/symfony/symfony/pull/16838
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-08T22:06:27Z
+
+@yceruto probably. And less lines of code for us, less bugs, less maintenance, etc.  But first, let's try to make tests green for this change :smile:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-09T01:01:05Z
+
+I'm all in for this ! :+1:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-09T08:13:20Z
+
+:+1: , it makes me want time to go faster for 2.3 to reach end of life, to avoid all these workarounds :stuck_out_tongue:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-10T19:08:55Z
+
+I've refactored this code completely. It now supports 2.3, but I haven't added any BC layer. The problem is divided into two parts: read a value and set a value.
+
+Before we had an `introspectGettersAndSetters()` that set `isReadable`, `isWritable`, `getter`, `setter`, etc. for each property of each entity and for each view. This was necessary because we used a custom solution instead of the PropertyAccessor component. Now I've removed everything.
+
+1. When reading a value, we wrap the `readValue()` method in a `try ... catch` and we display the usual `Inaccessible` label for values that cannot be read. When we drop support for 2.3, we can replace the `try .. catch` by a proper `if .. $accessor->isReadable(...)`
+2. When writing a value (this only happens in the controller), we don't check if `isWritable` and we don't wrap it in a `try .. catch` That's because in this case we wan't to fail hard. Otherwise, if we fail silently, the user may think that the value was modified. If you try to edit a value which is not writable, the app should fail in a clear way.
+
+This change simplifies everything and shaves hundreds of lines of code. Thoughts?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-10T19:27:17Z
+
+@javiereguiluz : Those changes are fine to me, especially as it simplifies things a lot. But someone might have relied one those metadata. So this is potentially a BC break I guess.
+I would have opted for a decorated `PropertyAccessor` however, as suggested by @Pierstoval, in order to avoid [this try/catch](https://github.com/javiereguiluz/EasyAdminBundle/pull/625/files#diff-0c199003d2370f3ea2800f894b951396R165) over a simple if, and smooth the upgrade path when we'll drop 2.3 support.
+I agree about hard failing when writing values.
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-10T21:02:53Z
+
+Fixed all the details and added a note in the UPGRADE file (in c7c6331)

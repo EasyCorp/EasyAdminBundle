@@ -156,7 +156,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
             if ('association' === $fieldType && ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE)) {
                 $targetEntityClassName = $this->getClassShortName($fieldMetadata['targetEntity']);
                 $targetEntityConfig = $this->getEntityConfiguration($targetEntityClassName);
-                $primaryKeyIsReadable = $this->accessor->isReadable($value, $targetEntityConfig['primary_key_field_name']);
 
                 // get the most appropriate string representation for the
                 // associated value (this depends on the target entity methods)

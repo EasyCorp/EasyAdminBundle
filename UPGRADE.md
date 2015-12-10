@@ -5,8 +5,8 @@ This document describes the backwards incompatible changes introduced by each
 EasyAdminBundle version and the needed changes to be made before upgrading to
 the next version.
 
-Upgrade to 2.0.0
-----------------
+Upgrade to 2.0.0 (XX/XXX/2016)
+------------------------------
 
  * The route used to generate every backend URL is now called `easyadmin` instead
    of `admin`. This change has been introduce to prevent collisions with your
@@ -15,8 +15,22 @@ Upgrade to 2.0.0
    In order to upgrade, you just need to replace `admin` by `easyadmin` in all
    `path()`, `generateUrl()` and `redirectToRoute()` calls.
 
-Upgrade to 1.9.2
-----------------
+Upgrade to 1.9.5 (XX/XXX/2015)
+------------------------------
+
+ * The `isReadable` and `isWritable` options are no longer available for each
+   property metadata. These options were needed when we introspected the getters
+   and setters of the properties ourselves. We now use the Symfony PropertyAccessor
+   component to get and set values for entity properties.
+
+ * The `Configurator::introspectGettersAndSetters()` method, the
+   `Reflection/ClassPropertyReflector` class and the `easyadmin.property_reflector`
+   service have been deleted and replaced by the use of the `PropertyAccessor`
+   class, its `getValue()` and `setValue()` methods and the `@property_accessor`
+   service.
+
+Upgrade to 1.9.2 (24/November/2015)
+-----------------------------------
 
  * The `render404error()` utility method has been removed from `AdminController`.
    This method was no longer used since we started throwing custom exceptions
@@ -27,8 +41,8 @@ Upgrade to 1.9.2
    the value of boolean properties. It has been replaced by a private method
    called `updateEntityProperty()`.
 
-Upgrade to 1.8.0
-----------------
+Upgrade to 1.8.0 (8/November/2015)
+----------------------------------
 
 The options that define if a entity property is readable and/or writable have
 changed their name to match the names used by Symfony:
@@ -46,8 +60,8 @@ $propertyMetadata['isWritable'];
 This only affects you if you make a very advance use of the bundle and override
 lots of its functionalities.
 
-Upgrade to 1.5.5
-----------------
+Upgrade to 1.5.5 (22/June/2015)
+-------------------------------
 
 In order to improve the consistency of the backend design, all CSS class names
 have been updated to use dashes instead of underscores, to match the syntax
@@ -66,8 +80,8 @@ has changed:
 
 All these changes only affect you if your backend uses a custom stylesheet.
 
-Upgrade to 1.5.3
-----------------
+Upgrade to 1.5.3 (26/May/2015)
+------------------------------
 
 The `class` option has been renamed to `css_class`.
 
@@ -97,8 +111,8 @@ easy_admin:
             - { property: 'id', css_class: 'col-md-12' }
 ```
 
-Upgrade to 1.5.0
-----------------
+Upgrade to 1.5.0 (17/May/2015)
+------------------------------
 
 ### Some methods used to tweak AdminController behaviour have changed
 
@@ -192,8 +206,8 @@ This variable has been renamed to `entity` for better understandability.
 
 Be sure that you did not override these variables, if so, you just have to change the name.
 
-Upgrade to 1.4.0
-----------------
+Upgrade to 1.4.0 (1/May/2015)
+-----------------------------
 
 These changes affect you only if you have customized any of the following
 templates in your backend:

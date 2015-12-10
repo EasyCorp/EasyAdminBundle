@@ -87,7 +87,7 @@ class PropertyAccessorTest extends \PHPUnit_Framework_TestCase
         $accessor = new PropertyAccessor();
         $object = new FooBarClass();
 
-    if (!method_exists($accessor, 'isReadable')) {
+        if (!method_exists($accessor, 'isReadable')) {
             $this->markTestSkipped('PropertyAccessor::isReadable method is not available in Symfony 2.3.');
         }
 

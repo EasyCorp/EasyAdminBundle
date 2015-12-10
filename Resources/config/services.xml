@@ -14,7 +14,6 @@
         <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
             <argument>%easyadmin.config%</argument>
             <argument type="service" id="easyadmin.metadata_inspector" />
-            <argument type="service" id="property_accessor" />
         </service>
 
         <service id="easyadmin.metadata_inspector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector" public="false">

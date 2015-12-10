@@ -111,13 +111,13 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
         $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
+        $fieldName = $fieldMetadata['property'];
 
-        if (!$fieldMetadata['isReadable']) {
+        try {
+            $value = $this->accessor->getValue($item, $fieldName);
+        } catch(\Exception $e) {
             return $twig->render($entityConfiguration['templates']['label_inaccessible'], array('view' => $view));
         }
-
-        $fieldName = $fieldMetadata['property'];
-        $value = $this->accessor->getValue($item, $fieldName);
 
         try {
             $fieldType = $fieldMetadata['dataType'];
@@ -162,16 +162,18 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 // associated value (this depends on the target entity methods)
                 if (method_exists($value, '__toString')) {
                     $templateParameters['value'] = (string) $value;
-                } elseif ($primaryKeyIsReadable) {
-                    $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $this->accessor->getValue($value, $targetEntityConfig['primary_key_field_name']));
                 } else {
-                    $templateParameters['value'] = $targetEntityClassName;
-                }
-
-                // if the target entity has a primary key getter, it's displayed
-                // as a link pointing to its 'show' view
-                if ($primaryKeyIsReadable) {
-                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'view' => $view, 'id' => $this->accessor->getValue($value, $targetEntityConfig['primary_key_field_name']));
+                    try {
+                        // if the target entity has a readable primary key, we
+                        // dsiplay a link pointing to its 'show' view
+                        $primaryKeyValue = $this->accessor->getValue($value, $targetEntityConfig['primary_key_field_name']);
+                        $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
+                        $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'view' => $view, 'id' => $primaryKeyValue);
+                    } catch(\Exception $e) {
+                        // if the primary key value is not readable, just use the class name
+                        // we can't use the $accessor->isReadable() method because it's not available in 2.3 version
+                        $templateParameters['value'] = $targetEntityClassName;
+                    }
                 }
             }
 

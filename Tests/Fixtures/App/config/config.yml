@@ -1,5 +1,5 @@
 # Basic config common to all functional tests
-# Can be easily overriden in each test config
+# Can be easily overridden in each test config
 parameters:
     locale: en
     database_path: %kernel.root_dir%/../../../build/test.db

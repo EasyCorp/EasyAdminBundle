@@ -736,8 +736,14 @@ class AdminController extends Controller
         if (!method_exists($this, $methodName)) {
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }
-
-        return call_user_func_array(array($this, $methodName), $arguments);
+		
+        $result = call_user_func_array(array($this, $methodName), $arguments);
+        
+        if (false === $result) {
+        	throw new \Exception(sprintf('The class %s does not have a method "%s".', get_class($this), $methodName));
+        }
+		
+        return $result;
     }
 
     /**

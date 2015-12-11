@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OverridingEasyAdminController extends Controller
 {
-
     /**
      * @Route("/override_layout", name="override_layout")
      * @return Response
@@ -18,5 +17,4 @@ class OverridingEasyAdminController extends Controller
     {
         return $this->render('override_templates/layout.html.twig');
     }
-
 }

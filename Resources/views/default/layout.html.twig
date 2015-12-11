@@ -83,7 +83,7 @@
         <div id="content" class="col-lg-10 col-lg-offset-2">
             {% block content %}
                 {% block flash_messages %}
-                    {{ include(_entity_config.templates.flash_messages) }}
+                    {{ _entity_config is defined ? include(_entity_config.templates.flash_messages) }}
                 {% endblock flash_messages %}
 
                 <div class="row">

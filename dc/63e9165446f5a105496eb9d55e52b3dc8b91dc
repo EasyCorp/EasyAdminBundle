@@ -1,0 +1,20 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-13T21:26:41Z
+
+AMAZING!! Thanks @ogizanagi. Just a question ... should we add this config in `config_test.yml` instead of `config.yml`?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-13T21:36:23Z
+
+@javiereguiluz : It won't work, because `BackendErrorsTest::testUndefinedEntityError`, which is one of the tests incriminated, doesn't load the `config_test.yml` file. Indeed, the used environment is set to `default_backend`, so `config_default_backend.yml` is used instead.
+
+I don't know if this is fully expected, nor if it should rather be in `config_default_backend.yml`, but let me know if it is :)
+But then it should also be in `config_read_only_backend.yml` as it is required for the `ReadOnlyBackendTest::testEditActionIsDisabled` test.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-13T21:38:17Z
+
+@ogizanagi you are right. Sorry for the "noise". I'm going to merge your great pull request right away.

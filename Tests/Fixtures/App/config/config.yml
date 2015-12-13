@@ -36,5 +36,5 @@ security:
              memory: ~
 
 services:
-  logger:
-    class: Psr\Log\NullLogger
+    logger:
+        class: Psr\Log\NullLogger

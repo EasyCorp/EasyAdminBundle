@@ -11,8 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
 
 class AdminController extends EasyAdminController

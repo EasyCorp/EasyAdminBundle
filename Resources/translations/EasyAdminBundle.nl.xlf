@@ -5,7 +5,7 @@
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
-                <target>Maak nieuw %entity_name%</target>
+                <target>Maak nieuw(e) %entity_name%</target>
             </trans-unit>
             <trans-unit id="show.page_title">
                 <source>show.page_title</source>
@@ -58,6 +58,40 @@
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> van <strong>%results%</strong>]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Ja</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>Nee</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Leeg</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Niets</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Laat leeg</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>PHP Object</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Niet toegankelijk</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Getter bestaat niet voor dit veld of de eigenschap is niet public</target>
+            </trans-unit>
+
             <!-- misc. elements -->
             <trans-unit id="header.close">
                 <source>header.close</source>
@@ -74,6 +108,22 @@
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
                 <target>Deze actie kan niet ongedaan worden gemaakt.</target>
+            </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Voeg een item toe</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Voeg nog een item toe</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Verwijder dit item</target>
+            </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>Fout|Fouten</target>
             </trans-unit>
         </body>
     </file>

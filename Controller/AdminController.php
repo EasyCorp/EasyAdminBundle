@@ -733,7 +733,7 @@ class AdminController extends Controller
     private function executeDynamicMethod($methodNamePattern, array $arguments = array())
     {
         $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
-        if (!method_exists($this, $methodName)) {
+        if (!is_callable(array($this, $methodName))) {
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }
 

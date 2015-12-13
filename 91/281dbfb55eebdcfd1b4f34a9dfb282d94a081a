@@ -1,0 +1,53 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-11T10:33:04Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-11T10:33:20Z
+
+I'm gonna write tests for this, because there will be many other edge cases in the future maybe
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-11T11:05:47Z
+
+I added a single test for now, I can't make `list` work right now but we may add it later. It's a simple override that allows to check whether the layout is overridable without constraint so people can use EasyAdmin's layout without all EasyAdmin's logic to be copied/pasted.
+Let's wait for travis build to check it's working :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-11T11:15:57Z
+
+Just wondering: does your test really need to perform a request ? Isn't testing the template rendering enough, considering the fact we want to be able to render a template inheriting EasyAdmin's layout independently of the request (not an easyadmin's one for instance) ?
+
+(But maybe it is better as you did, in terms of "intentional programming")
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-11T11:24:00Z
+
+I think it's better to perform a request because almost all the templates need for a request to make many checks, and even if it'd be more "test-friendly" to test only the template, I'm thinking only in functional terms, so we need a request for this.
+
+Plus, list wouldn't be testable outside a request, so it's a good bootstrap :D
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-11T11:27:37Z
+
+I'm not sure we should encourage to extend the `list.html.twig` layout anyway. I think the main layout is enough if you just want to reuse the EasyAdmin theme in other parts of your application.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-11T14:25:13Z
+
+You're right, we'll often override only the layout, but I was just looking for places where to put more and more tests :stuck_out_tongue:
+Anyway, the PR sounds good to me right now, if @javiereguiluz agrees ;)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-11T14:27:15Z
+
+(I'm still so impressed that one line modification induces 70 lines of test :laughing: )

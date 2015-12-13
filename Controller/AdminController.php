@@ -382,9 +382,9 @@ class AdminController extends Controller
     private function updateEntityProperty($entity, $property, $value)
     {
         $entityConfig = $this->entity;
-        $fieldsMetadata = $entityConfig['list']['fields'];
 
-        if (!$fieldsMetadata[$property]['isWritable']) {
+        // the method_exists() check is needed because Symfony 2.3 doesn't have isWritable() method
+        if (method_exists($this->get('property_accessor'), 'isWritable') && $this->get('property_accessor')->isWritable($entity, $property)) {
             throw new \Exception(sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
         }
 

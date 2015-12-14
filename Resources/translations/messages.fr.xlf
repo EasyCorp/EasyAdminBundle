@@ -35,6 +35,10 @@
                 <source>action.list</source>
                 <target>Retour à la liste</target>
             </trans-unit>
+            <trans-unit id="form.label.empty_value">
+                <source>form.label.empty_value</source>
+                <target>Aucun(e)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

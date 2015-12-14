@@ -96,6 +96,15 @@ class EasyAdminFormType extends AbstractType
                 }
             }
 
+            // Configure "placeholder" option for entity fields
+            if ('association' === $metadata['type']
+                && ($metadata['associationType'] & ClassMetadata::TO_ONE)
+                && !isset($formFieldOptions[$placeHolderOptionName = $this->getPlaceholderOptionName()])
+                && false === $formFieldOptions['required']
+            ) {
+                $formFieldOptions[$placeHolderOptionName] = 'form.label.empty_value';
+            }
+
             $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];
             $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
             $formFieldOptions['attr']['field_help'] = $metadata['help'];
@@ -212,5 +221,16 @@ class EasyAdminFormType extends AbstractType
     private function useLegacyFormComponent()
     {
         return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
+    }
+
+    /**
+     * BC for Sf < 2.6
+     *
+     * The "empty_value" option in the types "choice", "date", "datetime" and "time"
+     * was deprecated in 2.6 and replaced by a new option "placeholder".
+     */
+    private function getPlaceholderOptionName()
+    {
+        return version_compare(Kernel::VERSION, '2.6.0', '>=') ? 'placeholder' : 'empty_value';
     }
 }

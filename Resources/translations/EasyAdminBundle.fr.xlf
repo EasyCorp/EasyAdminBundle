@@ -13,7 +13,7 @@
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>
-                <target>%entity_name% (#%entity_id%)</target>
+                <target>Modifier %entity_name% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="list.page_title">
                 <source>list.page_title</source>
@@ -66,6 +66,30 @@
             <trans-unit id="label.false">
                 <source>label.false</source>
                 <target>Non</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Vide</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Aucun(e)</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Laisser vide</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>Objet PHP</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Inaccessible</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Aucun accesseur n'existe pour cette propriété ou celle-ci n'est pas publique.</target>
             </trans-unit>
 
             <!-- misc. elements -->

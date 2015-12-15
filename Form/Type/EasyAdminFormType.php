@@ -195,15 +195,19 @@ class EasyAdminFormType extends AbstractType
     private function getFormTypeFqcn($shortType)
     {
         $typeNames = array(
-            'base', 'birthday', 'button', 'checkbox', 'choice', 'collection',
-            'country', 'currency', 'datetime', 'date', 'email', 'file', 'form',
-            'hidden', 'integer', 'language', 'money', 'number', 'password',
-            'percent', 'radio', 'repeated', 'reset', 'search', 'submit',
-            'textarea', 'text', 'time', 'timezone', 'url',
+            'birthday', 'button', 'checkbox', 'choice', 'collection', 'country',
+            'currency', 'datetime', 'date', 'email', 'entity', 'file', 'form',
+            'hidden', 'integer', 'language', 'locale', 'money', 'number',
+            'password', 'percent', 'radio', 'range', 'repeated', 'reset',
+            'search', 'submit', 'textarea', 'text', 'time', 'timezone', 'url',
         );
 
         if (!in_array($shortType, $typeNames)) {
             return $shortType;
+        }
+
+        if ('entity' === $shortType) {
+            return 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType';
         }
 
         // take into account the irregular class name for 'datetime' type

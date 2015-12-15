@@ -663,7 +663,7 @@ class EasyAdminExtension extends Extension
     private function ensureBackwardCompatibility(ContainerBuilder $container)
     {
         // BC for Symfony 2.3 and Request Stack
-        $isRequestStackAvailable = version_compare(Kernel::VERSION, '2.4.0', '>=');
+        $isRequestStackAvailable = class_exists('Symfony\\Component\\HttpFoundation\\RequestStack');
         if (!$isRequestStackAvailable) {
             $needsSetRequestMethodCall = array('easyadmin.listener.request_post_initialize', 'easyadmin.form.type.extension');
             foreach ($needsSetRequestMethodCall as $serviceId) {

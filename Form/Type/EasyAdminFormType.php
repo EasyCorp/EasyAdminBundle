@@ -208,7 +208,7 @@ class EasyAdminFormType extends AbstractType
 
         return 'entity' === $shortType ? 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType'
             : 'datetime' === $shortType ? 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType'
-            : sprintf('Symfony\\Component\\Form\\Extension\\Core\\Type\\%sType', $typeClassName);
+            : sprintf('Symfony\\Component\\Form\\Extension\\Core\\Type\\%sType', ucfirst($shortType));
     }
 
     /**

@@ -81,7 +81,8 @@ class EasyAdminFormType extends AbstractType
                     $formFieldOptions['allow_delete'] = true;
                 }
 
-                if (version_compare(Kernel::VERSION, '2.5.0', '>=')) {
+                // The "delete_empty" option exists as of Sf >= 2.5
+                if (class_exists('Symfony\\Component\\Form\\FormErrorIterator')) {
                     if (!isset($formFieldOptions['delete_empty'])) {
                         $formFieldOptions['delete_empty'] = true;
                     }
@@ -228,9 +229,13 @@ class EasyAdminFormType extends AbstractType
      *
      * The "empty_value" option in the types "choice", "date", "datetime" and "time"
      * was deprecated in 2.6 and replaced by a new option "placeholder".
+     *
+     * @return string
      */
     private function getPlaceholderOptionName()
     {
-        return version_compare(Kernel::VERSION, '2.6.0', '>=') ? 'placeholder' : 'empty_value';
+        return defined('Symfony\\Component\\Form\\Extension\\Validator\\Constraints\\Form::NOT_SYNCHRONIZED_ERROR')
+            ? 'placeholder'
+            : 'empty_value';
     }
 }

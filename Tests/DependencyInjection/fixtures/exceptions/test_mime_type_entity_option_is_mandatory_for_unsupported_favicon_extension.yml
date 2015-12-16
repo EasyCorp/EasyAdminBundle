@@ -1,0 +1,8 @@
+# TEST
+# Favicon configuration: unsupported ext should throw an exception if mime_type option isn't provided
+
+# CONFIGURATION
+easy_admin:
+    design:
+        assets:
+            favicon: { path: 'favicon.bar' }

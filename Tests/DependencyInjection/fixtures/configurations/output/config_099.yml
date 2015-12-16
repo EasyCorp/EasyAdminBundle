@@ -8,6 +8,9 @@ easy_admin:
         assets:
             css: {  }
             js: {  }
+            favicon:
+                path: favicon.ico
+                mime_type: image/x-icon
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity

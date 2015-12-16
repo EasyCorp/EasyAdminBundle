@@ -19,7 +19,10 @@
             <link rel="stylesheet" href="{{ asset(css_asset) }}">
         {% endfor %}
 
-        <link rel="shortcut icon" type="image/png" href="/favicon.png">
+        {% block head_favicon %}
+            {% set favicon = easyadmin_config('design.assets.favicon') %}
+            <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}" />
+        {% endblock %}
 
         {% block head_javascript %}{% endblock %}
     </head>

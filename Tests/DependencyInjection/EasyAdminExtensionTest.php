@@ -62,6 +62,15 @@ class EasyAdminExtensionTest extends CommonPhpUnitTestCase
     }
 
     /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Invalid configuration for path "easy_admin.design.assets.favicon": The "mime_type" key is required as we were unable to guess it from the favicon extension.
+     */
+    public function testMimeTypeEntityOptionIsMandatoryForUnsupportedFaviconExtension()
+    {
+        $this->parseConfigurationFile(__DIR__.'/fixtures/exceptions/test_mime_type_entity_option_is_mandatory_for_unsupported_favicon_extension.yml');
+    }
+
+    /**
      * @expectedException RuntimeException
      * @expectedExceptionMessage The "TestEntity" entity must define its associated Doctrine entity class using the "class" option.
      */

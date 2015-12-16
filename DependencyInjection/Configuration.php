@@ -269,6 +269,40 @@ class Configuration implements ConfigurationInterface
                                     ->prototype('scalar')->end()
                                     ->info('The array of JavaScript assets to load in all backend pages.')
                                 ->end()
+                                ->arrayNode('favicon')
+                                    ->performNoDeepMerging()
+                                    ->addDefaultsIfNotSet()
+                                    ->info('The favicon to use in all backend pages.')
+                                    ->children()
+                                        ->scalarNode('path')->cannotBeEmpty()->defaultValue('favicon.ico')->end()
+                                        ->scalarNode('mime_type')->defaultValue('image/x-icon')->end()
+                                    ->end()
+                                    ->beforeNormalization()
+                                        ->always(function ($v) {
+                                            if (is_string($v)) {
+                                                $v = array('path' => $v);
+                                            }
+                                            $mimeTypes = array(
+                                                'ico' => 'image/x-icon',
+                                                'png' => 'image/png',
+                                                'gif' => 'image/gif',
+                                                'jpg' => 'image/jpeg',
+                                                'jpeg' => 'image/jpeg',
+                                            );
+                                            if (!isset($v['mime_type']) && isset($mimeTypes[$ext = pathinfo($v['path'], PATHINFO_EXTENSION)])) {
+                                                $v['mime_type'] = $mimeTypes[$ext];
+                                            } elseif (!isset($v['mime_type'])) {
+                                                $v['mime_type'] = null;
+                                            }
+
+                                            return $v;
+                                        })
+                                    ->end()
+                                    ->validate()
+                                        ->ifTrue(function ($v) { return empty($v['mime_type']); })
+                                        ->thenInvalid('The "mime_type" key is required as we were unable to guess it from the favicon extension.')
+                                    ->end()
+                                ->end()
                             ->end()
                         ->end()
 

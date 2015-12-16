@@ -7,6 +7,9 @@ easy_admin:
                 - //path/to/asset3.css
                 - 'http://exmaple.com/path/to/asset4.css'
             js: {  }
+            favicon:
+                path: favicon.ico
+                mime_type: image/x-icon
         theme: default
         color_scheme: dark
         brand_color: '#E67E22'

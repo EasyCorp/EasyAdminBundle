@@ -134,6 +134,9 @@ easy_admin:
         assets:
             css: {  }
             js: {  }
+            favicon:
+                path: favicon.ico
+                mime_type: image/x-icon
         theme: default
         color_scheme: dark
         brand_color: '#E67E22'

@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-16T21:01:02Z
+
+At first this feature looked like "too much" for such a minor gain. However, I think that for some people it may be important to have this feature. I personally always change the favicon in the backend layout to better differentiate it from the public site. So I'm gonna merge it and after that I'll add the documentation. Thanks @ogizanagi for proposing and implementing this feature.

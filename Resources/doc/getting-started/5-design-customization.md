@@ -171,7 +171,7 @@ easy_admin:
 ```
 
 The value of the `design.favicon` option is directly used as the value of the
-`href`attribute of the `<link rel="icon">` element of the backend's layout.
+`href` attribute of the `<link rel="icon">` element of the backend's layout.
 
 If your favicon uses an uncommon graphic format, you must define both the `path`
 of the favicon and its `mime_type`:

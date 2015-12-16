@@ -152,6 +152,39 @@ easy_admin:
     # ...
 ```
 
+Customizing the favicon
+-----------------------
+
+A nice trick for backends is to change their favicon to better differentiate
+the backend from the public website (this is specially useful when opening lots
+of tabs in your browser).
+
+If you want to apply this technique to your backends, just create the favicon
+image (using any common format: `.ico`, `.png`, `.gif`, `.jpg`) and set the
+`favicon` option:
+
+```yaml
+easy_admin:
+    design:
+        favicon: '/assets/backend/favicon.png'
+    # ...
+```
+
+The value of the `design.favicon` option is directly used as the value of the
+`href`attribute of the `<link rel="icon">` element of the backend's layout.
+
+If your favicon uses an uncommon graphic format, you must define both the `path`
+of the favicon and its `mime_type`:
+
+```yaml
+easy_admin:
+    design:
+        favicon:
+            path: '/assets/backend/favicon.xxx'
+            mime_type: 'image/xxx'
+    # ...
+```
+
 Adding Custom Web Assets
 ------------------------
 

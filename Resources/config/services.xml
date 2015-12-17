@@ -20,8 +20,6 @@
             <argument type="service" id="doctrine" />
         </service>
 
-        <service id="easyadmin.property_reflector" class="JavierEguiluz\Bundle\EasyAdminBundle\Reflection\ClassPropertyReflector" public="false" />
-
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
             <argument type="service" id="templating" />
             <argument type="string">easyadmin.listener.exception:showExceptionPageAction</argument>

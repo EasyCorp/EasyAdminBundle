@@ -167,5 +167,34 @@ This configuration makes the entity listing looks as follow:
 
 ![Action Icons in Entity Listing](../images/easyadmin-listing-actions-icon-only.png)
 
+Making the Backend Use a Different Language Than the Public Website
+-------------------------------------------------------------------
+
+Imagine that the public part of your website uses French as its default locale.
+EasyAdmin uses the same locale as the underlying Symfony application, so the
+backend would be displayed in French too. How could you define a different
+language for the backend?
+
+You just need to get the `translator` service and execute the `setLocale()` method
+befor executing the code of EasyAdmin. The easiest way to do that is to create
+a [custom admin controller] [override-admin-controller] and override the
+`initialize()` method as follows:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+
+class AdminController extends BaseAdminController
+{
+    protected function initialize(Request $request)
+    {
+        $this->get('translator')->setLocale('en');
+        parent::initialize();
+    }
+}
+```
+
 [override-admin-controller]: ./customizing-admin-controller.md
 [advanced-design-customization]: ./advanced-design-customization.md

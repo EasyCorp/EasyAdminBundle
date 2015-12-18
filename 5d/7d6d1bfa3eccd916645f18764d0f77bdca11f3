@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-17T20:38:51Z
+
+I would also propose to prepend the locale to the route path in the routing file, which sounds much better to me (I always use this prefix in multi-lang apps, it's very cool)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-17T21:19:21Z
+
+:+1: . I still think the event listener is better for decoupling & testability purpose (if the logic is more complex and is worth testing). The performance impact is insignificant (of course it'll depend on your app, but in most cases, insignificant).
+But for the record, this tip is perfect as it is in the EasyAdmin documentation !
+
+I like @Pierstoval suggestion too, but not sure it suits an admin backend (it's more a SEO thing). Instead I would rather see a language selector in the backend than dealing with the locale in the url (I'm not saying EasyAdmin should implement it, just allow to do it, and I think the `header_menu` and `header_footer` twig blocks allow to to that).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-18T11:31:24Z
+
+@ogizanagi It's not "only" a SEO thing, it's also much easier to do in development terms because adding the `_locale` parameter in any route will automatically set it up in the translator, and also, creating a "language toggler" in the menu becomes much easier because you can reuse all parameters of the current request and only change the `_locale` option.
+Indeed this parameter can be in the query string, but this is ugly, and does not update the translator.

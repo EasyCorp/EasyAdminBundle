@@ -93,7 +93,6 @@ easy_admin:
                 list: easy_admin/list.html.twig
                 new: '@EasyAdmin/default/new.html.twig'
                 show: '@EasyAdmin/default/show.html.twig'
-                form: '@EasyAdmin/default/form.html.twig'
                 flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
                 paginator: '@EasyAdmin/default/paginator.html.twig'
                 field_array: '@EasyAdmin/default/field_array.html.twig'
@@ -215,7 +214,6 @@ easy_admin:
                 list: easy_admin/AnotherTestEntity/list.html.twig
                 new: '@EasyAdmin/default/new.html.twig'
                 show: '@EasyAdmin/default/show.html.twig'
-                form: '@EasyAdmin/default/form.html.twig'
                 flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
                 paginator: '@EasyAdmin/default/paginator.html.twig'
                 field_array: '@EasyAdmin/default/field_array.html.twig'

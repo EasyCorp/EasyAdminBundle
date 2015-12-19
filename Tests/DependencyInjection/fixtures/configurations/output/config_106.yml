@@ -20,7 +20,6 @@ easy_admin:
             field_text: custom_global_template/field_text.html.twig
             field_time: custom_global_template/field_time.html.twig
             field_toggle: custom_global_template/field_toggle.html.twig
-            form: custom_global_template/form.html.twig
             label_empty: custom_global_template/label_empty.html.twig
             label_inaccessible: custom_global_template/label_inaccessible.html.twig
             label_null: custom_global_template/label_null.html.twig
@@ -64,7 +63,6 @@ easy_admin:
                 field_text: custom_entity_template/field_text.html.twig
                 field_time: custom_entity_template/field_time.html.twig
                 field_toggle: custom_entity_template/field_toggle.html.twig
-                form: custom_entity_template/form.html.twig
                 label_empty: custom_entity_template/label_empty.html.twig
                 label_inaccessible: custom_entity_template/label_inaccessible.html.twig
                 label_null: custom_entity_template/label_null.html.twig

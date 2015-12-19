@@ -44,22 +44,27 @@ Upgrade to 1.9.2 (24/November/2015)
 Upgrade to 1.8.0 (8/November/2015)
 ----------------------------------
 
-The options that define if a entity property is readable and/or writable have
-changed their name to match the names used by Symfony:
+ * The options that define if a entity property is readable and/or writable have
+   changed their name to match the names used by Symfony:
 
-```php
-// Before
-$propertyMetadata['canBeGet'];
-$propertyMetadata['canBeSet'];
+   ```php
+   // Before
+   $propertyMetadata['canBeGet'];
+   $propertyMetadata['canBeSet'];
 
-// After
-$propertyMetadata['isReadable'];
-$propertyMetadata['isWritable'];
-```
+   // After
+   $propertyMetadata['isReadable'];
+   $propertyMetadata['isWritable'];
+   ```
 
-This only affects you if you make a very advance use of the bundle and override
-lots of its functionalities.
+   This only affects you if you make a very advance use of the bundle and override
+   lots of its functionalities.
 
+ * The `form.html.twig` template has been removed and therefore, you cannot define
+   the `easy_admin.design.templates.form` to override it by your own template.
+   If you want to customize the forms of the backend, use a proper Symfony form
+   theme and enable it in the `easy_admin.design.form_theme` option.
+   
 Upgrade to 1.5.5 (22/June/2015)
 -------------------------------
 

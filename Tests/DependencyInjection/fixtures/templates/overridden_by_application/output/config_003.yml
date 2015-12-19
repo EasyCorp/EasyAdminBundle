@@ -20,7 +20,6 @@ easy_admin:
             field_text: custom_template/field_text.html.twig
             field_time: custom_template/field_time.html.twig
             field_toggle: custom_template/field_toggle.html.twig
-            form: custom_template/form.html.twig
             label_empty: custom_template/label_empty.html.twig
             label_inaccessible: custom_template/label_inaccessible.html.twig
             label_null: custom_template/label_null.html.twig
@@ -135,7 +134,6 @@ easy_admin:
                 list: custom_template/list.html.twig
                 new: custom_template/new.html.twig
                 show: custom_template/show.html.twig
-                form: custom_template/form.html.twig
                 flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
                 paginator: custom_template/paginator.html.twig
                 field_array: custom_template/field_array.html.twig

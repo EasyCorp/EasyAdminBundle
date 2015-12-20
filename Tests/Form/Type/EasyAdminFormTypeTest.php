@@ -31,11 +31,8 @@ class EasyAdminFormTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFormTypeFqcn($shortType, $expected)
     {
-        $type = new EasyAdminFormType(
-            $this->getMockBuilder('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator')->disableOriginalConstructor()->getMock(),
-            array(),
-            $this->getMockBuilder('Symfony\Component\Form\FormTypeGuesserInterface')->disableOriginalConstructor()->getMock()
-        );
+        $configuratorMock = $this->getMockBuilder('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator')->disableOriginalConstructor()->getMock();
+        $type = new EasyAdminFormType($configuratorMock, array(), array());
 
         $method = new \ReflectionMethod($type, 'getFormTypeFqcn');
         $method->setAccessible(true);

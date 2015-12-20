@@ -30,8 +30,8 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         return array(
-            new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
             // ...
+            new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
         );
     }
 }
@@ -58,9 +58,9 @@ easy_admin:
             form:
                 fields:
                     # ...
-                    - { property: 'description', type: 'ckeditor' }
-                    # In Symfony 3 you must provide the fully qualified class name
-                    # - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType' }
+                    - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType' }
+                    # In Symfony 2 you can use the form type alias instead
+                    # - { property: 'description', type: 'ckeditor' }
 ```
 
 Now, the `description` property will be rendered as a rich text editor and not as
@@ -92,7 +92,9 @@ In this example, the toolbar is simplified to display just a few common options:
 ![Simple WYSIWYG editor](../images/wysiwyg/simple-wysiwyg.png)
 
 2) Configure the editor globally in your Symfony application under the
-`ivory_ck_editor` option. For example:
+`ivory_ck_editor` option. This is the preferred option because it provides a
+consistent look and feel to your application and because it makes the backend
+configuration more maintainable. For example:
 
 ```yaml
 # app/config/config.yml
@@ -111,6 +113,15 @@ ivory_ck_editor:
                 - { name: "styles", items: [ "Styles", "Format" ] }
                 - { name: "document", items: [ "Source", "-" ] }
                 - { name: "about", items: [ "About" ] }
+
+easy_admin:
+    entities:
+        Product:
+            # ...
+            form:
+                fields:
+                    # ...
+                    - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType' }
 ```
 
 Check out the original CKEditor documentation to get

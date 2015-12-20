@@ -97,9 +97,9 @@ class EasyAdminFormType extends AbstractType
             }
 
             // when using a WYSIWYG CKEditor without custom config, apply a better default config
-            if (class_exists('\Ivory\CKEditorBundle\Form\Type\CKEditorType')) {
-                $isCkeditorField = in_array($metadata['fieldType'], array('ckeditor', 'Ivory\CKEditorBundle\Form\Type\CKEditorType'));
-                if ($isCkeditorField && !isset($metadata['type_options']['config']['toolbar'])) {
+            if (class_exists('\\Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType')) {
+                $isCkeditorField = in_array($metadata['fieldType'], array('ckeditor', 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType'));
+                if ($isCkeditorField && !isset($metadata['type_options']['config']['toolbar']) && !isset($metadata['type_options']['config_name'])) {
                     $formFieldOptions['config']['toolbar'] = array(
                         array('name' => 'styles', 'items' => array('Bold', 'Italic', 'Strike', 'Link')),
                         array('name' => 'lists', 'items' => array('BulletedList', 'NumberedList', '-','Outdent','Indent')),

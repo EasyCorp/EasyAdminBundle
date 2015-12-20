@@ -12,6 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,16 +38,26 @@ class EasyAdminFormType extends AbstractType
     /** @var FormTypeGuesserInterface */
     private $guesser;
 
+    /** @var TypeConfiguratorInterface[] */
+    private $configurators;
+
     /**
-     * @param Configurator             $configurator
-     * @param array                    $config
-     * @param FormTypeGuesserInterface $guesser
+     * @param Configurator                $configurator
+     * @param array                       $config
+     * @param FormTypeGuesserInterface    $guesser
+     * @param TypeConfiguratorInterface[] $configurators
      */
-    public function __construct(Configurator $configurator, array $config, FormTypeGuesserInterface $guesser)
+    public function __construct(Configurator $configurator, array $config, FormTypeGuesserInterface $guesser, array $configurators = array())
     {
         $this->configurator = $configurator;
         $this->config = $config;
         $this->guesser = $guesser;
+        $this->configurators = $configurators;
+    }
+
+    public function addTypeConfigurator(TypeConfiguratorInterface $configurator)
+    {
+        $this->configurators[] = $configurator;
     }
 
     /**
@@ -96,19 +107,6 @@ class EasyAdminFormType extends AbstractType
                 $formFieldOptions['required'] = false;
             }
 
-            // when using a WYSIWYG CKEditor without custom config, apply a better default config
-            if (class_exists('\\Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType')) {
-                $isCkeditorField = in_array($metadata['fieldType'], array('ckeditor', 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType'));
-                if ($isCkeditorField && !isset($metadata['type_options']['config']['toolbar']) && !isset($metadata['type_options']['config_name'])) {
-                    $formFieldOptions['config']['toolbar'] = array(
-                        array('name' => 'styles', 'items' => array('Bold', 'Italic', 'Strike', 'Link')),
-                        array('name' => 'lists', 'items' => array('BulletedList', 'NumberedList', '-','Outdent','Indent')),
-                        array('name' => 'clipboard', 'items' => array('Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo')),
-                        array('name' => 'advanced', 'items' => array('Source')),
-                    );
-                }
-            }
-
             if (!isset($formFieldOptions['required'])) {
                 if (null !== $guessRequired = $this->guesser->guessRequired($builder->getOption('data_class'), $name)) {
                     $formFieldOptions['required'] = $guessRequired->getValue();
@@ -123,6 +121,17 @@ class EasyAdminFormType extends AbstractType
             ) {
                 $formFieldOptions[$placeHolderOptionName] = 'form.label.empty_value';
             }
+
+            // Configure options using the list of registered type configurators:
+            foreach ($this->configurators as $configurator) {
+                if ($configurator->supports($metadata['fieldType'], $formFieldOptions, $metadata)) {
+                    $formFieldOptions = $configurator->configure($formFieldOptions, $metadata);
+                }
+            }
+
+            $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];
+            $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
+            $formFieldOptions['attr']['field_help'] = $metadata['help'];
 
             $formFieldType = $this->useLegacyFormComponent() ? $metadata['fieldType'] : $this->getFormTypeFqcn($metadata['fieldType']);
             $builder->add($name, $formFieldType, $formFieldOptions);

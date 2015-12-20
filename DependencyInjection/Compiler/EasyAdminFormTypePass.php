@@ -33,5 +33,20 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         $guesserChain = new Definition('Symfony\Component\Form\FormTypeGuesserChain', array($guessers));
 
         $formTypeDefinition->replaceArgument(2, $guesserChain);
+
+        // Register the Ivory CKEditor type configurator only if the bundle
+        // is installed and no default configuration is provided.
+        if ($container->has('ivory_ck_editor.config_manager')
+            && null === $container->get('ivory_ck_editor.config_manager')->getDefaultConfig()
+        ) {
+            $ckeditorConfigurator = $container->register(
+                'easyadmin.form.type.configurator.ivory_ckeditor',
+                'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\Configurator\\IvoryCKEditorTypeConfigurator'
+            );
+            $container->getDefinition('easyadmin.form.type')->addMethodCall(
+                'addTypeConfigurator',
+                array($ckeditorConfigurator)
+            );
+        }
     }
 }

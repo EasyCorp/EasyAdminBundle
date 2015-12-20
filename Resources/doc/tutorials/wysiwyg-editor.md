@@ -72,7 +72,9 @@ Customizing the Rich Text Editor
 --------------------------------
 
 EasyAdmin tweaks some CKEditor settings to improve the user experience. In case
-you need further customization, use the `type_options` setting of the property:
+you need further customization, you have two options:
+
+1) Define the editor options in the `type_options` setting of the property:
 
 ```yaml
 easy_admin:
@@ -85,10 +87,31 @@ easy_admin:
                     - { property: 'description', type: 'ckeditor', type_options: { 'config': { 'toolbar': [ { name: 'styles', items: ['Bold', 'Italic', 'BulletedList', 'Link'] } ] } } }
 ```
 
-In the above example, the editor toolbar is simplified to display just a few
-common options:
+In this example, the toolbar is simplified to display just a few common options:
 
 ![Simple WYSIWYG editor](../images/wysiwyg/simple-wysiwyg.png)
+
+2) Configure the editor globally in your Symfony application under the
+`ivory_ck_editor` option. For example:
+
+```yaml
+# app/config/config.yml
+ivory_ck_editor:
+    input_sync: true
+    default_config: base_config
+    configs:
+        base_config:
+            toolbar:
+                - { name: "basicstyles", items: [ "Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "-", "RemoveFormat" ] }
+                - { name: "links", items: [ "Link", "Unlink", "Anchor" ] }
+                - { name: "insert", items: [ "Image", "Table", "HorizontalRule", "SpecialChar" ] }
+                - { name: "tools", items: [ "Maximize" ] }
+                - "/"
+                - { name: "paragraph", items: [ "NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote" ] }
+                - { name: "styles", items: [ "Styles", "Format" ] }
+                - { name: "document", items: [ "Source", "-" ] }
+                - { name: "about", items: [ "About" ] }
+```
 
 Check out the original CKEditor documentation to get
 [its full list of configuration options] (http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html).

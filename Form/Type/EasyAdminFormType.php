@@ -191,7 +191,7 @@ class EasyAdminFormType extends AbstractType
     }
 
     /**
-     * It returns the FQCN of the given short type.
+     * It returns the FQCN of the given short type name.
      * Example: 'text' -> 'Symfony\Component\Form\Extension\Core\Type\TextType'
      *
      * @param string $shortType
@@ -200,7 +200,7 @@ class EasyAdminFormType extends AbstractType
      */
     private function getFormTypeFqcn($shortType)
     {
-        $typeNames = array(
+        $builtinTypes = array(
             'birthday', 'button', 'checkbox', 'choice', 'collection', 'country',
             'currency', 'datetime', 'date', 'email', 'entity', 'file', 'form',
             'hidden', 'integer', 'language', 'locale', 'money', 'number',
@@ -208,16 +208,20 @@ class EasyAdminFormType extends AbstractType
             'search', 'submit', 'textarea', 'text', 'time', 'timezone', 'url',
         );
 
-        if (!in_array($shortType, $typeNames)) {
+        if (!in_array($shortType, $builtinTypes)) {
             return $shortType;
         }
 
-        return 'entity' === $shortType
-            ? 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType'
-            : ('datetime' === $shortType
-                ? 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType'
-                : sprintf('Symfony\\Component\\Form\\Extension\\Core\\Type\\%sType', ucfirst($shortType))
-            );
+        $irregularTypeFqcn = array(
+            'entity' => 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType',
+            'datetime' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType',
+        );
+
+        if (array_key_exists($shortType, $irregularTypeFqcn)) {
+            return $irregularTypeFqcn[$shortType];
+        }
+
+        return sprintf('Symfony\\Component\\Form\\Extension\\Core\\Type\\%sType', ucfirst($shortType));
     }
 
     /**

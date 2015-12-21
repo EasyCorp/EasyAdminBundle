@@ -1,0 +1,79 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-20T18:07:45Z
+
+@ogizanagi I'm amazed by your proposal :heart_eyes:  Your solution looks elegant, flexible and it's very Symfony-friendly. It truly feels natural.
+
+Thinking about the future, I agree with you and I'd like to also introduce in this same pull request a `easyadmin.form_type_configurator` service tag. I'm only concerned about this part:
+
+```php
+        if ($container->has('ivory_ck_editor.config_manager')
+             && null === $container->get('ivory_ck_editor.config_manager')->getDefaultConfig()
+         ) { ... }
+```
+
+I'd prefer if type configurators were always registered (if they have the mentioned service tag) and we make this check inside each configurator. Otherwise, people won't be able to create their own type configurators because they have to add the checks in the `EasyAdminFormTypePass` compiler pass.
+
+Thinking about the solution, I don't know where should we move these checks. To `support` or `configure` methods? Creating a new method in the interface? Should we pass the entire container to that methods so they can do any check? I'm afraid I have more questions than answers.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-20T21:07:48Z
+
+The whole logic of this PR, even though it's very well implemented ( congrats for this :+1: ), it has no place in a bundle that says it's not dependent at all of IvoryCKEditorBundle.
+
+What if someone wants to use [stfalcon/TinymceBundle](https://github.com/stfalcon/TinymceBundle)? This whole thing would be useless then.
+
+As I said many times, adding a cookbook allows us to be sure we won't have to maintain logic and code to comply third party bundle's requirements and exigencies, which is not "our" work to do, and is certainly not what should be done in a Symfony bundle that intends to be fully standalone.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-21T01:05:24Z
+
+@javiereguiluz : Here we are.
+I've kept the removal of the `IvoryCKEditorTypeConfigurator` type configurator from the container in the compiler pass, because I don't see why we should instantiate a service that won't be used at all (even if it has not much impact). It won't prevent people to register their own type configurators at all, and if they can, they should do the same as us & avoid to create useless services in the container in their own compiler pass. But most of the time, when people will register their own type configurator, they won't need such logic, because it means they'll always need this type configurator for their application.
+
+I had to change the initial interface for the [`RequiredOptionConfigurator`](https://github.com/ogizanagi/EasyAdminBundle/blob/integrate_ckeditor_enhancements/Form/Type/Configurator/RequiredOptionConfigurator.php#L39) to add the field `name` and `parentConfig`, because it's needed for the guesser to work.
+I chose to [pass the `$builder` variable](https://github.com/ogizanagi/EasyAdminBundle/blob/integrate_ckeditor_enhancements/Form/Type/EasyAdminFormType.php#L67) to the [`TypeConfigurator::configure`](https://github.com/ogizanagi/EasyAdminBundle/blob/integrate_ckeditor_enhancements/Form/Type/Configurator/TypeConfiguratorInterface.php#L30) method, but typehinted [`FormConfigInterface`](http://api.symfony.com/2.8/Symfony/Component/Form/FormConfigInterface.html), instead of the raw array of options, because it allows to access both options and initial data along with other stuff that might be needed. It also avoid confusion between the field options to configure, and the parent form ones.
+Of course the real object is an instance of `FormBuilderInterface` too and might allow to tweak the form by adding/removing fields or adding events, but I don't think we should encourage this, so hide behind the `FormConfigInterface` typehint.
+
+I chose the priority of the different configurators regarding their legacy order in the `EasyAdminFormType`, excepts that the `entity` one should be called after the `required_option` one due to its implementation.
+Registering a configurator without any priority will always register it before the `required_option`, in order to give it a chance to set the value of the `required` option before being guessed.
+
+@Pierstoval : I don't agree with you, because the whole logic of this PR (except the bugfix about CKEditor "config_name" support) is not really about the CKEditor integration, but instead declutters our form type and allows users to register their own configurators. See CKEditor as a concrete example among the other ones I've now extracted.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-21T07:46:38Z
+
+@ogizanagi this PR is becoming more and more amazing. I truly love it!! Thanks a lot for your work.
+
+---
+
+@Pierstoval first, thank you for your comments. It's not easy to go against "the common opinion" and say what someone really thinks.
+
+I wanted to create built-in widgets. You and others convinced me that it was an awful idea. But then, I want to provide "second-party" widgets. These are bundles which are documented in our tutorials and which work better out-of-the-box and the other bundles.
+
+You asked:
+
+> What if someone wants to use stfalcon/TinymceBundle?
+
+I don't know. If you want a WYSIWYG editor, we recommend you to use CKEditor. If you want to use the other one, you are on your own. Everything will work, but you'll have to take care of the details yourself.
+
+This reminds me about Symfony and ORMs. In theory Symfony is agnostic. In practice only Doctrine works great and is tightly integrated with the framework.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-21T08:30:25Z
+
+After a night of sleep, I've reconsidered my option about #666 because it's good to "propose" something.
+
+I still think this PR is too much, but it may be because of it's level of complexity, actually after relooking at the code multiple times, it seems that all "field configuration" logic is just decoupled to configurator classes.
+
+But actually, as Forms are not really my best with Symfony, I'd like to have a dedicated section of the docs that would explain, in a few lines, how it works behind, and add examples on how to customize these configurators in an "EasyAdmin way".
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-21T08:34:39Z
+
+@Pierstoval in the long term we'll document everything in detail ... but for now I'd like to do the opposite. That allows us to freely use and tweak this feature until we are sure it's finished. Then we'll document it.

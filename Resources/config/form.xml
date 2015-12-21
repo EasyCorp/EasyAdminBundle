@@ -49,10 +49,5 @@
             <tag name="easyadmin.form.type.configurator" priority="-130"/>
         </service>
 
-        <service id="easyadmin.form.type.configurator.attributes" public="false"
-                 class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\AttributesConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="-250"/>
-        </service>
-
     </services>
 </container>

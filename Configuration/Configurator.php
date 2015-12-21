@@ -44,7 +44,7 @@ class Configurator
 
     private $doctrineTypeToFormTypeMap = array(
         'array' => 'collection',
-        'association' => null,
+        'association' => 'entity',
         'bigint' => 'text',
         'blob' => 'textarea',
         'boolean' => 'checkbox',
@@ -456,8 +456,8 @@ class Configurator
                 // this prevents the template from displaying the 'id' primary key formatted as a number
                 if ('id' === $fieldName) {
                     $template = $entityConfiguration['templates']['field_id'];
-                } elseif (array_key_exists('field_'.$fieldMetadata['type'], $entityConfiguration['templates'])) {
-                    $template = $entityConfiguration['templates']['field_'.$fieldMetadata['type']];
+                } elseif (array_key_exists('field_'.$fieldMetadata['dataType'], $entityConfiguration['templates'])) {
+                    $template = $entityConfiguration['templates']['field_'.$fieldMetadata['dataType']];
                 } else {
                     $template = $entityConfiguration['templates']['label_undefined'];
                 }

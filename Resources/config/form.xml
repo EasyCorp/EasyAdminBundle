@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="easyadmin.form.type" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType">
+            <argument type="service" id="easyadmin.configurator" />
+            <argument>%easyadmin.config%</argument>
+            <argument type="collection" /> <!-- type configurators -->
+            <tag name="form.type" alias="easyadmin" />
+        </service>
+
+        <service id="easyadmin.form.type.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension">
+            <argument type="service" id="request_stack" on-invalid="null" />
+            <tag name="form.type_extension" alias="form" extended-type="Symfony\Component\Form\Extension\Core\Type\FormType" />
+        </service>
+
+        <service id="easyadmin.form.type_guesser_chain" class="Symfony\Component\Form\FormTypeGuesserChain" public="false">
+            <argument type="collection" /> <!-- type guessers -->
+        </service>
+
+        <!-- Type Configurators -->
+
+        <service id="easyadmin.form.type.configurator.collection" public="false"
+                 class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="20"/>
+        </service>
+
+        <service id="easyadmin.form.type.configurator.checkbox" public="false"
+                 class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="10"/>
+        </service>
+
+        <service id="easyadmin.form.type.configurator.required_option" public="false"
+                 class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator">
+            <argument type="service" id="easyadmin.form.type_guesser_chain" />
+            <tag name="easyadmin.form.type.configurator" priority="-10"/>
+        </service>
+
+        <service id="easyadmin.form.type.configurator.entity" public="false"
+                 class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator">
+            <argument type="service" id="easyadmin.form.type_guesser_chain" />
+            <tag name="easyadmin.form.type.configurator" priority="-20"/>
+        </service>
+
+        <service id="easyadmin.form.type.configurator.ivory_ckeditor" public="false"
+                 class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="-130"/>
+        </service>
+
+    </services>
+</container>

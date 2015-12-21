@@ -366,7 +366,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testEditViewFieldClasses()
     {
         $crawler = $this->requestEditView();
-        $fieldClasses = array('text', 'default');
+        $fieldClasses = array('text', 'entity');
 
         foreach ($fieldClasses as $i => $cssClass) {
             $this->assertContains('field-'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
@@ -450,7 +450,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testNewViewFieldClasses()
     {
         $crawler = $this->requestNewView();
-        $fieldClasses = array('text', 'default');
+        $fieldClasses = array('text', 'entity');
 
         foreach ($fieldClasses as $i => $cssClass) {
             $this->assertContains('field-'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));

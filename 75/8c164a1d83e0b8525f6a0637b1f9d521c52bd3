@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-20T20:59:39Z
+
+With this change, is the `type: toggle` still usable? I mean, I don't know when the `dataType` is set so it could induce breaks, no?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-21T07:27:56Z
+
+The `type` property can never be `toggle` because this value is obtained through Doctrine metadata, so we only receive "safe and official" types.

@@ -48,6 +48,5 @@
                  class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator">
             <tag name="easyadmin.form.type.configurator" priority="-130"/>
         </service>
-
     </services>
 </container>

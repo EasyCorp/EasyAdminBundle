@@ -14,9 +14,10 @@ use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormTypeGuesserInterface;
 
 /**
- * This configurator applies to any type for which the "required" option has not been configured yet.
- * The implementation uses a FormTypeGuesserInterface instance in order to guess the "required" value,
- * for instance from phpdoc, validation or doctrine metadata ...
+ * This configurator is applied to any type for which the "required" option has
+ * not been configured yet. The implementation uses a FormTypeGuesserInterface
+ * instance in order to guess the "required" value, for instance from PHPdoc,
+ * validation or doctrine metadata, etc.
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */

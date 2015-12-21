@@ -21,8 +21,8 @@ interface TypeConfiguratorInterface
      * Configure the options for this type.
      *
      * @param string              $name         The field name
-     * @param array               $options      Configured options
-     * @param array               $metadata     The EasyAdmin config metadata for this field
+     * @param array               $options      The configured field options provided by Symfony Form component
+     * @param array               $metadata     The field metadata provided by EasyAdmin
      * @param FormConfigInterface $parentConfig The parent form configuration
      *
      * @return array The array of options to configure
@@ -33,7 +33,7 @@ interface TypeConfiguratorInterface
      * Returns true if the type option configurator supports this field.
      *
      * @param string $type     The form type alias or FQCN
-     * @param array  $options  Configured options
+     * @param array  $options  The configured field options provided by Symfony Form component
      * @param array  $metadata The EasyAdmin config metadata for this field
      *
      * @return bool

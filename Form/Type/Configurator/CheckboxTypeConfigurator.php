@@ -23,8 +23,8 @@ class CheckboxTypeConfigurator implements TypeConfiguratorInterface
      */
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
-        // If no value provided explicitly for the "required" option, assume the checkbox is not required.
-        // Otherwise, HTML5 validation will prevent the form to be submitted.
+        // If no value is provided explicitly for the "required" option, assume the checkbox is not required.
+        // Otherwise, HTML5 validation will prevent the form from being submitted.
         if (!isset($options['required'])) {
             $options['required'] = false;
         }

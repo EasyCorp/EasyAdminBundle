@@ -23,7 +23,7 @@ class IvoryCKEditorTypeConfigurator implements TypeConfiguratorInterface
      */
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
-        // when using a WYSIWYG CKEditor without custom config, apply a better default config
+        // when the IvoryCKEditor doesn't define the toolbar to use, EasyAdmin uses a simple toolbar
         $options['config']['toolbar'] = array(
             array('name' => 'styles', 'items' => array('Bold', 'Italic', 'Strike', 'Link')),
             array('name' => 'lists', 'items' => array('BulletedList', 'NumberedList', '-', 'Outdent', 'Indent')),

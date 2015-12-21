@@ -13,7 +13,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -26,22 +25,40 @@ class EasyAdminFormTypePass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        $this->configureTypeGuesserChain($container);
+        $this->registerTypeConfigurators($container);
+    }
+
+    private function configureTypeGuesserChain(ContainerBuilder $container)
+    {
+        $definition = $container->getDefinition('easyadmin.form.type_guesser_chain');
         $guesserIds = array_keys($container->findTaggedServiceIds('form.type_guesser'));
         $guessers = array_map(function ($id) { return new Reference($id); }, $guesserIds);
+        $definition->replaceArgument(0, $guessers);
+    }
 
-        $container->getDefinition('easyadmin.form.type_guesser_chain')->replaceArgument(0, $guessers);
+    private function registerTypeConfigurators(ContainerBuilder $container)
+    {
+        $configurators = new \SplPriorityQueue();
+        foreach ($container->findTaggedServiceIds('easyadmin.form.type.configurator') as $id => $tags) {
+            // Register the Ivory CKEditor type configurator only if the bundle
+            // is installed and no default configuration is provided.
+            if ('easyadmin.form.type.configurator.ivory_ckeditor' === $id
+                && !(
+                    $container->has('ivory_ck_editor.config_manager')
+                    && null === $container->get('ivory_ck_editor.config_manager')->getDefaultConfig()
+                )
+            ) {
+                $container->removeDefinition('easyadmin.form.type.configurator.ivory_ckeditor');
+                continue;
+            }
 
-        // Register the Ivory CKEditor type configurator only if the bundle
-        // is installed and no default configuration is provided.
-        if (!($container->has('ivory_ck_editor.config_manager')
-            && null === $container->get('ivory_ck_editor.config_manager')->getDefaultConfig())
-        ) {
-            $formTypeDefinition = $container->getDefinition('easyadmin.form.type');
-            $formTypeDefinition->replaceArgument(2, array_filter($formTypeDefinition->getArgument(2), function (Reference $reference) {
-                return (string) $reference !== 'easyadmin.form.type.configurator.ivory_ckeditor';
-            }));
-
-            $container->removeDefinition('easyadmin.form.type.configurator.ivory_ckeditor');
+            foreach ($tags as $tag) {
+                $priority = isset($tag['priority']) ? $tag['priority'] : 0;
+                $configurators->insert(new Reference($id), $priority);
+            }
         }
+
+        $container->getDefinition('easyadmin.form.type')->replaceArgument(2, iterator_to_array($configurators));
     }
 }

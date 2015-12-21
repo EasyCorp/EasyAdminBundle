@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Symfony\Component\Form\FormConfigInterface;

@@ -14,6 +14,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
+ * This configurator is applied to any form field of type 'checkbox' and is used
+ * to decide whether the field should be required or not.
+ *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class CheckboxTypeConfigurator implements TypeConfiguratorInterface

@@ -13,6 +13,11 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
+ * This is the interface implemented by all the form type configurations. They
+ * allow to add specific configuration options for each form type, no matter if
+ * they are built-in Symfony types, custom types or types provided by third-party
+ * bundles.
+ *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 interface TypeConfiguratorInterface

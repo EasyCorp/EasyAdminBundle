@@ -14,6 +14,10 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
+ * This configurator is applied to any form field of type 'ckeditor' available
+ * when using the IvoryCKEditorBundle. It's used to provide a better default
+ * configuration for the WYSIWYG editors created with this bundle.
+ *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class IvoryCKEditorTypeConfigurator implements TypeConfiguratorInterface

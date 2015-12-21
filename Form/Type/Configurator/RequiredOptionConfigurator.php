@@ -14,10 +14,8 @@ use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormTypeGuesserInterface;
 
 /**
- * This configurator is applied to any type for which the "required" option has
- * not been configured yet. The implementation uses a FormTypeGuesserInterface
- * instance in order to guess the "required" value, for instance from PHPdoc,
- * validation or doctrine metadata, etc.
+ * This configurator is applied to any form field type and is used to decide
+ * whether the field should be required or not.
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
@@ -39,6 +37,9 @@ class RequiredOptionConfigurator implements TypeConfiguratorInterface
      */
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
+        // The implementation uses a FormTypeGuesserInterface instance in order
+        // to guess the "required" value from different sources (PHPdoc,
+        // validation or doctrine metadata, etc.)
         $guessed = $this->guesser->guessRequired($parentConfig->getDataClass(), $name);
 
         if (null !== $guessed) {

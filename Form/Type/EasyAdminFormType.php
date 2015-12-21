@@ -105,10 +105,6 @@ class EasyAdminFormType extends AbstractType
                 $formFieldOptions[$placeHolderOptionName] = 'form.label.empty_value';
             }
 
-            $formFieldOptions['attr']['field_type'] = $metadata['fieldType'];
-            $formFieldOptions['attr']['field_css_class'] = $metadata['class'];
-            $formFieldOptions['attr']['field_help'] = $metadata['help'];
-
             $formFieldType = $this->useLegacyFormComponent() ? $metadata['fieldType'] : $this->getFormTypeFqcn($metadata['fieldType']);
             $builder->add($name, $formFieldType, $formFieldOptions);
         }

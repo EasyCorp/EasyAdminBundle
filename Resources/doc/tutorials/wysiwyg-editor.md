@@ -72,9 +72,35 @@ Customizing the Rich Text Editor
 --------------------------------
 
 EasyAdmin tweaks some CKEditor settings to improve the user experience. In case
-you need further customization, you have two options:
+you need further customization, configure the editor globally in your Symfony
+application under the `ivory_ck_editor` option. For example:
 
-1) Define the editor options in the `type_options` setting of the property:
+```yaml
+# app/config/config.yml
+ivory_ck_editor:
+    input_sync: true
+    default_config: base_config
+    configs:
+        base_config:
+            toolbar:
+                - { name: "styles", items: ['Bold', 'Italic', 'BulletedList', 'Link'] }
+
+easy_admin:
+    entities:
+        Product:
+            # ...
+            form:
+                fields:
+                    # ...
+                    - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType' }
+```
+
+In this example, the toolbar is simplified to display just a few common options:
+
+![Simple WYSIWYG editor](../images/wysiwyg/simple-wysiwyg.png)
+
+Alternatively, you can also define the editor options in the `type_options`
+setting of the property:
 
 ```yaml
 easy_admin:
@@ -87,32 +113,22 @@ easy_admin:
                     - { property: 'description', type: 'ckeditor', type_options: { 'config': { 'toolbar': [ { name: 'styles', items: ['Bold', 'Italic', 'BulletedList', 'Link'] } ] } } }
 ```
 
-In this example, the toolbar is simplified to display just a few common options:
-
-![Simple WYSIWYG editor](../images/wysiwyg/simple-wysiwyg.png)
-
-2) Configure the editor globally in your Symfony application under the
-`ivory_ck_editor` option. This is the preferred option because it provides a
-consistent look and feel to your application and because it makes the backend
-configuration more maintainable. For example:
+This inline configuration is very hard to maintain, so it's recommended to use
+the global configuration instead. You can even combine both to define the toolbars
+globally and then select the toolbar to use in each property:
 
 ```yaml
 # app/config/config.yml
 ivory_ck_editor:
     input_sync: true
-    default_config: base_config
+    default_config: simple_config
     configs:
-        base_config:
+        simple_config:
             toolbar:
-                - { name: "basicstyles", items: [ "Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "-", "RemoveFormat" ] }
-                - { name: "links", items: [ "Link", "Unlink", "Anchor" ] }
-                - { name: "insert", items: [ "Image", "Table", "HorizontalRule", "SpecialChar" ] }
-                - { name: "tools", items: [ "Maximize" ] }
-                - "/"
-                - { name: "paragraph", items: [ "NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote" ] }
-                - { name: "styles", items: [ "Styles", "Format" ] }
-                - { name: "document", items: [ "Source", "-" ] }
-                - { name: "about", items: [ "About" ] }
+                # ...
+        advanced_config:
+            toolbar:
+                # ...
 
 easy_admin:
     entities:
@@ -121,7 +137,10 @@ easy_admin:
             form:
                 fields:
                     # ...
-                    - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType' }
+                    - { property: 'excerpt', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType',
+                        type_options: { config_name: simple_config } }
+                    - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType',
+                        type_options: { config_name: simple_config } }
 ```
 
 Check out the original CKEditor documentation to get

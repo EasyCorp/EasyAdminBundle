@@ -62,7 +62,13 @@ class EasyAdminFormType extends AbstractType
         foreach ($entityProperties as $name => $metadata) {
             $formFieldOptions = $metadata['type_options'];
 
-            if ('association' === $metadata['type']) {
+            if ('entity' === $metadata['fieldType'] && 'association' === $metadata['type']) {
+                if (!isset($formFieldOptions['class'])) {
+                    $guessedOptions = $this->guesser->guessType($builder->getDataClass(), $name)->getOptions();
+                    $formFieldOptions['class'] = $guessedOptions['class'];
+                    $formFieldOptions['multiple'] = $guessedOptions['multiple'];
+                    $formFieldOptions['em'] = $guessedOptions['em'];
+                }
                 if ($metadata['associationType'] & ClassMetadata::TO_MANY) {
                     $formFieldOptions['attr']['multiple'] = true;
                 }
@@ -97,7 +103,7 @@ class EasyAdminFormType extends AbstractType
             }
 
             // Configure "placeholder" option for entity fields
-            if ('association' === $metadata['type']
+            if ('entity' === $metadata['fieldType'] && 'association' === $metadata['type']
                 && ($metadata['associationType'] & ClassMetadata::TO_ONE)
                 && !isset($formFieldOptions[$placeHolderOptionName = $this->getPlaceholderOptionName()])
                 && false === $formFieldOptions['required']

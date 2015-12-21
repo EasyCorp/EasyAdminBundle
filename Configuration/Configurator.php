@@ -44,7 +44,7 @@ class Configurator
 
     private $doctrineTypeToFormTypeMap = array(
         'array' => 'collection',
-        'association' => null,
+        'association' => 'entity',
         'bigint' => 'text',
         'blob' => 'textarea',
         'boolean' => 'checkbox',

@@ -3,6 +3,30 @@
 
 {# Widgets #}
 
+{% block form_widget %}
+    {{- parent() -}}
+
+    {% if form.parent.vars.allow_delete|default(false) %}
+        {% set remove_item_javascript %}
+            $(function() {
+            if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+            var containerDiv = $('#{{ id }}').parents('.form-group:first');
+            containerDiv.remove();
+            });
+        {% endset %}
+
+        <div class="form-group field-collection-item-action">
+            <div class="col-sm-12">
+                <a href="#" onclick="{{ remove_item_javascript|raw }}" class="pull-right text-danger">
+                    <i class="fa fa-remove"></i>
+                    {{ 'action.remove_item'|trans }}
+                </a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock form_widget %}
+
 {% block form_widget_simple -%}
     {% if type is not defined or 'file' != type %}
         {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
@@ -228,10 +252,12 @@
         {% endset %}
 
         <div class="form-group field-collection-action">
-            <a href="#" onclick="{{ js_add_item|raw }}" class="col-sm-12 text-right">
-                <i class="fa fa-plus-square"></i>
-                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
-            </a>
+            <div class="col-sm-12">
+                <a href="#" onclick="{{ js_add_item|raw }}" class="pull-right text-primary">
+                    <i class="fa fa-plus-square"></i>
+                    {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
+                </a>
+            </div>
         </div>
     {% endif %}
 {% endblock collection_row %}
@@ -303,24 +329,6 @@
     {% endif %}
 
     {{ parent() }}
-
-    {% if form.parent.vars.allow_delete|default(false) %}
-        {% set remove_item_javascript %}
-            $(function() {
-                if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
-
-                var containerDiv = $('#{{ id }}').parents('.form-group:first');
-                containerDiv.remove();
-            });
-        {% endset %}
-
-        <div class="form-group">
-            <a href="#" onclick="{{ remove_item_javascript|raw }}" class="col-sm-12 text-right">
-                <i class="fa fa-remove"></i>
-                {{ 'action.remove_item'|trans }}
-            </a>
-        </div>
-    {% endif %}
 {%- endblock form_widget_compound -%}
 
 {# Easy admin form type #}

@@ -41,9 +41,9 @@ class EasyAdminFormTypePass implements CompilerPassInterface
     {
         $configurators = new \SplPriorityQueue();
         foreach ($container->findTaggedServiceIds('easyadmin.form.type.configurator') as $id => $tags) {
-            $definition = new \ReflectionClass($container->getDefinition($id)->getClass());
+            $configuratorClass = new \ReflectionClass($container->getDefinition($id)->getClass());
             $typeConfiguratorInterface = 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\Configurator\\TypeConfiguratorInterface';
-            if (!$definition->implementsInterface($typeConfiguratorInterface)) {
+            if (!$configuratorClass->implementsInterface($typeConfiguratorInterface)) {
                 throw new \InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $id, $typeConfiguratorInterface));
             }
 

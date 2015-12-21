@@ -77,7 +77,7 @@ col-sm-2
 
 {% block submit_row -%}
 {% spaceless %}
-    <div class="form-group field-{{ easyadmin.field.fieldType|default('default') }} {{ attr.class|default('') }}">
+    <div class="form-group field-{{ easyadmin.field.fieldType|default('default') }} {{ easyadmin.field.class|default('') }}">
         <div class="{{ block('form_label_class') }}"></div>
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}

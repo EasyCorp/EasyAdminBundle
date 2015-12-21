@@ -26,27 +26,22 @@ class EasyAdminFormTypePass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $formTypeDefinition = $container->getDefinition('easyadmin.form.type');
-
         $guesserIds = array_keys($container->findTaggedServiceIds('form.type_guesser'));
         $guessers = array_map(function ($id) { return new Reference($id); }, $guesserIds);
-        $guesserChain = new Definition('Symfony\Component\Form\FormTypeGuesserChain', array($guessers));
 
-        $formTypeDefinition->replaceArgument(2, $guesserChain);
+        $container->getDefinition('easyadmin.form.type_guesser_chain')->replaceArgument(0, $guessers);
 
         // Register the Ivory CKEditor type configurator only if the bundle
         // is installed and no default configuration is provided.
-        if ($container->has('ivory_ck_editor.config_manager')
-            && null === $container->get('ivory_ck_editor.config_manager')->getDefaultConfig()
+        if (!($container->has('ivory_ck_editor.config_manager')
+            && null === $container->get('ivory_ck_editor.config_manager')->getDefaultConfig())
         ) {
-            $ckeditorConfigurator = $container->register(
-                'easyadmin.form.type.configurator.ivory_ckeditor',
-                'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\Configurator\\IvoryCKEditorTypeConfigurator'
-            );
-            $container->getDefinition('easyadmin.form.type')->addMethodCall(
-                'addTypeConfigurator',
-                array($ckeditorConfigurator)
-            );
+            $formTypeDefinition = $container->getDefinition('easyadmin.form.type');
+            $formTypeDefinition->replaceArgument(2, array_filter($formTypeDefinition->getArgument(2), function (Reference $reference) {
+                return (string) $reference !== 'easyadmin.form.type.configurator.ivory_ckeditor';
+            }));
+
+            $container->removeDefinition('easyadmin.form.type.configurator.ivory_ckeditor');
         }
     }
 }

@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
+use Symfony\Component\Form\FormConfigInterface;
+
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
@@ -19,7 +21,7 @@ class IvoryCKEditorTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(array $options, array $metadata)
+    public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
         // when using a WYSIWYG CKEditor without custom config, apply a better default config
         $options['config']['toolbar'] = array(

@@ -10,6 +10,7 @@
  */
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
+use Symfony\Component\Form\FormConfigInterface;
 
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
@@ -19,12 +20,14 @@ interface TypeConfiguratorInterface
     /**
      * Configure the options for this type.
      *
-     * @param array $options  Configured options
-     * @param array $metadata The EasyAdmin config metadata for this field
+     * @param string              $name         The field name
+     * @param array               $options      Configured options
+     * @param array               $metadata     The EasyAdmin config metadata for this field
+     * @param FormConfigInterface $parentConfig The parent form configuration
      *
      * @return array The array of options to configure
      */
-    public function configure(array $options, array $metadata);
+    public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig);
 
     /**
      * Returns true if the type option configurator supports this field.

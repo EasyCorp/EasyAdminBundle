@@ -16,6 +16,10 @@ use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormTypeGuesserInterface;
 
 /**
+ * This configurator is applied to any form field of type 'association' and is
+ * used to configure lots of their features (for example whether we should use
+ * a JavaScript widget to display their contents).
+ *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class EntityTypeConfigurator implements TypeConfiguratorInterface
@@ -47,7 +51,7 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
             $options['attr']['multiple'] = true;
         }
 
-        // supported associations are displayed using advanced JavaScript widgets
+        // Supported associations are displayed using advanced JavaScript widgets
         $options['attr']['data-widget'] = 'select2';
 
         // Configure "placeholder" option for entity fields

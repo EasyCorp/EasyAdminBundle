@@ -14,6 +14,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
+ * This configurator is applied to any form field of type 'collection' and is
+ * used to allow adding/removing elements from the collection.
+ *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class CollectionTypeConfigurator implements TypeConfiguratorInterface

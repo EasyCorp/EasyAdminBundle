@@ -138,9 +138,9 @@ easy_admin:
                 fields:
                     # ...
                     - { property: 'excerpt', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType',
-                        type_options: { config_name: simple_config } }
+                        type_options: { config_name: 'simple_config' } }
                     - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType',
-                        type_options: { config_name: simple_config } }
+                        type_options: { config_name: 'advanced_config' } }
 ```
 
 Check out the original CKEditor documentation to get

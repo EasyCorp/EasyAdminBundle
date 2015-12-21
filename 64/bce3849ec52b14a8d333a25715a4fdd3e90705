@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-20T08:21:20Z
+
+I've added all the recommendations made by @ogizanagi Thanks!  Besides, I now promote the alternative of defining the `ivory_ck_editor` config option, as recommended by @Pierstoval. I agree that's the best way to go.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-20T20:54:52Z
+
+It's the best way to go, but it should be the first proposal at all, as I said in [my comment](#discussion_r48108073), adding field configuration "inline" in the easyadmin field is very very ugly, and complicated to maintain.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-21T01:58:25Z
+
+I agree we should promote the best way to go first with the `ivory_ck_editor.configs` settings, and show the use of the `config_name` option instead of specifying the toolbar option directly on the field.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-21T07:36:43Z
+
+I've reworded the last part of the article according to your suggestions. Thanks!

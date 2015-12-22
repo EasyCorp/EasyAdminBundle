@@ -178,8 +178,8 @@
 {# Rows #}
 
 {% block form_row -%}
-    {% set _field_type = attr.field_type|default('default') %}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ _field_type }} {{ attr.field_css_class|default('') }}">
+    {% set _field_type = easyadmin.field.fieldType|default('default') %}
+    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ _field_type }}">
 
         {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
         {% set _field_label = easyadmin.field['label']|default(null) %}
@@ -198,8 +198,8 @@
 
         {{- form_errors(form) -}}
 
-        {% if attr.field_help|default('') != '' %}
-            <span class="help-block"><i class="fa fa-info-circle"></i> {{ attr.field_help|trans|raw }}</span>
+        {% if easyadmin.field.help|default('') != '' %}
+            <span class="help-block"><i class="fa fa-info-circle"></i> {{ easyadmin.field.help|trans|raw }}</span>
         {% endif %}
     </div>
 {%- endblock form_row %}
@@ -237,7 +237,7 @@
 {% endblock collection_row %}
 
 {% block button_row -%}
-    <div class="form-group field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
+    <div class="form-group field-{{ easyadmin.field.fieldType|default('default') }} {{ easyadmin.field.class|default('') }}">
         {{- form_widget(form) -}}
     </div>
 {%- endblock button_row %}
@@ -263,14 +263,14 @@
 {%- endblock datetime_row %}
 
 {% block checkbox_row -%}
-    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
+    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ easyadmin.field.fieldType|default('default') }}">
         {{- form_widget(form) -}}
         {{- form_errors(form) -}}
     </div>
 {%- endblock checkbox_row %}
 
 {% block radio_row -%}
-    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ attr.field_type|default('default') }} {{ attr.field_css_class|default('') }}">
+    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ easyadmin.field.fieldType|default('default') }}">
         {{- form_widget(form) -}}
         {{- form_errors(form) -}}
     </div>
@@ -336,7 +336,7 @@
         <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
 
         {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
-            <div class="{{ field.vars.easyadmin.field.css_class|default('col-xs-12') }}">
+            <div class="{{ field.vars.easyadmin.field.class|default('col-xs-12') }}">
                 {{ form_row(field) }}
             </div>
         {% endfor %}

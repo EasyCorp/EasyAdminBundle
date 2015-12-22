@@ -27,7 +27,7 @@ col-sm-2
 {% block form_row -%}
 {% spaceless %}
     {% set _field_type = easyadmin.field.fieldType|default('default') %}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ _field_type }} {{ easyadmin.field.class|default('') }}">
+    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ _field_type }}">
 
         {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
         {% set _field_label = easyadmin.field['label']|default(null) %}
@@ -65,7 +65,7 @@ col-sm-2
 
 {% block checkbox_radio_row -%}
 {% spaceless %}
-    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ easyadmin.field.fieldType|default('default') }} {{ easyadmin.field.class|default('') }}">
+    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ easyadmin.field.fieldType|default('default') }}">
         <div class="{{ block('form_label_class') }}"></div>
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}
@@ -77,7 +77,7 @@ col-sm-2
 
 {% block submit_row -%}
 {% spaceless %}
-    <div class="form-group field-{{ easyadmin.field.fieldType|default('default') }} {{ attr.class|default('') }}">
+    <div class="form-group field-{{ easyadmin.field.fieldType|default('default') }}">
         <div class="{{ block('form_label_class') }}"></div>
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}

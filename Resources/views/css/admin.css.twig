@@ -261,10 +261,14 @@ span.badge {
 
 /* Buttons
    ------------------------------------------------------------------------- */
+a.btn:not([class*=btn-]),
+input.btn:not([class*=btn-]),
+button.btn:not([class*=btn-]) {
+    background: {{ brand_color }};
+}
 a.btn,
 input.btn,
 button.btn {
-    background: {{ brand_color }};
     border: none;
     border-radius: 4px;
     color: {{ colors.white }};

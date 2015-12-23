@@ -363,7 +363,7 @@
 
                             <a class="btn {{ _action.css_class|default('') }}" href="{{ _action_href }}">
                                 {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                {{ _action.label|trans(_trans_parameters) }}
+                                {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters, 'messages') }}
                             </a>
                         {% endfor %}
 
@@ -373,7 +373,7 @@
                                 <button type="button" id="button-delete"
                                         class="btn {{ _action.css_class|default('btn-danger') }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                    {{ _action.label|default('action.delete')|trans(_trans_parameters, 'messages') }}
+                                    {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters, 'messages') }}
                                 </button>
                             {% endif %}
                         {% endif %}
@@ -389,7 +389,7 @@
                             <a class="btn btn-secondary"
                                href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('easyadmin', ({ entity: easyadmin.entity.name, action: _list_action.name, view: easyadmin.view }) ) }}">{% spaceless %}
                                     {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
-                                    {{ _list_action.label|default('action.list')|trans(_trans_parameters, 'messages') }}
+                                    {{ _list_action.label is defined and not _list_action.label is empty ? _list_action.label|trans(_trans_parameters, 'messages') }}
                                 {% endspaceless %}</a>
                         {% endif %}
                     {% endblock item_actions %}

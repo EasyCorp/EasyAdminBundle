@@ -603,13 +603,29 @@ class AdminController extends Controller
      */
     protected function createEntityFormBuilder($entity, $view)
     {
-        $formOptions = $this->entity[$view]['form_options'];
-        $formOptions['entity'] = $this->entity['name'];
-        $formOptions['view'] = $view;
+        $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', array($entity, $view));
 
         $formType = $this->useLegacyFormComponent() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
 
         return $this->get('form.factory')->createNamedBuilder('form', $formType, $entity, $formOptions);
+    }
+
+    /**
+     * Retrieves the list of form options before sending them to the form builder.
+     * This allows adding dynamic logic to the default form options.
+     *
+     * @param object $entity
+     * @param string $view
+     *
+     * @return array
+     */
+    protected function getEntityFormOptions($entity, $view)
+    {
+        $formOptions = $this->entity[$view]['form_options'];
+        $formOptions['entity'] = $this->entity['name'];
+        $formOptions['view'] = $view;
+
+        return $formOptions;
     }
 
     /**

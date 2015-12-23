@@ -52,7 +52,7 @@
                             <div id="content-actions">
                                 <a class="btn {{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                    {{ _action.label|default('action.new')|trans(_trans_parameters) }}
+                                    {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
                                 </a>
                             </div>
                         {% endblock new_action %}
@@ -153,7 +153,9 @@
 
                                                 <a class="{{ _action.css_class|default('') }}" href="{{ _action_href }}">
                                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                                    {{ _action.label|trans(_trans_parameters|merge({ '%entity_id%': _item_id })) }}
+                                                    {% if _action.label is defined and not _action.label is empty %}
+                                                        {{ _action.label|trans(_trans_parameters|merge({ '%entity_id%': _item_id })) }}
+                                                    {% endif %}
                                                 </a>
                                             {% endfor %}
                                         {% endspaceless %}

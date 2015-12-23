@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-22T19:47:27Z
+
+:+1:
+
+However, what do you think about positioning it `absolute` instead of displaying it inlined with the label ?
+```diff
+form label.control-label.required:after {
+    content: "\00a0*";
+    color: red;
+-    display: inline-block
++    position: absolute;
+}
+```
+
+It allows to keep labels aligned:
+
+<img width="264" alt="screenshot 2015-12-22 a 20 38 53" src="https://cloud.githubusercontent.com/assets/2211145/11964271/c8b0422c-a8ec-11e5-83a1-6d8ea8f42047.PNG">
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-22T21:26:16Z
+
+I like this feature a lot. Thanks @Pierstoval. And I like @ogizanagi's comments too :)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-23T09:26:11Z
+
+Updated the PR after @ogizanagi comments :)

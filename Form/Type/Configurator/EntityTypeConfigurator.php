@@ -40,7 +40,7 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
      */
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
-        if (!isset($formFieldOptions['class'])) {
+        if (!isset($options['class'])) {
             $guessedOptions = $this->guesser->guessType($parentConfig->getDataClass(), $name)->getOptions();
             $options['class'] = $guessedOptions['class'];
             $options['multiple'] = $guessedOptions['multiple'];

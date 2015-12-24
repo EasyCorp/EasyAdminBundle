@@ -1,6 +1,5 @@
 <?php
 
-
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -11,6 +10,7 @@ class OverridingEasyAdminController extends Controller
 {
     /**
      * @Route("/override_layout", name="override_layout")
+     *
      * @return Response
      */
     public function overrideLayout()

@@ -82,7 +82,7 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     }
 }
 
-
-class TestEntity {
+class TestEntity
+{
     // empty class needed for test fixtures
 }

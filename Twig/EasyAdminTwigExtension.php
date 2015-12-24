@@ -115,7 +115,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
         try {
             $value = $this->accessor->getValue($item, $fieldName);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return $twig->render($entityConfiguration['templates']['label_inaccessible'], array('view' => $view));
         }
 
@@ -168,7 +168,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                         $primaryKeyValue = $this->accessor->getValue($value, $targetEntityConfig['primary_key_field_name']);
                         $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
                         $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'view' => $view, 'id' => $primaryKeyValue);
-                    } catch(\Exception $e) {
+                    } catch (\Exception $e) {
                         // if the primary key value is not readable, just use the class name
                         // we can't use the $accessor->isReadable() method because it's not available in 2.3 version
                         $templateParameters['value'] = $targetEntityClassName;

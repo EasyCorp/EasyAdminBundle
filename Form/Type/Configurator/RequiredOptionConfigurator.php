@@ -10,6 +10,7 @@
  */
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
+
 use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormTypeGuesserInterface;
 

@@ -172,6 +172,7 @@ class AdminController extends Controller
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
             'fields' => $fields,
+            'delete_form_template' => $this->createDeleteForm($this->entity['name'], '{{ ID }}')->createView(),
         ));
     }
 
@@ -369,6 +370,7 @@ class AdminController extends Controller
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
             'fields' => $fields,
+            'delete_form_template' => $this->createDeleteForm($this->entity['name'], '{{ ID }}')->createView(),
         ));
     }
 

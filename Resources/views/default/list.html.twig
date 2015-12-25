@@ -151,7 +151,7 @@
                                                     {% set _action_href = path(_action.name, _request_parameters|merge({ action: _action.name, id: _item_id })) %}
                                                 {% endif %}
 
-                                                <a class="{{ _action.css_class|default('') }}" href="{{ _action_href }}">
+                                                <a class="{{ 'action-'~_action.name~' '~_action.css_class|default('') }}" href="{{ _action_href }}">
                                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                                     {% if _action.label is defined and not _action.label is empty %}
                                                         {{ _action.label|trans(_trans_parameters|merge({ '%entity_id%': _item_id })) }}
@@ -178,6 +178,41 @@
                     {{ include(_entity_config.templates.paginator) }}
                 {% endblock paginator %}
             </div>
+
+            {% block delete_form %}
+                {{
+                    form(delete_form_template, {
+                        action: delete_form_template.vars.action ~ '&referer=' ~ app.request.requestUri|url_encode,
+                        method: 'DELETE',
+                        attr: { id: 'delete-form', style: 'display: none' }
+                    })
+                }}
+
+                <div id="modal-delete" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <h4>{{ 'delete_modal.title'|trans(_trans_parameters, 'EasyAdminBundle') }}</h4>
+                                <p>{{ 'delete_modal.content'|trans(_trans_parameters, 'EasyAdminBundle') }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn">
+                                    {{ 'action.cancel'|trans(_trans_parameters) }}
+                                </button>
+
+                                {% if easyadmin_action_is_enabled_for_list_view('delete', _entity_config.name) %}
+                                    {% set _delete_action = easyadmin_get_action_for_list_view('delete', _entity_config.name) %}
+                                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                                        {% if _delete_action.icon %}<i class="fa fa-{{ _delete_action.icon }}"></i>{% endif %}
+                                        {{ _delete_action.label is defined and not _delete_action.label is empty ? _delete_action.label|trans(_trans_parameters) }}
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endblock delete_form %}
+
         {% endblock main %}
         </div>
     </div>
@@ -212,6 +247,18 @@
                     toggle.bootstrapToggle(oldValue == true ? 'on' : 'off');
                     toggle.bootstrapToggle('disable');
                 });
+            });
+
+            $('.action-delete').on('click', function(e) {
+                e.preventDefault();
+                var id = $(this).parents('tr').first().data('id');
+
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .one('click', '#modal-delete-button', function (e) {
+                        var deleteForm = $('#delete-form');
+                        deleteForm.attr('action', deleteForm.attr('action').replace('%7B%7B+ID+%7D%7D', id));
+                        deleteForm.trigger('submit');
+                    });
             });
         });
     </script>

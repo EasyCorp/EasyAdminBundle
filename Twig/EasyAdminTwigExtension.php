@@ -240,7 +240,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
         // in the 'list' view). Those special actions shouldn't be displayed for
         // each item as a regular action.
         $actionsExcludedForItems = array(
-            'list' => array('delete', 'list', 'new', 'search'),
+            'list' => array('list', 'new', 'search'),
             'edit' => array('list', 'delete'),
             'new' => array('list'),
             'show' => array('list', 'delete'),

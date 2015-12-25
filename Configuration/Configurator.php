@@ -271,11 +271,6 @@ class Configurator
         $excludedFieldNames = array('password', 'salt', 'slug', 'updatedAt', 'uuid');
         $excludedFieldTypes = array('array', 'binary', 'blob', 'guid', 'json_array', 'object', 'simple_array', 'text');
 
-        // if the entity has few fields, show them all
-        if (count($entityFields) <= $maxListFields) {
-            return $entityFields;
-        }
-
         // if the entity has a lot of fields, try to guess which fields we can remove
         $filteredFields = $entityFields;
         foreach ($entityFields as $name => $metadata) {

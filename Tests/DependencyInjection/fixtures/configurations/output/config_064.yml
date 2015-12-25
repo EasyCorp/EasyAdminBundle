@@ -45,19 +45,19 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: ''
+                        css_class: 'action-delete btn-danger'
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
                     custom_action_for_edit:
                         name: custom_action_for_edit
                         type: route
                         label: custom-edit-label
-                        css_class: custom-edit-class
+                        css_class: 'custom-edit-class action-custom_action_for_edit'
                         icon: custom-edit-icon
             list:
                 fields: {  }
@@ -66,37 +66,37 @@ easy_admin:
                         name: show
                         type: method
                         label: action.show
-                        css_class: ''
+                        css_class: action-show
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        css_class: ''
+                        css_class: action-edit
                         icon: null
                     search:
                         name: search
                         type: method
                         label: action.search
-                        css_class: ''
+                        css_class: action-search
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        css_class: ''
+                        css_class: action-new
                         icon: null
                     custom_action_for_list:
                         name: custom_action_for_list
                         type: route
                         label: custom-list-label
-                        css_class: custom-list-class
+                        css_class: 'custom-list-class action-custom_action_for_list'
                         icon: custom-list-icon
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
             new:
                 fields: {  }
@@ -106,13 +106,13 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
                     custom_action_for_new:
                         name: custom_action_for_new
                         type: route
                         label: custom-new-label
-                        css_class: custom-new-class
+                        css_class: 'custom-new-class action-custom_action_for_new'
                         icon: custom-new-icon
             search:
                 fields: {  }
@@ -123,25 +123,25 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: ''
+                        css_class: 'action-delete btn-danger'
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        css_class: ''
+                        css_class: action-edit
                         icon: edit
                     custom_action_for_show:
                         name: custom_action_for_show
                         type: route
                         label: custom-show-label
-                        css_class: custom-show-class
+                        css_class: 'custom-show-class action-custom_action_for_show'
                         icon: custom-show-icon
             disabled_actions: {  }
             templates:

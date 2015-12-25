@@ -249,6 +249,14 @@ class EasyAdminExtension extends Extension
                     $viewActions = array_merge($viewActions, $this->normalizeActionsConfiguration(array('list')));
                 }
 
+                if (isset($viewActions['delete'])) {
+                    if ('list' === $view) {
+                        $viewActions['delete']['css_class'] .= ' text-danger';
+                    } elseif (in_array($view, array('edit', 'show'))) {
+                        $viewActions['delete']['css_class'] .= ' btn-danger';
+                    }
+                }
+
                 $entityConfiguration[$view]['actions'] = $viewActions;
             }
 
@@ -378,6 +386,10 @@ class EasyAdminExtension extends Extension
                     $normalizedConfiguration = array_replace($defaultActionsConfiguration[$actionName], $normalizedConfiguration);
                 }
             }
+
+            // Add default classes ("action-{actionName}") to each actions configuration:
+            $normalizedConfiguration['css_class'] .= ' action-'.$normalizedConfiguration['name'];
+            $normalizedConfiguration['css_class'] = ltrim($normalizedConfiguration['css_class']);
 
             $configuration[$actionName] = $normalizedConfiguration;
         }

@@ -40,13 +40,13 @@ easy_admin:
                         name: list
                         type: method
                         label: custom-list-label
-                        css_class: ''
+                        css_class: action-list
                         icon: null
                     custom_action_for_edit:
                         name: custom_action_for_edit
                         type: method
                         label: 'Custom action for edit'
-                        css_class: ''
+                        css_class: action-custom_action_for_edit
                         icon: null
             list:
                 fields: {  }
@@ -55,31 +55,31 @@ easy_admin:
                         name: show
                         type: method
                         label: action.show
-                        css_class: ''
+                        css_class: action-show
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: custom-edit-label
-                        css_class: ''
+                        css_class: action-edit
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        css_class: ''
+                        css_class: action-new
                         icon: null
                     custom_action_for_list:
                         name: custom_action_for_list
                         type: method
                         label: 'Custom action for list'
-                        css_class: ''
+                        css_class: action-custom_action_for_list
                         icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
             new:
                 fields: {  }
@@ -89,13 +89,13 @@ easy_admin:
                         name: custom_action_for_new
                         type: method
                         label: custom-action-label
-                        css_class: ''
+                        css_class: action-custom_action_for_new
                         icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
             search:
                 fields: {  }
@@ -106,25 +106,25 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: ''
+                        css_class: 'action-delete btn-danger'
                         icon: trash
                     edit:
                         name: edit
                         type: method
                         label: custom-edit-label
-                        css_class: ''
+                        css_class: action-edit
                         icon: edit
                     custom_action_for_show:
                         name: custom_action_for_show
                         type: method
                         label: 'Custom action for show'
-                        css_class: ''
+                        css_class: action-custom_action_for_show
                         icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
             disabled_actions: {  }
             templates:

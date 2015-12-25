@@ -151,7 +151,7 @@
                                                     {% set _action_href = path(_action.name, _request_parameters|merge({ action: _action.name, id: _item_id })) %}
                                                 {% endif %}
 
-                                                <a class="{{ 'action-'~_action.name~' '~_action.css_class|default('') }}" href="{{ _action_href }}">
+                                                <a class="{{ _action.css_class|default('') }}" href="{{ _action_href }}">
                                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                                     {% if _action.label is defined and not _action.label is empty %}
                                                         {{ _action.label|trans(_trans_parameters|merge({ '%entity_id%': _item_id })) }}

@@ -45,13 +45,13 @@ easy_admin:
                         name: delete
                         type: route
                         label: custom-delete-label
-                        css_class: custom-delete-class
+                        css_class: 'custom-delete-class action-delete btn-danger'
                         icon: custom-delete-icon
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
             list:
                 fields: {  }
@@ -60,31 +60,31 @@ easy_admin:
                         name: show
                         type: method
                         label: action.show
-                        css_class: ''
+                        css_class: action-show
                         icon: null
                     edit:
                         name: edit
                         type: route
                         label: custom-edit-label
-                        css_class: custom-edit-class
+                        css_class: 'custom-edit-class action-edit'
                         icon: custom-edit-icon
                     search:
                         name: search
                         type: method
                         label: action.search
-                        css_class: ''
+                        css_class: action-search
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        css_class: ''
+                        css_class: action-new
                         icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
             new:
                 fields: {  }
@@ -94,7 +94,7 @@ easy_admin:
                         name: list
                         type: route
                         label: custom-list-label
-                        css_class: custom-list-class
+                        css_class: 'custom-list-class action-list'
                         icon: custom-list-icon
             search:
                 fields: {  }
@@ -105,19 +105,19 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: ''
+                        css_class: 'action-delete btn-danger'
                         icon: trash
                     list:
                         name: list
                         type: route
                         label: custom-list-label
-                        css_class: custom-list-class
+                        css_class: 'custom-list-class action-list'
                         icon: custom-list-icon
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        css_class: ''
+                        css_class: action-edit
                         icon: edit
             disabled_actions: {  }
             templates:

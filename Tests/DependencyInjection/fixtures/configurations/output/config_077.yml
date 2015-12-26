@@ -21,37 +21,37 @@ easy_admin:
                         name: show
                         type: method
                         label: action.show
-                        class: ''
+                        css_class: ''
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        class: ''
+                        css_class: ''
                         icon: null
                     search:
                         name: search
                         type: method
                         label: action.search
-                        class: ''
+                        css_class: ''
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        class: ''
+                        css_class: ''
                         icon: null
                     custom_list_action:
                         name: custom_list_action
                         type: method
                         label: 'Custom list action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
             edit:
@@ -60,19 +60,19 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        class: ''
+                        css_class: ''
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     custom_edit_action:
                         name: custom_edit_action
                         type: method
                         label: 'Custom edit action'
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
                 form_options: {  }
@@ -82,25 +82,25 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        class: ''
+                        css_class: ''
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        class: ''
+                        css_class: ''
                         icon: edit
                     custom_show_action:
                         name: custom_show_action
                         type: method
                         label: 'Custom show action'
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
             new:
@@ -109,13 +109,13 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     custom_new_action:
                         name: custom_new_action
                         type: method
                         label: 'Custom new action'
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
                 form_options: {  }

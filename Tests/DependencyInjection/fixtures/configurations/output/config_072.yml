@@ -21,25 +21,25 @@ easy_admin:
                         name: show
                         type: method
                         label: action.show
-                        class: ''
+                        css_class: ''
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        class: ''
+                        css_class: ''
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        class: ''
+                        css_class: ''
                         icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
             edit:
@@ -48,7 +48,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
                 form_options: {  }
@@ -58,13 +58,13 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        class: ''
+                        css_class: ''
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
             new:
@@ -73,7 +73,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
                 form_options: {  }

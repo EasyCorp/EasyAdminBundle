@@ -4,7 +4,7 @@ easy_admin:
             -
                 name: custom_action_for_list
                 icon: custom-list-icon
-                class: custom-list-class
+                css_class: custom-list-class
                 label: custom-list-label
                 type: route
         max_results: 15
@@ -13,7 +13,7 @@ easy_admin:
             -
                 name: custom_action_for_edit
                 icon: custom-edit-icon
-                class: custom-edit-class
+                css_class: custom-edit-class
                 label: custom-edit-label
                 type: route
     show:
@@ -21,7 +21,7 @@ easy_admin:
             -
                 name: custom_action_for_show
                 icon: custom-show-icon
-                class: custom-show-class
+                css_class: custom-show-class
                 label: custom-show-label
                 type: route
     new:
@@ -29,7 +29,7 @@ easy_admin:
             -
                 name: custom_action_for_new
                 icon: custom-new-icon
-                class: custom-new-class
+                css_class: custom-new-class
                 label: custom-new-label
                 type: route
     entities:
@@ -45,19 +45,19 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        class: ''
+                        css_class: ''
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     custom_action_for_edit:
                         name: custom_action_for_edit
                         type: route
                         label: custom-edit-label
-                        class: custom-edit-class
+                        css_class: custom-edit-class
                         icon: custom-edit-icon
             list:
                 fields: {  }
@@ -66,37 +66,37 @@ easy_admin:
                         name: show
                         type: method
                         label: action.show
-                        class: ''
+                        css_class: ''
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        class: ''
+                        css_class: ''
                         icon: null
                     search:
                         name: search
                         type: method
                         label: action.search
-                        class: ''
+                        css_class: ''
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        class: ''
+                        css_class: ''
                         icon: null
                     custom_action_for_list:
                         name: custom_action_for_list
                         type: route
                         label: custom-list-label
-                        class: custom-list-class
+                        css_class: custom-list-class
                         icon: custom-list-icon
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
             new:
                 fields: {  }
@@ -106,13 +106,13 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     custom_action_for_new:
                         name: custom_action_for_new
                         type: route
                         label: custom-new-label
-                        class: custom-new-class
+                        css_class: custom-new-class
                         icon: custom-new-icon
             search:
                 fields: {  }
@@ -123,25 +123,25 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        class: ''
+                        css_class: ''
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        class: ''
+                        css_class: ''
                         icon: edit
                     custom_action_for_show:
                         name: custom_action_for_show
                         type: route
                         label: custom-show-label
-                        class: custom-show-class
+                        css_class: custom-show-class
                         icon: custom-show-icon
             disabled_actions: {  }
             templates:

@@ -5,16 +5,16 @@
 easy_admin:
     list:
         actions:
-            - { name: 'custom_action_for_list', icon: 'custom-list-icon', class: 'custom-list-class', label: 'custom-list-label', type: 'route' }
+            - { name: 'custom_action_for_list', icon: 'custom-list-icon', css_class: 'custom-list-class', label: 'custom-list-label', type: 'route' }
     edit:
         actions:
-            - { name: 'custom_action_for_edit', icon: 'custom-edit-icon', class: 'custom-edit-class', label: 'custom-edit-label', type: 'route' }
+            - { name: 'custom_action_for_edit', icon: 'custom-edit-icon', css_class: 'custom-edit-class', label: 'custom-edit-label', type: 'route' }
     show:
         actions:
-            - { name: 'custom_action_for_show', icon: 'custom-show-icon', class: 'custom-show-class', label: 'custom-show-label', type: 'route' }
+            - { name: 'custom_action_for_show', icon: 'custom-show-icon', css_class: 'custom-show-class', label: 'custom-show-label', type: 'route' }
     new:
         actions:
-            - { name: 'custom_action_for_new', icon: 'custom-new-icon', class: 'custom-new-class', label: 'custom-new-label', type: 'route' }
+            - { name: 'custom_action_for_new', icon: 'custom-new-icon', css_class: 'custom-new-class', label: 'custom-new-label', type: 'route' }
     entities:
         TestEntity:
             class: AppBundle\Entity\TestEntity

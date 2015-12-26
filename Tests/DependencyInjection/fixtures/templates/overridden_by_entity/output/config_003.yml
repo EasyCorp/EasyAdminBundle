@@ -29,6 +29,12 @@ easy_admin:
             new: custom_template/new.html.twig
             paginator: custom_template/paginator.html.twig
             show: custom_template/show.html.twig
+            exception: '@EasyAdmin/default/exception.html.twig'
+            flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
+            field_guid: '@EasyAdmin/default/field_guid.html.twig'
+            field_json_array: '@EasyAdmin/default/field_json_array.html.twig'
+            field_object: '@EasyAdmin/default/field_object.html.twig'
+            field_raw: '@EasyAdmin/default/field_raw.html.twig'
         theme: default
         color_scheme: dark
         brand_color: '#E67E22'
@@ -134,6 +140,7 @@ easy_admin:
                 list: custom_template/list.html.twig
                 new: custom_template/new.html.twig
                 show: custom_template/show.html.twig
+                exception: '@EasyAdmin/default/exception.html.twig'
                 flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
                 paginator: custom_template/paginator.html.twig
                 field_array: custom_template/field_array.html.twig

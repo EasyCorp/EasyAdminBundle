@@ -35,9 +35,15 @@ class ExceptionListener extends BaseExceptionListener
     /** @var EngineInterface */
     private $templating;
 
-    public function __construct(EngineInterface $templating, $controller, LoggerInterface $logger = null)
+    /** @var array */
+    private $easyAdminConfig;
+
+    private $currentEntityName;
+
+    public function __construct(EngineInterface $templating, array $easyAdminConfig, $controller, LoggerInterface $logger = null)
     {
         $this->templating = $templating;
+        $this->easyAdminConfig = $easyAdminConfig;
 
         parent::__construct($controller, $logger);
     }
@@ -45,6 +51,7 @@ class ExceptionListener extends BaseExceptionListener
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
+        $this->currentEntityName = $event->getRequest()->query->get('entity', null);
 
         if (!$exception instanceof BaseException) {
             return;
@@ -60,8 +67,13 @@ class ExceptionListener extends BaseExceptionListener
 
     public function showExceptionPageAction(FlattenException $exception)
     {
+        $currentEntityConfig = isset($this->easyAdminConfig['entities'][$this->currentEntityName])
+            ? $this->easyAdminConfig['entities'][$this->currentEntityName] : null;
+        $exceptionTemplatePath = isset($currentEntityConfig['templates']['exception'])
+            ? $currentEntityConfig['templates']['exception'] : '@EasyAdmin/default/exception.html.twig';
+
         return $this->templating->renderResponse(
-            '@EasyAdmin/default/exception.html.twig',
+            $exceptionTemplatePath,
             array('exception' => $exception),
             Response::create()->setStatusCode($exception->getStatusCode())
         );

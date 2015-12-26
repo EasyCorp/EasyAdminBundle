@@ -55,7 +55,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
         $templating = $this->getTemplating();
 
-        $listener = new ExceptionListener($templating, 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($templating, array(), 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 
@@ -65,6 +65,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $event->method('getException')->willReturn($exception);
+        $event->method('getRequest')->willReturn(new Request());
         $event->expects($this->never())->method('setResponse');
 
         return $event;
@@ -76,7 +77,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $event = $this->getEventExceptionThatShouldNotBeCalled($exception);
         $templating = $this->getTemplating();
 
-        $listener = new ExceptionListener($templating, 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($templating, array(), 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 }

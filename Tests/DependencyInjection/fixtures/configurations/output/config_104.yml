@@ -134,6 +134,7 @@ easy_admin:
                 list: custom_template/list.html.twig
                 new: custom_template/new.html.twig
                 show: custom_template/show.html.twig
+                exception: '@EasyAdmin/default/exception.html.twig'
                 flash_messages: '@EasyAdmin/default/flash_messages.html.twig'
                 paginator: custom_template/paginator.html.twig
                 field_array: custom_template/field_array.html.twig

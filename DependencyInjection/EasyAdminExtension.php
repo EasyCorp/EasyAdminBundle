@@ -43,6 +43,7 @@ class EasyAdminExtension extends Extension
         'list' => '@EasyAdmin/default/list.html.twig',
         'new' => '@EasyAdmin/default/new.html.twig',
         'show' => '@EasyAdmin/default/show.html.twig',
+        'exception' => '@EasyAdmin/default/exception.html.twig',
         'flash_messages' => '@EasyAdmin/default/flash_messages.html.twig',
         'paginator' => '@EasyAdmin/default/paginator.html.twig',
         'field_array' => '@EasyAdmin/default/field_array.html.twig',

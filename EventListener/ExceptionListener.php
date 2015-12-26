@@ -72,8 +72,13 @@ class ExceptionListener extends BaseExceptionListener
      */
     protected function logException(\Exception $exception, $message, $original = true)
     {
+        if (!$exception instanceof BaseException) {
+            parent::logException($exception, $message, $original);
+
+            return;
+        }
+
         if (null !== $this->logger) {
-            /** @var BaseException $exception */
             if ($exception->getStatusCode() >= 500) {
                 $this->logger->critical($message, array('exception' => $exception));
             } else {

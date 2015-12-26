@@ -85,6 +85,7 @@ class EasyAdminExtension extends Extension
 
         // process bundle's configuration parameters
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
+        $backendConfiguration = $this->processBackendTemplates($backendConfiguration);
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
         $backendConfiguration = $this->processEntityActions($backendConfiguration);
         $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
@@ -407,6 +408,39 @@ class EasyAdminExtension extends Extension
             return !array_key_exists($action['name'], $removedActions)
                 && !array_key_exists('-'.$action['name'], $removedActions);
         });
+    }
+
+    /**
+     * Determines the template used to render each backend element. It's similar
+     * to processBackendTemplates() but it doesn't take into account the details
+     * of each entity. This is needed for example when an exception is triggered
+     * and no entitiy configuration is available to know which template should
+     * be rendered.
+     *
+     * @param  array  $backendConfiguration
+     *
+     * @return array
+     */
+    private function processBackendTemplates(array $backendConfiguration)
+    {
+        $templatesDir = $this->kernelRootDir.'/Resources/views';
+
+        foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
+            // 1st level priority: easy_admin.design.templates.<templateName> config option
+            if (isset($backendConfiguration['design']['templates'][$templateName])) {
+                $template = $backendConfiguration['design']['templates'][$templateName];
+            // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
+            } elseif (file_exists($templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
+                $template = 'easy_admin/'.$templateName.'.html.twig';
+            // 3rd level priority: @EasyAdmin/default/<templateName>.html.twig
+            } else {
+                $template = $defaultTemplatePath;
+            }
+
+            $backendConfiguration['design']['templates'][$templateName] = $template;
+        }
+
+        return $backendConfiguration;
     }
 
     /**

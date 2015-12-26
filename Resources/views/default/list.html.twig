@@ -180,9 +180,14 @@
             </div>
 
             {% block delete_form %}
+                {% set referer = paginator.currentPage == paginator.nbPages and 0 != paginator.currentPage and 1 == paginator.currentPageResults.count
+                    ? path('easyadmin', app.request.query|merge({ page: app.request.query.get('page') - 1 }))
+                    : app.request.requestUri
+                %}
+
                 {{ include('@EasyAdmin/default/includes/delete_form.html.twig', {
                     view: 'list',
-                    referer: app.request.requestUri|url_encode,
+                    referer: referer|url_encode,
                     delete_form: delete_form_template,
                     _trans_parameters: _trans_parameters,
                     _entity_config: _entity_config,

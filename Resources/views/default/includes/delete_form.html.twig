@@ -18,8 +18,8 @@
                     {{ 'action.cancel'|trans(_trans_parameters) }}
                 </button>
 
-                {% if easyadmin_action_is_enabled_for_view(view, 'delete', _entity_config.name) %}
-                    {% set _delete_action = easyadmin_get_action_for_view(view, 'delete', _entity_config.name) %}
+                {% if easyadmin_action_is_enabled(view, 'delete', _entity_config.name) %}
+                    {% set _delete_action = easyadmin_get_action(view, 'delete', _entity_config.name) %}
                     <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
                         {% if _delete_action.icon %}<i class="fa fa-{{ _delete_action.icon }}"></i>{% endif %}
                         {{ _delete_action.label is defined and not _delete_action.label is empty ? _delete_action.label|trans(_trans_parameters) }}

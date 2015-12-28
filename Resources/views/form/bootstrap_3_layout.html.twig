@@ -203,7 +203,7 @@
 
 {% block form_row -%}
     {% set _field_type = easyadmin.field.fieldType|default('default') %}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ _field_type }}">
+    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
 
         {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
         {% set _field_label = easyadmin.field['label']|default(null) %}
@@ -263,7 +263,7 @@
 {% endblock collection_row %}
 
 {% block button_row -%}
-    <div class="form-group field-{{ easyadmin.field.fieldType|default('default') }} {{ easyadmin.field.class|default('') }}">
+    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ easyadmin.field.class|default('') }}">
         {{- form_widget(form) -}}
     </div>
 {%- endblock button_row %}
@@ -289,14 +289,14 @@
 {%- endblock datetime_row %}
 
 {% block checkbox_row -%}
-    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ easyadmin.field.fieldType|default('default') }}">
+    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
         {{- form_widget(form) -}}
         {{- form_errors(form) -}}
     </div>
 {%- endblock checkbox_row %}
 
 {% block radio_row -%}
-    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ easyadmin.field.fieldType|default('default') }}">
+    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
         {{- form_widget(form) -}}
         {{- form_errors(form) -}}
     </div>

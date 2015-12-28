@@ -578,7 +578,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertCount(15, $crawler->filter('.table tbody td:contains("Inaccessible")'));
 
-        $this->assertEquals('thisFieldIsVirtual', $crawler->filter('.table tbody td:contains("Inaccessible")')->first()->attr('data-label'));
+        $this->assertEquals('This field is virtual', $crawler->filter('.table tbody td:contains("Inaccessible")')->first()->attr('data-label'));
 
         $firstVirtualField = $crawler->filter('.table tbody td:contains("Inaccessible") span')->first();
         $this->assertEquals('label label-danger', $firstVirtualField->attr('class'));

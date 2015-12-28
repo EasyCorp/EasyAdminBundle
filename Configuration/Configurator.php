@@ -339,7 +339,6 @@ class Configurator
                         'columnName' => null,
                         'fieldName' => $fieldName,
                         'id' => false,
-                        'label' => $fieldName,
                         'sortable' => false,
                         // if the 'type' is not set explicitly for a virtual field,
                         // consider it as a string, so the backend displays its contents

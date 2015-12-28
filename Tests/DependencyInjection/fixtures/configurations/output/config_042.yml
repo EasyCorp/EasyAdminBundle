@@ -107,6 +107,7 @@ easy_admin:
                 field_boolean: '@EasyAdmin/default/field_boolean.html.twig'
                 field_date: '@EasyAdmin/default/field_date.html.twig'
                 field_datetime: '@EasyAdmin/default/field_datetime.html.twig'
+                field_datetime_locale: '@EasyAdmin/default/field_datetime_locale.html.twig'
                 field_datetimetz: '@EasyAdmin/default/field_datetimetz.html.twig'
                 field_decimal: '@EasyAdmin/default/field_decimal.html.twig'
                 field_float: '@EasyAdmin/default/field_float.html.twig'

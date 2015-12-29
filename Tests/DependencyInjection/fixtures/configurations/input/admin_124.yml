@@ -1,0 +1,7 @@
+# TEST
+# When using custom form themes in an array, we should parse them automatically
+
+# CONFIGURATION
+easy_admin:
+    design:
+        form_theme: ['horizontal', 'vertical']

@@ -1,0 +1,31 @@
+easy_admin:
+    design:
+        assets:
+            css: {  }
+            js: {  }
+            favicon:
+                path: favicon.ico
+                mime_type: image/x-icon
+        theme: default
+        color_scheme: dark
+        brand_color: '#E67E22'
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+            - '@EasyAdmin/form/bootstrap_3_layout.html.twig'
+    site_name: 'Easy Admin'
+    formats:
+        date: Y-m-d
+        time: 'H:i:s'
+        datetime: 'F j, Y H:i'
+    disabled_actions: {  }
+    list:
+        actions: {  }
+        max_results: 15
+    edit:
+        actions: {  }
+    new:
+        actions: {  }
+    show:
+        actions: {  }
+    entities: {  }
+    default_entity_name: null

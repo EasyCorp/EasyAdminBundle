@@ -245,15 +245,19 @@ class Configuration implements ConfigurationInterface
                             ->treatNullLike(array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'))
                             ->info('The form theme applied to backend forms. Allowed values: "horizontal", "vertical" and a custom theme path or array of custom theme paths.')
                             ->validate()
-                                ->ifTrue(function ($v) { return 'horizontal' === $v; })
-                                ->then(function () { return array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'); })
-                            ->end()
-                            ->validate()
-                                ->ifTrue(function ($v) { return 'vertical' === $v; })
-                                ->then(function () { return array('@EasyAdmin/form/bootstrap_3_layout.html.twig'); })
-                            ->end()
-                            ->validate()
                                 ->ifString()->then(function ($v) { return array($v); })
+                            ->end()
+                            ->validate()
+                                ->ifArray()->then(function($values){
+                                    foreach ($values as $k => $v) {
+                                        if ('horizontal' === $v) {
+                                            $values[$k] = '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig';
+                                        } elseif ('vertical' === $v) {
+                                            $values[$k] = '@EasyAdmin/form/bootstrap_3_layout.html.twig';
+                                        }
+                                    }
+                                    return $values;
+                                })
                             ->end()
                         ->end()
 

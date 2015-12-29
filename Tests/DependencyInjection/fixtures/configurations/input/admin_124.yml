@@ -1,5 +1,6 @@
 # TEST
-# When using custom form themes in an array, we should parse them automatically
+# When using an array of form themes, the 'horizontal' and 'vertical' shortcuts
+# must keep being automatically transformed into their full form theme paths
 
 # CONFIGURATION
 easy_admin:

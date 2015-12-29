@@ -1,10 +1,12 @@
 How to Upload Files and Images
 ==============================
 
-EasyAdmin doesn't provide any built-in feature to upload files, but it integrates
-seamlessly with the most popular file uploader bundle: [VichUploaderBundle] [vich-uploader].
 In this article you'll learn how to allow uploading files in your backends, both
 images and regular files, such as PDF files.
+
+Although EasyAdmin doesn't provide any built-in feature to upload files, it
+integrates seamlessly with [VichUploaderBundle](https://github.com/dustin10/VichUploaderBundle),
+the most popular file uploader Symfony bundle.
 
 Installing the File Uploader Bundle
 -----------------------------------
@@ -41,9 +43,10 @@ vich_uploader:
 Uploading Image Files
 ---------------------
 
-First we'll show how to upload images for an example entity called `Product`.
+First you'll learn how to upload and preview images in the backend. Then, in the
+next section, you'll see how to upload other types of files (such as PDFs).
 
-### Configuring the Image Files Uploading
+### Configuring the Uploading of Image Files
 
 Before uploading files, you must configure the "mappings" for the VichUploaderBundle.
 These "mappings" tell the bundle where should the files be uploaded and which
@@ -75,7 +78,7 @@ can be displayed in the application. In this example, the `uri_prefix` value is
 defined as a container parameter, because we'll reuse this value in the EasyAdmin
 configuration later.
 
-### Preparing your Entities to Persist Files
+### Preparing your Entities to Persist Images
 
 Considering that the `Product` entity is already created, the first change you
 need to make is adding the `Uploadable` annotation to the entity class:
@@ -141,7 +144,7 @@ class Product
 }
 ```
 
-The `image` properties stores just the name of the uploaded image and it's
+The `image` property stores just the name of the uploaded image and it's
 persisted in the database. The `imageFile` property stores the binary contents
 of the image file and it's not persisted in the database (that's why it doesn't
 define a `@ORM` annotation).
@@ -150,10 +153,10 @@ The `imageFile` property must define a `@Vich\UploadableField` annotation that
 configures both the "mapping" to use (`product_images` in this case) and the
 entity property that stores the image name (`image` in this case).
 
-### Displaying the Images in the `list` and `show` views
+### Displaying the Images in the `list` and `show` Views
 
-EasyAdmin supports displaying images in the `list` and `show` views through the
-special `image` type:
+Use the special `image` type in the `list` and `show` views to display the
+contents of a property as an image:
 
 ```yaml
 easy_admin:
@@ -176,12 +179,12 @@ define the `base_path` option to prepend the path to make the image accessible.
 
 Instead of hardcoding the `base_path` value, this example uses the
 `app.path.product_images` container parameter which also was used in the
-VichUploaderbundle configuration.
+VichUploaderBundle configuration.
 
-### Displaying the Images in the `edit` and `new` views
+### Uploading the Images in the `edit` and `new` Views
 
-The easiest way to enable uploading file images in the forms of the `edit` and
-`new` views is to define the type of the property as `file`:
+The easiest way to enable uploading images in the forms of the `edit` and `new`
+views is to define the type of the property as `file`:
 
 ```yaml
 easy_admin:
@@ -229,11 +232,11 @@ Uploading Other Types of Files
 ------------------------------
 
 Adding support for uploading other types of files (such as PDF files) is similar
-to uploading images, but it requires some changes when displaying them in the
-backend. In this example, we'll add support for uploading PDFs that represent the
-contracts subscribed by the users.
+to uploading images. That's why in the next sections we'll show the required
+steps, but we won't repeat the same explanations. In this example, we'll add
+support for uploading PDFs that represent the contracts subscribed by the users.
 
-### Configuring the Files Uploading
+### Configuring the Uploading of Files
 
 Define the "mapping" for the new user contracts:
 
@@ -283,7 +286,7 @@ class User
 }
 ```
 
-### Displaying the Files in the `list` and `show` views
+### Displaying the Files in the `list` and `show` Views
 
 This is the most tricky part of adding support for file uploads. Contrary to
 images, it's not easy to provide a preview of the contents for any kind of file.
@@ -317,7 +320,7 @@ easy_admin:
                     - { property: 'contract', template: 'contract' }
 ```
 
-Now you must create the `app/Resources/views/easy_admin/User/contract.html.twig`
+Now you must create the `app/Resources/views/easy_admin/contract.html.twig`
 template with this content:
 
 ```twig
@@ -330,7 +333,7 @@ property only stores the name of the file, but you also need the public path to
 that file (which in this case is stored in the `app.path.user_contracts` parameter).
 
 The solution is simple: you can define any number of arbitrary options for a
-property and they all are available in your custom template via the `field_options`
+property and they will be available in your custom template via the `field_options`
 option. So you just need to add a new option in the property definition:
 
 ```yaml
@@ -341,7 +344,7 @@ option. So you just need to add a new option in the property definition:
 - { property: 'contract', template: 'contract', base_path: %app.path.user_contracts% }
 ```
 
-Finally, update the custom template to use this new option:
+Then, update the custom template to use this new option:
 
 ```twig
 <a href="{{ field_options.base_path ~ '/' ~ value }}">View contract (PDF)</a>
@@ -356,7 +359,7 @@ Finally, update the custom template to use this new option:
 > <a href="{{ asset(value, 'user_contracts') }}">View contract (PDF)</a>
 > ```
 
-### Displaying the Files in the `edit` and `new` views
+### Uploading the Files in the `edit` and `new` Views
 
 Thanks to the custom `VichFileType` provided by the bundle, this is pretty
 straightforward:
@@ -383,5 +386,3 @@ easy_admin:
     design:
         form_theme: ['VichUploaderBundle:Form:fields.html.twig', 'horizontal']
 ```
-
-[vich-uploader]: https://github.com/dustin10/VichUploaderBundle

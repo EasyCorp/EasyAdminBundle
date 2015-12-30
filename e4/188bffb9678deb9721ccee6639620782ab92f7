@@ -1,0 +1,98 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-29T07:56:13Z
+
+`field-{{ block_prefixes[-2:][0] }}`
+
+I don't understand this syntax :confused: Could you explain?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-29T08:22:29Z
+
+@Pierstoval : Sure. It is a syntactic sugar for the [`slice`](http://twig.sensiolabs.org/doc/filters/slice.html) filter. The syntax is `[start:length]`.
+Here it simply means: "Start to the penultimate element (-2) of the array of block prefixes, and return me the remaining slice (no length). Then simply access the first element (which is the penultimate one)"
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-29T08:56:22Z
+
+That's quite cool! Thanks for the tip :smile:
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-12-29T10:07:37Z
+
+I do not think that `block_prefixes` will be available in Symfony versions before 2.8.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-29T10:09:20Z
+
+@xabbuh : Really ? :confused:
+Tests passed, so I didn't worry about, but I've got some doubts regarding what you say. To me, `block_prefixes` has always existed and are used by form themes to choose the appropriate Twig block to render.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-29T10:12:12Z
+
+See https://github.com/symfony/symfony/blob/2.3/src/Symfony/Component/Form/FormRenderer.php#L192 and https://github.com/symfony/symfony/blob/2.3/src/Symfony/Component/Form/Extension/Core/Type/BaseType.php#L88
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2015-12-29T10:12:57Z
+
+Ah, you are right. So it's only just configurable right now.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-29T21:08:48Z
+
+@ogizanagi I'm probably wrong but, why cannot we use `field-{{ block_prefixes[-2:1] }}` instead of `field-{{ block_prefixes[-2:][0] }}` ?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-30T00:37:46Z
+
+@javiereguiluz : `field-{{ block_prefixes[-2:1] }}` still returns an array (of one element, but still an array).
+So we'll need `field-{{ block_prefixes[-2:1][0] }}`. IMO there is no gain here.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-30T07:20:23Z
+
+@ogizanagi you are right! I was :sleepy:  However, `[-2:][0]` still looks a bit hard to understand. What about `[-2:]|first`? I don't know, maybe that solution is worse.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-30T08:36:24Z
+
+:+1: for @javiereguiluz's proposal about `[-2:]|first`
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-30T10:46:01Z
+
+@javiereguiluz, @Pierstoval  : I like it. But finally, just asking, as we're going there, what will you prefer between:
+- `block_prefixes[-2:]|first`
+- `block_prefixes|slice(-2)|first`
+
+?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-30T10:54:06Z
+
+Maybe the `slice(-2)` is "better" because it's trivial to understand and therefore improves code readability?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-30T10:56:03Z
+
+@javiereguiluz : That's what I think too, even if I do like the other notation. But if someone has to override one of those form themes, it should be easily understood.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-30T11:54:32Z
+
+Good, the `slice` filter is great :)

@@ -263,7 +263,7 @@
 {% endblock collection_row %}
 
 {% block button_row -%}
-    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ easyadmin.field.class|default('') }}">
+    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ easyadmin.field.css_class|default('') }}">
         {{- form_widget(form) -}}
     </div>
 {%- endblock button_row %}
@@ -344,7 +344,7 @@
         <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
 
         {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
-            <div class="{{ field.vars.easyadmin.field.class|default('col-xs-12') }}">
+            <div class="{{ field.vars.easyadmin.field.css_class|default('col-xs-12') }}">
                 {{ form_row(field) }}
             </div>
         {% endfor %}

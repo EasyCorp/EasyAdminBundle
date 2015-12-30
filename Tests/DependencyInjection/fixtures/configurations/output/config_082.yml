@@ -8,67 +8,67 @@ easy_admin:
                         name: show
                         type: method
                         label: action.show
-                        class: ''
+                        css_class: ''
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        class: ''
+                        css_class: ''
                         icon: null
                     search:
                         name: search
                         type: method
                         label: action.search
-                        class: ''
+                        css_class: ''
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        class: ''
+                        css_class: ''
                         icon: null
                     CamelCaseAction:
                         name: CamelCaseAction
                         type: method
                         label: 'Camel case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
-                        class: ''
+                        css_class: ''
                         icon: null
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
-                        class: ''
+                        css_class: ''
                         icon: null
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
             edit:
@@ -77,49 +77,49 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        class: ''
+                        css_class: ''
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     CamelCaseAction:
                         name: CamelCaseAction
                         type: method
                         label: 'Camel case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
-                        class: ''
+                        css_class: ''
                         icon: null
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
-                        class: ''
+                        css_class: ''
                         icon: null
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
                 form_options: {  }
@@ -129,55 +129,55 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        class: ''
+                        css_class: ''
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        class: ''
+                        css_class: ''
                         icon: edit
                     CamelCaseAction:
                         name: CamelCaseAction
                         type: method
                         label: 'Camel case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
-                        class: ''
+                        css_class: ''
                         icon: null
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
-                        class: ''
+                        css_class: ''
                         icon: null
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
             new:
@@ -186,43 +186,43 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     CamelCaseAction:
                         name: CamelCaseAction
                         type: method
                         label: 'Camel case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
-                        class: ''
+                        css_class: ''
                         icon: null
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
-                        class: ''
+                        css_class: ''
                         icon: null
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
-                        class: ''
+                        css_class: ''
                         icon: null
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
                 form_options: {  }

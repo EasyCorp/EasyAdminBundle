@@ -32,7 +32,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
             list:
                 fields: {  }
@@ -41,7 +41,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
             new:
                 fields: {  }
@@ -51,7 +51,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
             search:
                 fields: {  }
@@ -62,7 +62,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
             disabled_actions: {  }
             templates:

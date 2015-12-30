@@ -269,8 +269,8 @@ These are the options that you can define for each field:
   * `css_class` (optional): the CSS class applied to the form field widget
     container element in the `edit`, `new` and `show` views. For example, when
     using the default Bootstrap based form theme, this value is applied to the
-    `<div class="form-group">` element which wraps the label, the widget and
-    the error messages of the field.
+    `<div>` element which wraps the label, the widget and the error messages of 
+    the field.
   * `template` (optional): the name of the custom template used to render the
     contents of the field in the `list` and `show` views. This option is fully
     explained in the [Advanced Design Customization] [advanced-design-customization] tutorial.

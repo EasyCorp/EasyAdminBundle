@@ -37,31 +37,31 @@ easy_admin:
                         name: show
                         type: method
                         label: action.show
-                        class: ''
+                        css_class: ''
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: 'Entity Edit Label'
-                        class: ''
+                        css_class: ''
                         icon: entity-edit-icon
                     search:
                         name: search
                         type: method
                         label: action.search
-                        class: ''
+                        css_class: ''
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        class: ''
+                        css_class: ''
                         icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
             edit:
@@ -70,13 +70,13 @@ easy_admin:
                         name: delete
                         type: method
                         label: 'Entity Delete Label'
-                        class: ''
+                        css_class: ''
                         icon: entity-delete-icon
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                 fields: {  }
                 form_options: {  }
@@ -86,19 +86,19 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        class: ''
+                        css_class: ''
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        class: ''
+                        css_class: ''
                         icon: null
                     edit:
                         name: edit
                         type: route
                         label: 'Entity Edit Label'
-                        class: ''
+                        css_class: ''
                         icon: entity-edit-icon
                 fields: {  }
             new:
@@ -107,7 +107,7 @@ easy_admin:
                         name: list
                         type: route
                         label: 'Entity List Label'
-                        class: ''
+                        css_class: ''
                         icon: entity-list-icon
                 fields: {  }
                 form_options: {  }

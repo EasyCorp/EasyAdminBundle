@@ -30,11 +30,11 @@ class EasyAdminExtension extends Extension
     private $views = array('edit', 'list', 'new', 'show');
 
     private $defaultActionConfiguration = array(
-        'name'  => null,     // either the name of a controller method or an application route (it depends on the 'type' option)
-        'type'  => 'method', // 'method' if the action is a controller method; 'route' if it's an application route
-        'label' => null,     // action label (displayed as link or button) (if 'null', autogenerate it)
-        'class' => '',       // the CSS class applied to the button/link displayed by the action
-        'icon'  => null,     // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
+        'name'      => null,     // either the name of a controller method or an application route (it depends on the 'type' option)
+        'type'      => 'method', // 'method' if the action is a controller method; 'route' if it's an application route
+        'label'     => null,     // action label (displayed as link or button) (if 'null', autogenerate it)
+        'css_class' => '',       // the CSS class applied to the button/link displayed by the action
+        'icon'      => null,     // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
     );
 
     private $defaultBackendTemplates = array(

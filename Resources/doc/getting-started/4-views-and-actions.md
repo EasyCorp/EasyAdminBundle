@@ -313,43 +313,6 @@ to learn about all the available options, their usage and allowed values.
 > customizations, as explained in the
 > [Advanced Design Customization] [advanced-design-customization] tutorial.
 
-### Translate Property Labels
-
-Before translating the labels, make sure that the `translator` service is
-enabled in the application (projects based on the Symfony Standard Edition
-have it disabled by default):
-
-```yaml
-# app/config/config.yml
-framework:
-    translator: { fallbacks: [ "%locale%" ] }
-```
-
-Then, in order to translate the labels to the application language, use
-translation keys instead of contents for the `label` option:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields:
-                    - 'id'
-                    - { property: 'firstname', label: 'app.users.firstname' }
-                    - { property: 'lastname', label: 'app.users.firstname' }
-        # ...
-```
-
-Now, instead of displaying the label content, EasyAdmin will look for any
-translation file available in the application which defines the value of those
-keys for the current language.
-
-If there is no translation available, it will try to look for those values for
-the default application language. In case no translation is available, the key
-will be displayed so you can easily spot any missing translation.
-
 ### Customize Date Format
 
 By default, these are the formats applied to date properties (read the

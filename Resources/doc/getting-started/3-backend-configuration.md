@@ -127,52 +127,6 @@ easy_admin:
             class: AppBundle\Entity\Order
 ```
 
-Translate the Backend Interface
--------------------------------
-
-The backend uses the same language as the underlying Symfony application, which
-is usually configured in the `locale` option of the `app/config/parameters.yml`
-file. The current version of EasyAdmin supports tens of languages and we're
-actively looking for more translations contributed by the community.
-
-The strings that belong to the bundle interface are translated using the
-special `EasyAdminBundle` translation domain. The rest of the strings, such as
-the property names, are translated using the default `messages` domain.
-
-In addition, make sure that the `translator` service is enabled in the
-application (projects based on the Symfony Standard Edition have it disabled
-by default):
-
-```yaml
-# app/config/config.yml
-framework:
-    translator: { fallbacks: [ "%locale%" ] }
-```
-
-Customize the Translation of the Main Menu Items
-------------------------------------------------
-
-In addition to the built-in backend elements, you may need to translate the
-labels of your entities, because they are displayed in the main menu. To do so,
-use translation keys instead of contents in the configuration file:
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    entities:
-        Customers:
-            label: app.customers
-            class: AppBundle\Entity\Customer
-        Orders:
-            label: app.orders
-            class: AppBundle\Entity\Order
-```
-
-The `app.customers` and `app.orders` values are not the real entity names but
-the translation keys. If your application includes a translation file which
-defines the value of those keys for the active language, you'll see the main
-menu items translated.
-
 Restrict the Access to the Backend
 ----------------------------------
 

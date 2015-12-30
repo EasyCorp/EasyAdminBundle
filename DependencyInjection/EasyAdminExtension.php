@@ -85,7 +85,7 @@ class EasyAdminExtension extends Extension
 
         // process bundle's configuration parameters
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
-        $backendConfiguration = $this->processBackendTemplates($backendConfiguration);
+        $backendConfiguration = $this->processDeaultTemplates($backendConfiguration);
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
         $backendConfiguration = $this->processEntityActions($backendConfiguration);
         $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
@@ -411,17 +411,17 @@ class EasyAdminExtension extends Extension
     }
 
     /**
-     * Determines the template used to render each backend element. It's similar
-     * to processBackendTemplates() but it doesn't take into account the details
-     * of each entity. This is needed for example when an exception is triggered
-     * and no entitiy configuration is available to know which template should
-     * be rendered.
+     * Determines the templates used to render each backend element when no
+     * entity configuration is available. It's similar to processEntityTemplates()
+     * but it doesn't take into account the details of each entity.
+     * This is needed for example when an exception is triggered and no entitiy
+     * configuration is available to know which template should be rendered.
      *
      * @param  array  $backendConfiguration
      *
      * @return array
      */
-    private function processBackendTemplates(array $backendConfiguration)
+    private function processDeaultTemplates(array $backendConfiguration)
     {
         $templatesDir = $this->kernelRootDir.'/Resources/views';
 
@@ -437,7 +437,7 @@ class EasyAdminExtension extends Extension
                 $template = $defaultTemplatePath;
             }
 
-            $backendConfiguration['design']['templates'][$templateName] = $template;
+            $backendConfiguration['default_templates'][$templateName] = $template;
         }
 
         return $backendConfiguration;

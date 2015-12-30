@@ -67,10 +67,10 @@ class ExceptionListener extends BaseExceptionListener
 
     public function showExceptionPageAction(FlattenException $exception)
     {
-        $currentEntityConfig = isset($this->easyAdminConfig['entities'][$this->currentEntityName])
+        $entityConfig = isset($this->easyAdminConfig['entities'][$this->currentEntityName])
             ? $this->easyAdminConfig['entities'][$this->currentEntityName] : null;
-        $exceptionTemplatePath = isset($currentEntityConfig['templates']['exception'])
-            ? $currentEntityConfig['templates']['exception'] : $this->easyAdminConfig['design']['templates']['exception'];
+        $exceptionTemplatePath = isset($entityConfig['templates']['exception'])
+            ? $entityConfig['templates']['exception'] : $this->easyAdminConfig['default_templates']['exception'];
 
         return $this->templating->renderResponse(
             $exceptionTemplatePath,

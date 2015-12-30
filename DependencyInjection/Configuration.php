@@ -160,6 +160,11 @@ class Configuration implements ConfigurationInterface
     private function addGlobalOptionsSection(ArrayNodeDefinition $rootNode)
     {
         $rootNode
+            ->beforeNormalization()
+                ->ifTrue(function ($v) { return isset($v['default_templates']); })
+                ->thenInvalid('The "default_templates" key is reserved for internal use and cannot be defined. It contains the templates to use when no entity configuration is available (for example in exception pages).')
+            ->end()
+
             ->children()
                 ->scalarNode('site_name')
                     ->defaultValue('Easy Admin')
@@ -315,6 +320,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('list')->info('Used to render the listing page and the search results page')->end()
                                 ->scalarNode('new')->info('Used to render the page where new entities are created')->end()
                                 ->scalarNode('show')->info('Used to render the contents stored by a given entity')->end()
+                                ->scalarNode('exception')->info('Used to render the error page when some exception happens')->end()
                                 ->scalarNode('flash_messages')->info('Used to render the notification area were flash messages are displayed')->end()
                                 ->scalarNode('paginator')->info('Used to render the paginator in the list page')->end()
                                 ->scalarNode('field_array')->info('Used to render array field types')->end()

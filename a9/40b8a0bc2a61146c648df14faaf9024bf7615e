@@ -1,0 +1,75 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-26T12:00:42Z
+
+@javiereguiluz : Is it really needed to add this new `easyadmin.templates` options ? We already have `easyadmin.design.template` for this, right ? (It only missed to be initialized with `$defaultBackendTemplates`)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-26T12:33:58Z
+
+@ogizanagi you are right. I wasn't referring to a new public configuration option. What I want to do is to create that option when processing the full backend configuration into the `easy_Admin.config` container parameter.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-26T18:14:04Z
+
+I've finished this feature in de01f1d.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-30T17:27:12Z
+
+I've fixed all the minor issues reported and in b54b648 I've tried to also fix the major issue raised by @ogizanagi. I agree with you that configuring the exception template per entity looks like "too much". However, I prefer to be consistent and provide a feature that almost nobody will use ... instead of having to treat the exception templates differently from the rest of the templates (we need to deal with this differences in the code, the docs, etc.)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-30T18:29:56Z
+
+@javiereguiluz : I'm lost in the tests fixtures diff, but did you add/modify an input fixture to customize the `exception` template somewhere ? I don't see any input file in the diff :confused: (This is the test that proves the `Configuration` class is properly fixed.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-30T19:59:30Z
+
+@shakaran I completely agree with you. I've reverted everything in b6ff3d7 and thanks to the latest changes, I was able to fix some tests which were wrong.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-30T20:39:33Z
+
+Travis shows 1 test failing ... but I can't reproduce locally :confused:  Everything works for me!!
+
+![failing_tests](https://cloud.githubusercontent.com/assets/73419/12057091/cb0c25a2-af3d-11e5-8f11-c9366af13aff.png)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-30T21:17:52Z
+
+I can't reproduce it neither, and the incriminated file seems good to me :/
+It looks like Travis doesn't have the right version of `EasyAdminBundle/Tests/DependencyInjection/fixtures/configurations/output/config_024.yml`.
+
+Did you already try to relaunch the build ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-30T21:19:38Z
+
+@ogizanagi I tried relaunching with no luck. Let's relaunch again. If it fails, I'll merge it anyway.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-30T21:34:37Z
+
+The `continuous-integration/travis-ci/push` check pass, and I also tried to launch a build on my own fork.[Everything seems to be good](https://travis-ci.org/ogizanagi/EasyAdminBundle/builds/99505615).
+So it might be an issue with Travis.
+
+Let's get this merged IMO :)
+
+@Pierstoval : This typo has been fixed already :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-30T21:43:48Z
+
+I also deleted all the caches of my Travis account but it didn't work. Let's merge it.

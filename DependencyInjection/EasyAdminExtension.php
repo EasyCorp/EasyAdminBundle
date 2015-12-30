@@ -85,10 +85,10 @@ class EasyAdminExtension extends Extension
 
         // process bundle's configuration parameters
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
-        $backendConfiguration = $this->processDeaultTemplates($backendConfiguration);
         $backendConfiguration['entities'] = $this->getEntitiesConfiguration($backendConfiguration['entities']);
         $backendConfiguration = $this->processEntityActions($backendConfiguration);
         $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
+        $backendConfiguration = $this->processDefaultTemplates($backendConfiguration);
         $backendConfiguration['default_entity_name'] = $this->getFirstEntityName($backendConfiguration);
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
@@ -421,7 +421,7 @@ class EasyAdminExtension extends Extension
      *
      * @return array
      */
-    private function processDeaultTemplates(array $backendConfiguration)
+    private function processDefaultTemplates(array $backendConfiguration)
     {
         $templatesDir = $this->kernelRootDir.'/Resources/views';
 
@@ -437,7 +437,7 @@ class EasyAdminExtension extends Extension
                 $template = $defaultTemplatePath;
             }
 
-            $backendConfiguration['default_templates'][$templateName] = $template;
+            $backendConfiguration['design']['templates'][$templateName] = $template;
         }
 
         return $backendConfiguration;

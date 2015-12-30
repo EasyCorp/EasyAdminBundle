@@ -160,11 +160,6 @@ class Configuration implements ConfigurationInterface
     private function addGlobalOptionsSection(ArrayNodeDefinition $rootNode)
     {
         $rootNode
-            ->beforeNormalization()
-                ->ifTrue(function ($v) { return isset($v['default_templates']); })
-                ->thenInvalid('The "default_templates" key is reserved for internal use and cannot be defined. It contains the templates to use when no entity configuration is available (for example in exception pages).')
-            ->end()
-
             ->children()
                 ->scalarNode('site_name')
                     ->defaultValue('Easy Admin')

@@ -88,9 +88,9 @@ easy_admin:
                         icon: edit
             disabled_actions: {  }
             templates:
-                layout: '@EasyAdmin/default/layout.html.twig'
+                layout: easy_admin/TestEntity/layout.html.twig
                 edit: '@EasyAdmin/default/edit.html.twig'
-                list: '@EasyAdmin/default/list.html.twig'
+                list: easy_admin/TestEntity/list.html.twig
                 new: '@EasyAdmin/default/new.html.twig'
                 show: '@EasyAdmin/default/show.html.twig'
                 exception: '@EasyAdmin/default/exception.html.twig'
@@ -114,13 +114,13 @@ easy_admin:
                 field_raw: '@EasyAdmin/default/field_raw.html.twig'
                 field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
                 field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
-                field_string: '@EasyAdmin/default/field_string.html.twig'
+                field_string: easy_admin/TestEntity/field_string.html.twig
                 field_text: '@EasyAdmin/default/field_text.html.twig'
                 field_time: '@EasyAdmin/default/field_time.html.twig'
                 field_toggle: '@EasyAdmin/default/field_toggle.html.twig'
                 label_empty: '@EasyAdmin/default/label_empty.html.twig'
                 label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
-                label_null: '@EasyAdmin/default/label_null.html.twig'
+                label_null: easy_admin/TestEntity/label_null.html.twig
                 label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
         AnotherTestEntity:
             class: AppBundle\Entity\AnotherTestEntity

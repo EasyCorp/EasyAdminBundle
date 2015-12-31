@@ -42,6 +42,18 @@ class Configurator
         'type_options' => array(), // the options passed to the Symfony Form type used to render the form field
     );
 
+    private $defaultVirtualFieldMetadata = array(
+        'columnName' => 'virtual',
+        'fieldName' => 'virtual',
+        'id' => false,
+        'length' => null,
+        'nullable' => false,
+        'precision' => 0,
+        'scale' => 0,
+        'type' => 'text',
+        'unique' => false,
+    );
+
     private $doctrineTypeToFormTypeMap = array(
         'array' => 'collection',
         'association' => 'entity',
@@ -328,33 +340,22 @@ class Configurator
         foreach ($fieldsConfiguration as $fieldName => $fieldConfiguration) {
             $originalFieldConfiguration = isset($originalViewConfiguration['fields'][$fieldName]) ? $originalViewConfiguration['fields'][$fieldName] : null;
 
-            if (!array_key_exists($fieldName, $entityConfiguration['properties'])) {
-                // this field doesn't exist as a property of the related Doctrine
-                // entity. Treat it as a 'virtual' field and provide default values
-                // for some field options (such as fieldName and columnName) to avoid
-                // any problem while processing field data
-                $normalizedConfiguration = array_replace(
-                    $this->defaultEntityFieldConfiguration,
-                    array(
-                        'columnName' => null,
-                        'fieldName' => $fieldName,
-                        'id' => false,
-                        'sortable' => false,
-                        // if the 'type' is not set explicitly for a virtual field,
-                        // consider it as a string, so the backend displays its contents
-                        'type' => 'text',
-                        'virtual' => true,
-                    ),
-                    $fieldConfiguration
-                );
+            if (array_key_exists($fieldName, $entityConfiguration['properties'])) {
+                $fieldMetadata = $entityConfiguration['properties'][$fieldName];
             } else {
-                // this is a regular field that exists as a property of the related Doctrine entity
-                $normalizedConfiguration = array_replace(
-                    $this->defaultEntityFieldConfiguration,
-                    $entityConfiguration['properties'][$fieldName],
-                    $fieldConfiguration
+                // this is a virtual field which doesn't exist as a property of
+                // the related entity. That's why Doctrine can't provide metadata for it
+                $fieldMetadata = array_merge(
+                    $this->defaultVirtualFieldMetadata,
+                    array('columnName' => $fieldName, 'fieldName' => $fieldName, 'virtual' => true)
                 );
             }
+
+            $normalizedConfiguration = array_replace(
+                $this->defaultEntityFieldConfiguration,
+                $fieldMetadata,
+                $fieldConfiguration
+            );
 
             // virtual fields and associations different from *-to-one cannot be sorted in listings
             $isToManyAssociation = 'association' === $normalizedConfiguration['type']

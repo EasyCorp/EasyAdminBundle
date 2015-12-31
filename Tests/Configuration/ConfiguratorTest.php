@@ -35,31 +35,6 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     }
 
     /**
-     * @dataProvider provideConfigurationFiles
-     */
-    public function testGetEntityConfiguration($inputFixtureFilepath, $outputFixtureFilepath)
-    {
-        $backendConfig = Yaml::parse(file_get_contents($inputFixtureFilepath));
-        $backendConfig['easy_admin']['entities'] = $this->extension->getEntitiesConfiguration($backendConfig['easy_admin']['entities']);
-
-        $configurator = new Configurator($backendConfig['easy_admin'], $this->inspector);
-        $configuration = $configurator->getEntityConfiguration('TestEntity');
-
-        // Yaml component dumps empty arrays as hashes, fix it to increase configuration readability
-        $yamlConfiguration = str_replace('{  }', '[]', Yaml::dump($configuration));
-
-        $expectedConfiguration = file_get_contents($outputFixtureFilepath);
-        $expectedConfiguration = str_replace("\r", '', $expectedConfiguration); // Prevents bugs from different git crlf config
-
-        $this->assertEquals($expectedConfiguration, $yamlConfiguration, sprintf('%s configuration is not correctly parsed into %s', basename($inputFixtureFilepath), basename($outputFixtureFilepath)));
-    }
-
-    public function provideConfigurationFiles($fixturesDir)
-    {
-        return parent::provideConfigurationFiles(__DIR__.'/fixtures');
-    }
-
-    /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Entity "TestEntity" is not managed by EasyAdmin.
      */

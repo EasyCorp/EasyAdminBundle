@@ -18,6 +18,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
  * to simplify its processing.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * @internal
  */
 interface NormalizerInterface
 {

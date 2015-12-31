@@ -37,21 +37,19 @@ class ConfigurationNormalizer implements NormalizerInterface
 
     public function normalize(array $backendConfiguration)
     {
-        $entityNormalizer = new EntityNormalizer();
-        $formViewNormalizer = new FormViewNormalizer();
-        $viewNormalizer = new ViewNormalizer();
-        $propertyNormalizer = new PropertyNormalizer();
-        $actionNormalizer = new ActionNormalizer();
-        $templateNormalizer = new TemplateNormalizer($this->kernelRootDir);
-        $defaultNormalizer = new DefaultNormalizer();
+        $normalizers = array(
+            new EntityNormalizer(),
+            new FormViewNormalizer(),
+            new ViewNormalizer(),
+            new PropertyNormalizer(),
+            new ActionNormalizer(),
+            new TemplateNormalizer($this->kernelRootDir),
+            new DefaultNormalizer(),
+        );
 
-        $backendConfiguration = $entityNormalizer->normalize($backendConfiguration);
-        $backendConfiguration = $formViewNormalizer->normalize($backendConfiguration);
-        $backendConfiguration = $viewNormalizer->normalize($backendConfiguration);
-        $backendConfiguration = $propertyNormalizer->normalize($backendConfiguration);
-        $backendConfiguration = $actionNormalizer->normalize($backendConfiguration);
-        $backendConfiguration = $templateNormalizer->normalize($backendConfiguration);
-        $backendConfiguration = $defaultNormalizer->normalize($backendConfiguration);
+        foreach ($normalizers as $normalizer) {
+            $backendConfiguration = $normalizer->normalize($backendConfiguration);
+        }
 
         return $backendConfiguration;
     }

@@ -1,0 +1,50 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-25T19:57:07Z
+
+@ogizanagi this is the best gift :gift: we could receive for Christmas!! You are so amazing!! :bow: :bow:  I'm really honored to have you as contributor of this bundle.
+
+---
+
+I've been playing a bit with this feature. So far everything works perfectly:
+
+![list_view](https://cloud.githubusercontent.com/assets/73419/12004249/c9632716-ab49-11e5-869b-55f513db4d74.png)
+
+The only error I got was caused by the Doctrine configuration of the EasyAdmin demo application:
+
+![sql_error](https://cloud.githubusercontent.com/assets/73419/12004250/edc52e92-ab49-11e5-9f08-e75378523cbe.png)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-25T19:58:55Z
+
+@javiereguiluz You seem to have forgotten some `cascade={"delete"}` in your entity mapping, this is not EasyAdmin's fault :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2015-12-25T20:04:06Z
+
+@Pierstoval exactly! That's what I tried to say.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-26T11:26:48Z
+
+@javiereguiluz : My pleasure. :)
+
+I extracted the `css_class` relative things into a dedicated PR (#692) because it does not only concerns actions, but also entity fields :confused:  (This PR is rebased on #692, so #692 should be merged first)
+
+I also find out 2 issues with this PR:
+- [x] **How to reproduce**: Go to a given page, delete an entity, then delete another. You'll be redirected to the first page.
+**Solution**: I was actually annoyed by the pagination links referer, because I use the `app.request.requestUri` to set the referer [here](https://github.com/javiereguiluz/EasyAdminBundle/pull/690/files#diff-376ccbdab59b3b3c272d83b33e1a6ea8R185), so if there is already a referer in the query string, adding this one messed everything. So I removed the referer from the pagination lins. AFAIK, it wasn't used anyway, and polluted the urls. (fb1edff)
+- [x] **How to reproduce**: Go to the last page. If there is only one entity and you remove it, you'll be redirected to an inexistant page.
+**Solution**: ~~I don't really know how to solve this one.~~
+Solved in e8616fa
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-26T11:46:53Z
+
+Second issue solved in e8616fa.
+
+PR is ready for the final review & to be merged after #692 :smiley:

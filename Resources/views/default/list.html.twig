@@ -237,7 +237,7 @@
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })
                     .one('click', '#modal-delete-button', function (e) {
                         var deleteForm = $('#delete-form');
-                        deleteForm.attr('action', deleteForm.attr('action').replace('%7B%7B+ID+%7D%7D', id));
+                        deleteForm.attr('action', deleteForm.attr('action').replace('__id__', id));
                         deleteForm.trigger('submit');
                     });
             });

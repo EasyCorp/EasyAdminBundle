@@ -379,7 +379,7 @@
                             {% if easyadmin_action_is_enabled_for_edit_view('delete', easyadmin.entity.name) %}
                                 {% set _action = easyadmin_get_action_for_edit_view('delete', easyadmin.entity.name) %}
                                 <button type="button" id="button-delete"
-                                        class="btn {{ _action.css_class|default('btn-danger') }}">
+                                        class="btn {{ _action.css_class|default('') }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                     {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters, 'messages') }}
                                 </button>

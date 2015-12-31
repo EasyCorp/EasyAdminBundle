@@ -39,7 +39,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
             new \Twig_SimpleFunction('easyadmin_render_field_for_*_view', array($this, 'renderEntityField'), array('is_safe' => array('html'), 'needs_environment' => true)),
             new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
             new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
+            new \Twig_SimpleFunction('easyadmin_action_is_enabled', array($this, 'isActionEnabled')),
             new \Twig_SimpleFunction('easyadmin_action_is_enabled_for_*_view', array($this, 'isActionEnabled')),
+            new \Twig_SimpleFunction('easyadmin_get_action', array($this, 'getActionConfiguration')),
             new \Twig_SimpleFunction('easyadmin_get_action_for_*_view', array($this, 'getActionConfiguration')),
             new \Twig_SimpleFunction('easyadmin_get_actions_for_*_item', array($this, 'getActionsForItem')),
         );
@@ -240,7 +242,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
         // in the 'list' view). Those special actions shouldn't be displayed for
         // each item as a regular action.
         $actionsExcludedForItems = array(
-            'list' => array('delete', 'list', 'new', 'search'),
+            'list' => array('list', 'new', 'search'),
             'edit' => array('list', 'delete'),
             'new' => array('list'),
             'show' => array('list', 'delete'),

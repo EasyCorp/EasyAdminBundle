@@ -67,7 +67,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertEquals('New Category', trim($crawler->filter('#content-actions a.btn')->text()));
-        $this->assertEquals('btn custom_class_new', $crawler->filter('#content-actions a.btn')->attr('class'));
+        $this->assertEquals('btn custom_class_new action-new', $crawler->filter('#content-actions a.btn')->attr('class'));
         $this->assertEquals('fa fa-plus-circle', $crawler->filter('#content-actions a.btn i')->attr('class'));
         $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('#content-actions a.btn')->attr('href'));
     }

@@ -21,25 +21,25 @@ easy_admin:
                         name: show
                         type: method
                         label: action.show
-                        css_class: ''
+                        css_class: action-show
                         icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
-                        css_class: ''
+                        css_class: action-edit
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        css_class: ''
+                        css_class: action-new
                         icon: null
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
                 fields: {  }
             edit:
@@ -48,7 +48,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
                 fields: {  }
                 form_options: {  }
@@ -58,13 +58,13 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: ''
+                        css_class: 'action-delete btn-danger'
                         icon: trash
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
                 fields: {  }
             new:
@@ -73,7 +73,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: ''
+                        css_class: action-list
                         icon: null
                 fields: {  }
                 form_options: {  }

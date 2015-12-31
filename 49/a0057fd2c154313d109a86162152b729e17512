@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-23T10:48:11Z
+
+:+1: (even if I do not like much having all this methods in the `AdminController`, making it growing more and more)
+
+As there is no release yet, we can also change the `TypeConfiguratorInterface::configure` method to make the `FormConfigInterface $parentConfig` optional.
+Thus, we can register type configurators for the root `easyadmin` form.
+If you think it could make sense to configure the root form this way, I can make a PR too.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-23T11:11:22Z
+
+Your proposal makes use of advanced form handling, it superseeds my skills :stuck_out_tongue: feel free to make a PR to my branch if you want, I'll check
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2015-12-27T00:01:18Z
+
+:+1: for merging this, and forget about my additional proposal (for the reasons mentioned in my PR).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2015-12-27T07:44:46Z
+
+:+1:

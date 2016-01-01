@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
+
 /**
  * Initializes the configuration for all the views of each entity, which is
  * needed when some entity relies on the default configuration for some view.
@@ -103,7 +105,7 @@ class ViewConfigPass implements ConfigPassInterface
     private function processViewConfiguration(array $backendConfiguration)
     {
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
-            $defaultEntityFields = $this->createFieldsFromEntityProperties($entityConfiguration['properties']);
+            $this->defaultEntityFields = $this->createFieldsFromEntityProperties($entityConfiguration['properties']);
 
             $entityConfiguration['list']['fields'] = $this->getFieldsForListView($entityConfiguration, $backendConfiguration);
             $entityConfiguration['show']['fields'] = $this->getFieldsForShowView($entityConfiguration, $backendConfiguration);

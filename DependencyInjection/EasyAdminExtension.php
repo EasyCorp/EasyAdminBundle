@@ -17,7 +17,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigurationNormalizer;
 
 /**
  * Resolves all the backend configuration values and most of the entities
@@ -35,7 +34,6 @@ class EasyAdminExtension extends Extension
     {
         // process bundle's configuration parameters
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
-//        $backendConfiguration = $this->processBackendConfiguration($backendConfiguration, $container->getParameter('kernel.root_dir'), null);
         $container->setParameter('easyadmin.config', $backendConfiguration);
 
         // load bundle's services
@@ -50,23 +48,6 @@ class EasyAdminExtension extends Extension
 
         $this->ensureBackwardCompatibility($container);
     }
-
-    // *
-    //  * Process the entire backend configuration to normalize and complete its
-    //  * contents whatever the format used by the user. This is needed because we
-    //  * support lots of shortcuts and "syntactic sugar" when configuring a backend.
-    //  *
-    //  * @param  array  $backendConfiguration
-    //  * @param  string $kernelRootDir
-    //  *
-    //  * @return array
-
-    // private function processBackendConfiguration(array $backendConfiguration, $kernelRootDir, $doctrine)
-    // {
-    //     $normalizer = new ConfigurationNormalizer($kernelRootDir, $doctrine);
-
-    //     return $normalizer->process($backendConfiguration);
-    // }
 
     /**
      * Makes some tweaks in order to ensure backward compatibilities

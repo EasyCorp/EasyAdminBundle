@@ -11,9 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\Mapping\ClassMetadata;
-
 /**
  * Completes the entities configuration with the information that can only be
  * determined during runtime, not during the container compilation phase (most

@@ -21,7 +21,6 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ViewConfigPass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

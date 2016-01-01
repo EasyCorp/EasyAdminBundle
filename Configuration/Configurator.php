@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 
@@ -25,7 +26,7 @@ class Configurator
 {
     private $backendConfig = array();
     private $entitiesConfig = array();
-    private $inspector;
+    private $doctrine;
     private $defaultEntityFields = array();
 
     private $defaultEntityFieldConfiguration = array(
@@ -76,10 +77,10 @@ class Configurator
         'time' => 'time',
     );
 
-    public function __construct(array $backendConfig, EntityMetadataInspector $inspector)
+    public function __construct(array $backendConfig, Registry $doctrine)
     {
         $this->backendConfig = $backendConfig;
-        $this->inspector = $inspector;
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -116,7 +117,9 @@ class Configurator
 
         $entityConfiguration = $this->backendConfig['entities'][$entityName];
 
-        $entityMetadata = $this->inspector->getEntityMetadata($entityConfiguration['class']);
+        $em = $this->doctrine->getManagerForClass($entityConfiguration['class']);
+        $entityMetadata = $em->getMetadataFactory()->getMetadataFor($entityConfiguration['class']);
+
         $entityConfiguration['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
 
         $entityProperties = $this->processEntityPropertiesMetadata($entityMetadata);

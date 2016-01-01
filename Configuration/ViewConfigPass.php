@@ -73,31 +73,7 @@ class ViewConfigPass implements ConfigPassInterface
 
     public function process(array $backendConfiguration)
     {
-        $backendConfiguration = $this->normalizeViewConfiguration($backendConfiguration);
         $backendConfiguration = $this->processViewConfiguration($backendConfiguration);
-
-        return $backendConfiguration;
-    }
-
-    private function normalizeViewConfiguration(array $backendConfiguration)
-    {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
-            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
-                if (!isset($entityConfiguration[$view])) {
-                    $entityConfiguration[$view] = array('fields' => array());
-                }
-
-                if (!isset($entityConfiguration[$view]['fields'])) {
-                    $entityConfiguration[$view]['fields'] = array();
-                }
-
-                if (in_array($view, array('edit', 'new')) && !isset($entityConfiguration[$view]['form_options'])) {
-                    $entityConfiguration[$view]['form_options'] = array();
-                }
-            }
-
-            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
-        }
 
         return $backendConfiguration;
     }
@@ -105,7 +81,7 @@ class ViewConfigPass implements ConfigPassInterface
     private function processViewConfiguration(array $backendConfiguration)
     {
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
-            $this->defaultEntityFields = $this->createFieldsFromEntityProperties($entityConfiguration['properties']);
+            $this->defaultEntityFields = $this->createFieldsFromEntityProperties($entityConfiguration['properties'], $backendConfiguration);
 
             $entityConfiguration['list']['fields'] = $this->getFieldsForListView($entityConfiguration, $backendConfiguration);
             $entityConfiguration['show']['fields'] = $this->getFieldsForShowView($entityConfiguration, $backendConfiguration);
@@ -116,7 +92,7 @@ class ViewConfigPass implements ConfigPassInterface
             $backendConfiguration['entities'][$entityName] = $entityConfiguration;
         }
 
-        return $entityConfiguration;
+        return $backendConfiguration;
     }
 
     /**
@@ -320,7 +296,7 @@ class ViewConfigPass implements ConfigPassInterface
             }
 
             if (null === $normalizedConfiguration['format']) {
-                $normalizedConfiguration['format'] = $this->getFieldFormat($normalizedConfiguration['type']);
+                $normalizedConfiguration['format'] = $this->getFieldFormat($normalizedConfiguration['type'], $backendConfiguration);
             }
 
             $configuration[$fieldName] = $normalizedConfiguration;
@@ -338,7 +314,7 @@ class ViewConfigPass implements ConfigPassInterface
      *
      * @return array The array of fields
      */
-    private function createFieldsFromEntityProperties($entityProperties)
+    private function createFieldsFromEntityProperties($entityProperties, $backendConfiguration)
     {
         $fields = array();
 

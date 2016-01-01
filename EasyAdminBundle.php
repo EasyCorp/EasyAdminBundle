@@ -25,6 +25,6 @@ class EasyAdminBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new EasyAdminFormTypePass());
-        $container->addCompilerPass(new EasyAdminConfigurationPass(), PassConfig::TYPE_AFTER_REMOVING);
+        $container->addCompilerPass(new EasyAdminConfigurationPass(), PassConfig::TYPE_REMOVE);
     }
 }

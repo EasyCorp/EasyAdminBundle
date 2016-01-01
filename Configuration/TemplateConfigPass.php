@@ -20,7 +20,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class TemplateConfigPass implements ConfigPassInterface
 {
-    private $kernelRootDir;
+    private $templatesDir;
 
     private $defaultBackendTemplates = array(
         'layout' => '@EasyAdmin/default/layout.html.twig',
@@ -59,9 +59,9 @@ class TemplateConfigPass implements ConfigPassInterface
         'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
     );
 
-    public function __construct($kernelRootDir)
+    public function __construct($templatesDir)
     {
-        $this->kernelRootDir = $kernelRootDir;
+        $this->templatesDir = $templatesDir;
     }
 
     public function process(array $backendConfiguration)
@@ -84,8 +84,6 @@ class TemplateConfigPass implements ConfigPassInterface
      */
     private function processEntityTemplates(array $backendConfiguration)
     {
-        $templatesDir = $this->kernelRootDir.'/Resources/views';
-
         // first, resolve the general template overriding mechanism
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
@@ -96,10 +94,10 @@ class TemplateConfigPass implements ConfigPassInterface
                 } elseif (isset($backendConfiguration['design']['templates'][$templateName])) {
                     $template = $backendConfiguration['design']['templates'][$templateName];
                 // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
-                } elseif (file_exists($templatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
+                } elseif (file_exists($this->templatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
                     $template = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
                 // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-                } elseif (file_exists($templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
+                } elseif (file_exists($this->templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
                     $template = 'easy_admin/'.$templateName.'.html.twig';
                 // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
                 } else {
@@ -127,10 +125,10 @@ class TemplateConfigPass implements ConfigPassInterface
                         }
 
                         // 1st level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
-                        if (file_exists($templatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
+                        if (file_exists($this->templatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
                             $templatePath = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
                         // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-                        } elseif (file_exists($templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
+                        } elseif (file_exists($this->templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
                             $templatePath = 'easy_admin/'.$templateName.'.html.twig';
                         } else {
                             throw new \RuntimeException(sprintf('The "%s" field of the "%s" entity uses a custom template called "%s" which doesn\'t exist in "app/Resources/views/easy_admin/" directory.', $fieldName, $entityName, $templateName));
@@ -164,14 +162,12 @@ class TemplateConfigPass implements ConfigPassInterface
      */
     private function processDefaultTemplates(array $backendConfiguration)
     {
-        $templatesDir = $this->kernelRootDir.'/Resources/views';
-
         foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
             // 1st level priority: easy_admin.design.templates.<templateName> config option
             if (isset($backendConfiguration['design']['templates'][$templateName])) {
                 $template = $backendConfiguration['design']['templates'][$templateName];
             // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-            } elseif (file_exists($templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
+            } elseif (file_exists($this->templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
                 $template = 'easy_admin/'.$templateName.'.html.twig';
             // 3rd level priority: @EasyAdmin/default/<templateName>.html.twig
             } else {
@@ -189,11 +185,11 @@ class TemplateConfigPass implements ConfigPassInterface
      * trivial because templates can depend on the entity displayed and they
      * define an advanced override mechanism.
      *
-     * @param array $entityConfiguration
+     * @param array $backendConfiguration
      *
      * @return array
      */
-    private function processFieldTemplates(array $entityConfiguration)
+    private function processFieldTemplates(array $backendConfiguration)
     {
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             foreach (array('list', 'show') as $view) {

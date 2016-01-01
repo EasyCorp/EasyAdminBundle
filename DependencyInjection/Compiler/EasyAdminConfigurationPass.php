@@ -33,14 +33,15 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $backendConfiguration = $container->getParameter('easyadmin.config');
+
         $configPasses = array(
             new NormalizerConfigPass(),
             new FormViewConfigPass(),
-            new MetadataConfigPass($container->get('doctrine')),
-            new ViewConfigPass(),
             new PropertyConfigPass(),
+            new MetadataConfigPass($container->get('doctrine')),
             new ActionConfigPass(),
-            new TemplateConfigPass($container->getParameter('kernel.root_dir')),
+            new ViewConfigPass(),
+            new TemplateConfigPass($container->getParameter('kernel.root_dir').'/Resources/views'),
             new DefaultConfigPass(),
         );
 
@@ -49,5 +50,10 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
         }
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
+$container->setParameter('entity_name', '???');
+
+        $container->findDefinition('easyadmin.configurator')->addMethodCall(
+            'setBackendConfig', array($backendConfiguration)
+        );
     }
 }

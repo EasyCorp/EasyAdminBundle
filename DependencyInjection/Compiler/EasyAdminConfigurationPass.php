@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ActionConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass;
@@ -19,39 +19,36 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ViewConfigPass;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * It applies several configuration normalizers in a row to transform any
- * input backend configuration into the normalized configuration used by
- * the rest of the code.
- *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class ConfigurationNormalizer implements ConfigPassInterface
+class EasyAdminConfigurationPass implements CompilerPassInterface
 {
-    /** @var ConfigPassInterface[] */
-    private $configPasses;
-
-    public function __construct($kernelRootDir, $doctrine)
+    /**
+     * {@inheritdoc}
+     */
+    public function process(ContainerBuilder $container)
     {
-        $this->configPasses = array(
+        $backendConfiguration = $container->getParameter('easyadmin.config');
+        $configPasses = array(
             new NormalizerConfigPass(),
             new FormViewConfigPass(),
-            new MetadataConfigPass($doctrine),
+            new MetadataConfigPass($container->findDefinition('doctrine')),
             new ViewConfigPass(),
             new PropertyConfigPass(),
             new ActionConfigPass(),
-            new TemplateConfigPass($kernelRootDir),
+            new TemplateConfigPass($container->getParameter('kernel.root_dir')),
             new DefaultConfigPass(),
         );
-    }
 
-    public function process(array $backendConfiguration)
-    {
-        foreach ($this->configPasses as $configPass) {
+        foreach ($configPasses as $configPass) {
             $backendConfiguration = $configPass->process($backendConfiguration);
         }
 
-        return $backendConfiguration;
+        $container->setParameter('easyadmin.config', $backendConfiguration);
     }
 }

@@ -68,6 +68,7 @@ class TemplateConfigPass implements ConfigPassInterface
     {
         $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
         $backendConfiguration = $this->processDefaultTemplates($backendConfiguration);
+        $backendConfiguration = $this->processFieldTemplates($backendConfiguration);
 
         return $backendConfiguration;
     }
@@ -178,6 +179,43 @@ class TemplateConfigPass implements ConfigPassInterface
             }
 
             $backendConfiguration['design']['templates'][$templateName] = $template;
+        }
+
+        return $backendConfiguration;
+    }
+
+    /**
+     * Determines the template used to render each backend element. This is not
+     * trivial because templates can depend on the entity displayed and they
+     * define an advanced override mechanism.
+     *
+     * @param array $entityConfiguration
+     *
+     * @return array
+     */
+    private function processFieldTemplates(array $entityConfiguration)
+    {
+        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+            foreach (array('list', 'show') as $view) {
+                foreach ($entityConfiguration[$view]['fields'] as $fieldName => $fieldMetadata) {
+                    if (null !== $fieldMetadata['template']) {
+                        continue;
+                    }
+
+                    // this prevents the template from displaying the 'id' primary key formatted as a number
+                    if ('id' === $fieldName) {
+                        $template = $entityConfiguration['templates']['field_id'];
+                    } elseif (array_key_exists('field_'.$fieldMetadata['dataType'], $entityConfiguration['templates'])) {
+                        $template = $entityConfiguration['templates']['field_'.$fieldMetadata['dataType']];
+                    } else {
+                        $template = $entityConfiguration['templates']['label_undefined'];
+                    }
+
+                    $entityConfiguration[$view]['fields'][$fieldName]['template'] = $template;
+                }
+            }
+
+            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
         }
 
         return $backendConfiguration;

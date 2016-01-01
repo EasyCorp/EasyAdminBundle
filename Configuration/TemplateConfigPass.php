@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Processes the template configuration to decide which template to use to
@@ -18,7 +18,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class TemplateNormalizer implements NormalizerInterface
+class TemplateConfigPass implements ConfigPassInterface
 {
     private $kernelRootDir;
 
@@ -64,7 +64,7 @@ class TemplateNormalizer implements NormalizerInterface
         $this->kernelRootDir = $kernelRootDir;
     }
 
-    public function normalize(array $backendConfiguration)
+    public function process(array $backendConfiguration)
     {
         $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
         $backendConfiguration = $this->processDefaultTemplates($backendConfiguration);

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Initializes the configuration for all the views of each entity, which is
@@ -17,9 +17,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class ViewNormalizer implements NormalizerInterface
+class ViewConfigPass implements ConfigPassInterface
 {
-    public function normalize(array $backendConfiguration)
+    public function process(array $backendConfiguration)
     {
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {

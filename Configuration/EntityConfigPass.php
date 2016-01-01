@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Transforms the two simple configuration formats into the full expanded
@@ -49,9 +49,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EntityNormalizer implements NormalizerInterface
+class EntityConfigPass implements ConfigPassInterface
 {
-    public function normalize(array $backendConfiguration)
+    public function process(array $backendConfiguration)
     {
         $normalizedConfiguration = array();
 

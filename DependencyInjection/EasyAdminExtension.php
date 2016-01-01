@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer\ConfigurationNormalizer;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigurationNormalizer;
 
 /**
  * Resolves all the backend configuration values and most of the entities
@@ -65,7 +65,7 @@ class EasyAdminExtension extends Extension
     {
         $normalizer = new ConfigurationNormalizer($kernelRootDir);
 
-        return $normalizer->normalize($backendConfiguration);
+        return $normalizer->process($backendConfiguration);
     }
 
     /**

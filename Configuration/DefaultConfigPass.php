@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Processes default values for some backend configuration options.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class DefaultNormalizer implements NormalizerInterface
+class DefaultConfigPass implements ConfigPassInterface
 {
-    public function normalize(array $backendConfiguration)
+    public function process(array $backendConfiguration)
     {
         $entityNames = array_keys($backendConfiguration['entities']);
         $firstEntityName = isset($entityNames[0]) ? $entityNames[0] : null;

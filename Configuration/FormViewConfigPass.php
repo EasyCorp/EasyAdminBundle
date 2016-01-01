@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Entities can define a special 'form' view to set the options of 'edit' and
@@ -18,9 +18,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class FormViewNormalizer implements NormalizerInterface
+class FormViewConfigPass implements ConfigPassInterface
 {
-    public function normalize(array $backendConfiguration)
+    public function process(array $backendConfiguration)
     {
         $entitiesConfiguration = $backendConfiguration['entities'];
 

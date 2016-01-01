@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Merges all the actions that can be configured in the backend and normalizes
@@ -17,7 +17,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class ActionNormalizer implements NormalizerInterface
+class ActionConfigPass implements ConfigPassInterface
 {
     private $defaultActionConfiguration = array(
         'name'      => null,     // either the name of a controller method or an application route (it depends on the 'type' option)
@@ -27,7 +27,7 @@ class ActionNormalizer implements NormalizerInterface
         'icon'      => null,     // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
     );
 
-    public function normalize(array $backendConfiguration)
+    public function process(array $backendConfiguration)
     {
         $entitiesConfiguration = array();
 

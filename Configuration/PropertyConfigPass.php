@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Views can define their fields using two different formats:
@@ -33,9 +33,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class PropertyNormalizer implements NormalizerInterface
+class PropertyConfigPass implements ConfigPassInterface
 {
-    public function normalize(array $backendConfiguration)
+    public function process(array $backendConfiguration)
     {
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {

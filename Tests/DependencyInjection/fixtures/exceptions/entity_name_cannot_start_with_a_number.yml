@@ -1,7 +1,0 @@
-# TEST
-# the name of the entity cannot start with a number
-
-# CONFIGURATION
-easy_admin:
-    entities:
-        7TestEntity: 'AppBundle\Entity\TestEntity'

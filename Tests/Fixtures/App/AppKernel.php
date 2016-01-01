@@ -13,6 +13,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+/**
+ * The kernel used in the application of most functional tests.
+ */
 class AppKernel extends Kernel
 {
     public function registerBundles()
@@ -24,7 +27,6 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
-
             new JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle(),
             new JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\AppTestBundle(),
         );
@@ -59,7 +61,7 @@ class AppKernel extends Kernel
         return __DIR__.'/../../../build/kernel_logs/'.$this->getEnvironment();
     }
 
-    private function isSymfony3()
+    protected function isSymfony3()
     {
         return 3 === Kernel::MAJOR_VERSION;
     }

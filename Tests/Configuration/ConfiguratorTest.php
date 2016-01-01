@@ -12,26 +12,16 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration;
 
 use InvalidArgumentException;
-use Symfony\Component\Yaml\Yaml;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
 
-class ConfiguratorTest extends CommonPhpUnitTestCase
+class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 {
     private $extension;
-    private $inspector;
 
     public function setUp()
     {
         $this->extension = new EasyAdminExtension();
-
-        $entityMetadataStub = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')->disableOriginalConstructor()->getMock();
-        $entityMetadataStub->method('getSingleIdentifierFieldName')->willReturn(array('id'));
-
-        $inspectorStub = $this->getMockBuilder('JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector')->disableOriginalConstructor()->getMock();
-        $inspectorStub->method('getEntityMetadata')->willReturn($entityMetadataStub);
-        $this->inspector = $inspectorStub;
     }
 
     /**
@@ -41,7 +31,7 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     public function testEmptyConfiguration()
     {
         $backendConfig = array('easy_admin' => null);
-        $configurator = new Configurator($backendConfig, $this->inspector);
+        $configurator = new Configurator($backendConfig);
         $configurator->getEntityConfiguration('TestEntity');
     }
 
@@ -52,7 +42,7 @@ class ConfiguratorTest extends CommonPhpUnitTestCase
     public function testAccessingAnUnmanagedEntity()
     {
         $backendConfig = array('easy_admin' => array('entities' => array('AppBundle\\Entity\\TestEntity')));
-        $configurator = new Configurator($backendConfig, $this->inspector);
+        $configurator = new Configurator($backendConfig);
         $configurator->getEntityConfiguration('UnmanagedEntity');
     }
 }

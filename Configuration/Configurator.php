@@ -13,7 +13,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use JavierEguiluz\Bundle\EasyAdminBundle\Reflection\EntityMetadataInspector;
 
 /**
  * Completes the entities configuration with the information that can only be

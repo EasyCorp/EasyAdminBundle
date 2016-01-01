@@ -50,7 +50,6 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
         }
 
         $container->setParameter('easyadmin.config', $backendConfiguration);
-$container->setParameter('entity_name', '???');
 
         $container->findDefinition('easyadmin.configurator')->addMethodCall(
             'setBackendConfig', array($backendConfiguration)

@@ -166,7 +166,6 @@ class TemplateNormalizer implements NormalizerInterface
         $templatesDir = $this->kernelRootDir.'/Resources/views';
 
         foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
-
             // 1st level priority: easy_admin.design.templates.<templateName> config option
             if (isset($backendConfiguration['design']['templates'][$templateName])) {
                 $template = $backendConfiguration['design']['templates'][$templateName];

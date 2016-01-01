@@ -54,9 +54,8 @@ class EntityNormalizer implements NormalizerInterface
     public function normalize(array $backendConfiguration)
     {
         $normalizedConfiguration = array();
-        $entityConfiguration = $backendConfiguration['entities'];
 
-        foreach ($entityConfiguration as $entityName => $entityConfiguration) {
+        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             // normalize config formats #1 and #2 to use the 'class' option as config format #3
             if (!is_array($entityConfiguration)) {
                 $entityConfiguration = array('class' => $entityConfiguration);

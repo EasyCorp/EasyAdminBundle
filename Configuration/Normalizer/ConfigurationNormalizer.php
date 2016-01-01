@@ -21,33 +21,32 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Normalizer\ViewNormalizer
 
 /**
  * It applies several configuration normalizers in a row to transform any
- * inpput backend configuration into the normalized configuration used by
+ * input backend configuration into the normalized configuration used by
  * the rest of the code.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class ConfigurationNormalizer implements NormalizerInterface
 {
-    private $kernelRootDir;
+    /** @var NormalizerInterface[] */
+    private $normalizers;
 
     public function __construct($kernelRootDir)
     {
-        $this->kernelRootDir = $kernelRootDir;
-    }
-
-    public function normalize(array $backendConfiguration)
-    {
-        $normalizers = array(
+        $this->normalizers = array(
             new EntityNormalizer(),
             new FormViewNormalizer(),
             new ViewNormalizer(),
             new PropertyNormalizer(),
             new ActionNormalizer(),
-            new TemplateNormalizer($this->kernelRootDir),
+            new TemplateNormalizer($kernelRootDir),
             new DefaultNormalizer(),
         );
+    }
 
-        foreach ($normalizers as $normalizer) {
+    public function normalize(array $backendConfiguration)
+    {
+        foreach ($this->normalizers as $normalizer) {
             $backendConfiguration = $normalizer->normalize($backendConfiguration);
         }
 

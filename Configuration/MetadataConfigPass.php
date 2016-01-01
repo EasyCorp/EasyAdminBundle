@@ -11,8 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
@@ -23,9 +22,10 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class MetadataConfigPass implements ConfigPassInterface
 {
+    /** @var ManagerRegistry */
     private $doctrine;
 
-    public function __construct(Definition $doctrine)
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }

@@ -13,8 +13,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ActionConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass;
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\EntityConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\FormViewConfigPass;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ViewConfigPass;
@@ -34,7 +34,7 @@ class ConfigurationNormalizer implements ConfigPassInterface
     public function __construct($kernelRootDir)
     {
         $this->configPasses = array(
-            new EntityConfigPass(),
+            new NormalizerConfigPass(),
             new FormViewConfigPass(),
             new ViewConfigPass(),
             new PropertyConfigPass(),

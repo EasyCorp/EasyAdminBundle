@@ -49,7 +49,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EntityConfigPass implements ConfigPassInterface
+class NormalizerConfigPass implements ConfigPassInterface
 {
     public function process(array $backendConfiguration)
     {

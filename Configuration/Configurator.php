@@ -20,7 +20,12 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class Configurator
 {
-    private $backendConfig = array();
+    private $backendConfig;
+
+    public function __construct(array $backendConfig)
+    {
+        $this->backendConfig = $backendConfig;
+    }
 
     /**
      * Exposes the backend configuration to any external method that needs it.
@@ -30,11 +35,6 @@ class Configurator
     public function getBackendConfig()
     {
         return $this->backendConfig;
-    }
-
-    public function setBackendConfig(array $backendConfig)
-    {
-        $this->backendConfig = $backendConfig;
     }
 
     /**

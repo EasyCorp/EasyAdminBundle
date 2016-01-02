@@ -1,0 +1,16 @@
+# TEST
+# when using the expanded action configuration, is mandatory to define the
+# 'name' option
+
+# EXCEPTION
+expected_exception:
+    class: RuntimeException
+    message_string: 'When using the expanded configuration format for actions, you must define their "name" option.'
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions:
+            - { label: 'Unnamed Action' }
+    entities:
+        TestEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category

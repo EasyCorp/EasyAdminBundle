@@ -33,7 +33,6 @@ class ConfigPassKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
-
             new JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle(),
             new JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\AppTestBundle(),
         );
@@ -43,6 +42,7 @@ class ConfigPassKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config.yml');
 
+        $backendConfig = $this->backendConfig; // needed for PHP 5.3
         $loader->load(function (ContainerBuilder $container) use ($backendConfig) {
             $container->loadFromExtension('easy_admin', $backendConfig);
         });

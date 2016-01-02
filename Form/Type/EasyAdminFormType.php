@@ -93,9 +93,9 @@ class EasyAdminFormType extends AbstractType
             ->setRequired(array('entity', 'view'));
 
         if ($this->useLegacyFormComponent()) {
-            $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer($this->config)));
+            $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer()));
         } else {
-            $resolver->setNormalizer('attr', $this->getAttributesNormalizer($this->config));
+            $resolver->setNormalizer('attr', $this->getAttributesNormalizer());
         }
     }
 
@@ -124,19 +124,12 @@ class EasyAdminFormType extends AbstractType
     /**
      * Returns a closure normalizing the form html attributes.
      *
-     * @param array $config
-     *
      * @return \Closure
      */
-    private function getAttributesNormalizer(array $config)
+    private function getAttributesNormalizer()
     {
-        return function (Options $options, $value) use ($config) {
-            $formCssClass = array_reduce($config['design']['form_theme'], function ($previousClass, $formTheme) {
-                return sprintf('theme-%s %s', strtolower(str_replace('.html.twig', '', basename($formTheme))), $previousClass);
-            });
-
-            return array_replace_recursive(array(
-                'class' => $formCssClass,
+        return function (Options $options, $value) {
+            return array_replace(array(
                 'id' => $options['view'].'-form',
             ), $value);
         };

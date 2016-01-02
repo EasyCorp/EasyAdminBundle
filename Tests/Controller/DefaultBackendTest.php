@@ -343,16 +343,6 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals('Edit Category (#200)', trim($crawler->filter('h1.title')->text()));
     }
 
-    public function testEditViewFormClasses()
-    {
-        $crawler = $this->requestEditView();
-        $formClasses = array('theme-bootstrap_3_horizontal_layout', 'form-horizontal');
-
-        foreach ($formClasses as $cssClass) {
-            $this->assertContains($cssClass, trim($crawler->filter('#main form')->eq(0)->attr('class')));
-        }
-    }
-
     public function testEditViewFieldLabels()
     {
         $crawler = $this->requestEditView();
@@ -425,16 +415,6 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertEquals('Create Category', trim($crawler->filter('head title')->text()));
         $this->assertEquals('Create Category', trim($crawler->filter('h1.title')->text()));
-    }
-
-    public function testNewViewFormClasses()
-    {
-        $crawler = $this->requestNewView();
-        $formClasses = array('theme-bootstrap_3_horizontal_layout', 'form-horizontal');
-
-        foreach ($formClasses as $cssClass) {
-            $this->assertContains($cssClass, trim($crawler->filter('#main form')->eq(0)->attr('class')));
-        }
     }
 
     public function testNewViewFieldLabels()

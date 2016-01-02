@@ -251,6 +251,7 @@ vich_uploader:
         user_contracts:
             uri_prefix: %app.path.user_contracts%
             upload_destination: %kernel.root_dir%/../web/uploads/files/user/contracts
+```
 
 ### Preparing your Entities to Persist Files
 
@@ -259,7 +260,7 @@ store the name of the contract (`contract` property) and the binary contents of
 the PDF file (`contractFile` property). Only the first property is persisted in
 the database:
 
-```yaml
+```php
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;

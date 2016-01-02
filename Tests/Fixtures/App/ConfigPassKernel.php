@@ -43,8 +43,8 @@ class ConfigPassKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config.yml');
 
-        $loader->load(function (ContainerBuilder $container) {
-            $container->loadFromExtension('easy_admin', $this->backendConfig);
+        $loader->load(function (ContainerBuilder $container) use ($backendConfig) {
+            $container->loadFromExtension('easy_admin', $backendConfig);
         });
 
         if ($this->isSymfony3()) {

@@ -105,7 +105,11 @@ class ViewConfigPass implements ConfigPassInterface
     private function getFieldsForListView(array $entityConfiguration, $backendConfiguration)
     {
         if (0 === count($entityConfiguration['list']['fields'])) {
-            $entityConfiguration['list']['fields'] = $this->filterListFieldsBasedOnSmartGuesses($this->defaultEntityFields);
+            $maxListFields = 7;
+            $excludedFieldNames = array('password', 'salt', 'slug', 'updatedAt', 'uuid');
+            $excludedFieldTypes = array('array', 'binary', 'blob', 'guid', 'json_array', 'object', 'simple_array', 'text');
+
+            $entityConfiguration['list']['fields'] = $this->filterListFieldsBasedOnSmartGuesses($this->defaultEntityFields); // $this->filterFieldList($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes, $maxListFields);
         }
 
         return $this->normalizeFieldsConfiguration('list', $entityConfiguration, $backendConfiguration);
@@ -141,7 +145,7 @@ class ViewConfigPass implements ConfigPassInterface
         if (0 === count($entityConfiguration[$view]['fields'])) {
             $excludedFieldNames = array($entityConfiguration['primary_key_field_name']);
             $excludedFieldTypes = array('binary', 'blob', 'json_array', 'object');
-            $entityConfiguration[$view]['fields'] = $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
+            $entityConfiguration[$view]['fields'] = $this->filterFieldList($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
         }
 
         return $this->normalizeFieldsConfiguration($view, $entityConfiguration, $backendConfiguration);
@@ -157,7 +161,7 @@ class ViewConfigPass implements ConfigPassInterface
         if (0 === count($entityConfiguration['search']['fields'])) {
             $excludedFieldNames = array();
             $excludedFieldTypes = array('association', 'binary', 'boolean', 'blob', 'date', 'datetime', 'datetimetz', 'time', 'object');
-            $entityConfiguration['search']['fields'] = $this->filterFieldsByNameAndType($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
+            $entityConfiguration['search']['fields'] = $this->filterFieldList($this->defaultEntityFields, $excludedFieldNames, $excludedFieldTypes);
         }
 
         return $this->normalizeFieldsConfiguration('search', $entityConfiguration, $backendConfiguration);
@@ -202,10 +206,11 @@ class ViewConfigPass implements ConfigPassInterface
      * @param array    $fields
      * @param string[] $excludedFieldNames
      * @param string[] $excludedFieldTypes
+     * @param int      $maxNumFields
      *
      * @return array The filtered list of fields
      */
-    private function filterFieldsByNameAndType(array $fields, array $excludedFieldNames, array $excludedFieldTypes)
+    private function filterFieldList(array $fields, array $excludedFieldNames = array(), array $excludedFieldTypes = array(), $maxNumFields = null)
     {
         $filteredFields = array();
 
@@ -213,6 +218,10 @@ class ViewConfigPass implements ConfigPassInterface
             if (!in_array($name, $excludedFieldNames) && !in_array($metadata['type'], $excludedFieldTypes)) {
                 $filteredFields[$name] = $fields[$name];
             }
+        }
+
+        if (null !== $maxNumFields) {
+            $filteredFields = array_slice($filteredFields, 0, $maxNumFields, true);
         }
 
         return $filteredFields;

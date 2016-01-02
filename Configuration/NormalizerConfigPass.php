@@ -54,6 +54,7 @@ class NormalizerConfigPass implements ConfigPassInterface
     public function process(array $backendConfiguration)
     {
         $backendConfiguration = $this->normalizeShortConfiguration($backendConfiguration);
+        $backendConfiguration = $this->normalizeFormViewConfiguration($backendConfiguration);
         $backendConfiguration = $this->normalizeViewConfiguration($backendConfiguration);
 
         return $backendConfiguration;
@@ -101,6 +102,20 @@ class NormalizerConfigPass implements ConfigPassInterface
         }
 
         $backendConfiguration['entities'] = $normalizedConfiguration;
+
+        return $backendConfiguration;
+    }
+
+    private function normalizeFormViewConfiguration(array $backendConfiguration)
+    {
+        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+            if (isset($entityConfiguration['form'])) {
+                $entityConfiguration['new'] = isset($entityConfiguration['new']) ? array_replace($entityConfiguration['form'], $entityConfiguration['new']) : $entityConfiguration['form'];
+                $entityConfiguration['edit'] = isset($entityConfiguration['edit']) ? array_replace($entityConfiguration['form'], $entityConfiguration['edit']) : $entityConfiguration['form'];
+            }
+
+            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
+        }
 
         return $backendConfiguration;
     }

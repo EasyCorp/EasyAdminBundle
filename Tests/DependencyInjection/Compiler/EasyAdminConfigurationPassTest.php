@@ -55,9 +55,18 @@ class EasyAdminConfigurationPassTest extends AbstractTestCase
 
     public function provideConfigurationFiles()
     {
-        $fixturesDir = __DIR__.'/fixtures/*';
+        $inputs = array_merge(
+            glob(__DIR__.'/fixtures/configurations/input/admin_*.yml'),
+            glob(__DIR__.'/fixtures/deprecations/input/admin_*.yml'),
+            glob(__DIR__.'/fixtures/templates/*/input/admin_*.yml')
+        );
+        $outputs = array_merge(
+            glob(__DIR__.'/fixtures/configurations/output/config_*.yml'),
+            glob(__DIR__.'/fixtures/deprecations/output/config_*.yml'),
+            glob(__DIR__.'/fixtures/templates/*/output/config_*.yml')
+        );
 
-        return array_map(null, glob($fixturesDir.'/input/admin_*.yml'), glob($fixturesDir.'/output/config_*.yml'));
+        return array_map(null, $inputs, $outputs);
     }
 
     private function isTestCompatibleWithSymfony23($filepath)

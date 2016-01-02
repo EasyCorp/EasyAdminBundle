@@ -43,6 +43,7 @@ if (is_dir($buildDir = __DIR__.'/../build')) {
 }
 
 include __DIR__.'/Fixtures/App/AppKernel.php';
+include __DIR__.'/Fixtures/App/ConfigPassKernel.php';
 
 $application = new Application(new AppKernel('default_backend', true));
 $application->setAutoExit(false);

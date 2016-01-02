@@ -36,14 +36,16 @@ class EasyAdminConfigurationPassTest extends AbstractTestCase
         }
 
         $configuration = Yaml::parse(file_get_contents($inputFixtureFilepath));
-        $this->initClient(array('easyadmin.config' => $configuration));
+        //$this->initClient(array('easyadmin.config' => $configuration));
+        $app = new \ConfigPassKernel($configuration);
+        $app->boot();
 
-        $this->assertConfigurationParameterMatchesExpectedValue($this->client->getContainer(), $outputFixtureFilepath);
+        $this->assertConfigurationParameterMatchesExpectedValue($app->getContainer(), $outputFixtureFilepath);
     }
 
     private function assertConfigurationParameterMatchesExpectedValue($container, $expectedConfigFile)
     {
-        file_put_contents($expectedConfigFile, Yaml::dump(array('easy_admin' => $container->getParameter('easyadmin.config')), 100));
+//        file_put_contents($expectedConfigFile, Yaml::dump(array('easy_admin' => $container->getParameter('easyadmin.config')), 100));
 
         $expectedConfiguration = Yaml::parse(file_get_contents($expectedConfigFile));
         $actualConfiguration = $container->getParameter('easyadmin.config');

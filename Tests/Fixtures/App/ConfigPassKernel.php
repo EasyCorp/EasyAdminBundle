@@ -13,13 +13,15 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
-class ConfigPassPassKernel extends Kernel
+class ConfigPassKernel extends Kernel
 {
+    private $backendConfig;
+
     public function __construct($backendConfig)
     {
         parent::__construct('test', false);
 
-        $this->backendConfig = $backendConfig;
+        $this->backendConfig = $backendConfig['easy_admin'];
     }
 
     public function registerBundles()
@@ -39,7 +41,7 @@ class ConfigPassPassKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/config_base.yml');
+        $loader->load(__DIR__.'/config/config.yml');
 
         $loader->load(function (ContainerBuilder $container) {
             $container->loadFromExtension('easy_admin', $this->backendConfig);

@@ -4,4 +4,4 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        - AppBundle\Entity\TestEntity
+        - JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category

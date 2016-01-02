@@ -12,9 +12,9 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass;
 
-class PropertyConfigPassTest extends CommonPhpUnitTestCase
+class NormalizerConfigPassTest extends CommonPhpUnitTestCase
 {
     /**
      * @expectedException \RuntimeException
@@ -31,7 +31,7 @@ class PropertyConfigPassTest extends CommonPhpUnitTestCase
             ),
         ));
 
-        $configPass = new PropertyConfigPass();
+        $configPass = new NormalizerConfigPass();
         $configPass->process($backendConfig);
     }
 
@@ -52,7 +52,7 @@ class PropertyConfigPassTest extends CommonPhpUnitTestCase
             ),
         ));
 
-        $configPass = new PropertyConfigPass();
+        $configPass = new NormalizerConfigPass();
         $configPass->process($backendConfig);
     }
 }

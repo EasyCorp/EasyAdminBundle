@@ -46,8 +46,8 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
 
         $configPasses = array(
             new NormalizerConfigPass(),
-            new PropertyConfigPass(),
             new MetadataConfigPass($container->get('doctrine')),
+            new PropertyConfigPass(),
             new ActionConfigPass(),
             new ViewConfigPass(),
             new TemplateConfigPass($container->getParameter('kernel.root_dir').'/Resources/views'),

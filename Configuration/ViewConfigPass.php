@@ -115,6 +115,11 @@ class ViewConfigPass implements ConfigPassInterface
         return $this->normalizeFieldsConfiguration('list', $entityConfiguration, $backendConfiguration);
     }
 
+private function normalizeFieldsConfiguration($view, $entityConfig, $backendConfiguration)
+{
+
+}
+
     /**
      * Returns the list of fields to show in the 'show' view of this entity.
      *
@@ -226,94 +231,6 @@ class ViewConfigPass implements ConfigPassInterface
 
         return $filteredFields;
     }
-
-    /**
-     * Merges all the information about the fields associated with the given view
-     * to return the complete set of normalized field configuration.
-     *
-     * @param string $view
-     * @param array  $entityConfiguration
-     *
-     * @return array The complete field configuration
-     */
-    private function normalizeFieldsConfiguration($view, $entityConfiguration, $backendConfiguration)
-    {
-        $configuration = array();
-        $fieldsConfiguration = $entityConfiguration[$view]['fields'];
-        $originalViewConfiguration = $backendConfiguration['entities'][$entityConfiguration['name']][$view];
-
-        foreach ($fieldsConfiguration as $fieldName => $fieldConfiguration) {
-            $originalFieldConfiguration = isset($originalViewConfiguration['fields'][$fieldName]) ? $originalViewConfiguration['fields'][$fieldName] : null;
-
-            if (array_key_exists($fieldName, $entityConfiguration['properties'])) {
-                $fieldMetadata = $entityConfiguration['properties'][$fieldName];
-            } else {
-                // this is a virtual field which doesn't exist as a property of
-                // the related entity. That's why Doctrine can't provide metadata for it
-                $fieldMetadata = array_merge(
-                    $this->defaultVirtualFieldMetadata,
-                    array('columnName' => $fieldName, 'fieldName' => $fieldName, 'virtual' => true)
-                );
-            }
-
-            $normalizedConfiguration = array_replace(
-                $this->defaultEntityFieldConfiguration,
-                $fieldMetadata,
-                $fieldConfiguration
-            );
-
-            // virtual fields and associations different from *-to-one cannot be sorted in listings
-            $isToManyAssociation = 'association' === $normalizedConfiguration['type']
-                && ($normalizedConfiguration['associationType'] & ClassMetadata::TO_MANY);
-            if (true === $normalizedConfiguration['virtual'] || $isToManyAssociation) {
-                $normalizedConfiguration['sortable'] = false;
-            }
-
-            // special case: if the field is called 'id' and doesn't define a custom
-            // label, use 'ID' as label. This improves the readability of the label
-            // of this important field, which is usually related to the primary key
-            if ('id' === $normalizedConfiguration['fieldName'] && !isset($normalizedConfiguration['label'])) {
-                $normalizedConfiguration['label'] = 'ID';
-            }
-
-            // 'list', 'search' and 'show' views: use the value of the 'type' option
-            // as the 'dataType' option because the previous code has already
-            // prioritized end-user preferences over Doctrine and default values
-            if (in_array($view, array('list', 'search', 'show'))) {
-                $normalizedConfiguration['dataType'] = $normalizedConfiguration['type'];
-            }
-
-            // 'new' and 'edit' views: if the user has defined the 'type' option
-            // for the field, use it as 'fieldType'. Otherwise, infer the best field
-            // type using the property data type.
-            if (in_array($view, array('edit', 'new'))) {
-                $normalizedConfiguration['fieldType'] = isset($originalFieldConfiguration['type'])
-                    ? $originalFieldConfiguration['type']
-                    : $this->getFormTypeFromDoctrineType($normalizedConfiguration['type']);
-            }
-
-            // special case for the 'list' view: 'boolean' properties are displayed
-            // as toggleable flip switches when certain conditions are met
-            if ('list' === $view && 'boolean' === $normalizedConfiguration['dataType']) {
-                // conditions:
-                //   1) the end-user hasn't configured the field type explicitly
-                //   2) the 'edit' action is enabled for the 'list' view of this entity
-                $isEditActionEnabled = array_key_exists('edit', $entityConfiguration['list']['actions']);
-                if (!isset($originalFieldConfiguration['type']) && $isEditActionEnabled) {
-                    $normalizedConfiguration['dataType'] = 'toggle';
-                }
-            }
-
-            if (null === $normalizedConfiguration['format']) {
-                $normalizedConfiguration['format'] = $this->getFieldFormat($normalizedConfiguration['type'], $backendConfiguration);
-            }
-
-            $configuration[$fieldName] = $normalizedConfiguration;
-        }
-
-        return $configuration;
-    }
-
 
     /**
      * If the backend configuration doesn't define any options for the fields of some entity,

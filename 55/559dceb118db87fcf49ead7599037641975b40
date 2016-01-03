@@ -1,0 +1,247 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-03T12:29:47Z
+
+Looks good to me, but it's hard to review everything in such a big PR ^^'
+
+Anyway, fantastic work ! :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-03T15:22:21Z
+
+Regarding the failing tests with `--prefer-lowest` I can't reproduce them :confused:
+
+1) `composer update --prefer-lowest`
+
+2) `composer show -i`
+
+```
+doctrine/annotations              v1.0    Docblock Annotations Parser
+doctrine/cache                    v1.0    Caching library offering an object-oriented API for many cache backends
+doctrine/collections              v1.0    Collections Abstraction library
+doctrine/common                   v2.4.0  Common Library for Doctrine projects
+doctrine/data-fixtures            v1.0.0  Data Fixtures for all Doctrine Object Managers
+doctrine/dbal                     2.3.3   Database Abstraction Layer
+doctrine/doctrine-bundle          v1.2.0  Symfony DoctrineBundle
+doctrine/doctrine-fixtures-bundle v2.2.0  Symfony DoctrineFixturesBundle
+doctrine/inflector                v1.0    Common String Manipulations with regard to casing and singular/plural rules.
+doctrine/instantiator             1.0.1   A small, lightweight utility to instantiate objects in PHP without invoking their constructors
+doctrine/lexer                    v1.0    Base library for a lexer that can be used in Top-Down, Recursive Descent Parsers.
+doctrine/orm                      2.3.0   Object-Relational-Mapper for PHP
+jdorn/sql-formatter               v1.1.0  a PHP SQL highlighting library
+pagerfanta/pagerfanta             v1.0.1  Pagination for PHP 5.3
+phpunit/php-code-coverage         2.0.0   Library that provides collection, processing, and rendering functionality for PHP code coverage information.
+phpunit/php-file-iterator         1.3.2   FilterIterator implementation that filters files based on a list of suffixes.
+phpunit/php-text-template         1.2.0   Simple template engine.
+phpunit/php-timer                 1.0.3   Utility class for timing
+phpunit/php-token-stream          1.1.4   Wrapper around PHP's tokenizer extension.
+phpunit/phpunit                   4.4.0   The PHP Unit Testing framework.
+phpunit/phpunit-mock-objects      2.3.0   Mock Object library for PHPUnit
+psr/log                           1.0.0   Common interface for logging libraries
+sebastian/comparator              1.0.0   Provides the functionality to compare PHP values for equality
+sebastian/diff                    1.1.0   Diff implementation
+sebastian/environment             1.1.0   Provides functionality to handle HHVM/PHP environments
+sebastian/exporter                1.0.0   Provides the functionality to export PHP variables for visualization
+sebastian/global-state            1.0.0   Snapshotting of global state
+sebastian/version                 1.0.0   Library that helps with managing the version number of Git-hosted PHP projects
+sensio/distribution-bundle        v2.3.0  The base bundle for the Symfony Distributions
+sensio/framework-extra-bundle     v3.0.2  This bundle provides a way to configure your controllers with annotations
+symfony/phpunit-bridge            v2.7.0  Symfony PHPUnit Bridge
+symfony/symfony                   v2.6.6  The Symfony PHP framework
+twig/extensions                   v1.0.0  Common additional features for Twig that do not directly belong in core
+twig/twig                         v1.14.2 Twig, the flexible, fast, and secure template language for PHP
+```
+
+3) `phpunit`
+
+```
+PHPUnit 5.1.3 by Sebastian Bergmann and contributors.
+
+SS.............................................................  63 / 290 ( 21%)
+............................................................... 126 / 290 ( 43%)
+............................................................... 189 / 290 ( 65%)
+............................................................... 252 / 290 ( 86%)
+......................................                          290 / 290 (100%)
+
+Time: 30.57 seconds, Memory: 605.25Mb
+
+OK, but incomplete, skipped, or risky tests!
+Tests: 290, Assertions: 489, Skipped: 2.
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-03T15:28:09Z
+
+@javiereguiluz : I doubt your `composer update --prefer-lowest` worked as expected regarding your `composer show -i`.
+
+Here is mine:
+
+```
+doctrine/annotations              v1.0    Docblock Annotations Parser
+doctrine/cache                    v1.0    Caching library offering an object-oriented API for many cache backends
+doctrine/collections              v1.0    Collections Abstraction library
+doctrine/common                   v2.4.0  Common Library for Doctrine projects
+doctrine/data-fixtures            v1.0.0  Data Fixtures for all Doctrine Object Managers
+doctrine/dbal                     2.3.3   Database Abstraction Layer
+doctrine/doctrine-bundle          v1.2.0  Symfony DoctrineBundle
+doctrine/doctrine-fixtures-bundle v2.2.0  Symfony DoctrineFixturesBundle
+doctrine/inflector                v1.0    Common String Manipulations with regard to casing and singular/plural rules.
+doctrine/instantiator             1.0.4   A small, lightweight utility to instantiate objects in PHP without invoking their constructors
+doctrine/lexer                    v1.0    Base library for a lexer that can be used in Top-Down, Recursive Descent Parsers.
+doctrine/orm                      2.3.0   Object-Relational-Mapper for PHP
+jdorn/sql-formatter               v1.1.0  a PHP SQL highlighting library
+pagerfanta/pagerfanta             v1.0.1  Pagination for PHP 5.3
+phpunit/php-code-coverage         2.0.0   Library that provides collection, processing, and rendering functionality for PHP code coverage information.
+phpunit/php-file-iterator         1.3.2   FilterIterator implementation that filters files based on a list of suffixes.
+phpunit/php-text-template         1.2.0   Simple template engine.
+phpunit/php-timer                 1.0.3   Utility class for timing
+phpunit/php-token-stream          1.1.4   Wrapper around PHP's tokenizer extension.
+phpunit/phpunit                   4.4.0   The PHP Unit Testing framework.
+phpunit/phpunit-mock-objects      2.3.0   Mock Object library for PHPUnit
+psr/log                           1.0.0   Common interface for logging libraries
+sebastian/comparator              1.0.0   Provides the functionality to compare PHP values for equality
+sebastian/diff                    1.1.0   Diff implementation
+sebastian/environment             1.1.0   Provides functionality to handle HHVM/PHP environments
+sebastian/exporter                1.0.0   Provides the functionality to export PHP variables for visualization
+sebastian/global-state            1.0.0   Snapshotting of global state
+sebastian/version                 1.0.0   Library that helps with managing the version number of Git-hosted PHP projects
+sensio/distribution-bundle        v2.3.0  The base bundle for the Symfony Distributions
+sensio/framework-extra-bundle     v3.0.2  This bundle provides a way to configure your controllers with annotations
+symfony/browser-kit               v2.3.0  Symfony BrowserKit Component
+symfony/config                    v2.3.0  Symfony Config Component
+symfony/console                   v2.3.0  Symfony Console Component
+symfony/css-selector              v2.3.0  Symfony CssSelector Component
+symfony/debug                     v2.3.0  Symfony Debug Component
+symfony/dependency-injection      v2.3.0  Symfony DependencyInjection Component
+symfony/doctrine-bridge           v2.3.0  Symfony Doctrine Bridge
+symfony/dom-crawler               v2.3.0  Symfony DomCrawler Component
+symfony/event-dispatcher          v2.3.0  Symfony EventDispatcher Component
+symfony/filesystem                v2.3.0  Symfony Filesystem Component
+symfony/finder                    v2.3.0  Symfony Finder Component
+symfony/form                      v2.3.0  Symfony Form Component
+symfony/framework-bundle          v2.3.0  Symfony FrameworkBundle
+symfony/http-foundation           v2.3.0  Symfony HttpFoundation Component
+symfony/http-kernel               v2.3.0  Symfony HttpKernel Component
+symfony/icu                       v1.0.0  Contains an excerpt of the ICU data and classes to load it.
+symfony/intl                      v2.3.0  A PHP replacement layer for the C intl extension that includes additional data from the ICU library.
+symfony/options-resolver          v2.1.0  Symfony OptionsResolver Component
+symfony/phpunit-bridge            v2.7.0  Symfony PHPUnit Bridge
+symfony/property-access           v2.3.0  Symfony PropertyAccess Component
+symfony/routing                   v2.2.0  Symfony Routing Component
+symfony/security                  v2.3.0  Symfony Security Component
+symfony/security-bundle           v2.3.0  Symfony SecurityBundle
+symfony/stopwatch                 v2.3.0  Symfony Stopwatch Component
+symfony/templating                v2.1.0  Symfony Templating Component
+symfony/translation               v2.3.0  Symfony Translation Component
+symfony/twig-bridge               v2.3.4  Symfony Twig Bridge
+symfony/twig-bundle               v2.3.0  Symfony TwigBundle
+symfony/validator                 v2.3.0  Symfony Validator Component
+symfony/yaml                      v2.3.0  Symfony Yaml Component
+twig/extensions                   v1.0.0  Common additional features for Twig that do not directly belong in core
+twig/twig                         v1.14.2 Twig, the flexible, fast, and secure template language for PHP
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-03T15:57:00Z
+
+@ogizanagi OK, after a `$ composer clear-cache` and `rm -fr vendor/`, Composer finally installed the right dependencies with `--prefer-lowest`. I can now reproduce the failing tests.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-03T16:20:15Z
+
+Updates on the failing tests.
+
+If I make this change, everything works again:
+
+```diff
+-        "symfony/config"                : "~2.3|~3.0",
+-        "symfony/dependency-injection"  : "~2.3|~3.0",
+-        "symfony/doctrine-bridge"       : "~2.3|~3.0",
+-        "symfony/event-dispatcher"      : "~2.3|~3.0",
+-        "symfony/form"                  : "~2.3|~3.0",
+-        "symfony/framework-bundle"      : "~2.3|~3.0",
+-        "symfony/http-foundation"       : "~2.3|~3.0",
+-        "symfony/http-kernel"           : "~2.3|~3.0",
+-        "symfony/property-access"       : "~2.3|~3.0",
++        "symfony/config"                : "~2.3.36|~3.0",
++        "symfony/dependency-injection"  : "~2.3.36|~3.0",
++        "symfony/doctrine-bridge"       : "~2.3.36|~3.0",
++        "symfony/event-dispatcher"      : "~2.3.36|~3.0",
++        "symfony/form"                  : "~2.3.36|~3.0",
++        "symfony/framework-bundle"      : "~2.3.36|~3.0",
++        "symfony/http-foundation"       : "~2.3.36|~3.0",
++        "symfony/http-kernel"           : "~2.3.36|~3.0",
++        "symfony/property-access"       : "~2.3.36|~3.0",
+```
+
+The question is: which is the 2.3.x version that we should use to fix the tests? It must be higher than 2.3.0 and probably way lower than 2.3.36 to allow apps not updated to the latest version. Is there any empiric way of getting that magic 2.3 version?
+
+PS: I know that `composer.json` versions should be something like `"~2.3,>=2.3.36|~3.0,"` but I'm doing quick tests.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-03T16:23:53Z
+
+@javiereguiluz : That's strange anyway. Tests used to pass with those requirements until now.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-03T16:25:56Z
+
+@ogizanagi this is for instance the first error I get with 2.3.0:
+
+```
+1) JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller\BackendErrorsTest::testUndefinedEntityError
+Failed asserting that '    The file "/Users/javier/sf/EasyAdminBundle/Tests/Fixtures/App/config/routing_base.yml" must contain a YAML array. (500 Internal Server Error)
+' contains "Error: The "InexistentEntity" entity is not defined in the configuration of your backend. Solution: Open your "app/config/config.yml" file and add the "InexistentEntity" entity to the list of entities managed by EasyAdmin.".
+```
+
+And it's fixed if I change this (!!!!!!!!??????):
+
+```diff
+// Symfony\Component\Routing\Loader\YamlFileLoader.php
+-$config = Yaml::parse($path);
++$config = Yaml::parse(file_get_contents($path));
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-03T16:44:35Z
+
+@javiereguiluz : After some tries, it seems that `"symfony/framework-bundle"      : "^2.3.24|~3.0",` is enough to fix everything.
+
+The best would be to know what was fixed in the 2.3.24 version of the `symfony/framework-bundle`, and why we didn't get any error before. (We still don't get any on `master` branch)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-03T16:46:59Z
+
+Seems related to https://github.com/symfony/symfony/pull/12894
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-03T16:50:10Z
+
+@ogizanagi thanks for investigating this issue. I've just updated the dependencies and let's see if Travis becomes green again.
+
+Previously I looked at one of the issues linked from the PR that you mention ... but it only talked about having both `twig` and `php` engines enabled at the same time and that producing errors. I'm still not sure about the exact error cause of this.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-03T17:08:59Z
+
+[This is the incriminated line !](https://github.com/javiereguiluz/EasyAdminBundle/blob/fix_729/Tests/Fixtures/App/AppKernel.php#L34)
+
+The issue you've read about isn't about having both `php` and `twig` engines at the same time, but having one of them registered twice, because of including twice the `config.yml` file and `templating:      { engines: ['twig'] }`.
+
+You can revert anything changed from `composer.json` file and remove this line :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-03T17:17:01Z
+
+@ogizanagi as usual, amazing detective work!! :bow: :bow:  Thanks!  Changes done. Let's see if Travis is happy again.

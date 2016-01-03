@@ -415,7 +415,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
 
         // test 'novalidate' attribute
-        $this->assertSame('novalidate', $crawler->filter('#new-form')->first()->attr('novalidate'));
+        $this->assertSame('novalidate', $crawler->filter('#new-category-form')->first()->attr('novalidate'));
 
         $form = $crawler->selectButton('Save changes')->form();
         $form->remove('form[name]');

@@ -31,6 +31,10 @@ class ViewConfigPass implements ConfigPassInterface
      * This method takes care of the views that don't define their fields. In
      * those cases, we just use the $entityConfig['properties'] information and
      * we filter some fields to improve the user experience for default config.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
      */
     private function processViewConfig(array $backendConfig)
     {
@@ -55,6 +59,10 @@ class ViewConfigPass implements ConfigPassInterface
     /**
      * This methods makes some minor tweaks in fields configuration to improve
      * the user experience.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
      */
     private function processFieldConfig(array $backendConfig)
     {
@@ -76,6 +84,14 @@ class ViewConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
+    /**
+     * Returns the list of excluded field names for the given view.
+     *
+     * @param string $view
+     * @param array  $entityConfig
+     *
+     * @return array
+     */
     private function getExcludedFieldNames($view, $entityConfig)
     {
         $excludedFieldNames = array(
@@ -89,6 +105,13 @@ class ViewConfigPass implements ConfigPassInterface
         return isset($excludedFieldNames[$view]) ? $excludedFieldNames[$view] : null;
     }
 
+    /**
+     * Returns the list of excluded field types for the given view.
+     *
+     * @param string $view
+     *
+     * @return array
+     */
     private function getExcludedFieldTypes($view)
     {
         $excludedFieldTypes = array(
@@ -102,6 +125,14 @@ class ViewConfigPass implements ConfigPassInterface
         return isset($excludedFieldTypes[$view]) ? $excludedFieldTypes[$view] : null;
     }
 
+    /**
+     * Returns the maximum number of fields to display be default for the
+     * given view.
+     *
+     * @param string $view
+     *
+     * @return int
+     */
     private function getMaxNumberFields($view)
     {
         $maxNumberFields = array(

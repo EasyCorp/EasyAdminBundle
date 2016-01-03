@@ -93,6 +93,10 @@ class PropertyConfigPass implements ConfigPassInterface
      * This method adds some other options needed for EasyAdmin backends. This is
      * required because $entityConfig['properties'] will be used as the fields of
      * the views that don't define their fields.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
      */
     private function processMetadataConfig(array $backendConfig)
     {
@@ -123,6 +127,14 @@ class PropertyConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
+    /**
+     * Completes the configuration of each field/property with the metadata
+     * provided by Doctrine for each entity property.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
     private function processFieldConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
@@ -209,11 +221,12 @@ class PropertyConfigPass implements ConfigPassInterface
      * Returns the date/time/datetime/number format for the given field
      * according to its type and the default formats defined for the backend.
      *
+     * @param array  $backendConfig
      * @param string $fieldType
      *
      * @return string The format that should be applied to the field value
      */
-    private function getFieldFormat($backendConfig, $fieldType)
+    private function getFieldFormat(array $backendConfig, $fieldType)
     {
         if (in_array($fieldType, array('date', 'time', 'datetime', 'datetimetz'))) {
             // make 'datetimetz' use the same format as 'datetime'

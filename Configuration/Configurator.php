@@ -12,9 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 /**
- * Completes the entities configuration with the information that can only be
- * determined during runtime, not during the container compilation phase (most
- * of the entities configuration is resolved in EasyAdminExtension class).
+ * Exposes the configuration of the backend fully and on a per-entity basis.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -28,7 +26,7 @@ class Configurator
     }
 
     /**
-     * Exposes the backend configuration to any external method that needs it.
+     * Returns the entire backend configuration.
      *
      * @return array
      */
@@ -38,9 +36,7 @@ class Configurator
     }
 
     /**
-     * Processes and returns the full configuration for the given entity name.
-     * This configuration includes all the information about the form fields
-     * and properties of the entity.
+     * Returns the configuration for the given entity name.
      *
      * @param string $entityName
      *

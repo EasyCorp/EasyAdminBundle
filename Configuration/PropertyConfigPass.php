@@ -202,9 +202,7 @@ class PropertyConfigPass implements ConfigPassInterface
      */
     private function getFormTypeFromDoctrineType($doctrineType)
     {
-        // don't change this array_key_exists() by isset() because the Doctrine
-        // type map can return 'null' values that should be treated like that
-        return array_key_exists($doctrineType, $this->doctrineTypeToFormTypeMap)
+        return isset($this->doctrineTypeToFormTypeMap[$doctrineType])
             ? $this->doctrineTypeToFormTypeMap[$doctrineType]
             : $doctrineType;
     }

@@ -36,7 +36,6 @@ class EasyAdminConfigurationPassTest extends AbstractTestCase
         }
 
         $configuration = Yaml::parse(file_get_contents($inputFixtureFilepath));
-        //$this->initClient(array('easyadmin.config' => $configuration));
         $app = new \ConfigPassKernel($configuration);
         $app->boot();
 

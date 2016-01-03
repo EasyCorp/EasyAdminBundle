@@ -12,7 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use Symfony\Component\Yaml\Yaml;
-use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
 
 class EasyAdminConfigurationPassExceptionsTest extends \PHPUnit_Framework_TestCase
 {

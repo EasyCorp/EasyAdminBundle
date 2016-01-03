@@ -167,6 +167,7 @@ class NormalizerConfigPass implements ConfigPassInterface
     private function normalizePropertyConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            $fields = array();
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
                 foreach ($entityConfig[$view]['fields'] as $field) {
                     if (!is_string($field) && !is_array($field)) {
@@ -195,8 +196,10 @@ class NormalizerConfigPass implements ConfigPassInterface
                     }
 
                     $fieldName = $fieldConfig['property'];
-                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
+                    $fields[$fieldName] = $fieldConfig;
                 }
+
+                $backendConfig['entities'][$entityName][$view]['fields'] = $fields;
             }
         }
 

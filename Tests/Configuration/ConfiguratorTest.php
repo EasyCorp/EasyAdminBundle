@@ -12,14 +12,12 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration;
 
 use InvalidArgumentException;
-use Symfony\Component\Yaml\Yaml;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
 
 class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 {
     private $extension;
-    private $inspector;
 
     public function setUp()
     {
@@ -32,10 +30,8 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testEmptyConfiguration()
     {
-        $this->markTestSkipped('TODO...');
-
         $backendConfig = array('easy_admin' => null);
-        $configurator = new Configurator($backendConfig, $this->inspector);
+        $configurator = new Configurator($backendConfig);
         $configurator->getEntityConfiguration('TestEntity');
     }
 
@@ -45,10 +41,8 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAccessingAnUnmanagedEntity()
     {
-        $this->markTestSkipped('TODO...');
-
         $backendConfig = array('easy_admin' => array('entities' => array('AppBundle\\Entity\\TestEntity')));
-        $configurator = new Configurator($backendConfig, $this->inspector);
+        $configurator = new Configurator($backendConfig);
         $configurator->getEntityConfiguration('UnmanagedEntity');
     }
 }

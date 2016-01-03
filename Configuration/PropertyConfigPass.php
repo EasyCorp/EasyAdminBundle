@@ -19,7 +19,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class PropertyConfigPass implements ConfigPassInterface
 {
-    private $defaultEntityFieldConfiguration = array(
+    private $defaultEntityFieldConfig = array(
         // CSS class or classes applied to form field
         'css_class' => '',
         // date/time/datetime/number format applied to form field value
@@ -80,12 +80,12 @@ class PropertyConfigPass implements ConfigPassInterface
         'time' => 'time',
     );
 
-    public function process(array $backendConfiguration)
+    public function process(array $backendConfig)
     {
-        $backendConfiguration = $this->processMetadataConfiguration($backendConfiguration);
-        $backendConfiguration = $this->processFieldConfiguration($backendConfiguration);
+        $backendConfig = $this->processMetadataConfig($backendConfig);
+        $backendConfig = $this->processFieldConfig($backendConfig);
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**
@@ -94,48 +94,48 @@ class PropertyConfigPass implements ConfigPassInterface
      * required because $entityConfig['properties'] will be used as the fields of
      * the views that don't define their fields.
      */
-    private function processMetadataConfiguration(array $backendConfiguration)
+    private function processMetadataConfig(array $backendConfig)
     {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             $properties = array();
-            foreach ($entityConfiguration['properties'] as $propertyName => $propertyMetadata) {
+            foreach ($entityConfig['properties'] as $propertyName => $propertyMetadata) {
                 $properties[$propertyName] = array_replace(
-                    $this->defaultEntityFieldConfiguration,
+                    $this->defaultEntityFieldConfig,
                     $propertyMetadata,
                     array(
                         'property' => $propertyName,
                         'dataType' => $propertyMetadata['type'],
                         'fieldType' => $this->getFormTypeFromDoctrineType($propertyMetadata['type']),
-                        'format' => $this->getFieldFormat($propertyMetadata['type'], $backendConfiguration),
+                        'format' => $this->getFieldFormat($propertyMetadata['type'], $backendConfig),
                     )
                 );
 
                 // 'boolean' properties are displayed by default as toggleable
                 // flip switches (if the 'edit' action is enabled for the entity)
-                if ('boolean' === $properties[$propertyName]['dataType'] && array_key_exists('edit', $entityConfiguration['list']['actions'])) {
+                if ('boolean' === $properties[$propertyName]['dataType'] && array_key_exists('edit', $entityConfig['list']['actions'])) {
                     $properties[$propertyName]['dataType'] = 'toggle';
                 }
             }
 
-            $backendConfiguration['entities'][$entityName]['properties'] = $properties;
+            $backendConfig['entities'][$entityName]['properties'] = $properties;
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
-    private function processFieldConfiguration(array $backendConfiguration)
+    private function processFieldConfig(array $backendConfig)
     {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
-                $fieldsConfiguration = $entityConfiguration[$view]['fields'];
-                $originalViewConfiguration = $backendConfiguration['entities'][$entityName][$view];
+                $fieldsConfig = $entityConfig[$view]['fields'];
+                $originalViewConfig = $backendConfig['entities'][$entityName][$view];
 
-                foreach ($fieldsConfiguration as $fieldName => $fieldConfiguration) {
-                    $originalFieldConfiguration = isset($originalViewConfiguration['fields'][$fieldName]) ? $originalViewConfiguration['fields'][$fieldName] : null;
+                foreach ($fieldsConfig as $fieldName => $fieldConfig) {
+                    $originalFieldConfig = isset($originalViewConfig['fields'][$fieldName]) ? $originalViewConfig['fields'][$fieldName] : null;
 
-                    if (array_key_exists($fieldName, $entityConfiguration['properties'])) {
+                    if (array_key_exists($fieldName, $entityConfig['properties'])) {
                         $fieldMetadata = array_merge(
-                            $entityConfiguration['properties'][$fieldName],
+                            $entityConfig['properties'][$fieldName],
                             array('virtual' => false)
                         );
                     } else {
@@ -147,50 +147,50 @@ class PropertyConfigPass implements ConfigPassInterface
                         );
                     }
 
-                    $normalizedConfiguration = array_replace(
-                        $this->defaultEntityFieldConfiguration,
+                    $normalizedConfig = array_replace(
+                        $this->defaultEntityFieldConfig,
                         $fieldMetadata,
-                        $fieldConfiguration
+                        $fieldConfig
                     );
 
                     // 'list', 'search' and 'show' views: use the value of the 'type' option
                     // as the 'dataType' option because the previous code has already
                     // prioritized end-user preferences over Doctrine and default values
                     if (in_array($view, array('list', 'search', 'show'))) {
-                        $normalizedConfiguration['dataType'] = $normalizedConfiguration['type'];
+                        $normalizedConfig['dataType'] = $normalizedConfig['type'];
                     }
 
                     // 'new' and 'edit' views: if the user has defined the 'type' option
                     // for the field, use it as 'fieldType'. Otherwise, infer the best field
                     // type using the property data type.
                     if (in_array($view, array('edit', 'new'))) {
-                        $normalizedConfiguration['fieldType'] = isset($originalFieldConfiguration['type'])
-                            ? $originalFieldConfiguration['type']
-                            : $this->getFormTypeFromDoctrineType($normalizedConfiguration['type']);
+                        $normalizedConfig['fieldType'] = isset($originalFieldConfig['type'])
+                            ? $originalFieldConfig['type']
+                            : $this->getFormTypeFromDoctrineType($normalizedConfig['type']);
                     }
 
                     // special case for the 'list' view: 'boolean' properties are displayed
                     // as toggleable flip switches when certain conditions are met
-                    if ('list' === $view && 'boolean' === $normalizedConfiguration['dataType']) {
+                    if ('list' === $view && 'boolean' === $normalizedConfig['dataType']) {
                         // conditions:
                         //   1) the end-user hasn't configured the field type explicitly
                         //   2) the 'edit' action is enabled for the 'list' view of this entity
-                        $isEditActionEnabled = array_key_exists('edit', $entityConfiguration['list']['actions']);
-                        if (!isset($originalFieldConfiguration['type']) && $isEditActionEnabled) {
-                            $normalizedConfiguration['dataType'] = 'toggle';
+                        $isEditActionEnabled = array_key_exists('edit', $entityConfig['list']['actions']);
+                        if (!isset($originalFieldConfig['type']) && $isEditActionEnabled) {
+                            $normalizedConfig['dataType'] = 'toggle';
                         }
                     }
 
-                    if (null === $normalizedConfiguration['format']) {
-                        $normalizedConfiguration['format'] = $this->getFieldFormat($normalizedConfiguration['type'], $backendConfiguration);
+                    if (null === $normalizedConfig['format']) {
+                        $normalizedConfig['format'] = $this->getFieldFormat($normalizedConfig['type'], $backendConfig);
                     }
 
-                    $backendConfiguration['entities'][$entityName][$view]['fields'][$fieldName] = $normalizedConfiguration;
+                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $normalizedConfig;
                 }
             }
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**
@@ -215,17 +215,17 @@ class PropertyConfigPass implements ConfigPassInterface
      *
      * @return string The format that should be applied to the field value
      */
-    private function getFieldFormat($backendConfiguration, $fieldType)
+    private function getFieldFormat($backendConfig, $fieldType)
     {
         if (in_array($fieldType, array('date', 'time', 'datetime', 'datetimetz'))) {
             // make 'datetimetz' use the same format as 'datetime'
             $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
 
-            return $backendConfiguration['formats'][$fieldType];
+            return $backendConfig['formats'][$fieldType];
         }
 
         if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {
-            return isset($backendConfiguration['formats']['number']) ? $backendConfiguration['formats']['number'] : null;
+            return isset($backendConfig['formats']['number']) ? $backendConfig['formats']['number'] : null;
         }
     }
 }

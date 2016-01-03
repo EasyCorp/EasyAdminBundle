@@ -24,9 +24,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 interface ConfigPassInterface
 {
     /**
-     * @param array $backendConfiguration
+     * @param array $backendConfig
      *
      * @return array
      */
-    public function process(array $backendConfiguration);
+    public function process(array $backendConfig);
 }

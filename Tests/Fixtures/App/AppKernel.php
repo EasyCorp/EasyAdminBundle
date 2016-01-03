@@ -13,6 +13,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+/**
+ * The kernel used in the application of most functional tests.
+ */
 class AppKernel extends Kernel
 {
     public function registerBundles()

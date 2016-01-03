@@ -19,7 +19,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class ActionConfigPass implements ConfigPassInterface
 {
-    private $defaultActionConfiguration = array(
+    private $defaultActionConfig = array(
         // either the name of a controller method or an application route (it depends on the 'type' option)
         'name' => null,
         // 'method' if the action is a controller method; 'route' if it's an application route
@@ -32,35 +32,33 @@ class ActionConfigPass implements ConfigPassInterface
         'icon' => null,
     );
 
-    public function process(array $backendConfiguration)
+    public function process(array $backendConfig)
     {
-        $entitiesConfiguration = array();
-
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             // first, define the disabled actions
-            $actionsDisabledByBackend = $backendConfiguration['disabled_actions'];
-            $actionsDisabledByEntity = isset($entityConfiguration['disabled_actions']) ? $entityConfiguration['disabled_actions'] : array();
+            $actionsDisabledByBackend = $backendConfig['disabled_actions'];
+            $actionsDisabledByEntity = isset($entityConfig['disabled_actions']) ? $entityConfig['disabled_actions'] : array();
             $disabledActions = array_unique(array_merge($actionsDisabledByBackend, $actionsDisabledByEntity));
-            $entityConfiguration['disabled_actions'] = $disabledActions;
+            $entityConfig['disabled_actions'] = $disabledActions;
 
             // second, define the actions of each entity view
             foreach (array('edit', 'list', 'new', 'show') as $view) {
                 $defaultActions = $this->getDefaultActions($view);
-                $backendActions = isset($backendConfiguration[$view]['actions']) ? $backendConfiguration[$view]['actions'] : array();
-                $backendActions = $this->normalizeActionsConfiguration($backendActions, $defaultActions);
+                $backendActions = isset($backendConfig[$view]['actions']) ? $backendConfig[$view]['actions'] : array();
+                $backendActions = $this->normalizeActionsConfig($backendActions, $defaultActions);
 
                 $defaultViewActions = array_replace($defaultActions, $backendActions);
                 $defaultViewActions = $this->filterRemovedActions($defaultViewActions);
 
-                $entityActions = isset($entityConfiguration[$view]['actions']) ? $entityConfiguration[$view]['actions'] : array();
-                $entityActions = $this->normalizeActionsConfiguration($entityActions, $defaultViewActions);
+                $entityActions = isset($entityConfig[$view]['actions']) ? $entityConfig[$view]['actions'] : array();
+                $entityActions = $this->normalizeActionsConfig($entityActions, $defaultViewActions);
 
                 $viewActions = array_replace($defaultViewActions, $entityActions);
                 $viewActions = $this->filterRemovedActions($viewActions);
 
                 // 'list' action is mandatory for all views
                 if (!array_key_exists('list', $viewActions)) {
-                    $viewActions = array_merge($viewActions, $this->normalizeActionsConfiguration(array('list')));
+                    $viewActions = array_merge($viewActions, $this->normalizeActionsConfig(array('list')));
                 }
 
                 if (isset($viewActions['delete'])) {
@@ -71,15 +69,13 @@ class ActionConfigPass implements ConfigPassInterface
                     }
                 }
 
-                $entityConfiguration[$view]['actions'] = $viewActions;
+                $entityConfig[$view]['actions'] = $viewActions;
             }
 
-            $entitiesConfiguration[$entityName] = $entityConfiguration;
+            $backendConfig['entities'][$entityName] = $entityConfig;
         }
 
-        $backendConfiguration['entities'] = $entitiesConfiguration;
-
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**
@@ -94,13 +90,13 @@ class ActionConfigPass implements ConfigPassInterface
     private function getDefaultActions($view)
     {
         // basic configuration for default actions
-        $actions = $this->normalizeActionsConfiguration(array(
+        $actions = $this->normalizeActionsConfig(array(
             array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash'),
-            array('name' => 'edit',   'label' => 'action.edit',   'icon' => 'edit'),
-            array('name' => 'new',    'label' => 'action.new'),
+            array('name' => 'edit', 'label' => 'action.edit', 'icon' => 'edit'),
+            array('name' => 'new', 'label' => 'action.new'),
             array('name' => 'search', 'label' => 'action.search'),
-            array('name' => 'show',   'label' => 'action.show'),
-            array('name' => 'list',   'label' => 'action.list'),
+            array('name' => 'show', 'label' => 'action.show'),
+            array('name' => 'list', 'label' => 'action.list'),
         ));
 
         // define which actions are enabled for each view
@@ -135,32 +131,32 @@ class ActionConfigPass implements ConfigPassInterface
      *             list:
      *                 actions: ['search', { name: 'show', label: 'Show', 'icon': 'user' }, 'grantAccess']
      *
-     * @param array $actionsConfiguration
-     * @param array $defaultActionsConfiguration
+     * @param array $actionsConfig
+     * @param array $defaultActionsConfig
      *
      * @return array
      */
-    private function normalizeActionsConfiguration(array $actionsConfiguration, array $defaultActionsConfiguration = array())
+    private function normalizeActionsConfig(array $actionsConfig, array $defaultActionsConfig = array())
     {
         $configuration = array();
 
-        foreach ($actionsConfiguration as $action) {
+        foreach ($actionsConfig as $action) {
             if (is_string($action)) {
                 // config format #1
-                $actionConfiguration = array('name' => $action);
+                $actionConfig = array('name' => $action);
             } elseif (is_array($action)) {
                 // config format #2
-                $actionConfiguration = $action;
+                $actionConfig = $action;
             } else {
                 throw new \RuntimeException('The values of the "actions" option can only be strings or arrays.');
             }
 
             // 'name' is the only mandatory option for actions
-            if (!isset($actionConfiguration['name'])) {
+            if (!isset($actionConfig['name'])) {
                 throw new \RuntimeException('When using the expanded configuration format for actions, you must define their "name" option.');
             }
 
-            $actionName = $actionConfiguration['name'];
+            $actionName = $actionConfig['name'];
 
             // 'name' value is used as the class method name or the Symfony route name
             // check that its value complies with the PHP method name rules (the leading dash
@@ -169,24 +165,24 @@ class ActionConfigPass implements ConfigPassInterface
                 throw new \InvalidArgumentException(sprintf('The name of the "%s" action contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $actionName));
             }
 
-            $normalizedConfiguration = array_replace($this->defaultActionConfiguration, $actionConfiguration);
+            $normalizedConfig = array_replace($this->defaultActionConfig, $actionConfig);
 
-            $actionName = $normalizedConfiguration['name'];
+            $actionName = $normalizedConfig['name'];
 
             // use the special 'action.<action name>' label for the default actions
             // only if the user hasn't defined a custom label (which can also be an empty string)
-            if (null === $normalizedConfiguration['label'] && in_array($actionName, array('delete', 'edit', 'new', 'search', 'show', 'list'))) {
-                $normalizedConfiguration['label'] = 'action.'.$actionName;
+            if (null === $normalizedConfig['label'] && in_array($actionName, array('delete', 'edit', 'new', 'search', 'show', 'list'))) {
+                $normalizedConfig['label'] = 'action.'.$actionName;
             }
 
             // the rest of actions without a custom label use their name as label
-            if (null === $normalizedConfiguration['label']) {
+            if (null === $normalizedConfig['label']) {
                 // copied from Symfony\Component\Form\FormRenderer::humanize() (author: Bernhard Schussek <bschussek@gmail.com>)
                 $label = ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $actionName))));
-                $normalizedConfiguration['label'] = $label;
+                $normalizedConfig['label'] = $label;
             }
 
-            if (count($defaultActionsConfiguration)) {
+            if (count($defaultActionsConfig)) {
                 // if the user defines an action with the same name of a default action,
                 // he/she is in fact overriding the default configuration of that action.
                 // for example: actions: ['delete', 'list']
@@ -194,18 +190,18 @@ class ActionConfigPass implements ConfigPassInterface
                 // some option of the action (for example the icon or the label) that
                 // option is actually added with the right default value. Otherwise,
                 // those options would be 'null' and the template would show some issues
-                if (array_key_exists($actionName, $defaultActionsConfiguration)) {
+                if (array_key_exists($actionName, $defaultActionsConfig)) {
                     // remove null config options but maintain empty options (this allows to set an empty label for the action)
-                    $normalizedConfiguration = array_filter($normalizedConfiguration, function ($element) { return null !== $element; });
-                    $normalizedConfiguration = array_replace($defaultActionsConfiguration[$actionName], $normalizedConfiguration);
+                    $normalizedConfig = array_filter($normalizedConfig, function ($element) { return null !== $element; });
+                    $normalizedConfig = array_replace($defaultActionsConfig[$actionName], $normalizedConfig);
                 }
             }
 
             // Add default classes ("action-{actionName}") to each action configuration
-            $normalizedConfiguration['css_class'] .= ' action-'.$normalizedConfiguration['name'];
-            $normalizedConfiguration['css_class'] = ltrim($normalizedConfiguration['css_class']);
+            $normalizedConfig['css_class'] .= ' action-'.$normalizedConfig['name'];
+            $normalizedConfig['css_class'] = ltrim($normalizedConfig['css_class']);
 
-            $configuration[$actionName] = $normalizedConfiguration;
+            $configuration[$actionName] = $normalizedConfig;
         }
 
         return $configuration;
@@ -214,22 +210,22 @@ class ActionConfigPass implements ConfigPassInterface
     /**
      * Removes the actions marked as deleted from the given actions configuration.
      *
-     * @param array $actionsConfiguration
+     * @param array $actionsConfig
      *
      * @return array
      */
-    private function filterRemovedActions(array $actionsConfiguration)
+    private function filterRemovedActions(array $actionsConfig)
     {
         // if the name of the action starts with a dash ('-'), remove it
-        $removedActions = array_filter($actionsConfiguration, function ($action) {
+        $removedActions = array_filter($actionsConfig, function ($action) {
             return '-' === $action['name']{0};
         });
 
         if (empty($removedActions)) {
-            return $actionsConfiguration;
+            return $actionsConfig;
         }
 
-        return array_filter($actionsConfiguration, function ($action) use ($removedActions) {
+        return array_filter($actionsConfig, function ($action) use ($removedActions) {
             // e.g. '-search' action name removes both '-search' and 'search' (if exists)
             return !array_key_exists($action['name'], $removedActions)
                 && !array_key_exists('-'.$action['name'], $removedActions);

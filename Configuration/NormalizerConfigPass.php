@@ -51,28 +51,28 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class NormalizerConfigPass implements ConfigPassInterface
 {
-    public function process(array $backendConfiguration)
+    public function process(array $backendConfig)
     {
-        $backendConfiguration = $this->normalizeEntityConfiguration($backendConfiguration);
-        $backendConfiguration = $this->normalizeFormViewConfiguration($backendConfiguration);
-        $backendConfiguration = $this->normalizeViewConfiguration($backendConfiguration);
-        $backendConfiguration = $this->normalizePropertyConfiguration($backendConfiguration);
+        $backendConfig = $this->normalizeEntityConfig($backendConfig);
+        $backendConfig = $this->normalizeFormViewConfig($backendConfig);
+        $backendConfig = $this->normalizeViewConfig($backendConfig);
+        $backendConfig = $this->normalizePropertyConfig($backendConfig);
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
-    private function normalizeEntityConfiguration($backendConfiguration)
+    private function normalizeEntityConfig($backendConfig)
     {
-        $normalizedConfiguration = array();
+        $normalizedConfig = array();
 
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             // normalize config formats #1 and #2 to use the 'class' option as config format #3
-            if (!is_array($entityConfiguration)) {
-                $entityConfiguration = array('class' => $entityConfiguration);
+            if (!is_array($entityConfig)) {
+                $entityConfig = array('class' => $entityConfig);
             }
 
             // if config format #3 is used, ensure that it defines the 'class' option
-            if (!isset($entityConfiguration['class'])) {
+            if (!isset($entityConfig['class'])) {
                 throw new \RuntimeException(sprintf('The "%s" entity must define its associated Doctrine entity class using the "class" option.', $entityName));
             }
 
@@ -80,9 +80,9 @@ class NormalizerConfigPass implements ConfigPassInterface
             // of the configuration array. In this case, autogenerate the entity
             // name using its class name
             if (is_numeric($entityName)) {
-                $entityClassParts = explode('\\', $entityConfiguration['class']);
+                $entityClassParts = explode('\\', $entityConfig['class']);
                 $entityClassName = end($entityClassParts);
-                $entityName = $this->getUniqueEntityName($entityClassName, array_keys($normalizedConfiguration));
+                $entityName = $this->getUniqueEntityName($entityClassName, array_keys($normalizedConfig));
             } else {
                 // if config format #2 and #3 are used, make sure that the entity
                 // name is valid as a PHP method name (this is required to allow
@@ -94,54 +94,54 @@ class NormalizerConfigPass implements ConfigPassInterface
 
             // if config format #3 defines the 'label' option, use its value.
             // otherwise, use the entity name as its label
-            if (!isset($entityConfiguration['label'])) {
-                $entityConfiguration['label'] = $entityName;
+            if (!isset($entityConfig['label'])) {
+                $entityConfig['label'] = $entityName;
             }
 
-            $entityConfiguration['name'] = $entityName;
-            $normalizedConfiguration[$entityName] = $entityConfiguration;
+            $entityConfig['name'] = $entityName;
+            $normalizedConfig[$entityName] = $entityConfig;
         }
 
-        $backendConfiguration['entities'] = $normalizedConfiguration;
+        $backendConfig['entities'] = $normalizedConfig;
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
-    private function normalizeFormViewConfiguration(array $backendConfiguration)
+    private function normalizeFormViewConfig(array $backendConfig)
     {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
-            if (isset($entityConfiguration['form'])) {
-                $entityConfiguration['new'] = isset($entityConfiguration['new']) ? array_replace($entityConfiguration['form'], $entityConfiguration['new']) : $entityConfiguration['form'];
-                $entityConfiguration['edit'] = isset($entityConfiguration['edit']) ? array_replace($entityConfiguration['form'], $entityConfiguration['edit']) : $entityConfiguration['form'];
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            if (isset($entityConfig['form'])) {
+                $entityConfig['new'] = isset($entityConfig['new']) ? array_replace($entityConfig['form'], $entityConfig['new']) : $entityConfig['form'];
+                $entityConfig['edit'] = isset($entityConfig['edit']) ? array_replace($entityConfig['form'], $entityConfig['edit']) : $entityConfig['form'];
             }
 
-            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
+            $backendConfig['entities'][$entityName] = $entityConfig;
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
-    private function normalizeViewConfiguration(array $backendConfiguration)
+    private function normalizeViewConfig(array $backendConfig)
     {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
-                if (!isset($entityConfiguration[$view])) {
-                    $entityConfiguration[$view] = array('fields' => array());
+                if (!isset($entityConfig[$view])) {
+                    $entityConfig[$view] = array('fields' => array());
                 }
 
-                if (!isset($entityConfiguration[$view]['fields'])) {
-                    $entityConfiguration[$view]['fields'] = array();
+                if (!isset($entityConfig[$view]['fields'])) {
+                    $entityConfig[$view]['fields'] = array();
                 }
 
-                if (in_array($view, array('edit', 'new')) && !isset($entityConfiguration[$view]['form_options'])) {
-                    $entityConfiguration[$view]['form_options'] = array();
+                if (in_array($view, array('edit', 'new')) && !isset($entityConfig[$view]['form_options'])) {
+                    $entityConfig[$view]['form_options'] = array();
                 }
             }
 
-            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
+            $backendConfig['entities'][$entityName] = $entityConfig;
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**
@@ -164,46 +164,43 @@ class NormalizerConfigPass implements ConfigPassInterface
      * This method processes both formats to produce a common form field configuration
      * format used in the rest of the application.
      */
-    private function normalizePropertyConfiguration(array $backendConfiguration)
+    private function normalizePropertyConfig(array $backendConfig)
     {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
-                $fields = array();
-                foreach ($entityConfiguration[$view]['fields'] as $field) {
+                foreach ($entityConfig[$view]['fields'] as $field) {
                     if (!is_string($field) && !is_array($field)) {
-                        throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" view of the "%s" entity can only be strings or arrays.', $view, $entityConfiguration['class']));
+                        throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" view of the "%s" entity can only be strings or arrays.', $view, $entityConfig['class']));
                     }
 
                     if (is_string($field)) {
                         // Config format #1: field is just a string representing the entity property
-                        $fieldConfiguration = array('property' => $field);
+                        $fieldConfig = array('property' => $field);
                     } else {
                         // Config format #1: field is an array that defines one or more
                         // options. Check that the mandatory 'property' option is set
                         if (!array_key_exists('property', $field)) {
-                            throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" view of the "%s" entity does not define the "property" option.', $view, $entityConfiguration['class']));
+                            throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" view of the "%s" entity does not define the "property" option.', $view, $entityConfig['class']));
                         }
 
-                        $fieldConfiguration = $field;
+                        $fieldConfig = $field;
                     }
 
                     // for 'image' type fields, if the entity defines an 'image_base_path'
                     // option, but the field does not, use the value defined by the entity
-                    if (isset($fieldConfiguration['type']) && 'image' === $fieldConfiguration['type']) {
-                        if (!isset($fieldConfiguration['base_path']) && isset($entityConfiguration['image_base_path'])) {
-                            $fieldConfiguration['base_path'] = $entityConfiguration['image_base_path'];
+                    if (isset($fieldConfig['type']) && 'image' === $fieldConfig['type']) {
+                        if (!isset($fieldConfig['base_path']) && isset($entityConfig['image_base_path'])) {
+                            $fieldConfig['base_path'] = $entityConfig['image_base_path'];
                         }
                     }
 
-                    $fieldName = $fieldConfiguration['property'];
-                    $fields[$fieldName] = $fieldConfiguration;
+                    $fieldName = $fieldConfig['property'];
+                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
                 }
-
-                $backendConfiguration['entities'][$entityName][$view]['fields'] = $fields;
             }
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**

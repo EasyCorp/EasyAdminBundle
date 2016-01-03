@@ -30,20 +30,20 @@ class MetadataConfigPass implements ConfigPassInterface
         $this->doctrine = $doctrine;
     }
 
-    public function process(array $backendConfiguration)
+    public function process(array $backendConfig)
     {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
-            $em = $this->doctrine->getManagerForClass($entityConfiguration['class']);
-            $entityMetadata = $em->getMetadataFactory()->getMetadataFor($entityConfiguration['class']);
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+            $entityMetadata = $em->getMetadataFactory()->getMetadataFor($entityConfig['class']);
 
-            $entityConfiguration['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
+            $entityConfig['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
 
-            $entityConfiguration['properties'] = $this->processEntityPropertiesMetadata($entityMetadata);
+            $entityConfig['properties'] = $this->processEntityPropertiesMetadata($entityMetadata);
 
-            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
+            $backendConfig['entities'][$entityName] = $entityConfig;
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**

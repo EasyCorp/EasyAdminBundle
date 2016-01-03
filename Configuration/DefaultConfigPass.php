@@ -18,15 +18,15 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class DefaultConfigPass implements ConfigPassInterface
 {
-    public function process(array $backendConfiguration)
+    public function process(array $backendConfig)
     {
-        $entityNames = array_keys($backendConfiguration['entities']);
+        $entityNames = array_keys($backendConfig['entities']);
         $firstEntityName = isset($entityNames[0]) ? $entityNames[0] : null;
 
         // this option is used to redirect the homepage of the backend to the
         // 'list' view of the first configured entity.
-        $backendConfiguration['default_entity_name'] = $firstEntityName;
+        $backendConfig['default_entity_name'] = $firstEntityName;
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 }

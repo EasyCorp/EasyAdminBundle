@@ -19,12 +19,12 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class ViewConfigPass implements ConfigPassInterface
 {
-    public function process(array $backendConfiguration)
+    public function process(array $backendConfig)
     {
-        $backendConfiguration = $this->processViewConfiguration($backendConfiguration);
-        $backendConfiguration = $this->processFieldConfiguration($backendConfiguration);
+        $backendConfig = $this->processViewConfig($backendConfig);
+        $backendConfig = $this->processFieldConfig($backendConfig);
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**
@@ -32,56 +32,56 @@ class ViewConfigPass implements ConfigPassInterface
      * those cases, we just use the $entityConfig['properties'] information and
      * we filter some fields to improve the user experience for default config.
      */
-    private function processViewConfiguration(array $backendConfiguration)
+    private function processViewConfig(array $backendConfig)
     {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
-                if (0 === count($entityConfiguration[$view]['fields'])) {
-                    $fieldsConfiguration = $this->filterFieldList(
-                        $entityConfiguration['properties'],
-                        $this->getExcludedFieldNames($view, $entityConfiguration),
+                if (0 === count($entityConfig[$view]['fields'])) {
+                    $fieldsConfig = $this->filterFieldList(
+                        $entityConfig['properties'],
+                        $this->getExcludedFieldNames($view, $entityConfig),
                         $this->getExcludedFieldTypes($view),
                         $this->getMaxNumberFields($view)
                     );
 
-                    $backendConfiguration['entities'][$entityName][$view]['fields'] = $fieldsConfiguration;
+                    $backendConfig['entities'][$entityName][$view]['fields'] = $fieldsConfig;
                 }
             }
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**
      * This methods makes some minor tweaks in fields configuration to improve
      * the user experience.
      */
-    private function processFieldConfiguration(array $backendConfiguration)
+    private function processFieldConfig(array $backendConfig)
     {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
-                foreach ($entityConfiguration[$view]['fields'] as $fieldName => $fieldConfiguration) {
+                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // special case: if the field is called 'id' and doesn't define a custom
                     // label, use 'ID' as label. This improves the readability of the label
                     // of this important field, which is usually related to the primary key
-                    if ('id' === $fieldConfiguration['fieldName'] && !isset($fieldConfiguration['label'])) {
-                        $fieldConfiguration['label'] = 'ID';
+                    if ('id' === $fieldConfig['fieldName'] && !isset($fieldConfig['label'])) {
+                        $fieldConfig['label'] = 'ID';
                     }
 
-                    $backendConfiguration['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfiguration;
+                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
                 }
             }
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
-    private function getExcludedFieldNames($view, $entityConfiguration)
+    private function getExcludedFieldNames($view, $entityConfig)
     {
         $excludedFieldNames = array(
-            'edit' => array($entityConfiguration['primary_key_field_name']),
+            'edit' => array($entityConfig['primary_key_field_name']),
             'list' => array('password', 'salt', 'slug', 'updatedAt', 'uuid'),
-            'new' => array($entityConfiguration['primary_key_field_name']),
+            'new' => array($entityConfig['primary_key_field_name']),
             'search' => array('password', 'salt'),
             'show' => array(),
         );

@@ -64,13 +64,13 @@ class TemplateConfigPass implements ConfigPassInterface
         $this->templatesDir = $templatesDir;
     }
 
-    public function process(array $backendConfiguration)
+    public function process(array $backendConfig)
     {
-        $backendConfiguration = $this->processEntityTemplates($backendConfiguration);
-        $backendConfiguration = $this->processDefaultTemplates($backendConfiguration);
-        $backendConfiguration = $this->processFieldTemplates($backendConfiguration);
+        $backendConfig = $this->processEntityTemplates($backendConfig);
+        $backendConfig = $this->processDefaultTemplates($backendConfig);
+        $backendConfig = $this->processFieldTemplates($backendConfig);
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**
@@ -78,21 +78,21 @@ class TemplateConfigPass implements ConfigPassInterface
      * trivial because templates can depend on the entity displayed and they
      * define an advanced override mechanism.
      *
-     * @param array $backendConfiguration
+     * @param array $backendConfig
      *
      * @return array
      */
-    private function processEntityTemplates(array $backendConfiguration)
+    private function processEntityTemplates(array $backendConfig)
     {
         // first, resolve the general template overriding mechanism
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
                 // 1st level priority: easy_admin.entities.<entityName>.templates.<templateName> config option
-                if (isset($entityConfiguration['templates'][$templateName])) {
-                    $template = $entityConfiguration['templates'][$templateName];
+                if (isset($entityConfig['templates'][$templateName])) {
+                    $template = $entityConfig['templates'][$templateName];
                 // 2nd level priority: easy_admin.design.templates.<templateName> config option
-                } elseif (isset($backendConfiguration['design']['templates'][$templateName])) {
-                    $template = $backendConfiguration['design']['templates'][$templateName];
+                } elseif (isset($backendConfig['design']['templates'][$templateName])) {
+                    $template = $backendConfig['design']['templates'][$templateName];
                 // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
                 } elseif (file_exists($this->templatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
                     $template = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
@@ -104,16 +104,16 @@ class TemplateConfigPass implements ConfigPassInterface
                     $template = $defaultTemplatePath;
                 }
 
-                $entityConfiguration['templates'][$templateName] = $template;
+                $entityConfig['templates'][$templateName] = $template;
             }
 
-            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
+            $backendConfig['entities'][$entityName] = $entityConfig;
         }
 
         // second, walk through all entity fields to determine their specific template
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('list', 'show') as $view) {
-                foreach ($entityConfiguration[$view]['fields'] as $fieldName => $fieldMetadata) {
+                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
                     // if the field defines its own template, resolve its location
                     if (isset($fieldMetadata['template'])) {
                         $templateName = $fieldMetadata['template'];
@@ -139,14 +139,14 @@ class TemplateConfigPass implements ConfigPassInterface
                         $templatePath = null;
                     }
 
-                    $entityConfiguration[$view]['fields'][$fieldName]['template'] = $templatePath;
+                    $entityConfig[$view]['fields'][$fieldName]['template'] = $templatePath;
                 }
             }
 
-            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
+            $backendConfig['entities'][$entityName] = $entityConfig;
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**
@@ -156,16 +156,16 @@ class TemplateConfigPass implements ConfigPassInterface
      * This is needed for example when an exception is triggered and no entitiy
      * configuration is available to know which template should be rendered.
      *
-     * @param array $backendConfiguration
+     * @param array $backendConfig
      *
      * @return array
      */
-    private function processDefaultTemplates(array $backendConfiguration)
+    private function processDefaultTemplates(array $backendConfig)
     {
         foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
             // 1st level priority: easy_admin.design.templates.<templateName> config option
-            if (isset($backendConfiguration['design']['templates'][$templateName])) {
-                $template = $backendConfiguration['design']['templates'][$templateName];
+            if (isset($backendConfig['design']['templates'][$templateName])) {
+                $template = $backendConfig['design']['templates'][$templateName];
             // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
             } elseif (file_exists($this->templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
                 $template = 'easy_admin/'.$templateName.'.html.twig';
@@ -174,10 +174,10 @@ class TemplateConfigPass implements ConfigPassInterface
                 $template = $defaultTemplatePath;
             }
 
-            $backendConfiguration['design']['templates'][$templateName] = $template;
+            $backendConfig['design']['templates'][$templateName] = $template;
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 
     /**
@@ -185,35 +185,35 @@ class TemplateConfigPass implements ConfigPassInterface
      * trivial because templates can depend on the entity displayed and they
      * define an advanced override mechanism.
      *
-     * @param array $backendConfiguration
+     * @param array $backendConfig
      *
      * @return array
      */
-    private function processFieldTemplates(array $backendConfiguration)
+    private function processFieldTemplates(array $backendConfig)
     {
-        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('list', 'show') as $view) {
-                foreach ($entityConfiguration[$view]['fields'] as $fieldName => $fieldMetadata) {
+                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
                     if (null !== $fieldMetadata['template']) {
                         continue;
                     }
 
                     // this prevents the template from displaying the 'id' primary key formatted as a number
                     if ('id' === $fieldName) {
-                        $template = $entityConfiguration['templates']['field_id'];
-                    } elseif (array_key_exists('field_'.$fieldMetadata['dataType'], $entityConfiguration['templates'])) {
-                        $template = $entityConfiguration['templates']['field_'.$fieldMetadata['dataType']];
+                        $template = $entityConfig['templates']['field_id'];
+                    } elseif (array_key_exists('field_'.$fieldMetadata['dataType'], $entityConfig['templates'])) {
+                        $template = $entityConfig['templates']['field_'.$fieldMetadata['dataType']];
                     } else {
-                        $template = $entityConfiguration['templates']['label_undefined'];
+                        $template = $entityConfig['templates']['label_undefined'];
                     }
 
-                    $entityConfiguration[$view]['fields'][$fieldName]['template'] = $template;
+                    $entityConfig[$view]['fields'][$fieldName]['template'] = $template;
                 }
             }
 
-            $backendConfiguration['entities'][$entityName] = $entityConfiguration;
+            $backendConfig['entities'][$entityName] = $entityConfig;
         }
 
-        return $backendConfiguration;
+        return $backendConfig;
     }
 }

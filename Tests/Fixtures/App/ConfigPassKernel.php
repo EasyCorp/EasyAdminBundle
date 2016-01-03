@@ -12,6 +12,9 @@
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+/**
+ * The kernel used in the unit tests related to the configuration passes.
+ */
 class ConfigPassKernel extends AppKernel
 {
     private $backendConfig;

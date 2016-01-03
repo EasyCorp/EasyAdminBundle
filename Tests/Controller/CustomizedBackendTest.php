@@ -272,6 +272,16 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertEquals('Modify Category (200) details', trim($crawler->filter('h1.title')->text()));
     }
 
+    public function testEditViewFormAttributes()
+    {
+        $crawler = $this->requestEditView();
+        $form = $crawler->filter('#main form')->eq(0);
+
+        $this->assertSame('edit', trim($form->attr('data-view')));
+        $this->assertSame('Category', trim($form->attr('data-entity')));
+        $this->assertSame('200', trim($form->attr('data-entity-id')));
+    }
+
     public function testEditViewFieldLabels()
     {
         $crawler = $this->requestEditView();
@@ -349,6 +359,16 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertEquals('Add a new Category', trim($crawler->filter('head title')->text()));
         $this->assertEquals('Add a new Category', trim($crawler->filter('h1.title')->text()));
+    }
+
+    public function testNewViewFormAttributes()
+    {
+        $crawler = $this->requestNewView();
+        $form = $crawler->filter('#main form')->eq(0);
+
+        $this->assertSame('new', trim($form->attr('data-view')));
+        $this->assertSame('Category', trim($form->attr('data-entity')));
+        $this->assertEmpty($form->attr('data-entity-id'));
     }
 
     public function testNewViewFieldLabels()

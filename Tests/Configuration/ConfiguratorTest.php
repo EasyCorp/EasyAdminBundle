@@ -15,9 +15,8 @@ use InvalidArgumentException;
 use Symfony\Component\Yaml\Yaml;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
 
-class ConfiguratorTest extends CommonPhpUnitTestCase
+class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 {
     private $extension;
     private $inspector;

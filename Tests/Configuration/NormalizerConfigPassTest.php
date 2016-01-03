@@ -11,10 +11,9 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass;
 
-class NormalizerConfigPassTest extends CommonPhpUnitTestCase
+class NormalizerConfigPassTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException \RuntimeException

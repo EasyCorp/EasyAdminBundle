@@ -13,9 +13,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compile
 
 use Symfony\Component\Yaml\Yaml;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
-class EasyAdminConfigurationPassExceptionsTest extends AbstractTestCase
+class EasyAdminConfigurationPassExceptionsTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider provideConfigurationFiles

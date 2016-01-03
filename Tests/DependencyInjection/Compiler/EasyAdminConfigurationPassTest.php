@@ -11,19 +11,10 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
-use InvalidArgumentException;
-use RuntimeException;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
-use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension;
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\CommonPhpUnitTestCase;
-use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminConfigurationPass;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
-class EasyAdminConfigurationPassTest extends AbstractTestCase
+class EasyAdminConfigurationPassTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider provideConfigurationFiles

@@ -26,19 +26,11 @@ class ConfigPassKernel extends AppKernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/config.yml');
+        parent::registerContainerConfiguration($loader);
 
         $backendConfig = $this->backendConfig; // needed for PHP 5.3
         $loader->load(function (ContainerBuilder $container) use ($backendConfig) {
             $container->loadFromExtension('easy_admin', $backendConfig);
         });
-
-        if ($this->isSymfony3()) {
-            $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('framework', array(
-                    'assets' => null,
-                ));
-            });
-        }
     }
 }

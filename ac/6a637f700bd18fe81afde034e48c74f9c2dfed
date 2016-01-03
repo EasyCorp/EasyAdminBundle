@@ -1,0 +1,49 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-02T11:27:24Z
+
+:+1: for data attributes, IMO it's the best solution as IDs are not stackable on the same tag
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-02T11:28:30Z
+
+I'd also suggest to use a regex instead of plain str_replace, because form themes with paths like `easy_admin/form/form_theme.html.twig` won't be normalized correctly...
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-02T11:30:04Z
+
+Right. Simply replacing `/` with proper dashes would be sufficient though. I don't see how a regex can help much.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-02T11:33:21Z
+
+@ogizanagi I don't remember if there're other ways of referencing templates, but think also about the prepending `@` like in `@AppBundle/Form/theme.html.twig` :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-02T11:51:38Z
+
+Is there a way to resolve form themes templates names during container compile to always have the same format ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-02T21:12:21Z
+
+Instead of solving this "feature", what do you think about removing it? I highly doubt anyone would ever use `theme-easyadminbundle:form:bootstrap_3_horizontal_layout` or `theme-vichuploaderbundle:form:fields` as part of a CSS selector.
+
+I agree with the other points you mentioned.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-02T21:20:05Z
+
+@javiereguiluz : I definitively agree. Let's remove this "feature" in this PR and take care of the rest in another.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-02T21:21:23Z
+
+Plus this feature didn't really make sense anyway, as the configured form themes are applied to the whole easyadmin backend. So the classes are always the same everywhere.

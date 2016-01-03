@@ -145,7 +145,7 @@ class NormalizerConfigPass implements ConfigPassInterface
     }
 
     /**
-     * Fields can be defined using two different formats:
+     * Fields can be defined using two different formats:.
      *
      * # Config format #1: simple configuration
      * easy_admin:

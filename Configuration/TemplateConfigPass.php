@@ -156,7 +156,7 @@ class TemplateConfigPass implements ConfigPassInterface
      * This is needed for example when an exception is triggered and no entitiy
      * configuration is available to know which template should be rendered.
      *
-     * @param  array  $backendConfiguration
+     * @param array $backendConfiguration
      *
      * @return array
      */

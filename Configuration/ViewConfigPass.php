@@ -11,8 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-
 /**
  * Initializes the configuration for all the views of each entity, which is
  * needed when some entity relies on the default configuration for some view.

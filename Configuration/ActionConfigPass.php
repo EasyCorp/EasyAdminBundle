@@ -107,7 +107,7 @@ class ActionConfigPass implements ConfigPassInterface
         $actionsPerView = array(
             'edit' => array('delete' => $actions['delete'], 'list' => $actions['list']),
             'list' => array('show' => $actions['show'], 'edit' => $actions['edit'], 'search' => $actions['search'], 'new' => $actions['new']),
-            'new'  => array('list' => $actions['list']),
+            'new' => array('list' => $actions['list']),
             'show' => array('delete' => $actions['delete'], 'list' => $actions['list'], 'edit' => $actions['edit']),
         );
 
@@ -119,7 +119,7 @@ class ActionConfigPass implements ConfigPassInterface
 
     /**
      * Transforms the different action configuration formats into a normalized
-     * and expanded format. These are the two simple formats allowed:
+     * and expanded format. These are the two simple formats allowed:.
      *
      * # Config format #1: no custom option
      * easy_admin:

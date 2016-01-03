@@ -14,7 +14,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 /**
  * Completes the entities configuration with the information that can only be
  * determined during runtime, not during the container compilation phase (most
- * of the entities configuration is resolved in EasyAdminExtension class)
+ * of the entities configuration is resolved in EasyAdminExtension class).
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */

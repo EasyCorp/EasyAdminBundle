@@ -1,0 +1,19 @@
+# TEST
+# the 'theme' design option must always be 'default' (for now this option is a
+# placeholder that will be used in future versions)
+
+# EXCEPTION
+expected_exception:
+    class: \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+    message_string: 'Invalid configuration for path "easy_admin.design.theme": The theme name can only be "default".'
+
+# CONFIGURATION
+easy_admin:
+    design:
+        theme: 'my_custom_theme'
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            new:
+                fields:
+                    - { label: 'Field without property option' }

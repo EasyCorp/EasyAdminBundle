@@ -129,9 +129,10 @@ class EasyAdminFormType extends AbstractType
     private function getAttributesNormalizer()
     {
         return function (Options $options, $value) {
-            return array_replace(array(
-                'id' => $options['view'].'-form',
-            ), $value);
+            return array_replace(
+                array('id' => $options['view'].'-form'),
+                $value
+            );
         };
     }
 

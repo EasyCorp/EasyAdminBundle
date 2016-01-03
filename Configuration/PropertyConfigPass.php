@@ -221,12 +221,12 @@ class PropertyConfigPass implements ConfigPassInterface
      * Returns the date/time/datetime/number format for the given field
      * according to its type and the default formats defined for the backend.
      *
-     * @param array  $backendConfig
      * @param string $fieldType
+     * @param array  $backendConfig
      *
      * @return string The format that should be applied to the field value
      */
-    private function getFieldFormat(array $backendConfig, $fieldType)
+    private function getFieldFormat($fieldType, array $backendConfig)
     {
         if (in_array($fieldType, array('date', 'time', 'datetime', 'datetimetz'))) {
             // make 'datetimetz' use the same format as 'datetime'

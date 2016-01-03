@@ -38,11 +38,22 @@ easy_admin:
                         sortable: false
                         template: null
                         type_options: {  }
-                        associationType: 8
                         fieldName: products
+                        joinTable: {  }
+                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                        mappedBy: categories
+                        inversedBy: null
+                        cascade: {  }
+                        orphanRemoval: false
                         fetch: 2
                         isOwningSide: false
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        isCascadeRemove: false
+                        isCascadePersist: false
+                        isCascadeRefresh: false
+                        isCascadeMerge: false
+                        isCascadeDetach: false
+                        associationType: 8
                         property: products
                     parent:
                         css_class: ''
@@ -56,11 +67,35 @@ easy_admin:
                         sortable: true
                         template: null
                         type_options: {  }
-                        associationType: 1
                         fieldName: parent
+                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        joinColumns:
+                            -
+                                name: parent_id
+                                unique: true
+                                nullable: true
+                                onDelete: null
+                                columnDefinition: null
+                                referencedColumnName: id
+                        mappedBy: null
+                        inversedBy: null
+                        cascade: {  }
+                        orphanRemoval: false
                         fetch: 2
                         isOwningSide: true
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        isCascadeRemove: false
+                        isCascadePersist: false
+                        isCascadeRefresh: false
+                        isCascadeMerge: false
+                        isCascadeDetach: false
+                        sourceToTargetKeyColumns:
+                            parent_id: id
+                        joinColumnFieldNames:
+                            parent_id: parent_id
+                        targetToSourceKeyColumns:
+                            id: parent_id
+                        associationType: 1
                         property: parent
                 form_options: {  }
                 actions:
@@ -131,11 +166,22 @@ easy_admin:
                         sortable: false
                         template: '@EasyAdmin/default/field_association.html.twig'
                         type_options: {  }
-                        associationType: 8
                         fieldName: products
+                        joinTable: {  }
+                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                        mappedBy: categories
+                        inversedBy: null
+                        cascade: {  }
+                        orphanRemoval: false
                         fetch: 2
                         isOwningSide: false
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        isCascadeRemove: false
+                        isCascadePersist: false
+                        isCascadeRefresh: false
+                        isCascadeMerge: false
+                        isCascadeDetach: false
+                        associationType: 8
                         property: products
                     parent:
                         css_class: ''
@@ -149,11 +195,35 @@ easy_admin:
                         sortable: true
                         template: '@EasyAdmin/default/field_association.html.twig'
                         type_options: {  }
-                        associationType: 1
                         fieldName: parent
+                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        joinColumns:
+                            -
+                                name: parent_id
+                                unique: true
+                                nullable: true
+                                onDelete: null
+                                columnDefinition: null
+                                referencedColumnName: id
+                        mappedBy: null
+                        inversedBy: null
+                        cascade: {  }
+                        orphanRemoval: false
                         fetch: 2
                         isOwningSide: true
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        isCascadeRemove: false
+                        isCascadePersist: false
+                        isCascadeRefresh: false
+                        isCascadeMerge: false
+                        isCascadeDetach: false
+                        sourceToTargetKeyColumns:
+                            parent_id: id
+                        joinColumnFieldNames:
+                            parent_id: parent_id
+                        targetToSourceKeyColumns:
+                            id: parent_id
+                        associationType: 1
                         property: parent
                 actions:
                     show:
@@ -220,11 +290,22 @@ easy_admin:
                         sortable: false
                         template: null
                         type_options: {  }
-                        associationType: 8
                         fieldName: products
+                        joinTable: {  }
+                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                        mappedBy: categories
+                        inversedBy: null
+                        cascade: {  }
+                        orphanRemoval: false
                         fetch: 2
                         isOwningSide: false
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        isCascadeRemove: false
+                        isCascadePersist: false
+                        isCascadeRefresh: false
+                        isCascadeMerge: false
+                        isCascadeDetach: false
+                        associationType: 8
                         property: products
                     parent:
                         css_class: ''
@@ -238,11 +319,35 @@ easy_admin:
                         sortable: true
                         template: null
                         type_options: {  }
-                        associationType: 1
                         fieldName: parent
+                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        joinColumns:
+                            -
+                                name: parent_id
+                                unique: true
+                                nullable: true
+                                onDelete: null
+                                columnDefinition: null
+                                referencedColumnName: id
+                        mappedBy: null
+                        inversedBy: null
+                        cascade: {  }
+                        orphanRemoval: false
                         fetch: 2
                         isOwningSide: true
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        isCascadeRemove: false
+                        isCascadePersist: false
+                        isCascadeRefresh: false
+                        isCascadeMerge: false
+                        isCascadeDetach: false
+                        sourceToTargetKeyColumns:
+                            parent_id: id
+                        joinColumnFieldNames:
+                            parent_id: parent_id
+                        targetToSourceKeyColumns:
+                            id: parent_id
+                        associationType: 1
                         property: parent
                 form_options: {  }
                 actions:
@@ -350,11 +455,22 @@ easy_admin:
                         sortable: false
                         template: '@EasyAdmin/default/field_association.html.twig'
                         type_options: {  }
-                        associationType: 8
                         fieldName: products
+                        joinTable: {  }
+                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                        mappedBy: categories
+                        inversedBy: null
+                        cascade: {  }
+                        orphanRemoval: false
                         fetch: 2
                         isOwningSide: false
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        isCascadeRemove: false
+                        isCascadePersist: false
+                        isCascadeRefresh: false
+                        isCascadeMerge: false
+                        isCascadeDetach: false
+                        associationType: 8
                         property: products
                     parent:
                         css_class: ''
@@ -368,11 +484,35 @@ easy_admin:
                         sortable: true
                         template: '@EasyAdmin/default/field_association.html.twig'
                         type_options: {  }
-                        associationType: 1
                         fieldName: parent
+                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        joinColumns:
+                            -
+                                name: parent_id
+                                unique: true
+                                nullable: true
+                                onDelete: null
+                                columnDefinition: null
+                                referencedColumnName: id
+                        mappedBy: null
+                        inversedBy: null
+                        cascade: {  }
+                        orphanRemoval: false
                         fetch: 2
                         isOwningSide: true
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                        isCascadeRemove: false
+                        isCascadePersist: false
+                        isCascadeRefresh: false
+                        isCascadeMerge: false
+                        isCascadeDetach: false
+                        sourceToTargetKeyColumns:
+                            parent_id: id
+                        joinColumnFieldNames:
+                            parent_id: parent_id
+                        targetToSourceKeyColumns:
+                            id: parent_id
+                        associationType: 1
                         property: parent
                 actions:
                     delete:
@@ -393,11 +533,22 @@ easy_admin:
                         label: action.edit
                         css_class: action-edit
                         icon: edit
+            disabled_actions: {  }
             primary_key_field_name: id
             properties:
                 id:
-                    fieldName: id
+                    css_class: ''
+                    format: null
+                    help: null
+                    label: null
                     type: integer
+                    fieldType: integer
+                    dataType: integer
+                    virtual: false
+                    sortable: true
+                    template: null
+                    type_options: {  }
+                    fieldName: id
                     scale: 0
                     length: null
                     unique: false
@@ -405,30 +556,98 @@ easy_admin:
                     precision: 0
                     columnName: id
                     id: true
+                    property: id
                 name:
-                    fieldName: name
+                    css_class: ''
+                    format: null
+                    help: null
+                    label: null
                     type: string
+                    fieldType: text
+                    dataType: string
+                    virtual: false
+                    sortable: true
+                    template: null
+                    type_options: {  }
+                    fieldName: name
                     scale: 0
                     length: null
                     unique: false
                     nullable: false
                     precision: 0
                     columnName: name
+                    property: name
                 products:
+                    css_class: ''
+                    format: null
+                    help: null
+                    label: null
                     type: association
-                    associationType: 8
+                    fieldType: entity
+                    dataType: association
+                    virtual: false
+                    sortable: false
+                    template: null
+                    type_options: {  }
                     fieldName: products
+                    joinTable: {  }
+                    targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                    mappedBy: categories
+                    inversedBy: null
+                    cascade: {  }
+                    orphanRemoval: false
                     fetch: 2
                     isOwningSide: false
-                    targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+                    sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                    isCascadeRemove: false
+                    isCascadePersist: false
+                    isCascadeRefresh: false
+                    isCascadeMerge: false
+                    isCascadeDetach: false
+                    associationType: 8
+                    property: products
                 parent:
+                    css_class: ''
+                    format: null
+                    help: null
+                    label: null
                     type: association
-                    associationType: 1
+                    fieldType: entity
+                    dataType: association
+                    virtual: false
+                    sortable: true
+                    template: null
+                    type_options: {  }
                     fieldName: parent
+                    targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                    joinColumns:
+                        -
+                            name: parent_id
+                            unique: true
+                            nullable: true
+                            onDelete: null
+                            columnDefinition: null
+                            referencedColumnName: id
+                    mappedBy: null
+                    inversedBy: null
+                    cascade: {  }
+                    orphanRemoval: false
                     fetch: 2
                     isOwningSide: true
-                    targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-            disabled_actions: {  }
+                    sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+                    isCascadeRemove: false
+                    isCascadePersist: false
+                    isCascadeRefresh: false
+                    isCascadeMerge: false
+                    isCascadeDetach: false
+                    sourceToTargetKeyColumns:
+                        parent_id: id
+                    joinColumnFieldNames:
+                        parent_id: parent_id
+                    targetToSourceKeyColumns:
+                        id: parent_id
+                    associationType: 1
+                    property: parent
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
                 edit: '@EasyAdmin/default/edit.html.twig'

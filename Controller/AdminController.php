@@ -609,7 +609,7 @@ class AdminController extends Controller
 
         $formType = $this->useLegacyFormComponent() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
 
-        return $this->get('form.factory')->createNamedBuilder('form', $formType, $entity, $formOptions);
+        return $this->get('form.factory')->createNamedBuilder(strtolower($this->entity['name']), $formType, $entity, $formOptions);
     }
 
     /**

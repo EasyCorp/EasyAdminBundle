@@ -70,20 +70,6 @@ class ViewConfigPass implements ConfigPassInterface
                         $fieldConfiguration['label'] = 'ID';
                     }
 
-                    // special case for the 'list' view: 'boolean' properties are displayed
-                    // as toggleable flip switches when certain conditions are met
-                    if ('list' === $view && 'boolean' === $fieldConfiguration['dataType']) {
-                        // conditions:
-                        //   1) the end-user hasn't configured the field type explicitly
-                        //   2) the 'edit' action is enabled for the 'list' view of this entity
-                        // $originalViewConfiguration = $entityConfiguration[$view];
-                        // $originalFieldConfiguration = isset($originalViewConfiguration['fields'][$fieldName]) ? $originalViewConfiguration['fields'][$fieldName] : null;
-                        $isEditActionEnabled = array_key_exists('edit', $entityConfiguration['list']['actions']);
-                        if (!isset($fieldConfiguration['type']) && $isEditActionEnabled) {
-                            $fieldConfiguration['dataType'] = 'toggle';
-                        }
-                    }
-
                     $backendConfiguration['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfiguration;
                 }
             }

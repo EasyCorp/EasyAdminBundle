@@ -167,8 +167,8 @@ class NormalizerConfigPass implements ConfigPassInterface
     private function normalizePropertyConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            $fields = array();
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
+                $fields = array();
                 foreach ($entityConfig[$view]['fields'] as $field) {
                     if (!is_string($field) && !is_array($field)) {
                         throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" view of the "%s" entity can only be strings or arrays.', $view, $entityConfig['class']));

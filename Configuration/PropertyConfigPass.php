@@ -52,8 +52,10 @@ class PropertyConfigPass implements ConfigPassInterface
         'nullable' => false,
         'precision' => 0,
         'scale' => 0,
+        'sortable' => false,
         'type' => 'text',
         'unique' => false,
+        'virtual' => true,
     );
 
     private $doctrineTypeToFormTypeMap = array(
@@ -80,7 +82,37 @@ class PropertyConfigPass implements ConfigPassInterface
 
     public function process(array $backendConfiguration)
     {
+        $backendConfiguration = $this->processMetadataConfiguration($backendConfiguration);
         $backendConfiguration = $this->processFieldConfiguration($backendConfiguration);
+
+        return $backendConfiguration;
+    }
+
+    /**
+     * $entityConfig['properties'] stores the raw metadata provided by Doctrine.
+     * This method adds some other options needed for EasyAdmin backends. This is
+     * required because $entityConfig['properties'] will be used as the fields of
+     * the views that don't define their fields.
+     */
+    private function processMetadataConfiguration(array $backendConfiguration)
+    {
+        foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
+            $properties = array();
+            foreach ($entityConfiguration['properties'] as $propertyName => $propertyMetadata) {
+                $properties[$propertyName] = array_replace(
+                    $this->defaultEntityFieldConfiguration,
+                    $propertyMetadata,
+                    array(
+                        'property' => $propertyName,
+                        'dataType' => $propertyMetadata['type'],
+                        'fieldType' => $this->getFormTypeFromDoctrineType($propertyMetadata['type']),
+                        'format' => $this->getFieldFormat($propertyMetadata['type'], $backendConfiguration),
+                    )
+                );
+            }
+
+            $backendConfiguration['entities'][$entityName]['properties'] = $properties;
+        }
 
         return $backendConfiguration;
     }
@@ -89,7 +121,6 @@ class PropertyConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfiguration['entities'] as $entityName => $entityConfiguration) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
-                //$configuration = array();
                 $fieldsConfiguration = $entityConfiguration[$view]['fields'];
                 $originalViewConfiguration = $backendConfiguration['entities'][$entityName][$view];
 
@@ -97,13 +128,16 @@ class PropertyConfigPass implements ConfigPassInterface
                     $originalFieldConfiguration = isset($originalViewConfiguration['fields'][$fieldName]) ? $originalViewConfiguration['fields'][$fieldName] : null;
 
                     if (array_key_exists($fieldName, $entityConfiguration['properties'])) {
-                        $fieldMetadata = $entityConfiguration['properties'][$fieldName];
+                        $fieldMetadata = array_merge(
+                            $entityConfiguration['properties'][$fieldName],
+                            array('virtual' => false)
+                        );
                     } else {
                         // this is a virtual field which doesn't exist as a property of
                         // the related entity. That's why Doctrine can't provide metadata for it
                         $fieldMetadata = array_merge(
                             $this->defaultVirtualFieldMetadata,
-                            array('columnName' => $fieldName, 'fieldName' => $fieldName, 'virtual' => true)
+                            array('columnName' => $fieldName, 'fieldName' => $fieldName)
                         );
                     }
 
@@ -112,20 +146,6 @@ class PropertyConfigPass implements ConfigPassInterface
                         $fieldMetadata,
                         $fieldConfiguration
                     );
-
-                    // virtual fields and associations different from *-to-one cannot be sorted in listings
-                    $isToManyAssociation = 'association' === $normalizedConfiguration['type']
-                        && ($normalizedConfiguration['associationType'] & ClassMetadata::TO_MANY);
-                    if (true === $normalizedConfiguration['virtual'] || $isToManyAssociation) {
-                        $normalizedConfiguration['sortable'] = false;
-                    }
-
-                    // special case: if the field is called 'id' and doesn't define a custom
-                    // label, use 'ID' as label. This improves the readability of the label
-                    // of this important field, which is usually related to the primary key
-                    if ('id' === $normalizedConfiguration['fieldName'] && !isset($normalizedConfiguration['label'])) {
-                        $normalizedConfiguration['label'] = 'ID';
-                    }
 
                     // 'list', 'search' and 'show' views: use the value of the 'type' option
                     // as the 'dataType' option because the previous code has already
@@ -143,28 +163,12 @@ class PropertyConfigPass implements ConfigPassInterface
                             : $this->getFormTypeFromDoctrineType($normalizedConfiguration['type']);
                     }
 
-                    // special case for the 'list' view: 'boolean' properties are displayed
-                    // as toggleable flip switches when certain conditions are met
-                    if ('list' === $view && 'boolean' === $normalizedConfiguration['dataType']) {
-                        // conditions:
-                        //   1) the end-user hasn't configured the field type explicitly
-                        //   2) the 'edit' action is enabled for the 'list' view of this entity
-                        $isEditActionEnabled = array_key_exists('edit', $entityConfiguration['list']['actions']);
-                        if (!isset($originalFieldConfiguration['type']) && $isEditActionEnabled) {
-                            $normalizedConfiguration['dataType'] = 'toggle';
-                        }
-                    }
-
                     if (null === $normalizedConfiguration['format']) {
                         $normalizedConfiguration['format'] = $this->getFieldFormat($normalizedConfiguration['type'], $backendConfiguration);
                     }
 
-                    //$configuration[$fieldName] = $normalizedConfiguration;
                     $backendConfiguration['entities'][$entityName][$view]['fields'][$fieldName] = $normalizedConfiguration;
-//echo "<pre>";var_dump(array_keys($configuration));
                 }
-//echo "<pre>";var_dump($configuration);exit;
-  //              $backendConfiguration['entities'][$entityName][$view]['fields'] = $configuration;
             }
         }
 

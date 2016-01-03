@@ -20,11 +20,16 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 class ActionConfigPass implements ConfigPassInterface
 {
     private $defaultActionConfiguration = array(
-        'name'      => null,     // either the name of a controller method or an application route (it depends on the 'type' option)
-        'type'      => 'method', // 'method' if the action is a controller method; 'route' if it's an application route
-        'label'     => null,     // action label (displayed as link or button) (if 'null', autogenerate it)
-        'css_class' => '',       // the CSS class applied to the button/link displayed by the action
-        'icon'      => null,     // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
+        // either the name of a controller method or an application route (it depends on the 'type' option)
+        'name' => null,
+        // 'method' if the action is a controller method; 'route' if it's an application route
+        'type' => 'method',
+        // action label (displayed as link or button) (if 'null', autogenerate it)
+        'label' => null,
+        // the CSS class applied to the button/link displayed by the action
+        'css_class' => '',
+        // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
+        'icon' => null,
     );
 
     public function process(array $backendConfiguration)

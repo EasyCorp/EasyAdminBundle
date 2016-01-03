@@ -45,8 +45,6 @@ class EasyAdminConfigurationPassTest extends AbstractTestCase
 
     private function assertConfigurationParameterMatchesExpectedValue($container, $expectedConfigFile)
     {
-        file_put_contents($expectedConfigFile, Yaml::dump(array('easy_admin' => $container->getParameter('easyadmin.config')), 100));
-
         $expectedConfiguration = Yaml::parse(file_get_contents($expectedConfigFile));
         $actualConfiguration = $container->getParameter('easyadmin.config');
 

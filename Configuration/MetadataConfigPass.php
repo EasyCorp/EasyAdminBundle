@@ -38,8 +38,7 @@ class MetadataConfigPass implements ConfigPassInterface
 
             $entityConfiguration['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
 
-            $entityProperties = $this->processEntityPropertiesMetadata($entityMetadata);
-            $entityConfiguration['properties'] = $entityProperties;
+            $entityConfiguration['properties'] = $this->processEntityPropertiesMetadata($entityMetadata);
 
             $backendConfiguration['entities'][$entityName] = $entityConfiguration;
         }
@@ -47,7 +46,7 @@ class MetadataConfigPass implements ConfigPassInterface
         return $backendConfiguration;
     }
 
-        /**
+    /**
      * Takes the entity metadata introspected via Doctrine and completes its
      * contents to simplify data processing for the rest of the application.
      *
@@ -70,14 +69,15 @@ class MetadataConfigPass implements ConfigPassInterface
 
         // introspect fields for entity associations
         foreach ($entityMetadata->associationMappings as $fieldName => $associationMetadata) {
-            $entityPropertiesMetadata[$fieldName] = array(
-                'type'            => 'association',
+            $entityPropertiesMetadata[$fieldName] = array_merge($associationMetadata, array(
+                'type' => 'association',
                 'associationType' => $associationMetadata['type'],
-                'fieldName'       => $fieldName,
-                'fetch'           => $associationMetadata['fetch'],
-                'isOwningSide'    => $associationMetadata['isOwningSide'],
-                'targetEntity'    => $associationMetadata['targetEntity'],
-            );
+            ));
+
+            // associations different from *-to-one cannot be sorted
+            if ($associationMetadata['type'] & ClassMetadata::TO_MANY) {
+                $entityPropertiesMetadata[$fieldName]['sortable'] = false;
+            }
         }
 
         return $entityPropertiesMetadata;

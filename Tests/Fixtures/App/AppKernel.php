@@ -31,7 +31,6 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/config.yml');
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
 
         if ($this->isSymfony3()) {

@@ -59,7 +59,7 @@ class AppKernel extends Kernel
         return __DIR__.'/../../../build/kernel_logs/'.$this->getEnvironment();
     }
 
-    private function isSymfony3()
+    protected function isSymfony3()
     {
         return 3 === Kernel::MAJOR_VERSION;
     }

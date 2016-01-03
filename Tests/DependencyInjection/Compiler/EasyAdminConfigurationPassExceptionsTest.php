@@ -32,7 +32,7 @@ class EasyAdminConfigurationPassExceptionsTest extends AbstractTestCase
             }
         }
 
-        $app = new \ConfigPassKernel($config);
+        $app = new \ConfigPassKernel($config['easy_admin']);
         $app->boot();
     }
 

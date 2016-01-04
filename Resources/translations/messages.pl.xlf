@@ -35,6 +35,14 @@
                 <source>action.list</source>
                 <target>Wróć do listy</target>
             </trans-unit>
+            <trans-unit id="form.label.empty_value">
+                <source>form.label.empty_value</source>
+                <target>Pusta wartość</target>
+            </trans-unit>
+            <trans-unit id="modal.action.delete">
+                <source>modal.action.delete</source>
+                <target>Usuń</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -39,6 +39,10 @@
                 <source>form.label.empty_value</source>
                 <target>None</target>
             </trans-unit>
+            <trans-unit id="modal.action.delete">
+                <source>modal.action.delete</source>
+                <target>Delete</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

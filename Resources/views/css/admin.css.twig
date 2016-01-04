@@ -1199,15 +1199,17 @@ body.error .error-message p.lead {
         background: {{ brand_color }};
         color: {{ colors.white }};
     }
-    #header #header-footer {
-        background: {{ colors.header_background }};
+    #header #header-security {
 {% if 'dark' == color_scheme %}
         border-top: 1px solid {{ colors.gray_dark }};
 {% endif %}
-        font-size: 14px;
         padding-bottom: 1em;
         padding-top: 1em;
         padding-left: 10px;
+    }
+    #header #header-footer {
+        background: {{ colors.header_background }};
+        font-size: 14px;
         width: 100%;
         -moz-transition: box-shadow 0.3s ease-out;
         -webkit-transition: box-shadow 0.3s ease-out;

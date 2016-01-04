@@ -27,20 +27,20 @@ class TypeOptionsTest extends AbstractTestCase
     {
         $crawler = $this->requestNewView();
 
-        $this->assertEquals('Lorem Ipsum', $crawler->filter('#main form #form_name')->attr('value'));
+        $this->assertEquals('Lorem Ipsum', $crawler->filter('#main form #category_name')->attr('value'));
 
-        $this->assertCount(201, $crawler->filter('#main form #form_parent input[type=radio]'));
+        $this->assertCount(201, $crawler->filter('#main form #category_parent input[type=radio]'));
     }
 
     public function testEditViewTypeOptions()
     {
         $crawler = $this->requestEditView();
 
-        $this->assertContains('col-sm-6', $crawler->filter('#main form label[for=form_name]')->attr('class'));
-        $this->assertContains('col-sm-6', $crawler->filter('#main form input#form_name')->attr('class'));
+        $this->assertContains('col-sm-6', $crawler->filter('#main form label[for=category_name]')->attr('class'));
+        $this->assertContains('col-sm-6', $crawler->filter('#main form input#category_name')->attr('class'));
 
-        $this->assertContains('col-sm-4', $crawler->filter('#main form label[for=form_parent]')->attr('class'));
-        $this->assertContains('col-sm-10', $crawler->filter('#main form select#form_parent')->attr('class'));
+        $this->assertContains('col-sm-4', $crawler->filter('#main form label[for=category_parent]')->attr('class'));
+        $this->assertContains('col-sm-10', $crawler->filter('#main form select#category_parent')->attr('class'));
     }
 
     /**

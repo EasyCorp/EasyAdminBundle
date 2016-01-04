@@ -1,6 +1,18 @@
 {% use "form_div_layout.html.twig" %}
 {% trans_default_domain "EasyAdminBundle" %}
 
+{% block form_start -%}
+    {% if 'easyadmin' == block_prefixes|slice(-2)|first %}
+        {% set attr = attr|merge({
+            'data-view': easyadmin.view,
+            'data-entity': easyadmin.entity.name,
+            'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name),
+        }) %}
+    {% endif %}
+
+    {{- parent() -}}
+{%- endblock form_start %}
+
 {# Widgets #}
 
 {% block form_widget %}

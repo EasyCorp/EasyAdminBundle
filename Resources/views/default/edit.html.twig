@@ -47,7 +47,8 @@
                 e.preventDefault();
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })
-                    .one('click', '#modal-delete-button', function (e) {
+                    .off('click', '#modal-delete-button')
+                    .on('click', '#modal-delete-button', function (e) {
                         $('#delete-form').trigger('submit');
                     });
             });

@@ -41,7 +41,7 @@
             </trans-unit>
             <trans-unit id="modal.action.delete">
                 <source>modal.action.delete</source>
-                <target>Usuń1</target>
+                <target>Usuń</target>
             </trans-unit>
         </body>
     </file>

@@ -75,12 +75,17 @@ Sending Pull Requests
  1. Commit and push your changes to your own fork:
 
     ```bash
-    $ git add --all   # if you have added new files
-    $ git commit -a   # commit all changes
-    $ git push        # alternative: git push origin fix_NNN
+    # optional: needed only if you have added new files
+    $ git add --all
+
+    $ git commit path/to/modified/files
+    # alternative: "git commit -a" to commit all the modified files
+
+    # if this doesn't work, try: "git push origin <branch_name>"
+    $ git push
     ```
 
- 2. Go to GitHub website and [create a new pull request][create-pr] in the
+ 2. Go to the GitHub website and [create a new pull request][create-pr] in the
     EasyAdmin repository.
  3. Provide a short description about the changes made by the pull request.
     If you are fixing a bug, add the text `Fixed #NNN` and provide the number of

@@ -34,7 +34,7 @@ EasyAdmin is a project originally published by [Javier Eguiluz](https://github.c
   * [Everton Júnior (ejkun)](https://github.com/ejkun)
   * [Stoyan Kyosev (skyosev)](https://github.com/skyosev)
   * [Alberto Vioque (mashware)](https://github.com/mashware)
-  * [AQNOUCH Mohammed (maqnouch)](https://github.com/maqnouch)
+  * [AQNOUCH Mohammed (aqnouch)](https://github.com/aqnouch)
   * [Patrick Kempff (patrickkempff)](https://github.com/patrickkempff)
   * [Gabi Udrescu (gabiudrescu)](https://github.com/gabiudrescu)
   * [thomasbeaujean](https://github.com/thomasbeaujean)
@@ -44,5 +44,13 @@ EasyAdmin is a project originally published by [Javier Eguiluz](https://github.c
   * [Marcin Chwedziak (tiraeth)](https://github.com/tiraeth)
   * [Arthur Guigand (artggd)](https://github.com/artggd)
   * [Yonel Ceruto González (yceruto)](https://github.com/yceruto)
+  * [Florent Viel (luxifer)](https://github.com/luxifer)
+  * [Sebastián (sebastianlp)](https://github.com/sebastianlp)
+  * [Ángel Guzmán Maeso (shakaran)](https://github.com/shakaran)
+  * [Adam Motvička (motvicka)](https://github.com/motvicka)
+  * [Peter van der Leek (pvdleek)](https://github.com/pvdleek)
+  * [ReynierPM (reypm)](https://github.com/reypm)
+  * [Luca Ferri (lucaferri)](https://github.com/lucaferri)
+  * [mkalisz77](https://github.com/mkalisz77)
 
 If you have contributed somehow to this project and I've forgotten to mention you, please ping me.

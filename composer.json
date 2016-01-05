@@ -17,9 +17,9 @@
     ],
     "require": {
         "php"                           : ">=5.3.0",
-        "doctrine/common"               : "^2.4.0",
+        "doctrine/common"               : "~2.5.0",
         "doctrine/doctrine-bundle"      : "~1.2",
-        "doctrine/orm"                  : "~2.3",
+        "doctrine/orm"                  : "~2.4.0",
         "pagerfanta/pagerfanta"         : "~1.0,>=1.0.1",
         "sensio/distribution-bundle"    : "~2.3|~3.0|~4.0|~5.0",
         "sensio/framework-extra-bundle" : "~3.0,>=3.0.2",

@@ -58,6 +58,40 @@
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> di <strong>%results%</strong>]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Si</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>No</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Vuoto</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Null</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Lasciare vuoto</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>Oggetto PHP</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Inaccessibile</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Il metodo getter non esiste per questo campo o la proprietà non è pubblica</target>
+            </trans-unit>
+
             <!-- misc. elements -->
             <trans-unit id="header.close">
                 <source>header.close</source>
@@ -74,6 +108,22 @@
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
                 <target>Questa azione è irreversibile.</target>
+            </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Aggiungi un nuovo elemento</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Aggiungi un altro elemento</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Rimuovi l'elemento</target>
+            </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>Errore|Errori</target>
             </trans-unit>
         </body>
     </file>

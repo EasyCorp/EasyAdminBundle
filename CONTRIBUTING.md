@@ -53,12 +53,16 @@ Sending Pull Requests
  1. Fork [the EasyAdmin repository][easyadmin-repository] on GitHub and clone it
     in your computer:
 
+    ```bash
     $ git clone git://github.com/<YOUR GITHUB USERNAME>/EasyAdminBundle.git
+    ```
 
  2. Create a new branch for the new code (if you are fixing a bug, you can call
     this branch `fix_NNN`, where `NNN` is the number of the related issue):
 
+    ```bash
     $ git checkout -b fix_NNN
+    ```
 
  3. Make your code changes (use the same code syntax as Symfony described in
     [PSR-2][psr2-standard]) and submit the changes. Make sure that your code is
@@ -70,9 +74,11 @@ Sending Pull Requests
 
  1. Commit and push your changes to your own fork:
 
+    ```bash
     $ git add --all   # if you have added new files
     $ git commit -a   # commit all changes
     $ git push        # alternative: git push origin fix_NNN
+    ```
 
  2. Go to GitHub website and [create a new pull request][create-pr] in the
     EasyAdmin repository.
@@ -84,7 +90,7 @@ Sending Pull Requests
 In case some changes are merged in the repository since you submitted your pull
 request, we may ask you to rebase it to make it mergeable again:
 
-``` bash
+```bash
 $ git remote add upstream git@github.com:javiereguiluz/EasyAdminBundle.git
 $ git pull --rebase upstream master
 $ git push -f origin the_name_of_your_branch

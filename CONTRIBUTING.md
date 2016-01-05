@@ -27,8 +27,8 @@ the bundle. This means that we routinely reject any feature that complicates the
 code too much or which doesn't fit in the bundle's philosophy.
 
 That's why **we strongly recommend you** to propose new features by
-[opening a new issue][create-issue] in the repository instead of submitting a
-pull request with the code of the proposed feature.
+[opening a new issue][create-issue] in the repository to discuss about them
+instead of submitting a pull request with the code of the proposed feature.
 
 Reporting Bugs
 --------------
@@ -51,19 +51,31 @@ Sending Pull Requests
 ### Making your changes
 
  1. Fork [the EasyAdmin repository][easyadmin-repository] on GitHub and clone it
-    in your computer.
+    in your computer:
+
+    $ git clone git://github.com/<YOUR GITHUB USERNAME>/EasyAdminBundle.git
+
  2. Create a new branch for the new code (if you are fixing a bug, you can call
-    this branch `fix_NNN`, where `NNN` is the number of the related issue).
+    this branch `fix_NNN`, where `NNN` is the number of the related issue):
+
+    $ git checkout -b fix_NNN
+
  3. Make your code changes (use the same code syntax as Symfony described in
-    [PSR-2][psr2-standard]).
- 4. Make sure that your code is **compatible with PHP 5.3 and Symfony 2.3**.
-    Sometimes it's tricky to develop code compatible with Symfony 2.3 and 3.x.
-    If you get stuck, just ask us and we'll help you.
+    [PSR-2][psr2-standard]) and submit the changes. Make sure that your code is
+    **compatible with PHP 5.3 and Symfony 2.3**. Sometimes it's tricky to develop
+    code compatible with Symfony 2.3 and 3.x. If you get stuck, just ask us and
+    we'll help you.
 
 ### Submitting your changes
 
- 1. Commit and push your changes to your own fork (`git commit -a` and `git push`).
- 2. [Create a new pull request][create-pr] in the EasyAdmin GitHub repository.
+ 1. Commit and push your changes to your own fork:
+
+    $ git add --all   # if you have added new files
+    $ git commit -a   # commit all changes
+    $ git push        # alternative: git push origin fix_NNN
+
+ 2. Go to GitHub website and [create a new pull request][create-pr] in the
+    EasyAdmin repository.
  3. Provide a short description about the changes made by the pull request.
     If you are fixing a bug, add the text `Fixed #NNN` and provide the number of
     the related issue (this allows us to track which bugs have already been fixed).

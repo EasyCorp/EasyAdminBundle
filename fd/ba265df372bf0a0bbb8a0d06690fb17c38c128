@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-05T07:59:18Z
+
+@mkalisz77 so far you are doing it very well!  You have added the two missing translations in `Resources/translations/messages.pl.xlf` file. In order to finish the translation, you just need to add the missing translations in the other file (`Resources/translations/EasyAdminBundle.pl.xlf`) as explained in https://github.com/javiereguiluz/EasyAdminBundle/issues/759.
+
+There is no need to create a new pull request for that. Just enter in your `fix_759` branch (`git checkout fix_759`) update the `EasyAdminBundle.pl.xlf` and then submit your changes (`git commit -a` and `git push`). After that, this pull request will be updated automatically.
+
+---------------------------------------------------------------------------
+
+by mkalisz77 at 2016-01-05T09:42:18Z
+
+Done. Thank you for GIT explanation.

@@ -53,8 +53,8 @@ class EasyAdminExtension extends Extension
     }
 
     /**
-     * Makes some tweaks in order to ensure backward compatibilities
-     * with supported versions of Symfony components.
+     * Merges entity configuration in case it's defined in different files,
+     * which is useful for complex backends or when managing lots of entities.
      *
      * @param array $configs
      *

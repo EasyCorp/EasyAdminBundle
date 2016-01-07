@@ -58,6 +58,40 @@
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> de <strong>%results%</strong>]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Si</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>No</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Buit</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Null</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Deixar vacío</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>Objecte PHP</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Inaccessible</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Aquest camp no té un mètode getter o la propietat associada no és pública</target>
+            </trans-unit>
+
             <!-- misc. elements -->
             <trans-unit id="header.close">
                 <source>header.close</source>
@@ -74,6 +108,22 @@
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
                 <target>Aquesta acció no es pot desfer.</target>
+            </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Afegir un element</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Afegir altre element</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Eliminar aquest element</target>
+            </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>Error|Errors</target>
             </trans-unit>
         </body>
     </file>

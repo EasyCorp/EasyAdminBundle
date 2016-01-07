@@ -27,6 +27,28 @@ easy_admin:
     # ...
 ```
 
+In case your backend configuration is too complex, you can even split it into
+different files. Then, you just need to import all those files from `config.yml`:
+
+```yaml
+# app/config/config.yml
+imports:
+    # ...
+    - { resource: easyadmin/basic.yml }
+    - { resource: easyadmin/design.yml }
+    - { resource: easyadmin/entity/product.yml }
+    - { resource: easyadmin/entity/user.yml }
+```
+
+Each of these files can define any number of EasyAdmin configuration options.
+You can even define the same option in several files and Symfony will take of
+merge all values (the last one always wins).
+
+This trick is also useful when your entities are scattered across different
+bundles. You can define their backend configuration separately in each bundle
+and then load those files through the local `services.xml` (or `services.yml`)
+configuration of the bundles.
+
 Improving Backend Performance
 -----------------------------
 

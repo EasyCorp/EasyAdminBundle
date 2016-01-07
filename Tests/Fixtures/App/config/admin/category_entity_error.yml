@@ -1,0 +1,8 @@
+easy_admin:
+    design:
+        # this value is wrong on purpose to trigger an exception
+        color_scheme: 'wrong_value'
+    entities:
+        Category:
+            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            label: 'Categories'

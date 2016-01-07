@@ -1,0 +1,5 @@
+easy_admin:
+    entities:
+        Category:
+            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            label: 'Categories'

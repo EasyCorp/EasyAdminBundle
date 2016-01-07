@@ -2,10 +2,6 @@ imports:
     - { resource: config.yml }
     - { resource: admin/category_entity.yml }
 
-framework:
-    # This file overrides the EasyAdmin controller
-    router: { resource: "%kernel.root_dir%/config/routing_override_templates.yml" }
-
 easy_admin:
     entities:
         Product: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product

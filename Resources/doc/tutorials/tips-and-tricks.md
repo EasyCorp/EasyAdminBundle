@@ -27,6 +27,59 @@ easy_admin:
     # ...
 ```
 
+Splitting Backend Configuration into Several Files
+--------------------------------------------------
+
+If your backend manages lots of entities, the configuration can become too long
+and hard to maintain. Sadly, neither the YAML spec nor the Symfony Yaml
+component support importing/including external files. However, you can use the
+following trick to split the configuration into several files.
+
+In this example, the configuration of one complex entity called `Product` is
+defined in a separate file, while the rest of the configuration is defined in
+the `app/config/admin.yml` file.
+
+First, create the `app/config/product.yml` file and put the configuration of the
+`Product` entity under a Symfony container parameter called `easyadmin.product`:
+
+```yaml
+# app/config/product.yml
+parameters:
+    easyadmin.product:
+        class: AppBundle\Entity\Product
+        label: 'Products'
+        list:
+            # ...
+```
+
+Then, make sure that this new YAML file is imported somehow by your application.
+For example from the main `config.yml` file:
+
+```yaml
+# app/config/config.yml
+imports:
+    - { resource: product.yml }
+    # ...
+```
+
+Lastly, update the original EasyAdmin config to use the value of the
+`easyadmin.product` parameter as the configuration of the `Product` entity:
+
+```yaml
+easy_admin:
+    site_name: 'ACME Backend'
+    entities:
+        Product: %easyadmin.product%  # <-- config defined as a parameter
+        User:
+            class: AppBundle\Entity\User
+            # ...
+```
+
+This trick is also useful to separate the backend configuration into several
+bundles. Just make sure that the YAML files which define the configuration of
+each entity are loaded by the bundle and then use those parameters in the main
+backend configuration file.
+
 Improving Backend Performance
 -----------------------------
 

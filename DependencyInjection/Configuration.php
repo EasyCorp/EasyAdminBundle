@@ -409,7 +409,8 @@ class Configuration implements ConfigurationInterface
     {
         $rootNode
             ->children()
-                ->variableNode('entities')
+                ->arrayNode('entities')
+                    ->prototype('variable')->end()
                     ->defaultValue(array())
                     ->info('The list of entities to manage in the administration zone.')
                 ->end()

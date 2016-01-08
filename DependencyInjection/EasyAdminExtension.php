@@ -32,9 +32,6 @@ class EasyAdminExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        // merge entity configuration in case it's defined in different files
-        $configs = $this->mergeEntityConfiguration($configs);
-
         // process bundle's configuration parameters
         $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
         $container->setParameter('easyadmin.config', $backendConfiguration);
@@ -50,30 +47,6 @@ class EasyAdminExtension extends Extension
         }
 
         $this->ensureBackwardCompatibility($container);
-    }
-
-    /**
-     * Merges entity configuration in case it's defined in different files,
-     * which is useful for complex backends or when managing lots of entities.
-     *
-     * @param array $configs
-     *
-     * @return array
-     */
-    private function mergeEntityConfiguration(array $configs)
-    {
-        $entities = array();
-
-        foreach ($configs as $config) {
-            if (isset($config['entities'])) {
-                $entities = array_merge($entities, $config['entities']);
-                unset($config['entities']);
-            }
-        }
-
-        $configs[] = array('entities' => $entities);
-
-        return $configs;
     }
 
     /**

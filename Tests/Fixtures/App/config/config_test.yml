@@ -1,2 +1,2 @@
 imports:
-    - { resource: config_default_backend.yml }
+    - { resource: config.yml }

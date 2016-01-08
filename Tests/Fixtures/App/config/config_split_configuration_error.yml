@@ -1,11 +1,7 @@
 imports:
     - { resource: config.yml }
-    - { resource: admin/category_entity.yml }
-    - { resource: admin/design_config.yml }
+    - { resource: admin/category_entity_error.yml }
 
 easy_admin:
-    site_name: 'Second Site Name'
-    design:
-        brand_color: 'blue'
     entities:
         Product: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product

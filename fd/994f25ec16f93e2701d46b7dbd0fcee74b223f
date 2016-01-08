@@ -1,0 +1,93 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-07T21:44:24Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-08T10:46:58Z
+
+I don't understand why the tests fail on this :confused:
+
+But anyway I'm :+1: for this feature :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-08T10:54:02Z
+
+I know why they fail :)  I'll fix them later.
+
+On Fri, Jan 8, 2016 at 11:46 AM, Alex Rock Ancelet <notifications@github.com
+> wrote:
+
+> I don't understand why the tests fail on this [image: :confused:]
+>
+> But anyway I'm [image: :+1:] for this feature :)
+>
+> —
+> Reply to this email directly or view it on GitHub
+> <https://github.com/javiereguiluz/EasyAdminBundle/pull/777#issuecomment-169961499>
+> .
+>
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-08T18:02:55Z
+
+OK. I'm going crazy trying to fix some failing tests :sob:  The tests which fail are related to exceptions which are not thrown. Example:
+
+If `admin.yml` contains an error, using the following config will result in an exception:
+
+```yaml
+imports:
+    - { resource: product_entity.yml }
+    - { resource: admin.yml }
+```
+
+However, if we maintain the same error but change the config order to this:
+
+```yaml
+imports:
+    - { resource: admin.yml }
+    - { resource: product_entity.yml }
+```
+
+The exception is not thrown!!
+
+`product_entity.yml` contains this:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            # ...
+```
+
+The `admin.yml` contains all the other config, including the YAML for the other four entities.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-08T18:29:30Z
+
+Update: in a5d5126 I'm trying to solve the problem in a different way. Tests pass (except one edge case). Config works as expected if you define entities in different files. BUT if the config contains errors ... you only see the exception if the error is in the last file imported (same error as described in my previous comment).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-08T19:33:25Z
+
+Another update: a4df010 has fixed all the problems locally (let's see Travis). Everything seems to work now as expected: config gets merged and the order in which you load the files doesn't matter.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-08T19:42:40Z
+
+Great ! Looks way better than the manual merging !:+1: :smile:
+I guess I should have looked back at the `Configuration` class to see what can be done before randomly suggesting a hack-ish solution ^^'
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-08T20:48:24Z
+
+@ogizanagi no worries! Your original suggestion was a great start to solve this issue. It was my fault for not fully understanding how Symfony Config works for array and variable nodes.

@@ -143,7 +143,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->arrayNode('assets')
-                    ->performNoDeepMerging()
                     ->children()
                         ->arrayNode('css')
                             ->info('DEPRECATED: use the "design -> assets -> css" option.')
@@ -167,7 +166,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->arrayNode('formats')
-                    ->performNoDeepMerging()
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->scalarNode('date')
@@ -209,7 +207,6 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('design')
-                    ->performNoDeepMerging()
                     ->addDefaultsIfNotSet()
                     ->children()
                         // the 'theme' option is not used at the moment, but it allows us to be prepared for the future
@@ -263,7 +260,6 @@ class Configuration implements ConfigurationInterface
                         ->end()
 
                         ->arrayNode('assets')
-                            ->performNoDeepMerging()
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->arrayNode('css')
@@ -275,7 +271,6 @@ class Configuration implements ConfigurationInterface
                                     ->info('The array of JavaScript assets to load in all backend pages.')
                                 ->end()
                                 ->arrayNode('favicon')
-                                    ->performNoDeepMerging()
                                     ->addDefaultsIfNotSet()
                                     ->info('The favicon to use in all backend pages.')
                                     ->children()
@@ -313,7 +308,6 @@ class Configuration implements ConfigurationInterface
 
                         ->arrayNode('templates')
                             ->info('The custom templates used to render each backend element.')
-                            ->performNoDeepMerging()
                             ->children()
                                 ->scalarNode('layout')->info('Used to decorate the main templates (list, edit, new and show)')->end()
                                 ->scalarNode('edit')->info('Used to render the page where entities are edited')->end()
@@ -410,9 +404,10 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('entities')
-                    ->prototype('variable')->end()
+                    ->normalizeKeys(false)
                     ->defaultValue(array())
                     ->info('The list of entities to manage in the administration zone.')
+                    ->prototype('variable')
                 ->end()
             ->end()
         ;

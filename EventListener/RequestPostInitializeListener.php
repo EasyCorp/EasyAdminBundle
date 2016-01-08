@@ -77,7 +77,8 @@ class RequestPostInitializeListener
      */
     private function findCurrentItem(array $entityConfig, $itemId)
     {
-        if (null === $entity = $this->doctrine->getRepository($entityConfig['class'])->find($itemId)) {
+        $manager = $this->doctrine->getManagerForClass($entityConfig['class']);
+        if (null === $entity = $manager->getRepository($entityConfig['class'])->find($itemId)) {
             throw new EntityNotFoundException(array('entity' => $entityConfig, 'entity_id' => $itemId));
         }
 

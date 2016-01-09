@@ -24,13 +24,6 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->initClient(array('environment' => 'customized_backend'));
     }
 
-    public function testListViewPageMainMenu()
-    {
-        $crawler = $this->requestListView();
-
-        $this->assertEquals('Categories', trim($crawler->filter('.sidebar-menu li.active')->text()));
-    }
-
     public function testListViewPageTitle()
     {
         $crawler = $this->requestListView();
@@ -149,13 +142,6 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 
-    public function testShowViewPageMainMenu()
-    {
-        $crawler = $this->requestShowView();
-
-        $this->assertEquals('Categories', trim($crawler->filter('.sidebar-menu li.active')->text()));
-    }
-
     public function testShowViewPageTitle()
     {
         $crawler = $this->requestShowView();
@@ -258,13 +244,6 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertEquals($parameters, $refererParameters);
     }
 
-    public function testEditViewPageMainMenu()
-    {
-        $crawler = $this->requestEditView();
-
-        $this->assertEquals('Categories', trim($crawler->filter('.sidebar-menu li.active')->text()));
-    }
-
     public function testEditViewPageTitle()
     {
         $crawler = $this->requestEditView();
@@ -345,13 +324,6 @@ class CustomizedBackendTest extends AbstractTestCase
         parse_str($queryString, $refererParameters);
 
         $this->assertEquals($parameters, $refererParameters);
-    }
-
-    public function testNewViewPageMainMenu()
-    {
-        $crawler = $this->requestNewView();
-
-        $this->assertEquals('Categories', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testNewViewPageTitle()
@@ -454,13 +426,6 @@ class CustomizedBackendTest extends AbstractTestCase
             // In Symfony 2.3 FormDataCollector does not exist. Search in response content.
             $this->assertContains('This value should not be null.', $crawler->filter('.error-block')->first()->text());
         }
-    }
-
-    public function testSearchViewPageMainMenu()
-    {
-        $crawler = $this->requestSearchView();
-
-        $this->assertEquals('Categories', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testSearchViewPageTitle()

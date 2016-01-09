@@ -62,7 +62,7 @@ class AdminController extends Controller
         $this->initialize($request);
 
         if (null === $request->query->get('entity')) {
-            return $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->config['default_entity_name'])));
+            return $this->redirectToBackendHomepage();
         }
 
         $action = $request->query->get('action', 'list');
@@ -766,5 +766,19 @@ class AdminController extends Controller
     private function useLegacyFormComponent()
     {
         return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
+    }
+
+    /**
+     * Generates the backend homepage and redirects to it.
+     */
+    private function redirectToBackendHomepage()
+    {
+        $homepageConfig = $this->config['homepage'];
+
+        $url = isset($homepageConfig['url'])
+            ? $homepageConfig['url']
+            : $this->get('router')->generate($homepageConfig['route'], $homepageConfig['params']);
+
+        return $this->redirect($url);
     }
 }

@@ -33,7 +33,15 @@
             </trans-unit>
             <trans-unit id="action.list">
                 <source>action.list</source>
-                <target>Nazaj na poslušanje</target>
+                <target>Nazaj na seznam</target>
+            </trans-unit>
+            <trans-unit id="form.label.empty_value">
+                <source>form.label.empty_value</source>
+                <target>Noben</target>
+            </trans-unit>
+            <trans-unit id="modal.action.delete">
+                <source>modal.action.delete</source>
+                <target>Izbrišite</target>
             </trans-unit>
         </body>
     </file>

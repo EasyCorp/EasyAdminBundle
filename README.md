@@ -31,7 +31,6 @@ with unprecedented simplicity.
   * Symfony 2.3+ applications (Silex not supported).
   * Doctrine ORM entities (Doctrine ODM and Propel not supported).
   * Entities with simple primary keys (composite keys not supported).
-  * All kinds of entity associations are supported.
   * Entities using inheritance are not supported.
 
 Documentation
@@ -46,7 +45,7 @@ Documentation
   * [Chapter 5 - Backend Design Customization](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/5-design-customization.md)
   * [Chapter 6 - About this Project](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/6-about-this-project.md)
 
-#### Advanced Tutorials
+#### Tutorials
 
   * [Customizing Backend Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/customizing-backend-actions.md)
   * [Customizing AdminController](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/customizing-admin-controller.md)
@@ -55,6 +54,7 @@ Documentation
   * [How to Define Custom Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/custom-actions.md)
   * [How to Use a WYSIWYG Editor](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/wysiwyg-editor.md)
   * [How to Upload Files and Images](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/upload-files-and-images.md)
+  * [How to Manage Configuration for Complex Backends](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/complex-backend-config.md)
   * [Tips and Tricks](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/tips-and-tricks.md)
   * [Configuration Reference](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/configuration-reference.md)
 

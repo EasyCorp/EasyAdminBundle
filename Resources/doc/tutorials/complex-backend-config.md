@@ -6,9 +6,9 @@ The recommended way to start configuring your backend is to use the
 key. However, for medium-sized and large backends this configuration can be very
 long and hard to maintain.
 
-In those cases, it's better to create a new `app/config/admin.yml` file to
-define all the configuration related to the backend and then, import that
-file from the general `config.yml` file:
+In those cases, it's better to create a new `app/config/easyadmin.yml` file to
+define all the configuration related to the backend and then, import that file
+from the general `config.yml` file:
 
 ```yaml
 # app/config/config.yml
@@ -16,9 +16,9 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    - { resource: admin.yml }  # <-- add this line
+    - { resource: easyadmin.yml }  # <-- add this line
 
-# app/config/admin.yml      # <-- create this file
+# app/config/easyadmin.yml      # <-- create this file
 easy_admin:
     # ...
     # copy all the configuration originally defined in config.yml
@@ -109,8 +109,8 @@ imports:
 ```
 
 The imported files can define any number of EasyAdmin configuration options. You
-can even define the same option in several files and Symfony will take of merge
-all values (the last one always wins).
+can even define the same option in several files and Symfony will take care of
+merging all values (the last one always wins).
 
 Importing EasyAdmin Configuration from Different Bundles
 --------------------------------------------------------

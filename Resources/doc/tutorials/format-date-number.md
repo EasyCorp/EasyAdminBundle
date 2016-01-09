@@ -51,7 +51,25 @@ easy_admin:
 
 ### Form-Based Views (`edit` and `new`)
 
-// TODO ...
+These views rely on the Symfony Form component to display the form fields used
+to set the value for the date/time properties. Use the options defined in the
+[DateTimeType](http://symfony.com/doc/current/reference/forms/types/datetime.html),
+[DateType](http://symfony.com/doc/current/reference/forms/types/date.html) and
+[TimeType](http://symfony.com/doc/current/reference/forms/types/time.html) types
+to change their appearance and behavior.
+
+For example, to display your dates as a single `<input>` text element, define
+the `date_widget` form field option (commonly used together with `date_format`):
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            edit:
+                fields:
+                    - { property: 'saleStartsAt', type_options: { date_widget: 'single_text' } }
+                    # ...
+```
 
 Customizing Numeric Properties
 ------------------------------
@@ -96,4 +114,25 @@ easy_admin:
 
 ### Form-Based Views (`edit` and `new`)
 
-// TODO ...
+These views rely on the Symfony Form component to display the form fields used
+to set the value for numeric properties. Use the options defined in the
+[NumberType](http://symfony.com/doc/current/reference/forms/types/number.html),
+[IntegerType](http://symfony.com/doc/current/reference/forms/types/integer.html),
+[MoneyType](http://symfony.com/doc/current/reference/forms/types/money.html) and
+[PercentType](http://symfony.com/doc/current/reference/forms/types/percent.html)
+types to change their appearance and behavior.
+
+For example, to display a numeric property which stores some price, you can
+define the `currency` option of the `MoneyType` form type:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            edit:
+                fields:
+                    - { property: 'price', type: 'Symfony\Component\Form\Extension\Core\Type\MoneyType', type_options: { currency: 'EUR' } }
+                    # In Symfony 2.x you can use
+                    # - { property: 'price', type: 'money', type_options: { currency: 'EUR' } }
+                    # ...
+```

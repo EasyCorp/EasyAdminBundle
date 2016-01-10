@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by reypm at 2016-01-09T17:37:03Z
+
+@javiereguiluz It's neccesary to setup a FQDN here for the type? I achieve the same as:
+
+    - { property: 'price', label: 'price', type: 'money', type_options: { currency: 'EUR' } }
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-09T19:39:04Z
+
+@reypm : It is since Symfony 2.8, as using the form aliases is deprecated. Aliases are removed in 3.0, and FQCN are used instead.
+
+Even if EasyAdmin currently does some stuff to ensure we can use the aliases for native types, I think the whole documentation of the bundle should be updated in order to reflect that change.
+
+---------------------------------------------------------------------------
+
+by reypm at 2016-01-09T19:48:54Z
+
+Ohhhh interesting thx one thing learned today I will update mine code too

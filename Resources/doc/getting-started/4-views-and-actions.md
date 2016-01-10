@@ -269,7 +269,7 @@ These are the options that you can define for each field:
   * `css_class` (optional): the CSS class applied to the form field widget
     container element in the `edit`, `new` and `show` views. For example, when
     using the default Bootstrap based form theme, this value is applied to the
-    `<div>` element which wraps the label, the widget and the error messages of 
+    `<div>` element which wraps the label, the widget and the error messages of
     the field.
   * `template` (optional): the name of the custom template used to render the
     contents of the field in the `list` and `show` views. This option is fully
@@ -312,89 +312,6 @@ to learn about all the available options, their usage and allowed values.
 > option for the fields. This way you can create very powerful backend
 > customizations, as explained in the
 > [Advanced Design Customization] [advanced-design-customization] tutorial.
-
-### Customize Date Format
-
-By default, these are the formats applied to date properties (read the
-[date configuration options](http://php.net/manual/en/function.date.php) page
-in the PHP manual in case you don't know the meaning of these formats):
-
-  * `date`: `Y-m-d`
-  * `time`:  `H:i:s`
-  * `datetime`: `F j, Y H:i`
-
-These default formats can be overridden in two ways: globally for all entities
-and locally for each entity property. Define the global `formats` option to set
-the new formats for all entities (define any or all the `date`, `time` and
-`datetime` options):
-
-```yaml
-easy_admin:
-    formats:
-        date:     'd/m/Y'
-        time:     'H:i'
-        datetime: 'd/m/Y H:i:s'
-    entities:
-        # ...
-```
-
-The value of the `format` option is passed to the `format()` method of the
-`DateTime` class, so you can use any of the
-[date configuration options](http://php.net/manual/en/function.date.php)
-defined by PHP.
-
-The same `format` option can be applied to any date-based property. This local
-option always overrides the global formats:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            list:
-                fields:
-                    - { property: 'dateOfBirth', format: 'j/n/Y' }
-                    # ...
-    # ...
-```
-
-### Customize Number Format
-
-Number related properties (`bigint`, `integer`, `smallint`, `decimal`, `float`)
-are displayed using the appropriate formatting according to the locale of your
-Symfony application. Use the `format` option to explicitly set the format
-applied to numeric properties.
-
-The global `formats` option applies the same formatting for all numeric values:
-
-```yaml
-easy_admin:
-    formats:
-        # ...
-        number: '%.2f'
-    entities:
-        # ...
-```
-
-In this case, the value of the `format` option is passed to the `sprintf()`
-function, so you can use any of the
-[PHP format specifiers](http://php.net/manual/en/function.sprintf.php).
-
-The same `format` option can be applied to any numeric property. This local
-configuration always overrides the global format:
-
-```yaml
-easy_admin:
-    entities:
-        Product:
-            class: AppBundle\Entity\Product
-            list:
-                fields:
-                    - { property: 'serialNumber', format: '%010s' }
-                    - { property: 'margin', format: '%01.2f' }
-                    # ...
-    # ...
-```
 
 ### Customize Boolean Properties
 

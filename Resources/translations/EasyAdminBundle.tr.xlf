@@ -75,6 +75,14 @@
                 <source>label.null</source>
                 <target>Boş</target>
             </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Boş Bırakabilirsiniz</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>PHP Objesi</target>
+            </trans-unit>
             <trans-unit id="label.inaccessible">
                 <source>label.inaccessible</source>
                 <target>Erişilemez</target>

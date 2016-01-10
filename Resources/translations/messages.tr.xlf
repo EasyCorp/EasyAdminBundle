@@ -35,6 +35,14 @@
                 <source>action.list</source>
                 <target>Listeye Dön</target>
             </trans-unit>
+            <trans-unit id="form.label.empty_value">
+                <source>form.label.empty_value</source>
+                <target>Boş</target>
+            </trans-unit>
+            <trans-unit id="modal.action.delete">
+                <source>modal.action.delete</source>
+                <target>Sil</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

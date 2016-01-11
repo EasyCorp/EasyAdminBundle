@@ -18,12 +18,15 @@ Reordering Menu Items
 The easiest way to reorder the menu items is to reorder the contents of the
 `entities` option in the EasyAdmin configuration file. However, when the
 configuration file is too complex or its contents are scattered into several
-files, it's easier to use the `menu` option. Just provide the names of the
-entities in the order you want to display them in the menu:
+files, it's easier to use the `menu` option under the global `design` option.
+
+Just provide the names of the entities in the order you want to display them in
+the menu:
 
 ```yaml
 easy_admin:
-    menu: ['User', 'Product', 'Category']
+    design:
+        menu: ['User', 'Product', 'Category']
     # ...
     entities:
         Category:
@@ -43,7 +46,8 @@ item:
 
 ```yaml
 easy_admin:
-    menu: ['User', 'Product', { entity: 'Category', label: 'Tags' }]
+    design:
+        menu: ['User', 'Product', { entity: 'Category', label: 'Tags' }]
     # ...
 ```
 
@@ -52,10 +56,11 @@ YAML syntax to make configuration easier to maintain:
 
 ```yaml
 easy_admin:
-    menu:
-        - User
-        - Product
-        - { entity: 'Category', label: 'Tags' }
+    design:
+        menu:
+            - User
+            - Product
+            - { entity: 'Category', label: 'Tags' }
     # ...
 ```
 
@@ -65,10 +70,11 @@ the `fa-` prefix (in this example, `user` will display the `fa-user` icon):
 
 ```yaml
 easy_admin:
-    menu:
-        - { entity: 'User', label: 'Users', icon: 'user' }
-        - Product
-        - { entity: 'Category', label: 'Tags', icon: 'tag' }
+    design:
+        menu:
+            - { entity: 'User', label: 'Users', icon: 'user' }
+            - Product
+            - { entity: 'Category', label: 'Tags', icon: 'tag' }
     # ...
 ```
 
@@ -81,10 +87,11 @@ generate the link of the menu item:
 
 ```yaml
 easy_admin:
-    menu:
-        - { entity: 'User', params: { view: 'new' } }
-        - Product
-        - { entity: 'Category', params: { view: 'edit', id: 341 } }
+    design:
+        menu:
+            - { entity: 'User', params: { view: 'new' } }
+            - Product
+            - { entity: 'Category', params: { view: 'edit', id: 341 } }
     # ...
 ```
 
@@ -93,8 +100,9 @@ The `params` option is also useful to change the sort field or direction of the
 
 ```yaml
 easy_admin:
-    menu:
-        - { entity: 'User', params: { sortField: 'createdAt', sortDirection: 'DESC' } }
+    design:
+        menu:
+            - { entity: 'User', params: { sortField: 'createdAt', sortDirection: 'DESC' } }
     # ...
 ```
 
@@ -112,10 +120,11 @@ create one menu item which only defines the `label` option:
 
 ```yaml
 easy_admin:
-    menu:
-        - { label: 'User' }
-        - Product
-        - Category
+    design:
+        menu:
+            - { label: 'User' }
+            - Product
+            - Category
     # ...
 ```
 
@@ -127,10 +136,11 @@ a link element, define the `url` option:
 
 ```yaml
 easy_admin:
-    menu:
-        - { label: 'Public Homepage', url: 'http://example.com' }
-        - { label: 'Search', url: 'https://google.com' }
-        - { label: 'Monitor Systems', url: '/monitor.php' }
+    design:
+        menu:
+            - { label: 'Public Homepage', url: 'http://example.com' }
+            - { label: 'Search', url: 'https://google.com' }
+            - { label: 'Monitor Systems', url: '/monitor.php' }
     # ...
 ```
 
@@ -145,10 +155,11 @@ value. Optionally, define the route parameters in the `params` option:
 
 ```yaml
 easy_admin:
-    menu:
-        - { label: 'Public Homepage', route: 'homepage' }
-        - { label: 'Some Task', route: 'user_some_task' }
-        - { label: 'Other Task', route: 'other_task', params: { max: 7 } }
+    design:
+        menu:
+            - { label: 'Public Homepage', route: 'homepage' }
+            - { label: 'Some Task', route: 'user_some_task' }
+            - { label: 'Other Task', route: 'other_task', params: { max: 7 } }
     # ...
 ```
 
@@ -161,11 +172,12 @@ easy as defining the `children` option for any first-level menu item:
 
 ```yaml
 easy_admin:
-    menu:
-        - label: 'Clients'
-          children: ['Invoice', 'Payment', 'User', 'Provider']
-        - label: 'Products'
-          children: ['Product', 'Stock', 'Shipment']
+    design:
+        menu:
+            - label: 'Clients'
+              children: ['Invoice', 'Payment', 'User', 'Provider']
+            - label: 'Products'
+              children: ['Product', 'Stock', 'Shipment']
     # ...
 ```
 
@@ -179,18 +191,19 @@ advanced menus with two-level submenus and all kind of items:
 
 ```yaml
 easy_admin:
-    menu:
-        - label: 'Clients'
-          entity: 'User'
-          params: { sortField: 'name', sortDirection: 'ASC' }
-          icon: 'users'
-          children:
-            - { label: 'New Invoice', icon: 'file-new', route: 'createInvoice' }
-            - { label: 'Invoices', icon: 'file-list', entity: 'Invoice' }
-            - { label: 'Payments Received', entity: 'Payment', params: { sortField: 'paidAt' } }
-        - label: 'About'
-          children:
-            - { label: 'Help', route: 'help_index' }
-            - { label: 'Docs', url: 'http://example.com/external-docs' }
-            - { label: %app.version% }
+    design:
+        menu:
+            - label: 'Clients'
+              entity: 'User'
+              params: { sortField: 'name', sortDirection: 'ASC' }
+              icon: 'users'
+              children:
+                - { label: 'New Invoice', icon: 'file-new', route: 'createInvoice' }
+                - { label: 'Invoices', icon: 'file-list', entity: 'Invoice' }
+                - { label: 'Payments Received', entity: 'Payment', params: { sortField: 'paidAt' } }
+            - label: 'About'
+              children:
+                - { label: 'Help', route: 'help_index' }
+                - { label: 'Docs', url: 'http://example.com/external-docs' }
+                - { label: %app.version% }
 ```

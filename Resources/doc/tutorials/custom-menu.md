@@ -1,13 +1,13 @@
 How to Customize the Main Menu
 ==============================
 
-By default the main menu of the backend displays the list of the managed
-entities in the same order they were defined in the configuration. The menu
-items point to the `list` view of each entity.
+The main menu of the backend displays by default the list of the managed
+entities. They are displayed in the same order they were defined in the
+configuration and all of them point to the `list` view of each entity.
 
 This behavior is too limited for complex backends, which need to define custom
 labels, icons or links for each menu item. In addition, complex backends usually
-manage lots of entities, which should be displayed in submenus.
+manage lots of entities, which should be grouped in submenus.
 
 In this article you'll learn all the different ways supported by EasyAdmin to
 create a custom navigation menu for your backend.
@@ -16,29 +16,52 @@ Reordering Menu Items
 ---------------------
 
 The easiest way to reorder the menu items is to reorder the contents of the
-`entities` option in the EasyAdmin configuration file. However, sometimes the
+`entities` option in the EasyAdmin configuration file. However, when the
 configuration file is too complex or its contents are scattered into several
-files. In those cases, it's easier to use the `menu` option to reorder the menu
-items just by defining the names of the entities:
+files, it's easier to use the `menu` option. Just provide the names of the
+entities in the order you want to display them in the menu:
 
-```
+```yaml
 easy_admin:
     menu: ['User', 'Product', 'Category']
     # ...
     entities:
-        User:
+        Category:
             # ...
         Product:
             # ...
-        Category:
+        User:
             # ...
 ```
 
 Customizing the Labels and Icons of the Menu Items
 --------------------------------------------------
 
-Use the expanded configuration format to define the label and/or icon of any or
-all the menu items:
+Menu items that link to entities, display the `label` option for the related
+entity. If you want to customize this value, use the `label` option of the menu
+item:
+
+```yaml
+easy_admin:
+    menu: ['User', 'Product', { entity: 'Category', label: 'Tags' }]
+    # ...
+```
+
+When using the expanded configuration format, consider using this alternative
+YAML syntax to make configuration easier to maintain:
+
+```yaml
+easy_admin:
+    menu:
+        - User
+        - Product
+        - { entity: 'Category', label: 'Tags' }
+    # ...
+```
+
+Menu items can also display an icon next to their labels. Just define the `icon`
+option and use the name of any of the FontAwesome icons as its value, without
+the `fa-` prefix (in this example, `user` will display the `fa-user` icon):
 
 ```yaml
 easy_admin:
@@ -49,41 +72,37 @@ easy_admin:
     # ...
 ```
 
-The value of the `icon` option is the name of any of the FontAwesome icons
-without the `fa-` prefix (in this example, `user` will display the `fa-user` icon).
-
 Linking Menu Items to Other Views
 ---------------------------------
 
-The `view` option sets the view to display when the menu item is clicked. Its
-default value is `list`, but you can use any valid view name. Views that display
-or edit some entity data (`show` and `edit`) also require to define the value of
-the entity primary key in the `id` option:
+Instead of linking to the `list` view of an entity, you can also link to any
+of its views. Just define the `params` option to define the parameters used to
+generate the link of the menu item:
 
 ```yaml
 easy_admin:
     menu:
-        - { entity: 'User', view: 'new' }
+        - { entity: 'User', params: { view: 'new' } }
         - Product
-        - { entity: 'Category', view: 'edit', id: 341 }
+        - { entity: 'Category', params: { view: 'edit', id: 341 } }
     # ...
 ```
 
-The `list` view also supports the `sortField` and `sortDirection` options to
-define the field used to order the listing:
+The `params` option is also useful to change the sort field or direction of the
+`list` view:
 
 ```yaml
 easy_admin:
     menu:
-        - { entity: 'User', view: 'list', sortField: 'createdAt', sortDirection: 'DESC' }
+        - { entity: 'User', params: { sortField: 'createdAt', sortDirection: 'DESC' } }
     # ...
 ```
 
 Adding Menu Items not Based on Entities
 ---------------------------------------
 
-Most of the times you just need to link to backend entities. However, the menu
-can also contain other types of items not related to entities.
+Most of the times you just need to link to backend entities. However, the main
+menu can also contain other types of items not related to entities.
 
 ### Empty elements
 
@@ -100,29 +119,18 @@ easy_admin:
     # ...
 ```
 
-They can also be used to display the value of some container parameter:
-
-```yaml
-easy_admin:
-    menu:
-        # ...
-        - { label: %app.version% }
-    # ...
-```
-
 ### Link elements
 
 They display a clickable label which points to the given absolute or relative
 URL. They are useful to integrate external applications in the backend. To add
-a link element, set the `type` option to `link` and define the URL in the `url`
-option:
+a link element, define the `url` option:
 
 ```yaml
 easy_admin:
     menu:
-        - { label: 'Public Homepage', type: 'link', url: 'http://example.com' }
-        - { label: 'Search', type: 'link', url: 'https://google.com' }
-        - { label: 'Monitor Systems', type: 'link', url: '/monitor.php' }
+        - { label: 'Public Homepage', url: 'http://example.com' }
+        - { label: 'Search', url: 'https://google.com' }
+        - { label: 'Monitor Systems', url: '/monitor.php' }
     # ...
 ```
 
@@ -132,39 +140,17 @@ They display a clickable label which points to the path generated with the given
 Symfony route name. They are useful to integrate controllers which are defined
 anywhere in your application.
 
-To add a route element, set the `type` option to `route`, define the route name
-in the `route` option and optionally, define the route parameters in the
-`params` option:
+To add a route element, define the `route` option and set the route name as its
+value. Optionally, define the route parameters in the `params` option:
 
 ```yaml
 easy_admin:
     menu:
-        - { label: 'Public Homepage', type: 'route', name: 'homepage' }
-        - { label: 'Some Task', type: 'route', name: 'user_some_task' }
-        - { label: 'Other Task', type: 'route', name: 'user_other_task', params: { max: 7 } }
+        - { label: 'Public Homepage', route: 'homepage' }
+        - { label: 'Some Task', route: 'user_some_task' }
+        - { label: 'Other Task', route: 'other_task', params: { max: 7 } }
     # ...
 ```
-
-### Method elements
-
-They display a clickable label which executes the given method of the
-`AdminController`. They are useful to integrate the custom actions defined
-inside your EasyAdmin backend.
-
-To add a method element, set the `type` option to `method`, define the method
-name in the `name` option and optionally, define the parameters in the `params`
-option:
-
-```yaml
-easy_admin:
-    menu:
-        - { label: 'Some Task', type: 'method', name: 'restock' }
-        - { label: 'Other Task', type: 'method', name: 'restock', params: { amount: 100 } }
-    # ...
-```
-
-The first menu item will execute `AdminController::restock()` when clicked and
-the second item will execute `AdminController::restock(100)`.
 
 Adding Submenus
 ---------------
@@ -183,11 +169,10 @@ easy_admin:
     # ...
 ```
 
-In this example, the first level of the menu displays two "empty" (non-clickable
-elements) called `Clients` and `Products`. Point to any of these items with your
-mouse or your finger and the second level submenu will be displayed. In this
-example, the submenus just display regular links to the `list` view of some
-entities.
+In this example, the main menu displays two "empty" (non-clickable elements)
+called `Clients` and `Products`. Point to any of these items with your mouse or
+your finger and the second level submenu will be displayed. In this example, the
+submenus just display regular links to the `list` view of some entities.
 
 Combining all the options explained in the previous sections you can create very
 advanced menus with two-level submenus and all kind of items:
@@ -197,16 +182,15 @@ easy_admin:
     menu:
         - label: 'Clients'
           entity: 'User'
-          sortField: 'name'
-          sortDirection: 'ASC'
+          params: { sortField: 'name', sortDirection: 'ASC' }
           icon: 'users'
           children:
-            - { label: 'New Invoice', icon: 'file-new', type: 'method', name: 'createInvoice' }
+            - { label: 'New Invoice', icon: 'file-new', route: 'createInvoice' }
             - { label: 'Invoices', icon: 'file-list', entity: 'Invoice' }
-            - { label: 'Payments Received', icon: 'money-bag', entity: 'Payment', sortField: 'paidAt' }
+            - { label: 'Payments Received', entity: 'Payment', params: { sortField: 'paidAt' } }
         - label: 'About'
           children:
-            - { label: 'Help', type: 'route', name: 'help_index' }
-            - { label: 'Docs', type: 'link', url: 'http://example.com/external-docs' }
+            - { label: 'Help', route: 'help_index' }
+            - { label: 'Docs', url: 'http://example.com/external-docs' }
             - { label: %app.version% }
 ```

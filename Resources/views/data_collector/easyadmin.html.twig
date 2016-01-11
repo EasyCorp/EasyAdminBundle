@@ -5,7 +5,7 @@
 
     {% set icon %}
         {% set icon_fill_color = profiler_markup_version == 1 ? '#222' : '#AAA' %}
-        {% set icon_height = profiler_markup_version == 1 ? '26' : '24' %}
+        {% set icon_height = profiler_markup_version == 1 ? '28' : '24' %}
         <span class="icon">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { fill_color: icon_fill_color, height: icon_height }) }}</span>
         <span class="sf-toolbar-value sf-toolbar-status">{{ collector.numEntities }}</span>
     {% endset %}

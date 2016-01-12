@@ -45,7 +45,7 @@
                 : easyadmin_config('site_name')|length <= 12 ? 'medium' : 'long'
             %}
             <a class="logo" href="{{ path('easyadmin') }}" class="{{ _site_name_length }}">
-              <span class="logo-mini">{{ easyadmin_config('site_name')|striptags|first }}</span>
+              <span class="logo-mini">{{ easyadmin_config('site_name')|striptags|first|upper }}</span>
               <span class="logo-lg">{{ easyadmin_config('site_name')|raw }}</span>
             </a>
             {% endblock header_logo %}

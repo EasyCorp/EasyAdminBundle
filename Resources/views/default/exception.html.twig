@@ -9,11 +9,13 @@
 {% block page_title 'ERROR' %}
 
 {% block content %}
-    <div class="error-description">
-        <h1>Error</h1>
+    <section id="main" class="content">
+        <div class="error-description">
+            <h1>Error</h1>
 
-        <div class="error-message">
-            <p class="lead">{{ exception.safeMessage }}</p>
+            <div class="error-message">
+                <p>{{ exception.safeMessage }}</p>
+            </div>
         </div>
-    </div>
+    </section>
 {% endblock %}

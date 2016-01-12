@@ -46,8 +46,8 @@ includes four actions as buttons or links:
 These are the actions included by default in each view:
 
 | View   | Actions
-| ------ | ---------------------------------------
-| `list` | `edit`, `list`, `new`, `search`, `show`
+| ------ | -----------------------------------------
+| `list` | `delete`, `edit`, `list`, `new`, `search`
 | `edit` | `delete`, `list`
 | `new`  | `list`
 | `show` | `delete`, `edit`, `list`

@@ -92,15 +92,13 @@
                 <target>Es gibt keine Getter-Methode für diese Eigenschaft oder die Eigenschaft ist nicht public.</target>
             </trans-unit>
 
-            <!-- misc. elements -->
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Schließen</target>
-            </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
+            <!-- user -->
+            <trans-unit id="user.logged_in_as">
+                <source>user.logged_in_as</source>
                 <target>Angemeldet als</target>
             </trans-unit>
+
+            <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Soll das Element wirklich gelöscht werden?</target>

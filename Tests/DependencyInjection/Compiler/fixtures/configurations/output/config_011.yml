@@ -103,8 +103,8 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: 'action-delete btn-danger'
-                        icon: trash
+                        css_class: action-delete
+                        icon: trash-o
                     list:
                         name: list
                         type: method
@@ -226,17 +226,17 @@ easy_admin:
                         associationType: 1
                         property: parent
                 actions:
-                    show:
-                        name: show
-                        type: method
-                        label: action.show
-                        css_class: action-show
-                        icon: null
                     edit:
                         name: edit
                         type: method
                         label: action.edit
                         css_class: action-edit
+                        icon: null
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        css_class: 'action-delete text-danger'
                         icon: null
                     search:
                         name: search
@@ -519,8 +519,8 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: 'action-delete btn-danger'
-                        icon: trash
+                        css_class: action-delete
+                        icon: trash-o
                     list:
                         name: list
                         type: method
@@ -692,7 +692,7 @@ easy_admin:
                 mime_type: image/x-icon
         theme: default
         color_scheme: dark
-        brand_color: '#E67E22'
+        brand_color: '#205081'
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
         templates:
@@ -730,7 +730,7 @@ easy_admin:
             label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
             label_null: '@EasyAdmin/default/label_null.html.twig'
             label_undefined: '@EasyAdmin/default/label_undefined.html.twig'
-    site_name: 'Easy Admin'
+    site_name: EasyAdmin
     formats:
         date: Y-m-d
         time: 'H:i:s'

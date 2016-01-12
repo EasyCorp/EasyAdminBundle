@@ -161,7 +161,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('site_name')
-                    ->defaultValue('Easy Admin')
+                    ->defaultValue('EasyAdmin')
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
 
@@ -228,8 +228,8 @@ class Configuration implements ConfigurationInterface
 
                         ->scalarNode('brand_color')
                             ->info('The color used in the backend design to highlight important elements.')
-                            ->defaultValue('#E67E22')
-                            ->treatNullLike('#E67E22')
+                            ->defaultValue('#205081')
+                            ->treatNullLike('#205081')
                             ->validate()
                                 // if present, remove the trailing ';' to avoid CSS issues
                                 ->ifTrue(function ($v) { return ';' === substr(trim($v), -1); })

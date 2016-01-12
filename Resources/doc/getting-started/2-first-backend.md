@@ -3,7 +3,7 @@ Chapter 2. Your First Backend
 
 Creating your first backend will take you less than 30 seconds. Let's suppose
 that your Symfony application defines three Doctrine ORM entities called
-`Customer`, `Order` and `Product`.
+`Product`, `Category` and `User`.
 
 Creating the backend for those entities just require you to add the following
 configuration in the `app/config/config.yml` file:
@@ -12,9 +12,9 @@ configuration in the `app/config/config.yml` file:
 # app/config/config.yml
 easy_admin:
     entities:
-        - AppBundle\Entity\Customer
-        - AppBundle\Entity\Order
         - AppBundle\Entity\Product
+        - AppBundle\Entity\Category
+        - AppBundle\Entity\User
 ```
 
 **Congratulations! You've just created your first fully-featured backend!**

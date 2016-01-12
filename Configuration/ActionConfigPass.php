@@ -65,8 +65,6 @@ class ActionConfigPass implements ConfigPassInterface
                 if (isset($viewActions['delete'])) {
                     if ('list' === $view) {
                         $viewActions['delete']['css_class'] .= ' text-danger';
-                    } elseif (in_array($view, array('edit', 'show'))) {
-                        $viewActions['delete']['css_class'] .= ' btn-danger';
                     }
                 }
 

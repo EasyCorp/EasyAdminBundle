@@ -228,8 +228,8 @@ class Configuration implements ConfigurationInterface
 
                         ->scalarNode('brand_color')
                             ->info('The color used in the backend design to highlight important elements.')
-                            ->defaultValue('#E67E22')
-                            ->treatNullLike('#E67E22')
+                            ->defaultValue('#D36B19')
+                            ->treatNullLike('#D36B19')
                             ->validate()
                                 // if present, remove the trailing ';' to avoid CSS issues
                                 ->ifTrue(function ($v) { return ';' === substr(trim($v), -1); })

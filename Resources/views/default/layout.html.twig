@@ -1,129 +1,152 @@
 <!DOCTYPE html>
 <html lang="{{ app.request.locale|split('_')|first|default('en') }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta http-equiv="content-type" content="text/html; charset=utf-8">
-        <meta name="generator" content="EasyAdmin" />
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="generator" content="EasyAdmin" />
 
-        <title>{% block page_title %}{{ block('content_title')|striptags|raw }}{% endblock %}</title>
+    <title>{% block page_title %}{{ block('content_title')|striptags|raw }}{% endblock %}</title>
 
-        {% block head_stylesheets %}
-            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}">
-            <link rel="stylesheet" href="{{ path('_easyadmin_render_css') }}">
-        {% endblock head_stylesheets %}
+    {% block head_stylesheets %}
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/adminlte.min.css') }}">
+        <link rel="stylesheet" href="{{ path('_easyadmin_render_css') }}">
+    {% endblock head_stylesheets %}
 
-        {% for css_asset in easyadmin_config('design.assets.css') %}
-            <link rel="stylesheet" href="{{ asset(css_asset) }}">
-        {% endfor %}
+    {% for css_asset in easyadmin_config('design.assets.css') %}
+        <link rel="stylesheet" href="{{ asset(css_asset) }}">
+    {% endfor %}
 
-        {% block head_favicon %}
-            {% set favicon = easyadmin_config('design.assets.favicon') %}
-            <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}" />
-        {% endblock %}
+    {% block head_favicon %}
+        {% set favicon = easyadmin_config('design.assets.favicon') %}
+        <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}" />
+    {% endblock %}
 
-        {% block head_javascript %}{% endblock %}
-    </head>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
-    {% block body %}
-    <body id="{% block body_id %}{% endblock %}" class="easyadmin {% block body_class %}{% endblock %}">
-    <div id="wrapper" class="container">
-        {% block wrapper %}
-        <nav id="header" class="navbar navbar-default navbar-static-top" role="navigation">
-            {% block header %}
-            <div id="header-contents">
-                <div class="navbar-header">
-                    {% block navbar_header %}
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-nav">
-                        <span class="sr-only">Toggle navigation</span>
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <div id="header-logo" class="navbar-brand">
-                        {% block header_logo %}
-                        {% set _site_name_length = easyadmin_config('site_name')|length <= 10 ? 'short'
-                            : easyadmin_config('site_name')|length <= 12 ? 'medium' : 'long'
-                        %}
-                        <a href="{{ path('easyadmin') }}" class="{{ _site_name_length }}">{{ easyadmin_config('site_name')|raw }}</a>
-                        {% endblock header_logo %}
-                    </div>
-                    {% endblock navbar_header %}
-                </div>
+    {% block head_javascript %}{% endblock %}
+  </head>
 
-                <div class="collapse navbar-collapse" id="header-nav">
-                    {% block header_menu %}
-                        <ul id="header-menu" class="nav navbar-nav">
-                            {% block navigation_items %}
-                                {% for item in easyadmin_config('entities') %}
-                                    <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' : '' }}">
-                                        <a href="{{ path('easyadmin', { entity: item.name, action: 'list' }) }}">
-                                            {{- item.label|trans -}}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            {% endblock %}
-                        </ul>
-                    {% endblock header_menu %}
-                </div>
-
-                <div id="header-footer" class="navbar-right">
-                    {% block header_footer %}
-                        {% if app.user %}
-                            <div id="header-security">
-                                <p>
-                                    <small><i class="fa fa-lock"></i> <span>{{ 'header.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span></small>
-                                    {{ app.user.username|default('Unnamed User') }}
-                                </p>
-                            </div>
-                        {% endif %}
-                    {% endblock header_footer %}
-                </div>
-            </div>
-            {% endblock header %}
-        </nav>
-
-        <div id="content" class="col-lg-10 col-lg-offset-2">
-            {% block content %}
-                {% block flash_messages %}
-                    {{ _entity_config is defined ? include(_entity_config.templates.flash_messages) }}
-                {% endblock flash_messages %}
-
-                <div class="row">
-                    <div id="content-header" class="col-sm-12">
-                        {% block content_header %}
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h1 class="title">{% block content_title %}{% endblock %}</h1>
-                                </div>
-                            </div>
-                        {% endblock content_header %}
-                    </div>
-
-                    <div id="main" class="col-sm-9">
-                        {% block main %}{% endblock %}
-                    </div>
-
-                    <div id="sidebar" class="col-sm-3">
-                        {% block sidebar %}{% endblock %}
-                    </div>
-                </div>
-            {% endblock content %}
+  {% block body %}
+  <body id="{% block body_id %}{% endblock %}" class="easyadmin sidebar-mini {% block body_class %}{% endblock %}">
+    <div class="wrapper">
+      {% block wrapper %}
+      <header class="main-header">
+        <div id="header-logo">
+            {% block header_logo %}
+            {% set _site_name_length = easyadmin_config('site_name')|length <= 10 ? 'short'
+                : easyadmin_config('site_name')|length <= 12 ? 'medium' : 'long'
+            %}
+            <a class="logo" href="{{ path('easyadmin') }}" class="{{ _site_name_length }}">
+              <span class="logo-mini">{{ easyadmin_config('site_name')|striptags|first }}</span>
+              <span class="logo-lg">{{ easyadmin_config('site_name')|raw }}</span>
+            </a>
+            {% endblock header_logo %}
         </div>
-        {% endblock wrapper %}
+        <nav class="navbar navbar-static-top" role="navigation">
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+          </a>
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+
+              <li class="user user-menu">
+                {% block user %}
+                    {% if app.user %}
+                      <i class="hidden-xs fa fa-user"></i>
+                      <span class="sr-only">{{ 'header.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
+                      {{ app.user.username|default('Unnamed User') }}
+                  {% else %}
+                      <i class="hidden-xs fa fa-user"></i>
+                      Anonymous User
+                    {% endif %}
+                {% endblock user %}
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+      <aside class="main-sidebar">
+        {% block sidebar %}
+        <section class="sidebar">
+          {% block main_menu %}
+          <ul class="sidebar-menu">
+            {% block main_menu_items %}
+                {% for item in easyadmin_config('entities') %}
+                    <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' }}">
+                        <a href="{{ path('easyadmin', { entity: item.name, action: 'list' }) }}">
+                            <i class="fa fa-chevron-circle-right"></i>
+                            <span>{{ item.label|trans }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            {% endblock main_menu_items %}
+          </ul>
+          {% endblock main_menu %}
+        </section>
+        {% endblock sidebar %}
+      </aside>
+
+      <div class="content-wrapper">
+        {% block content %}
+            {% block flash_messages %}
+                {{ _entity_config is defined ? include(_entity_config.templates.flash_messages) }}
+            {% endblock flash_messages %}
+
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          {% block content_header %}
+              <h1 class="title">{% block content_title %}{% endblock %}</h1>
+
+              <div class="global-actions">
+                  <div class="row">
+                    {% block global_actions %}{% endblock %}
+                  </div>
+              </div>
+          {% endblock content_header %}
+        </section>
+
+        <section id="main" class="content">
+          {% block main %}{% endblock %}
+        </section>
+          {% endblock content %}
+      </div><!-- /.content-wrapper -->
+      {% endblock wrapper %}
     </div>
 
     {% block body_javascript %}
         <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
-        <script src="{{ asset('bundles/easyadmin/javascript/jquery-flexmenu.min.js') }}"></script>
         <script src="{{ asset('bundles/easyadmin/javascript/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('bundles/easyadmin/javascript/admin.js') }}"></script>
+
+        {% block adminlte_options %}
+            <script type="text/javascript">
+                var AdminLTEOptions = {
+                    animationSpeed: 'fast',
+                    sidebarExpandOnHover: true,
+                    enableBoxRefresh: false,
+                    enableBSToppltip: false,
+                    enableFastclick: false,
+                    enableControlSidebar: false,
+                    enableBoxWidget: false
+                };
+            </script>
+        {% endblock %}
+
+        <script src="{{ asset('bundles/easyadmin/javascript/adminlte.min.js') }}"></script>
     {% endblock body_javascript %}
 
     {% for js_asset in easyadmin_config('design.assets.js') %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
-
-    </body>
-    {% endblock body %}
+  </body>
+  {% endblock body %}
 </html>

@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ActionConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MenuConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass;
@@ -45,6 +46,7 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
 
         $configPasses = array(
             new NormalizerConfigPass(),
+            new MenuConfigPass(),
             new ActionConfigPass(),
             new MetadataConfigPass($container->get('doctrine')),
             new PropertyConfigPass(),

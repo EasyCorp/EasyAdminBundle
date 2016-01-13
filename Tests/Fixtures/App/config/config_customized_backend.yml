@@ -18,6 +18,7 @@ easy_admin:
             list:
                 title: 'Product %%entity_label%%'
                 actions:
+                    - 'show'
                     - { name: 'new', label: 'New %%entity_name%%', icon: 'plus-circle', css_class: 'custom_class_new' }
                     - { name: 'search', label: 'Look for %%entity_label%%', css_class: 'custom_class_search' }
                 fields:

@@ -27,13 +27,13 @@ class EmptyActionLabelsTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        // show action
-        $this->assertEquals('', trim($crawler->filter('#main table tr:first-child td.actions a')->eq(0)->text()));
-        $this->assertEquals('fa fa-search', trim($crawler->filter('#main table tr:first-child td.actions a i')->eq(0)->attr('class')));
-
         // edit action
+        $this->assertEquals('', trim($crawler->filter('#main table tr:first-child td.actions a')->eq(0)->text()));
+        $this->assertEquals('fa fa-pencil', trim($crawler->filter('#main table tr:first-child td.actions a i')->eq(0)->attr('class')));
+
+        // delete action
         $this->assertEquals('', trim($crawler->filter('#main table tr:first-child td.actions a')->eq(1)->text()));
-        $this->assertEquals('fa fa-pencil', trim($crawler->filter('#main table tr:first-child td.actions a i')->eq(1)->attr('class')));
+        $this->assertEquals('fa fa-minus-circle', trim($crawler->filter('#main table tr:first-child td.actions a i')->eq(1)->attr('class')));
     }
 
     public function testCustomActionLabels()

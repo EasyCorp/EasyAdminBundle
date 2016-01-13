@@ -47,7 +47,8 @@ class DefaultBackendTest extends AbstractTestCase
         $cssFiles = array(
             '/bundles/easyadmin/stylesheet/bootstrap.min.css',
             '/bundles/easyadmin/stylesheet/font-awesome.min.css',
-            '/admin/_css/admin.css',
+            '/bundles/easyadmin/stylesheet/adminlte.min.css',
+            '/admin/_css/easyadmin.css',
         );
 
         $crawler = $this->getBackendHomepage();
@@ -61,9 +62,9 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        $this->assertEquals('Easy Admin', $crawler->filter('#header-logo a')->text());
+        $this->assertEquals('E', $crawler->filter('#header-logo a .logo-mini')->text());
+        $this->assertEquals('EasyAdmin', $crawler->filter('#header-logo a .logo-lg')->text());
         $this->assertEquals('/admin/', $crawler->filter('#header-logo a')->attr('href'));
-        $this->assertEquals('short', $crawler->filter('#header-logo a')->attr('class'));
     }
 
     public function testMainMenuItems()
@@ -80,8 +81,8 @@ class DefaultBackendTest extends AbstractTestCase
 
         $i = 0;
         foreach ($menuItems as $label => $url) {
-            $this->assertEquals($label, $crawler->filter('#header-menu li a')->eq($i)->text());
-            $this->assertEquals($url, $crawler->filter('#header-menu li a')->eq($i)->attr('href'));
+            $this->assertEquals($label, trim($crawler->filter('.sidebar-menu li a')->eq($i)->text()));
+            $this->assertEquals($url, $crawler->filter('.sidebar-menu li a')->eq($i)->attr('href'));
 
             ++$i;
         }
@@ -89,19 +90,19 @@ class DefaultBackendTest extends AbstractTestCase
 
     public function testAdminCssFile()
     {
-        $this->client->request('GET', '/admin/_css/admin.css');
+        $this->client->request('GET', '/admin/_css/easyadmin.css');
 
         $this->assertEquals('text/css; charset=UTF-8', $this->client->getResponse()->headers->get('Content-Type'));
-        $this->assertEquals(20, substr_count($this->client->getResponse()->getContent(), '#E67E22'), 'The admin.css file uses the default brand color.');
+        $this->assertEquals(14, substr_count($this->client->getResponse()->getContent(), '#205081'), 'The admin.css file uses the default brand color.');
         // #222222 color is only used by the "dark" color scheme, not the "light" one
-        $this->assertEquals(16, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');
+        $this->assertEquals(6, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');
     }
 
     public function testListViewMainMenu()
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('Category', trim($crawler->filter('#header-menu li.active')->text()));
+        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testListViewTitle()
@@ -123,12 +124,12 @@ class DefaultBackendTest extends AbstractTestCase
             'sortDirection' => 'DESC',
         );
 
-        $this->assertEquals('Search', $crawler->filter('#content-search input[type=search]')->attr('placeholder'));
+        $this->assertEquals('Search', $crawler->filter('.action-search input[type=search]')->attr('placeholder'));
 
         $i = 0;
         foreach ($hiddenParameters as $name => $value) {
-            $this->assertEquals($name, $crawler->filter('#content-search input[type=hidden]')->eq($i)->attr('name'));
-            $this->assertEquals($value, $crawler->filter('#content-search input[type=hidden]')->eq($i)->attr('value'));
+            $this->assertEquals($name, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('name'));
+            $this->assertEquals($value, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('value'));
 
             ++$i;
         }
@@ -138,17 +139,17 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('Add Category', trim($crawler->filter('#content-actions a.btn')->text()));
-        $this->assertCount(0, $crawler->filter('#content-actions a.btn i'), 'The default "new" button shows no icon.');
-        $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('#content-actions a.btn')->attr('href'));
+        $this->assertEquals('Add Category', trim($crawler->filter('.global-actions a.btn')->text()));
+        $this->assertCount(0, $crawler->filter('.global-actions a.btn i'), 'The default "new" button shows no icon.');
+        $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('.global-actions a.btn')->attr('href'));
     }
 
     public function testListViewItemActions()
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
-        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
+        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
     }
 
     public function testListViewTableIdColumn()
@@ -223,7 +224,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestShowView();
 
-        $this->assertEquals('Category', trim($crawler->filter('#header-menu li.active')->text()));
+        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testShowViewPageTitle()
@@ -281,46 +282,11 @@ class DefaultBackendTest extends AbstractTestCase
         // 1. visit a specific 'list' view page
         $crawler = $this->getBackendPage($parameters);
 
-        // 2. click on the 'Show' link of the first item
-        $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
+        // 2. click on the 'Edit' link of the first item
+        $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
         $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
-        $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
-        $queryString = parse_url($refererUrl, PHP_URL_QUERY);
-        parse_str($queryString, $refererParameters);
-
-        $this->assertEquals($parameters, $refererParameters);
-    }
-
-    /**
-     * The 'referer' parameter stores the original 'list' or 'search' page
-     * from which the user browsed to other pages (edit, delete, show). When
-     * visiting several consecutive pages, the 'referer' value should be kept
-     * without changes.
-     */
-    public function testChainedReferer()
-    {
-        $parameters = array(
-            'action' => 'list',
-            'entity' => 'Category',
-            'page' => '2',
-            'sortDirection' => 'ASC',
-            'sortField' => 'name',
-        );
-
-        // 1. visit a specific 'list' view page
-        $crawler = $this->getBackendPage($parameters);
-
-        // 2. click on the 'Show' link of the first item
-        $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
-        $crawler = $this->client->click($link);
-
-        // 3. click on the 'Edit' button
-        $link = $crawler->filter('.form-actions a:contains("Edit")')->link();
-        $crawler = $this->client->click($link);
-
-        // 4. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
@@ -332,7 +298,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestEditView();
 
-        $this->assertEquals('Category', trim($crawler->filter('#header-menu li.active')->text()));
+        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testEditViewTitle()
@@ -416,7 +382,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestNewView();
 
-        $this->assertEquals('Category', trim($crawler->filter('#header-menu li.active')->text()));
+        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testNewViewTitle()
@@ -482,7 +448,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->getBackendPage($parameters);
 
         // 2. click on the 'New' link to browse the 'new' view
-        $link = $crawler->filter('#content-actions a:contains("Add Category")')->link();
+        $link = $crawler->filter('.global-actions a:contains("Add Category")')->link();
         $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
@@ -497,7 +463,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertEquals('Category', trim($crawler->filter('#header-menu li.active')->text()));
+        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testSearchViewTitle()
@@ -580,8 +546,8 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
-        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
+        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
     }
 
     public function testSearchViewShowActionReferer()
@@ -598,12 +564,12 @@ class DefaultBackendTest extends AbstractTestCase
         // 1. visit a specific 'search' view page
         $crawler = $this->getBackendPage($parameters);
 
-        // 2. click on the 'Show' action of the first result
-        $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
+        // 2. click on the 'Edit' action of the first result
+        $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
         $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
-        $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
+        $refererUrl = $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 

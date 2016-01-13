@@ -12,10 +12,10 @@ easy_admin:
             label: 'Categories'
             list:
                 actions:
-                    # override a built-in action with an empty label
-                    - { name: 'show', label: '', icon: 'search' }
                     # override a built-in action with a false label
                     - { name: 'edit', label: false, icon: 'pencil' }
+                    # override a built-in action with an empty label
+                    - { name: 'delete', label: '', icon: 'minus-circle' }
                     # custom action with an empty label
                     - { name: 'action1', label: '', icon: 'icon1' }
                     # custom action with a false label

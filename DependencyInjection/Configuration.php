@@ -161,7 +161,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('site_name')
-                    ->defaultValue('Easy Admin')
+                    ->defaultValue('EasyAdmin')
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
 

@@ -78,7 +78,7 @@ class AdminController extends Controller
      * allows to generate dynamic CSS files that use variables without the need
      * to set up a CSS preprocessing toolchain.
      *
-     * @Route("/_css/admin.css", name="_easyadmin_render_css")
+     * @Route("/_css/easyadmin.css", name="_easyadmin_render_css")
      *
      * @return Response
      */
@@ -86,7 +86,7 @@ class AdminController extends Controller
     {
         $config = $this->container->getParameter('easyadmin.config');
 
-        $cssContent = $this->renderView('@EasyAdmin/css/admin.css.twig', array(
+        $cssContent = $this->renderView('@EasyAdmin/css/easyadmin.css.twig', array(
             'brand_color' => $config['design']['brand_color'],
             'color_scheme' => $config['design']['color_scheme'],
         ));

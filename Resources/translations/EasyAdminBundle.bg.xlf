@@ -58,11 +58,13 @@
                 <target><![CDATA[<strong>%start%</strong>–<strong>%end%</strong> от <strong>%results%</strong>]]></target>
             </trans-unit>
 
-            <!-- misc. elements -->
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Затваряне</target>
+            <!-- user -->
+            <trans-unit id="user.logged_in_as">
+                <source>user.logged_in_as</source>
+                <target>Влезли сте като</target>
             </trans-unit>
+
+            <!-- misc. elements -->
             <trans-unit id="header.logged_in_as">
                 <source>header.logged_in_as</source>
                 <target>Влезли сте като</target>

@@ -92,15 +92,13 @@
                 <target>Getter metoda ne obstaja za to polje ali pa lastnost ni javna</target>
             </trans-unit>
 
-            <!-- misc. elements -->
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Zaprite</target>
-            </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
+            <!-- user -->
+            <trans-unit id="user.logged_in_as">
+                <source>user.logged_in_as</source>
                 <target>Prijavljeni kot</target>
             </trans-unit>
+
+            <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Ali res želite izbrisati ta element?</target>

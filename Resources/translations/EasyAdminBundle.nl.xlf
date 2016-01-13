@@ -92,15 +92,13 @@
                 <target>Getter bestaat niet voor dit veld of de eigenschap is niet public</target>
             </trans-unit>
 
-            <!-- misc. elements -->
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Sluiten</target>
-            </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
+            <!-- user -->
+            <trans-unit id="user.logged_in_as">
+                <source>user.logged_in_as</source>
                 <target>Aangemeld als</target>
             </trans-unit>
+
+            <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Weet je zeker dat je dit item wilt verwijderen?</target>

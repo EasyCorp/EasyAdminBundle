@@ -92,15 +92,13 @@
                 <target>Aucun accesseur n'existe pour cette propriété ou celle-ci n'est pas publique.</target>
             </trans-unit>
 
-            <!-- misc. elements -->
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Fermer</target>
-            </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
+            <!-- user -->
+            <trans-unit id="user.logged_in_as">
+                <source>user.logged_in_as</source>
                 <target>Connecté en tant que</target>
             </trans-unit>
+
+            <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Voulez-vous supprimer cet élément ?</target>

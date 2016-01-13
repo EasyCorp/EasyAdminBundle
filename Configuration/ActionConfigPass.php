@@ -92,7 +92,7 @@ class ActionConfigPass implements ConfigPassInterface
     {
         // basic configuration for default actions
         $actions = $this->normalizeActionsConfig(array(
-            array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash'),
+            array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash-o'),
             array('name' => 'edit', 'label' => 'action.edit', 'icon' => 'edit'),
             array('name' => 'new', 'label' => 'action.new'),
             array('name' => 'search', 'label' => 'action.search'),
@@ -103,12 +103,13 @@ class ActionConfigPass implements ConfigPassInterface
         // define which actions are enabled for each view
         $actionsPerView = array(
             'edit' => array('delete' => $actions['delete'], 'list' => $actions['list']),
-            'list' => array('show' => $actions['show'], 'edit' => $actions['edit'], 'search' => $actions['search'], 'new' => $actions['new']),
+            'list' => array('edit' => $actions['edit'], 'delete' => $actions['delete'], 'search' => $actions['search'], 'new' => $actions['new']),
             'new' => array('list' => $actions['list']),
             'show' => array('delete' => $actions['delete'], 'list' => $actions['list'], 'edit' => $actions['edit']),
         );
 
         // minor tweaks for some action + view combinations
+        $actionsPerView['list']['delete']['icon'] = null;
         $actionsPerView['list']['edit']['icon'] = null;
 
         return $actionsPerView[$view];

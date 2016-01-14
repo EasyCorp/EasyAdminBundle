@@ -39,7 +39,7 @@
 {% block global_actions %}
     {% if easyadmin_action_is_enabled_for_list_view('search', _entity_config.name) %}
         {% set _action = easyadmin_get_action_for_list_view('search', _entity_config.name) %}
-        <div class="col-xs-6 col-sm-8 form-actions">
+
         {% block search_action %}
             <div class="{{ _action.css_class|default('action-search') }}">
                 <form method="get" action="{{ path('easyadmin') }}">
@@ -48,24 +48,27 @@
                     <input type="hidden" name="sortField" value="{{ _request_parameters.sortField }}">
                     <input type="hidden" name="sortDirection" value="{{ _request_parameters.sortDirection }}">
                     <div class="input-group">
-                        <input class="form-control" type="search" name="query" placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters) }}" value="{{ app.request.get('query')|default('') }}">
+                        <input class="form-control" type="search" name="query" value="{{ app.request.get('query')|default('') }}">
+                        <span class="input-group-btn">
+                            <button class="btn" type="submit">
+                                <i class="fa fa-search"></i>
+                                <span class="hidden-xs hidden-sm">{{ _action.label|default('action.search')|trans(_trans_parameters) }}</span>
+                            </button>
+
+                            {% if easyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
+                                {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
+                                {% block new_action %}
+                                    <a class="btn btn-primary {{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}">
+                                        {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                                        {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
+                                    </a>
+                                {% endblock new_action %}
+                            {% endif %}
+                        </span>
                     </div>
                 </form>
             </div>
         {% endblock search_action %}
-        </div>
-    {% endif %}
-
-    {% if easyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
-        {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
-        <div class="col-xs-6 col-sm-4 button-actions">
-        {% block new_action %}
-            <a class="btn btn-primary {{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}">
-                {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
-            </a>
-        {% endblock new_action %}
-        </div>
     {% endif %}
 {% endblock %}
 

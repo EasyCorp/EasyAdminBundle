@@ -433,9 +433,15 @@ a.btn-secondary:active {
 #content #main {
     padding-bottom: 3em;
 }
-
+.content {
+    padding-top: 10px;
+}
 .content-header {
     padding: 12px 15px 0 15px;
+}
+.content-header h1 {
+    margin: 0;
+    font-size: 24px;
 }
 
 /* Sidebar
@@ -490,24 +496,19 @@ body.easyadmin h1.title {
 /* -------------------------------------------------------------------------
    LIST PAGE
    ------------------------------------------------------------------------- */
-body.list .global-actions .button-actions {
+body.list .global-actions {
     text-align: right;
 }
-
-body.list .form-actions .action-search .input-group {
-    position: relative;
-    width: 100%;
+body.list .global-actions .form-control {
+    box-shadow: none;
 }
-
-body.list .form-actions .action-search .input-group:after {
-    content: "\f002";
-    color: {{ colors.gray_light }};
-    font-family: "fontAwesome";
-    font-size: 16px;
-    position: absolute;
-    margin-left: -25px;
-    margin-top: 5px;
-    z-index: 10;
+body.list .global-actions .input-group-btn > button.btn:not(:last-child) {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+body.list .global-actions .input-group-btn a.btn {
+    border-radius: 3px;
+    margin-left: 10px;
 }
 
 /* Responsive tables
@@ -656,12 +657,6 @@ body.new .form-horizontal #form-actions-row {
     padding-right: 15px;
 }
 
-@media (min-width: 768px) {
-    body.new .form-horizontal #form-actions-row {
-        margin-left: 16.66666667%;
-    }
-}
-
 /* -------------------------------------------------------------------------
    EDIT PAGE
    ------------------------------------------------------------------------- */
@@ -685,12 +680,6 @@ body.edit #form-actions-row a.btn {
 body.edit .form-horizontal #form-actions-row {
     padding-left: 15px;
     padding-right: 15px;
-}
-
-@media (min-width: 768px) {
-    body.edit .form-horizontal #form-actions-row {
-        margin-left: 16.66666667%;
-    }
 }
 
 /* -------------------------------------------------------------------------
@@ -884,6 +873,14 @@ body.error .error-message {
     .pagination > li > a,
     .pagination > li > span {
         padding: 6px 12px;
+    }
+
+    body.new .form-horizontal #form-actions-row {
+        margin-left: 16.66666667%;
+    }
+
+    body.edit .form-horizontal #form-actions-row {
+        margin-left: 16.66666667%;
     }
 }
 {% endautoescape %}

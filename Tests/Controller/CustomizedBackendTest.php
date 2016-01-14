@@ -50,7 +50,7 @@ class CustomizedBackendTest extends AbstractTestCase
             'sortDirection' => 'DESC',
         );
 
-        $this->assertEquals('Look for Categories', $crawler->filter('.action-search input[type=search]')->attr('placeholder'));
+        $this->assertEquals('Look for Categories', trim($crawler->filter('.action-search button[type=submit]')->text()));
         $this->assertContains('custom_class_search', $crawler->filter('.action-search')->attr('class'));
 
         $i = 0;

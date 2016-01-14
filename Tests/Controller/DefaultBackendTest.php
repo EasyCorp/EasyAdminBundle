@@ -124,7 +124,7 @@ class DefaultBackendTest extends AbstractTestCase
             'sortDirection' => 'DESC',
         );
 
-        $this->assertEquals('Search', $crawler->filter('.action-search input[type=search]')->attr('placeholder'));
+        $this->assertEquals('Search', trim($crawler->filter('.action-search button[type=submit]')->text()));
 
         $i = 0;
         foreach ($hiddenParameters as $name => $value) {

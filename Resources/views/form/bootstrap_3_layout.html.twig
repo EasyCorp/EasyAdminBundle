@@ -4,6 +4,7 @@
 {% block form_start -%}
     {% if 'easyadmin' == block_prefixes|slice(-2)|first %}
         {% set attr = attr|merge({
+            'class': attr.class|default('') ~ ' ' ~ easyadmin.view ~ '-form',
             'data-view': easyadmin.view,
             'data-entity': easyadmin.entity.name,
             'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name),

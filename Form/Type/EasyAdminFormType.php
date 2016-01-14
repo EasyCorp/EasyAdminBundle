@@ -130,7 +130,6 @@ class EasyAdminFormType extends AbstractType
         return function (Options $options, $value) {
             return array_replace(array(
                 'id' => sprintf('%s-%s-form', $options['view'], strtolower($options['entity'])),
-                'class' => sprintf('%s-form', $options['view']),
             ), $value);
         };
     }

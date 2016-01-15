@@ -58,13 +58,59 @@
                 <target><![CDATA[<strong>%start%</strong>tik - <strong>%end%</strong>era <strong>%results%</strong>tik]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Bai</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>Ez</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Hutsik</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Nulu</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Hutsik utzi</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>PHP Objektua</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Helezina</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Eremu honek ez du getter metodo bat edo honi loturiko propietatea ez da publikoa</target>
+            </trans-unit>
+
             <!-- user -->
             <trans-unit id="user.logged_in_as">
                 <source>user.logged_in_as</source>
                 <target>Konektatutako erabiltzailea</target>
             </trans-unit>
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>Erabiltzaile izengabea</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>Erabiltzaile anonimoa</target>
+            </trans-unit>
 
             <!-- misc. elements -->
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Nabigazioa txandakatu</target>
+            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Ziur zaude elementu hau ezabatu nahi duzula?</target>
@@ -73,9 +119,21 @@
                 <source>delete_modal.content</source>
                 <target>Ekintza hau ezin da desegin.</target>
             </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Elementu bat erantsi</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Beste elementu bat erantsi</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Elementu hau ezabatu</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
-                <target>Hutsa|Hutsak</target>
+                <target>Errore</target>
             </trans-unit>
         </body>
     </file>

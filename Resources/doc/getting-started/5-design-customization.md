@@ -64,9 +64,7 @@ easy_admin:
 ![The default backend homepage using the light color scheme](../images/easyadmin-design-color-scheme-light.png)
 
 Combine the `light` color scheme with the `brand_color` option to get a myriad
-of new backend designs:
-
-![Combining the light color scheme with a colorful palette](../images/easyadmin-design-brand-color-light-theme.png)
+of new backend designs.
 
 Customizing Form Design
 -----------------------

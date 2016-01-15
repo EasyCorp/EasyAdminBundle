@@ -245,6 +245,9 @@ a.btn-secondary:active {
 
 /* Forms
    ------------------------------------------------------------------------- */
+.form-inline .form-control {
+    margin-bottom: 5px;
+}
 .form-control,
 .form-inline .form-control {
     border: 1px solid #b6b6b6;
@@ -666,7 +669,7 @@ body.edit textarea {
 body.edit .field-date select + select {
     margin-top: .5em;
 }
-body.new .field-collection-action {
+body.edit .field-collection-action {
     margin: -15px 0 10px;
 }
 body.edit .field-collection-item-action {
@@ -873,6 +876,10 @@ body.error .error-message {
     .pagination > li > a,
     .pagination > li > span {
         padding: 6px 12px;
+    }
+
+    .form-inline .form-control {
+        margin-bottom: 0;
     }
 
     body.new .form-horizontal #form-actions-row {

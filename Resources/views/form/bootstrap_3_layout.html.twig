@@ -4,6 +4,7 @@
 {% block form_start -%}
     {% if 'easyadmin' == block_prefixes|slice(-2)|first %}
         {% set attr = attr|merge({
+            'class': attr.class|default('') ~ ' ' ~ easyadmin.view ~ '-form',
             'data-view': easyadmin.view,
             'data-entity': easyadmin.entity.name,
             'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name),
@@ -28,13 +29,11 @@
             });
         {% endset %}
 
-        <div class="form-group field-collection-item-action">
-            <div class="col-sm-12">
-                <a href="#" onclick="{{ remove_item_javascript|raw }}" class="pull-right text-danger">
-                    <i class="fa fa-remove"></i>
-                    {{ 'action.remove_item'|trans }}
-                </a>
-            </div>
+        <div class="text-right field-collection-item-action">
+            <a href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
+                <i class="fa fa-remove"></i>
+                {{ 'action.remove_item'|trans }}
+            </a>
         </div>
     {% endif %}
 {% endblock form_widget %}
@@ -263,13 +262,11 @@
             });
         {% endset %}
 
-        <div class="form-group field-collection-action">
-            <div class="col-sm-12">
-                <a href="#" onclick="{{ js_add_item|raw }}" class="pull-right text-primary">
-                    <i class="fa fa-plus-square"></i>
-                    {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
-                </a>
-            </div>
+        <div class="text-right field-collection-action">
+            <a href="#" onclick="{{ js_add_item|raw }}" class="text-primary">
+                <i class="fa fa-plus-square"></i>
+                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
+            </a>
         </div>
     {% endif %}
 {% endblock collection_row %}
@@ -366,7 +363,7 @@
                 <div id="form-actions-row">
                     {% block item_actions %}
                         {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
-                        <button type="submit" class="btn">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, 'messages') }}
                         </button>
 
@@ -381,7 +378,7 @@
                                 {% set _action_href = path(_action.name, { entity: easyadmin.entity.name, id: attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) }) %}
                             {% endif %}
 
-                            <a class="btn {{ _action.css_class|default('') }}" href="{{ _action_href }}">
+                            <a class="btn btn-primary {{ _action.css_class|default('') }}" href="{{ _action_href }}">
                                 {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                 {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters, 'messages') }}
                             </a>

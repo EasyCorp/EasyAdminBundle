@@ -92,15 +92,21 @@
                 <target>Este campo no tiene un método getter o la propiedad asociada no es pública</target>
             </trans-unit>
 
+            <!-- user -->
+            <trans-unit id="user.logged_in_as">
+                <source>user.logged_in_as</source>
+                <target>Conectado/a como</target>
+            </trans-unit>
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>Usuario sin nombre</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>Usuario anónimo</target>
+            </trans-unit>
+
             <!-- misc. elements -->
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Cerrar</target>
-            </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
-                <target>Conectado como</target>
-            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>¿Realmente quieres borrar este elemento?</target>

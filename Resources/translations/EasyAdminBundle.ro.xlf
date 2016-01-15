@@ -92,15 +92,13 @@
                 <target>Metoda de tip Get nu există pentru acest câmp sau proprietatea nu e publică</target>
             </trans-unit>
 
-            <!-- misc. elements -->
-            <trans-unit id="header.close">
-                <source>header.close</source>
-                <target>Închide</target>
-            </trans-unit>
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
+            <!-- user -->
+            <trans-unit id="user.logged_in_as">
+                <source>user.logged_in_as</source>
                 <target>Înregistrat ca</target>
             </trans-unit>
+
+            <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Ești sigur că vrei să ștergi acest item?</target>

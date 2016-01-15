@@ -13,7 +13,7 @@ EasyAdmin
 [![Coverage Status](https://coveralls.io/repos/javiereguiluz/EasyAdminBundle/badge.svg?branch=master)](https://coveralls.io/r/javiereguiluz/EasyAdminBundle?branch=master)
 <sup><kbd>**SUPPORTS SYMFONY 2.x and 3.x**</kbd></sup>
 
-<img src="https://cloud.githubusercontent.com/assets/73419/5748254/e0697de0-9c3e-11e4-8b42-792a25538676.png" alt="EasyAdmin creates Symfony Backends" title="EasyAdmin" align="right" />
+<img src="https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-default-backend.png" alt="Symfony Backends created with EasyAdmin" align="right" />
 
 EasyAdmin lets you create administration backends for Symfony applications
 with unprecedented simplicity.
@@ -28,7 +28,7 @@ with unprecedented simplicity.
 
 **Requirements**
 
-  * Symfony 2.3+ applications (Silex not supported).
+  * Symfony 2.3+ applications (including Symfony 3).
   * Doctrine ORM entities (Doctrine ODM and Propel not supported).
   * Entities with simple primary keys (composite keys not supported).
   * Entities using inheritance are not supported.
@@ -126,7 +126,7 @@ Your First Backend
 
 Creating your first backend will take you less than 30 seconds. Let's suppose
 that your Symfony application defines three Doctrine ORM entities called
-`Customer`, `Order` and `Product`.
+`Product`, `Category` and `User`.
 
 Creating the backend for those entities just require you to add the following
 configuration in the `app/config/config.yml` file:
@@ -135,16 +135,16 @@ configuration in the `app/config/config.yml` file:
 # app/config/config.yml
 easy_admin:
     entities:
-        - AppBundle\Entity\Customer
-        - AppBundle\Entity\Order
         - AppBundle\Entity\Product
+        - AppBundle\Entity\Category
+        - AppBundle\Entity\User
 ```
 
 **Congratulations! You've just created your first fully-featured backend!**
 Browse the `/admin` URL in your Symfony application and you'll get access to
 the admin backend:
 
-![Default listing interface](https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-list-view.png)
+![Default EasyAdmin Backend interface](https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-default-backend.png)
 
 Creating a backend is that simple because EasyAdmin doesn't generate any code.
 All resources are served on-the-fly to ensure an exceptional developer

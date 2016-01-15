@@ -1,0 +1,893 @@
+/*! ========================================================================
+    EasyAdmin Default Theme | (c) 2015 Javier Eguiluz | MIT License
+    ======================================================================== */
+
+{% set color_schemes = {
+    'dark': {
+        danger: '#D42124',
+        success: '#006B2E',
+        text: '#222222',
+        text_muted: '#737373',
+        link: '#205081',
+        black: '#111111',
+        white: '#FFFFFF',
+        gray_darker: '#252525',
+        gray_dark: '#444',
+        gray: '#AAA',
+        gray_light: '#CCC',
+        gray_lighter: '#F5F5F5',
+        page_background: '#F5F5F5',
+        table_header: '#EEE',
+        table_border: '#CCC',
+        table_row_border: '#DDD',
+    },
+    'light': {
+        danger: '#D42124',
+        success: '#006B2E',
+        text: '#444444',
+        text_muted: '#737373',
+        link: '#205081',
+        black: '#333333',
+        white: '#FFFFFF',
+        gray_darker: '#444',
+        gray_dark: '#AAA',
+        gray: '#CCC',
+        gray_light: '#F5F5F5',
+        gray_lighter: '#FAFAFA',
+        page_background: '#FFFFFF',
+        table_header: '#FAFAFA',
+        table_border: '#FFFFFF',
+        table_row_border: '#E5E5E5',
+    }
+} %}
+
+{% set colors = color_schemes[color_scheme] %}
+
+{% autoescape false %}
+
+/* -------------------------------------------------------------------------
+   BASIC STYLES
+   ------------------------------------------------------------------------- */
+body {
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Links
+   ------------------------------------------------------------------------- */
+a        { color: {{ colors.link }}; }
+a:hover  { opacity: 0.9; }
+a:active { outline: 0; }
+
+#main a:active {
+    position: relative;
+    top: 1px;
+}
+
+a.text-primary,
+a.text-primary:focus {
+    color: {{ colors.link }};
+}
+a.text-danger,
+a.text-danger:focus {
+    color: {{ colors.danger }};
+}
+a.text-primary:hover,
+a.text-danger:hover {
+    opacity: 0.9;
+}
+
+/* Lists
+   ------------------------------------------------------------------------- */
+ul, ol {
+    margin: 1em 0 1em 1em;
+    padding: 0;
+}
+li {
+    margin-bottom: 1em;
+}
+
+/* Flash messages
+   ------------------------------------------------------------------------- */
+div.flash {
+    padding: .5em;
+}
+div.flash-success {
+    background: {{ colors.success }};
+    color: {{ colors.white }};
+}
+div.flash-error {
+    background: {{ colors.danger }};
+    color: {{ colors.white }};
+}
+div.flash-error strong {
+    padding-right: .5em;
+}
+
+/* Labels
+   ------------------------------------------------------------------------- */
+/* this prevents overriding default styles for labels (label-info, label-primary, etc.) */
+.label:not([class*=label-]) {
+    background: {{ colors.gray_darker }};
+}
+.label {
+    color: {{ colors.white }};
+    display: inline-block;
+    font-size: 11px;
+    padding: 4px;
+    text-transform: uppercase;
+}
+
+.label-success {
+    /* !important is required to override AdminLTE styles */
+    background: {{ colors.success }} !important;
+}
+.label-danger {
+    /* !important is required to override AdminLTE styles */
+    background: {{ colors.danger }} !iportant;
+}
+.label-empty {
+    background: transparent;
+    border: 2px dotted;
+    border-radius: 4px;
+    color: {{ colors.gray_light }};
+    padding: 4px 8px;
+}
+
+/* this makes boolean labels to be of the same width for most languages */
+.boolean .label,
+.toggle .label {
+    min-width: 33px;
+}
+
+/* Switches / toggles
+   ------------------------------------------------------------------------- */
+.toggle .btn {
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.toggle .toggle.btn-success {
+    border-color: {{ colors.success }};
+    background: {{ colors.success }};
+}
+.toggle .toggle.btn-danger {
+    border-color: {{ colors.danger }};
+    background: {{ colors.danger }};
+}
+.toggle .btn-success .toggle-handle {
+    box-shadow: -2px 0 1px rgba(0, 0, 0, .2);
+}
+.toggle .btn-danger .toggle-handle {
+    box-shadow: 2px 0 1px rgba(0, 0, 0, .2);
+}
+.toggle .toggle .toggle-on {
+    background: {{ colors.success }};
+}
+.toggle .toggle .toggle-off {
+    background: {{ colors.danger }};
+}
+.toggle .toggle-group label {
+    padding-top: 3px;
+}
+.toggle .toggle.btn-xs {
+    width: 44px;
+}
+.toggle .toggle.btn-xs .toggle-handle {
+    height: 18px;
+    margin-top: 1px;
+    margin-right: 5px;
+}
+.toggle .toggle-on.btn-xs,
+.toggle .toggle-off.btn-xs {
+    padding-left: 4px;
+    text-align: center;
+}
+
+/* Badges
+   ------------------------------------------------------------------------- */
+span.badge {
+    background-color: {{ brand_color }};
+}
+
+/* Buttons
+   ------------------------------------------------------------------------- */
+.btn:focus {
+    outline: none;
+}
+.btn + .btn {
+    margin-left: 5px;
+}
+.btn-primary,
+.btn-danger {
+    font-weight: bold;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:active:hover {
+    background-color: {{ brand_color }};
+    border-color: {{ brand_color }};
+}
+
+a.btn {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: {{ colors.white }};
+    display: inline-block;
+    line-height: 1.42857143;
+    outline: none;
+    padding: 6px 12px;
+    text-align: center;
+}
+
+.btn i {
+    font-size: 16px;
+    margin-right: 2px;
+}
+
+/* .bnt-secondary is for 'buttons' displayed as text links */
+a.btn-secondary,
+a.btn-secondary:hover {
+    background: transparent;
+    color: {{ brand_color }};
+    text-decoration: underline;
+}
+a.btn-secondary:hover {
+    text-decoration: none;
+}
+a.btn-secondary:active {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+/* Forms
+   ------------------------------------------------------------------------- */
+.form-inline .form-control {
+    margin-bottom: 5px;
+}
+.form-control,
+.form-inline .form-control {
+    border: 1px solid #b6b6b6;
+    border-radius: 0;
+{% if 'dark' == color_scheme %}
+    box-shadow: 0 0 3px rgba(0, 0, 0, .15);
+{% endif %}
+    color: {{ colors.text }};
+    -webkit-transition: none;
+    transition: none;
+}
+.form-control:focus {
+{% if 'dark' == color_scheme %}
+    border-color: {{ colors.gray }};
+{% elseif 'light' == color_scheme %}
+    border-color: {{ colors.gray_darker }};
+{% endif %}
+}
+
+.has-error .error-block {
+    color: {{ colors.danger }};
+    font-weight: bold;
+    padding-top: 5px;
+}
+.has-error .error-block .label-danger {
+    margin-right: 3px;
+}
+.has-error .error-block ul {
+    margin: .5em 0 .5em 1.5em;
+}
+.has-error .error-block ul li {
+    margin-bottom: .5em;
+}
+
+.help-block,
+.has-error .help-block {
+    color: {{ colors.text_muted }};
+    font-size: 13px;
+}
+.nullable-control {
+   padding-top: 5px;
+}
+
+/* Field: collection
+   ------------------------------------------------------------------------- */
+.field-collection .collection-empty {
+    margin: .5em 0;
+}
+
+/* Select2 widget
+   ------------------------------------------------------------------------- */
+/* these styles must be applied after loading the default select2 styles */
+.select2-container--bootstrap .select2-selection {
+    border: 1px solid #b6b6b6;
+    border-radius: 0;
+    box-shadow: 0 0 3px rgba(0, 0, 0, .15);
+    color: {{ colors.text }};
+    -webkit-transition: none;
+    transition: none;
+}
+.select2-container--bootstrap .select2-selection--single .select2-selection__rendered {
+    color: {{ colors.text }};
+}
+.select2-container--bootstrap .select2-results__option {
+    margin-bottom: 0;
+}
+.select2-container--bootstrap .select2-results__option[aria-selected=true] {
+    background-color: {{ colors.gray_light }};
+    font-weight: bold;
+}
+.select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+    background-color: {{ brand_color }};
+}
+.select2-container--bootstrap .select2-selection--multiple .select2-selection__choice {
+    color: {{ colors.text }};
+}
+.select2-container--bootstrap .select2-selection--multiple .select2-selection__choice__remove {
+    color: {{ colors.danger }};
+    font-weight: bold;
+}
+.select2-container--bootstrap .select2-search--dropdown .select2-search__field {
+    border: 1px solid {{ colors.gray_dark }};
+    border-radius: 0;
+    margin: 5px 10px;
+    padding: 6px;
+    width: 96%;
+}
+.select2-search--inline .select2-search__field:focus {
+    outline: 0;
+    border: 0;
+}
+
+/* Modal windows
+   ------------------------------------------------------------------------- */
+.modal-dialog .modal-content {
+    border-radius: 0;
+}
+.modal-dialog .modal-content .modal-body h4 {
+    font-size: 21px;
+    margin: .5em 0;
+}
+.modal-dialog .modal-footer {
+    background: {{ colors.gray_lighter }};
+    border-top: 1px solid {{ colors.gray_light }};
+    margin-top: 1.5em;
+}
+
+/* -------------------------------------------------------------------------
+   LAYOUT
+   ------------------------------------------------------------------------- */
+
+/* Wrapper
+   ------------------------------------------------------------------------- */
+.content-wrapper {
+    background: {{ colors.page_background }};
+}
+
+/* Header
+   ------------------------------------------------------------------------- */
+.main-header {
+    background: {{ brand_color }};
+}
+.main-header .logo {
+    background: rgba(0, 0, 0, 0.15);
+    color: {{ colors.white }};
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif; /* needed to override AdminLTE styles */
+    font-weight: bold;
+}
+.main-header .logo-lg {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.main-header .logo-mini {
+    font-weight: bold;
+    text-align: center;
+}
+.main-header .logo-long .logo-lg {
+    font-size: 16px;
+}
+.main-header > img {
+    margin-top: -2px;
+    max-height: 26px;
+    max-width: 94%;
+}
+.main-header li {
+    margin-bottom: 0;
+}
+
+.main-header > .navbar {
+{% if 'dark' == color_scheme %}
+    background-color: {{ brand_color }};
+    color: {{ colors.white }};
+{% elseif 'light' == color_scheme %}
+    background-color: {{ colors.gray_light }};
+    color: {{ brand_color }};
+{% endif %}
+    min-height: 40px;
+}
+
+.main-header .navbar .sidebar-toggle {
+{% if 'dark' == color_scheme %}
+    color: {{ colors.white }};
+{% elseif 'light' == color_scheme %}
+    color: {{ colors.text_muted }};
+{% endif %}
+    padding: 10px;
+}
+.main-header .navbar .sidebar-toggle:hover {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.navbar-custom-menu .user-menu {
+{% if 'dark' == color_scheme %}
+    color: rgba(255, 255, 255, 0.8);
+{% elseif 'light' == color_scheme %}
+    color: {{ colors.text_muted }};
+{% endif %}
+    font-size: 13px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+/* Main body
+   ------------------------------------------------------------------------- */
+#content #main {
+    padding-bottom: 3em;
+}
+.content {
+    padding-top: 10px;
+}
+.content-header {
+    padding: 12px 15px 0 15px;
+}
+.content-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Sidebar
+   ------------------------------------------------------------------------- */
+.main-sidebar,
+.wrapper {
+{% if 'dark' == color_scheme %}
+    background-color: {{ colors.gray_darker }};
+{% elseif 'light' == color_scheme %}
+    background-color: {{ colors.gray_light }};
+{% endif %}
+}
+.main-sidebar {
+    padding-top: 90px;
+}
+.sidebar-menu > li > a {
+{% if 'dark' == color_scheme %}
+    color: rgba(255, 255, 255, 0.6);
+{% elseif 'light' == color_scheme %}
+    color: {{ colors.gray_darker }};
+{% endif %}
+    font-weight: bold;
+}
+.sidebar-menu > li > a i {
+{% if 'light' == color_scheme %}
+    color: {{ colors.gray_dark }};
+{% endif %}
+}
+.sidebar-menu > li:hover > a,
+.sidebar-menu > li.active > a {
+{% if 'dark' == color_scheme %}
+    color: {{ colors.white }};
+    background: rgba(0, 0, 0, 0.4);
+{% elseif 'light' == color_scheme %}
+    background: rgba(0, 0, 0, 0.1);
+{% endif %}
+}
+.sidebar-menu > li:hover > a i,
+.sidebar-menu > li.active > a i {
+{% if 'dark' == color_scheme %}
+    color: {{ colors.white }};
+{% endif %}
+}
+
+/* -------------------------------------------------------------------------
+   COMMON ADMIN PAGES
+   ------------------------------------------------------------------------- */
+body.easyadmin h1.title {
+    margin-bottom: 10px;
+}
+
+/* -------------------------------------------------------------------------
+   LIST PAGE
+   ------------------------------------------------------------------------- */
+body.list .global-actions {
+    text-align: right;
+}
+body.list .global-actions .form-control {
+    box-shadow: none;
+}
+body.list .global-actions .input-group-btn > button.btn:not(:last-child) {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+body.list .global-actions .input-group-btn a.btn {
+    border-radius: 3px;
+    margin-left: 10px;
+}
+
+/* Responsive tables
+   ------------------------------------------------------------------------- */
+body.list table {
+    background: transparent;
+    border: 0;
+}
+body.list table thead {
+    display: none;
+}
+body.list .table tbody {
+    background: transparent;
+    border: 0;
+}
+body.list table tbody tr {
+    background: {{ colors.white }};
+{% if 'dark' == color_scheme %}
+    border: 1px solid {{ colors.gray_light }};
+{% elseif 'light' == color_scheme %}
+    border: 1px solid {{ colors.gray }};
+{% endif %}
+    display: block;
+    margin-bottom: 1em;
+}
+body.list table tbody td {
+    border-bottom: 1px solid {{ colors.table_row_border }};
+    border-top: 0;
+    display: block;
+    text-align: right;
+    vertical-align: middle;
+}
+body.list table tbody td:last-child {
+    border-bottom: 0;
+}
+table td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+}
+table td:after {
+    clear: both;
+    content: "";
+    display: block;
+}
+
+body.list table tbody td.image img {
+    border: 2px solid {{ colors.white }};
+    box-shadow: 0 0 2px {{ colors.gray_light }};
+    max-height: 50px;
+    max-width: 150px;
+}
+body.list table tbody td.association .badge {
+    font-size: 13px;
+}
+body.list table tbody td.actions a {
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* Search results
+   ------------------------------------------------------------------------- */
+body.list .table tbody span.highlight {
+    background: #FF9;
+    border-radius: 2px;
+    padding: 1px;
+}
+body.list .table tbody .no-results span.highlight,
+body.list .table tbody .actions span.highlight {
+    background: 0;
+    border-radius: 0;
+}
+
+/* Pagination
+   ------------------------------------------------------------------------- */
+body.list .pagination {
+    float: right;
+    margin: 0;
+}
+body.list .pagination > .disabled > span {
+    background: transparent;
+    border: 1px solid transparent;
+{% if 'dark' == color_scheme %}
+    color: {{ colors.text_muted }};
+{% elseif 'light' == color_scheme %}
+    color: {{ colors.gray }};
+{% endif %}
+}
+body.list .pagination > li > a {
+    background: {{ colors.white }};
+    border-color: {{ colors.gray_light }};
+    border-radius: 0;
+    color: {{ colors.text }};
+}
+body.list .pagination > li > a:hover {
+    background: {{ brand_color }};
+    color: {{ colors.white }};
+}
+.pagination > li > a,
+.pagination > li > span {
+    padding: 6px 8px;
+}
+body.list .pagination > li i {
+    padding: 0 3px;
+}
+/* this hack is needed to avoid the last pagination page from showing wrong
+   borders for the second pagination element (we need to put this element above
+   the third element) */
+body.list .pagination.last-page li:nth-child(2) {
+    position: relative;
+    z-index: 1;
+}
+
+/* -------------------------------------------------------------------------
+   FORM PAGE
+   ------------------------------------------------------------------------- */
+form label.control-label.required:after {
+    content: "\00a0*";
+    color: {{ colors.danger }};
+    font-size: 16px;
+    position: absolute;
+}
+
+/* -------------------------------------------------------------------------
+   NEW PAGE
+   ------------------------------------------------------------------------- */
+body.new textarea {
+    min-height: 250px;
+}
+body.new .field-date select + select {
+    margin-top: .5em;
+}
+body.new .field-collection-action {
+    margin: -15px 0 10px;
+}
+body.new .field-collection-item-action {
+    margin: 5px 0 0;
+}
+
+body.new #form-actions-row button,
+body.new #form-actions-row a.btn {
+    margin-bottom: 10px;
+}
+body.new .form-horizontal #form-actions-row {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* -------------------------------------------------------------------------
+   EDIT PAGE
+   ------------------------------------------------------------------------- */
+body.edit textarea {
+    min-height: 250px;
+}
+body.edit .field-date select + select {
+    margin-top: .5em;
+}
+body.edit .field-collection-action {
+    margin: -15px 0 10px;
+}
+body.edit .field-collection-item-action {
+    margin: 5px 0 0;
+}
+
+body.edit #form-actions-row button,
+body.edit #form-actions-row a.btn {
+    margin-bottom: 10px;
+}
+body.edit .form-horizontal #form-actions-row {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* -------------------------------------------------------------------------
+   SHOW PAGE
+   ------------------------------------------------------------------------- */
+body.show .form-control {
+{% if 'dark' == color_scheme %}
+    background: {{ colors.white }};
+{% elseif 'light' == color_scheme %}
+    background: {{ colors.gray_lighter }};
+{% endif %}
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
+}
+body.show .form-control.text {
+    min-height: 34px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+body.show .field-image img {
+    max-height: 300px;
+    max-width: 100%;
+}
+
+/* -------------------------------------------------------------------------
+   ERROR PAGES
+   ------------------------------------------------------------------------- */
+body.error .error-description {
+    background: {{ colors.white }};
+    border: 1px solid {{ colors.gray_lighter }};
+    box-shadow: 0 0 3px {{ colors.gray_light }};
+    margin: 2em auto 2em;
+    max-width: 90%;
+    min-height: 150px;
+    padding: 0;
+}
+body.error .error-description h1 {
+    background: {{ colors.danger }};
+    color: {{ colors.white }};
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 0;
+    padding: 10px;
+    text-transform: uppercase;
+}
+body.error .error-message {
+    font-size: 16px;
+    padding: 15px;
+}
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   VERTICAL TABLETS and LANDSCAPE SMARTPHONES
+   ------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+    ul, ol {
+        margin-left: 2em;
+    }
+
+    .main-header > .navbar {
+      min-height: 50px;
+    }
+    .main-header .logo {
+        text-align: left;
+    }
+    .main-header .logo img {
+        max-height: 48px;
+    }
+
+    .main-header .navbar .sidebar-toggle {
+        padding: 15px;
+    }
+    .navbar-custom-menu .user-menu {
+        padding: 17px 15px 13px;
+    }
+    .navbar-custom-menu .user-menu i {
+        padding-right: 4px;
+    }
+
+    .main-sidebar {
+        padding-top: 50px;
+    }
+
+    /* these table styles are needed to override the "responsive tables" styles */
+    body.list table {
+        background: {{ colors.white }};
+        border: 1px solid {{ colors.table_border }};
+    }
+    body.list table thead {
+        display: table-header-group;
+    }
+    body.list table thead th {
+        background: {{ colors.table_header }};
+        padding: 0;
+    }
+    body.list table thead th i {
+        color: {{ colors.gray }};
+        padding: 0 3px;
+    }
+    body.list table thead th a,
+    body.list table thead th span {
+        color: {{ colors.text }};
+        display: block;
+        padding: 10px 6px;
+        white-space: nowrap;
+    }
+    body.list table thead th a:hover {
+        background: {{ colors.gray_light }};
+        text-decoration: none;
+    }
+    body.list table thead th.sorted,
+    body.list table thead th.sorted a {
+{% if 'dark' == color_scheme %}
+        background: {{ brand_color }};
+        color: {{ colors.white }};
+{% endif %}
+    }
+    body.list table thead th.sorted a:hover i,
+    body.list table thead th.sorted i {
+{% if 'dark' == color_scheme %}
+        color: {{ colors.white }};
+{% elseif 'light' == color_scheme %}
+        color: {{ brand_color }};
+{% endif %}
+    }
+    body.list th.boolean, body.list td.boolean,
+    body.list th.toggle, body.list td.toggle,
+    body.list td.image {
+        text-align: center;
+    }
+
+    body.list .table thead tr th {
+        border-bottom: 2px solid {{ colors.gray_light }};
+    }
+    body.list .table thead tr th.sorted {
+        border-bottom: 2px outset {{ brand_color }};
+    }
+    /* these styles are needed to fix some visual glitches when the sort field is the first column */
+    body.list .table thead tr th:first-child.sorted {
+{% if 'dark' == color_scheme %}
+        border-left: 1px solid {{ brand_color }};
+        border-top: 1px solid {{ brand_color }};
+{% endif %}
+    }
+    body.list .table tbody {
+        border-bottom: 2px double {{ colors.gray_light }};
+    }
+    body.list table tbody tr {
+        border: 0;
+        display: table-row;
+        margin-bottom: 0;
+    }
+    body.list table tbody td {
+        border-bottom: 0;
+        border-top: 1px solid {{ colors.table_row_border }};
+        display: table-cell;
+        text-align: left;
+    }
+    table td:before {
+        content: none;
+        float: none;
+    }
+    body.list table tbody td.sorted {
+        background: {{ colors.gray_lighter }};
+        border-color: {{ colors.table_row_border }};
+    }
+    body.list .table tbody tr:hover td {
+        background: {{ colors.gray_lighter }};
+    }
+    body.list table tbody td.actions a {
+        margin-left: 0;
+        margin-right: 10px;
+    }
+
+    .field-date select + select,
+    .field-time select + select,
+    .field-datetime select + select {
+        margin-left: 2px;
+        margin-top: 0;
+    }
+
+    body.error .error-description {
+        max-width: 70%;
+    }
+
+    .pagination > li > a,
+    .pagination > li > span {
+        padding: 6px 12px;
+    }
+
+    .form-inline .form-control {
+        margin-bottom: 0;
+    }
+
+    body.new .form-horizontal #form-actions-row {
+        margin-left: 16.66666667%;
+    }
+
+    body.edit .form-horizontal #form-actions-row {
+        margin-left: 16.66666667%;
+    }
+}
+{% endautoescape %}

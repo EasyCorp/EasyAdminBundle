@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block head_stylesheets %}
-    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}">
     {{ parent() }}
 {% endblock %}
 
@@ -30,11 +30,11 @@
     <script src="{{ asset('bundles/easyadmin/javascript/jquery.are-you-sure.min.js') }}"></script>
     <script type="text/javascript">
         $(function() {
-            $('#new-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
+            $('.new-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
         });
     </script>
 
-    <script src="{{ asset('bundles/easyadmin/javascript/select2.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
     <script type="text/javascript">
         $(function() {
             // Select2 widget is only enabled for the <select> elements which explicitly ask for it

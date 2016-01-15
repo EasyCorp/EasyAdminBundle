@@ -13,7 +13,7 @@ EasyAdmin
 [![Coverage Status](https://coveralls.io/repos/javiereguiluz/EasyAdminBundle/badge.svg?branch=master)](https://coveralls.io/r/javiereguiluz/EasyAdminBundle?branch=master)
 <sup><kbd>**SUPPORTS SYMFONY 2.x and 3.x**</kbd></sup>
 
-<img src="https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-default-backend.png" alt="Symfony Backends created with EasyAdmin" align="right" />
+<img src="https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-promo.png" alt="Symfony Backends created with EasyAdmin" align="right" />
 
 EasyAdmin lets you create administration backends for Symfony applications
 with unprecedented simplicity.

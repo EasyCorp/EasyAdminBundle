@@ -33,7 +33,7 @@
     </head>
 
     {% block body %}
-    <body id="{% block body_id %}{% endblock %}" class="easyadmin sidebar-mini {% block body_class %}{% endblock %}">
+    <body id="{% block body_id %}{% endblock %}" class="easyadmin sidebar-mini fixed {% block body_class %}{% endblock %}">
         <div class="wrapper">
         {% block wrapper %}
             <header class="main-header">
@@ -46,7 +46,7 @@
                     {% endblock header_logo %}
                 </div>
 
-                <nav class="navbar navbar-static-top" role="navigation">
+                <nav class="navbar navbar-fixed-top" role="navigation">
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                         <span class="sr-only">{{ 'toggle_navigation'|trans(domain = 'EasyAdminBundle') }}</span>
                     </a>
@@ -137,6 +137,7 @@
                 </script>
             {% endblock %}
 
+            <script src="{{ asset('bundles/easyadmin/javascript/jquery.slimscroll.min.js') }}"></script>
             <script src="{{ asset('bundles/easyadmin/javascript/adminlte.min.js') }}"></script>
             <script src="{{ asset('bundles/easyadmin/javascript/easyadmin.js') }}"></script>
         {% endblock body_javascript %}

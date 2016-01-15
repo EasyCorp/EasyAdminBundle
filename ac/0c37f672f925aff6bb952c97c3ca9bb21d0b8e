@@ -1,0 +1,319 @@
+---------------------------------------------------------------------------
+
+by fatihkahveci at 2016-01-12T21:28:06Z
+
+ :+1: Awesome
+
+---------------------------------------------------------------------------
+
+by rubengc at 2016-01-12T21:33:25Z
+
+Awesome? ... Amazing! Beautiful! Incredible!
+
+Say good bey to all about you think about admin development and say hello to the future!
+
+Easyadmin is here baby!
+
+That's can replace the current description of the project right? XD
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-12T22:30:20Z
+
+It looks great so far :)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-01-13T06:39:43Z
+
+Beautiful job! :+1:
+
+---------------------------------------------------------------------------
+
+by gabiudrescu at 2016-01-13T08:10:32Z
+
+looks very promising :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-13T10:19:19Z
+
+I have a question about how to name and create Twig blocks which are easy to override.
+
+If you have this code:
+
+```html
+<div class="global-actions">
+    <div class="row">
+        ...
+    </div>
+</div>
+```
+
+Which Twig blocks would you create for EasyAdmin?
+
+**Option 1**
+
+```twig
+<div class="global-actions">
+    <div class="row">
+        {% block global_actions %}{% endblock %}
+    </div>
+</div>
+```
+
+**Option 2**
+
+```twig
+{% block global_actions %}
+<div class="global-actions">
+    <div class="row">
+        ...
+    </div>
+</div>
+{% endblock %}
+```
+
+**Option 3**
+
+```twig
+{% block global_actions %}
+<div class="global-actions">
+    <div class="row">
+        {% block global_actions_inner %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+```
+
+**Option 4**
+
+```twig
+{% block global_actions_wrapper %}
+<div class="global-actions">
+    <div class="row">
+        {% block global_actions %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+```
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-13T11:00:34Z
+
+@javiereguiluz I'd vote for option 4
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-13T12:27:13Z
+
+Options 3 but:
+
+```twig
+{% block global_actions %}
+<div class="global-actions">
+    <div class="row">
+        {% block global_actions_row %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+```
+
+or if it make sense (but I doubt it will for most cases) :
+
+```twig
+{% block global_actions %}
+<div class="global-actions">
+    {% block global_actions_row %}
+     <div class="row">
+        {% block global_actions_row_inner %}{% endblock %}
+     </div>
+    {% endblock %}
+</div>
+{% endblock %}
+```
+
+Actually, it's hard to tell without more context. It really depends where it'll be.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-13T12:43:57Z
+
+@ogizanagi Actually, having a `_wrapper` instead of `_inner` allows better understanding of the "easiness" of the override. Most of the time people will override what's inside the `div.row`, and the wrapper may certainly be here only to "hide" it all and leave the space blank. The row itself would be useful if there were needs in adding other rows to avoid having `</div><div class="row">` solitary in a template.
+
+I don't know if I'm clear enough :stuck_out_tongue:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-13T17:42:56Z
+
+**Update**: I've almost finished the redesign. Here it is a "sneak peek" of the new default look of EasyAdmin:
+
+### Desktop - List
+
+![desktop_list](https://cloud.githubusercontent.com/assets/73419/12302407/47fc8df8-ba25-11e5-99ae-384d1bcbefc1.png)
+
+### Desktop - Show
+
+![desktop_edit](https://cloud.githubusercontent.com/assets/73419/12302414/4a918f6e-ba25-11e5-984e-f00527f24270.png)
+
+### Mobile
+
+| List | Show
+| --- | ---
+| ![mobile_list](https://cloud.githubusercontent.com/assets/73419/12302424/57669536-ba25-11e5-8de9-45b0f718f437.png) | ![mobile_edit](https://cloud.githubusercontent.com/assets/73419/12302429/5a43d156-ba25-11e5-9251-665e3028e477.png)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-01-13T18:20:30Z
+
+looks great!! :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-13T19:51:50Z
+
+I've just pushed the last changes. **Now this is ready for review** (except the tests, which I haven't fixed yet).
+
+Some screenshots of the dark/light theme in desktop/mobile for list/form views:
+
+![dark_list](https://cloud.githubusercontent.com/assets/73419/12305903/53a46f4c-ba37-11e5-97fb-fe5fa2bba3f2.png)
+
+![dark_form](https://cloud.githubusercontent.com/assets/73419/12305904/55f972d8-ba37-11e5-9ad2-5ec3dd335e98.png)
+
+![light_list](https://cloud.githubusercontent.com/assets/73419/12305907/59a6b5da-ba37-11e5-9020-429e3dda802d.png)
+
+![light_form](https://cloud.githubusercontent.com/assets/73419/12305910/5cd3d3be-ba37-11e5-8fab-d0ceba8d8cc1.png)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-13T20:55:47Z
+
+Tests are fixed. Thanks to our test suite, we can assure that these are the only relevant HTML/CSS changes that could break a heavily customized backend:
+
+| Before              | After
+| ------------------- | -------------
+| #header-menu        | .sidebar-menu
+| form#content-search | .action-search form
+| #content-actions    | .global-actions
+
+It's a matter of changing 3 selectors, so I'm happy with the BC breaks.
+
+Besides, the name of the main CSS and JS files have changed:
+
+```
+/admin/_css/admin.css -> /admin/_css/easyadmin.css
+/js/admin.js          -> /js/easyadmin.js
+```
+
+---------------------------------------------------------------------------
+
+by rubengc at 2016-01-13T21:59:54Z
+
+Amazing work @javiereguiluz really
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-13T22:55:35Z
+
+Just asking about the list view and the search bar:
+
+<img src="https://cloud.githubusercontent.com/assets/73419/12305907/59a6b5da-ba37-11e5-9020-429e3dda802d.png" />
+
+Shouldn't the search bar be aligned with title (in desktop version only, but also avoid the gap between the search bar and the `add` btn) ?
+
+---------------------------------------------------------------------------
+
+by SakyaStelios at 2016-01-13T23:51:20Z
+
+Wow, great
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-14T07:34:18Z
+
+@ogizanagi I don't understand the first part of the question:
+
+> Shouldn't the search bar be aligned with title (in desktop version only)
+
+About the second part:
+
+> ... but also avoid the gap between the search bar and the add btn)?
+
+This was done on purpose for three reasons. 1) When the search form and the button don't show a gap in the middle, the button looks like the *Search* button. I found myself several times clicking on that button when all I wanted is to search. 2) Removing the gap would mean to make the search input huge, and that usually looks wrong. 3) The gap allows to add more buttons to the "global actions" element, which is something that we'll allow in the future.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-14T08:36:05Z
+
+It looks terrific! Can't wait to refactor my templates for it :D
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-14T08:41:46Z
+
+> > I don't understand the first part of the question:
+>
+> Shouldn't the search bar be aligned with title (in desktop version only)
+
+I'm referring to the difference between:
+
+![capture d ecran 2016-01-14 a 09 38 21](https://cloud.githubusercontent.com/assets/2211145/12319489/f1d4d894-baa2-11e5-9e74-4525b287a0b8.png)
+
+and:
+
+![capture d ecran 2016-01-14 a 09 38 39](https://cloud.githubusercontent.com/assets/2211145/12319490/f1d76f32-baa2-11e5-9b1f-9c8690700b59.png)
+
+> This was done on purpose for three reasons. 1) When the search form and the button don't show a gap in the middle, the button looks like the Search button. I found myself several times clicking on that button when all I wanted is to search. 2) Removing the gap would mean to make the search input huge, and that usually looks wrong. 3) The gap allows to add more buttons to the "global actions" element, which is something that we'll allow in the future.
+
+A simple separator or adding a `search` btn represented by a magnifier icon could solve this. Also the search bar width can be flexible (it'll always fill the available space, but won't prevent adding new "global actions")
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-14T14:03:59Z
+
+@ogizanagi I now understand your comment and I agree with you. I've pushed new changes.
+
+### Desktop
+
+![desktop](https://cloud.githubusercontent.com/assets/73419/12326254/f860e43c-bacf-11e5-8d1e-3d8a727adfb2.png)
+
+### Tablet
+
+![tablet](https://cloud.githubusercontent.com/assets/73419/12326260/fea12776-bacf-11e5-9b3c-d9a384a957d7.png)
+
+### Mobile
+
+![mobile](https://cloud.githubusercontent.com/assets/73419/12326261/018905e4-bad0-11e5-9290-01b90a07c6c7.png)
+
+---------------------------------------------------------------------------
+
+by reypm at 2016-01-14T14:06:44Z
+
+Just amazing, when this will be available not as a job done but for test?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-14T14:37:10Z
+
+@reypm my intention is to release this as soon as possible. I'm waiting a bit longer in case more people want to review the changes and provide feedback.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-14T14:44:49Z
+
+@javiereguiluz : Great \o/
+:+1: :sparkles:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-14T17:23:44Z
+
+I've released a new version of the bundle (https://github.com/javiereguiluz/EasyAdminBundle/releases/tag/v1.10.3). The next version will only include this new theme, so this is the last opportunity to test and review. Thanks!  (And the version after the next one, will include the new feature to define custom menus).
+
+---------------------------------------------------------------------------
+
+by reypm at 2016-01-14T17:28:52Z
+
+@javiereguiluz :+1:  more great news, waiting for the next version with new theme for test it and help, excellent work!

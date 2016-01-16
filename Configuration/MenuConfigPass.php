@@ -134,7 +134,7 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['type'] = 'link';
 
                 if (!isset($itemConfig['label'])) {
-                    throw new \RuntimeException(sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define the "label" option.', $i));
+                    throw new \RuntimeException(sprintf('The configuration of the menu item with "url = %s" must define the "label" option.', $itemConfig['url']));
                 }
             }
 
@@ -143,7 +143,7 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['type'] = 'route';
 
                 if (!isset($itemConfig['label'])) {
-                    throw new \RuntimeException(sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define the "label" option.', $i));
+                    throw new \RuntimeException(sprintf('The configuration of the menu item with "route = %s" must define the "label" option.', $itemConfig['route']));
                 }
 
                 if (!isset($itemConfig['params'])) {

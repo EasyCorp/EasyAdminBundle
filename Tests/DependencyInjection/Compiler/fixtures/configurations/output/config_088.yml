@@ -650,6 +650,7 @@ easy_admin:
                     property: parent
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
+                menu: '@EasyAdmin/default/menu.html.twig'
                 edit: '@EasyAdmin/default/edit.html.twig'
                 list: '@EasyAdmin/default/list.html.twig'
                 new: '@EasyAdmin/default/new.html.twig'
@@ -695,8 +696,20 @@ easy_admin:
         brand_color: '#205081'
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+        menu:
+            -
+                entity: Category
+                label: Category
+                icon: fa-chevron-circle-right
+                children: {  }
+                default: false
+                menu_index: 0
+                submenu_index: -1
+                type: entity
+                params: {  }
         templates:
             layout: '@EasyAdmin/default/layout.html.twig'
+            menu: '@EasyAdmin/default/menu.html.twig'
             edit: '@EasyAdmin/default/edit.html.twig'
             list: '@EasyAdmin/default/list.html.twig'
             new: '@EasyAdmin/default/new.html.twig'
@@ -746,3 +759,9 @@ easy_admin:
     show:
         actions: {  }
     default_entity_name: Category
+    default_menu_item: null
+    homepage:
+        route: easyadmin
+        params:
+            action: list
+            entity: Category

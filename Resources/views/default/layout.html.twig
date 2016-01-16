@@ -72,7 +72,11 @@
             {% block sidebar %}
                 <section class="sidebar">
                     {% block main_menu_wrapper %}
-                        {{ include(_entity_config.templates.menu) }}
+                        {{ include([
+                            _entity_config.templates.menu,
+                            easyadmin_config('design.templates.menu'),
+                            '@EasyAdmin/default/menu.html.twig'
+                        ]) }}
                     {% endblock main_menu_wrapper %}
                 </section>
             {% endblock sidebar %}

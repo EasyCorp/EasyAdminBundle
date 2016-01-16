@@ -45,6 +45,39 @@ class CustomMenuTest extends AbstractTestCase
         );
     }
 
+    public function testBackendHomepageConfig()
+    {
+        $crawler = $this->getBackendHomepage();
+        $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
+
+        $this->assertArraySubset(array(
+            'route' => 'easyadmin',
+            'params' => array('action' => 'list', 'entity' => 'Category'),
+        ), $backendConfig['homepage']);
+    }
+
+    public function testDefaultMenuItem()
+    {
+        $crawler = $this->getBackendHomepage();
+        $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
+
+        $this->assertArraySubset(array(
+            'label' => 'Categories',
+            'entity' => 'Category',
+            'type' => 'entity',
+        ), $backendConfig['default_menu_item']);
+    }
+
+    public function testMenuHeaders()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $this->assertEquals(
+            'header',
+            $crawler->filter('.sidebar-menu li:contains("About EasyAdmin")')->attr('class')
+        );
+    }
+
     public function testMenuIcons()
     {
         $crawler = $this->getBackendHomepage();

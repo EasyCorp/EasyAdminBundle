@@ -62,7 +62,7 @@ class AdminController extends Controller
         $this->initialize($request);
 
         if (null === $request->query->get('entity')) {
-            return $this->redirectToBackendIndex();
+            return $this->redirectToBackendHomepage();
         }
 
         $action = $request->query->get('action', 'list');
@@ -769,34 +769,15 @@ class AdminController extends Controller
     }
 
     /**
-     * Determines the backend index page dynamically and redirects to it.
+     * Generates the backend homepage and redirects to it.
      */
-    private function redirectToBackendIndex()
+    private function redirectToBackendHomepage()
     {
-        // if no menu item has been set as "default", redirect to the "list"
-        // action of the first configured entity
-        if (null === $menuItemConfig = $this->config['default_menu_item']) {
-            return $this->redirect($this->generateUrl('easyadmin', array(
-                'action' => 'list', 'entity' => $this->config['default_entity_name']
-            )));
-        }
+        $homepageConfig = $this->config['homepage'];
 
-        $routeParams = array_merge(
-            array('menuIndex' => $menuItemConfig['menu_index'], 'submenuIndex' => $menuItemConfig['submenu_index']),
-            $menuItemConfig['params']
-        );
-
-        if ('entity' === $menuItemConfig['type']) {
-            $routeParams = array_merge(
-                array('action' => 'list', 'entity' => $menuItemConfig['entity']),
-                $routeParams
-            );
-            $url = $this->generateUrl('easyadmin', $routeParams);
-        } elseif ('route' === $menuItemConfig['type']) {
-            $url = $this->generateUrl($menuItemConfig['route'], $routeParams);
-        } elseif ('link' === $menuItemConfig['type']) {
-            $url = $menuItemConfig['url'];
-        }
+        $url = isset($homepageConfig['url'])
+            ? $homepageConfig['url']
+            : $this->get('router')->generate($homepageConfig['route'], $homepageConfig['params']);
 
         return $this->redirect($url);
     }

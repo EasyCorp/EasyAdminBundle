@@ -22,6 +22,7 @@ class DefaultConfigPass implements ConfigPassInterface
     {
         $backendConfig = $this->processDefaultEntity($backendConfig);
         $backendConfig = $this->processDefaultMenuItem($backendConfig);
+        $backendConfig = $this->processDefaultHomepage($backendConfig);
 
         return $backendConfig;
     }
@@ -62,14 +63,50 @@ class DefaultConfigPass implements ConfigPassInterface
      */
     private function findDefaultMenuItem(array $menuConfig)
     {
-        foreach ($menuConfig as $i => $itemConfig) {
+        foreach ($menuConfig as $itemConfig) {
             if (true === $itemConfig['default']) {
                 return $itemConfig;
             }
 
-            if (!empty($itemConfig['children'])) {
-                $this->findDefaultMenuItem($itemConfig['children']);
+            foreach ($itemConfig['children'] as $subitemConfig) {
+                if (true === $subitemConfig['default']) {
+                    return $subitemConfig;
+                }
             }
         }
+    }
+
+    /**
+     * Processes the backend config to define the URL or the route/params to
+     * use as the default backend homepage when none is defined explicitly.
+     * (Note: we store the route/params instead of generating the URL because
+     * the 'router' service cannot be used inside a compiler pass).
+     */
+    private function processDefaultHomepage(array $backendConfig)
+    {
+        $backendHomepage = array();
+
+        // if no menu item has been set as "default", use the "list"
+        // action of the first configured entity as the backend homepage
+        if (null === $menuItemConfig = $backendConfig['default_menu_item']) {
+            $backendHomepage['route'] = 'easyadmin';
+            $backendHomepage['params'] = array('action' => 'list', 'entity' => $backendConfig['default_entity_name']);
+        } else {
+            $routeParams = array('menuIndex' => $menuItemConfig['menu_index'], 'submenuIndex' => $menuItemConfig['submenu_index']);
+
+            if ('entity' === $menuItemConfig['type']) {
+                $backendHomepage['route'] = 'easyadmin';
+                $backendHomepage['params'] = array_merge(array('action' => 'list', 'entity' => $menuItemConfig['entity']), $routeParams, $menuItemConfig['params']);
+            } elseif ('route' === $menuItemConfig['type']) {
+                $backendHomepage['route'] = $menuItemConfig['route'];
+                $backendHomepage['params'] = array_merge($routeParams, $menuItemConfig['params']);
+            } elseif ('link' === $menuItemConfig['type']) {
+                $backendHomepage['url'] = $menuItemConfig['url'];
+            }
+        }
+
+        $backendConfig['homepage'] = $backendHomepage;
+
+        return $backendConfig;
     }
 }

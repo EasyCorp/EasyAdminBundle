@@ -157,7 +157,7 @@ class MenuConfigPass implements ConfigPassInterface
             }
 
             else {
-                throw new \RuntimeException(sprintf('The configuration of the "menu" option is wrong. The item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.', $i));
+                throw new \RuntimeException(sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.', $i));
             }
 
             $menuConfig[$i] = $itemConfig;

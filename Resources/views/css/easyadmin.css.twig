@@ -250,7 +250,7 @@ a.btn-secondary:active {
 }
 .form-control,
 .form-inline .form-control {
-    border: 1px solid #b6b6b6;
+    border: 1px solid {{ colors.gray }};
     border-radius: 0;
 {% if 'dark' == color_scheme %}
     box-shadow: 0 0 3px rgba(0, 0, 0, .15);
@@ -261,7 +261,8 @@ a.btn-secondary:active {
 }
 .form-control:focus {
 {% if 'dark' == color_scheme %}
-    border-color: {{ colors.gray }};
+    border-color: {{ colors.gray_dark }};
+    box-shadow: 0 0 3px rgba(0, 0, 0, .15);
 {% elseif 'light' == color_scheme %}
     border-color: {{ colors.gray_darker }};
 {% endif %}
@@ -301,7 +302,7 @@ a.btn-secondary:active {
    ------------------------------------------------------------------------- */
 /* these styles must be applied after loading the default select2 styles */
 .select2-container--bootstrap .select2-selection {
-    border: 1px solid #b6b6b6;
+    border: 1px solid {{ colors.gray }};
     border-radius: 0;
     box-shadow: 0 0 3px rgba(0, 0, 0, .15);
     color: {{ colors.text }};
@@ -462,7 +463,11 @@ a.btn-secondary:active {
 }
 
 .sidebar-menu > li.header {
+{% if 'dark' == color_scheme %}
     color: {{ colors.white }};
+{% elseif 'light' == color_scheme %}
+    color: {{ colors.black }};
+{% endif %}
     font-size: 12px;
     font-weight: bold;
     opacity: 0.4;
@@ -470,7 +475,6 @@ a.btn-secondary:active {
 }
 
 .sidebar-menu > li > a,
-.sidebar-menu > li > span,
 .sidebar-menu .treeview-menu > li > a {
 {% if 'dark' == color_scheme %}
     color: {{ colors.white }};
@@ -482,12 +486,9 @@ a.btn-secondary:active {
     display: block;
     font-weight: bold;
 }
-.sidebar-menu > li > a > .fa,
-.sidebar-menu > li > span > .fa {
-{% if 'light' == color_scheme %}
-    color: {{ colors.gray_dark }};
-{% endif %}
-    width: 22px;
+.sidebar-menu .treeview-menu > li > a {
+    font-size: 13px;
+    padding: 8px 5px 8px 25px;
 }
 .sidebar-menu > li:hover > a,
 .sidebar-menu > li.active > a,
@@ -498,36 +499,34 @@ a.btn-secondary:active {
     background: rgb(15, 15, 15);
     border-left-color: rgb(115, 115, 115);
 {% elseif 'light' == color_scheme %}
-    background: rgba(0, 0, 0, 0.1);
+    background: rgb(200, 200, 200);
+    border-left-color: rgb(128, 128, 128);
 {% endif %}
     opacity: 1;
 }
-.sidebar-menu > li.active.submenu-active > a {
-    background: rgb(60, 60, 60);
-    border-left-color: transparent;
+
+.sidebar-menu > li > a > .fa {
+    width: 22px;
 }
-.sidebar-menu > li:hover > a i,
-.sidebar-menu > li.active > a i {
-{% if 'dark' == color_scheme %}
-    color: {{ colors.white }};
-{% endif %}
-}
-.treeview-menu > li.active > a {
-    color: {{ colors.white }};
-}
+
 .sidebar-menu .treeview-menu {
+{% if 'dark' == color_scheme %}
     background: rgb(60, 60, 60);
-    margin: 0 1px;
-    padding-left: 0;
+{% elseif 'light' == color_scheme %}
+    background: rgb(220, 220, 220);
+{% endif %}
+    margin: 0;
+    padding: 0;
 }
-.sidebar-menu .treeview-menu > li > a {
-    color: {{ colors.gray_light }};
-    font-size: 13px;
-    font-weight: bold;
-    padding: 8px 5px 8px 20px;
-}
-.treeview-menu > li > a > .fa {
-    font-size: 12px;
+
+/* applied to the menu item which is active and has its submenu revealed */
+.sidebar-menu > li.active.submenu-active > a {
+{% if 'dark' == color_scheme %}
+    background: rgb(34, 34, 34);
+{% elseif 'light' == color_scheme %}
+    background: rgb(220, 220, 220);
+{% endif %}
+    border-left-color: transparent;
 }
 /* icon displayed for collapsed submenus */
 .sidebar-menu li > a > .pull-right {
@@ -538,6 +537,10 @@ a.btn-secondary:active {
 .sidebar-menu li.active > a > .fa-angle-left {
     top: 30px;
     right: 0;
+}
+/* when the sidebar is collapsed, make the icons wider to just display them and not the labels */
+.sidebar-collapse .sidebar-menu > li > a > .fa {
+    width: 28px;
 }
 
 /* -------------------------------------------------------------------------

@@ -62,7 +62,7 @@ class AdminController extends Controller
         $this->initialize($request);
 
         if (null === $request->query->get('entity')) {
-            return $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->config['default_entity_name'])));
+            return $this->redirectToBackendIndex();
         }
 
         $action = $request->query->get('action', 'list');
@@ -766,5 +766,38 @@ class AdminController extends Controller
     private function useLegacyFormComponent()
     {
         return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
+    }
+
+    /**
+     * Determines the backend index page dynamically and redirects to it.
+     */
+    private function redirectToBackendIndex()
+    {
+        // if no menu item has been set as "default", redirect to the "list"
+        // action of the first configured entity
+        if (null === $menuItemConfig = $this->config['default_menu_item']) {
+            return $this->redirect($this->generateUrl('easyadmin', array(
+                'action' => 'list', 'entity' => $this->config['default_entity_name']
+            )));
+        }
+
+        $routeParams = array_merge(
+            array('menuIndex' => $menuItemConfig['menu_index'], 'submenuIndex' => $menuItemConfig['submenu_index']),
+            $menuItemConfig['params']
+        );
+
+        if ('entity' === $menuItemConfig['type']) {
+            $routeParams = array_merge(
+                array('action' => 'list', 'entity' => $menuItemConfig['entity']),
+                $routeParams
+            );
+            $url = $this->generateUrl('easyadmin', $routeParams);
+        } elseif ('route' === $menuItemConfig['type']) {
+            $url = $this->generateUrl($menuItemConfig['route'], $routeParams);
+        } elseif ('link' === $menuItemConfig['type']) {
+            $url = $menuItemConfig['url'];
+        }
+
+        return $this->redirect($url);
     }
 }

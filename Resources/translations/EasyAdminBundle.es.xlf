@@ -85,7 +85,7 @@
             </trans-unit>
             <trans-unit id="label.inaccessible">
                 <source>label.inaccessible</source>
-                <target>Inaccessible</target>
+                <target>Inaccesible</target>
             </trans-unit>
             <trans-unit id="label.inaccessible.explanation">
                 <source>label.inaccessible.explanation</source>
@@ -107,6 +107,10 @@
             </trans-unit>
 
             <!-- misc. elements -->
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Turnar navegación</target>
+            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>¿Realmente quieres borrar este elemento?</target>

@@ -20,28 +20,46 @@ class DefaultConfigPass implements ConfigPassInterface
 {
     public function process(array $backendConfig)
     {
-        $backendConfig = $this->processBackendIndex($backendConfig);
+        $backendConfig = $this->processDefaultEntity($backendConfig);
+        $backendConfig = $this->processDefaultMenuItem($backendConfig);
 
         return $backendConfig;
     }
 
-    private function processBackendIndex(array $backendConfig)
+    /**
+     * Finds the default entity to display when the backend index is not
+     * defined explicitly.
+     */
+    private function processDefaultEntity(array $backendConfig)
     {
-        // define the default entity used when there is no default menu item
         $entityNames = array_keys($backendConfig['entities']);
         $firstEntityName = isset($entityNames[0]) ? $entityNames[0] : null;
         $backendConfig['default_entity_name'] = $firstEntityName;
 
-        // determine if there is a default menu item to be displayed as the backend index
+        return $backendConfig;
+    }
+
+    /**
+     * Finds the default menu item to display when browsing the backend index.
+     */
+    private function processDefaultMenuItem(array $backendConfig)
+    {
         $defaultMenuItem = $this->findDefaultMenuItem($backendConfig['design']['menu']);
+
         if ('empty' === $defaultMenuItem['type']) {
-            throw new \RuntimeException(sprintf('The "menu" configuration sets "%s" as the default item, which is wrong because its type is "empty" and it cannot redirect to a valid URL.', $defaultMenuItem['label']));
+            throw new \RuntimeException(sprintf('The "menu" configuration sets "%s" as the default item, which is not possible because its type is "empty" and it cannot redirect to a valid URL.', $defaultMenuItem['label']));
         }
+
         $backendConfig['default_menu_item'] = $defaultMenuItem;
 
         return $backendConfig;
     }
 
+    /**
+     * Finds the first menu item whose 'default' option is 'true' (if any).
+     * It looks for the option both in the first level items and in the
+     * submenu items.
+     */
     private function findDefaultMenuItem(array $menuConfig)
     {
         foreach ($menuConfig as $i => $itemConfig) {

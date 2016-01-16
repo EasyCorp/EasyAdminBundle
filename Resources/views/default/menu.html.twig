@@ -1,0 +1,41 @@
+{% macro render_menu_item(item) %}
+    {% if item.type == 'empty' and item.children is empty %}
+        <li class="header">{{ item.label|trans }}</li>
+    {% else %}
+        {% set menu_params = { menuIndex: item.menu_index, submenuIndex: item.submenu_index } %}
+        {% set path =
+            item.type == 'link' ? item.url :
+            item.type == 'route' ? path(item.route, menu_params|merge(item.params)) :
+            item.type == 'entity' ? path('easyadmin', { entity: item.entity, action: 'list' }|merge(menu_params)|merge(item.params)) :
+            item.type == 'empty' ? '#' : ''
+        %}
+
+        <a href="{{ path }}">
+            {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}
+            {{ item.label|trans }}
+            {% if item.children|default([]) is not empty %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
+        </a>
+    {% endif %}
+{% endmacro %}
+
+{% import _self as helper %}
+
+<ul class="sidebar-menu">
+    {% block main_menu %}
+        {% for item in easyadmin_config('design.menu') %}
+            <li class="{{ item.children is not empty ? 'treeview' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.index0 ? 'active' }} {{ app.request.query.get('submenuIndex')|default(-1) != -1 ? 'submenu-active' }}">
+                {{ helper.render_menu_item(item) }}
+
+                {% if item.children|default([]) is not empty %}
+                    <ul class="treeview-menu">
+                        {% for subitem in item.children %}
+                            <li class="{{ app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
+                                {{ helper.render_menu_item(subitem) }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endfor %}
+    {% endblock main_menu %}
+</ul>

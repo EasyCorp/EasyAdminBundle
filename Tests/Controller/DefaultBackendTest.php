@@ -70,11 +70,11 @@ class DefaultBackendTest extends AbstractTestCase
     public function testMainMenuItems()
     {
         $menuItems = array(
-            'Category' => '/admin/?entity=Category&action=list',
-            'Image' => '/admin/?entity=Image&action=list',
-            'Purchase' => '/admin/?entity=Purchase&action=list',
-            'PurchaseItem' => '/admin/?entity=PurchaseItem&action=list',
-            'Product' => '/admin/?entity=Product&action=list',
+            'Category' => '/admin/?entity=Category&action=list&menuIndex=0&submenuIndex=-1',
+            'Image' => '/admin/?entity=Image&action=list&menuIndex=1&submenuIndex=-1',
+            'Purchase' => '/admin/?entity=Purchase&action=list&menuIndex=2&submenuIndex=-1',
+            'PurchaseItem' => '/admin/?entity=PurchaseItem&action=list&menuIndex=3&submenuIndex=-1',
+            'Product' => '/admin/?entity=Product&action=list&menuIndex=4&submenuIndex=-1',
         );
 
         $crawler = $this->getBackendHomepage();
@@ -96,13 +96,6 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals(14, substr_count($this->client->getResponse()->getContent(), '#205081'), 'The admin.css file uses the default brand color.');
         // #222222 color is only used by the "dark" color scheme, not the "light" one
         $this->assertEquals(6, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');
-    }
-
-    public function testListViewMainMenu()
-    {
-        $crawler = $this->requestListView();
-
-        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testListViewTitle()
@@ -220,13 +213,6 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 
-    public function testShowViewPageMainMenu()
-    {
-        $crawler = $this->requestShowView();
-
-        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
-    }
-
     public function testShowViewPageTitle()
     {
         $crawler = $this->requestShowView();
@@ -292,13 +278,6 @@ class DefaultBackendTest extends AbstractTestCase
         parse_str($queryString, $refererParameters);
 
         $this->assertEquals($parameters, $refererParameters);
-    }
-
-    public function testEditViewMainMenu()
-    {
-        $crawler = $this->requestEditView();
-
-        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testEditViewTitle()
@@ -378,13 +357,6 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals($parameters, $refererParameters);
     }
 
-    public function testNewViewMainMenu()
-    {
-        $crawler = $this->requestNewView();
-
-        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
-    }
-
     public function testNewViewTitle()
     {
         $crawler = $this->requestNewView();
@@ -457,13 +429,6 @@ class DefaultBackendTest extends AbstractTestCase
         parse_str($queryString, $refererParameters);
 
         $this->assertEquals($parameters, $refererParameters);
-    }
-
-    public function testSearchViewMainMenu()
-    {
-        $crawler = $this->requestSearchView();
-
-        $this->assertEquals('Category', trim($crawler->filter('.sidebar-menu li.active')->text()));
     }
 
     public function testSearchViewTitle()

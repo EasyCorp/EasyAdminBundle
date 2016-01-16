@@ -1,42 +1,51 @@
-{% macro render_menu_item(item) %}
+{% macro render_menu_item(item, menuIndex = -1, submenuIndex = -1) %}
     {% if item.type == 'entity' %}
-        <a href="{{ path('easyadmin', { entity: item.entity, action: 'list' }|merge(item.params)) }}">
+        <a href="{{ path('easyadmin', { entity: item.entity, action: 'list', menuIndex: menuIndex, submenuIndex: submenuIndex }|merge(item.params)) }}">
             {% if item.icon %}<i class="fa {{ item.icon }}"></i>{% endif %}
             {{- item.label|trans -}}
+            {% if item.children|length > 0 %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
         </a>
     {% elseif item.type == 'link' %}
-        {% if item.icon %}<i class="fa {{ item.icon }}"></i>{% endif %}
         <a href="{{ item.url }}">
+            {% if item.icon %}<i class="fa {{ item.icon }}"></i>{% endif %}
             {{- item.label|trans -}}
+            {% if item.children|length > 0 %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
         </a>
     {% elseif item.type == 'route' %}
-        {% if item.icon %}<i class="fa {{ item.icon }}"></i>{% endif %}
-        <a href="{{ path(item.route, item.params) }}">
+        <a href="{{ path(item.route, { menuIndex: menuIndex, submenuIndex: submenuIndex }|merge(item.params)) }}">
+            {% if item.icon %}<i class="fa {{ item.icon }}"></i>{% endif %}
             {{- item.label|trans -}}
+            {% if item.children|length > 0 %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
         </a>
+    {% elseif item.type == 'empty' and item.children is empty %}
+        <li class="header">{{ item.label }}</li>
     {% elseif item.type == 'empty' %}
-        {% if item.icon %}<i class="fa {{ item.icon }}"></i>{% endif %}
-        {{- item.label|trans -}}
+        <a href="#">
+            {% if item.icon %}<i class="fa {{ item.icon }}"></i>{% endif %}
+            {{- item.label|trans -}}
+            {% if item.children|length > 0 %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
+        </a>
     {% endif %}
 {% endmacro %}
 
 {% import _self as helper %}
 
-<ul id="header-menu" class="nav navbar-nav">
-    {% block navigation_items %}
-        {% for item in easyadmin_config('design.menu') %}
-            <li class="{{ item.entity|default('')|lower == app.request.get('entity')|lower ? 'active' }}">
-                {{ helper.render_menu_item(item) }}
+<ul class="sidebar-menu">
+    {% block main_menu %}
+    {% for item in easyadmin_config('design.menu') %}
+        <li class="{{ item.children|length > 0 ? 'treeview' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.index0 ? 'active' }} {{ app.request.query.get('submenuIndex')|default(-1) != -1 ? 'submenu-active' }}">
+            {{ helper.render_menu_item(item, loop.index0) }}
 
-                {% if item.children is not empty %}
-                    <ul class="dropdown-menu">
-                        {% for subitem in item.children %}
-                            {{ helper.render_menu_item(subitem) }}
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-
-            </li>
-        {% endfor %}
-    {% endblock %}
+            {% if item.children is not empty %}
+                <ul class="treeview-menu">
+                    {% for subitem in item.children %}
+                        <li class="{{ app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
+                            {{ helper.render_menu_item(subitem, loop.parent.loop.index0, loop.index0) }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+    {% endfor %}
+    {% endblock main_menu %}
 </ul>

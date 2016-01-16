@@ -21,16 +21,31 @@ class MenuConfigPass implements ConfigPassInterface
 {
     public function process(array $backendConfig)
     {
-        $backendConfig = $this->normalizeMenuConfig($backendConfig);
-        $backendConfig = $this->processMenuConfig($backendConfig);
+        // process 1st level menu items
+        $menuConfig = $backendConfig['design']['menu'];
+        $menuConfig = $this->normalizeMenuConfig($menuConfig, $backendConfig);
+        $menuConfig = $this->processMenuConfig($menuConfig, $backendConfig);
+
+        $backendConfig['design']['menu'] = $menuConfig;
+
+        // process 2nd level menu items (i.e. submenus)
+        foreach ($backendConfig['design']['menu'] as $i => $itemConfig) {
+            if (empty($itemConfig['children'])) {
+                continue;
+            }
+
+            $submenuConfig = $itemConfig['children'];
+            $submenuConfig = $this->normalizeMenuConfig($submenuConfig, $backendConfig, true);
+            $submenuConfig = $this->processMenuConfig($submenuConfig, $backendConfig);
+
+            $backendConfig['design']['menu'][$i]['children'] = $submenuConfig;
+        }
 
         return $backendConfig;
     }
 
-    private function normalizeMenuConfig(array $backendConfig)
+    private function normalizeMenuConfig(array $menuConfig, array $backendConfig, $isSubmenu = false)
     {
-        $menuConfig = $backendConfig['design']['menu'];
-
         // if the backend doesn't define the menu configuration: create a default
         // menu configuration to display all its entities
         if (empty($menuConfig)) {
@@ -39,18 +54,10 @@ class MenuConfigPass implements ConfigPassInterface
             }
         }
 
-        // process the short config syntax to simplify further processing:
-        // easy_admin:
-        //   design:
-        //     menu: ['Product', 'User']
-        //
+        // normalize the short config syntax to simplify further processing:
+        //   design.menu: ['Product', 'User']
         // is transformed into:
-        //
-        // easy_admin:
-        //   design:
-        //     menu:
-        //       - { entity: 'Product' }
-        //       - { entity: 'User' }
+        //   design.menu: []{ entity: 'Product' }, { entity: 'User' }]
         foreach ($menuConfig as $i => $itemConfig) {
             if (is_string($itemConfig)) {
                 $itemConfig = array('entity' => $itemConfig);
@@ -61,8 +68,8 @@ class MenuConfigPass implements ConfigPassInterface
 
         foreach ($menuConfig as $i => $itemConfig) {
             // normalize icon configuration
-            if (!isset($itemConfig['icon'])) {
-                $itemConfig['icon'] = null;
+            if (!array_key_exists('icon', $itemConfig)) {
+                $itemConfig['icon'] = $isSubmenu ? 'fa-chevron-right' : 'fa-chevron-circle-right';
             } else {
                 $itemConfig['icon'] = 'fa-'.$itemConfig['icon'];
             }
@@ -71,22 +78,16 @@ class MenuConfigPass implements ConfigPassInterface
             if (!isset($itemConfig['children'])) {
                 $itemConfig['children'] = array();
             }
-            // } else {
-            //     $itemConfig['children'] = $this->normalizeMenuConfig($itemConfig['children']);
-            // }
 
             $menuConfig[$i] = $itemConfig;
         }
+//echo "<pre>"; var_dump($menuConfig); exit;
 
-        $backendConfig['design']['menu'] = $menuConfig;
-
-        return $backendConfig;
+        return $menuConfig;
     }
 
-    private function processMenuConfig(array $backendConfig)
+    private function processMenuConfig(array $menuConfig, array $backendConfig)
     {
-        $menuConfig = $backendConfig['design']['menu'];
-
         foreach ($menuConfig as $i => $itemConfig) {
             // 1st level priority: if 'entity' is defined, link to the given entity
             if (isset($itemConfig['entity'])) {
@@ -140,8 +141,6 @@ class MenuConfigPass implements ConfigPassInterface
             $menuConfig[$i] = $itemConfig;
         }
 
-        $backendConfig['design']['menu'] = $menuConfig;
-
-        return $backendConfig;
+        return $menuConfig;
     }
 }

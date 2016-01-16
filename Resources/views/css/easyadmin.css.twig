@@ -452,7 +452,7 @@ a.btn-secondary:active {
 .main-sidebar,
 .wrapper {
 {% if 'dark' == color_scheme %}
-    background-color: {{ colors.gray_darker }};
+    background-color: rgb(34, 34, 34);
 {% elseif 'light' == color_scheme %}
     background-color: {{ colors.gray_light }};
 {% endif %}
@@ -460,33 +460,84 @@ a.btn-secondary:active {
 .main-sidebar {
     padding-top: 90px;
 }
-.sidebar-menu > li > a {
+
+.sidebar-menu > li.header {
+    color: {{ colors.white }};
+    font-size: 12px;
+    font-weight: bold;
+    opacity: 0.4;
+    text-transform: uppercase;
+}
+
+.sidebar-menu > li > a,
+.sidebar-menu > li > span,
+.sidebar-menu .treeview-menu > li > a {
 {% if 'dark' == color_scheme %}
-    color: rgba(255, 255, 255, 0.6);
+    color: {{ colors.white }};
+    opacity: 0.8;
 {% elseif 'light' == color_scheme %}
     color: {{ colors.gray_darker }};
 {% endif %}
+    border-left: 3px solid transparent;
+    display: block;
     font-weight: bold;
 }
-.sidebar-menu > li > a i {
+.sidebar-menu > li > a > .fa,
+.sidebar-menu > li > span > .fa {
 {% if 'light' == color_scheme %}
     color: {{ colors.gray_dark }};
 {% endif %}
+    width: 22px;
 }
 .sidebar-menu > li:hover > a,
-.sidebar-menu > li.active > a {
+.sidebar-menu > li.active > a,
+.sidebar-menu .treeview-menu > li:hover > a,
+.sidebar-menu .treeview-menu > li.active > a {
 {% if 'dark' == color_scheme %}
     color: {{ colors.white }};
-    background: rgba(0, 0, 0, 0.4);
+    background: rgb(15, 15, 15);
+    border-left-color: rgb(115, 115, 115);
 {% elseif 'light' == color_scheme %}
     background: rgba(0, 0, 0, 0.1);
 {% endif %}
+    opacity: 1;
+}
+.sidebar-menu > li.active.submenu-active > a {
+    background: rgb(60, 60, 60);
+    border-left-color: transparent;
 }
 .sidebar-menu > li:hover > a i,
 .sidebar-menu > li.active > a i {
 {% if 'dark' == color_scheme %}
     color: {{ colors.white }};
 {% endif %}
+}
+.treeview-menu > li.active > a {
+    color: {{ colors.white }};
+}
+.sidebar-menu .treeview-menu {
+    background: rgb(60, 60, 60);
+    margin: 0 1px;
+    padding-left: 0;
+}
+.sidebar-menu .treeview-menu > li > a {
+    color: {{ colors.gray_light }};
+    font-size: 13px;
+    font-weight: bold;
+    padding: 8px 5px 8px 20px;
+}
+.treeview-menu > li > a > .fa {
+    font-size: 12px;
+}
+/* icon displayed for collapsed submenus */
+.sidebar-menu li > a > .pull-right {
+    font-weight: bold;
+    text-align: right;
+}
+/* icon displayed for revealed submenus */
+.sidebar-menu li.active > a > .fa-angle-left {
+    top: 30px;
+    right: 0;
 }
 
 /* -------------------------------------------------------------------------

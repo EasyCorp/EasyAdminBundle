@@ -72,18 +72,7 @@
             {% block sidebar %}
                 <section class="sidebar">
                     {% block main_menu_wrapper %}
-                    <ul class="sidebar-menu">
-                        {% block main_menu %}
-                        {% for item in easyadmin_config('entities') %}
-                            <li class="{{ item.name|lower == app.request.get('entity')|lower ? 'active' }}">
-                                <a href="{{ path('easyadmin', { entity: item.name, action: 'list' }) }}">
-                                    <i class="fa fa-chevron-circle-right"></i>
-                                    <span>{{ item.label|trans }}</span>
-                                </a>
-                            </li>
-                        {% endfor %}
-                        {% endblock main_menu %}
-                    </ul>
+                        {{ include(_entity_config.templates.menu) }}
                     {% endblock main_menu_wrapper %}
                 </section>
             {% endblock sidebar %}

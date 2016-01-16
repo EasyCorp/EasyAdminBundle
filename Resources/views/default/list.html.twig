@@ -75,6 +75,7 @@
 {% block main %}
     {% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity_config.name) %}
 
+    <div class="table-responsive">
     <table class="table">
         <thead>
         {% block table_head %}
@@ -152,6 +153,7 @@
         {% endblock table_body %}
         </tbody>
     </table>
+    </div>
 
     {% block paginator %}
         {{ include(_entity_config.templates.paginator) }}

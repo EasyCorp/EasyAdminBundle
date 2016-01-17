@@ -1,0 +1,258 @@
+---------------------------------------------------------------------------
+
+by reypm at 2016-01-09T17:32:35Z
+
+:+1: yes for me this will work and covers almost everything I could do with a menu. If this is will be implemented soon I am very graceful since this is a missing part of this amazing bundle which day by day is more likely Admin Generator from Symfony1 but with goodness from Symfony2|3
+
+And for the second I haven't experience so I can't help there I just get sticky to the rules by the masters behind the Bundle :smiley:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-10T15:08:14Z
+
+> * If this feature was real, would it solve your menu-related needs?
+>  * If yes, could we simplify it?
+>  * If no, what does it lack?
+
+Totally, I don't think we could simplify it actually
+
+> * Do you know any good-practice related to menus that we could import from other projects (KnpMenuBundle, Sonata, ...) or technologies (Django, Rails, ...)?
+
+We could add something to "convert" the base menu into a KnpMenu, but it'd be only for specific overridability. With what you're proposing, having some templates under `@EasyAdmin/menu/...` would make everything overridable so it's pretty enough :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-10T16:54:44Z
+
+Thanks for the comments and discussion so far. It's very important to balance the syntax right because we only have one opportunity to do it right. We must be concise but explicit, flexible but not magic, etc.
+
+---
+
+I'm proposing some changes to the syntax (nothing is definitive ... let's keep discussing):
+
+1) Most common menu items (changing the view or the sort order):
+
+```php
+// Before
+- { entity: 'User', view: 'new' }
+// After
+- { entity: 'User', params: { view: 'new' } }
+
+// Before
+- { entity: 'User', sortDirection: 'ASC' }
+// After
+- { entity: 'User', params: { sortDirection: 'ASC' } }
+
+// Before
+- { entity: 'User', sortField: 'createdAt', sortDirection: 'ASC' }
+// After
+- { entity: 'User', params: { sortField: 'createdAt', sortDirection: 'ASC' } }
+```
+
+I'm still not fully convinced by the `params` proposal. First, it's longer to write. Second, nested hashes are hard to maintain in YAML files.
+
+2) Other menu item types:
+
+```php
+// Before
+- { label: 'New Invoice', type: 'method', name: 'createInvoice' }
+- { label: 'New Invoice', type: 'method', name: 'createInvoice', params: { tax: 0.21 } }
+// After
+- { label: 'New Invoice', action: 'createInvoice' }
+- { label: 'New Invoice', action: 'createInvoice', params: { tax: 0.21 } }
+
+// Before
+- { label: 'Docs', type: 'link', url: 'http://example.com/external-docs' }
+// After
+- { label: 'Docs', url: 'http://example.com/external-docs' }
+
+// Before
+- { label: 'Help', type: 'route', name: 'help_index' }
+- { label: 'Help', type: 'route', name: 'help_index', params: { locale: 'fr' } }
+// After
+- { label: 'Help', route: 'help_index' }
+- { label: 'Help', route: 'help_index', params: { locale: 'fr' } }
+```
+
+The main difference with the @ogizanagi's proposal is that I prefer to remove the `link` option. Why? Because every item defines them (except "empty" ones) so it looks redundant. And second, because of the "problem" with nested hashes readability in YAML files.
+
+The explicit `type` option is gone. What if someone defines `route`, `url` and `action` for the same item? We apply this priority: url > route > action.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-10T17:15:14Z
+
+I'm fine with the removal of the `link` level from my suggestion. It indeed makes sense, as even the `label` and `icon` options can be considered kind of as part of the link generation. So having it at the same level isn't a problem.
+What I wanted to avoid is only the `type` option :smiley:
+
+:+1: about priority (but I'll remove the action based configuration to only keep `route` and `url`).
+
+About the `params` option, I don't think we have a lot of solutions. And having it in a dedicated config option is the most flexible.
+
+---------------------------------------------------------------------------
+
+by rubengc at 2016-01-10T19:25:34Z
+
+@javiereguiluz this sounds awesome and I think this config can resolve any need
+
+I love this feature
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-11T08:19:38Z
+
+> About the `params` option, I don't think we have a lot of solution. And having it in a dedicated config option is the most flexible.
+
+If we needed something more "verbose" we could name it `request_parameters` or `route_parameters`, but actually it's just the array that will be sent to the `path()` twig function... Plus, we're talking about a menu link, so `params` is basically understood as "link parameters", which is verbose enough to me.
+
+:+1: for @ogizanagi's proposal about removing `action` and keep only `route` and `url`. I doubt that `action` will be often used...
+
+For the rest I'm :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-11T21:28:17Z
+
+Update: I'm implementing this feature and all the basic stuff is ready (it was a matter of creating a simple `MenuConfigPass` and a new `menu.html.twig` template).
+
+The problem is when I'm trying to display the submenus. The Bootstrap navbar doesn't work as I expected when displayed in > 1200px (as a sidebar). I was thinking about replacing the current navbar by the Treeview jQuery+Bootstrap plugin (https://github.com/jonmiles/bootstrap-treeview). If I'm right, is the same used in the famous LTE2 backend template (https://almsaeedstudio.com/themes/AdminLTE/index2.html).
+
+Thoughts about this Treeview component? Better alternatives?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-11T21:38:59Z
+
+@javiereguiluz : That's pretty easy. Not sure you need this plugin, nor if it is actually used by LTE themes:
+
+- http://cssdeck.com/labs/twitter-bootstrap-plain-collapsible-tree-menu
+- http://www.bootply.com/lE2NPpERdt
+- http://jsfiddle.net/umutc1/eyf9q87c/
+- http://bootsnipp.com/snippets/yplrV
+- ...
+
+Actually I think admin LTE only uses its own js snippet:
+```js
+      $.AdminLTE.tree = function(a) {
+        var b = this,
+            c = $.AdminLTE.options.animationSpeed;
+        $(a).on("click", "li a", function(a) {
+            var d = $(this),
+                e = d.next();
+            if (e.is(".treeview-menu") && e.is(":visible") && !$("body").hasClass("sidebar-collapse")) e.slideUp(c, function() {
+                e.removeClass("menu-open")
+            }), e.parent("li").removeClass("active");
+            else if (e.is(".treeview-menu") && !e.is(":visible")) {
+                var f = d.parents("ul").first(),
+                    g = f.find("ul:visible").slideUp(c);
+                g.removeClass("menu-open");
+                var h = d.parent("li");
+                e.slideDown(c, function() {
+                    e.addClass("menu-open"), f.find("li.active").removeClass("active"), h.addClass("active"), b.layout.fix()
+                })
+            }
+            e.is(".treeview-menu") && a.preventDefault()
+        })
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-11T21:49:04Z
+
+@ogizanagi the problem is that we have to implement three different menus: < 768px, < 1200px and >= 1200px. I'm really tempted to create a new issue for EasyAdmin: *"Replace our custom template by LTE2"*.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-11T22:03:21Z
+
+Instead of having different menus, do you think it's feasible to implement the push-menu thing as in LTE and other popular themes ? http://www.jasny.net/bootstrap/examples/navmenu-push/
+
+I'm not against replacing our current theme by LTE if you think it makes sense, though.
+
+---------------------------------------------------------------------------
+
+by rubengc at 2016-01-11T22:40:36Z
+
++1 to change to admin lte
+
+It has an active development and is a robust and flexible theme
+
+You will need so much time to get the same goal that admin lte has
+
+I have been worked with him in three complex backends and the result was amazing
+
+---------------------------------------------------------------------------
+
+by reypm at 2016-01-11T22:44:14Z
+
+Yeah :+1: for AdminLTE I mention here time ago about how to use and/or integrate and @javiereguiluz tell me wasn't necessary since EasyAdmin have it's own theme but I am in favor of change to AdminLTE a huge step though
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-12T09:52:33Z
+
+I'm not favor of "replacing" the actual theme with AdminLTE but only create another theme instead.
+
+It's feasible to handle these submenus in our backend, even if it's hard, I'm sure we can do it :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-12T10:02:00Z
+
+@Pierstoval : I agree, but I don't like the idea of maintaining two themes in EasyAdminBundle.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-12T10:17:01Z
+
+@ogizanagi Then it's a huge BC break, so it would need to rise up to v2.0 :smiley:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-12T10:19:03Z
+
+@Pierstoval it's not a huge BC break. It will be just a redesign. We'll use the same things (Bootstrap, jQuery, FontAwesome, same Twig blocks, etc.). We just change some HTML tags, which will break things for people doing advanced things.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-16T17:14:41Z
+
+This feature is now finished and **ready to review** (except tests, which I haven't updated yet). You can also read the updated docs to learn about new features for the menus (creating menu dividers, set the default page to show when loading the backend, etc.)
+
+This is the feature in action:
+
+![easyadmin_menu](https://cloud.githubusercontent.com/assets/73419/12373544/d28e7cfc-bc7c-11e5-9db7-0728ae1fb506.gif)
+
+And this is the config I used to create that:
+
+```yaml
+easy_admin:
+    design:
+        menu:
+            - label: 'Products'
+              icon: 'shopping-basket'
+              children:
+                  - { entity: 'Product', icon: 'th-list', label: 'List Products', params: { sortField: 'createdAt' } }
+                  - { entity: 'Product', icon: 'plus-circle', label: 'Add Product', params: { action: 'new' } }
+                  - { entity: 'Category', icon: 'tags' }
+            - { label: 'Customers', entity: 'User', icon: 'users' }
+            - { label: 'Purchases', entity: 'Purchase', icon: 'credit-card', params: { sortField: 'deliveryDate' } }
+            - { label: 'About EasyAdmin' }
+            - { label: 'Project Home', url: 'https://github.com/javiereguiluz/EasyAdminBundle', icon: 'home' }
+            - { label: 'Documentation', url: 'https://github.com/javiereguiluz/EasyAdminBundle#getting-started-guide', icon: 'book' }
+            - { label: 'Report Issues', url: 'https://github.com/javiereguiluz/EasyAdminBundle/issues', icon: 'github' }
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-16T17:38:59Z
+
+@javiereguiluz : I didn't have fully reviewed it yet, but it looks great. Awesome work ! :clap:
+About `empty` elements, why not renaming it to `divider` elements as you mentioned it ?
+Also I'd suggest that a divider with an empty label generate an simple line divider.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-17T15:54:15Z
+
+@ogizanagi about menu dividers, I prefer to not do these changes. First, to not complicate things more. Second, because AdminLTE doesn't support these "line dividers" yet. We can always implement this in the future.

@@ -1,6 +1,10 @@
 {% if value is iterable %}
     {% if 'show' == view %}
-        {{ value|join(', ') }}
+        <ul>
+            {% for element in value %}
+                <li>{{ element }}</li>
+            {% endfor %}
+        </ul>
     {% else %}
         <span class="badge">{{ value|length }}</span>
     {% endif %}

@@ -99,7 +99,7 @@ Customizing the Backend Index Page
 ----------------------------------
 
 By default, when accessing the index page of the backend, you are redirected to
-the `list` view of the first entity defined in the EasyAdmin configuration.
+the `list` action of the first entity defined in the EasyAdmin configuration.
 
 If you define a custom menu configuration, you can also set any of its items
 as the default backend index. Just add `default: true` to the menu item you want
@@ -115,25 +115,25 @@ easy_admin:
     # ...
 ```
 
-Linking Menu Items to Other Views
----------------------------------
+Linking Menu Items to Other Actions
+-----------------------------------
 
-Instead of linking to the `list` view of an entity, you can also link to any
-of its views. Just define the `params` option to set the parameters used to
-generate the link of the menu item:
+Instead of linking to the `list` action of an entity, you can also link to any
+of its other actions. Just define the `params` option to set the parameters used
+to generate the link of the menu item:
 
 ```yaml
 easy_admin:
     design:
         menu:
-            - { entity: 'User', params: { view: 'new' } }
+            - { entity: 'User', params: { action: 'new' } }
             - Product
-            - { entity: 'Category', params: { view: 'edit', id: 341 } }
+            - { entity: 'Category', params: { action: 'edit', id: 341 } }
     # ...
 ```
 
 The `params` option is also useful to change the sort field or sort direction of
-the `list` view:
+the `list` action:
 
 ```yaml
 easy_admin:

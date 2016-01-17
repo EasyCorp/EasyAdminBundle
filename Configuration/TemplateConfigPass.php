@@ -24,6 +24,7 @@ class TemplateConfigPass implements ConfigPassInterface
 
     private $defaultBackendTemplates = array(
         'layout' => '@EasyAdmin/default/layout.html.twig',
+        'menu' => '@EasyAdmin/default/menu.html.twig',
         'edit' => '@EasyAdmin/default/edit.html.twig',
         'list' => '@EasyAdmin/default/list.html.twig',
         'new' => '@EasyAdmin/default/new.html.twig',

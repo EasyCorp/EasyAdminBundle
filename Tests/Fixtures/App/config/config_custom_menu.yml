@@ -1,0 +1,18 @@
+imports:
+    - { resource: config_default_backend.yml }
+
+easy_admin:
+    design:
+        menu:
+            - label: 'Products'
+              icon: 'shopping-basket'
+              children:
+                  - { entity: 'Product', icon: 'th-list', label: 'List Products', params: { sortField: 'createdAt' } }
+                  - { entity: 'Product', label: 'Add Product', params: { action: 'new' } }
+                  - { entity: 'Category', label: 'Categories', default: true, icon: '' }
+            - { label: 'Images', entity: 'Image' }
+            - { label: 'Purchases', entity: 'Purchase', icon: '', params: { sortField: 'deliveryDate' } }
+            - { label: 'About EasyAdmin' }
+            - { label: 'Project Home', url: 'https://github.com/javiereguiluz/EasyAdminBundle', icon: 'home' }
+            - { label: 'Documentation', url: 'https://github.com/javiereguiluz/EasyAdminBundle#getting-started-guide', icon: 'book' }
+            - { label: 'Report Issues', url: 'https://github.com/javiereguiluz/EasyAdminBundle/issues', icon: 'github' }

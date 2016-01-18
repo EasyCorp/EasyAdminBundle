@@ -148,7 +148,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
                         ? rtrim($fieldMetadata['base_path'], '/').'/'.ltrim($value, '/')
                         : '/'.ltrim($value, '/');
                 }
+
                 $templateParameters['value'] = $imageUrl;
+                $templateParameters['uuid'] = md5($imageUrl);
             }
 
             if (in_array($fieldType, array('array', 'simple_array')) && empty($value)) {

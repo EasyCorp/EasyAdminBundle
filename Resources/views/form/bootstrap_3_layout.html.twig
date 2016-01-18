@@ -340,6 +340,45 @@
     {{ parent() }}
 {%- endblock form_widget_compound -%}
 
+{% block vich_file_widget %}
+{% spaceless %}
+    <div class="easyadmin-vich-file">
+        {{ form_widget(form.file) }}
+
+        {% if form.delete is defined %}
+            {{ form_row(form.delete) }}
+        {% endif %}
+
+        {% if download_uri|default('') is not empty %}
+            <a href="{{ download_uri }}">{{ 'download'|trans({}, 'VichUploaderBundle') }}</a>
+        {% endif %}
+    </div>
+{% endspaceless %}
+{% endblock %}
+
+{% block vich_image_widget %}
+{% spaceless %}
+    <div class="easyadmin-vich-image">
+        {{ form_widget(form.file) }}
+        {% if form.delete is defined %}
+            {{ form_row(form.delete) }}
+        {% endif %}
+
+        {% if download_uri|default('') is not empty %}
+            {% set _lightbox_id = 'easyadmin-lightbox-' ~ id %}
+
+            <a href="#" class="easyadmin-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
+                <img src="{{ download_uri }}">
+            </a>
+
+            <div id="{{ _lightbox_id }}" class="easyadmin-lightbox">
+                <img src="{{ download_uri }}">
+            </div>
+        {% endif %}
+    </div>
+{% endspaceless %}
+{% endblock %}
+
 {# Easy admin form type #}
 {% block easyadmin_widget %}
 

@@ -48,6 +48,7 @@ class DefaultBackendTest extends AbstractTestCase
             '/bundles/easyadmin/stylesheet/bootstrap.min.css',
             '/bundles/easyadmin/stylesheet/font-awesome.min.css',
             '/bundles/easyadmin/stylesheet/adminlte.min.css',
+            '/bundles/easyadmin/stylesheet/featherlight.min.css',
             '/admin/_css/easyadmin.css',
         );
 

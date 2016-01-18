@@ -163,9 +163,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if ('association' === $fieldType) {
-                $targetEntityClassName = $this->getClassShortName($fieldMetadata['targetEntity']);
-                $targetEntityConfig = $this->getEntityConfiguration($targetEntityClassName);
+                $targetEntityConfig = $this->configurator->getEntityConfigByClass($fieldMetadata['targetEntity']);
+                $isShowActionAllowed = $this->isActionEnabled($view, 'show', $targetEntityConfig['name']);
+            }
 
+            if ('association' === $fieldType && ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE)) {
                 // the try..catch block is required because we can't use
                 // $accessor->isReadable(), which is unavailable in Symfony 2.3
                 try {
@@ -175,20 +177,26 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 }
 
                 // get the string representation of the associated *-to-one entity
-                if ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE) {
-                    if (method_exists($value, '__toString')) {
-                        $templateParameters['value'] = (string) $value;
-                    } elseif (null !== $primaryKeyValue) {
-                        $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
-                    } else {
-                        $templateParameters['value'] = $targetEntityClassName;
-                    }
+                if (method_exists($value, '__toString')) {
+                    $templateParameters['value'] = (string) $value;
+                } elseif (null !== $primaryKeyValue) {
+                    $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
+                } else {
+
+                    $templateParameters['value'] = $this->getClassShortName($fieldMetadata['targetEntity']);
                 }
 
-                // if the associated entity is managed by EasyAdmin, display a link to it
-                if (null !== $targetEntityConfig && ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE)) {
+                // if the associated entity is managed by EasyAdmin, and the "show"
+                // action is enabled for the associated entity, display a link to it
+                if (null !== $targetEntityConfig && null !== $primaryKeyValue && $isShowActionAllowed) {
                     $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'id' => $primaryKeyValue);
-                } elseif (null !== $targetEntityConfig && ($fieldMetadata['associationType'] & ClassMetadata::TO_MANY)) {
+                }
+            }
+
+            if ('association' === $fieldType && ($fieldMetadata['associationType'] & ClassMetadata::TO_MANY)) {
+                // if the associated entity is managed by EasyAdmin, and the "show"
+                // action is enabled for the associated entity, display a link to it
+                if (null !== $targetEntityConfig && $isShowActionAllowed) {
                     $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'primary_key_name' => $targetEntityConfig['primary_key_field_name']);
                 }
             }
@@ -213,10 +221,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function isActionEnabled($view, $action, $entityName)
     {
-        $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
-
-        return !in_array($action, $entityConfiguration['disabled_actions'])
-            && array_key_exists($action, $entityConfiguration[$view]['actions']);
+        return $this->configurator->isActionEnabled($entityName, $view, $action);
     }
 
     /**
@@ -229,11 +234,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getActionConfiguration($view, $action, $entityName)
     {
-        $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
-
-        return isset($entityConfiguration[$view]['actions'][$action])
-            ? $entityConfiguration[$view]['actions'][$action]
-            : array();
+        return $this->configurator->getActionConfig($entityName, $view, $action);
     }
 
     /**
@@ -247,9 +248,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getActionsForItem($view, $entityName)
     {
-        $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
-        $disabledActions = $entityConfiguration['disabled_actions'];
-        $viewActions = $entityConfiguration[$view]['actions'];
+        $entityConfig = $this->configurator->getEntityConfig($entityName);
+        $disabledActions = $entityConfig['disabled_actions'];
+        $viewActions = $entityConfig[$view]['actions'];
 
         $actionsExcludedForItems = array(
             'list' => array('new', 'search'),
@@ -273,6 +274,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function truncateText(\Twig_Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
     {
+        try {
+            $value = (string) $value;
+        } catch (\Exception $e) {
+            $value = '';
+        }
+
         if (function_exists('mb_get_info')) {
             if (mb_strlen($value, $env->getCharset()) > $length) {
                 if ($preserve) {

@@ -344,6 +344,23 @@ a.btn-secondary:active {
     border: 0;
 }
 
+/* VichUploaderBundle files and images
+   ------------------------------------------------------------------------- */
+.easyadmin-vich-image img {
+    border: 3px solid {{ colors.white }};
+    box-shadow: 0 0 3px {{ colors.gray }};
+    max-height: 300px;
+    max-width: 400px;
+}
+.easyadmin-vich-file input[type="file"] {
+    padding-top: 7px;
+}
+/* the checkbox to delete the image/file */
+.easyadmin-vich-file .field-checkbox .col-sm-2,
+.easyadmin-vich-image .field-checkbox .col-sm-2 {
+    display: none;
+}
+
 /* Modal windows
    ------------------------------------------------------------------------- */
 .modal-dialog .modal-content {

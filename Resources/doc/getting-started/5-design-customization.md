@@ -253,3 +253,7 @@ easy_admin:
 ```
 
 [advanced-design-customization]: ../tutorials/advanced-design-customization.md
+
+-------------------------------------------------------------------------------
+
+&larr; [Chapter 4. Views and Actions](4-views-and-actions.md)  |  [Chapter 6. About this project](6-about-this-project.md) &rarr;

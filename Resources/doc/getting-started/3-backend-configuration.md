@@ -141,3 +141,7 @@ who is logged in the application.
 
 [custom-admin-controller]: ../tutorials/customizing-admin-controller.md
 [config-reference]: ../tutorials/configuration-reference.md
+
+-------------------------------------------------------------------------------
+
+&larr; [Chapter 2. Your First Backend](2-first-backend.md)  |  [Chapter 4. Views and Actions](4-views-and-actions.md) &rarr;

@@ -2,7 +2,7 @@
     {% if 'show' == view %}
         <ul>
             {% for element in value %}
-                <li>{{ element }}</li>
+                <li><a href="{{ path('easyadmin', link_parameters|merge({ id: attribute(element, link_parameters.primary_key_name) })) }}">{{ element }}</a></li>
             {% endfor %}
         </ul>
     {% else %}

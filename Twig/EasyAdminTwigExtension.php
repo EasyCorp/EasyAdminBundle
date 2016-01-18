@@ -162,27 +162,34 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
             }
 
-            if ('association' === $fieldType && ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE)) {
+            if ('association' === $fieldType) {
+                $targetEntityClassName = $this->getClassShortName($fieldMetadata['targetEntity']);
+                $targetEntityConfig = $this->getEntityConfiguration($targetEntityClassName);
+
+                // the try..catch block is required because we can't use
+                // $accessor->isReadable(), which is unavailable in Symfony 2.3
                 try {
-                    $targetEntityClassName = $this->getClassShortName($fieldMetadata['targetEntity']);
-                    $targetEntityConfig = $this->getEntityConfiguration($targetEntityClassName);
                     $primaryKeyValue = $this->accessor->getValue($value, $targetEntityConfig['primary_key_field_name']);
                 } catch (\Exception $e) {
-                    // the try..catch block is needed because we can't use the
-                    // $accessor->isReadable(), which is unavailable in Symfony 2.3
-                    $templateParameters['value'] = $targetEntityClassName;
+                    $primaryKeyValue = null;
                 }
 
-                // get the string representation of the associated entity
-                if (method_exists($value, '__toString')) {
-                    $templateParameters['value'] = (string) $value;
-                } elseif (isset($primaryKeyValue)) {
-                    $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
+                // get the string representation of the associated *-to-one entity
+                if ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE) {
+                    if (method_exists($value, '__toString')) {
+                        $templateParameters['value'] = (string) $value;
+                    } elseif (null !== $primaryKeyValue) {
+                        $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
+                    } else {
+                        $templateParameters['value'] = $targetEntityClassName;
+                    }
                 }
 
                 // if the associated entity is managed by EasyAdmin, display a link to it
-                if (null !== $targetEntityConfig && isset($primaryKeyValue)) {
+                if (null !== $targetEntityConfig && ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE)) {
                     $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'id' => $primaryKeyValue);
+                } elseif (null !== $targetEntityConfig && ($fieldMetadata['associationType'] & ClassMetadata::TO_MANY)) {
+                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'primary_key_name' => $targetEntityConfig['primary_key_field_name']);
                 }
             }
 

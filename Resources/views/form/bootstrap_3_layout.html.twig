@@ -365,7 +365,15 @@
         {% endif %}
 
         {% if download_uri|default('') is not empty %}
-            <a href="{{ download_uri }}"><img src="{{ download_uri }}" alt="" /></a>
+            {% set _lightbox_id = 'easyadmin-lightbox-' ~ id %}
+
+            <a href="#" class="easyadmin-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
+                <img src="{{ download_uri }}">
+            </a>
+
+            <div id="{{ _lightbox_id }}" class="easyadmin-lightbox">
+                <img src="{{ download_uri }}">
+            </div>
         {% endif %}
     </div>
 {% endspaceless %}

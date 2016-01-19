@@ -1,1 +1,10 @@
-<img src="{{ value }}">
+{# each lightbox image must have its own unique 'id' attribute #}
+{% set _lightbox_id = 'easyadmin-lightbox-' ~ value|replace({ '/': '', '\\': '', '.': '', '-': '', '_': '' })[-12:] %}
+
+<a href="#" class="easyadmin-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
+    <img src="{{ value }}">
+</a>
+
+<div id="{{ _lightbox_id }}" class="easyadmin-lightbox">
+    <img src="{{ value }}">
+</div>

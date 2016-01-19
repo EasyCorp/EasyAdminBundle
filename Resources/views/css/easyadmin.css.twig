@@ -352,13 +352,35 @@ a.btn-secondary:active {
     max-height: 300px;
     max-width: 400px;
 }
-.easyadmin-vich-file input[type="file"] {
+.easyadmin-vich-file input[type="file"],
+.easyadmin-vich-image input[type="file"] {
     padding-top: 7px;
 }
 /* the checkbox to delete the image/file */
 .easyadmin-vich-file .field-checkbox .col-sm-2,
 .easyadmin-vich-image .field-checkbox .col-sm-2 {
     display: none;
+}
+
+/* Thumbnails and image lightbox
+   ------------------------------------------------------------------------- */
+.easyadmin-thumbnail img {
+    border: 3px solid {{ colors.white }};
+    box-shadow: 0 0 3px {{ colors.gray }};
+    max-height: 100px;
+    max-width: 100%;
+}
+.easyadmin-thumbnail img:hover {
+    cursor: zoom-in;
+}
+.featherlight .easyadmin-lightbox:hover {
+    cursor: zoom-out;
+}
+.easyadmin-lightbox {
+    display: none;
+}
+.featherlight .easyadmin-lightbox {
+    display: block;
 }
 
 /* Modal windows
@@ -632,9 +654,8 @@ table td:after {
     display: block;
 }
 
-body.list table tbody td.image img {
-    border: 2px solid {{ colors.white }};
-    box-shadow: 0 0 2px {{ colors.gray_light }};
+body.list table tbody td.image .easyadmin-thumbnail img {
+    border-width: 2px;
     max-height: 50px;
     max-width: 150px;
 }
@@ -777,10 +798,6 @@ body.show .form-control.text {
     min-height: 34px;
     max-height: 250px;
     overflow-y: auto;
-}
-body.show .field-image img {
-    max-height: 300px;
-    max-width: 100%;
 }
 
 /* -------------------------------------------------------------------------

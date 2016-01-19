@@ -218,16 +218,6 @@ easy_admin:
             # ...
 ```
 
-Then, add the special form theme provided by VichUploaderBundle to the list of
-form themes used by the backend:
-
-```yaml
-easy_admin:
-    # ...
-    design:
-        form_theme: ['VichUploaderBundle:Form:fields.html.twig', 'horizontal']
-```
-
 Uploading Other Types of Files
 ------------------------------
 
@@ -378,12 +368,23 @@ easy_admin:
             # ...
 ```
 
-Don't forget to enable the custom form theme provided by VichUploaderBundle to
-improve the appearance of this file upload field:
+Customizing Form Fields for Image and File Uploading
+----------------------------------------------------
+
+EasyAdmin renders the VichUploaderBundle form fields using a custom form theme
+that improves their default styling. For example, image fields are rendered as
+thumbnails which display the original images when clicking on them.
+
+If you prefer to use the original VichUploaderBundle styles, add its form theme
+in the `form_theme` configuration option (put it at the end to override
+EasyAdmin's default form theme):
 
 ```yaml
 easy_admin:
     # ...
     design:
-        form_theme: ['VichUploaderBundle:Form:fields.html.twig', 'horizontal']
+        form_theme: ['horizontal', 'VichUploaderBundle:Form:fields.html.twig']
 ```
+
+Apply the same technique in case you want to use your own form theme instead
+of the one provided by VichUploaderBundle.

@@ -66,21 +66,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getBackendConfiguration($key = null)
     {
-        $config = $this->configurator->getBackendConfig();
-
-        if (!empty($key)) {
-            $parts = explode('.', $key);
-
-            foreach ($parts as $part) {
-                if (!isset($config[$part])) {
-                    $config = null;
-                    break;
-                }
-                $config = $config[$part];
-            }
-        }
-
-        return $config;
+        return $this->configurator->getBackendConfig($key);
     }
 
     /**

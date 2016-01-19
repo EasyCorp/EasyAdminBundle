@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+
 /**
  * Exposes the configuration of the backend fully and on a per-entity basis.
  *
@@ -19,20 +21,32 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 class Configurator
 {
     private $backendConfig;
+    private $accessor;
 
-    public function __construct(array $backendConfig)
+    public function __construct(array $backendConfig, PropertyAccessor $accessor)
     {
         $this->backendConfig = $backendConfig;
+        $this->accessor = $accessor;
     }
 
     /**
-     * Returns the entire backend configuration.
+     * Returns the entire backend configuration or just the configuration for
+     * the optional property path. Example: getBackendConfig('design.menu')
+     *
+     * @param string $propertyPath
      *
      * @return array
      */
-    public function getBackendConfig()
+    public function getBackendConfig($propertyPath = null)
     {
-        return $this->backendConfig;
+        if (empty($propertyPath)) {
+            return $this->backendConfig;
+        }
+
+        // turns 'design.menu' into '[design][menu]', the format required by PropertyAccess
+        $propertyPath = '['.str_replace('.', '][', $propertyPath).']';
+
+        return $this->accessor->getValue($this->backendConfig, $propertyPath);
     }
 
     /**

@@ -3,16 +3,14 @@
     {% if 'show' == view %}
         <ul>
             {% for item in value %}
-                {% if link_parameters is defined %}
-                    {% set primary_key_value = attribute(item, link_parameters.primary_key_name) %}
-                    <li>
+                <li>
+                    {% if link_parameters is defined %}
+                        {% set primary_key_value = attribute(item, link_parameters.primary_key_name) %}
                         <a href="{{ path('easyadmin', link_parameters|merge({ id: primary_key_value })) }}">{{ item }}</a>
-                    </li>
-                {% else %}
-                    <li>
+                    {% else %}
                         {{ item }}
-                    </li>
-                {% endif %}
+                    {% endif %}
+                </li>
             {% endfor %}
         </ul>
     {% elseif 'list' == view %}

@@ -312,8 +312,12 @@ a.btn-secondary:active {
     -webkit-transition: none;
     transition: none;
 }
+.select2-container--bootstrap .select2-selection .select2-search--inline {
+    margin: 0;
+}
 .select2-container--bootstrap .select2-selection--single .select2-selection__rendered {
     color: {{ colors.text }};
+    padding-top: 4px;
 }
 .select2-container--bootstrap .select2-results__option {
     margin-bottom: 0;
@@ -331,6 +335,8 @@ a.btn-secondary:active {
 .select2-container--bootstrap .select2-selection--multiple .select2-selection__choice__remove {
     color: {{ colors.danger }};
     font-weight: bold;
+    position: relative;
+    top: -1px;
 }
 .select2-container--bootstrap .select2-search--dropdown .select2-search__field {
     border: 1px solid {{ colors.gray_dark }};

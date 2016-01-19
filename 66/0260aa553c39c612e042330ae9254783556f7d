@@ -1,0 +1,139 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-18T21:50:33Z
+
+It's way better, but IMO it's still too big.
+
+Can we consider (maybe not for this PR) integrating (or making a basic implementation of) a js plugin (as well for other views) in order to have display the full size image on click on a thumbnail ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-18T21:52:45Z
+
+Anyone knows an ultra-lightweight JavaScript plugin (if possible for Bootstrap) which allows to display an image full-screen when clicking on it? Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-18T21:55:39Z
+
+Alternatively, we can for now fix the image size to a decent thumbnail proportion (between 100 and 250px) and ~~add~~ let the link on it.
+
+---------------------------------------------------------------------------
+
+by reypm at 2016-01-18T22:04:16Z
+
+@javiereguiluz something like [this](http://www.jasonbutz.info/bootstrap-lightbox/)?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-18T22:43:30Z
+
+Just for the record, I tried a pure CSS implementation, maybe you can give it a try to enhance it:
+
+```diff
+--- a/Resources/views/css/easyadmin.css.twig
++++ b/Resources/views/css/easyadmin.css.twig
+@@ -349,8 +349,8 @@ a.btn-secondary:active {
+ .easyadmin-vich-image img {
+     border: 3px solid {{ colors.white }};
+     box-shadow: 0 0 3px {{ colors.gray }};
+-    max-height: 300px;
+-    max-width: 400px;
++    max-height: 160px;
++    max-width: 250px;
+ }
+ .easyadmin-vich-file input[type="file"] {
+     padding-top: 7px;
+@@ -361,6 +361,33 @@ a.btn-secondary:active {
+     display: none;
+ }
+
++.easyadmin-vich-image a {
++    transition: all 0.3s;
++}
++.easyadmin-vich-image a img {
++    transition: all 0.2s;
++}
++.easyadmin-vich-image a:hover {
++    position: fixed;
++    z-index: 9999;
++    left: 0;
++    background: rgba(0,0,0,0.75);
++    width: 100%;
++    height: 100%;
++    bottom: 0;
++    opacity: 1;
++}
++.easyadmin-vich-image a:hover img {
++    position: absolute;
++    left: 0;
++    top: 0;
++    right: 0;
++    bottom: 0;
++    margin: auto;
++    max-height: 100%;
++    max-width: 100%;
++}
++
+```
+
+But I fear it might be more annoying than useful as it is.
+It can be enhanced to respond on click instead on hover by using the `:target` pseudo-class & a predefined modal element. (See references below)
+
+The js plugin mentioned by @reypm looks good. I don't know if there is lighter.
+
+[Here](http://drublic.github.io/css-modal/) is also a full implementation of a pure CSS modal we can eventually inspire of. And some references:
+
+- http://www.webdesignerdepot.com/2012/10/creating-a-modal-window-with-html5-and-css3/
+- http://codepen.io/maccadb7/pen/nbHEg
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-19T08:34:33Z
+
+You could use `:active` instead of `hover` or `target`, this would be much better for UX (with a `cursor: pointer;` of course).
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-19T08:38:52Z
+
+Here's a really simple fiddle:
+
+http://jsfiddle.net/8c7Vn/192/
+
+```css
+img {
+    transition: max-width 0.25s ease;
+    max-width: 250px;
+    max-height: 150px;
+    cursor: zoom-in;
+    margin: 0 auto;
+    display: block;
+}
+
+img:active {
+    max-width: 100%;
+    max-height: 100%;
+    cursor: zoom-out;
+}
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-19T17:14:35Z
+
+Thank you all for the discussion and the recommendations. At the end I didn't use the Bootstrap Lightbox plugin because I couldn't make it work and because it's officially deprecated. I used http://noelboss.github.io/featherlight/ instead.
+
+This feature is now finished and ready for review. We now have lightbox images everwhere: list, show, edit and new views!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-19T17:47:42Z
+
+Looks good ! :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-19T17:52:55Z
+
+@javiereguiluz : :confused: Unfortunately, it seems it does not render properly on small screens.

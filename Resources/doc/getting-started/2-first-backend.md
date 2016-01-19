@@ -31,3 +31,7 @@ Without any further configuration, EasyAdmin guesses the best settings to make
 your admin backend look "good enough". This may be acceptable for simple
 backends and rapid prototypes, but most of the times, you need to customize
 some parts of the backend. Keep reading to learn how to do it.
+
+-------------------------------------------------------------------------------
+
+&larr; [Chapter 1. Installation](1-installation.md)  |  [Chapter 3. Backend Configuration](3-backend-configuration.md) &rarr;

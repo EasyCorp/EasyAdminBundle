@@ -1,0 +1,28 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-19T19:10:36Z
+
+Nice.
+
+Maybe you can also fix the vertical centering of the deletion icon ?
+
+### Before:
+<img width="992" alt="screenshot 2016-01-19 a 20 07 29" src="https://cloud.githubusercontent.com/assets/2211145/12429024/4d35eae0-bee8-11e5-9188-173a6fe6d839.PNG">
+
+### After:
+<img width="995" alt="screenshot 2016-01-19 a 20 07 15" src="https://cloud.githubusercontent.com/assets/2211145/12429023/4d1f344e-bee8-11e5-97bf-d2a8f7f0e5b2.PNG">
+
+```diff
+.select2-container--bootstrap .select2-selection--multiple .select2-selection__choice__remove {
+    color: #D42124;
+    font-weight: bold;
++    position: relative;
++    top: -1px;
+}
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-19T19:22:20Z
+
+@ogizanagi I love it!! Thanks for the fix. Done!

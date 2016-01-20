@@ -39,3 +39,4 @@ function navigationToggled(hidden) {
         }
     };
 }
+

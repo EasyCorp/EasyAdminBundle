@@ -1,4 +1,11 @@
 $(function () {
+    var body = $('body');
+
+    body
+        .on('expanded.pushMenu', navigationToggled(false))
+        .on('collapsed.pushMenu', navigationToggled(true))
+    ;
+
     createNullableControls();
 });
 
@@ -20,3 +27,16 @@ function createNullableControls() {
 
     $('.nullable-control :checkbox').bind('change', fnNullDates).each(fnNullDates);
 }
+
+function navigationToggled(hidden) {
+    var key = '_easyadmin_navbar_hidden';
+
+    return function() {
+        if (hidden) {
+            docCookies.setItem(key, true, Infinity);
+        } else {
+            docCookies.removeItem(key);
+        }
+    };
+}
+

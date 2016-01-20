@@ -29,44 +29,23 @@ function createNullableControls() {
 }
 
 function toggleNavigation(hidden) {
-    var cookieName = '_easyadmin_navigation_collapse';
+    var cookieName = '_easyadmin_navigation_isCollapsed';
 
     return function() {
         if (hidden) {
-            createCookie(cookieName, true, Infinity);
+            createPersistentCookie(cookieName, true);
         } else {
             deleteCookie(cookieName);
         }
     };
 }
 
-function createCookie(name, value, expiration, path, domain, secure)
+function createPersistentCookie(name, value)
 {
-    if (!name || /^(?:expires|max\-age|path|domain|secure)$/i.test(name)) { return false; }
-
-    var expires = "";
-    if (expiration) {
-        switch (expiration.constructor) {
-            case Number:
-                expires = expiration === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + expiration;
-                break;
-            case String:
-                expires = "; expires=" + expiration;
-                break;
-            case Date:
-                expires = "; expires=" + expiration.toUTCString();
-                break;
-        }
-    }
-
-    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + (domain ? "; domain=" + domain : "") + (path ? "; path=" + path : "") + (secure ? "; secure" : "");
-
-    return true;
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
 }
 
 function deleteCookie(name, path, domain)
 {
     document.cookie = encodeURIComponent(name) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (domain ? "; domain=" + domain : "") + (path ? "; path=" + path : "");
-
-    return true;
 }

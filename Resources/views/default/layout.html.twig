@@ -34,7 +34,7 @@
     </head>
 
     {% block body %}
-    <body id="{% block body_id %}{% endblock %}" class="easyadmin sidebar-mini fixed {% block body_class %}{% endblock %} {{ app.request.cookies.has('_easyadmin_navbar_hidden') ? 'sidebar-collapse' }}">
+    <body id="{% block body_id %}{% endblock %}" class="easyadmin sidebar-mini fixed {% block body_class %}{% endblock %} {{ app.request.cookies.has('_easyadmin_navigation_collapse') ? 'sidebar-collapse' }}">
         <div class="wrapper">
         {% block wrapper %}
             <header class="main-header">
@@ -116,7 +116,6 @@
         {% block body_javascript %}
             <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
             <script src="{{ asset('bundles/easyadmin/javascript/bootstrap.min.js') }}"></script>
-            <script src="{{ asset('bundles/easyadmin/javascript/cookies.js') }}"></script>
 
             {% block adminlte_options %}
                 <script type="text/javascript">

@@ -34,7 +34,7 @@
     </head>
 
     {% block body %}
-    <body id="{% block body_id %}{% endblock %}" class="easyadmin sidebar-mini fixed {% block body_class %}{% endblock %} {{ app.request.cookies.has('_easyadmin_navigation_isCollapsed') ? 'sidebar-collapse' }}">
+    <body id="{% block body_id %}{% endblock %}" class="easyadmin sidebar-mini fixed {% block body_class %}{% endblock %} {{ app.request.cookies.has('_easyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
         <div class="wrapper">
         {% block wrapper %}
             <header class="main-header">

@@ -28,11 +28,11 @@ function createNullableControls() {
     $('.nullable-control :checkbox').bind('change', fnNullDates).each(fnNullDates);
 }
 
-function toggleNavigation(hidden) {
-    var cookieName = '_easyadmin_navigation_isCollapsed';
+function toggleNavigation(collapsed) {
+    var cookieName = '_easyadmin_navigation_iscollapsed';
 
     return function() {
-        if (hidden) {
+        if (collapsed) {
             createPersistentCookie(cookieName, true);
         } else {
             deleteCookie(cookieName);

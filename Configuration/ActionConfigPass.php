@@ -48,13 +48,13 @@ class ActionConfigPass implements ConfigPassInterface
                 $backendActions = isset($backendConfig[$view]['actions']) ? $backendConfig[$view]['actions'] : array();
                 $backendActions = $this->normalizeActionsConfig($backendActions, $defaultActions);
 
-                $defaultViewActions = array_replace($defaultActions, $backendActions);
+                $defaultViewActions = $backendActions + $defaultActions;
                 $defaultViewActions = $this->filterRemovedActions($defaultViewActions);
 
                 $entityActions = isset($entityConfig[$view]['actions']) ? $entityConfig[$view]['actions'] : array();
                 $entityActions = $this->normalizeActionsConfig($entityActions, $defaultViewActions);
 
-                $viewActions = array_replace($defaultViewActions, $entityActions);
+                $viewActions = $entityActions + $defaultViewActions;
                 $viewActions = $this->filterRemovedActions($viewActions);
 
                 // 'list' action is mandatory for all views

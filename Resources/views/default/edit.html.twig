@@ -20,7 +20,7 @@
     {% endblock entity_form %}
 
     {% block delete_form %}
-        {{ include('@EasyAdmin/default/includes/delete_form.html.twig', {
+        {{ include('@EasyAdmin/default/includes/_delete_form.html.twig', {
             view: 'edit',
             referer: app.request.query.get('referer', ''),
             delete_form: delete_form,
@@ -43,7 +43,7 @@
         $(function() {
             $('.edit-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
 
-            $('#button-delete').on('click', function(e) {
+            $('a.action-delete').on('click', function(e) {
                 e.preventDefault();
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })

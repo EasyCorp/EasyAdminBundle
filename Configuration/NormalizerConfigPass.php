@@ -25,6 +25,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         $backendConfig = $this->normalizeFormViewConfig($backendConfig);
         $backendConfig = $this->normalizeViewConfig($backendConfig);
         $backendConfig = $this->normalizePropertyConfig($backendConfig);
+        $backendConfig = $this->normalizeActionConfig($backendConfig);
 
         return $backendConfig;
     }
@@ -227,6 +228,34 @@ class NormalizerConfigPass implements ConfigPassInterface
                 }
 
                 $backendConfig['entities'][$entityName][$view]['fields'] = $fields;
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    private function normalizeActionConfig(array $backendConfig)
+    {
+        $views = array('edit', 'list', 'new', 'show');
+
+        foreach ($views as $view) {
+            if (!isset($backendConfig[$view]['actions'])) {
+                $backendConfig[$view]['actions'] = array();
+            }
+
+            // there is no need to check if the "actions" option for the global
+            // view is an array because it's done by the Configuration definition
+        }
+
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach ($views as $view) {
+                if (!isset($entityConfig[$view]['actions'])) {
+                    $backendConfig['entities'][$entityName][$view]['actions'] = array();
+                }
+
+                if (!is_array($backendConfig['entities'][$entityName][$view]['actions'])) {
+                    throw new \InvalidArgumentException(sprintf('The "actions" configuration for the "%s" view of the "%s" entity must be an array (a string was provided).', $view, $entityName));
+                }
             }
         }
 

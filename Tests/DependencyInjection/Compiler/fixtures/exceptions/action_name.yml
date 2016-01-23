@@ -5,7 +5,7 @@
 # EXCEPTION
 expected_exception:
     class: RuntimeException
-    message_string: 'When using the expanded configuration format for actions, you must define their "name" option.'
+    message_string: 'One of the actions defined by the global "list" view defined under "easy_admin" option does not define its name, which is the only mandatory option for actions.'
 
 # CONFIGURATION
 easy_admin:

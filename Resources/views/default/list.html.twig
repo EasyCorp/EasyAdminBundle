@@ -125,20 +125,12 @@
                         {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') %}
                         <td data-label="{{ _column_label }}" class="actions">
                         {% block item_actions %}
-                            {% for _action in _list_item_actions %}
-                                {% if 'method' == _action.type %}
-                                    {% set _action_href = path('easyadmin', _request_parameters|merge({ action: _action.name, id: _item_id })) %}
-                                {% elseif 'route' == _action.type %}
-                                    {% set _action_href = path(_action.name, _request_parameters|merge({ action: _action.name, id: _item_id })) %}
-                                {% endif %}
-
-                                <a class="{{ _action.css_class|default('') }}" href="{{ _action_href }}">{% spaceless %}
-                                    {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                    {% if _action.label is defined and not _action.label is empty %}
-                                        {{ _action.label|trans(_trans_parameters|merge({ '%entity_id%': _item_id })) }}
-                                    {% endif %}
-                                {% endspaceless %}</a>
-                            {% endfor %}
+                            {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+                                actions: _list_item_actions,
+                                request_parameters: _request_parameters,
+                                trans_parameters: _trans_parameters,
+                                item_id: _item_id
+                            }, with_context = false) }}
                         {% endblock item_actions %}
                         </td>
                     {% endif %}
@@ -165,7 +157,7 @@
             : app.request.requestUri
         %}
 
-        {{ include('@EasyAdmin/default/includes/delete_form.html.twig', {
+        {{ include('@EasyAdmin/default/includes/_delete_form.html.twig', {
             view: 'list',
             referer: referer|url_encode,
             delete_form: delete_form_template,

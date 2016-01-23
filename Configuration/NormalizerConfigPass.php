@@ -25,6 +25,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         $backendConfig = $this->normalizeFormViewConfig($backendConfig);
         $backendConfig = $this->normalizeViewConfig($backendConfig);
         $backendConfig = $this->normalizePropertyConfig($backendConfig);
+        $backendConfig = $this->normalizeActionConfig($backendConfig);
 
         return $backendConfig;
     }
@@ -227,6 +228,27 @@ class NormalizerConfigPass implements ConfigPassInterface
                 }
 
                 $backendConfig['entities'][$entityName][$view]['fields'] = $fields;
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    private function normalizeActionConfig(array $backendConfig)
+    {
+        $views = array('edit', 'list', 'new', 'show');
+
+        foreach ($views as $view) {
+            if (!isset($backendConfig[$view]['actions'])) {
+                $backendConfig[$view]['actions'] = array();
+            }
+        }
+
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach ($views as $view) {
+                if (!isset($entityConfig[$view]['actions'])) {
+                    $backendConfig['entities'][$entityName][$view]['actions'] = array();
+                }
             }
         }
 

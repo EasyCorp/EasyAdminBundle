@@ -103,13 +103,13 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: action-delete
+                        css_class: 'btn btn-default action-delete'
                         icon: trash-o
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: action-list
+                        css_class: 'btn btn-secondary action-list'
                         icon: null
             list:
                 fields:
@@ -230,31 +230,25 @@ easy_admin:
                         name: edit
                         type: method
                         label: action.edit
-                        css_class: action-edit
+                        css_class: 'text-primary action-edit'
                         icon: null
                     delete:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: 'action-delete text-danger'
+                        css_class: 'text-danger action-delete'
                         icon: null
                     search:
                         name: search
                         type: method
                         label: action.search
-                        css_class: action-search
+                        css_class: ' action-search'
                         icon: null
                     new:
                         name: new
                         type: method
                         label: action.new
-                        css_class: action-new
-                        icon: null
-                    list:
-                        name: list
-                        type: method
-                        label: action.list
-                        css_class: action-list
+                        css_class: ' action-new'
                         icon: null
             new:
                 fields:
@@ -355,7 +349,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: action-list
+                        css_class: 'btn btn-secondary action-list'
                         icon: null
             search:
                 fields:
@@ -515,24 +509,24 @@ easy_admin:
                         associationType: 1
                         property: parent
                 actions:
+                    edit:
+                        name: edit
+                        type: method
+                        label: action.edit
+                        css_class: 'btn btn-primary action-edit'
+                        icon: edit
                     delete:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: action-delete
+                        css_class: 'btn btn-default action-delete'
                         icon: trash-o
                     list:
                         name: list
                         type: method
                         label: action.list
-                        css_class: action-list
+                        css_class: 'btn btn-secondary action-list'
                         icon: null
-                    edit:
-                        name: edit
-                        type: method
-                        label: action.edit
-                        css_class: action-edit
-                        icon: edit
             disabled_actions: {  }
             primary_key_field_name: id
             properties:

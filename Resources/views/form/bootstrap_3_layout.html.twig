@@ -407,47 +407,21 @@
                         </button>
 
                         {% set _entity_actions = (easyadmin.view == 'new')
-                        ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
-                        : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
+                            ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
+                            : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
 
-                        {% for _action in _entity_actions %}
-                            {% if 'method' == _action.type %}
-                                {% set _action_href = path('easyadmin', { action: _action.name, view: easyadmin.view, entity: easyadmin.entity.name, id: attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) }) %}
-                            {% elseif 'route' == _action.type %}
-                                {% set _action_href = path(_action.name, { entity: easyadmin.entity.name, id: attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) }) %}
-                            {% endif %}
+                        {% set _entity_id = (easyadmin.view == 'new')
+                            ? null
+                            : attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) %}
 
-                            <a class="btn btn-primary {{ _action.css_class|default('') }}" href="{{ _action_href }}">
-                                {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters, 'messages') }}
-                            </a>
-                        {% endfor %}
+                        {% set _request_parameters = { entity: easyadmin.entity.name, referer: app.request.query.get('referer') } %}
 
-                        {% if easyadmin.view == 'edit' %}
-                            {% if easyadmin_action_is_enabled_for_edit_view('delete', easyadmin.entity.name) %}
-                                {% set _action = easyadmin_get_action_for_edit_view('delete', easyadmin.entity.name) %}
-                                <button type="button" id="button-delete"
-                                        class="btn {{ _action.css_class|default('') }}">
-                                    {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                    {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters, 'messages') }}
-                                </button>
-                            {% endif %}
-                        {% endif %}
-
-                        {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
-                        {% if easyadmin.view == 'new' and easyadmin_action_is_enabled_for_new_view('list', easyadmin.entity.name) %}
-                            {% set _list_action = easyadmin_get_action_for_new_view('list', easyadmin.entity.name) %}
-                        {% elseif easyadmin.view == 'edit' and easyadmin_action_is_enabled_for_edit_view('list', easyadmin.entity.name) %}
-                            {% set _list_action = easyadmin_get_action_for_edit_view('list', easyadmin.entity.name) %}
-                        {% endif %}
-
-                        {% if _list_action is defined %}
-                            <a class="btn btn-secondary"
-                               href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('easyadmin', ({ entity: easyadmin.entity.name, action: _list_action.name, view: easyadmin.view }) ) }}">{% spaceless %}
-                                    {% if _list_action.icon %}<i class="fa fa-{{ _list_action.icon }}"></i>{% endif %}
-                                    {{ _list_action.label is defined and not _list_action.label is empty ? _list_action.label|trans(_trans_parameters, 'messages') }}
-                                {% endspaceless %}</a>
-                        {% endif %}
+                        {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+                            actions: _entity_actions,
+                            request_parameters: _request_parameters,
+                            trans_parameters: _trans_parameters,
+                            item_id: _entity_id
+                        }, with_context = false) }}
                     {% endblock item_actions %}
                 </div>
             </div>

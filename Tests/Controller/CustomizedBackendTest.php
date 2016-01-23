@@ -178,7 +178,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertContains('fa-pencil-square', trim($crawler->filter('.form-actions a:contains("Modify Category") i')->attr('class')));
 
         // delete action (removed in configuration file)
-        $this->assertCount(0, $crawler->filter('.form-actions button:contains("Delete")'));
+        $this->assertCount(0, $crawler->filter('.form-actions a:contains("Delete")'));
 
         // list action
         $this->assertContains('fa-list', trim($crawler->filter('.form-actions a:contains("Back to Category listing") i')->attr('class')));
@@ -295,7 +295,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertContains('fa-save', trim($crawler->filter('#form-actions-row button:contains("Save changes") i')->attr('class')));
 
         // delete action
-        $this->assertContains('fa-minus-circle', trim($crawler->filter('#form-actions-row button:contains("Remove") i')->attr('class')));
+        $this->assertContains('fa-minus-circle', trim($crawler->filter('#form-actions-row a:contains("Remove") i')->attr('class')));
 
         // list action
         $this->assertContains('fa-list', trim($crawler->filter('#form-actions-row a:contains("Return to listing") i')->attr('class')));

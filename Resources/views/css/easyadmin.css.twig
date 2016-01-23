@@ -198,9 +198,32 @@ span.badge {
 .btn + .btn {
     margin-left: 5px;
 }
-.btn-primary,
-.btn-danger {
-    font-weight: bold;
+
+button.btn:active {
+    position: relative;
+    top: 1px;
+}
+
+.btn,
+.btn:hover,
+.btn:active,
+.btn:focus,
+.btn:active:hover  {
+{% if 'dark' == color_scheme %}
+    background: {{ colors.gray_light }};
+{% elseif 'light' == color_scheme %}
+    background: {{ colors.gray }};
+{% endif %}
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: none;
+    color: {{ colors.text }};
+    display: inline-block;
+    line-height: 1.42857143;
+    opacity: 1;
+    outline: none;
+    padding: 6px 12px;
+    text-align: center;
 }
 
 .btn-primary,
@@ -209,38 +232,49 @@ span.badge {
 .btn-primary:focus,
 .btn-primary:active:hover {
     background-color: {{ brand_color }};
-    border-color: {{ brand_color }};
+    border-color: transparent;
+    color: {{ colors.white }};
+}
+.btn-default,
+.btn-default:hover,
+.btn-default:active,
+.btn-default:focus,
+.btn-default:active:hover {
+    border-color: transparent;
 }
 
-a.btn {
-    border: 1px solid transparent;
-    border-radius: 4px;
+.btn-danger,
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger:focus,
+.btn-danger:active:hover {
+    background-color: {{ colors.danger }};
+    border-color: transparent;
     color: {{ colors.white }};
-    display: inline-block;
-    line-height: 1.42857143;
-    outline: none;
-    padding: 6px 12px;
-    text-align: center;
+}
+
+/* .bnt-secondary is for 'buttons' displayed as text links */
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:active,
+.btn-secondary:focus,
+.btn-secondary:active:hover{
+    background: transparent;
+    color: {{ brand_color }};
+    text-decoration: underline;
+}
+.btn-secondary:hover {
+    text-decoration: none;
+}
+
+.btn-primary,
+.btn-danger {
+    font-weight: bold;
 }
 
 .btn i {
     font-size: 16px;
     margin-right: 2px;
-}
-
-/* .bnt-secondary is for 'buttons' displayed as text links */
-a.btn-secondary,
-a.btn-secondary:hover {
-    background: transparent;
-    color: {{ brand_color }};
-    text-decoration: underline;
-}
-a.btn-secondary:hover {
-    text-decoration: none;
-}
-a.btn-secondary:active {
-    box-shadow: none;
-    -webkit-box-shadow: none;
 }
 
 /* Forms

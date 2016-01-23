@@ -35,42 +35,21 @@
             <div class="col-sm-10 col-sm-offset-2">
             {% block item_actions %}
                 {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
-                {% for _action in _show_actions %}
-                    {% if 'method' == _action.type %}
-                        {% set _action_href = path('easyadmin', { action: _action.name, entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
-                    {% elseif 'route' == _action.type %}
-                        {% set _action_href = path(_action.name, { entity: _entity_config.name, id: attribute(entity, _entity_config.primary_key_field_name), referer: app.request.query.get('referer', '') }) %}
-                    {% endif %}
+                {% set _request_parameters = { entity: _entity_config.name, referer: app.request.query.get('referer') } %}
 
-                    <a class="btn btn-primary {{ _action.css_class|default('') }}" href="{{ _action_href }}">
-                        {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                        {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
-                    </a>
-                {% endfor %}
-
-                {% if easyadmin_action_is_enabled_for_show_view('delete', _entity_config.name) %}
-                    {% set _action = easyadmin_get_action_for_show_view('delete', _entity_config.name) %}
-                    <button type="button" id="button-delete" class="btn {{ _action.css_class }}">
-                        {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                        {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
-                    </button>
-                {% endif %}
-
-                {# for aesthetic reasons, the 'list' action is always displayed as a link instead of a button #}
-                {% if easyadmin_action_is_enabled_for_show_view('list', _entity_config.name) %}
-                    {% set _action = easyadmin_get_action_for_show_view('list', _entity_config.name) %}
-                    <a class="btn btn-secondary" href="{{ app.request.query.has('referer') ? app.request.query.get('referer')|easyadmin_urldecode : path('easyadmin', ({ entity: _entity_config.name, action: _action.name, view: 'show' })) }}">{% spaceless %}
-                        {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                        {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
-                    {% endspaceless %}</a>
-                {% endif %}
+                {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+                    actions: _show_actions,
+                    request_parameters: _request_parameters,
+                    trans_parameters: _trans_parameters,
+                    item_id: _entity_id
+                }, with_context = false) }}
             {% endblock item_actions %}
             </div>
         </div>
     </div>
 
     {% block delete_form %}
-        {{ include('@EasyAdmin/default/includes/delete_form.html.twig', {
+        {{ include('@EasyAdmin/default/includes/_delete_form.html.twig', {
             view: 'show',
             referer: app.request.query.get('referer', ''),
             delete_form: delete_form,
@@ -85,7 +64,7 @@
 
     <script type="text/javascript">
         $(function() {
-            $('#button-delete').on('click', function(e) {
+            $('a.action-delete').on('click', function(e) {
                 e.preventDefault();
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })

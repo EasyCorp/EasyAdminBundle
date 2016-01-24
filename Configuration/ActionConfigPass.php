@@ -28,7 +28,7 @@ class ActionConfigPass implements ConfigPassInterface
         // action label (displayed as link or button) (if 'null', autogenerate it)
         'label' => null,
         // the CSS class applied to the button/link displayed by the action
-        'css_class' => '',
+        'css_class' => null,
         // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
         'icon' => null,
     );
@@ -85,14 +85,20 @@ class ActionConfigPass implements ConfigPassInterface
         // first, normalize actions defined globally for the entire backend
         foreach ($this->views as $view) {
             $actionsConfig = $backendConfig[$view]['actions'];
-            $backendConfig[$view]['actions'] = $this->doNormalizeActionsConfig($actionsConfig, sprintf('the global "%s" view defined under "easy_admin" option', $view));
+            $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig, sprintf('the global "%s" view defined under "easy_admin" option', $view));
+            $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
+
+            $backendConfig[$view]['actions'] = $actionsConfig;
         }
 
         // second, normalize actions defined for each entity
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
                 $actionsConfig = $entityConfig[$view]['actions'];
-                $backendConfig['entities'][$entityName][$view]['actions'] = $this->doNormalizeActionsConfig($actionsConfig, sprintf('the "%s" view of the "%s" entity', $view, $entityName));
+                $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig, sprintf('the "%s" view of the "%s" entity', $view, $entityName));
+                $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
+
+                $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
             }
         }
 
@@ -128,17 +134,52 @@ class ActionConfigPass implements ConfigPassInterface
         return $normalizedConfig;
     }
 
+    /**
+     * If the user overrides the configuration of a default action, they usually
+     * define just the options they want to change. For example:
+     *   actions: ['delete', 'list'] just to redefine the order
+     *   actions: [ { name: 'list', label: 'Listing' }] just to redefine the label
+     *
+     * For that reason, this method merges the full configuration of the default
+     * actions with the new action configuration. This means that you get the
+     * default value for any option that you don't explicitly set (e.g. the icon
+     * or the CSS class).
+     */
+    private function doNormalizeDefaultActionsConfig(array $actionsConfig, $view)
+    {
+        $defaultActionsConfig = $this->getDefaultActions();
+        $defaultActions = $defaultActionsConfig[$view];
+
+        foreach ($actionsConfig as $actionName => $actionConfig) {
+            if (array_key_exists($actionName, $defaultActions)) {
+                // remove null config options but maintain empty options (this allows to set an empty label for the action)
+                $actionConfig = array_filter($actionConfig, function ($element) { return null !== $element; });
+                $actionsConfig[$actionName] = array_merge($defaultActions[$actionName], $actionConfig);
+            }
+        }
+
+        return $actionsConfig;
+    }
+
     private function resolveActionInheritance(array $backendConfig)
     {
-        $defaultActions = $this->getDefaultActions();
+        $defaultActionsConfig = $this->getDefaultActions();
 
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
-                $actionsConfig = array_merge(
-                    $defaultActions[$view],
-                    $backendConfig[$view]['actions'],
-                    $entityConfig[$view]['actions']
-                );
+                $defaultActions = $defaultActionsConfig[$view];
+                $backendActions = $backendConfig[$view]['actions'];
+                $entityActions = $entityConfig[$view]['actions'];
+
+                $actionsConfig = array_merge($defaultActions, $backendActions, $entityActions);
+
+                // reorder the actions to match the order set by the user in the
+                // entity or in the global backend options
+                if (!empty($entityActions)) {
+                    $actionsConfig = $this->reoderArrayItems($actionsConfig, array_keys($entityActions));
+                } elseif (!empty($backendActions)) {
+                    $actionsConfig = $this->reoderArrayItems($actionsConfig, array_keys($backendActions));
+                }
 
                 $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
             }
@@ -264,5 +305,22 @@ class ActionConfigPass implements ConfigPassInterface
     private function humanizeString($content)
     {
         return ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $content))));
+    }
+
+    private function reoderArrayItems($originalArray, array $newKeyOrder)
+    {
+        $newArray = array();
+        foreach ($newKeyOrder as $key) {
+            if (isset($originalArray[$key])) {
+                $newArray[$key] = $originalArray[$key];
+            }
+        }
+
+        $missingKeys = array_diff(array_keys($originalArray), array_keys($newArray));
+        foreach ($missingKeys as $key) {
+            $newArray[$key] = $originalArray[$key];
+        }
+
+        return $newArray;
     }
 }

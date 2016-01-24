@@ -141,11 +141,32 @@ div.flash-error strong {
 
 /* Switches / toggles
    ------------------------------------------------------------------------- */
-.toggle .btn {
+td.toggle .btn {
+   padding: 4px 6px;
+}
+td.toggle .btn,
+td.toggle .btn:hover {
     border-radius: 3px;
+    color: {{ colors.white }};
     font-size: 11px;
     font-weight: bold;
     text-transform: uppercase;
+}
+td.toggle .btn:active {
+    top: 0;
+}
+td.toggle .btn .btn:hover,
+td.toggle .btn .btn:active,
+td.toggle .toggle-handle,
+td.toggle .toggle-handle:hover,
+td.toggle .toggle-handle:active {
+    border: 0;
+}
+td.toggle .toggle.btn-xs {
+    width: 44px;
+}
+.toggle .btn + .btn {
+    margin-left: 0;
 }
 .toggle .toggle.btn-success {
     border-color: {{ colors.success }};
@@ -154,6 +175,10 @@ div.flash-error strong {
 .toggle .toggle.btn-danger {
     border-color: {{ colors.danger }};
     background: {{ colors.danger }};
+}
+.toggle .toggle-handle,
+.toggle .toggle-handle:hover {
+    background: {{ colors.gray_lighter }};
 }
 .toggle .btn-success .toggle-handle {
     box-shadow: -2px 0 1px rgba(0, 0, 0, .2);
@@ -168,20 +193,18 @@ div.flash-error strong {
     background: {{ colors.danger }};
 }
 .toggle .toggle-group label {
-    padding-top: 3px;
+    padding-top: 4px;
 }
-.toggle .toggle.btn-xs {
-    width: 44px;
-}
+
 .toggle .toggle.btn-xs .toggle-handle {
     height: 18px;
-    margin-top: 1px;
-    margin-right: 5px;
+    margin-top: 2px;
 }
-.toggle .toggle-on.btn-xs,
+.toggle .toggle-on.btn-xs {
+    padding: 4px 5px 4px 0;
+}
 .toggle .toggle-off.btn-xs {
-    padding-left: 4px;
-    text-align: center;
+    padding: 4px 0 4px 5px;
 }
 
 /* Badges

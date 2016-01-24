@@ -21,19 +21,18 @@ class EasyAdminConfigurationPassTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackendConfigurations($inputFixtureFilepath, $outputFixtureFilepath)
     {
-        $isSymfony23 = 2 == Kernel::MAJOR_VERSION && 3 == Kernel::MINOR_VERSION;
-        if ($isSymfony23 && !$this->isTestCompatibleWithSymfony23($inputFixtureFilepath)) {
-            $this->markTestSkipped('This test is not compatible with Symfony 2.3 because the YAML component of that version does not ignore duplicate keys.');
+        if (!$this->isTestCompatible($inputFixtureFilepath)) {
+            $this->markTestSkipped('This test is not compatible with this Symfony Version.');
         }
 
         $configuration = Yaml::parse(file_get_contents($inputFixtureFilepath));
         $app = new \ConfigPassKernel($configuration['easy_admin']);
         $app->boot();
 
-        $this->assertConfigurationParameterMatchesExpectedValue($app->getContainer(), $outputFixtureFilepath);
+        $this->assertBackendConfigIsCorrect($app->getContainer(), $outputFixtureFilepath);
     }
 
-    private function assertConfigurationParameterMatchesExpectedValue($container, $expectedConfigFile)
+    private function assertBackendConfigIsCorrect($container, $expectedConfigFile)
     {
         $expectedConfiguration = Yaml::parse(file_get_contents($expectedConfigFile));
         $actualConfiguration = $container->getParameter('easyadmin.config');
@@ -57,9 +56,15 @@ class EasyAdminConfigurationPassTest extends \PHPUnit_Framework_TestCase
         return array_map(null, $inputs, $outputs);
     }
 
-    private function isTestCompatibleWithSymfony23($filepath)
+    private function isTestCompatible($filepath)
     {
-        $incompatibleTests = array(
+        if (2 != Kernel::MAJOR_VERSION || 3 != Kernel::MINOR_VERSION) {
+            return true;
+        }
+
+        // these tests are not compatible with Symfony 2.3 because the YAML
+        // component of that version does not ignore duplicate keys
+        $incompatibleTestsWithSymfony23 = array(
             'configurations/input/admin_007.yml',
             'configurations/input/admin_008.yml',
             'configurations/input/admin_013.yml',
@@ -70,6 +75,6 @@ class EasyAdminConfigurationPassTest extends \PHPUnit_Framework_TestCase
             'configurations/input/admin_026.yml',
         );
 
-        return !in_array(substr($filepath, -34), $incompatibleTests);
+        return !in_array(substr($filepath, -34), $incompatibleTestsWithSymfony23);
     }
 }

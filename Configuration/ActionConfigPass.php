@@ -176,9 +176,9 @@ class ActionConfigPass implements ConfigPassInterface
                 // reorder the actions to match the order set by the user in the
                 // entity or in the global backend options
                 if (!empty($entityActions)) {
-                    $actionsConfig = $this->reoderArrayItems($actionsConfig, array_keys($entityActions));
+                    $actionsConfig = $this->reorderArrayItems($actionsConfig, array_keys($entityActions));
                 } elseif (!empty($backendActions)) {
-                    $actionsConfig = $this->reoderArrayItems($actionsConfig, array_keys($backendActions));
+                    $actionsConfig = $this->reorderArrayItems($actionsConfig, array_keys($backendActions));
                 }
 
                 $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
@@ -307,7 +307,7 @@ class ActionConfigPass implements ConfigPassInterface
         return ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $content))));
     }
 
-    private function reoderArrayItems($originalArray, array $newKeyOrder)
+    private function reorderArrayItems(array $originalArray, array $newKeyOrder)
     {
         $newArray = array();
         foreach ($newKeyOrder as $key) {

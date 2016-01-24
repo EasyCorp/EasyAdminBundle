@@ -69,9 +69,9 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
-        $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
-        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
+        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
+        $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
     }
 
     public function testListViewTableIdColumn()
@@ -508,9 +508,9 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
-        $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
-        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
+        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
+        $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
     }
 
     public function testSearchViewShowActionReferer()

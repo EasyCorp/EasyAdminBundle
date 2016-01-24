@@ -6,8 +6,9 @@
 
 # CONFIGURATION
 easy_admin:
-    TestEntity:
-        class: AppBundle\Entity\TestEntity
-        edit:
-            actions:
-                - { name: 'delete', icon: '', css_class: ~ }
+    entities:
+        TestEntity:
+            class:  JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            edit:
+                actions:
+                    - { name: 'delete', icon: '', css_class: ~ }

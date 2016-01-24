@@ -141,70 +141,63 @@ div.flash-error strong {
 
 /* Switches / toggles
    ------------------------------------------------------------------------- */
-td.toggle .btn {
+.toggle.btn-xs {
+ width: 44px;
+}
+.toggle-group .btn,
+.toggle-group .btn:hover {
+   border-radius: 3px;
+   font-size: 10px;
+   font-weight: bold;
+   text-transform: uppercase;
+}
+.toggle-group .btn {
    padding: 4px 6px;
 }
-td.toggle .btn,
-td.toggle .btn:hover {
-    border-radius: 3px;
-    color: {{ colors.white }};
-    font-size: 11px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-td.toggle .btn:active {
-    top: 0;
-}
-td.toggle .btn .btn:hover,
-td.toggle .btn .btn:active,
-td.toggle .toggle-handle,
-td.toggle .toggle-handle:hover,
-td.toggle .toggle-handle:active {
+.toggle-group .btn:hover {
     border: 0;
 }
-td.toggle .toggle.btn-xs {
-    width: 44px;
-}
-.toggle .btn + .btn {
+.toggle-group .btn + .btn {
     margin-left: 0;
 }
-.toggle .toggle.btn-success {
-    border-color: {{ colors.success }};
+.toggle-group .toggle-on,
+.toggle-group .toggle-on.btn-xs,
+.toggle-group .toggle-on:hover,
+.toggle-group .toggle-on:active,
+.toggle-group .toggle-on:active:hover {
     background: {{ colors.success }};
+    border-color: {{ colors.success }};
+    color: {{ colors.white }};
+    padding: 4px 5px 4px 0;
+    border: 0;
 }
-.toggle .toggle.btn-danger {
-    border-color: {{ colors.danger }};
+.toggle-group .toggle-off,
+.toggle-group .toggle-off.btn-xs,
+.toggle-group .toggle-off:hover,
+.toggle-group .toggle-off:active,
+.toggle-group .toggle-off:active:hover {
     background: {{ colors.danger }};
+    border-color: {{ colors.danger }};
+    color: {{ colors.white }};
+    padding: 4px 0 4px 5px;
+    border: 0;
 }
-.toggle .toggle-handle,
-.toggle .toggle-handle:hover {
+.toggle-group .toggle-handle,
+.toggle-group .toggle-handle:hover,
+.toggle-group .toggle-handle:active,
+.toggle-group .toggle-handle:active:hover {
     background: {{ colors.gray_lighter }};
+    border: 0;
+    border-radius: 2px;
+    height: 19px;
+    margin-top: 2px;
+    padding: 5px;
 }
 .toggle .btn-success .toggle-handle {
     box-shadow: -2px 0 1px rgba(0, 0, 0, .2);
 }
 .toggle .btn-danger .toggle-handle {
     box-shadow: 2px 0 1px rgba(0, 0, 0, .2);
-}
-.toggle .toggle .toggle-on {
-    background: {{ colors.success }};
-}
-.toggle .toggle .toggle-off {
-    background: {{ colors.danger }};
-}
-.toggle .toggle-group label {
-    padding-top: 4px;
-}
-
-.toggle .toggle.btn-xs .toggle-handle {
-    height: 18px;
-    margin-top: 2px;
-}
-.toggle .toggle-on.btn-xs {
-    padding: 4px 5px 4px 0;
-}
-.toggle .toggle-off.btn-xs {
-    padding: 4px 0 4px 5px;
 }
 
 /* Badges

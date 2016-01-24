@@ -94,9 +94,9 @@ class DefaultBackendTest extends AbstractTestCase
         $this->client->request('GET', '/admin/_css/easyadmin.css');
 
         $this->assertEquals('text/css; charset=UTF-8', $this->client->getResponse()->headers->get('Content-Type'));
-        $this->assertEquals(14, substr_count($this->client->getResponse()->getContent(), '#205081'), 'The admin.css file uses the default brand color.');
+        $this->assertEquals(13, substr_count($this->client->getResponse()->getContent(), '#205081'), 'The admin.css file uses the default brand color.');
         // #222222 color is only used by the "dark" color scheme, not the "light" one
-        $this->assertEquals(6, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');
+        $this->assertEquals(7, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');
     }
 
     public function testListViewTitle()
@@ -250,10 +250,10 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertContains('fa-edit', trim($crawler->filter('.form-actions a:contains("Edit") i')->attr('class')));
 
         // delete action
-        $this->assertContains('fa-trash', trim($crawler->filter('.form-actions button:contains("Delete") i')->attr('class')));
+        $this->assertContains('fa-trash', trim($crawler->filter('.form-actions a:contains("Delete") i')->attr('class')));
 
         // list action
-        $this->assertEquals('btn btn-secondary', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
+        $this->assertEquals('btn btn-secondary action-list', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
     }
 
     public function testShowViewReferer()
@@ -327,10 +327,10 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertContains('fa-save', trim($crawler->filter('#form-actions-row button:contains("Save changes") i')->attr('class')));
 
         // delete action
-        $this->assertContains('fa-trash', trim($crawler->filter('#form-actions-row button:contains("Delete") i')->attr('class')));
+        $this->assertContains('fa-trash', trim($crawler->filter('#form-actions-row a:contains("Delete") i')->attr('class')));
 
         // list action
-        $this->assertEquals('btn btn-secondary', trim($crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('class')));
+        $this->assertEquals('btn btn-secondary action-list', trim($crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('class')));
     }
 
     public function testEditViewReferer()
@@ -404,7 +404,7 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertContains('fa-save', trim($crawler->filter('#form-actions-row button:contains("Save changes") i')->attr('class')));
 
         // list action
-        $this->assertEquals('btn btn-secondary', trim($crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('class')));
+        $this->assertEquals('btn btn-secondary action-list', trim($crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('class')));
     }
 
     public function testNewViewReferer()

@@ -5,7 +5,7 @@
 # EXCEPTION
 expected_exception:
     class: InvalidArgumentException
-    message_string: 'The name of the "invalid-Action~Name!!" action contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).'
+    message_string: 'The name of the "invalid-Action~Name!!" action defined in the "list" view of the "TestEntity" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).'
 
 # CONFIGURATION
 easy_admin:

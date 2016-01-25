@@ -245,7 +245,7 @@ class Configuration implements ConfigurationInterface
                                 ->ifString()->then(function ($v) { return array($v); })
                             ->end()
                             ->validate()
-                                ->ifArray()->then(function($values){
+                                ->ifArray()->then(function ($values) {
                                     foreach ($values as $k => $v) {
                                         if ('horizontal' === $v) {
                                             $values[$k] = '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig';

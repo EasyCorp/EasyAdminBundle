@@ -30,7 +30,7 @@
         <server name="KERNEL_DIR" value="./Tests/Fixtures/App" />
         <ini name="error_reporting" value="-1" />
         <ini name="memory_limit" value="-1" />
-        <ini name="zend.enable_gc" value="0" />
+        <ini name="zend.enable_gc" value="1" />
     </php>
 
     <filter>

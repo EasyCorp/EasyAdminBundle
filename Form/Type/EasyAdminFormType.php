@@ -30,9 +30,6 @@ class EasyAdminFormType extends AbstractType
     /** @var Configurator */
     private $configurator;
 
-    /** @var array */
-    private $config;
-
     /** @var TypeConfiguratorInterface[] */
     private $configurators;
 
@@ -43,7 +40,6 @@ class EasyAdminFormType extends AbstractType
     public function __construct(Configurator $configurator, array $configurators = array())
     {
         $this->configurator = $configurator;
-        $this->config = $configurator->getBackendConfig();
         $this->configurators = $configurators;
     }
 

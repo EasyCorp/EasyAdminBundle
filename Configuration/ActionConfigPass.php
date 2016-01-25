@@ -75,8 +75,7 @@ class ActionConfigPass implements ConfigPassInterface
      *             list:
      *                 actions: ['search', { name: 'show', label: 'Show', 'icon': 'user' }, 'grantAccess']
      *
-     * @param array $actionsConfig
-     * @param array $defaultActionsConfig
+     * @param array $backendConfig
      *
      * @return array
      */
@@ -144,6 +143,11 @@ class ActionConfigPass implements ConfigPassInterface
      * actions with the new action configuration. This means that you get the
      * default value for any option that you don't explicitly set (e.g. the icon
      * or the CSS class).
+     *
+     * @param array  $actionsConfig
+     * @param string $view
+     *
+     * @return array
      */
     private function doNormalizeDefaultActionsConfig(array $actionsConfig, $view)
     {
@@ -191,7 +195,7 @@ class ActionConfigPass implements ConfigPassInterface
     /**
      * Removes the actions marked as deleted from the given actions configuration.
      *
-     * @param array $actionsConfig
+     * @param array $backendConfig
      *
      * @return array
      */
@@ -248,8 +252,6 @@ class ActionConfigPass implements ConfigPassInterface
      * Returns the default actions defined by EasyAdmin for the given view.
      * This allows to provide some nice defaults for backends that don't
      * define their own actions.
-     *
-     * @param string $view
      *
      * @return array
      */

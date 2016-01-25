@@ -27,8 +27,7 @@ class ActionConfigPassTest extends \PHPUnit_Framework_TestCase
         $method = new \ReflectionMethod($configPass, 'doNormalizeActionsConfig');
         $method->setAccessible(true);
 
-        $backendConfig = $method->invoke($configPass, $actionsConfig, 'the global "list" view defined under "easy_admin" option');
-        $this->assert();
+        $method->invoke($configPass, $actionsConfig, 'the global "list" view defined under "easy_admin" option');
     }
 
     public function getWrongActionConfigs()

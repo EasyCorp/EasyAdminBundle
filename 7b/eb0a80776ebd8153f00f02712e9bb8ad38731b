@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by TomasVotruba at 2016-01-25T17:11:39Z
+
+What about adding php-cs-fixer to CI to prevent these issues?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-25T17:13:06Z
+
+@TomasVotruba yes, that's the best solution. In the past we had php-cs-fixer enabled in Travis. But one day stopped working and we can't fix it. There is an open issue explaining this and asking for help to the community: https://github.com/javiereguiluz/EasyAdminBundle/issues/721

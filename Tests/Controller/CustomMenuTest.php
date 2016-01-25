@@ -45,7 +45,7 @@ class CustomMenuTest extends AbstractTestCase
 
     public function testBackendHomepageConfig()
     {
-        $crawler = $this->getBackendHomepage();
+        $this->getBackendHomepage();
         $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
 
         $this->assertArraySubset(array(
@@ -56,7 +56,7 @@ class CustomMenuTest extends AbstractTestCase
 
     public function testDefaultMenuItem()
     {
-        $crawler = $this->getBackendHomepage();
+        $this->getBackendHomepage();
         $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
 
         $this->assertArraySubset(array(

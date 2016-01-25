@@ -90,9 +90,9 @@ class ViewConfigPass implements ConfigPassInterface
      * @param string $view
      * @param array  $entityConfig
      *
-     * @return array
+     * @return array|null
      */
-    private function getExcludedFieldNames($view, $entityConfig)
+    private function getExcludedFieldNames($view, array $entityConfig)
     {
         $excludedFieldNames = array(
             'edit' => array($entityConfig['primary_key_field_name']),
@@ -110,7 +110,7 @@ class ViewConfigPass implements ConfigPassInterface
      *
      * @param string $view
      *
-     * @return array
+     * @return array|null
      */
     private function getExcludedFieldTypes($view)
     {
@@ -131,7 +131,7 @@ class ViewConfigPass implements ConfigPassInterface
      *
      * @param string $view
      *
-     * @return int
+     * @return int|null
      */
     private function getMaxNumberFields($view)
     {

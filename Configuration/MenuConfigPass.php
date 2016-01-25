@@ -48,11 +48,11 @@ class MenuConfigPass implements ConfigPassInterface
      * Normalizes the different shortcut notations of the menu config to simplify
      * further processing.
      *
-     * @param     array $menuConfig
-     * @param     array $backendConfig
-     * @param     int   $parentItemIndex The index of the parent item for this menu item (allows to treat submenus differently)
+     * @param array $menuConfig
+     * @param array $backendConfig
+     * @param int   $parentItemIndex The index of the parent item for this menu item (allows to treat submenus differently)
      *
-     * @return    array
+     * @return array
      */
     private function normalizeMenuConfig(array $menuConfig, array $backendConfig, $parentItemIndex = -1)
     {
@@ -154,9 +154,7 @@ class MenuConfigPass implements ConfigPassInterface
             // 4th level priority: if 'label' is defined (and not the previous options), this is an empty element
             elseif (isset($itemConfig['label'])) {
                 $itemConfig['type'] = 'empty';
-            }
-
-            else {
+            } else {
                 throw new \RuntimeException(sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.', $i));
             }
 

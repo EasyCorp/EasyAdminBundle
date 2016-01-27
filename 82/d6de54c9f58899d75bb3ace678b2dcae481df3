@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-27T18:42:43Z
+
+There should be a CSS style to fix this error for dates:
+
+![select_margin](https://cloud.githubusercontent.com/assets/73419/12624183/fd253e38-c52d-11e5-8d00-6067e1976c12.png)
+
+Anyway, I'm going to merge your pull request because I don't understand why we should apply these styles. Thanks for the fix and for your first contribution!

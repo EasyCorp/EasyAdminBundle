@@ -10,7 +10,9 @@
             item.type == 'empty' ? '#' : ''
         %}
 
-        <a href="{{ path }}">
+        <a href="{{ path }}"
+            {% if item.type == 'link' and item.target is defined and item.target is not empty %}target="{{ item.target }}{% endif %}"
+        >
             {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}
             {{ item.label|trans }}
             {% if item.children|default([]) is not empty %}<i class="fa fa-angle-left pull-right"></i>{% endif %}

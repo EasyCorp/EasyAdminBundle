@@ -83,7 +83,7 @@
                 {% for field, metadata in fields %}
                     {% set isSortingField = metadata.property == app.request.get('sortField') %}
                     {% set nextSortDirection = isSortingField ? (app.request.get('sortDirection') == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
-                    {% set _column_label = metadata.label ? metadata.label|trans(_trans_parameters) : field|humanize %}
+                    {% set _column_label = (metadata.label ?: field|humanize)|trans(_trans_parameters) %}
                     {% set _column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-caret-up' : 'fa-caret-down') : 'fa-sort' %}
 
                     <th data-property-name="{{ metadata.property }}" class="{{ isSortingField ? 'sorted' }} {{ metadata.virtual ? 'virtual' }} {{ metadata.dataType|lower }}">
@@ -114,7 +114,7 @@
                 <tr data-id="{{ _item_id }}">
                     {% for field, metadata in fields %}
                         {% set isSortingField = metadata.property == app.request.get('sortField') %}
-                        {% set _column_label =  metadata.label ? metadata.label|trans(_trans_parameters) : field|humanize %}
+                        {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters)  %}
 
                         <td data-label="{{ _column_label }}" class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }}">
                             {{ easyadmin_render_field_for_list_view(_entity_config.name, item, metadata) }}

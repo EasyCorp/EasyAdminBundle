@@ -343,15 +343,21 @@
 {% block vich_file_widget %}
 {% spaceless %}
     <div class="easyadmin-vich-file">
-        {{ form_widget(form.file) }}
-
-        {% if form.delete is defined %}
-            {{ form_row(form.delete) }}
-        {% endif %}
-
         {% if download_uri|default('') is not empty %}
-            <a href="{{ download_uri }}">{{ 'download'|trans({}, 'VichUploaderBundle') }}</a>
+            {% set download_title = download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') %}
+            <a href="{{ download_uri }}">{{ download_title }}</a>
         {% endif %}
+
+        <div class="row">
+            {% if form.delete is defined %}
+            <div class="col-sm-3 col-md-2">
+                {{ form_row(form.delete) }}
+            </div>
+            {% endif %}
+            <div class="{{ form.delete is defined ? 'col-sm-9 col-md-10' : 'col-sm-12' }}">
+                {{ form_widget(form.file) }}
+            </div>
+        </div>
     </div>
 {% endspaceless %}
 {% endblock %}

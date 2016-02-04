@@ -408,11 +408,18 @@ button.btn:active {
     max-height: 300px;
     max-width: 400px;
 }
-.easyadmin-vich-file input[type="file"],
-.easyadmin-vich-image input[type="file"] {
+.easyadmin-vich-image input[type="file"],
+.easyadmin-vich-file input[type="file"] {
+    padding-top: 7px;
+}
+.easyadmin-vich-file a {
+    display: inline-block;
     padding-top: 7px;
 }
 /* the checkbox to delete the image/file */
+.easyadmin-vich-file .field-checkbox {
+    margin-bottom: 0;
+}
 .easyadmin-vich-file .field-checkbox .col-sm-2,
 .easyadmin-vich-image .field-checkbox .col-sm-2 {
     display: none;

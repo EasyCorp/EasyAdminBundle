@@ -222,7 +222,7 @@
         {{- form_label(form, _field_label|trans(_trans_parameters)) -}}
         {{- form_widget(form) -}}
 
-        {% if _field_type in ['datetime', 'datetimetz', 'date', 'time'] and easyadmin.field.nullable %}
+        {% if _field_type in ['datetime', 'datetimetz', 'date', 'time'] and easyadmin.field.nullable|default(false) %}
             <div class="nullable-control">
                 <label>
                     <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>

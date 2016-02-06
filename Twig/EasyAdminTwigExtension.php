@@ -140,6 +140,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if ('image' === $fieldType) {
+                // avoid displaying broken images when the entity defines no image
+                if (empty($value)) {
+                    return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
+                }
+
                 // absolute URLs (http or https) and protocol-relative URLs (//) are rendered unmodified
                 if (1 === preg_match('/^(http[s]?|\/\/).*/i', $value)) {
                     $imageUrl = $value;

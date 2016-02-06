@@ -151,14 +151,13 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function doNormalizeDefaultActionsConfig(array $actionsConfig, $view)
     {
-        $defaultActionsConfig = $this->getDefaultActions();
-        $defaultActions = $defaultActionsConfig[$view];
+        $defaultActionsConfig = $this->getDefaultActionsConfig($view);
 
         foreach ($actionsConfig as $actionName => $actionConfig) {
-            if (array_key_exists($actionName, $defaultActions)) {
+            if (array_key_exists($actionName, $defaultActionsConfig)) {
                 // remove null config options but maintain empty options (this allows to set an empty label for the action)
                 $actionConfig = array_filter($actionConfig, function ($element) { return null !== $element; });
-                $actionsConfig[$actionName] = array_merge($defaultActions[$actionName], $actionConfig);
+                $actionsConfig[$actionName] = array_merge($defaultActionsConfig[$actionName], $actionConfig);
             }
         }
 
@@ -167,11 +166,9 @@ class ActionConfigPass implements ConfigPassInterface
 
     private function resolveActionInheritance(array $backendConfig)
     {
-        $defaultActionsConfig = $this->getDefaultActions();
-
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
-                $defaultActions = $defaultActionsConfig[$view];
+                $defaultActions = $this->getDefaultActions($view);
                 $backendActions = $backendConfig[$view]['actions'];
                 $entityActions = $entityConfig[$view]['actions'];
 
@@ -249,15 +246,16 @@ class ActionConfigPass implements ConfigPassInterface
     }
 
     /**
-     * Returns the default actions defined by EasyAdmin for the given view.
-     * This allows to provide some nice defaults for backends that don't
-     * define their own actions.
+     * Returns the default configuration for all the built-in actions of the
+     * given view, including the actions which are not enabled by default for
+     * that view (e.g. the 'show' action for the 'list' view).
+     *
+     * @param  string $view
      *
      * @return array
      */
-    private function getDefaultActions()
+    private function getDefaultActionsConfig($view)
     {
-        // basic configuration for default actions
         $actions = $this->doNormalizeActionsConfig(array(
             'delete' => array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash-o', 'css_class' => 'btn btn-default'),
             'edit' => array('name' => 'edit', 'label' => 'action.edit', 'icon' => 'edit', 'css_class' => 'btn btn-primary'),
@@ -267,21 +265,42 @@ class ActionConfigPass implements ConfigPassInterface
             'list' => array('name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary'),
         ));
 
-        // define which actions are enabled for each view
-        $actionsPerView = array(
-            'edit' => array('delete' => $actions['delete'], 'list' => $actions['list']),
-            'list' => array('edit' => $actions['edit'], 'delete' => $actions['delete'], 'search' => $actions['search'], 'new' => $actions['new']),
-            'new' => array('list' => $actions['list']),
-            'show' => array('edit' => $actions['edit'], 'delete' => $actions['delete'], 'list' => $actions['list']),
+        // minor tweaks for some action + view combinations
+        if ('list' === $view) {
+            $actions['delete']['icon'] = null;
+            $actions['delete']['css_class'] = 'text-danger';
+            $actions['edit']['icon'] = null;
+            $actions['edit']['css_class'] = 'text-primary';
+        }
+
+        return $actions;
+    }
+
+    /**
+     * Returns the built-in actions defined by EasyAdmin for the given view.
+     * This allows to provide some nice defaults for backends that don't
+     * define their own actions.
+     *
+     * @return array
+     */
+    private function getDefaultActions($view)
+    {
+        $defaultActions = array();
+        $defaultActionsConfig = $this->getDefaultActionsConfig($view);
+
+        // actions are displayed in the same order as defined in this array
+        $actionsEnabledByView = array(
+            'edit' => array('delete', 'list'),
+            'list' => array('edit', 'delete', 'new', 'search'),
+            'new' => array('list'),
+            'show' => array('edit', 'delete', 'list'),
         );
 
-        // minor tweaks for some action + view combinations
-        $actionsPerView['list']['delete']['icon'] = null;
-        $actionsPerView['list']['delete']['css_class'] = 'text-danger';
-        $actionsPerView['list']['edit']['icon'] = null;
-        $actionsPerView['list']['edit']['css_class'] = 'text-primary';
+        foreach ($actionsEnabledByView[$view] as $actionName) {
+            $defaultActions[$actionName] = $defaultActionsConfig[$actionName];
+        }
 
-        return $actionsPerView;
+        return $defaultActions;
     }
 
     /**

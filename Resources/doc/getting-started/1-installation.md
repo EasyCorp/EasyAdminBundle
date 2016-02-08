@@ -69,6 +69,12 @@ Symfony application:
 php app/console assets:install --symlink
 ```
 
+** If you are using Symfony 3.x you should use this command:
+```cli
+php app/bin assets:install --symlink
+```
+
+
 That's it! Now everything is ready to create your first admin backend.
 
 -------------------------------------------------------------------------------

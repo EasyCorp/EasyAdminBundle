@@ -66,10 +66,10 @@ interfaces. Execute the following command to make those assets available in your
 Symfony application:
 
 ```cli
-# Symfony 2 apps
+# Symfony 2
 php app/console assets:install --symlink
 
-# Symfony 3 apps
+# Symfony 3
 php bin/console assets:install --symlink
 ```
 

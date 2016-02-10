@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminBatchActionPass;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass;
 use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminConfigurationPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -26,5 +27,6 @@ class EasyAdminBundle extends Bundle
     {
         $container->addCompilerPass(new EasyAdminConfigurationPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $container->addCompilerPass(new EasyAdminFormTypePass(), PassConfig::TYPE_BEFORE_REMOVING);
+        $container->addCompilerPass(new EasyAdminBatchActionPass(), PassConfig::TYPE_BEFORE_REMOVING);
     }
 }

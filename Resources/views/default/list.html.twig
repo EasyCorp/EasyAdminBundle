@@ -72,12 +72,53 @@
 
 {% block main %}
     {% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity_config.name) %}
+    {% set _batch_actions_aviable = paginator.count and supported_actions is defined and supported_actions is not empty %}
+
+    {% if _batch_actions_aviable %}
+        <div class="row js-batch-actions">
+            <div class="col-sm-12">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default js-toggle-all">Select</button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+
+                    <ul class="dropdown-menu" role="menu">
+                        <li class="js-select-all"><a href="#">Select all records</a></li>
+                    </ul>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        Actions
+                        <span class="fa fa-caret-down"></span>
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        {% for action in supported_actions %}
+                            <li class="js-batch-action" data-action-name="{{ action.name }}"><a href="#">{{ action.name | title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <span class="js-batch-message"></span>
+            </div>
+        </div>
+
+        <br />
+    {% endif %}
 
     <div class="table-responsive">
     <table class="table">
         <thead>
         {% block table_head %}
+
             <tr>
+                {% if _batch_actions_aviable %}
+                    <th data-propert-name="Selected" width="20"></th>
+                {% endif %}
+
                 {% for field, metadata in fields %}
                     {% set isSortingField = metadata.property == app.request.get('sortField') %}
                     {% set nextSortDirection = isSortingField ? (app.request.get('sortDirection') == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
@@ -110,6 +151,12 @@
             {% for item in paginator.currentPageResults %}
                 {% set _item_id = attribute(item, _entity_config.primary_key_field_name) %}
                 <tr data-id="{{ _item_id }}">
+                    {% if _batch_actions_aviable %}
+                        <td data-label="Is Selected">
+                            <input type="checkbox" class="js-is-selected">
+                        </td>
+                    {% endif %}
+
                     {% for field, metadata in fields %}
                         {% set isSortingField = metadata.property == app.request.get('sortField') %}
                         {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters)  %}

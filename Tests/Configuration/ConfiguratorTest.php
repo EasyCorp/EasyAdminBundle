@@ -25,26 +25,18 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
         $this->extension = new EasyAdminExtension();
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Entity "TestEntity" is not managed by EasyAdmin.
-     */
     public function testEmptyConfiguration()
     {
         $backendConfig = array('easy_admin' => null);
         $configurator = new Configurator($backendConfig, new PropertyAccessor());
-        $configurator->getEntityConfiguration('TestEntity');
+        $this->assertNull($configurator->getEntityConfiguration('TestEntity'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Entity "UnmanagedEntity" is not managed by EasyAdmin.
-     */
     public function testAccessingAnUnmanagedEntity()
     {
         $backendConfig = array('easy_admin' => array('entities' => array('AppBundle\\Entity\\TestEntity')));
         $configurator = new Configurator($backendConfig, new PropertyAccessor());
-        $configurator->getEntityConfiguration('UnmanagedEntity');
+        $this->assertNull($configurator->getEntityConfiguration('UnmanagedEntity'));
     }
 }
 

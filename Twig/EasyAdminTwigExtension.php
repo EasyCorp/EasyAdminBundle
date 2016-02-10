@@ -150,6 +150,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
             if ('association' === $fieldType) {
                 $targetEntityConfig = $this->configurator->getEntityConfigByClass($fieldMetadata['targetEntity']);
+                if (null === $targetEntityConfig) {
+                    // the associated entity is not managed by EasyAdmin
+                    return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
+                }
+
                 $isShowActionAllowed = $this->isActionEnabled($view, 'show', $targetEntityConfig['name']);
             }
 

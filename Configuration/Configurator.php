@@ -69,17 +69,11 @@ class Configurator
      *
      * @param string $entityName
      *
-     * @return array The full entity configuration
-     *
-     * @throws \InvalidArgumentException when the entity isn't managed by EasyAdmin
+     * @return array|null The full entity configuration
      */
     public function getEntityConfig($entityName)
     {
-        if (!isset($this->backendConfig['entities'][$entityName])) {
-            throw new \InvalidArgumentException(sprintf('Entity "%s" is not managed by EasyAdmin.', $entityName));
-        }
-
-        return $this->backendConfig['entities'][$entityName];
+        return isset($this->backendConfig['entities'][$entityName]) ? $this->backendConfig['entities'][$entityName] : null;
     }
 
     /**
@@ -87,9 +81,7 @@ class Configurator
      *
      * @param string $fqcn The full qualified class name of the entity
      *
-     * @return array The full entity configuration
-     *
-     * @throws \InvalidArgumentException when the entity isn't managed by EasyAdmin
+     * @return array|null The full entity configuration
      */
     public function getEntityConfigByClass($fqcn)
     {
@@ -99,8 +91,6 @@ class Configurator
                 return $entityConfig;
             }
         }
-
-        throw new \InvalidArgumentException(sprintf('Entity "%s" is not managed by EasyAdmin.', $fqcn));
     }
 
     /**

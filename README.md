@@ -117,7 +117,11 @@ easy_admin_bundle:
 ### Step 4: Prepare the Web Assets of the Bundle
 
 ```cli
+# Symfony 2
 php app/console assets:install --symlink
+
+# Symfony 3
+php bin/console assets:install --symlink
 ```
 
 That's it! Now everything is ready to create your first admin backend.

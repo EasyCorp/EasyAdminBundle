@@ -45,7 +45,7 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
         });
 
         $configPasses = array(
-            new NormalizerConfigPass(),
+            new NormalizerConfigPass($container),
             new MenuConfigPass(),
             new ActionConfigPass(),
             new MetadataConfigPass($container->get('doctrine')),

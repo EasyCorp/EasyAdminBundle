@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
 /**
  * Normalizes the different configuration formats available for entities, views,
  * actions and properties.
@@ -19,6 +21,16 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class NormalizerConfigPass implements ConfigPassInterface
 {
+    /**
+     * @var ContainerBuilder
+     */
+    private $container;
+
+    public function __construct (ContainerBuilder $container)
+    {
+        $this->container = $container;
+    }
+
     public function process(array $backendConfig)
     {
         $backendConfig = $this->normalizeEntityConfig($backendConfig);
@@ -65,6 +77,15 @@ class NormalizerConfigPass implements ConfigPassInterface
      *             class: AppBundle\Entity\User
      *             label: 'Clients'
      *
+     * Config format #3 can also define a custom controller.
+     *
+     * easy_admin:
+     *     entities:
+     *         User:
+     *             class: AppBundle\Entity\User
+     *             label: 'Clients'
+     *             controller: AppBundle\Admin\UserAdmin
+     *
      * @param array $backendConfig
      *
      * @return array
@@ -104,6 +125,15 @@ class NormalizerConfigPass implements ConfigPassInterface
             // otherwise, use the entity name as its label
             if (!isset($entityConfig['label'])) {
                 $entityConfig['label'] = $entityName;
+            }
+
+            // if config format #3 defines the 'controller' option, validate
+            // that the class derives from the default controller.
+            if ( isset($entityConfig['controller'])) {
+                if (!$this->isValidAdminController($entityConfig['controller'])) {
+                    // TODO - Use an interface
+                    throw new \InvalidArgumentException(sprintf('The controller class "%s" is not derived from "JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController".', $entityConfig['controller']));
+                }
             }
 
             $entityConfig['name'] = $entityName;
@@ -299,5 +329,28 @@ class NormalizerConfigPass implements ConfigPassInterface
         }
 
         return $uniqueName;
+    }
+
+    private function isValidAdminController($class)
+    {
+        if (0 === strpos($class, '@')) {
+            $definition = $this->container->findDefinition(substr($class, 1));
+            $class = $definition->getClass();
+        }
+        
+        if ( class_exists($class) ) {
+            if (version_compare(phpversion(), '5.3.7', '<')) {
+                if (is_subclass_of($class, 'JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController')) {
+                    return true;
+                }
+            }
+            else {
+                $reflection = new \ReflectionClass($class);
+                if ( $reflection->isSubclassOf('JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController')) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

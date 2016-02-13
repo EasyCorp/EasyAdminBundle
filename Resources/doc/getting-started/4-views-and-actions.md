@@ -303,6 +303,8 @@ easy_admin:
                     - { property: 'email', type: 'email', type_options: { trim: true } }
                     - { property: 'interests', type_options: { expanded: true, multiple: true } }
                     - { property: 'updated_at', type_options: { read_only: true } }
+                    #or in Symfony 3 
+                    - { property: 'updated_at', type_options: { attr: {'readonly': true}  } }
 ```
 
 Read the [Symfony Form type reference](http://symfony.com/doc/current/reference/forms/types.html)

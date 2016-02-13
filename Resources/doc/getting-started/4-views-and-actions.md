@@ -302,7 +302,7 @@ easy_admin:
                     - 'id'
                     - { property: 'email', type: 'email', type_options: { trim: true } }
                     - { property: 'interests', type_options: { expanded: true, multiple: true } }
-                    - { property: 'updated_at', type_options: { read_only: true } }
+                    - { property: 'updated_at', type_options: { widget: 'single_text' } }
 ```
 
 Read the [Symfony Form type reference](http://symfony.com/doc/current/reference/forms/types.html)

@@ -250,7 +250,7 @@ class ActionConfigPass implements ConfigPassInterface
      * given view, including the actions which are not enabled by default for
      * that view (e.g. the 'show' action for the 'list' view).
      *
-     * @param  string $view
+     * @param string $view
      *
      * @return array
      */

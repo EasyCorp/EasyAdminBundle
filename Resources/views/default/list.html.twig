@@ -29,7 +29,7 @@
 
 {% block content_title %}
     {% if 'search' == app.request.get('action') %}
-        {{ 'search.page_title'|transchoice(count = paginator.nbResults, domain = 'EasyAdminBundle')|raw }}
+        {{ 'search.page_title'|transchoice(count = paginator.nbResults, domain = 'EasyAdminBundle')|striptags|raw }}
     {% else %}
         {% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
         {{ _entity_config.list.title|default(_default_title)|trans(_trans_parameters) }}

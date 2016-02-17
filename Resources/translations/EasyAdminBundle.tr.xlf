@@ -97,6 +97,14 @@
                 <source>user.logged_in_as</source>
                 <target>Kullanıcı : </target>
             </trans-unit>
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>İsimsiz Kullanıcı</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>Anonim Kullanıcı</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">

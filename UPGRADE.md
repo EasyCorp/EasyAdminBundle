@@ -15,8 +15,15 @@ Upgrade to 2.0.0 (XX/XXX/2016)
    In order to upgrade, you just need to replace `admin` by `easyadmin` in all
    `path()`, `generateUrl()` and `redirectToRoute()` calls.
 
-Upgrade to 1.9.5 (XX/XXX/2015)
-------------------------------
+Upgrade to 1.11.6 (XX/XXX/2016)
+-------------------------------
+
+ * `findBy()` and `createSearchQueryBuilder()` methods now receive two new
+   parameters called `$sortField` and `$sortDirection` to allow sorting the
+   search results.
+
+Upgrade to 1.9.5 (13/December/2015)
+-----------------------------------
 
  * The `isReadable` and `isWritable` options are no longer available for each
    property metadata. These options were needed when we introspected the getters
@@ -64,7 +71,7 @@ Upgrade to 1.8.0 (8/November/2015)
    the `easy_admin.design.templates.form` to override it by your own template.
    If you want to customize the forms of the backend, use a proper Symfony form
    theme and enable it in the `easy_admin.design.form_theme` option.
-   
+
 Upgrade to 1.5.5 (22/June/2015)
 -------------------------------
 

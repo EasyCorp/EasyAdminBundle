@@ -359,7 +359,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_SEARCH);
 
         $searchableFields = $this->entity['search']['fields'];
-        $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list']['max_results']);
+        $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
         $fields = $this->entity['list']['fields'];
 
         $this->dispatch(EasyAdminEvents::POST_SEARCH, array(
@@ -507,12 +507,14 @@ class AdminController extends Controller
      * @param array  $searchableFields
      * @param int    $page
      * @param int    $maxPerPage
+     * @param string $sortField
+     * @param string $sortDirection
      *
      * @return Pagerfanta The paginated query results
      */
-    protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15)
+    protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null)
     {
-        $queryBuilder = $this->executeDynamicMethod('create<EntityName>SearchQueryBuilder', array($entityClass, $searchQuery, $searchableFields));
+        $queryBuilder = $this->executeDynamicMethod('create<EntityName>SearchQueryBuilder', array($entityClass, $searchQuery, $searchableFields, $sortField, $sortDirection));
 
         $this->dispatch(EasyAdminEvents::POST_SEARCH_QUERY_BUILDER, array(
             'query_builder' => $queryBuilder,
@@ -533,10 +535,12 @@ class AdminController extends Controller
      * @param string $entityClass
      * @param string $searchQuery
      * @param array  $searchableFields
+     * @param string $sortField
+     * @param string $sortDirection
      *
      * @return QueryBuilder The Query Builder instance
      */
-    protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields)
+    protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null)
     {
         $databaseIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
         $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
@@ -565,6 +569,10 @@ class AdminController extends Controller
         }
 
         $queryBuilder->add('where', $queryConditions)->setParameters($queryParameters);
+
+        if (null !== $sortField) {
+            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection ?: 'DESC');
+        }
 
         return $queryBuilder;
     }

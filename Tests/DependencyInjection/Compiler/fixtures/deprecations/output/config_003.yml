@@ -697,6 +697,7 @@ easy_admin:
                 icon: fa-chevron-circle-right
                 children: {  }
                 default: false
+                target: false
                 menu_index: 0
                 submenu_index: -1
                 type: entity

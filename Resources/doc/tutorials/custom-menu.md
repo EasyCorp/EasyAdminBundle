@@ -37,9 +37,8 @@ easy_admin:
             # ...
 ```
 
-Customizing the Labels and Icons of the Menu Items
---------------------------------------------------
-
+Customizing the Labels, Icons and Targets of the Menu Items
+-----------------------------------------------------------
 
 ### Labels
 
@@ -92,6 +91,23 @@ easy_admin:
     design:
         menu:
             - { entity: 'Product', icon: '' }
+    # ...
+```
+
+### Targets
+
+By default, when clicking on a menu item, the linked resource is displayed in
+the same browser tab. If you prefer to open the resource in a new tab or in a
+specific HTML frame, define the link target using the `target` option of the
+menu item:
+
+```yaml
+easy_admin:
+    design:
+        menu:
+            - { entity: 'Product', target: '_blank' }
+            - { entity: 'User', target: '_parent' }
+            - { entity: 'Category', target: '_self' }
     # ...
 ```
 

@@ -502,13 +502,13 @@ class AdminController extends Controller
      * Performs a database query based on the search query provided by the user.
      * It supports pagination and field sorting.
      *
-     * @param string $entityClass
-     * @param string $searchQuery
-     * @param array  $searchableFields
-     * @param int    $page
-     * @param int    $maxPerPage
-     * @param string $sortField
-     * @param string $sortDirection
+     * @param string      $entityClass
+     * @param string      $searchQuery
+     * @param array       $searchableFields
+     * @param int         $page
+     * @param int         $maxPerPage
+     * @param string|null $sortField
+     * @param string|null $sortDirection
      *
      * @return Pagerfanta The paginated query results
      */
@@ -532,11 +532,11 @@ class AdminController extends Controller
     /**
      * Creates Query Builder instance for search query.
      *
-     * @param string $entityClass
-     * @param string $searchQuery
-     * @param array  $searchableFields
-     * @param string $sortField
-     * @param string $sortDirection
+     * @param string      $entityClass
+     * @param string      $searchQuery
+     * @param array       $searchableFields
+     * @param string|null $sortField
+     * @param string|null $sortDirection
      *
      * @return QueryBuilder The Query Builder instance
      */

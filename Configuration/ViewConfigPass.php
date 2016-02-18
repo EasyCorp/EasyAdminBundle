@@ -90,7 +90,7 @@ class ViewConfigPass implements ConfigPassInterface
      * @param string $view
      * @param array  $entityConfig
      *
-     * @return array|null
+     * @return array
      */
     private function getExcludedFieldNames($view, array $entityConfig)
     {
@@ -102,7 +102,7 @@ class ViewConfigPass implements ConfigPassInterface
             'show' => array(),
         );
 
-        return isset($excludedFieldNames[$view]) ? $excludedFieldNames[$view] : null;
+        return isset($excludedFieldNames[$view]) ? $excludedFieldNames[$view] : array();
     }
 
     /**
@@ -110,7 +110,7 @@ class ViewConfigPass implements ConfigPassInterface
      *
      * @param string $view
      *
-     * @return array|null
+     * @return array
      */
     private function getExcludedFieldTypes($view)
     {
@@ -122,7 +122,7 @@ class ViewConfigPass implements ConfigPassInterface
             'show' => array(),
         );
 
-        return isset($excludedFieldTypes[$view]) ? $excludedFieldTypes[$view] : null;
+        return isset($excludedFieldTypes[$view]) ? $excludedFieldTypes[$view] : array();
     }
 
     /**
@@ -131,19 +131,15 @@ class ViewConfigPass implements ConfigPassInterface
      *
      * @param string $view
      *
-     * @return int|null
+     * @return int
      */
     private function getMaxNumberFields($view)
     {
         $maxNumberFields = array(
-            'edit' => null,
             'list' => 7,
-            'new' => null,
-            'search' => null,
-            'show' => null,
         );
 
-        return isset($maxNumberFields[$view]) ? $maxNumberFields[$view] : null;
+        return isset($maxNumberFields[$view]) ? $maxNumberFields[$view] : PHP_INT_MAX;
     }
 
     /**
@@ -156,7 +152,7 @@ class ViewConfigPass implements ConfigPassInterface
      *
      * @return array The filtered list of fields
      */
-    private function filterFieldList(array $fields, array $excludedFieldNames = array(), array $excludedFieldTypes = array(), $maxNumFields = null)
+    private function filterFieldList(array $fields, array $excludedFieldNames, array $excludedFieldTypes, $maxNumFields)
     {
         $filteredFields = array();
 
@@ -166,7 +162,7 @@ class ViewConfigPass implements ConfigPassInterface
             }
         }
 
-        if (null !== $maxNumFields) {
+        if (count($filteredFields) > $maxNumFields) {
             $filteredFields = array_slice($filteredFields, 0, $maxNumFields, true);
         }
 

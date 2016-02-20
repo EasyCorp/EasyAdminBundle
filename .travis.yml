@@ -20,6 +20,7 @@ matrix:
   include:
     - php: 5.3
       env: COMPOSER_FLAGS="--prefer-lowest"
+      env: SYMFONY_VERSION=3.0.*
     - php: 5.6
       env: SYMFONY_VERSION=2.3.*
     - php: 5.6
@@ -30,6 +31,7 @@ matrix:
       env: TWIG_VERSION="2.0.x-dev"
     - php: 7.0
       env: PHP_CS=yes
+      env: SYMFONY_VERSION=3.0.*
     - php: hhvm
       env: SYMFONY_VERSION=2.8.*
   allow_failures:
@@ -38,7 +40,7 @@ matrix:
 
 before_install:
   - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == "3.0.*" ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
-  - if [[ "$TRAVIS_PHP_VERSION" == 7.0 && (RANDOM % 20 == 0) ]]; then export ENABLE_CODE_COVERAGE="true"; fi;
+  - if [[ "$TRAVIS_PHP_VERSION" == 7.0 && $(($RANDOM % 20)) == 0 ]]; then export ENABLE_CODE_COVERAGE="true"; fi;
   - composer selfupdate
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
   - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;

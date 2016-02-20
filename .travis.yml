@@ -2,9 +2,8 @@ language: php
 
 php:
   - 5.3
-  - 5.4
-  - 5.5
   - 5.6
+  - 7.0
   - hhvm
 
 sudo: false
@@ -18,8 +17,9 @@ env:
   global:
     - deps="no"
     - SYMFONY_VERSION=""
-    - PHP_CS="no"
-    - SYMFONY_DEPRECATIONS_HELPER=weak
+    - CHECK_PHP_SYNTAX="no"
+    - SYMFONY_DEPRECATIONS_HELPER="weak"
+    - ENABLE_CODE_COVERAGE="false"
 
 matrix:
   fast_finish: true
@@ -42,22 +42,21 @@ matrix:
 
 before_install:
   - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == "3.0.*" ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
-  - if [[ "$SYMFONY_VERSION" = "" ]] && [[ "$TWIG_VERSION" = "" ]] && [[ "$TRAVIS_PHP_VERSION" =~ 5.[45] ]] && [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then export skip="yes"; fi;
-  - if [[ "$skip" != "yes" ]]; then composer selfupdate; fi
-  - if [[ "$skip" != "yes" && "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
-  - if [[ "$skip" != "yes" && "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
-  - if [[ "$skip" != "yes" && "$TRAVIS_PHP_VERSION" != 7.0 && "$TRAVIS_PHP_VERSION" != hhvm ]]; then phpenv config-rm xdebug.ini; fi;
+  - if [[ "$TRAVIS_PHP_VERSION" == 7.0 && (RANDOM % 20 == 0) ]]; then export ENABLE_CODE_COVERAGE="true"; fi;
+  - composer selfupdate
+  - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
+  - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
+  - if [[ "$ENABLE_CODE_COVERAGE" != "true" ]]; then phpenv config-rm xdebug.ini; fi;
 
 install:
-  - if [[ "$PHP_CS" == "yes" ]]; then curl http://get.sensiolabs.org/php-cs-fixer.phar -o php-cs-fixer; fi;
-  - if [[ "$skip" != "yes" ]]; then composer update --prefer-dist --no-interaction $COMPOSER_FLAGS; fi
-  - if [[ "$skip" != "yes" && "$TRAVIS_PHP_VERSION" == 7.0 ]]; then composer require --dev satooshi/php-coveralls:~0.6; fi
+  - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then curl http://get.sensiolabs.org/php-cs-fixer.phar -o php-cs-fixer; fi;
+  - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
+  - if [[ "$ENABLE_CODE_COVERAGE" == "true" ]]; then composer require --dev satooshi/php-coveralls:~0.6; fi
 
 script:
-  - if [[ "$skip" != "yes" && "$TRAVIS_PHP_VERSION" == 7.0 ]]; then phpunit --coverage-text --coverage-clover build/logs/clover.xml; else if [[ "$skip" != "yes" ]]; then phpunit; fi; fi
-  - if [[ "$skip" = "yes" ]]; then echo "Skipping matrix entry for pull requests"; fi
-  - if [[ "$PHP_CS" == "yes" ]]; then php php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
-  - if [[ "$PHP_CS" == "yes" ]]; then mv ./.php_cs.cache $HOME/.app/cache/.php_cs.cache; fi;
+  - if [[ "$ENABLE_CODE_COVERAGE" == "true" ]]; then phpunit --coverage-text --coverage-clover build/logs/clover.xml; else; then phpunit; fi; fi
+  - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then php php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
+  - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then mv ./.php_cs.cache $HOME/.app/cache/.php_cs.cache; fi;
 
 after_success: |
-    if [[ "$TRAVIS_PHP_VERSION" == 7.0 ]]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;
+    if [[ "$ENABLE_CODE_COVERAGE" == "true" ]]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;

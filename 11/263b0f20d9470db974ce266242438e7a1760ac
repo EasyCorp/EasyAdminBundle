@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-02-19T10:19:36Z
+
+I don't like this feature. It's "specific" behavior for something a bit restrictive.
+
+Why not add a `attr` option that will contain all HTML properties to the tag? (of course with the `href` one being overriden to avoid issues)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-02-19T11:50:33Z
+
+I agree with @Pierstoval on this.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-02-20T19:05:29Z
+
+I understand the concerns of @Pierstoval and @ogizanagi ... but I still is OK to add this small feature. I don't plan to add more configuration options for menu items, so this is the last one (and that means that we won't clutter the menu feature). Besides, we allow links to absolute URLs and external systems in the menu, so it's important to be able to open them in new tabs/windows.
+
+The problem with `attr` is that it forces you to remember which options are first-level options and which ones nested inside `attr`. And nested arrays are ugly in YAML files. We do that when we have no other option (line `type_options` for form fields) but we try to avoid that as much as possible.
+
+So, I'm going to merge this feature. But, in the future, we can reconsider this decision. And since the feature is minimal, and removing it won't break the backend, BC breaks won't matter. Thanks!

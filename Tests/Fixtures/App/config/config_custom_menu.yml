@@ -13,6 +13,6 @@ easy_admin:
             - { label: 'Images', entity: 'Image' }
             - { label: 'Purchases', entity: 'Purchase', icon: '', params: { sortField: 'deliveryDate' } }
             - { label: 'About EasyAdmin' }
-            - { label: 'Project Home', url: 'https://github.com/javiereguiluz/EasyAdminBundle', icon: 'home' }
-            - { label: 'Documentation', url: 'https://github.com/javiereguiluz/EasyAdminBundle#getting-started-guide', icon: 'book' }
-            - { label: 'Report Issues', url: 'https://github.com/javiereguiluz/EasyAdminBundle/issues', icon: 'github' }
+            - { label: 'Project Home', url: 'https://github.com/javiereguiluz/EasyAdminBundle', icon: 'home', target: '_blank' }
+            - { label: 'Documentation', url: 'https://github.com/javiereguiluz/EasyAdminBundle#getting-started-guide', icon: 'book', target: '_self' }
+            - { label: 'Report Issues', url: 'https://github.com/javiereguiluz/EasyAdminBundle/issues', icon: 'github', target: 'arbitrary_value' }

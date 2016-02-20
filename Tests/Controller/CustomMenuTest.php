@@ -117,6 +117,26 @@ class CustomMenuTest extends AbstractTestCase
         );
     }
 
+    public function testMenuTargets()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $this->assertEquals(
+            '_blank',
+            $crawler->filter('.sidebar-menu li:contains("Project Home") a')->attr('target')
+        );
+
+        $this->assertEquals(
+            '_self',
+            $crawler->filter('.sidebar-menu li:contains("Documentation") a')->attr('target')
+        );
+
+        $this->assertEquals(
+            'arbitrary_value',
+            $crawler->filter('.sidebar-menu li:contains("Report Issues") a')->attr('target')
+        );
+    }
+
     public function testMenuUrls()
     {
         $crawler = $this->getBackendHomepage();

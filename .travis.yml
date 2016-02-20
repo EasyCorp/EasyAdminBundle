@@ -30,6 +30,8 @@ matrix:
       env: TWIG_VERSION="2.0.x-dev"
     - php: 7.0
       env: PHP_CS=yes
+    - php: hhvm
+      env: SYMFONY_VERSION=2.8.*
   allow_failures:
     - php: hhvm
     - env: TWIG_VERSION="2.0.x-dev"

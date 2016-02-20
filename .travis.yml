@@ -18,8 +18,11 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 5.3
-      env: COMPOSER_FLAGS="--prefer-lowest"
+    # define faster jobs first to reduce blocking time
+    - php: 7.0
+      env: PHP_CS=yes
+      env: SYMFONY_VERSION=3.0.*
+    - php: hhvm
       env: SYMFONY_VERSION=2.8.*
     - php: 5.6
       env: SYMFONY_VERSION=2.3.*
@@ -29,10 +32,8 @@ matrix:
       env: SYMFONY_VERSION=2.8.*
     - php: 5.6
       env: TWIG_VERSION="2.0.x-dev"
-    - php: 7.0
-      env: PHP_CS=yes
-      env: SYMFONY_VERSION=3.0.*
-    - php: hhvm
+    - php: 5.3
+      env: COMPOSER_FLAGS="--prefer-lowest"
       env: SYMFONY_VERSION=2.8.*
   allow_failures:
     - php: hhvm

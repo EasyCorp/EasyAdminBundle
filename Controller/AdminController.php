@@ -631,8 +631,8 @@ class AdminController extends Controller
      */
     protected function getEntityFormOptions($entity, $view)
     {
-        $formOptions = $entity[$view]['form_options'];
-        $formOptions['entity'] = $entity['name'];
+        $formOptions = $this->entity[$view]['form_options'];
+        $formOptions['entity'] = $this->entity['name'];
         $formOptions['view'] = $view;
 
         return $formOptions;

@@ -98,6 +98,13 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['default'] = (bool) $itemConfig['default'];
             }
 
+            // normalize 'target' option, which allows to open menu items in different windows or tabs
+            if (!array_key_exists('target', $itemConfig)) {
+                $itemConfig['target'] = false;
+            } else {
+                $itemConfig['target'] = (string) $itemConfig['target'];
+            }
+
             $menuConfig[$i] = $itemConfig;
         }
 

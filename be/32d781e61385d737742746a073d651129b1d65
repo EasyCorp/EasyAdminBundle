@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-02-20T20:03:05Z
+
+So far the results are promising. Tests now take 30 minute less to complete:
+
+![new_travis](https://cloud.githubusercontent.com/assets/73419/13198891/49e94364-d815-11e5-9806-4e9de731b30f.png)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-02-21T09:15:00Z
+
+Randomly? Seriously? I think we need coverage on each build :confused:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-02-21T09:39:59Z
+
+@Pierstoval code coverage barely changes from one commit to another, so I think it's OK to calculate it "from time to time". Don't you think saving 30 minutes in the test suite is worth it?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-02-21T10:24:56Z
+
+Why not adding a dedicated build in the `allow_failure` section, so we can have the result of the required builds on Github without being annoyed by the coverage build ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-02-21T11:40:15Z
+
+@ogizanagi good idea! I'm trying to do that in 90a582c.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-02-21T12:04:17Z
+
+Everything seems to work as expected and tests are fast again. Thanks for the discussion and the ideas!

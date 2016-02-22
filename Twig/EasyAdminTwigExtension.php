@@ -239,7 +239,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getActionsForItem($view, $entityName)
     {
-        $entityConfig = $this->configurator->getEntityConfig($entityName);
+        try {
+            $entityConfig = $this->configurator->getEntityConfig($entityName);
+        } catch (\Exception $e) {
+            return array();
+        }
+
         $disabledActions = $entityConfig['disabled_actions'];
         $viewActions = $entityConfig[$view]['actions'];
 

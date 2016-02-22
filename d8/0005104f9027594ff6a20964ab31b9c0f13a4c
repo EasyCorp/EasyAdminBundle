@@ -1,0 +1,57 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-01-17T18:53:24Z
+
+:+1: It also allows to easily render tag elements as labels for instance, using pure css without changing the template.
+However, I  would expect those items to be links to targeted entities. But it of course adds some complexity to this PR. :/
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-18T10:29:12Z
+
+:+1: for @ogizanagi's proposal to add a link if the entity is managed by EasyAdmin
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-18T12:19:41Z
+
+I did a quick test in 3a67a4c to add links. It works, but when I have some time I'd like to improve it:
+
+![association_links](https://cloud.githubusercontent.com/assets/73419/12391181/195bf596-bde6-11e5-88c0-c55015d6b19c.png)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-18T13:57:14Z
+
+There's no need to "improve" it actually: allowing to override what you provided is fairly enough :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-18T13:59:42Z
+
+@Pierstoval but this is a common need for most people, right? I prefer to provided a built-in feature for that :smile:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-01-18T14:04:39Z
+
+What kind of features then?
+I can't think of anything else than changing the `<ul>` for another tag, or adding a `class` attribute to it...
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-01-18T20:03:56Z
+
+The code has been refactored to tackle the issues discussed by @yceruto.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-02-10T21:18:11Z
+
+I've finished this feature and (if test pass) I'll merge it soon. Last chance to review. Thanks!
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-02-12T13:58:11Z
+
+@javiereguiluz I think there is no problem with merge this PR for me, because the possibility of multiple administrations is not lost yet, just affects the link in lists. :+1: ?

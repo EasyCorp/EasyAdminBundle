@@ -1,5 +1,22 @@
+{# a *-to-many collection of values #}
 {% if value is iterable %}
-    <span class="badge">{{ value|length }}</span>
+    {% if 'show' == view %}
+        <ul>
+            {% for item in value %}
+                <li>
+                    {% if link_parameters is defined %}
+                        {% set primary_key_value = attribute(item, link_parameters.primary_key_name) %}
+                        <a href="{{ path('easyadmin', link_parameters|merge({ id: primary_key_value })) }}">{{ item }}</a>
+                    {% else %}
+                        {{ item }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% elseif 'list' == view %}
+        <span class="badge">{{ value|length }}</span>
+    {% endif %}
+{# a simple *-to-one value associated with an entity managed by this backend #}
 {% elseif link_parameters is defined %}
     <a href="{{ path('easyadmin', link_parameters|merge({ referer: app.request.requestUri })) }}">{{ value|easyadmin_truncate }}</a>
 {% else %}

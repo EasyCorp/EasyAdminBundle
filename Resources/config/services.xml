@@ -13,6 +13,7 @@
 
         <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
             <argument /> <!-- easyadmin.config parameter -->
+            <argument type="service" id="property_accessor" />
         </service>
 
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">

@@ -22,6 +22,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class EasyAdminBundle extends Bundle
 {
+    const VERSION = '1.11.6-DEV';
+
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new EasyAdminConfigurationPass(), PassConfig::TYPE_BEFORE_REMOVING);

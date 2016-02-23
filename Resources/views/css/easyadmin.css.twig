@@ -44,6 +44,15 @@
 {% set colors = color_schemes[color_scheme] %}
 
 {% autoescape false %}
+/* -------------------------------------------------------------------------
+   RESET STYLES
+   ------------------------------------------------------------------------- */
+/* make the Symfony Web Toolbar look nice by neutralizing the aliasing applied
+   globally by the AdminLTE template styles */
+.sf-toolbarreset {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+}
 
 /* -------------------------------------------------------------------------
    BASIC STYLES

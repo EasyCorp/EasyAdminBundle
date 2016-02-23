@@ -12,17 +12,16 @@
 
     {% set text %}
     <div class="sf-toolbar-info-piece">
-        <b>EasyAdmin</b>
+        <b>EasyAdmin {{ constant('JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }}</b>
     </div>
     <div class="sf-toolbar-info-piece">
         <b>Managed entities</b>
-        <span>{{ collector.numEntities }}</span>
+        <span class="sf-toolbar-status">{{ collector.numEntities }}</span>
     </div>
     {% endset %}
 
     {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
 {% endblock %}
-
 
 {% block menu %}
     <span class="label status-{{ not collector.requestParameters ? 'disabled' }}">
@@ -117,4 +116,20 @@
             </div>
         </div>
     </div>
+
+    <h2>Additional Resources</h2>
+
+        <div class="metrics">
+            <div class="metric">
+                <span class="value">{{ constant('JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }}</span>
+                <span class="label">EasyAdmin Version</span>
+            </div>
+        </div>
+
+    <ul>
+        <li><a href="https://github.com/javiereguiluz/EasyAdminBundle/issues">Report an issue</a></li>
+        <li><a href="https://github.com/javiereguiluz/EasyAdminBundle#documentation">Read documentation</a></li>
+        <li><a href="https://github.com/javiereguiluz/EasyAdminBundle">Project homepage</a></li>
+    </ul>
+
 {% endblock %}

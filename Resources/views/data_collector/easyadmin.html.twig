@@ -33,7 +33,7 @@
 {% block panel %}
     {% set profiler_markup_version = profiler_markup_version|default(1) %}
 
-    <h2>EasyAdmin</h2>
+    <h2>EasyAdmin <small>({{ constant('JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }})</small></h2>
 
     {% if profiler_markup_version == 1 %}
 
@@ -117,14 +117,7 @@
         </div>
     </div>
 
-    <h2>Additional Resources</h2>
-
-        <div class="metrics">
-            <div class="metric">
-                <span class="value">{{ constant('JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }}</span>
-                <span class="label">EasyAdmin Version</span>
-            </div>
-        </div>
+    <h3>Additional Resources</h3>
 
     <ul>
         <li><a href="https://github.com/javiereguiluz/EasyAdminBundle/issues">Report an issue</a></li>

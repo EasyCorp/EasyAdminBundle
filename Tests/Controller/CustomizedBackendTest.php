@@ -326,6 +326,13 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertEquals($parameters, $refererParameters);
     }
 
+    public function testEditViewCheckboxLabel()
+    {
+        $crawler = $this->requestEditView('Product', '1');
+
+        $this->assertContains('Custom Label', trim($crawler->filter('#product_enabled')->parents()->filter('label')->text()));
+    }
+
     public function testNewViewPageTitle()
     {
         $crawler = $this->requestNewView();
@@ -426,6 +433,13 @@ class CustomizedBackendTest extends AbstractTestCase
             // In Symfony 2.3 FormDataCollector does not exist. Search in response content.
             $this->assertContains('This value should not be null.', $crawler->filter('.error-block')->first()->text());
         }
+    }
+
+    public function testNewViewCheckboxLabel()
+    {
+        $crawler = $this->requestNewView('Product');
+
+        $this->assertContains('Custom Label', trim($crawler->filter('#product_enabled')->parents()->filter('label')->text()));
     }
 
     public function testSearchViewPageTitle()
@@ -582,23 +596,23 @@ class CustomizedBackendTest extends AbstractTestCase
     /**
      * @return Crawler
      */
-    private function requestEditView()
+    private function requestEditView($entityName = 'Category', $entityId = '200')
     {
         return $this->getBackendPage(array(
             'action' => 'edit',
-            'entity' => 'Category',
-            'id' => '200',
+            'entity' => $entityName,
+            'id' => $entityId,
         ));
     }
 
     /**
      * @return Crawler
      */
-    private function requestNewView()
+    private function requestNewView($entityName = 'Category')
     {
         return $this->getBackendPage(array(
             'action' => 'new',
-            'entity' => 'Category',
+            'entity' => $entityName,
         ));
     }
 

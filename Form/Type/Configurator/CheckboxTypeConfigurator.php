@@ -32,6 +32,8 @@ class CheckboxTypeConfigurator implements TypeConfiguratorInterface
             $options['required'] = false;
         }
 
+        $options['label'] = $metadata['label'];
+
         return $options;
     }
 

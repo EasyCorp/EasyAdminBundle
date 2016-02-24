@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-02-23T20:16:27Z
+
+Could you provide screenshots of the before/after? I don't see the point actually (even if it is theoretically good :) )
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-02-23T20:32:13Z
+
+The screenshots in https://github.com/symfony/symfony/pull/17860 are for Sonata, but exactly the same happens in EasyAdmin. Click on the images to see them in detail.

@@ -57,7 +57,7 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
         // Configure "placeholder" option for entity fields
         if (($metadata['associationType'] & ClassMetadata::TO_ONE)
             && !isset($options[$placeHolderOptionName = $this->getPlaceholderOptionName()])
-            && false === $options['required']
+            && isset($options['required']) && false === $options['required']
         ) {
             $options[$placeHolderOptionName] = 'form.label.empty_value';
         }

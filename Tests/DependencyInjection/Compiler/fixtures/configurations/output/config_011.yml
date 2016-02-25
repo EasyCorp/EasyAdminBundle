@@ -2,8 +2,8 @@ easy_admin:
     entities:
         Category:
             class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-            label: Category
             name: Category
+            label: Category
             edit:
                 fields:
                     name:
@@ -746,7 +746,7 @@ easy_admin:
     disabled_actions: {  }
     list:
         actions: {  }
-        max_results: '15'
+        max_results: 15
     edit:
         actions: {  }
     new:

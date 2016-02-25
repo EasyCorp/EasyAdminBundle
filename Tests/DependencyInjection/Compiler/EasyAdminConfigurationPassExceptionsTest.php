@@ -38,7 +38,7 @@ class EasyAdminConfigurationPassExceptionsTest extends \PHPUnit_Framework_TestCa
     {
         // glob() returns an array of strings and fixtures require an array of arrays
         return array_map(
-            function ($v) { return array($v); },
+            function ($filePath) { return array($filePath); },
             glob(__DIR__.'/fixtures/exceptions/*.yml')
         );
     }

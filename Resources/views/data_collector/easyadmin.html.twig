@@ -46,12 +46,12 @@
         {% if collector.requestParameters %}
         <div class="metrics">
             <div class="metric">
-                <span class="value">{{ collector.requestParameters.action }}</span>
+                <span class="value">{{ collector.requestParameters.action|default('-') }}</span>
                 <span class="label">Action</span>
             </div>
 
             <div class="metric">
-                <span class="value">{{ collector.requestParameters.entity }}</span>
+                <span class="value">{{ collector.requestParameters.entity|default('-') }}</span>
                 <span class="label">Entity Name</span>
             </div>
 
@@ -60,7 +60,7 @@
                     <span class="value">{{ collector.requestParameters.id }}</span>
                     <span class="label">ID</span>
                 </div>
-            {% else %}
+            {% elseif collector.requestParameters.sort_field %}
                 <div class="metric">
                     <span class="value">{{ collector.requestParameters.sort_field }} <span class="unit">({{ collector.requestParameters.sort_direction }})</span></span>
                     <span class="label">Sorting</span>

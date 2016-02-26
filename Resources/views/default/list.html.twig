@@ -37,6 +37,17 @@
 {% endblock %}
 
 {% block global_actions %}
+    {% if easyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
+        {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
+        {% block new_action %}
+            <div class="{{ _action.css_class|default('action-new') }}">
+                <a class="btn btn-primary {{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}">
+                    {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                    {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
+                </a>
+            </div>
+        {% endblock new_action %}
+    {% endif %}
     {% if easyadmin_action_is_enabled_for_list_view('search', _entity_config.name) %}
         {% set _action = easyadmin_get_action_for_list_view('search', _entity_config.name) %}
 
@@ -56,16 +67,6 @@
                                 <i class="fa fa-search"></i>
                                 <span class="hidden-xs hidden-sm">{{ _action.label|default('action.search')|trans(_trans_parameters) }}</span>
                             </button>
-
-                            {% if easyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
-                                {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
-                                {% block new_action %}
-                                    <a class="btn btn-primary {{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}">
-                                        {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                        {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
-                                    </a>
-                                {% endblock new_action %}
-                            {% endif %}
                         </span>
                     </div>
                 </form>

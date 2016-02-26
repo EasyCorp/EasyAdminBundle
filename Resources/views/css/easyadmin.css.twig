@@ -670,13 +670,24 @@ body.easyadmin h1.title {
 /* -------------------------------------------------------------------------
    LIST PAGE
    ------------------------------------------------------------------------- */
+
 body.list .global-actions {
-    text-align: right;
+    display: table;
 }
-body.list .global-actions > div[class*=action-] {
-    max-width: 50%;
-    float: right;
+body.list .global-actions .action-new {
+    display: table-cell;
+    padding-left: 10px;
+    vertical-align: middle;
+    width: 1%;
 }
+body.list .global-actions .action-search {
+    display: table-cell;
+    width: 100%;
+}
+body.list .global-actions .action-search .input-group {
+    width: 100%;
+}
+
 body.list .global-actions .form-control {
     box-shadow: none;
 }

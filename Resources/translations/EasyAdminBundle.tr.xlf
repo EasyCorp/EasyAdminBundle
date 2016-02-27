@@ -55,7 +55,7 @@
             </trans-unit>
             <trans-unit id="paginator.counter">
                 <source>paginator.counter</source>
-                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>]]></target>
+                <target><![CDATA[<strong>%results%</strong> öğeden <strong>%start%</strong> - <strong>%end%</strong> arası]]></target>
             </trans-unit>
 
             <!-- labels -->

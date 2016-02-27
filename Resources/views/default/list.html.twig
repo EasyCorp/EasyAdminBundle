@@ -32,7 +32,7 @@
         {{ 'search.page_title'|transchoice(count = paginator.nbResults, domain = 'EasyAdminBundle')|raw }}
     {% else %}
         {% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-        {{ _entity_config.list.title|default(_default_title)|trans(_trans_parameters) }}
+        {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title }}
     {% endif %}
 {% endblock %}
 

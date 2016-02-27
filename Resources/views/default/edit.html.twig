@@ -11,7 +11,7 @@
 
 {% block content_title %}
     {% set _default_title = 'edit.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-    {{ _entity_config.edit.title|default(_default_title)|trans(_trans_parameters) }}
+    {{ _entity_config.edit.title is defined ? _entity_config.edit.title|trans(_trans_parameters) : _default_title }}
 {% endblock %}
 
 {% block main %}

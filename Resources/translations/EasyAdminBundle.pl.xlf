@@ -107,6 +107,10 @@
                 <source>delete_modal.content</source>
                 <target>Tej operacji nie można anulować.</target>
             </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>Usuń</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Dodaj nową pozycję</target>

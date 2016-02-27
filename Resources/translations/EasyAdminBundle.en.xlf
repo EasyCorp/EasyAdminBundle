@@ -119,6 +119,10 @@
                 <source>delete_modal.content</source>
                 <target>There is no undo for this operation.</target>
             </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>Delete</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Add a new item</target>

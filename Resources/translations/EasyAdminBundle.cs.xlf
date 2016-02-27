@@ -119,6 +119,10 @@
                 <source>delete_modal.content</source>
                 <target>Není možné se vrátit zpět.</target>
             </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>Smazat</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Vložit položku</target>

@@ -482,6 +482,9 @@ button.btn:active {
 .content-wrapper {
     background: {{ colors.page_background }};
 }
+.fixed .content-wrapper {
+    padding-top: 50px;
+}
 
 /* Header
    ------------------------------------------------------------------------- */
@@ -493,6 +496,7 @@ button.btn:active {
     color: {{ colors.white }};
     font-family: Helvetica, "Helvetica Neue", Arial, sans-serif; /* needed to override AdminLTE styles */
     font-weight: bold;
+    height: 40px;
 }
 .main-header .logo-lg {
     overflow: hidden;
@@ -576,7 +580,7 @@ button.btn:active {
 {% endif %}
 }
 .main-sidebar {
-    padding-top: 90px;
+    padding-top: 40px;
 }
 
 .sidebar-menu > li.header {
@@ -931,6 +935,7 @@ body.error .error-message {
     }
     .main-header .logo {
         text-align: left;
+        height: 50px;
     }
     .main-header .logo img {
         max-height: 48px;

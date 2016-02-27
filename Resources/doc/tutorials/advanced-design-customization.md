@@ -307,18 +307,30 @@ easy_admin:
         Invoice:
             list:
                 fields:
-                    - { property: 'total', template: 'invoice_total' }
+                    - { property: 'total', template: 'invoice_total.html.twig' }
 ```
 
 The above configuration makes the backend use the `invoice_total.html.twig`
 template instead of the default `field_float.html.twig` template. Custom
-templates are looked for in the following locations (the first existing
+templates are looked for first in the following locations (the first existing
 template is used):
 
-  1. `app/Resources/views/easy_admin/<EntityName>/<TemplateName>.html.twig`
-     template.
-  2. `app/Resources/views/easy_admin/<TemplateName>.html.twig`
-     template.
+  1. `app/Resources/views/easy_admin/<EntityName>/<TemplateOptionValue>`
+  2. `app/Resources/views/easy_admin/<TemplateOptionValue>`
+
+If none of these templates exist, the value of the ``template`` option is passed
+to Symfony "as is", so you can use any of the valid template syntaxes:
+
+```yaml
+easy_admin:
+    # ...
+    entities:
+        Invoice:
+            list:
+                fields:
+                    - { property: 'total', template: 'AppBundle:Invoice:total.html.twig' }
+                    - { property: 'price', template: '@App/Invoice/unit_price.html.twig' }
+```
 
 Custom templates receive the same parameters as built-in templates (
 `field_options`, `item`, `value`, `view`).

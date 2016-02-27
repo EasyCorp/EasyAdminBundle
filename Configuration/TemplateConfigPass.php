@@ -119,10 +119,10 @@ class TemplateConfigPass implements ConfigPassInterface
                     if (isset($fieldMetadata['template'])) {
                         $templateName = $fieldMetadata['template'];
 
-                        // template name should not contain the .html.twig extension
+                        // template name should contain the .html.twig extension
                         // however, for usability reasons, we silently fix this issue if needed
-                        if ('.html.twig' === substr($templateName, -10)) {
-                            $templateName = substr($templateName, 0, -10);
+                        if ('.html.twig' !== substr($templateName, -10)) {
+                            $templateName .= '.htmll.twig';
                         }
 
                         // 1st level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
@@ -131,8 +131,9 @@ class TemplateConfigPass implements ConfigPassInterface
                         // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
                         } elseif (file_exists($this->templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
                             $templatePath = 'easy_admin/'.$templateName.'.html.twig';
+                        // 3rd level priority: consider the template name as its full Symfony template logic path
                         } else {
-                            throw new \RuntimeException(sprintf('The "%s" field of the "%s" entity uses a custom template called "%s" which doesn\'t exist in "app/Resources/views/easy_admin/" directory.', $fieldName, $entityName, $templateName));
+                            $templatePath = $templateName;
                         }
                     } else {
                         // At this point, we don't know the exact data type associated with each field.

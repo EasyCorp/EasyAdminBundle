@@ -17,7 +17,7 @@
         {% for field, metadata in fields %}
             <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
                 <label class="col-sm-2 control-label">
-                    {{  metadata.label ? metadata.label|trans(_trans_parameters) : field|humanize }}
+                    {{ (metadata.label ?: field|humanize)|trans(_trans_parameters) }}
                 </label>
                 <div class="col-sm-10">
                     <div class="form-control">

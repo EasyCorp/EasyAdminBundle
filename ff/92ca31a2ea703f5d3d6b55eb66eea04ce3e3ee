@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-02-27T09:43:26Z
+
+I've tested this further and now it works as expected when you remove just the New or Search action and when you remove both of them.

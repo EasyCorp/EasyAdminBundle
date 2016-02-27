@@ -1,7 +1,7 @@
 {# a *-to-many collection of values #}
 {% if value is iterable %}
     {% if 'show' == view %}
-        <ul>
+        <ul class="{{ value|length < 2 ? 'inline' }}">
             {% for item in value %}
                 <li>
                     {% if link_parameters is defined %}

@@ -278,12 +278,22 @@ button.btn:active {
     color: {{ colors.white }};
 }
 
+.btn-success,
+.btn-success:hover,
+.btn-success:active,
+.btn-success:focus,
+.btn-success:active:hover {
+    background-color: {{ colors.success }};
+    border-color: transparent;
+    color: {{ colors.white }};
+}
+
 /* .bnt-secondary is for 'buttons' displayed as text links */
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:active,
 .btn-secondary:focus,
-.btn-secondary:active:hover{
+.btn-secondary:active:hover {
     background: transparent;
     color: {{ brand_color }};
     text-decoration: underline;
@@ -293,13 +303,22 @@ button.btn:active {
 }
 
 .btn-primary,
-.btn-danger {
+.btn-danger,
+.btn-success {
     font-weight: bold;
 }
 
 .btn i {
     font-size: 16px;
     margin-right: 2px;
+}
+
+.btn-flat,
+.btn-flat:hover,
+.btn-flat:active,
+.btn-flat:focus,
+.btn-flat:active:hover {
+    border-radius: 0;
 }
 
 /* Forms

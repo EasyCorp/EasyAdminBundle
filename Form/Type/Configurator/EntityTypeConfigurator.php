@@ -59,7 +59,7 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
             && !isset($options[$placeHolderOptionName = $this->getPlaceholderOptionName()])
             && isset($options['required']) && false === $options['required']
         ) {
-            $options[$placeHolderOptionName] = 'form.label.empty_value';
+            $options[$placeHolderOptionName] = 'label.form.empty_value';
         }
 
         return $options;

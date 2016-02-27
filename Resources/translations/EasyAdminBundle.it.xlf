@@ -107,6 +107,10 @@
                 <source>delete_modal.content</source>
                 <target>Questa azione è irreversibile.</target>
             </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>Cancella</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Aggiungi un nuovo elemento</target>

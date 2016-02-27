@@ -115,6 +115,10 @@
                 <source>delete_modal.content</source>
                 <target>Bu işlem geri alınamaz.</target>
             </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>Sil</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Yeni öğe ekle</target>

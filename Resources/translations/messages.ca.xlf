@@ -35,13 +35,9 @@
                 <source>action.list</source>
                 <target>Tornar al llistat</target>
             </trans-unit>
-            <trans-unit id="form.label.empty_value">
-                <source>form.label.empty_value</source>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
                 <target>Ningú</target>
-            </trans-unit>
-            <trans-unit id="modal.action.delete">
-                <source>modal.action.delete</source>
-                <target>Borrar</target>
             </trans-unit>
         </body>
     </file>

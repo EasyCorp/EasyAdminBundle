@@ -318,7 +318,7 @@ template is used):
   1. `app/Resources/views/easy_admin/<EntityName>/<TemplateOptionValue>`
   2. `app/Resources/views/easy_admin/<TemplateOptionValue>`
 
-If none of these templates exist, the value of the ``template`` option is passed
+If none of these templates exist, the value of the `template` option is passed
 to Symfony "as is", so you can use any of the valid template syntaxes:
 
 ```yaml

@@ -122,7 +122,7 @@ class TemplateConfigPass implements ConfigPassInterface
                         // template name should contain the .html.twig extension
                         // however, for usability reasons, we silently fix this issue if needed
                         if ('.html.twig' !== substr($templateName, -10)) {
-                            $templateName .= '.htmll.twig';
+                            $templateName .= '.html.twig';
                         }
 
                         // 1st level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig

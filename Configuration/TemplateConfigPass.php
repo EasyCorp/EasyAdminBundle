@@ -122,6 +122,7 @@ class TemplateConfigPass implements ConfigPassInterface
                         // template name should contain the .html.twig extension
                         // however, for usability reasons, we silently fix this issue if needed
                         if ('.html.twig' !== substr($templateName, -10)) {
+                            @trigger_error('Passing a template name without the ".html.twig" extension to the "template" field option is deprecated since version 1.11.7 and will be removed in 2.0.', E_USER_DEPRECATED);
                             $templateName .= '.html.twig';
                         }
 

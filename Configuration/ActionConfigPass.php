@@ -259,7 +259,7 @@ class ActionConfigPass implements ConfigPassInterface
         $actions = $this->doNormalizeActionsConfig(array(
             'delete' => array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash-o', 'css_class' => 'btn btn-default'),
             'edit' => array('name' => 'edit', 'label' => 'action.edit', 'icon' => 'edit', 'css_class' => 'btn btn-primary'),
-            'new' => array('name' => 'new', 'label' => 'action.new'),
+            'new' => array('name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'),
             'search' => array('name' => 'search', 'label' => 'action.search'),
             'show' => array('name' => 'show', 'label' => 'action.show'),
             'list' => array('name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary'),

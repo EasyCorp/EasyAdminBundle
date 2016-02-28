@@ -238,17 +238,17 @@ easy_admin:
                         label: action.delete
                         css_class: 'text-danger action-delete'
                         icon: null
+                    new:
+                        name: new
+                        type: method
+                        label: action.new
+                        css_class: 'btn btn-primary action-new'
+                        icon: null
                     search:
                         name: search
                         type: method
                         label: action.search
                         css_class: ' action-search'
-                        icon: null
-                    new:
-                        name: new
-                        type: method
-                        label: action.new
-                        css_class: ' action-new'
                         icon: null
             new:
                 fields:

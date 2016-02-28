@@ -59,10 +59,10 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('New Category', trim($crawler->filter('.global-actions a.btn')->text()));
-        $this->assertEquals('btn btn-primary custom_class_new action-new', $crawler->filter('.global-actions a.btn')->attr('class'));
-        $this->assertEquals('fa fa-plus-circle', $crawler->filter('.global-actions a.btn i')->attr('class'));
-        $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('.global-actions a.btn')->attr('href'));
+        $this->assertEquals('New Category', trim($crawler->filter('.global-actions a.action-new')->text()));
+        $this->assertEquals('custom_class_new action-new', $crawler->filter('.global-actions a.action-new')->attr('class'));
+        $this->assertEquals('fa fa-plus-circle', $crawler->filter('.global-actions a.action-new i')->attr('class'));
+        $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('.global-actions a.action-new')->attr('href'));
     }
 
     public function testListViewItemActions()

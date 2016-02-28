@@ -117,22 +117,23 @@ class TemplateConfigPass implements ConfigPassInterface
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
                     // if the field defines its own template, resolve its location
                     if (isset($fieldMetadata['template'])) {
-                        $templateName = $fieldMetadata['template'];
+                        $templatePath = $fieldMetadata['template'];
 
-                        // template name should not contain the .html.twig extension
+                        // template path should contain the .html.twig extension
                         // however, for usability reasons, we silently fix this issue if needed
-                        if ('.html.twig' === substr($templateName, -10)) {
-                            $templateName = substr($templateName, 0, -10);
+                        if ('.html.twig' !== substr($templatePath, -10)) {
+                            $templatePath .= '.html.twig';
+                            @trigger_error(sprintf('Passing a template path without the ".html.twig" extension is deprecated since version 1.11.7 and will be removed in 2.0. Use "%s" as the value of the "template" option for the "%s" field in the "%s" view of the "%s" entity.', $templatePath, $fieldName, $view, $entityName), E_USER_DEPRECATED);
                         }
 
-                        // 1st level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
-                        if (file_exists($this->templatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
-                            $templatePath = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
-                        // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-                        } elseif (file_exists($this->templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
-                            $templatePath = 'easy_admin/'.$templateName.'.html.twig';
-                        } else {
-                            throw new \RuntimeException(sprintf('The "%s" field of the "%s" entity uses a custom template called "%s" which doesn\'t exist in "app/Resources/views/easy_admin/" directory.', $fieldName, $entityName, $templateName));
+                        // before considering $templatePath a regular Symfony template
+                        // path, check if the given template exists in any of these directories:
+                        // * app/Resources/views/easy_admin/<entityName>/<templatePath>
+                        // * app/Resources/views/easy_admin/<templatePath>
+                        if (file_exists($this->templatesDir.'/easy_admin/'.$entityName.'/'.$templatePath)) {
+                            $templatePath = 'easy_admin/'.$entityName.'/'.$templatePath;
+                        } elseif (file_exists($this->templatesDir.'/easy_admin/'.$templatePath)) {
+                            $templatePath = 'easy_admin/'.$templatePath;
                         }
                     } else {
                         // At this point, we don't know the exact data type associated with each field.

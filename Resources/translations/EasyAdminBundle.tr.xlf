@@ -89,7 +89,7 @@
             </trans-unit>
             <trans-unit id="label.inaccessible.explanation">
                 <source>label.inaccessible.explanation</source>
-                <target>Getter method does not exist for this field or the property is not public</target>
+                <target>Özelliğin getter methodu tanımlanmamış veya özellik public değil</target>
             </trans-unit>
 
             <!-- user -->
@@ -107,6 +107,10 @@
             </trans-unit>
 
             <!-- misc. elements -->
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Navigasyona Geç</target>
+            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Bu öğeyi silmek istediğinize emin misiniz?</target>

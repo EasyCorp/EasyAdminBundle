@@ -1,9 +1,15 @@
 {% if view == 'show' %}
-    <ul>
-        {% for element in value %}
-            <li>{{ element }}</li>
-        {% endfor %}
-    </ul>
+    {% if value|length > 0 %}
+        <ul>
+            {% for element in value %}
+                <li>{{ element }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty collection-empty">
+            <span class="label label-empty">{{ 'label.empty'|trans({}, 'EasyAdminBundle') }}</span>
+        </div>
+    {% endif %}
 {% else %}
     {{ value|join(', ')|easyadmin_truncate }}
 {% endif %}

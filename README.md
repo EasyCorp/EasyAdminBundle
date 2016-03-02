@@ -23,15 +23,15 @@ with unprecedented simplicity.
   * **CRUD** operations on Doctrine entities (create, edit, list, delete).
   * Full-text **search**, **pagination** and column **sorting**.
   * Fully **responsive** design (smartphones, tablets and desktops).
+  * Supports Symfony 2.x and 3.x.
   * Translated into tens of languages.
   * **Fast**, **simple** and **smart** where appropriate.
 
 **Requirements**
 
-  * Symfony 2.3+ applications (including Symfony 3).
+  * Symfony 2.3+ or 3.x applications (Silex not supported).
   * Doctrine ORM entities (Doctrine ODM and Propel not supported).
-  * Entities with simple primary keys (composite keys not supported).
-  * Entities using inheritance are not supported.
+  * Entities with composite keys or using inheritance are not supported.
 
 Documentation
 -------------
@@ -66,7 +66,7 @@ Documentation
 
 #### Demo Application
 
-[easy-admin-demo](https://github.com/javiereguiluz/easy-admin-demo) is a simple
+[easy-admin-demo](https://github.com/javiereguiluz/easy-admin-demo) is a complete
 Symfony application created to showcase EasyAdmin features.
 
 Installation
@@ -151,15 +151,7 @@ the admin backend:
 
 ![Default EasyAdmin Backend interface](https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-default-backend.png)
 
-Creating a backend is that simple because EasyAdmin doesn't generate any code.
-All resources are served on-the-fly to ensure an exceptional developer
-experience.
-
-Without any further configuration, EasyAdmin guesses the best settings to make
-your admin backend look "good enough". This may be acceptable for simple
-backends and rapid prototypes, but most of the times, you need to customize
-some parts of the backend. Keep reading the rest of the documentation to learn
-how to do it.
+Keep reading the rest of the documentation to learn how to customize your backends.
 
 License
 -------

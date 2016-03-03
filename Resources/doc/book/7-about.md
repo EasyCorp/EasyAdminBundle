@@ -1,4 +1,4 @@
-Chapter 6. About this project
+Chapter 7. About this project
 =============================
 
 The main author of this bundle works for SensioLabs, the company behind the

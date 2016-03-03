@@ -1,0 +1,20 @@
+
+Customize the Label of the Main Menu Items
+------------------------------------------
+
+By default, main menu items display the name of their associated entity. If you
+want to customize any menu item, define the `label` option of its related entity:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customers:
+            label: 'Active Clients'
+            class: AppBundle\Entity\Customer
+        Orders:
+            label: 'Pending Orders'
+            class: AppBundle\Entity\Order
+```
+
+

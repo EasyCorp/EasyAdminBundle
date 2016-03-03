@@ -38,9 +38,10 @@ Documentation
 
 #### Getting Started Guide
 
-The [Getting Started Guide](...) explains how to install the bundle, how to create
-your first backend and provides a quick overview of the bundle's features. This
-guide is a must-read before using EasyAdmin.
+The [Getting Started Guide](Resources/doc/getting-started.md) explains how to
+install the bundle, how to create your first backend and provides a quick
+overview of the bundle's features. This guide is a must-read before using
+EasyAdmin.
 
 #### The Book
 
@@ -52,6 +53,7 @@ guide is a must-read before using EasyAdmin.
   * [Chapter 6 - Menu Configuration](Resources/doc/book/6-menu-configuration.md)
   * [Chapter 7 - About this Project](Resources/doc/book/7-about.md)
   * [Appendix - Full Configuration Reference](Resources/doc/book/configuration-reference.md)
+
 
 
   * [Chapter 4 - Views and Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/4-views-and-actions.md)

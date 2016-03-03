@@ -89,14 +89,16 @@ class DefaultConfigPass implements ConfigPassInterface
         // if no menu item has been set as "default", use the "list"
         // action of the first configured entity as the backend homepage
         if (null === $menuItemConfig = $backendConfig['default_menu_item']) {
-            $backendHomepage['route'] = 'easyadmin';
-            $backendHomepage['params'] = array('action' => 'list', 'entity' => $backendConfig['default_entity_name']);
+            $backendHomepage['entity'] = $backendConfig['default_entity_name'];
+            $backendHomepage['action'] = 'list';
+            $backendHomepage['params'] = array();
         } else {
             $routeParams = array('menuIndex' => $menuItemConfig['menu_index'], 'submenuIndex' => $menuItemConfig['submenu_index']);
 
             if ('entity' === $menuItemConfig['type']) {
-                $backendHomepage['route'] = 'easyadmin';
-                $backendHomepage['params'] = array_merge(array('action' => 'list', 'entity' => $menuItemConfig['entity']), $routeParams, $menuItemConfig['params']);
+                $backendHomepage['entity'] = $menuItemConfig['entity'];
+                $backendHomepage['action'] = 'list';
+                $backendHomepage['params'] = array_merge($routeParams, $menuItemConfig['params']);
             } elseif ('route' === $menuItemConfig['type']) {
                 $backendHomepage['route'] = $menuItemConfig['route'];
                 $backendHomepage['params'] = array_merge($routeParams, $menuItemConfig['params']);

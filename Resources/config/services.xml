@@ -6,6 +6,7 @@
     <services>
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.configurator" />
+            <argument type="service" id="easyadmin.routing.generator" />
             <argument type="service" id="property_accessor" />
             <argument>%kernel.debug%</argument>
             <tag name="twig.extension" />
@@ -34,6 +35,15 @@
             <argument type="service" id="doctrine" />
             <argument type="service" id="request_stack" on-invalid="null" />
             <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />
+        </service>
+
+        <service id="easyadmin.routing.loader" class="JavierEguiluz\Bundle\EasyAdminBundle\Routing\Loader" public="false">
+            <argument type="service" id="easyadmin.configurator" />
+            <tag name="routing.loader" />
+        </service>
+
+        <service id="easyadmin.routing.generator" class="JavierEguiluz\Bundle\EasyAdminBundle\Routing\Generator\UrlGenerator">
+            <argument type="service" id="router" />
         </service>
     </services>
 </container>

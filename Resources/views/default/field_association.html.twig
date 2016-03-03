@@ -7,7 +7,7 @@
                     <li>
                         {% if link_parameters is defined %}
                             {% set primary_key_value = attribute(item, link_parameters.primary_key_name) %}
-                            <a href="{{ path('easyadmin', link_parameters|merge({ id: primary_key_value, referer: '' })) }}">{{ item }}</a>
+                            <a href="{{ easyadmin_path(link_parameters.entity, link_parameters.action, link_parameters|merge({ id: primary_key_value, referer: null, primary_key_name: null })) }}">{{ item }}</a>
                         {% else %}
                             {{ item }}
                         {% endif %}
@@ -24,7 +24,7 @@
     {% endif %}
 {# a simple *-to-one value associated with an entity managed by this backend #}
 {% elseif link_parameters is defined %}
-    <a href="{{ path('easyadmin', link_parameters|merge({ referer: '' })) }}">{{ value|easyadmin_truncate }}</a>
+    <a href="{{ easyadmin_path(link_parameters.entity, link_parameters.action, link_parameters|merge({ referer: null })) }}">{{ value|easyadmin_truncate }}</a>
 {% else %}
     {{ value|easyadmin_truncate }}
 {% endif %}

@@ -6,7 +6,7 @@
         {% set path =
             item.type == 'link' ? item.url :
             item.type == 'route' ? path(item.route, menu_params|merge(item.params)) :
-            item.type == 'entity' ? path('easyadmin', { entity: item.entity, action: 'list' }|merge(menu_params)|merge(item.params)) :
+            item.type == 'entity' ? easyadmin_path(item.entity, 'list', menu_params|merge(item.params)) :
             item.type == 'empty' ? '#' : ''
         %}
 

@@ -1,5 +1,6 @@
 {% trans_default_domain 'EasyAdminBundle' %}
 
+{% set _entity_route_name = app.request.attributes.get('_route') %}
 {% set _paginator_request_parameters = _request_parameters|merge({'referer': null}) %}
 
 {% if paginator.haveToPaginate %}
@@ -19,7 +20,7 @@
                         </li>
                     {% else %}
                         <li>
-                            <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: 1 }) ) }}">
+                            <a href="{{ path(_entity_route_name, _paginator_request_parameters|merge({ page: 1 }) ) }}">
                                 <i class="fa fa-angle-double-left"></i> {{ 'paginator.first'|trans }}
                             </a>
                         </li>
@@ -27,7 +28,7 @@
 
                     {% if paginator.hasPreviousPage %}
                         <li>
-                            <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.previousPage }) ) }}">
+                            <a href="{{ path(_entity_route_name, _paginator_request_parameters|merge({ page: paginator.previousPage }) ) }}">
                                 <i class="fa fa-angle-left"></i> {{ 'paginator.previous'|trans }}
                             </a>
                         </li>
@@ -41,7 +42,7 @@
 
                     {% if paginator.hasNextPage %}
                         <li>
-                            <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.nextPage }) ) }}">
+                            <a href="{{ path(_entity_route_name, _paginator_request_parameters|merge({ page: paginator.nextPage }) ) }}">
                                 {{ 'paginator.next'|trans }} <i class="fa fa-angle-right"></i>
                             </a>
                         </li>
@@ -55,7 +56,7 @@
 
                     {% if paginator.currentPage < paginator.nbPages %}
                         <li>
-                            <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.nbPages }) ) }}">
+                            <a href="{{ path(_entity_route_name, _paginator_request_parameters|merge({ page: paginator.nbPages }) ) }}">
                                 {{ 'paginator.last'|trans }} <i class="fa fa-angle-double-right"></i>
                             </a>
                         </li>

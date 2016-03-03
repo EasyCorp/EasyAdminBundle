@@ -1,8 +1,8 @@
 {% for action in actions %}
     {% if 'list' == action.name %}
-        {% set action_href = request_parameters.referer|default('') ? request_parameters.referer|easyadmin_urldecode : path('easyadmin', request_parameters|merge({ action: 'list' })) %}
+        {% set action_href = request_parameters.referer|default('') ? request_parameters.referer|easyadmin_urldecode : easyadmin_path(entity, 'list', request_parameters) %}
     {% elseif 'method' == action.type %}
-        {% set action_href = path('easyadmin', request_parameters|merge({ action: action.name, id: item_id })) %}
+        {% set action_href = easyadmin_path(entity, action.name, request_parameters|merge({ id: item_id })) %}
     {% elseif 'route' == action.type %}
         {% set action_href = path(action.name, request_parameters|merge({ action: action.name, id: item_id })) %}
     {% endif %}

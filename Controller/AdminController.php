@@ -61,11 +61,11 @@ class AdminController extends Controller
     {
         $this->initialize($request);
 
-        if (null === $request->query->get('entity')) {
+        if (null === $request->attributes->get('entity')) {
             return $this->redirectToBackendHomepage();
         }
 
-        $action = $request->query->get('action', 'list');
+        $action = $request->attributes->get('action', 'list');
         if (!$this->isActionAllowed($action)) {
             throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
         }
@@ -115,7 +115,7 @@ class AdminController extends Controller
 
         // this condition happens when accessing the backend homepage, which
         // then redirects to the 'list' action of the first configured entity
-        if (null === $entityName = $request->query->get('entity')) {
+        if (null === $entityName = $request->attributes->get('entity')) {
             return;
         }
 
@@ -180,12 +180,14 @@ class AdminController extends Controller
      * The method that is executed when the user performs a 'edit' action on an entity.
      *
      * @return RedirectResponse|Response
+     *
+     * @throws \Exception
      */
     protected function editAction()
     {
         $this->dispatch(EasyAdminEvents::PRE_EDIT);
 
-        $id = $this->request->query->get('id');
+        $id = $this->request->attributes->get('id');
         $easyadmin = $this->request->attributes->get('easyadmin');
         $entity = $easyadmin['item'];
 
@@ -220,7 +222,7 @@ class AdminController extends Controller
 
             return !empty($refererUrl)
                 ? $this->redirect(urldecode($refererUrl))
-                : $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->entity['name'])));
+                : $this->redirect($this->getUrlGenerator()->generate($this->entity['name'], 'list'));
         }
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
@@ -242,7 +244,7 @@ class AdminController extends Controller
     {
         $this->dispatch(EasyAdminEvents::PRE_SHOW);
 
-        $id = $this->request->query->get('id');
+        $id = $this->request->attributes->get('id');
         $easyadmin = $this->request->attributes->get('easyadmin');
         $entity = $easyadmin['item'];
 
@@ -296,7 +298,7 @@ class AdminController extends Controller
 
             return !empty($refererUrl)
                 ? $this->redirect(urldecode($refererUrl))
-                : $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->entity['name'])));
+                : $this->redirect($this->getUrlGenerator()->generate($this->entity['name'], 'list'));
         }
 
         $this->dispatch(EasyAdminEvents::POST_NEW, array(
@@ -323,10 +325,10 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_DELETE);
 
         if ('DELETE' !== $this->request->getMethod()) {
-            return $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirect($this->getUrlGenerator()->generate($this->entity['name'], 'list'));
         }
 
-        $id = $this->request->query->get('id');
+        $id = $this->request->attributes->get('id');
         $form = $this->createDeleteForm($this->entity['name'], $id);
         $form->handleRequest($this->request);
 
@@ -350,7 +352,7 @@ class AdminController extends Controller
 
         return !empty($refererUrl)
             ? $this->redirect(urldecode($refererUrl))
-            : $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            : $this->redirect($this->getUrlGenerator()->generate($this->entity['name'], 'list'));
     }
 
     /**
@@ -384,6 +386,8 @@ class AdminController extends Controller
      * @param mixed  $entity   The instance of the entity to modify
      * @param string $property The name of the property to change
      * @param bool   $value    The new value of the property
+     *
+     * @throws \Exception
      */
     private function updateEntityProperty($entity, $property, $value)
     {
@@ -693,7 +697,7 @@ class AdminController extends Controller
     {
         /** @var FormBuilder $formBuilder */
         $formBuilder = $this->get('form.factory')->createNamedBuilder('delete_form')
-            ->setAction($this->generateUrl('easyadmin', array('action' => 'delete', 'entity' => $entityName, 'id' => $entityId)))
+            ->setAction($this->getUrlGenerator()->generate($entityName, 'delete', array('id' => $entityId)))
             ->setMethod('DELETE')
         ;
 
@@ -729,6 +733,11 @@ class AdminController extends Controller
     protected function renderForbiddenActionError($action)
     {
         return $this->render('@EasyAdmin/error/forbidden_action.html.twig', array('action' => $action), new Response('', 403));
+    }
+
+    protected function getUrlGenerator()
+    {
+        return $this->get('easyadmin.routing.generator');
     }
 
     /**
@@ -787,9 +796,13 @@ class AdminController extends Controller
     {
         $homepageConfig = $this->config['homepage'];
 
-        $url = isset($homepageConfig['url'])
-            ? $homepageConfig['url']
-            : $this->get('router')->generate($homepageConfig['route'], $homepageConfig['params']);
+        if (isset($homepageConfig['entity'])) {
+            $url = $this->getUrlGenerator()->generate($homepageConfig['entity'], $homepageConfig['action'], $homepageConfig['params']);
+        } elseif (isset($homepageConfig['route'])) {
+            $url = $this->get('router')->generate($homepageConfig['route'], $homepageConfig['params']);
+        } else {
+            $url = $homepageConfig['url'];
+        }
 
         return $this->redirect($url);
     }

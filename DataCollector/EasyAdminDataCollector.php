@@ -37,7 +37,7 @@ class EasyAdminDataCollector extends DataCollector
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         $backendConfiguration = $this->configurator->getBackendConfig();
-        $entityName = $request->query->get('entity', null);
+        $entityName = $request->attributes->get('entity', null);
         $currentEntityConfiguration = array_key_exists($entityName, $backendConfiguration['entities']) ? $backendConfiguration['entities'][$entityName] : array();
 
         $this->data = array(
@@ -56,9 +56,9 @@ class EasyAdminDataCollector extends DataCollector
         }
 
         return array(
-            'action' => $request->query->get('action'),
-            'entity' => $request->query->get('entity'),
-            'id' => $request->query->get('id'),
+            'action' => $request->attributes->get('action'),
+            'entity' => $request->attributes->get('entity'),
+            'id' => $request->attributes->get('id'),
             'sort_field' => $request->query->get('sortField'),
             'sort_direction' => $request->query->get('sortDirection'),
         );

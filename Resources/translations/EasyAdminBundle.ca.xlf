@@ -61,7 +61,7 @@
             <!-- labels -->
             <trans-unit id="label.true">
                 <source>label.true</source>
-                <target>Si</target>
+                <target>Sí</target>
             </trans-unit>
             <trans-unit id="label.false">
                 <source>label.false</source>
@@ -77,7 +77,7 @@
             </trans-unit>
             <trans-unit id="label.nullable_field">
                 <source>label.nullable_field</source>
-                <target>Deixar vacío</target>
+                <target>Deixar buit</target>
             </trans-unit>
             <trans-unit id="label.object">
                 <source>label.object</source>
@@ -89,19 +89,19 @@
             </trans-unit>
             <trans-unit id="label.inaccessible.explanation">
                 <source>label.inaccessible.explanation</source>
-                <target>Aquest camp no té un mètode getter o la propietat associada no és pública</target>
+                <target>Aquest camp no té un mètode "getter" o la propietat associada no és pública</target>
             </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">
                 <source>user.logged_in_as</source>
-                <target>Connectat com</target>
+                <target>Connectat com a</target>
             </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>Realment vols borrar aquest element?</target>
+                <target>Realment vols esborrar aquest element?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
@@ -109,7 +109,7 @@
             </trans-unit>
             <trans-unit id="delete_modal.action">
                 <source>delete_modal.action</source>
-                <target>Borrar</target>
+                <target>Esborrar</target>
             </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
@@ -117,7 +117,7 @@
             </trans-unit>
             <trans-unit id="action.add_another_item">
                 <source>action.add_another_item</source>
-                <target>Afegir altre element</target>
+                <target>Afegir un altre element</target>
             </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>

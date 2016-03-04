@@ -610,7 +610,7 @@ button.btn:active {
     padding-top: 40px;
 }
 
-.sidebar-menu > li.header {
+.sidebar-menu li.header {
 {% if 'dark' == color_scheme %}
     color: {{ colors.white }};
 {% elseif 'light' == color_scheme %}
@@ -620,6 +620,9 @@ button.btn:active {
     font-weight: bold;
     opacity: 0.4;
     text-transform: uppercase;
+}
+.treeview-menu > li.header {
+    padding-left: 28px;
 }
 
 .sidebar-menu > li > a,

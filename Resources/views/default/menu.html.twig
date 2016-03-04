@@ -1,5 +1,5 @@
 {% macro render_menu_item(item) %}
-    {% if item.type == 'empty' and item.children is empty %}
+    {% if item.type == 'empty' and (item.children is not defined or item.children is empty) %}
         <li class="header">{{ item.label|trans }}</li>
     {% else %}
         {% set menu_params = { menuIndex: item.menu_index, submenuIndex: item.submenu_index } %}

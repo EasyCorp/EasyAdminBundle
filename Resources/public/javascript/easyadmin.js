@@ -42,10 +42,10 @@ function toggleNavigation(collapsed) {
 
 function createPersistentCookie(name, value)
 {
-    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + "; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT";
 }
 
 function deleteCookie(name)
 {
-    document.cookie = encodeURIComponent(name) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = encodeURIComponent(name) + "=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 }

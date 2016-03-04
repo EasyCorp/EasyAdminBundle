@@ -126,4 +126,33 @@ The only required option in this configuration format is called `class` and
 defines the fully qualified class name of the Doctrine entity managed by the
 backend.
 
+Views and Actions
+-----------------
 
+EasyAdmin backends consist of **views** and **actions**. The **view** is the
+page where you are (`list`, `edit`, `show`, etc.) and the **action** is what
+you do on that page (`search`, `delete`, etc.)
+
+There are five different **views** defined for each entity: `edit`, `list`,
+`new`, `search` and `show`. The `list` view is mandatory for all entities, but
+the rest of the views can be disabled if needed.
+
+Each view can include one or more **actions** to perform operations on the
+items displayed in that view. For example, the default `list` view interface
+includes four actions as buttons or links:
+
+![List view interface](../images/easyadmin-list-view-actions.png)
+
+These are the built-in actions included by default in each view:
+
+| View   | Actions
+| ------ | -----------------------------------------
+| `list` | `delete`, `edit`, `new`, `search`
+| `edit` | `delete`, `list`
+| `new`  | `list`
+| `show` | `delete`, `edit`, `list`
+
+Built-in actions can be enabled/disabled and fully customized. Moreover, you
+can [create your own actions][1] to perform tasks in the backend.
+
+[1]: ../tutorials/customizing-backend-actions.md

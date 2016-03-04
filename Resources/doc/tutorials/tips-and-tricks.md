@@ -58,7 +58,7 @@ class AdminController extends BaseAdminController
     public function indexAction(Request $request)
     {
         // if the URL doesn't include the entity name, this is the index page
-        if (null === $request->query->get('entity')) {
+        if (null === $request->attributes->get('entity')) {
             // define this route in any of your own controllers
             return $this->redirectToRoute('admin_dashboard');
         }

@@ -13,7 +13,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use JavierEguiluz\Bundle\EasyAdminBundle\Routing\Generator\UrlGenerator;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Defines the filters and functions used to render the bundle's templates.
@@ -24,11 +26,13 @@ class EasyAdminTwigExtension extends \Twig_Extension
 {
     private $configurator;
     private $accessor;
+    private $generator;
     private $debug;
 
-    public function __construct(Configurator $configurator, PropertyAccessor $accessor, $debug = false)
+    public function __construct(Configurator $configurator, UrlGenerator $generator, PropertyAccessor $accessor, $debug = false)
     {
         $this->configurator = $configurator;
+        $this->generator = $generator;
         $this->accessor = $accessor;
         $this->debug = $debug;
     }
@@ -44,6 +48,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             new \Twig_SimpleFunction('easyadmin_get_action', array($this, 'getActionConfiguration')),
             new \Twig_SimpleFunction('easyadmin_get_action_for_*_view', array($this, 'getActionConfiguration')),
             new \Twig_SimpleFunction('easyadmin_get_actions_for_*_item', array($this, 'getActionsForItem')),
+            new \Twig_SimpleFunction('easyadmin_path', array($this, 'getPath')),
         );
     }
 
@@ -259,6 +264,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
         return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
             return !in_array($action['name'], $excludedActions) && !in_array($action['name'], $disabledActions);
         });
+    }
+
+    public function getPath($entity, $action, array $parameters = array(), $relative = false)
+    {
+        return $this->generator->generate($entity, $action, $parameters, $relative ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_PATH);
     }
 
     /*

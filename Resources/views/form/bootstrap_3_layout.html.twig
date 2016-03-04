@@ -430,6 +430,7 @@
                         {% set _request_parameters = { entity: easyadmin.entity.name, referer: app.request.query.get('referer') } %}
 
                         {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+                            entity: easyadmin.entity.name,
                             actions: _entity_actions,
                             request_parameters: _request_parameters,
                             trans_parameters: _trans_parameters,

@@ -156,3 +156,8 @@ Built-in actions can be enabled/disabled and fully customized. Moreover, you
 can [create your own actions][1] to perform tasks in the backend.
 
 [1]: ../tutorials/customizing-backend-actions.md
+
+
+explain admin controller
+explain that we only define 1 route for everything
+mention events

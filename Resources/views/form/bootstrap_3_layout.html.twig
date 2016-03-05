@@ -6,7 +6,7 @@
 {% block form_start -%}
     {% if 'easyadmin' == block_prefixes|slice(-2)|first %}
         {% set attr = attr|merge({
-            'class': attr.class|default('') ~ ' ' ~ easyadmin.view ~ '-form',
+            'class': attr.class|default('') ~ ' ' ~ easyadmin.view ~ '-form sticky-footer',
             'data-view': easyadmin.view,
             'data-entity': easyadmin.entity.name,
             'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name),
@@ -410,7 +410,7 @@
             </div>
         {% endfor %}
 
-        <div class="col-xs-12">
+        <div class="col-xs-12 sticky-footer">
             <div class="form-group">
                 <div id="form-actions-row">
                     {% block item_actions %}

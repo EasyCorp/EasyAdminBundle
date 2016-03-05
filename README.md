@@ -48,7 +48,7 @@ EasyAdmin.
   * [Chapter 1 - General Configuration](Resources/doc/book/1-general-configuration.md)
   * [Chapter 2 - Design Configuration](Resources/doc/book/2-design-configuration.md)
   * [Chapter 3 - List, Search and Show Views Configuration](Resources/doc/book/3-list-search-show-configuration.md)
-  * [Chapter 4 - New and Edit Views Configuration](Resources/doc/book/4-new-edit-configuration.md)
+  * [Chapter 4 - NEdit and New Views Configuration](Resources/doc/book/4-edit-new-configuration.md)
   * [Chapter 5 - Actions Configuration](Resources/doc/book/5-actions-configuration.md)
   * [Chapter 6 - Menu Configuration](Resources/doc/book/6-menu-configuration.md)
   * [Chapter 7 - About this Project](Resources/doc/book/7-about.md)

@@ -1,8 +1,10 @@
 Chapter 3. List, Search and Show Views Configuration
 ====================================================
 
-This chaper explains all the configuration options available for the `list`,
-`search` and `show` views.
+This chaper explains how to customize the `list`, `search` and `show` views.
+You'll learn all their configuration options, how to override or tweak their
+templates and how to completely override their behavior with custom controllers
+and Symfony events.
 
 List, Search and Show Views
 ---------------------------
@@ -46,7 +48,7 @@ easy_admin:
         # ...
 ```
 
-The `title` content can include the following special variables:
+The `title` option can include the following special variables:
 
   * `%entity_label%`, resolves to the value defined in the `label` option of
     the entity. If you haven't defined it, this value will be equal to the
@@ -54,10 +56,10 @@ The `title` content can include the following special variables:
   * `%entity_name%`, resolves to the entity name, which is the YAML key used
     to configure the entity in the backend configuration file. In the example
     above, this value would be `Customer`.
-  * `%entity_id%`, resolves to the value of the primary key of the entity being
-    edited or showed. This variable is only available for the `show` view. Even
-    if the option is called `entity_id`, it also works for primary keys with
-    names different from `id`.
+  * `%entity_id%`, it's only available for the `show` view and it resolves to
+    the value of the primary key of the entity being showed. Even if the option
+    is called `entity_id`, it also works for primary keys with names different
+    from `id`.
 
 Beware that, in Symfony applications, YAML values enclosed with `%` and `%` have
 a special meaning (they are considered container parameters). Escape these
@@ -163,10 +165,8 @@ easy_admin:
 These are the options that you can define for each field:
 
   * `property` (mandatory): the name of the Doctrine property which you want to
-    display. Properties can be real (they exist as Doctrine properties) or
-    "virtual" (they just define getter/setter methods, as explained later). The
-    `property` option is the only mandatory option when using the extended
-    field configuration format.
+    display. The `property` option is the only mandatory option when using the
+    extended field configuration format.
   * `label` (optional): the title displayed for the property. The default
     title is the "humanized" version of the property name (e.g. 'fieldName' is
     transformed into 'Field name').
@@ -185,6 +185,11 @@ The `show` view defines another two options:
 
   * `help` (optional): the help message displayed below the field.
   * `css_class` (optional): the CSS class applied to the field container element.
+
+> In addition to these options defined by EasyAdmin, you can define any custom
+> option for the fields. This way you can create very powerful backend
+> customizations, as explained in the
+> [How to Define Custom Options for Entity Properties][1] tutorial.
 
 Virtual Properties
 ------------------
@@ -387,16 +392,14 @@ render them.
 
 ### Default Templates
 
-EasyAdmin uses the following seven Twig templates to create its interface:
+EasyAdmin defines seven Twig templates to create its interface. These are the
+four templates related to `list`, `search` and `show` views:
 
   * `layout`, the common layout that decorates the `list`, `edit`, `new` and
     `show` templates;
-  * `new`, renders the page where new entities are created;
   * `show`, renders the contents stored by a given entity;
-  * `edit`, renders the page where entity contents are edited;
   * `list`, renders the entity listings and the search results page;
-  * `paginator`, renders the paginator of the `list` view;
-  * `form`, renders the form of the `new` and `edit` views.
+  * `paginator`, renders the paginator of the `list` view.
 
 Depending on your needs you can override these templates in different ways.
 
@@ -672,7 +675,7 @@ In the previous sections you've learned how to override or tweak the templates
 associated with each view or property. This is the most common way to customize
 backends because it's simple yet powerful. However, EasyAdmin provides a more
 advanced customization mechanism based on PHP to customize the behavior of the
-views.
+actions.
 
 Depending on your needs you can choose any of these two customization options
 (or combine both, if your backend is very complex):
@@ -804,7 +807,7 @@ The two events related to this `initialize()` method are:
   * `POST_INITIALIZE`, executed at the very end of the method, just before
     executing the method associated with the current action.
 
-### Views related events
+#### Views related events
 
 Each view defines two events which are dispatched respectively at the very
 beginning of each method and at the very end of it, just before executing the
@@ -814,10 +817,10 @@ beginning of each method and at the very end of it, just before executing the
   * `PRE_SEARCH`, `POST_SEARCH`
   * `PRE_SHOW`, `POST_SHOW`
 
-### The Event Object
+#### The Event Object
 
 Event listeners and subscribers receive an event object based on the
-[GenericEvent class][1] defined by Symfony. The subject of the
+[GenericEvent class][2] defined by Symfony. The subject of the
 event depends on the current action:
 
   * `show` action receives the current `$entity` object (this object is also
@@ -831,4 +834,5 @@ In addition, the event arguments contain all the action method variables. You
 can access to them through the `getArgument()` method or via the array access
 provided by the `GenericEvent` class.
 
-[1]: http://symfony.com/doc/current/components/event_dispatcher/generic_event.html
+[1]: ../tutorials/custom-property-options.md
+[2]: http://symfony.com/doc/current/components/event_dispatcher/generic_event.html

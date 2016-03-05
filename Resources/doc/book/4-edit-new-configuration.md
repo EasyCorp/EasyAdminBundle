@@ -752,5 +752,49 @@ In addition, the event arguments contain all the action method variables. You
 can access to them through the `getArgument()` method or via the array access
 provided by the `GenericEvent` class.
 
+#### Event Subscriber Example
+
+The following example shows how to use an event subscriber to set the `slug`
+property of the `BlogPost` entity before persisting it:
+
+```php
+namespace AppBundle\EventListener;
+
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
+use AppBundle\Entity\BlogPost;
+
+class EasyAdminSubscriber implements EventSubscriberInterface
+{
+    private $slugger;
+
+    public function __construct($slugger)
+    {
+        $this->slugger = $slugger;
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            'easy_admin.pre_persist' => array('setBlogPostSlug'),
+        );
+    }
+
+    public function setBlogPostSlug(GenericEvent $event)
+    {
+        $entity = $event->getSubject();
+
+        if (!($entity instanceof BlogPost)) {
+            return;
+        }
+
+        $slug = $this->slugger->slugify($entity->getTitle());
+        $entity->setSlug($slug);
+
+        $event['entity'] = $entity;
+    }
+}
+```
+
 [1]: http://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 [2]: http://symfony.com/doc/current/components/event_dispatcher/generic_event.html

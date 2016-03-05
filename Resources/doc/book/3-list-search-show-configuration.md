@@ -665,10 +665,170 @@ easy_admin:
 Custom templates receive the same parameters as built-in templates
 (`field_options`, `item`, `value` and `view`).
 
-Customizing the Controllers
----------------------------
+Customizing the Behavior of `list`, `search` and `show` Views
+-------------------------------------------------------------
 
-### Custom Admin Controller
+In the previous sections you've learned how to override or tweak the templates
+associated with each view or property. This is the most common way to customize
+backends because it's simple yet powerful. However, EasyAdmin provides a more
+advanced customization mechanism based on PHP to customize the behavior of the
+views.
 
-### Events
+Depending on your needs you can choose any of these two customization options
+(or combine both, if your backend is very complex):
 
+  * Customization based on **controller methods**, which is easy to set up but
+    requires you to put all the customization code in a single controller which
+    extends from the default `AdminController` provided by EasyAdmin.
+  * Customization based on **Symfony events**, which is hader to set up but
+    allows you define the customization code anywhere in your application.
+
+### Customization Based on Controller Methods
+
+This technique requires you to create a new controller in your Symfony
+application and make it extend from the default `AdminController`. Then you
+just add one or more methods in your controller to override the default ones.
+
+The first step is to **create a new controller** anywhere in your Symfony
+application. Its class name or namespace doesn't matter as long as it extends
+the default `AdminController`:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+
+class AdminController extends BaseAdminController
+{
+}
+```
+
+Then you must **update the routing configuration** to associate the `easyadmin`
+route to the new controller. Open the `app/config/routing.yml` file and change
+the `resource` option of the `easy_admin_bundle` route:
+
+```yaml
+# app/config/routing.yml
+easy_admin_bundle:
+    # resource: "@EasyAdminBundle/Controller/"           <-- REMOVE this line
+    resource: "@AppBundle/Controller/AdminController.php" # <-- ADD this line
+    type:     annotation
+    prefix:   /admin
+```
+
+Save the changes and the backend will start using your own controller. Keep
+reading the practical examples of the next sections to learn which methods you
+can override in the controller.
+
+#### Tweak the Default Actions for All Entities
+
+This use case is only useful for very complex backends which need to override
+the entire behavior of some default action. Define a method with the same name
+of the view which you want to override (`list`, `search` or `show`):
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+
+class AdminController extends BaseAdminController
+{
+    public function listAction()   { ... }
+    public function searchAction() { ... }
+    public function showAction()   { ... }
+}
+```
+
+Take a look at the code of these methods in the original `AdminController` or
+extend from them to make your work easier.
+
+#### Tweak the Default Actions for a Specific Entity
+
+Before executing the general methods (`listAction()`, `showAction()`, etc.), the
+controller looks for the existence of methods created for the current entity. In
+particular, this is the syntax used to name these specific methods:
+
+```php
+public function list<EntityName>Action()   { ... }
+public function search<EntityName>Action() { ... }
+public function show<EntityName>Action()   { ... }
+```
+
+> **TIP**
+>
+> Given the syntax of method names, it's recommended to use CamelCase notation
+> to set the entity names.
+
+Suppose that you want to customize the behavior of the `list` view just for the
+`Product` entity. Instead of overriding the general `listAction()` method and
+checking for the right entity, is easier to define this method in your
+controller:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+
+class AdminController extends BaseAdminController
+{
+    public function listProductAction()
+    {
+        // ...
+    }
+}
+```
+
+### Customization Based on Symfony Events
+
+Lots of events are triggered during the execution of each backend action. Use
+Symfony's event listeners or event subscribers and hook to these events to
+modify the behavior of your backend.
+
+EasyAdmin events are defined in the `EasyAdmin\Event\EasyAdminEvents` class
+and these are the most relevant events for `list`, `search` and `show` views.
+
+#### Initialization related events
+
+The `initialize()` method is executed before any other action method
+(`listAction()`, etc.) It checks for some common errors and initializes the
+variables used by the rest of the methods (`$entity`, `$request`, `$config`,
+etc.)
+
+The two events related to this `initialize()` method are:
+
+  * `PRE_INITIALIZE`, executed just at the beginning of the method, before any
+    variable has been initialized and any error checked.
+  * `POST_INITIALIZE`, executed at the very end of the method, just before
+    executing the method associated with the current action.
+
+### Views related events
+
+Each view defines two events which are dispatched respectively at the very
+beginning of each method and at the very end of it, just before executing the
+`$this->render()` instruction:
+
+  * `PRE_LIST`, `POST_LIST`
+  * `PRE_SEARCH`, `POST_SEARCH`
+  * `PRE_SHOW`, `POST_SHOW`
+
+### The Event Object
+
+Event listeners and subscribers receive an event object based on the
+[GenericEvent class][1] defined by Symfony. The subject of the
+event depends on the current action:
+
+  * `show` action receives the current `$entity` object (this object is also
+    available in the event arguments as `$event['entity']`).
+  * `list` and `search` actions receive the `$paginator` object which contains
+    the collection of entities that meet the criteria of the current listing
+    (this object is also available in the event arguments as
+    `$event['paginator']`).
+
+In addition, the event arguments contain all the action method variables. You
+can access to them through the `getArgument()` method or via the array access
+provided by the `GenericEvent` class.
+
+[1]: http://symfony.com/doc/current/components/event_dispatcher/generic_event.html

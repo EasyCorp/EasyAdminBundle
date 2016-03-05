@@ -16,14 +16,3 @@ easy_admin:
             label: 'Pending Orders'
             class: AppBundle\Entity\Order
 ```
-
-
-
-
-      * `image`, displays inline images in the `list`, `search` and `show` views
-        (as explained later in this chapter).
-      * `toggle`, displays a boolean value as a flip switch in the `list` and
-        `search` views (as explained later in this chapter).
-      * `raw`, displays the value unescaped (using the `raw` Twig filter), which
-        is useful when the content stores HTML code that must be rendered
-        instead of displayed as HTML tags (as explained later in this chapter).

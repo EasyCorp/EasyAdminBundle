@@ -72,12 +72,13 @@ EasyAdmin.
 
 #### Tutorials
 
-  * [How to Translate the Backend](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/i18n.md)
-  * [How to Define Custom Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/custom-actions.md)
-  * [How to Use a WYSIWYG Editor](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/wysiwyg-editor.md)
-  * [How to Upload Files and Images](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/upload-files-and-images.md)
-  * [How to Manage Configuration for Complex Backends](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/complex-backend-config.md)
-  * [Tips and Tricks](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/tips-and-tricks.md)
+  * [How to Translate the Backend](Resources/doc/tutorials/i18n.md)
+  * [How to Define Custom Actions](Resources/doc/tutorials/custom-actions.md)
+  * [How to Define Custom Options for Entity Properties](Resources/doc/tutorials/custom-property-options.md)
+  * [How to Use a WYSIWYG Editor](Resources/doc/tutorials/wysiwyg-editor.md)
+  * [How to Upload Files and Images](Resources/doc/tutorials/upload-files-and-images.md)
+  * [How to Manage Configuration for Complex Backends](Resources/doc/tutorials/complex-backend-config.md)
+  * [Tips and Tricks](Resources/doc/tutorials/tips-and-tricks.md)
 
 > **❮ NOTE ❯** you are reading the documentation of the bundle's **development**
 > version. You can also [read the documentation of the latest stable version ➜]

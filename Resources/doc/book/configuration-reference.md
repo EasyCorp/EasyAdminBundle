@@ -4,9 +4,7 @@ Configuration Reference
 Simplest Backend Configuration
 ------------------------------
 
-Useful only for creating backend prototypes in a few seconds (just define the
-`entities` option and list the fully qualified class names of the entities to
-manage):
+Useful only for creating backend prototypes in a few seconds:
 
 ```yaml
 easy_admin:
@@ -199,16 +197,8 @@ to create a backend that matches your branding perfectly. Example:
 easy_admin:
     design:
         color_scheme: '#3B5998'
-    # ...
-```
-
-This value can be define using any valid CSS expression to define a color, so
-you can even use semi-transparent colors. Example:
-
-```yaml
-easy_admin:
-    design:
-        color_scheme: 'rgba(59, 89, 152, 0.5)'
+        # any valid CSS color syntax can be used
+        # color_scheme: 'rgba(59, 89, 152, 0.5)'
     # ...
 ```
 
@@ -305,12 +295,6 @@ you must override the `<head>` part of the layout template using a custom templa
 
 (**default value**: none, **type**: strings, **values**: any valid Twig template path)
 
-> **NOTE**
-> This option is too advanced for most backends. Don't use it unless you are
-> customizing most of the backend templates. If you need to customize just one
-> fragment of the layout or the way some field is displayed, use the method
-> explained in: [Advanced Design Customization](advanced-design-customization.md)
-
 This option allows to redefine the template used to render each backend element,
 from the global layout to the micro-templates used to render each form field type.
 For example, to use your own template to display the properties of type `boolean`
@@ -324,7 +308,7 @@ easy_admin:
     # ...
 ```
 
-Similarly, to customize the entire backend layout (used to render all pages) just
+Similarly, to customize the entire backend layout (used to render all pages)
 redefine the `layout` template:
 
 ```yaml

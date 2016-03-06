@@ -54,9 +54,6 @@ EasyAdmin.
   * [Chapter 7 - About this Project](Resources/doc/book/7-about.md)
   * [Appendix - Full Configuration Reference](Resources/doc/book/configuration-reference.md)
 
-  * [How to Format Dates and Numbers](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/format-date-number.md)
-
-
 #### Tutorials
 
   * [How to Translate the Backend](Resources/doc/tutorials/i18n.md)

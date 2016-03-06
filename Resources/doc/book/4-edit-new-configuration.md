@@ -274,6 +274,48 @@ easy_admin:
 Read the [Symfony Form type reference](http://symfony.com/doc/current/reference/forms/types.html)
 to learn about all the available options, their usage and allowed values.
 
+Formatting Dates and Numbers
+----------------------------
+
+### Customizing Date and Time Properties
+
+Unlike the `list`, `search` and `show` views, there are no configuration options
+to define the date/time format for `edit` and `new` form fields. You must use
+instead the options defined by Symfony's `DateTimeType`, `DateType` and
+`TimeType`.
+
+For example, to display your dates as a single `<input>` text element, define
+the `date_widget` form field option (commonly used together with `date_format`):
+
+```yaml
+easy_admin:
+    entities:
+        Event:
+            edit:
+                fields:
+                    - { property: 'startsAt', type_options: { date_widget: 'single_text' } }
+                    # ...
+```
+
+### Customizing Numeric Properties
+
+Similarly, there are no configuration options to define the formatting of the
+numeric values for `edit` and `new` views. You must user instead the options
+defined by Symfony's `NumberType`, `IntegerType`, `MoneyType` and `PercentType`.
+
+For example, to display a numeric property which stores some price, you can
+define the `currency` option of the `MoneyType` form type:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            edit:
+                fields:
+                    - { property: 'price', type: 'money', type_options: { currency: 'EUR' } }
+                    # ...
+```
+
 Custom Doctrine Types
 ---------------------
 

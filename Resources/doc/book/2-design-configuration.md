@@ -26,7 +26,7 @@ easy_admin:
 
 ![Using a custom brand color in the backend](../images/easyadmin-design-brand-color.png)
 
-The value of the `brand_color` option can use any of the valid CSS color syntaxes:
+The value of the `brand_color` option can use any of the valid CSS color formats:
 
 ```yaml
 easy_admin:
@@ -146,4 +146,4 @@ easy_admin:
 
 -------------------------------------------------------------------------------
 
-&larr; [Chapter 4. Views and Actions](4-views-and-actions.md)  |  [Chapter 6. About this project](6-about-this-project.md) &rarr;
+&larr; [Chapter 1. General Configuration](1-general-configuration.md)  |  [Chapter 3. List, Search and Show Views Configuration](2-list-search-show-configuration.md) &rarr;

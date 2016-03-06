@@ -1,5 +1,5 @@
-Menu Configuration
-==================
+Chapter 6. Menu Configuration
+=============================
 
 The main menu of the backend is created automatically based on the entities
 configuration. The default menu contains a list of links pointing to the `list`
@@ -261,3 +261,7 @@ easy_admin:
                 - { label: 'Docs', url: 'http://example.com/external-docs' }
                 - { label: %app.version% }
 ```
+
+-------------------------------------------------------------------------------
+
+&larr; [Chapter 5. Actions Configuration](5-actions-configuration.md)  |  [Chapter 7. About this Project](7-about.md) &rarr;

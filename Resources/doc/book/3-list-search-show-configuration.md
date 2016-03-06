@@ -27,14 +27,14 @@ The **Show View** is used when displaying the contents of any entity:
 General Configuration
 ---------------------
 
-This section explains the configuration options that can be applied to `list`,
-`search` and `show` views. The examples use the `list` view, but you can replace
-it by `search` or `show`.
+In order to make examples more concise, this section only shows the
+configuration for the `list` view, but you can apply the same options to the
+other `search` and `show` views.
 
 ### Customize the Title of the Page
 
-By default, page titles just display the name of the entity. Define the `title`
-option to set a custom page title:
+Page titles display by default the name of the entity. Define the `title` option
+to set a custom page title:
 
 ```yaml
 # app/config/config.yml
@@ -76,7 +76,7 @@ easy_admin:
         # ...
 ```
 
-### Customize the Number of Item Rows Displayed
+### Customize the Number of Rows Displayed
 
 By default, listings in the `list` and `search` display a maximum of 15 rows.
 Define the `max_results` option under the global `list` key to change this value:
@@ -119,13 +119,9 @@ properties except those with special data types, such as `binary`, `blob`,
 Customize the Properties Appearance
 -----------------------------------
 
-Properties are displayed by default with the most appropriate appearance
-according to their data types. Besides, their labels are generated automatically
-based on their property name (e.g. if the property name is `published`, the
-label will be `Published` and if the name is `dateOfBirth`, the label will be
-`Date of birth`).
-
-In order to customize the appearance of the properties, use the following
+When entity properties are not configured explicitly, the backend makes some
+smart guesses to display them with the most appropriate appearance according to
+their data types. If you prefer to control their appearance, start by using the
 extended field configuration:
 
 ```yaml
@@ -139,14 +135,13 @@ easy_admin:
     # ...
 ```
 
-Instead of using a string to define the name of the property (e.g. `email`) you
-have to define a hash with the name of the property (`property: 'email'`) and
-the custom label you want to display (`label: 'Contact'`).
+Instead of using a string to define the name of the property (e.g. `'email'`)
+you have to define a hash with the name of the property (`{ property: 'email'
+}`) and the options you want to define for it (`{ ..., label: 'Contact' }`).
 
-If your view contains lots of properties and most of them define their own
-custom label, consider using the alternative YAML syntax for sequences to
-improve the legibility of your backend configuration. The following example is
-equivalent to the above example:
+If your entity contains lots of properties, consider using the alternative YAML
+syntax for sequences to improve the legibility of your backend configuration.
+The following example is equivalent to the above example:
 
 ```yaml
 # app/config/config.yml
@@ -164,12 +159,12 @@ easy_admin:
 
 These are the options that you can define for each field:
 
-  * `property` (mandatory): the name of the Doctrine property which you want to
+  * `property` (mandatory): the name of the entity property which you want to
     display. The `property` option is the only mandatory option when using the
     extended field configuration format.
   * `label` (optional): the title displayed for the property. The default
-    title is the "humanized" version of the property name (e.g. 'fieldName' is
-    transformed into 'Field name').
+    title is the "humanized" version of the property name (e.g. `published` is
+    displayed as `Published` and `dateOfBirth` as `Date of birth`).
   * `template` (optional): the name of the custom template used to render the
     contents of the field. This option is fully explained later in this chapter.
   * `type` (optional): the type of data displayed. This allows to select the
@@ -181,11 +176,13 @@ These are the options that you can define for each field:
     * Any of the custom EasyAdmin types: `image`, `toggle`, `raw` (they are
       explained later in this chapter).
 
-The `show` view defines another two options:
+The fields of the `show` view define another two options:
 
-  * `help` (optional): the help message displayed below the field.
+  * `help` (optional): the help message displayed below the field contents.
   * `css_class` (optional): the CSS class applied to the field container element.
 
+> **TIP**
+>
 > In addition to these options defined by EasyAdmin, you can define any custom
 > option for the fields. This way you can create very powerful backend
 > customizations, as explained in the
@@ -196,9 +193,9 @@ Virtual Properties
 
 Sometimes, it's useful to display values which are not entity properties. For
 example, if your `Customer` entity defines the `firstName` and `lastName`
-properties, you may want to just display a column called `Name` with both
-values merged. These are called *virtual properties* because they don't really
-exist as Doctrine entity properties.
+properties, you may want to display a column called `Name` with both values
+merged. These are called *virtual properties* because they don't really exist as
+Doctrine entity properties.
 
 First add the virtual property to the entity configuration as any other property:
 
@@ -258,12 +255,16 @@ easy_admin:
 The main limitation of virtual properties is that you cannot sort listings
 using these fields.
 
-Custom Field Data Types
------------------------
+EasyAdmin Data Types
+--------------------
+
+In addition to the Doctrine data types, properties can use any of the following
+data types defined by EasyAdmin.
 
 ### Toogle and Boolean Data Types
 
-If an entity is editable, the `list` view displays its boolean properties as
+If an entity is editable, the `list` view applies the `type: 'toggle'` option to
+all the boolean properties. This data type makes these properties be rendered as
 "flip switches" that allow to toggle their values very easily:
 
 ![Advanced boolean fields](../images/easyadmin-boolean-field-toggle.gif)
@@ -368,8 +369,8 @@ globally for the entity.
 
 All the string-based data types are escaped before displaying them. For that
 reason, if the property stores HTML content, you'll see the HTML tags instead of
-the rendered HTML content. In case you want to display the rendered content, set
-the type of the property to `raw`:
+the rendered HTML content. In case you want to display the contents unescaped,
+define the `type` option with a `raw` value:
 
 ```yaml
 easy_admin:
@@ -421,9 +422,8 @@ templates used by the backend.
 
 #### Overriding the Default Templates By Configuration
 
-If you prefer to define the custom templates in some specific location of your
-application, it's more convenient to use the `templates` option to define their
-location.
+If you prefer to define your custom templates in some specific location of the
+application, it's more convenient to use the `templates` option.
 
 For example, to override the `paginator` template just for the `Customer` entity,
 create the `paginator.html.twig` template somewhere in your application and then,
@@ -553,8 +553,8 @@ These are all the available templates for each property type:
   * `field_string.html.twig`
   * `field_text.html.twig`
   * `field_time.html.twig`
-  * `field_toggle.html.twig`, related to the special `toggle` type defined by
-    EasyAdmin for boolean properties.
+  * `field_toggle.html.twig`, related to the special `toggle` data type defined
+    by EasyAdmin for boolean properties.
 
 In addition, there are other templates defined to render special labels:
 
@@ -606,7 +606,7 @@ easy_admin:
         templates:
             label_null: 'AppBundle:Invoice:backend/label_null.html.twig'
             # namespace syntax works too:
-            # label_null: '@App/Default/labels/null.html.twig'
+            # label_null: '@App/Invoice/backend/label_null.html.twig'
 ```
 
 Before customizing any of these templates, it's recommended to check out the
@@ -622,7 +622,7 @@ the following variables:
   * `view`, a string with the name of the view where the field is being rendered
     (`show` or `list`).
 
-### Customizing the Template Used to Render Each Property
+### Rendering Entity Properties with Custom Templates
 
 The property templates explained in the previous section are applied to all the
 properties of the same type (strings, dates, arrays, etc.) However, when your
@@ -675,7 +675,7 @@ In the previous sections you've learned how to override or tweak the templates
 associated with each view or property. This is the most common way to customize
 backends because it's simple yet powerful. However, EasyAdmin provides a more
 advanced customization mechanism based on PHP to customize the behavior of the
-actions.
+backend.
 
 Depending on your needs you can choose any of these two customization options
 (or combine both, if your backend is very complex):
@@ -770,11 +770,7 @@ checking for the right entity, is easier to define this method in your
 controller:
 
 ```php
-// src/AppBundle/Controller/AdminController.php
-namespace AppBundle\Controller;
-
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
-
+// ...
 class AdminController extends BaseAdminController
 {
     public function listProductAction()
@@ -833,6 +829,10 @@ event depends on the current action:
 In addition, the event arguments contain all the action method variables. You
 can access to them through the `getArgument()` method or via the array access
 provided by the `GenericEvent` class.
+
+-------------------------------------------------------------------------------
+
+&larr; [Chapter 2. Design Configuration](2-design-configuration.md)  |  [Chapter 4. Edit and New Views Configuration](4-edit-new-configuration.md) &rarr;
 
 [1]: ../tutorials/custom-property-options.md
 [2]: http://symfony.com/doc/current/components/event_dispatcher/generic_event.html

@@ -10,7 +10,7 @@ Disable Actions for Some or All Entities
 
 Use the `disabled_actions` option to disable any action globally or just for
 some entity. For example, to disable the `show` action for all entities, define
-the following:
+the following configuration:
 
 ```yaml
 easy_admin:
@@ -51,12 +51,18 @@ The `User` entity will have both the `new` and the `show` actions disabled.
 Configure the Actions Displayed in Each View
 --------------------------------------------
 
-Sometimes you don't want to disable an action entirely but you prefer to hide it
-from the backend or from some entity.
+These are the actions showed by default in each view:
+
+| View   | Default Actions
+| ------ | -----------------------------------------
+| `list` | `delete`, `edit`, `list`, `new`, `search`
+| `edit` | `delete`, `list`
+| `new`  | `list`
+| `show` | `delete`, `edit`, `list`
 
 ### Adding Actions Globally
 
-Define the actions to display using the `actions` option of each view:
+Define the actions to display on each backend view using the `actions` option:
 
 ```yaml
 easy_admin:
@@ -68,18 +74,9 @@ easy_admin:
 ```
 
 The value of the `actions` option is merged with the default action
-configuration for each view:
-
-| View   | Default Actions
-| ------ | -----------------------------------------
-| `list` | `delete`, `edit`, `list`, `new`, `search`
-| `edit` | `delete`, `list`
-| `new`  | `list`
-| `show` | `delete`, `edit`, `list`
-
-In the above example, the `edit` view of all entities will include the `list`,
-`delete` and `show` actions (the first two are the default actions and the last
-one is explicitly configured).
+configuration for each view. In the above example, the `edit` view of all
+entities will include the `list`, `delete` and `show` actions (the first two are
+the default actions and the last one is explicitly configured).
 
 ### Removing Actions Globally
 
@@ -96,12 +93,14 @@ easy_admin:
 ```
 
 In the above example, the `edit` view will now include just the `list` and the
-`show` actions because of the following:
+`show` actions because of the following configuration merge:
 
-  * Default actions for `edit` view: `list` and `delete`
-  * Actions added by configuration: `show`
-  * Actions removed by configuration: `delete`
-  * Resulting actions: `list` and `show`
+| Configuration merge                | Actions
+| ---------------------------------- | -------------------------------
+| Default actions                    | `list`, `delete`
+| Actions added by global config     | `show`
+| Actions deleted by global config   | `delete`
+| **Resulting actions for entities** | `list`, `show`
 
 ### Adding Actions Per Entity
 
@@ -211,5 +210,9 @@ Then, define any of the following options to customize the action:
     inside the button used to render the action. You don't have to include the
     `fa-` prefix of the icon name (e.g. to display the icon of a user, don't
     use `fa fa-user` or `fa-user`; just use `user`).
+
+-------------------------------------------------------------------------------
+
+&larr; [Chapter 4. Edit and New Views Configuration](4-edit-new-configuration.md)  |  [Chapter 6. Menu Configuration](6-menu-configuration.md) &rarr;
 
 [1]: ../tutorials/custom-actions.md

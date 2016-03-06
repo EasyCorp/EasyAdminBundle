@@ -60,27 +60,26 @@ easy_admin:
     # ...
 ```
 
+Changing the Homepage of the Backend
+------------------------------------
+
+By default, the homepage of the backend shows the items of the first configured
+entity. Read the [Menu Configuration][1] chapter to learn how to change this
+homepage.
+
 Restricting the Access to the Backend
 -------------------------------------
 
-EasyAdmin doesn't provide any security related feature because it relies on the
-underlying Symfony security mechanism. Read the [Security Chapter][1] of the
-official Symfony documentation to learn how to restrict the access to the
-backend section of your application.
+EasyAdmin relies on the underlying Symfony security mechanism to restrict the
+access to your backend. Read the [Symfony Security documentation][2] to learn
+how to protect the backend URLs.
 
 When accessing a protected backend, EasyAdmin displays the name of user who is
 logged in the application. Otherwise it displays: "Anonymous User".
 
 -------------------------------------------------------------------------------
 
-&larr; [Chapter 2. Your First Backend](2-first-backend.md)  |  [Chapter 4. Views and Actions](4-views-and-actions.md) &rarr;
+[Chapter 2. Design Configuration](2-design-configuration.md) &rarr;
 
-[1]: http://symfony.com/doc/current/book/security.html)
-
-
-
-TODO: ADD THIS
-
-Changing the Backend Index Page -> link to the other chapter
-
-
+[1]: ./6-menu-configuration.md
+[2]: http://symfony.com/doc/current/book/security.html)

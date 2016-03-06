@@ -34,11 +34,11 @@ easy_admin:
     # ...
 ```
 
-Any option defined in the `form` view will be copied into the `new` and
-`edit` views. However, any option defined in the `edit` and `new` view
-overrides the corresponding `form` option. In other words, always use the
-`form` action to define the common configuration, and then use the `new` and
-`edit` views to define just the specific options you want to override:
+Any option defined in the `form` view is copied into the `new` and `edit` views.
+However, any option defined in the `edit` and `new` view overrides the
+corresponding `form` option. In other words, always use the `form` action to
+define the common configuration, and then use the `new` and `edit` views to
+define just the specific options you want to override:
 
 ```yaml
 easy_admin:
@@ -74,14 +74,14 @@ easy_admin:
 General Configuration
 ---------------------
 
-This section explains the configuration options that can be applied to `edit`,
-`form` and `new` views. The examples use the `form` view, but you can replace
-it by `edit` or `new`.
+In order to make examples more concise, this section only shows the
+configuration for the `form` view, but you can apply the same options to the
+other `edit` and `new` views.
 
 ### Customize the Title of the Page
 
-By default, titles just display the name of the entity. Define the `title`
-option to set a custom page title:
+Page titles display by default the name of the entity. Define the `title` option
+to set a custom page title:
 
 ```yaml
 # app/config/config.yml
@@ -170,7 +170,8 @@ $form = $this->createFormBuilder($entity, array(
 -> ...
 ```
 
-If you need to pass custom options to any form, define the `form_options` option under the `edit`, `new` or `form` options:
+If you need to pass custom options to any form, define the `form_options` option
+under the `edit`, `new` or `form` options:
 
 ```yaml
 easy_admin:
@@ -196,14 +197,10 @@ $form = $this->createFormBuilder($entity, array(
 Customize the Form Fields
 -------------------------
 
-By default, properties are displayed with the most appropriate appearance
-according to their types. Besides, their labels are generated automatically
-based on their property name (e.g. if the property name is `published`, the
-label will be `Published` and if the name is `dateOfBirth`, the label will be
-`Date of birth`).
-
-In order to customize the appearance of the properties, use the following
-extended field configuration:
+When form fields are not configured explicitly, the backend makes some smart
+guesses to display them with the most appropriate widget according to their data
+types. If you prefer to control their appearance, start by using the extended
+field configuration:
 
 ```yaml
 # app/config/config.yml
@@ -216,14 +213,13 @@ easy_admin:
     # ...
 ```
 
-Instead of using a string to define the name of the property (e.g. `email`) you
-have to define a hash with the name of the property (`property: 'email'`) and
-the custom label you want to display (`label: 'Contact'`).
+Instead of using a string to define the name of the property (e.g. `'email'`)
+you have to define a hash with the name of the property (`{ property: 'email'
+}`) and the options you want to define for it (`{ ..., label: 'Contact' }`).
 
-If your view contains lots of properties and most of them define their own
-custom label, consider using the alternative YAML syntax for sequences to
-improve the legibility of your backend configuration. The following example is
-equivalent to the above example:
+If your entity contains lots of properties, consider using the alternative YAML
+syntax for sequences to improve the legibility of your backend configuration.
+The following example is equivalent to the above example:
 
 ```yaml
 # app/config/config.yml
@@ -240,25 +236,24 @@ easy_admin:
 
 These are the options that you can define for each field:
 
-  * `property` (mandatory): the name of the Doctrine property which you want to
-    display set (in `new` view) or modify (in `edit` view). This is the only
-    mandatory option when using the extended field configuration format.
-  * `label` (optional): the title displayed for the property. The default
-    title is the "humanized" version of the property name
-    (e.g. 'fieldName' is transformed into 'Field name').
-  * `help` (optional): the help message displayed below the form field in the
-    `edit` and `new` views.
-  * `css_class` (optional): the CSS class applied to the form field widget
-    container element. For example, when using the default Bootstrap based form
-    theme, this value is applied to the `<div>` element which wraps the label,
-    the widget and the error messages of the field.
+  * `property` (mandatory): the name of the entity property which you want to
+    set (in `new` view) or modify (in `edit` view). This is the only mandatory
+    option when using the extended field configuration format.
+  * `label` (optional): the title displayed for the form field. The default
+    title is the "humanized" version of the property name (e.g. `published` is
+    displayed as `Published` and `dateOfBirth` as `Date of birth`).
+  * `help` (optional): the help message displayed below the form field.
+  * `css_class` (optional): the CSS class applied to the HTML element which
+    contains the entire form field. For example, when using the default
+    Bootstrap form theme, this value is applied to the `<div>` element which
+    wraps the label, the widget and the error messages of the field.
   * `type` (optional): the Symfony Form type used to render this field. All the
     [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
     are supported. In Symfony 2.x applications, use the short type name (e.g.
-    `email`) and in Symfony 3.x use the fully qualified class name of the type
+    `email`); in Symfony 3.x use the fully qualified class name of the type
     (e.g. `Symfony\Component\Form\Extension\Core\Type\EmailType`)
-  * `type_options` (optional), a hash which defines the value of any of the
-    options supported by the Symfony Form type associated with the field.
+  * `type_options` (optional), a hash with the options passed to the Symfony
+    Form type associated with the field.
 
 The `type_options` is the most powerful option because it literally comprises
 tens of options suited for each form type:
@@ -283,7 +278,7 @@ Custom Doctrine Types
 ---------------------
 
 When your application defines custom Doctrine DBAL types, you must define a
-related custom form type before using them as form fields. Imagine that your
+custom form type for them before using them as form fields. Imagine that your
 application defines a `UTCDateTime` type to convert the timezone of datetime
 values to UTC before saving them in the database.
 
@@ -317,8 +312,8 @@ Bootstrap 3 CSS framework:
 ![Default horizontal form style](../images/easyadmin-form-horizontal.png)
 
 The style of the forms can be changed application-wide using the `form_theme`
-option inside the `design` configuration section. In fact, the default form
-style is equivalent to using this configuration:
+design option. In fact, the default form style is equivalent to using this
+configuration:
 
 ```yaml
 easy_admin:
@@ -342,8 +337,7 @@ The same form shown previously will now be rendered as follows:
 ![Vertical form style](../images/easyadmin-form-vertical.png)
 
 The `horizontal` and `vertical` values are just nice shortcuts for the two
-built-in form themes. But you can also use your own form themes. Just set the
-full theme path as the value of the `form_theme` option:
+built-in form themes. But you can also use your own form themes:
 
 ```yaml
 easy_admin:
@@ -352,8 +346,8 @@ easy_admin:
     # ...
 ```
 
-You can even pass several form themes in an array to use all of them when
-rendering the backend forms:
+The `form_theme` option even allows to define an array of form themes and all of
+them will be used when rendering the backend forms:
 
 ```yaml
 easy_admin:
@@ -367,9 +361,7 @@ easy_admin:
 ### Multiple-Column Forms
 
 EasyAdmin doesn't support multi-column form layouts. However, you can use the
-`css_class` form field to create these advanced layouts. The `css_class` value
-is applied to the parent `<div>` element which contains the field label, the
-field widget, the field help and the optional field errors:
+`css_class` option of each form field to create these advanced layouts:
 
 ![Multi-column form](../images/easyadmin-form-multi-column.png)
 
@@ -424,8 +416,7 @@ templates used by the backend.
 #### Overriding the Default Templates By Configuration
 
 If you prefer to define the custom templates in some specific location of your
-application, it's more convenient to use the `templates` option to define their
-location.
+application, it's more convenient to use the `templates` option.
 
 For example, to override the `edit` template just for the `Customer` entity,
 create the `edit.html.twig` template somewhere in your application and then,
@@ -505,9 +496,9 @@ of each view. However, this mechanism is somewhat limited for `edit` and `new`
 views because they really depend on the Symfony Form component styling.
 
 Moreover, for form-related views, the most useful customization is to tweak how
-are entities created, persisted or removed. For these cases, EasyAdmin provides
+entities are created, persisted or removed. For these cases, EasyAdmin provides
 a more advanced customization mechanism based on PHP to customize the behavior
-of the actions.
+of the backend.
 
 Depending on your needs you can choose any of these two customization options
 (or combine both, if your backend is very complex):
@@ -558,7 +549,7 @@ can override in the controller.
 
 ### Customize the Instantiation, Persistence and Removal of All Entities
 
-EasyAdmin appliest the simplest possible code when creating, editing, persisting
+EasyAdmin executes the simplest possible code when creating, editing, persisting
 and deleting entities. For example, this is the code used to create new entities
 before passing them to the form displayed by the `new` view:
 
@@ -577,7 +568,7 @@ result in an exception.
 
 For that reason, EasyAdmin lets you customize any method used to create, persist,
 edit and delete entities. Moreover, you can also customize utility methods used
-to define dynamically the form builders, the form options, etc.
+to create the form builders, define the form options, etc.
 
 These are all the methods you can define in your own controller to override the
 default methods used by the backend:
@@ -795,6 +786,10 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     }
 }
 ```
+
+-------------------------------------------------------------------------------
+
+&larr; [Chapter 3. List, Search and Show Views Configuration](2-list-search-show-configuration.md)  |  [Chapter 5. Actions Configuration](5-actions-configuration.md) &rarr;
 
 [1]: http://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 [2]: http://symfony.com/doc/current/components/event_dispatcher/generic_event.html

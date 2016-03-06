@@ -1,6 +1,9 @@
 Getting Started with EasyAdmin
 ==============================
 
+Welcome to the **EasyAdmin Project**, the new (and simple) admin generator for
+Symfony applications. In this guide you'll learn how to install the bundle and
+how to create your first backend.
 
 Installation
 ------------
@@ -126,38 +129,22 @@ The only required option in this configuration format is called `class` and
 defines the fully qualified class name of the Doctrine entity managed by the
 backend.
 
-Views and Actions
------------------
+What's Next?
+------------
 
-EasyAdmin backends consist of **views** and **actions**. The **view** is the
-page where you are (`list`, `edit`, `show`, etc.) and the **action** is what
-you do on that page (`search`, `delete`, etc.)
+  * Read the [EasyAdmin Documentation][1] to learn everything about its dozens
+    of features and configuration options.
+  * Check out the [EasyAdmin Demo application][2] to see how to easily create a
+    backend in a real Symfony application.
+  * Read the [EasyAdmin Tutorials][3] to learn about advanced features and
+    integrations with third-party bundles, such as VichUploaderBundle and
+    IvoryCKEditorBundle.
 
-There are five different **views** defined for each entity: `edit`, `list`,
-`new`, `search` and `show`. The `list` view is mandatory for all entities, but
-the rest of the views can be disabled if needed.
+Do you have any question about this bundle? [Open an issue][4] in our official
+repository or [post a question][5] in StackOverflow.
 
-Each view can include one or more **actions** to perform operations on the
-items displayed in that view. For example, the default `list` view interface
-includes four actions as buttons or links:
-
-![List view interface](../images/easyadmin-list-view-actions.png)
-
-These are the built-in actions included by default in each view:
-
-| View   | Actions
-| ------ | -----------------------------------------
-| `list` | `delete`, `edit`, `new`, `search`
-| `edit` | `delete`, `list`
-| `new`  | `list`
-| `show` | `delete`, `edit`, `list`
-
-Built-in actions can be enabled/disabled and fully customized. Moreover, you
-can [create your own actions][1] to perform tasks in the backend.
-
-[1]: ../tutorials/customizing-backend-actions.md
-
-
-explain admin controller
-explain that we only define 1 route for everything
-mention events
+[1]: ./book/1-general-configuration.md
+[2]: https://github.com/javiereguiluz/easy-admin-demo
+[3]: ./tutorials/
+[4]: https://github.com/javiereguiluz/EasyAdminBundle/issues
+[5]: http://stackoverflow.com/questions/tagged/symfony2-easyadmin

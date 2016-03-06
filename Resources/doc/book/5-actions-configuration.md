@@ -1,6 +1,25 @@
 Chapter 5. Actions Configuration
 ================================
 
+EasyAdmin backends consist of **views** and **actions**. The **view** is the
+page where you are (`list`, `edit`, `show`, etc.) and the **action** is what
+you do on that page (`search`, `delete`, etc.)
+
+Views include one or more **actions** to perform operations on the items
+displayed in that view. For example, the default `list` view interface includes
+four actions as buttons or links:
+
+![List view interface](../images/easyadmin-list-view-actions.png)
+
+These are the built-in actions included by default in each view:
+
+| View   | Default Actions
+| ------ | -----------------------------------------
+| `list` | `delete`, `edit`, `list`, `new`, `search`
+| `edit` | `delete`, `list`
+| `new`  | `list`
+| `show` | `delete`, `edit`, `list`
+
 In this chapter you'll learn how to enable/disable actions for entities and
 views, and how to customize the built-in actions. If you want to create your own
 actions read the [How to Define Custom Actions][1] tutorial.
@@ -50,15 +69,6 @@ The `User` entity will have both the `new` and the `show` actions disabled.
 
 Configure the Actions Displayed in Each View
 --------------------------------------------
-
-These are the actions showed by default in each view:
-
-| View   | Default Actions
-| ------ | -----------------------------------------
-| `list` | `delete`, `edit`, `list`, `new`, `search`
-| `edit` | `delete`, `list`
-| `new`  | `list`
-| `show` | `delete`, `edit`, `list`
 
 ### Adding Actions Globally
 

@@ -39,9 +39,8 @@ Documentation
 #### Getting Started Guide
 
 The [Getting Started Guide](Resources/doc/getting-started.md) explains how to
-install the bundle, how to create your first backend and provides a quick
-overview of the bundle's features. This guide is a must-read before using
-EasyAdmin.
+install the bundle and how to create your first backend. This guide is a must-
+read before using EasyAdmin.
 
 #### The Book
 

@@ -146,4 +146,4 @@ easy_admin:
 
 -------------------------------------------------------------------------------
 
-&larr; [Chapter 1. General Configuration](1-general-configuration.md)  |  [Chapter 3. List, Search and Show Views Configuration](2-list-search-show-configuration.md) &rarr;
+&larr; [Chapter 1. General Configuration](1-general-configuration.md)  |  [Chapter 3. List, Search and Show Views Configuration](3-list-search-show-configuration.md) &rarr;

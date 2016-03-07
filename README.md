@@ -23,50 +23,54 @@ with unprecedented simplicity.
   * **CRUD** operations on Doctrine entities (create, edit, list, delete).
   * Full-text **search**, **pagination** and column **sorting**.
   * Fully **responsive** design (smartphones, tablets and desktops).
+  * Supports Symfony 2.x and 3.x.
   * Translated into tens of languages.
   * **Fast**, **simple** and **smart** where appropriate.
 
 **Requirements**
 
-  * Symfony 2.3+ applications (including Symfony 3).
+  * Symfony 2.3+ or 3.x applications (Silex not supported).
   * Doctrine ORM entities (Doctrine ODM and Propel not supported).
-  * Entities with simple primary keys (composite keys not supported).
-  * Entities using inheritance are not supported.
+  * Entities with composite keys or using inheritance are not supported.
 
 Documentation
 -------------
 
 #### Getting Started Guide
 
-  * [Chapter 1 - Installation](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/1-installation.md)
-  * [Chapter 2 - Your First Backend](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/2-first-backend.md)
-  * [Chapter 3 - Backend Configuration](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/3-backend-configuration.md)
-  * [Chapter 4 - Views and Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/4-views-and-actions.md)
-  * [Chapter 5 - Backend Design Customization](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/5-design-customization.md)
-  * [Chapter 6 - About this Project](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/getting-started/6-about-this-project.md)
+The [Getting Started Guide](Resources/doc/getting-started.md) explains how to
+install the bundle and how to create your first backend. This guide is a must-
+read before using EasyAdmin.
+
+#### The Book
+
+  * [Chapter 1 - General Configuration](Resources/doc/book/1-general-configuration.md)
+  * [Chapter 2 - Design Configuration](Resources/doc/book/2-design-configuration.md)
+  * [Chapter 3 - List, Search and Show Views Configuration](Resources/doc/book/3-list-search-show-configuration.md)
+  * [Chapter 4 - Edit and New Views Configuration](Resources/doc/book/4-edit-new-configuration.md)
+  * [Chapter 5 - Actions Configuration](Resources/doc/book/5-actions-configuration.md)
+  * [Chapter 6 - Menu Configuration](Resources/doc/book/6-menu-configuration.md)
+  * [Chapter 7 - About this Project](Resources/doc/book/7-about.md)
+  * [Appendix - Full Configuration Reference](Resources/doc/book/configuration-reference.md)
 
 #### Tutorials
 
-  * [Customizing Backend Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/customizing-backend-actions.md)
-  * [Customizing AdminController](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/customizing-admin-controller.md)
-  * [Advanced Design Customization](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/advanced-design-customization.md)
-  * [How to Customize the Main Menu](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/custom-menu.md)
-  * [How to Format Dates and Numbers](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/format-date-number.md)
-  * [How to Translate the Backend](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/i18n.md)
-  * [How to Define Custom Actions](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/custom-actions.md)
-  * [How to Use a WYSIWYG Editor](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/wysiwyg-editor.md)
-  * [How to Upload Files and Images](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/upload-files-and-images.md)
-  * [How to Manage Configuration for Complex Backends](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/complex-backend-config.md)
-  * [Tips and Tricks](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/tips-and-tricks.md)
-  * [Configuration Reference](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/tutorials/configuration-reference.md)
+  * [How to Translate the Backend](Resources/doc/tutorials/i18n.md)
+  * [How to Define Custom Actions](Resources/doc/tutorials/custom-actions.md)
+  * [How to Define Custom Options for Entity Properties](Resources/doc/tutorials/custom-property-options.md)
+  * [How to Use a WYSIWYG Editor](Resources/doc/tutorials/wysiwyg-editor.md)
+  * [How to Upload Files and Images](Resources/doc/tutorials/upload-files-and-images.md)
+  * [How to Manage Configuration for Complex Backends](Resources/doc/tutorials/complex-backend-config.md)
+  * [Tips and Tricks](Resources/doc/tutorials/tips-and-tricks.md)
 
 > **❮ NOTE ❯** you are reading the documentation of the bundle's **development**
 > version. You can also [read the documentation of the latest stable version ➜]
 > (https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.11.7/).
 
-#### Demo Application
+Demo Application
+----------------
 
-[easy-admin-demo](https://github.com/javiereguiluz/easy-admin-demo) is a simple
+[easy-admin-demo](https://github.com/javiereguiluz/easy-admin-demo) is a complete
 Symfony application created to showcase EasyAdmin features.
 
 Installation
@@ -133,8 +137,7 @@ Creating your first backend will take you less than 30 seconds. Let's suppose
 that your Symfony application defines three Doctrine ORM entities called
 `Product`, `Category` and `User`.
 
-Creating the backend for those entities just require you to add the following
-configuration in the `app/config/config.yml` file:
+Open the `app/config/config.yml` file and add the following configuration:
 
 ```yaml
 # app/config/config.yml
@@ -151,15 +154,7 @@ the admin backend:
 
 ![Default EasyAdmin Backend interface](https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-default-backend.png)
 
-Creating a backend is that simple because EasyAdmin doesn't generate any code.
-All resources are served on-the-fly to ensure an exceptional developer
-experience.
-
-Without any further configuration, EasyAdmin guesses the best settings to make
-your admin backend look "good enough". This may be acceptable for simple
-backends and rapid prototypes, but most of the times, you need to customize
-some parts of the backend. Keep reading the rest of the documentation to learn
-how to do it.
+Keep reading the rest of the documentation to learn how to create complex backends.
 
 License
 -------

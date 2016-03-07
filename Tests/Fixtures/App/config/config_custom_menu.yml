@@ -9,7 +9,9 @@ easy_admin:
               children:
                   - { entity: 'Product', icon: 'th-list', label: 'List Products', params: { sortField: 'createdAt' } }
                   - { entity: 'Product', label: 'Add Product', params: { action: 'new' } }
+                  - { label: 'Additional Items' }
                   - { entity: 'Category', label: 'Categories', default: true, icon: '' }
+                  - { label: 'Absolute URL', url: 'https://github.com/javiereguiluz/EasyAdminBundle' }
             - { label: 'Images', entity: 'Image' }
             - { label: 'Purchases', entity: 'Purchase', icon: '', params: { sortField: 'deliveryDate' } }
             - { label: 'About EasyAdmin' }

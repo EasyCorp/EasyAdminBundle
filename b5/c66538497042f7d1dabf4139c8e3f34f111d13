@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-06T18:10:45Z
+
+@yceruto thanks for reporting this issue, providing a detailed explanation and contributing the solution.
+
+I agree with this change but I have a question: shouldn't we add the cookie for the path of the backend? This is `/admin` by default but the user can configure it when importing the routes. My concern is that this cookie with `path: /` would be sent to any website page, being a backend one or not.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-03-06T21:17:27Z
+
+Yes, with `path=/admin-prefix` it would be better, BUT I need transport this information to javascript scenery, some idea? request metadata...? Then, the cookie would be valid for backend paths only.
+
+> My concern is that this cookie with `path=/` would be sent to any website page, being a backend one or not.
+
+However, `domain` attribute is not specified when the cookie is created, its valid for current domain only.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-06T21:19:10Z
+
+It won't be easy. I'd say "let's merge this as it is". The only (very minor) issue is that (the few) people who access the backend will send the cookie of the menu when visiting any other part of the website. I don't think that's an issue.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-03-07T01:07:34Z
+
+:+1:
+
+Why not use `localSorage` instead of `cookies`?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-07T07:35:21Z
+
+@yceruto we tried localStorage ... but the result was very ugly: https://github.com/javiereguiluz/EasyAdminBundle/pull/822#issuecomment-173323912
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-03-07T19:14:28Z
+
+I see, :+1:

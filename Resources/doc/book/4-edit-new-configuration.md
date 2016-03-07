@@ -831,7 +831,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
 
 -------------------------------------------------------------------------------
 
-&larr; [Chapter 3. List, Search and Show Views Configuration](2-list-search-show-configuration.md)  |  [Chapter 5. Actions Configuration](5-actions-configuration.md) &rarr;
+&larr; [Chapter 3. List, Search and Show Views Configuration](3-list-search-show-configuration.md)  |  [Chapter 5. Actions Configuration](5-actions-configuration.md) &rarr;
 
 [1]: http://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 [2]: http://symfony.com/doc/current/components/event_dispatcher/generic_event.html

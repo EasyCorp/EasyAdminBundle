@@ -1,7 +1,4 @@
-{% use "form_div_layout.html.twig" %}
-
-{# needed to force translation of labels #}
-{% set translation_domain = 'messages' %}
+{% use 'form_div_layout.html.twig' %}
 
 {% block form_start -%}
     {% if 'easyadmin' == block_prefixes|slice(-2)|first %}
@@ -175,8 +172,6 @@
 {# Labels #}
 
 {% block form_label -%}
-    {# needed to force translation of labels #}
-    {% set translation_domain = 'messages' %}
     {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label')|trim}) -%}
     {{- parent() -}}
 {%- endblock form_label %}
@@ -196,9 +191,6 @@
 {%- endblock radio_label %}
 
 {% block checkbox_radio_label %}
-    {# needed to force translation of labels #}
-    {% set translation_domain = 'messages' %}
-
     {# Do no display the label if widget is not defined in order to prevent double label rendering #}
     {% if widget is defined %}
         {% if required %}
@@ -212,7 +204,7 @@
         {% endif %}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
             {{- widget|raw -}}
-            {{- label is not same as(false) ? label|trans({}, translation_domain) -}}
+            {{- label is not same as(false) ? label|trans({}, 'messages') -}}
         </label>
     {% endif %}
 {% endblock checkbox_radio_label %}
@@ -222,11 +214,8 @@
 {% block form_row -%}
     {% set _field_type = easyadmin.field.fieldType|default('default') %}
     <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
-
-        {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
         {% set _field_label = easyadmin.field['label']|default(null) %}
-
-        {{- form_label(form, _field_label|trans(_trans_parameters)) -}}
+        {{- form_label(form, _field_label, { translation_domain: 'messages' }) -}}
         {{- form_widget(form) -}}
 
         {% if _field_type in ['datetime', 'datetimetz', 'date', 'time'] and easyadmin.field.nullable|default(false) %}
@@ -358,7 +347,7 @@
         <div class="row">
             {% if form.delete is defined %}
             <div class="col-sm-3 col-md-2">
-                {{ form_row(form.delete) }}
+                {{ form_row(form.delete, { translation_domain: null }) }}
             </div>
             {% endif %}
             <div class="{{ form.delete is defined ? 'col-sm-9 col-md-10' : 'col-sm-12' }}">
@@ -374,7 +363,7 @@
     <div class="easyadmin-vich-image">
         {{ form_widget(form.file) }}
         {% if form.delete is defined %}
-            {{ form_row(form.delete) }}
+            {{ form_row(form.delete, { translation_domain: null }) }}
         {% endif %}
 
         {% if download_uri|default('') is not empty %}
@@ -394,7 +383,6 @@
 
 {# Easy admin form type #}
 {% block easyadmin_widget %}
-
     {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
 
     {% if form.vars.errors|length > 0 %}

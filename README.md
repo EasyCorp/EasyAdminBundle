@@ -60,6 +60,7 @@ read before using EasyAdmin.
   * [How to define custom options for entity properties](Resources/doc/tutorials/custom-property-options.md)
   * [How to use a WYSIWYG editor](Resources/doc/tutorials/wysiwyg-editor.md)
   * [How to upload files and images](Resources/doc/tutorials/upload-files-and-images.md)
+  * [How To integrate FOSRestBundle and EasyAdmin](Resources/doc/tutorials/fosrestbundle-integration.md)
   * [How to manage configuration for complex backends](Resources/doc/tutorials/complex-backend-config.md)
   * [Tips and tricks](Resources/doc/tutorials/tips-and-tricks.md)
 

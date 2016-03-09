@@ -27,16 +27,8 @@
     <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap-toggle.min.css') }}">
 {% endblock %}
 
-{% block content_title %}
-    {% if 'search' == app.request.get('action') %}
-        {{ 'search.page_title'|transchoice(count = paginator.nbResults, domain = 'EasyAdminBundle')|raw }}
-    {% else %}
-        {% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-        {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title }}
-    {% endif %}
-{% endblock %}
 
-{% block global_actions %}
+{% set _global_actions %}
     {% if easyadmin_action_is_enabled_for_list_view('search', _entity_config.name) %}
         {% set _action = easyadmin_get_action_for_list_view('search', _entity_config.name) %}
 
@@ -74,7 +66,33 @@
             </div>
         {% endblock new_action %}
     {% endif %}
+{% endset %}
+
+{% set _content_title %}
+{% spaceless %}
+    {% if 'search' == app.request.get('action') %}
+        {{ 'search.page_title'|transchoice(count = paginator.nbResults, domain = 'EasyAdminBundle')|raw }}
+    {% else %}
+        {% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
+        {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title }}
+    {% endif %}
+{% endspaceless %}
+{% endset %}
+
+{% block content_header %}
+    <div class="row">
+        <div class="col-sm-5">
+            <h1 class="title">{{ _content_title }}</h1>
+        </div>
+
+        <div class="col-sm-7">
+            <div class="global-actions">
+                {{ _global_actions }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
 
 {% block main %}
     {% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity_config.name) %}

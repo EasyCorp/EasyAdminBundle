@@ -41,10 +41,11 @@ install:
     - IF %PHP%==1 echo extension=php_fileinfo.dll >> php.ini-max
     - IF %PHP%==1 echo extension=php_pdo_sqlite.dll >> php.ini-max
     - appveyor DownloadFile https://getcomposer.org/composer.phar
+    - appveyor DownloadFile https://phar.phpunit.de/phpunit.phar
     - copy /Y php.ini-max php.ini
     - cd c:\projects\easyadmin-bundle
     - mkdir %APPDATA%\Composer
-    - php phpunit install
+    - php c:\php\phpunit.phar install
     - IF %APPVEYOR_REPO_BRANCH%==master (SET COMPOSER_ROOT_VERSION=dev-master) ELSE (SET COMPOSER_ROOT_VERSION=%APPVEYOR_REPO_BRANCH%.x-dev)
     - composer update --prefer-dist --no-progress --ansi
 
@@ -52,7 +53,7 @@ test_script:
     - cd c:\projects\easyadmin-bundle
     - SET X=0
     - copy /Y c:\php\php.ini-min c:\php\php.ini
-    - php phpunit
+    - php c:\php\phpunit.phar
     - copy /Y c:\php\php.ini-max c:\php\php.ini
-    - php phpunit
+    - php c:\php\phpunit.phar
     - exit %X%

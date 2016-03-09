@@ -347,7 +347,7 @@
         <div class="row">
             {% if form.delete is defined %}
             <div class="col-sm-3 col-md-2">
-                {{ form_row(form.delete, { translation_domain: null }) }}
+                {{ form_row(form.delete, { label: 'action.delete' }) }}
             </div>
             {% endif %}
             <div class="{{ form.delete is defined ? 'col-sm-9 col-md-10' : 'col-sm-12' }}">
@@ -363,7 +363,7 @@
     <div class="easyadmin-vich-image">
         {{ form_widget(form.file) }}
         {% if form.delete is defined %}
-            {{ form_row(form.delete, { translation_domain: null }) }}
+            {{ form_row(form.delete, { label: 'action.delete' }) }}
         {% endif %}
 
         {% if download_uri|default('') is not empty %}

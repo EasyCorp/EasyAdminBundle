@@ -8,8 +8,10 @@
 {% block body_class 'show show-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
+{% spaceless %}
     {% set _default_title = 'show.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
     {{ _entity_config.show.title is defined ? _entity_config.show.title|trans(_trans_parameters) : _default_title }}
+{% endspaceless %}
 {% endblock %}
 
 {% block main %}

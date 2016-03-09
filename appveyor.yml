@@ -41,7 +41,7 @@ install:
     - IF %PHP%==1 echo extension=php_fileinfo.dll >> php.ini-max
     - IF %PHP%==1 echo extension=php_pdo_sqlite.dll >> php.ini-max
     - appveyor DownloadFile https://getcomposer.org/composer.phar
-    - appveyor DownloadFile https://phar.phpunit.de/phpunit.phar
+    - appveyor DownloadFile https://phar.phpunit.de/phpunit-old.phar
     - copy /Y php.ini-max php.ini
     - cd c:\projects\easyadmin-bundle
     - mkdir %APPDATA%\Composer

@@ -39,6 +39,13 @@
                 <source>label.form.empty_value</source>
                 <target>Пусто</target>
             </trans-unit>
+
+            <!-- forms -->
+            <trans-unit id="form.label.collections">
+                <!-- don't change this "translation" -->
+                <source>__name__label__</source>
+                <target>__name__label__</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

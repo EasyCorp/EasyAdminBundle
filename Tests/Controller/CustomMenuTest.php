@@ -27,11 +27,12 @@ class CustomMenuTest extends AbstractTestCase
         $this->client->request('GET', '/admin/');
 
         $this->assertEquals(
-            '/admin/?action=list&entity=Category&menuIndex=0&submenuIndex=2',
+            '/admin/?action=list&entity=Category&menuIndex=0&submenuIndex=3',
             $this->client->getResponse()->headers->get('location')
         );
 
         $crawler = $this->client->followRedirect();
+
         $this->assertEquals(
             'Products',
             trim($crawler->filter('.sidebar-menu li.active.submenu-active a')->text())
@@ -41,7 +42,7 @@ class CustomMenuTest extends AbstractTestCase
             'Categories',
             trim($crawler->filter('.sidebar-menu .treeview-menu li.active a')->text())
         );
-    }
+   }
 
     public function testBackendHomepageConfig()
     {
@@ -66,13 +67,18 @@ class CustomMenuTest extends AbstractTestCase
         ), $backendConfig['default_menu_item']);
     }
 
-    public function testMenuHeaders()
+    public function testMenuDividers()
     {
         $crawler = $this->getBackendHomepage();
 
-        $this->assertEquals(
+        $this->assertContains(
             'header',
             $crawler->filter('.sidebar-menu li:contains("About EasyAdmin")')->attr('class')
+        );
+
+        $this->assertContains(
+            'header',
+            $crawler->filter('.sidebar-menu .treeview-menu li:contains("Additional Items")')->attr('class')
         );
     }
 
@@ -164,5 +170,23 @@ class CustomMenuTest extends AbstractTestCase
             $crawler->filter('.sidebar-menu li:contains("Project Home") a')->attr('href'),
             'First level menu, absolute URL'
         );
+    }
+
+    public function testMenuItemTypes()
+    {
+        $expectedTypesMainMenu = array('empty', 'entity', 'entity', 'divider', 'link', 'link', 'link');
+        $expectedTypesSubMenu = array('entity', 'entity', 'divider', 'entity', 'link');
+
+        $crawler = $this->getBackendHomepage();
+        $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
+        $menuConfig = $backendConfig['design']['menu'];
+
+        foreach ($menuConfig as $i => $itemConfig) {
+            $this->assertEquals($expectedTypesMainMenu[$i], $itemConfig['type']);
+        }
+
+        foreach ($menuConfig[0]['children'] as $i => $itemConfig) {
+            $this->assertEquals($expectedTypesSubMenu[$i], $itemConfig['type']);
+        }
     }
 }

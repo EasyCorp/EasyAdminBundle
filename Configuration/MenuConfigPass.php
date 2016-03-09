@@ -67,7 +67,7 @@ class MenuConfigPass implements ConfigPassInterface
         // replaces the short config syntax:
         //   design.menu: ['Product', 'User']
         // by the expanded config syntax:
-        //   design.menu: []{ entity: 'Product' }, { entity: 'User' }]
+        //   design.menu: [{ entity: 'Product' }, { entity: 'User' }]
         foreach ($menuConfig as $i => $itemConfig) {
             if (is_string($itemConfig)) {
                 $itemConfig = array('entity' => $itemConfig);
@@ -158,9 +158,16 @@ class MenuConfigPass implements ConfigPassInterface
                 }
             }
 
-            // 4th level priority: if 'label' is defined (and not the previous options), this is an empty element
+            // 4th level priority: if 'label' is defined (and not the previous options),
+            // this is a menu divider of a submenu title
             elseif (isset($itemConfig['label'])) {
-                $itemConfig['type'] = 'empty';
+                if (empty($itemConfig['children'])) {
+                    // if the item doesn't define a submenu, this is a menu divider
+                    $itemConfig['type'] = 'divider';
+                } else {
+                    // if the item defines a submenu, this is the title of that submenu
+                    $itemConfig['type'] = 'empty';
+                }
             } else {
                 throw new \RuntimeException(sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.', $i));
             }

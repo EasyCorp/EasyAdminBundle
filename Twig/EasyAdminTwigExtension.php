@@ -152,7 +152,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 $targetEntityConfig = $this->configurator->getEntityConfigByClass($fieldMetadata['targetEntity']);
                 if (null === $targetEntityConfig) {
                     // the associated entity is not managed by EasyAdmin
-                    return $twig->render($entityConfiguration['templates']['field_association'], $templateParameters);
+                    return $twig->render($fieldMetadata['template'], $templateParameters);
                 }
 
                 $isShowActionAllowed = $this->isActionEnabled($view, 'show', $targetEntityConfig['name']);
@@ -173,7 +173,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 } elseif (null !== $primaryKeyValue) {
                     $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
                 } else {
-
                     $templateParameters['value'] = $this->getClassShortName($fieldMetadata['targetEntity']);
                 }
 

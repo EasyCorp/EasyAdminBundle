@@ -1,10 +1,3 @@
-| Q             | A
-| ------------- | ---
-| Bug fix?      | yes/no
-| New feature?  | yes/no
-| BC breaks?    | yes/no
-| Deprecations? | yes/no
-| Tests pass?   | yes/no
-| Fixed tickets | comma-separated list of tickets fixed by the PR, if any
-| License       | MIT
-
+  * If this is a bug fix, include the number of the fixed issue.
+  * Tests are executed automatically after creating the Pull Request (check their result)
+  * Note: all your contributions adhere implicitly to the MIT license.

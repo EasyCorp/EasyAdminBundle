@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-10T10:09:02Z
+
+It worked! We now have Windows testing!! :tada: :tada: :tada:
+
+![appveyor](https://cloud.githubusercontent.com/assets/73419/13666168/6c68e1ac-e6b0-11e5-8d12-6fd1ec3c10e6.png)
+
+The only drawback is that they take around 20 minutes to complete.

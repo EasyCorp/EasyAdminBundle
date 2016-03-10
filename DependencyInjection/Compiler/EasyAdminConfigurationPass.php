@@ -41,7 +41,9 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
         // the % character to prevent Symfony interpreting them as a container
         // parameter when setting the easyadmin.config value at the end of this method
         array_walk_recursive($backendConfiguration, function (&$value) {
-            $value = str_replace('%', '%%', $value);
+            if (is_string($value)) {
+                $value = str_replace('%', '%%', $value);
+            }
         });
 
         $configPasses = array(

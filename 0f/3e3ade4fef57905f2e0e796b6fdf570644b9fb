@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-09T16:19:06Z
+
+I agree with changing this in the README file ... but I don't want to change this in the actual docs. The reason is that one day this doc will be integrated on symfony.com and that's the style they use for section titles.
+
+---
+
+By the way, the title casing is one of my favorite topics to discuss it with our beloved Symfony doc managers (Ryan, Wouter and Christian). From time to time I propose to change everything (https://github.com/symfony/symfony-docs/issues/5830)  but then I realize the amount of work it would require and forget about it :)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-03-10T09:07:53Z
+
+Actually, as long as there's someone to do the job I don't feel where the problem could be.
+
+> The reason is that one day this doc will be integrated on symfony.com and that's the style they use for section titles.
+
+So shouldn't we convert the whole markdown to `rst` ? IIRC, Symfony docs are made with `rst` :confused:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-10T09:20:49Z
+
+Yes, we'll need to convert docs to RST. I'll do it :)  (I've already done it for several bundles!)

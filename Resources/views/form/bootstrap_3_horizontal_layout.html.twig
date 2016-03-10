@@ -18,9 +18,7 @@
 {% endspaceless %}
 {%- endblock form_label %}
 
-{% block form_label_class -%}
-col-sm-2
-{%- endblock form_label_class %}
+{% block form_label_class 'col-sm-2' %}
 
 {# Rows #}
 
@@ -28,11 +26,8 @@ col-sm-2
 {% spaceless %}
     {% set _field_type = easyadmin.field.fieldType|default('default') %}
     <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
-
-        {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
         {% set _field_label = easyadmin.field['label']|default(null) %}
-
-        {{ form_label(form, _field_label|trans(_trans_parameters)) }}
+        {{ form_label(form, _field_label, { translation_domain: 'messages' }) }}
         <div class="{{ block('form_group_class') }}">
             {{ form_widget(form) }}
 
@@ -97,6 +92,4 @@ col-sm-2
 {% endspaceless %}
 {% endblock reset_row %}
 
-{% block form_group_class -%}
-col-sm-10
-{%- endblock form_group_class %}
+{% block form_group_class 'col-sm-10' %}

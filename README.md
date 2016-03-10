@@ -44,24 +44,24 @@ read before using EasyAdmin.
 
 #### The Book
 
-  * [Chapter 1 - General Configuration](Resources/doc/book/1-general-configuration.md)
-  * [Chapter 2 - Design Configuration](Resources/doc/book/2-design-configuration.md)
-  * [Chapter 3 - List, Search and Show Views Configuration](Resources/doc/book/3-list-search-show-configuration.md)
-  * [Chapter 4 - Edit and New Views Configuration](Resources/doc/book/4-edit-new-configuration.md)
-  * [Chapter 5 - Actions Configuration](Resources/doc/book/5-actions-configuration.md)
-  * [Chapter 6 - Menu Configuration](Resources/doc/book/6-menu-configuration.md)
-  * [Chapter 7 - About this Project](Resources/doc/book/7-about.md)
-  * [Appendix - Full Configuration Reference](Resources/doc/book/configuration-reference.md)
+  * [Chapter 1 - General configuration](Resources/doc/book/1-general-configuration.md)
+  * [Chapter 2 - Design configuration](Resources/doc/book/2-design-configuration.md)
+  * [Chapter 3 - `list`, `search` and `show` views configuration](Resources/doc/book/3-list-search-show-configuration.md)
+  * [Chapter 4 - `edit` and `new` views configuration](Resources/doc/book/4-edit-new-configuration.md)
+  * [Chapter 5 - Actions configuration](Resources/doc/book/5-actions-configuration.md)
+  * [Chapter 6 - Menu configuration](Resources/doc/book/6-menu-configuration.md)
+  * [Chapter 7 - About this project](Resources/doc/book/7-about.md)
+  * [Appendix - Full configuration reference](Resources/doc/book/configuration-reference.md)
 
 #### Tutorials
 
-  * [How to Translate the Backend](Resources/doc/tutorials/i18n.md)
-  * [How to Define Custom Actions](Resources/doc/tutorials/custom-actions.md)
-  * [How to Define Custom Options for Entity Properties](Resources/doc/tutorials/custom-property-options.md)
-  * [How to Use a WYSIWYG Editor](Resources/doc/tutorials/wysiwyg-editor.md)
-  * [How to Upload Files and Images](Resources/doc/tutorials/upload-files-and-images.md)
-  * [How to Manage Configuration for Complex Backends](Resources/doc/tutorials/complex-backend-config.md)
-  * [Tips and Tricks](Resources/doc/tutorials/tips-and-tricks.md)
+  * [How to translate the backend](Resources/doc/tutorials/i18n.md)
+  * [How to define custom actions](Resources/doc/tutorials/custom-actions.md)
+  * [How to define custom options for entity properties](Resources/doc/tutorials/custom-property-options.md)
+  * [How to use a WYSIWYG editor](Resources/doc/tutorials/wysiwyg-editor.md)
+  * [How to upload files and images](Resources/doc/tutorials/upload-files-and-images.md)
+  * [How to manage configuration for complex backends](Resources/doc/tutorials/complex-backend-config.md)
+  * [Tips and tricks](Resources/doc/tutorials/tips-and-tricks.md)
 
 > **❮ NOTE ❯** you are reading the documentation of the bundle's **development**
 > version. You can also [read the documentation of the latest stable version ➜]

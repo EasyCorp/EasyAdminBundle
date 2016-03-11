@@ -82,4 +82,4 @@ logged in the application. Otherwise it displays: "Anonymous User".
 [Chapter 2. Design Configuration](2-design-configuration.md) &rarr;
 
 [1]: ./6-menu-configuration.md
-[2]: http://symfony.com/doc/current/book/security.html)
+[2]: http://symfony.com/doc/current/book/security.html

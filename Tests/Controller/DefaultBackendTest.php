@@ -432,6 +432,26 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals($parameters, $refererParameters);
     }
 
+    public function testNewViewEntityCreation()
+    {
+        $crawler = $this->requestNewView();
+        $this->client->followRedirects();
+
+        $categoryName = sprintf('The New Category %s', md5(rand()));
+        $form = $crawler->selectButton('Save changes')->form(array(
+            'category[name]' => $categoryName,
+        ));
+        $crawler = $this->client->submit($form);
+
+        $this->assertContains($categoryName, $crawler->filter('#main table tr')->eq(1)->text(), 'The newly created category is displayed in the first data row of the "list" table.');
+
+        // remove the new category to avoid errors in other tests
+        $doctrine = $this->client->getContainer()->get('doctrine');
+        $category = $doctrine->getRepository('AppTestBundle:Category')->findOneByName($categoryName);
+        $doctrine->getManager()->remove($category);
+        $doctrine->getManager()->flush();
+    }
+
     public function testSearchViewTitle()
     {
         $crawler = $this->requestSearchView();

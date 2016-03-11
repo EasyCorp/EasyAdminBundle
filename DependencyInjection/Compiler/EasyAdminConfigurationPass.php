@@ -32,19 +32,7 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $backendConfiguration = $container->getParameter('easyadmin.config');
-
-        // The parameter returned by the container has its values resolved.
-        // %value% -> is turned into the parameter value
-        // %%value%% -> is turned into %value% (we use this for EasyAdmin translations)
-        // Before further processing the configuration we need to escape again
-        // the % character to prevent Symfony interpreting them as a container
-        // parameter when setting the easyadmin.config value at the end of this method
-        array_walk_recursive($backendConfiguration, function (&$value) {
-            if (is_string($value)) {
-                $value = str_replace('%', '%%', $value);
-            }
-        });
+        $backendConfig = $this->getBackendConfig($container);
 
         $configPasses = array(
             new NormalizerConfigPass(),
@@ -58,10 +46,36 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
         );
 
         foreach ($configPasses as $configPass) {
-            $backendConfiguration = $configPass->process($backendConfiguration);
+            $backendConfig = $configPass->process($backendConfig);
         }
 
-        $container->setParameter('easyadmin.config', $backendConfiguration);
-        $container->getDefinition('easyadmin.configurator')->replaceArgument(0, $backendConfiguration);
+        $container->setParameter('easyadmin.config', $backendConfig);
+        $container->getDefinition('easyadmin.configurator')->replaceArgument(0, $backendConfig);
+    }
+
+    /**
+     * Returns the current backend configuration defined in the given container.
+     *
+     * @param ContainerBuilder $container
+     *
+     * @return array
+     */
+    private function getBackendConfig(ContainerBuilder $container)
+    {
+        $backendConfig = $container->getParameter('easyadmin.config');
+
+        // The parameter returned by the container has its values resolved.
+        //   %value% -> is turned into the parameter value
+        //   %%value%% -> is turned into %value% (we use this for EasyAdmin translations)
+        // Before further processing the configuration we need to escape again
+        // the % character to prevent Symfony interpreting them as a container
+        // parameter when setting the easyadmin.config value at the end of this method
+        array_walk_recursive($backendConfig, function (&$value) {
+            if (is_string($value)) {
+                $value = str_replace('%', '%%', $value);
+            }
+        });
+
+        return $backendConfig;
     }
 }

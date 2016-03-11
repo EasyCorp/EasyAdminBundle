@@ -361,6 +361,61 @@ easy_admin:
 The main limitation of virtual properties is that you cannot sort listings
 using these fields.
 
+Filtering Entities
+------------------
+
+A common need for backends is to filter entities with some basic conditions
+before listing them. You can achieve this with the features explained later in
+this chapter to modify the behavior of the `list`, `search` and `show` views.
+
+However, for simple filters it's more convenient to use the `dql_filter` option,
+which defines the conditions passed to the `WHERE` clause of the Doctrine query.
+the only restriction is that you must use the `entity` name to refer to the
+current entity.
+
+The following example manages the same `User` entity but filters each of them
+to differentiate the type of users:
+
+```yaml
+easy_admin:
+    entities:
+        VipCustomers:
+            class: AppBundle\Entity\User
+            list:
+                dql_filter: 'entity.budget > 100000'
+        RegularCustomers:
+            class: AppBundle\Entity\User
+            list:
+                dql_filter: 'entity.budget <= 100000'
+```
+
+> **TIP**
+>
+> Combine this option with a custom menu (as explained in next chapters) to
+> improve the navigation of the backend.
+
+The value of the `dql_filter` can combine several conditions:
+
+```yaml
+easy_admin:
+    entities:
+        UrgentIssues:
+            class: AppBundle\Entity\Issue
+            list:
+                dql_filter: 'entity.label == "CRITICAL" OR entity.priority > 4'
+        ImportantIssues:
+            class: AppBundle\Entity\Issue
+            list:
+                dql_filter: 'entity.priority > 2 AND entity.numComments > 10'
+        AllIssues:
+            class: AppBundle\Entity\Issue
+```
+
+> **CAUTION**
+>
+> The `dql_filter` option is only available for the `list` view and not the
+> `search` view.
+
 Property Types Defined by EasyAdmin
 -----------------------------------
 

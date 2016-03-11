@@ -32,13 +32,14 @@ class QueryBuilder
      * Creates the query builder used to get all the records displayed by the
      * "list" view.
      *
-     * @param array  $entityConfig
-     * @param string $sortDirection
-     * @param string $sortField
+     * @param array       $entityConfig
+     * @param string|null $sortField
+     * @param string|null $sortDirection
+     * @param string|null $dqlFilter
      *
      * @return DoctrineQueryBuilder
      */
-    public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null)
+    public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
         /* @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
@@ -47,6 +48,10 @@ class QueryBuilder
             ->select('entity')
             ->from($entityConfig['class'], 'entity')
         ;
+
+        if (!empty($dqlFilter)) {
+            $queryBuilder->andWhere($dqlFilter);
+        }
 
         if (null !== $sortField) {
             $queryBuilder->orderBy('entity.'.$sortField, $sortDirection);
@@ -63,10 +68,11 @@ class QueryBuilder
      * @param string      $searchQuery
      * @param string|null $sortField
      * @param string|null $sortDirection
+     * @param string|null $dqlFilter
      *
      * @return DoctrineQueryBuilder
      */
-    public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField = null, $sortDirection = null)
+    public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
         /* @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
@@ -98,6 +104,10 @@ class QueryBuilder
 
         if (0 !== count($queryParameters)) {
             $queryBuilder->setParameters($queryParameters);
+        }
+
+        if (!empty($dqlFilter)) {
+            $queryBuilder->andWhere($dqlFilter);
         }
 
         if (null !== $sortField) {

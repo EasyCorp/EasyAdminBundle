@@ -12,6 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Response;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class DefaultBackendTest extends AbstractTestCase
@@ -570,6 +571,41 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals($parameters, $refererParameters);
     }
 
+    public function testEntityDeletion()
+    {
+        $em = $this->client->getContainer()->get('doctrine');
+        $product = $em->getRepository('AppTestBundle:Product')->find(1);
+        $this->assertNotNull($product, 'Initially the product exists.');
+
+        $crawler = $this->requestEditView('Product', '1');
+        $this->client->followRedirects();
+        $form = $crawler->filter('#delete_form_submit')->form();
+        $this->client->submit($form);
+
+        $product = $em->getRepository('AppTestBundle:Product')->find(1);
+        $this->assertNull($product, 'After removing it via the delete form, the product no longer exists.');
+    }
+
+    public function testEntityDeletionRequiresCsrfToken()
+    {
+        $queryParameters = array('action' => 'delete', 'entity' => 'Product', 'id' => '1');
+        // Sending a 'DELETE' HTTP request is not enough (the delete form includes a CSRF token)
+        $this->client->request('DELETE', '/admin/?'.http_build_query($queryParameters));
+
+        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', $this->client->getResponse()->getContent());
+    }
+
+    public function testEntityDeletionRequiresDeleteHttpMethod()
+    {
+        $queryParameters = array('action' => 'delete', 'entity' => 'Product', 'id' => '1');
+        // 'POST' HTTP method is wrong for deleting entities ('DELETE' method is required)
+        $this->client->request('POST', '/admin/?'.http_build_query($queryParameters));
+
+        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', $this->client->getResponse()->getContent());
+    }
+
     /**
      * @return Crawler
      */
@@ -596,12 +632,12 @@ class DefaultBackendTest extends AbstractTestCase
     /**
      * @return Crawler
      */
-    private function requestEditView()
+    private function requestEditView($entityName = 'Category', $entityId = '200')
     {
         return $this->getBackendPage(array(
             'action' => 'edit',
-            'entity' => 'Category',
-            'id' => '200',
+            'entity' => $entityName,
+            'id' => $entityId,
         ));
     }
 

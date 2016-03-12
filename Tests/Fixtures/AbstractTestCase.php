@@ -28,6 +28,7 @@ abstract class AbstractTestCase extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
+        $this->initDatabase();
     }
 
     protected function tearDown()
@@ -38,6 +39,17 @@ abstract class AbstractTestCase extends WebTestCase
     protected function initClient(array $options = array())
     {
         $this->client = static::createClient($options);
+    }
+
+    /**
+     * It ensures that the database contains the original fixtures of the
+     * application. This way tests can modify its contents safely without
+     * interfering with subsequent tests.
+     */
+    protected function initDatabase()
+    {
+        $buildDir = __DIR__.'/../../build';
+        copy($buildDir.'/original_test.db', $buildDir.'/test.db');
     }
 
     /**

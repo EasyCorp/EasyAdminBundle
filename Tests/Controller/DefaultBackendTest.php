@@ -358,6 +358,20 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals($parameters, $refererParameters);
     }
 
+    public function testEditViewEntityModification()
+    {
+        $crawler = $this->requestEditView();
+        $this->client->followRedirects();
+
+        $categoryName = sprintf('Modified Category %s', md5(rand()));
+        $form = $crawler->selectButton('Save changes')->form(array(
+            'category[name]' => $categoryName,
+        ));
+        $crawler = $this->client->submit($form);
+
+        $this->assertContains($categoryName, $crawler->filter('#main table tr')->eq(1)->text(), 'The modified category is displayed in the first data row of the "list" table.');
+    }
+
     public function testNewViewTitle()
     {
         $crawler = $this->requestNewView();

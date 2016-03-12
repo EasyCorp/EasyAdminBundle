@@ -30,7 +30,8 @@ AnnotationRegistry::registerLoader(function ($class) use ($autoload) {
     return class_exists($class, false);
 });
 
-// Test Setup: remove files in the build/ directory
+// Test Setup: remove all the contents in the build/ directory
+// (PHP doesn't allow to delete direcctories unless they are empty)
 if (is_dir($buildDir = __DIR__.'/../build')) {
     $files = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($buildDir, RecursiveDirectoryIterator::SKIP_DOTS),
@@ -59,5 +60,8 @@ $application->run($input, new NullOutput());
 // Load fixtures of the AppTestBundle
 $input = new ArrayInput(array('command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => true));
 $application->run($input, new NullOutput());
+
+// Make a copy of the original SQLite database to use a clean db in every test
+copy($buildDir.'/test.db', $buildDir.'/original_test.db');
 
 unset($input, $application);

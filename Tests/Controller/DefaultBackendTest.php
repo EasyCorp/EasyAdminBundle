@@ -380,6 +380,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $em = $this->client->getContainer()->get('doctrine');
         $product = $em->getRepository('AppTestBundle:Product')->find(1);
+var_dump($product);exit;
         $this->assertTrue($product->isEnabled(), 'Initially the product is enabled.');
 
         $queryParameters = array('action' => 'edit', 'view' => 'list', 'entity' => 'Product', 'id' => '1', 'property' => 'enabled', 'newValue' => 'false');

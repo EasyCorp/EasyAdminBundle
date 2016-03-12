@@ -67,9 +67,9 @@ class EasyAdminConfigurationPass implements CompilerPassInterface
         // The parameter returned by the container has its values resolved.
         //   %value% -> is turned into the parameter value
         //   %%value%% -> is turned into %value% (we use this for EasyAdmin translations)
-        // Before further processing the configuration we need to escape again
-        // the % character to prevent Symfony interpreting them as a container
-        // parameter when setting the easyadmin.config value at the end of this method
+        // We need to escape again the % character to prevent Symfony interpreting
+        // them as a container parameter when setting back the easyadmin.config
+        // parameter in the container
         array_walk_recursive($backendConfig, function (&$value) {
             if (is_string($value)) {
                 $value = str_replace('%', '%%', $value);

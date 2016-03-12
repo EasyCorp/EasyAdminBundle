@@ -12,7 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpFoundation\Response;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class DefaultBackendTest extends AbstractTestCase
@@ -592,7 +591,7 @@ class DefaultBackendTest extends AbstractTestCase
         // Sending a 'DELETE' HTTP request is not enough (the delete form includes a CSRF token)
         $this->client->request('DELETE', '/admin/?'.http_build_query($queryParameters));
 
-        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', $this->client->getResponse()->getContent());
     }
 
@@ -602,7 +601,7 @@ class DefaultBackendTest extends AbstractTestCase
         // 'POST' HTTP method is wrong for deleting entities ('DELETE' method is required)
         $this->client->request('POST', '/admin/?'.http_build_query($queryParameters));
 
-        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', $this->client->getResponse()->getContent());
     }
 

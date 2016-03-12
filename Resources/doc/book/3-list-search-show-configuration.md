@@ -370,11 +370,11 @@ this chapter to modify the behavior of the `list`, `search` and `show` views.
 
 However, for simple filters it's more convenient to use the `dql_filter` option,
 which defines the conditions passed to the `WHERE` clause of the Doctrine query.
-the only restriction is that you must use the `entity` name to refer to the
+The only restriction is that you must use the `entity` name to refer to the
 current entity.
 
-The following example manages the same `User` entity but filters each of them
-to differentiate the type of users:
+The following example manages the same `User` entity in two different ways using
+a basic filter to differentiate each type of user:
 
 ```yaml
 easy_admin:
@@ -389,12 +389,25 @@ easy_admin:
                 dql_filter: 'entity.budget <= 100000'
 ```
 
-> **TIP**
->
-> Combine this option with a custom menu (as explained in next chapters) to
-> improve the navigation of the backend.
+Since this is a regular YAML configuration file, you can also include container
+parameters inside the filter to use different values depending on the environment
+or even dynamic values:
 
-The value of the `dql_filter` can combine several conditions:
+```yaml
+easy_admin:
+    entities:
+        VipCustomers:
+            class: AppBundle\Entity\User
+            list:
+                dql_filter: 'entity.budget > %customers.budget_threshold%'
+        RegularCustomers:
+            class: AppBundle\Entity\User
+            list:
+                dql_filter: 'entity.budget <= %customers.budget_threshold%'
+```
+
+The value of the `dql_filter` can combine several conditions (in fact, you can
+put anything valid as a `WHERE` clause in a Doctrine query):
 
 ```yaml
 easy_admin:
@@ -410,6 +423,11 @@ easy_admin:
         AllIssues:
             class: AppBundle\Entity\Issue
 ```
+
+> **TIP**
+>
+> Combine the `dql_filter` option with a custom menu (as explained in the next
+> chapters) to improve the navigation of the backend.
 
 > **CAUTION**
 >

@@ -369,7 +369,33 @@ class DefaultBackendTest extends AbstractTestCase
         ));
         $crawler = $this->client->submit($form);
 
-        $this->assertContains($categoryName, $crawler->filter('#main table tr')->eq(1)->text(), 'The modified category is displayed in the first data row of the "list" table.');
+        $this->assertContains(
+            $categoryName,
+            $crawler->filter('#main table tr')->eq(1)->text(),
+            'The modified category is displayed in the first data row of the "list" table.'
+        );
+    }
+
+    public function testEntityModificationViaAjax()
+    {
+        $em = $this->client->getContainer()->get('doctrine');
+        $product = $em->getRepository('AppTestBundle:Product')->find(1);
+        $this->assertTrue($product->isEnabled(), 'Initially the product is enabled.');
+
+        $queryParameters = array('action' => 'edit', 'view' => 'list', 'entity' => 'Product', 'id' => '1', 'property' => 'enabled', 'newValue' => 'false');
+        $this->client->request('GET', '/admin/?'.http_build_query($queryParameters), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
+
+        $product = $em->getRepository('AppTestBundle:Product')->find(1);
+        $this->assertFalse($product->isEnabled(), 'After editing it via Ajax, the product is not enabled.');
+    }
+
+    public function testWrongEntityModificationViaAjax()
+    {
+        $queryParameters = array('action' => 'edit', 'view' => 'list', 'entity' => 'Product', 'id' => '1', 'property' => 'this_property_does_not_exist', 'newValue' => 'false');
+        $this->client->request('GET', '/admin/?'.http_build_query($queryParameters), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
+
+        $this->assertEquals(500, $this->client->getResponse()->getStatusCode(), 'Trying to modify a non-existent property via Ajax returns a 500 error');
+        $this->assertContains('The type of the &quot;this_property_does_not_exist&quot; property is not &quot;toggle&quot;', $this->client->getResponse()->getContent());
     }
 
     public function testNewViewTitle()

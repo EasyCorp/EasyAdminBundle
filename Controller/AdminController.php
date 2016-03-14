@@ -70,6 +70,18 @@ class AdminController extends Controller
             throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
         }
 
+        if (isset($this->entity['controller'])) {
+            if (0 === strpos($this->entity['controller'], '@')) {
+                $controller = $this->get(substr($this->entity['controller'],1));
+            }
+            else {
+                $controller = new $this->entity['controller']();
+                $controller->setContainer($this->container);
+            }
+            $controller->initialize($request);
+            return $controller->executeDynamicMethod($action.'<EntityName>Action');
+        }
+
         return $this->executeDynamicMethod($action.'<EntityName>Action');
     }
 

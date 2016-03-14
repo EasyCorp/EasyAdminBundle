@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-14T18:52:55Z
+
+Thank you for fixing this issue.
+
+Believe it or not ... we've fixed this very same error at least two times in the past: here (https://github.com/javiereguiluz/EasyAdminBundle/pull/894) and here (https://github.com/javiereguiluz/EasyAdminBundle/pull/863). :scream:
+
+After merging your pull request I'm going to create a test for this. Thanks you!

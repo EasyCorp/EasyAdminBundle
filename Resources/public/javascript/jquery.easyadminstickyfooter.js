@@ -64,13 +64,13 @@
                         .css('width', '100%');
                     
                     if ('up' === direction) {
-                        that.$placeholder.height($element.height());
-                        $(that.element)
-                            .addClass(that.settings.stickyClass)
-                            .width(that.$placeholder.width());
+                        that._createStickyFooter();
                     }
                 }
             });
+            if ($(window).height() > that.waypoint.triggerPoint) {
+                that._createStickyFooter();
+            }
         },
         _bindAdminLteSidebarEvents: function() {
             var that = this;
@@ -99,6 +99,14 @@
                     that.waypoint.context.refresh();
                 });
             }
+        },
+        _createStickyFooter: function() {
+            var $element = $(this.element);
+            this.$placeholder.height($element.height());
+                
+            $element
+                .addClass(this.settings.stickyClass)
+                .width(this.$placeholder.width());
         },
         _refreshWaypointAndWidth: function() {
             this.waypoint.context.refresh();

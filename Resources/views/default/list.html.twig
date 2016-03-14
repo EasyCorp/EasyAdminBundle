@@ -78,7 +78,7 @@
     {% endif %}
 {% endset %}
 
-{% block page_title %}{{ _content_title }}{% endblock %}
+{% block page_title %}{{ _content_title|striptags }}{% endblock %}
 
 {% block content_header %}
     <div class="row">

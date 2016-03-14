@@ -490,8 +490,8 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertEquals('200 results found', trim($crawler->filter('head title')->text()));
-        $this->assertEquals('200 results found', trim($crawler->filter('h1.title')->text()));
+        $this->assertEquals('200 results found', trim($crawler->filter('head title')->html()), 'The page title does not contain HTML tags.');
+        $this->assertEquals('<strong>200</strong> results found', trim($crawler->filter('h1.title')->html()), 'The visible content contains HTML tags.');
     }
 
     public function testSearchViewTableIdColumn()

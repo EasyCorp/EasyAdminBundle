@@ -7,6 +7,8 @@ $(function () {
     ;
 
     createNullableControls();
+    
+    $('.sticky-footer').easyAdminStickyFooter();
 });
 
 function createNullableControls() {

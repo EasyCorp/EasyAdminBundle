@@ -124,7 +124,7 @@ class MenuConfigPass implements ConfigPassInterface
                 $entityName = $itemConfig['entity'];
 
                 if (!array_key_exists($entityName, $backendConfig['entities'])) {
-                    throw new \RuntimeException(sprintf('The "%s" entity included in the "menu" option is not managed by EasyAdmin. The menu can only include any of these entities: %s.', $entityName, implode(', ', array_keys($backendConfig['entities']))));
+                    throw new \RuntimeException(sprintf('The "%s" entity included in the "menu" option is not managed by EasyAdmin. The menu can only include any of these entities: %s. NOTE: If your menu worked before, this error may be caused by a change introduced by EasyAdmin 1.12.0 version. Check out https://github.com/javiereguiluz/EasyAdminBundle/releases/tag/v1.12.0 for more details.', $entityName, implode(', ', array_keys($backendConfig['entities']))));
                 }
 
                 if (!isset($itemConfig['label'])) {

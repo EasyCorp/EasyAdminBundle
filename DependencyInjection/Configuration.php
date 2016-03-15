@@ -413,6 +413,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('entities')
                     ->normalizeKeys(false)
+                    ->useAttributeAsKey('name', false)
                     ->defaultValue(array())
                     ->info('The list of entities to manage in the administration zone.')
                     ->prototype('variable')

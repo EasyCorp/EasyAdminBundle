@@ -1,0 +1,42 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2016-02-25T22:38:48Z
+
+:+1: great!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-02-26T18:51:39Z
+
+Actually I think this change is correct but IMO we should add a BC break in EasyAdmin v2 and force the user to specify name and class with at least the `Post: AppBundle\Entity\Post` syntax, to lighten the code used to manage this flexibility.
+Plus, I don't think anyone uses the `- AppBundle\Entity\Product` syntax on a "long-term" project. It's just magic that's awesome to see and that's good to say "Create a back-end in 5 minutes", but this is actually a bit too much magic to allow *real* backends to be easy to manage internally by EasyAdmin.
+
+To conclude, I suggest we should remove some magic in v2 to avoid this kind of issue.
+
+---------------------------------------------------------------------------
+
+by rubengc at 2016-02-29T10:14:16Z
+
+I agree with @Pierstoval normally everithing needs more than a simple/default configuration
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-14T19:37:30Z
+
+**Update**
+
+Since this change can break things, I plan to release the `1.12.0` version containing only this change. In 074988c I've improved the error message of the "Undefined entity" exception to add a link to the changelog of the future 1.12.0 version. There we'll explain the change and the simple solution to fix it.
+
+Hopefully this change won't cause much pain. :pray:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-03-15T07:40:12Z
+
+So do you *really* plan to remove the "plain array" syntax when defining entities?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-15T07:50:45Z
+
+@Pierstoval probably not. That's our biggest "Wow factor" and it's very powerful from the marketing point of view.

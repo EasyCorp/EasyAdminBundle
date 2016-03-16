@@ -35,6 +35,10 @@
                 <source>action.list</source>
                 <target>Voltar para a lista</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Nenhum</target>
+            </trans-unit>
 
             <!-- forms -->
             <trans-unit id="form.label.collections">

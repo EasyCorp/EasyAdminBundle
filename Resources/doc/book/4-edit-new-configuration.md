@@ -249,9 +249,10 @@ These are the options that you can define for each field:
     wraps the label, the widget and the error messages of the field.
   * `type` (optional): the Symfony Form type used to render this field. All the
     [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
-    are supported. In Symfony 2.x applications, use the short type name (e.g.
-    `email`); in Symfony 3.x use the fully qualified class name of the type
-    (e.g. `Symfony\Component\Form\Extension\Core\Type\EmailType`)
+    are supported. You can use the short type name (e.g. `email`) instead of its
+    fully qualified class name (e.g. `Symfony\Component\Form\Extension\Core\Type\EmailType`)
+    even if your application runs on Symfony 3 (the needed conversion is done
+    internally by the bundle).
   * `type_options` (optional), a hash with the options passed to the Symfony
     Form type associated with the field.
 

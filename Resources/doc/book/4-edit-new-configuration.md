@@ -285,7 +285,7 @@ instead the options defined by Symfony's `DateTimeType`, `DateType` and
 `TimeType`.
 
 For example, to display your dates as a single `<input>` text element, define
-the `date_widget` form field option (commonly used together with `date_format`):
+the `widget` form field option (commonly used together with `format`):
 
 ```yaml
 easy_admin:
@@ -293,7 +293,7 @@ easy_admin:
         Event:
             edit:
                 fields:
-                    - { property: 'startsAt', type_options: { date_widget: 'single_text' } }
+                    - { property: 'startsAt', type_options: { widget: 'single_text' } }
                     # ...
 ```
 

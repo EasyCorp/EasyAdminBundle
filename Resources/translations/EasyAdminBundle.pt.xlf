@@ -39,7 +39,7 @@
             <!-- paginator -->
             <trans-unit id="paginator.first">
                 <source>paginator.first</source>
-                <target>Primera</target>
+                <target>Primeira</target>
             </trans-unit>
             <trans-unit id="paginator.previous">
                 <source>paginator.previous</source>

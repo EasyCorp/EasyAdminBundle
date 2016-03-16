@@ -220,11 +220,15 @@ easy_admin:
             # ...
             form:
                 fields:
-                    - { property: 'imageFile', type: 'Vich\UploaderBundle\Form\Type\VichImageType' }
-                    # In Symfony 2, you can use the form type shortcut
-                    # - { property: 'imageFile', type: 'vich_image' }
+                    - { property: 'imageFile', type: 'vich_image' }
             # ...
 ```
+
+> **TIP**
+>
+> Even if your application uses Symfony 3 there is no need to use the FQCN of
+> the VichImageType (`type: 'Vich\UploaderBundle\Form\Type\VichImageType'`)
+> because EasyAdmin supports the short types for some popular third-party bundles.
 
 Uploading Other Types of Files
 ------------------------------
@@ -370,11 +374,15 @@ easy_admin:
             # ...
             form:
                 fields:
-                    - { property: 'contractFile', type: 'Vich\UploaderBundle\Form\Type\VichFileType' }
-                    # In Symfony 2, you can use the form type shortcut
-                    # - { property: 'contractFile', type: 'vich_file' }
+                    - { property: 'contractFile', type: 'vich_file' }
             # ...
 ```
+
+> **TIP**
+>
+> Even if your application uses Symfony 3 there is no need to use the FQCN of
+> the VichFileType (`type: 'Vich\UploaderBundle\Form\Type\VichFileType'`)
+> because EasyAdmin supports the short types for some popular third-party bundles.
 
 Customizing Form Fields for Image and File Uploading
 ----------------------------------------------------

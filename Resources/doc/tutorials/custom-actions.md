@@ -42,9 +42,7 @@ Therefore, the next step is to create a custom `AdminController` in your
 Symfony application and to make it extend from the base AdminController
 provided by EasyAdmin. This process will take you less than a minute and it's
 explained in detail in the *Customization Based on Controller Methods* section
-in the [Customizing AdminController tutorial] [customizing-admin-controller].
-
-.. TODO: update the previous link
+in the [Customization Based on Controller Methods][1].
 
 Now you can define the `restockAction()` method in your own controller:
 
@@ -190,4 +188,4 @@ Similarly to method based actions, you can configure any option for these
 actions (icons, labels, etc.) and you can also leverage the action inheritance
 mechanism.
 
-[customizing-admin-controller]: ./customizing-admin-controller.md
+[1]: ../book/3-list-search-show-configuration.md#customization-based-on-controller-methods

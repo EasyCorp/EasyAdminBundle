@@ -79,7 +79,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getEntityConfiguration($entityName)
     {
         return null !== $this->getBackendConfiguration('entities.'.$entityName)
-            ? $this->configurator->getEntityConfiguration($entityName)
+            ? $this->configurator->getEntityConfig($entityName)
             : null;
     }
 
@@ -98,7 +98,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
-        $entityConfiguration = $this->configurator->getEntityConfiguration($entityName);
+        $entityConfiguration = $this->configurator->getEntityConfig($entityName);
         $fieldName = $fieldMetadata['property'];
 
         try {

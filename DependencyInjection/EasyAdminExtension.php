@@ -34,8 +34,8 @@ class EasyAdminExtension extends Extension
     {
         // process bundle's configuration parameters
         $configs = $this->processConfigFiles($configs);
-        $backendConfiguration = $this->processConfiguration(new Configuration(), $configs);
-        $container->setParameter('easyadmin.config', $backendConfiguration);
+        $backendConfig = $this->processConfiguration(new Configuration(), $configs);
+        $container->setParameter('easyadmin.config', $backendConfig);
 
         // load bundle's services
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

@@ -36,15 +36,15 @@ class EasyAdminDataCollector extends DataCollector
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $backendConfiguration = $this->configurator->getBackendConfig();
+        $backendConfig = $this->configurator->getBackendConfig();
         $entityName = $request->query->get('entity', null);
-        $currentEntityConfiguration = array_key_exists($entityName, $backendConfiguration['entities']) ? $backendConfiguration['entities'][$entityName] : array();
+        $currentEntityConfig = array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : array();
 
         $this->data = array(
-            'num_entities' => count($backendConfiguration['entities']),
+            'num_entities' => count($backendConfig['entities']),
             'request_parameters' => $this->getEasyAdminParameters($request),
-            'current_entity_configuration' => $currentEntityConfiguration,
-            'backend_configuration' => $backendConfiguration,
+            'current_entity_configuration' => $currentEntityConfig,
+            'backend_configuration' => $backendConfig,
         );
     }
 
@@ -74,12 +74,12 @@ class EasyAdminDataCollector extends DataCollector
         return $this->data['request_parameters'];
     }
 
-    public function getCurrentEntityConfiguration()
+    public function getCurrentEntityConfig()
     {
         return $this->data['current_entity_configuration'];
     }
 
-    public function getBackendConfiguration()
+    public function getBackendConfig()
     {
         return $this->data['backend_configuration'];
     }

@@ -33,7 +33,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
     {
         $backendConfig = array('easy_admin' => null);
         $configurator = new Configurator($backendConfig, new PropertyAccessor());
-        $configurator->getEntityConfiguration('TestEntity');
+        $configurator->getEntityConfig('TestEntity');
     }
 
     /**
@@ -44,7 +44,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
     {
         $backendConfig = array('easy_admin' => array('entities' => array('AppBundle\\Entity\\TestEntity')));
         $configurator = new Configurator($backendConfig, new PropertyAccessor());
-        $configurator->getEntityConfiguration('UnmanagedEntity');
+        $configurator->getEntityConfig('UnmanagedEntity');
     }
 }
 

@@ -50,7 +50,7 @@ class EasyAdminFormType extends AbstractType
     {
         $entity = $options['entity'];
         $view = $options['view'];
-        $entityConfig = $this->configurator->getEntityConfiguration($entity);
+        $entityConfig = $this->configurator->getEntityConfig($entity);
         $entityProperties = $entityConfig[$view]['fields'];
 
         foreach ($entityProperties as $name => $metadata) {
@@ -80,7 +80,7 @@ class EasyAdminFormType extends AbstractType
                 'allow_extra_fields' => true,
                 'data_class' => function (Options $options) use ($configurator) {
                     $entity = $options['entity'];
-                    $entityConfig = $configurator->getEntityConfiguration($entity);
+                    $entityConfig = $configurator->getEntityConfig($entity);
 
                     return $entityConfig['class'];
                 },

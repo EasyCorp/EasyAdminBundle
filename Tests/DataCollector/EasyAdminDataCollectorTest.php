@@ -48,11 +48,11 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
         );
         $this->assertEquals($parameters, $collector->getRequestParameters());
 
-        $currentConfiguration = $collector->getCurrentEntityConfiguration();
+        $currentConfiguration = $collector->getCurrentEntityConfig();
         $this->assertEquals('Category', $currentConfiguration['name']);
 
-        $backendConfiguration = $collector->getBackendConfiguration();
-        $this->assertCount(5, $backendConfiguration['entities']);
+        $backendConfig = $collector->getBackendConfig();
+        $this->assertCount(5, $backendConfig['entities']);
     }
 
     public function testCollectorInformationForEditView()
@@ -72,11 +72,11 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
         );
         $this->assertEquals($parameters, $collector->getRequestParameters());
 
-        $currentConfiguration = $collector->getCurrentEntityConfiguration();
+        $currentConfiguration = $collector->getCurrentEntityConfig();
         $this->assertEquals('Category', $currentConfiguration['name']);
 
-        $backendConfiguration = $collector->getBackendConfiguration();
-        $this->assertCount(5, $backendConfiguration['entities']);
+        $backendConfig = $collector->getBackendConfig();
+        $this->assertCount(5, $backendConfig['entities']);
     }
 
     /**

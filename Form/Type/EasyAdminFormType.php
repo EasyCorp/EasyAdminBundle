@@ -140,28 +140,51 @@ class EasyAdminFormType extends AbstractType
      */
     private function getFormTypeFqcn($shortType)
     {
-        $builtinTypes = array(
-            'birthday', 'button', 'checkbox', 'choice', 'collection', 'country',
-            'currency', 'datetime', 'date', 'email', 'entity', 'file', 'form',
-            'hidden', 'integer', 'language', 'locale', 'money', 'number',
-            'password', 'percent', 'radio', 'range', 'repeated', 'reset',
-            'search', 'submit', 'textarea', 'text', 'time', 'timezone', 'url',
-        );
-
-        if (!in_array($shortType, $builtinTypes)) {
-            return $shortType;
-        }
-
-        $irregularTypeFqcn = array(
-            'entity' => 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType',
+        $supportedTypes = array(
+            // Symfony's built-in types
+            'birthday' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\BirthdayType',
+            'button' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\ButtonType',
+            'checkbox' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CheckboxType',
+            'choice' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\ChoiceType',
+            'collection' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CollectionType',
+            'country' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CountryType',
+            'currency' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CurrencyType',
             'datetime' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType',
+            'date' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateType',
+            'email' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\EmailType',
+            'entity' => 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType',
+            'file' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FileType',
+            'form' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType',
+            'hidden' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\HiddenType',
+            'integer' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\IntegerType',
+            'language' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\LanguageType',
+            'locale' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\LocaleType',
+            'money' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\MoneyType',
+            'number' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\NumberType',
+            'password' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\PasswordType',
+            'percent' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\PercentType',
+            'radio' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\RadioType',
+            'range' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\RangeType',
+            'repeated' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\RepeatedType',
+            'reset' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\ResetType',
+            'search' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\SearchType',
+            'submit' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\SubmitType',
+            'textarea' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TextareaType',
+            'text' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TextType',
+            'time' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimeType',
+            'timezone' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimezoneType',
+            'url' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\UrlType',
+            // Popular third-party bundles types
+            'ckeditor' => 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType',
+            'vich_file' => 'Vich\\UploaderBundle\\Form\\Type\\VichFileType',
+            'vich_image' => 'Vich\\UploaderBundle\\Form\\Type\\VichImageType',
         );
 
-        if (array_key_exists($shortType, $irregularTypeFqcn)) {
-            return $irregularTypeFqcn[$shortType];
+        if (array_key_exists($shortType, $supportedTypes)) {
+            return $supportedTypes[$shortType];
         }
 
-        return sprintf('Symfony\\Component\\Form\\Extension\\Core\\Type\\%sType', ucfirst($shortType));
+        return $shortType;
     }
 
     /**

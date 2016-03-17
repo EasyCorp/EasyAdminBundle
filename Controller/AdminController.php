@@ -475,7 +475,7 @@ class AdminController extends Controller
             'sort_direction' => $sortDirection,
         ));
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, false, false));
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
         $paginator->setMaxPerPage($maxPerPage);
         $paginator->setCurrentPage($page);
 
@@ -526,7 +526,7 @@ class AdminController extends Controller
             'searchable_fields' => $searchableFields,
         ));
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, false, false));
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
         $paginator->setMaxPerPage($maxPerPage);
         $paginator->setCurrentPage($page);
 

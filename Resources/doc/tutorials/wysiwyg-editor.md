@@ -58,10 +58,14 @@ easy_admin:
             form:
                 fields:
                     # ...
-                    - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType' }
-                    # In Symfony 2 you can use the form type alias instead
-                    # - { property: 'description', type: 'ckeditor' }
+                    - { property: 'description', type: 'ckeditor' }
 ```
+
+> **TIP**
+>
+> Even if your application uses Symfony 3 there is no need to use the FQCN of
+> the `CKEditorType` (`type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType'`)
+> because EasyAdmin supports the short types for some popular third-party bundles.
 
 Now, the `description` property will be rendered as a rich text editor and not as
 a simple `<textarea>`:
@@ -92,7 +96,7 @@ easy_admin:
             form:
                 fields:
                     # ...
-                    - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType' }
+                    - { property: 'description', type: 'ckeditor' }
 ```
 
 In this example, the toolbar is simplified to display just a few common options:
@@ -137,9 +141,9 @@ easy_admin:
             form:
                 fields:
                     # ...
-                    - { property: 'excerpt', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType',
+                    - { property: 'excerpt', type: 'ckeditor',
                         type_options: { config_name: 'simple_config' } }
-                    - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType',
+                    - { property: 'description', type: 'ckeditor',
                         type_options: { config_name: 'advanced_config' } }
 ```
 

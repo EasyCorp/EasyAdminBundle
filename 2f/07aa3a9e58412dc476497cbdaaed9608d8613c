@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2016-03-17T11:56:14Z
+
+Very nice feature, especially because in the yaml files we don't have autocomplete. Thanks!
+
+---------------------------------------------------------------------------
+
+by Babacooll at 2016-03-17T15:53:26Z
+
+This is a nice feature, but do you think the examples should use alias instead of FQCN as FQCN are supposed to be good practice ? I think this should be some kind of fallback.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-17T15:58:27Z
+
+The problem is that using the FQCN is very verbose in YAML files. In PHP files is equally horrible, but you can at least hide part of it thanks to the `use ...` import and the `...::class` instruction. In any case, both formats work on EasyAdmin, so users can decide which one to use.

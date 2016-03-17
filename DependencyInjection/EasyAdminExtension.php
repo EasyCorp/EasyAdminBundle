@@ -42,10 +42,22 @@ class EasyAdminExtension extends Extension
         $loader->load('services.xml');
         $loader->load('form.xml');
 
-        // Don't register our exception listener if debug is enabled
+        // don't register our exception listener if debug is enabled
         if ($container->getParameter('kernel.debug')) {
             $container->removeDefinition('easyadmin.listener.exception');
         }
+
+        // compile commonly used classes
+        $this->addClassesToCompile(array(
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Controller\\AdminController',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Event\\EasyAdminEvents',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Configuration\\Configurator',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\RequestPostInitializeListener',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Extension\EasyAdminExtension',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\ExceptionListener',
+        ));
 
         $this->ensureBackwardCompatibility($container);
     }

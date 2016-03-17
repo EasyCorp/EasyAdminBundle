@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by xabbuh at 2016-03-16T19:46:29Z
+
+Not sure if that really makes sense. Are you able to make this comparison with Opcache enabled?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-03-16T19:50:57Z
+
+No matter how low it is, I think if should be taken into account. :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-16T20:44:39Z
+
+@xabbuh yes, the tests were done with OpCache enabled (and Twig extension enabled too).
+
+The entire page loads in 86ms, so we can't really save a lot. And the four slowest elements are Composer and Twig, which are a bit out of our control:
+
+![function_metrics](https://cloud.githubusercontent.com/assets/73419/13828121/3d32901c-ebc0-11e5-8326-360a5a03e42d.png)

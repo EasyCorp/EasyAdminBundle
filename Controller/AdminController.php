@@ -698,7 +698,7 @@ class AdminController extends Controller
         ;
 
         $submitButtonType = $this->useLegacyFormComponent() ? 'submit' : 'Symfony\\Component\\Form\\Extension\\Core\\Type\\SubmitType';
-        $formBuilder->add('submit', $submitButtonType, array('label' => 'Delete'));
+        $formBuilder->add('submit', $submitButtonType, array('label' => 'delete_modal.action', 'translation_domain' => 'EasyAdminBundle'));
 
         return $formBuilder->getForm();
     }

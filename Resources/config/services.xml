@@ -35,5 +35,9 @@
             <argument type="service" id="request_stack" on-invalid="null" />
             <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />
         </service>
+
+        <service id="easyadmin.query_builder" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder">
+            <argument type="service" id="doctrine" />
+        </service>
     </services>
 </container>

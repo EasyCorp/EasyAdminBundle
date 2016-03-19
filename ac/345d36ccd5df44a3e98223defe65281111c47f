@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-18T21:30:45Z
+
+@emmanuelballery thanks for this fix. I haven't merge it yet because I don't see that missing translation when using the [EasyAdmin Demo application](https://github.com/javiereguiluz/easy-admin-demo) and I'd like to investigate why. Thanks!
+
+---------------------------------------------------------------------------
+
+by emmanuelballery at 2016-03-18T23:15:00Z
+
+Because of this file : https://github.com/javiereguiluz/easy-admin-demo/blob/master/app/Resources/translations/messages.en.yml ? (last line)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-19T08:43:02Z
+
+You are right. I've removed the translation in the demo application (https://github.com/javiereguiluz/easy-admin-demo/commit/dd33ce5f6285906867d10faf8f1049d30f3b9506) and I will now merge this. Thanks for contributing actively in this bundle!

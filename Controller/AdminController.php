@@ -17,8 +17,6 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -474,11 +472,7 @@ class AdminController extends Controller
             'sort_direction' => $sortDirection,
         ));
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
-        $paginator->setMaxPerPage($maxPerPage);
-        $paginator->setCurrentPage($page);
-
-        return $paginator;
+        return $this->get('easyadmin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
     }
 
     /**
@@ -519,11 +513,7 @@ class AdminController extends Controller
             'searchable_fields' => $searchableFields,
         ));
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
-        $paginator->setMaxPerPage($maxPerPage);
-        $paginator->setCurrentPage($page);
-
-        return $paginator;
+        return $this->get('easyadmin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
     }
 
     /**

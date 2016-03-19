@@ -39,5 +39,8 @@
         <service id="easyadmin.query_builder" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder">
             <argument type="service" id="doctrine" />
         </service>
+
+        <service id="easyadmin.paginator" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator">
+        </service>
     </services>
 </container>

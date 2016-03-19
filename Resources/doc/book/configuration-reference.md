@@ -261,7 +261,8 @@ absolute links. Example:
 ```yaml
 easy_admin:
     design:
-        css: ['/bundles/app/custom_backend.css', 'https://example.com/css/theme.css']
+        assets:
+            css: ['/bundles/app/custom_backend.css', 'https://example.com/css/theme.css']
     # ...
 ```
 
@@ -283,7 +284,8 @@ can use relative or absolute links. Example:
 ```yaml
 easy_admin:
     design:
-        js: ['/bundles/app/custom_widgets.js', 'https://example.com/js/animations.js']
+        assets:
+            js: ['/bundles/app/custom_widgets.js', 'https://example.com/js/animations.js']
     # ...
 ```
 

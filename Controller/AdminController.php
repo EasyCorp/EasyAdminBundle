@@ -11,15 +11,12 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
-use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -38,13 +35,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AdminController extends Controller
 {
+    /** @var array The full configuration of the entire backend */
     protected $config;
+    /** @var array The full configuration of the current entity */
     protected $entity = array();
-
-    /** @var Request */
+    /** @var Request The instance of the current Symfony request */
     protected $request;
-
-    /** @var EntityManager */
+    /** @var EntityManager The Doctrine entity manager for the current entity */
     protected $em;
 
     /**
@@ -113,8 +110,8 @@ class AdminController extends Controller
             throw new NoEntitiesConfiguredException();
         }
 
-        // this condition happens when accessing the backend homepage, which
-        // then redirects to the 'list' action of the first configured entity
+        // this condition happens when accessing the backend homepage and before
+        // redirecting to the default page set as the homepage
         if (null === $entityName = $request->query->get('entity')) {
             return;
         }
@@ -475,11 +472,7 @@ class AdminController extends Controller
             'sort_direction' => $sortDirection,
         ));
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
-        $paginator->setMaxPerPage($maxPerPage);
-        $paginator->setCurrentPage($page);
-
-        return $paginator;
+        return $this->get('easyadmin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
     }
 
     /**
@@ -493,13 +486,7 @@ class AdminController extends Controller
      */
     protected function createListQueryBuilder($entityClass, $sortDirection, $sortField = null)
     {
-        $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
-
-        if (null !== $sortField) {
-            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection);
-        }
-
-        return $queryBuilder;
+        return $this->get('easyadmin.query_builder')->createListQueryBuilder($this->entity, $sortField, $sortDirection);
     }
 
     /**
@@ -526,11 +513,7 @@ class AdminController extends Controller
             'searchable_fields' => $searchableFields,
         ));
 
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
-        $paginator->setMaxPerPage($maxPerPage);
-        $paginator->setCurrentPage($page);
-
-        return $paginator;
+        return $this->get('easyadmin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
     }
 
     /**
@@ -546,39 +529,7 @@ class AdminController extends Controller
      */
     protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null)
     {
-        $databaseIsPostgreSql = $this->isPostgreSqlUsedByEntity($entityClass);
-        $queryBuilder = $this->em->createQueryBuilder()->select('entity')->from($entityClass, 'entity');
-
-        $queryConditions = $queryBuilder->expr()->orX();
-        $queryParameters = array();
-        foreach ($searchableFields as $name => $metadata) {
-            $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));
-            $isTextField = in_array($metadata['dataType'], array('string', 'text', 'guid'));
-
-            if (is_numeric($searchQuery) && $isNumericField) {
-                $queryConditions->add(sprintf('entity.%s = :exact_query', $name));
-                $queryParameters['exact_query'] = 0 + $searchQuery; // adding '0' turns the string into a numeric value
-            } elseif ($isTextField) {
-                $queryConditions->add(sprintf('entity.%s LIKE :fuzzy_query', $name));
-                $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
-            } else {
-                // PostgreSQL doesn't allow to compare string values with non-string columns (e.g. 'id')
-                if ($databaseIsPostgreSql) {
-                    continue;
-                }
-
-                $queryConditions->add(sprintf('entity.%s IN (:words)', $name));
-                $queryParameters['words'] = explode(' ', $searchQuery);
-            }
-        }
-
-        $queryBuilder->add('where', $queryConditions)->setParameters($queryParameters);
-
-        if (null !== $sortField) {
-            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection ?: 'DESC');
-        }
-
-        return $queryBuilder;
+        return $this->get('easyadmin.query_builder')->createSearchQueryBuilder($this->entity, $searchQuery, $sortField, $sortDirection);
     }
 
     /**
@@ -729,21 +680,6 @@ class AdminController extends Controller
     protected function renderForbiddenActionError($action)
     {
         return $this->render('@EasyAdmin/error/forbidden_action.html.twig', array('action' => $action), new Response('', 403));
-    }
-
-    /**
-     * Returns true if the data of the given entity are stored in a database
-     * of Type PostgreSQL.
-     *
-     * @param string $entityClass
-     *
-     * @return bool
-     */
-    private function isPostgreSqlUsedByEntity($entityClass)
-    {
-        $em = $this->get('doctrine')->getManagerForClass($entityClass);
-
-        return $em->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform;
     }
 
     /**

@@ -15,7 +15,6 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
-use Symfony\Component\Validator\Tests\Fixtures\Entity;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

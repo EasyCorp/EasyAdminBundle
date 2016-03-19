@@ -15,6 +15,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
+use Symfony\Component\Validator\Tests\Fixtures\Entity;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -41,7 +42,9 @@ class QueryBuilder
      */
     public function createListQueryBuilder(array $entityConfig, $sortField, $sortDirection)
     {
+        /** @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+        /** @var DoctrineQueryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
             ->from($entityConfig['class'], 'entity')
@@ -67,7 +70,9 @@ class QueryBuilder
      */
     public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField, $sortDirection)
     {
+        /** @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+        /** @var DoctrineQueryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
             ->from($entityConfig['class'], 'entity')
@@ -119,6 +124,7 @@ class QueryBuilder
      */
     private function isPostgreSqlPlatform($entityClass)
     {
+        /** @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityClass);
 
         return $em->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform;

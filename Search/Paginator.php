@@ -11,7 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
 
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -23,13 +23,13 @@ class Paginator
     /**
      * Creates a Doctrine ORM paginator for the given query builder.
      *
-     * @param QueryBuilder $queryBuilder
-     * @param int          $page
-     * @param int          $maxPerPage
+     * @param DoctrineQueryBuilder $queryBuilder
+     * @param int                  $page
+     * @param int                  $maxPerPage
      *
      * @return Pagerfanta
      */
-    public function createOrmPaginator(QueryBuilder $queryBuilder, $page, $maxPerPage)
+    public function createOrmPaginator(DoctrineQueryBuilder $queryBuilder, $page, $maxPerPage)
     {
         $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
         $paginator->setMaxPerPage($maxPerPage);

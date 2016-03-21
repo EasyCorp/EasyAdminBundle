@@ -84,18 +84,18 @@ class QueryBuilder
             $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));
             $isTextField = in_array($metadata['dataType'], array('string', 'text', 'guid'));
 
-            if (is_numeric($searchQuery) && $isNumericField) {
+            if ($isNumericField && is_numeric($searchQuery)) {
                 $queryBuilder->orWhere(sprintf('entity.%s = :exact_query', $name));
                 // adding '0' turns the string into a numeric value
                 $queryParameters['exact_query'] = 0 + $searchQuery;
             } elseif ($isTextField) {
-                $queryBuilder->orWhere(sprintf('entity.%s LIKE :fuzzy_query', $name));
-                $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
-            } else {
                 // PostgreSQL doesn't allow to search string values in non-string columns
                 if ($databaseIsPostgreSql) {
                     continue;
                 }
+
+                $queryBuilder->orWhere(sprintf('entity.%s LIKE :fuzzy_query', $name));
+                $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
 
                 $queryBuilder->orWhere(sprintf('entity.%s IN (:words_query)', $name));
                 $queryParameters['words_query'] = explode(' ', $searchQuery);

@@ -53,14 +53,14 @@ Editing User Information
 ------------------------
 
 FOSUserBundle provides a custom `User` entity with some predefined properties,
-such as `email`, `$enabled` and `lastLogin`. You can manage these properties in
+such as `email`, `enabled` and `lastLogin`. You can manage these properties in
 the same way you manage any property of any other entity:
 
 ```yaml
 easy_admin:
     entities:
         User:
-            edit:
+            form:
                 fields: ['enabled', 'username', 'email', 'roles', 'lastLogin']
 ```
 
@@ -68,11 +68,6 @@ However, it's recommended to save changes using FOSUserBundle's user manager.
 Therefore, open your AdminController and add the following method:
 
 ```php
-// src/AppBundle/Controller/AdminController.php
-namespace AppBundle\Controller;
-
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
-
 class AdminController extends BaseAdminController
 {
     // ...
@@ -90,7 +85,7 @@ class AdminController extends BaseAdminController
 > name. For example, if the entity is called `Customers`, the method to define
 > is `preUpdateCustomersEntity()`.
 
-[1]: https://github.com/friendsofsymfony/fosuserbundle
+[1]: https://github.com/FriendsOfSymfony/FOSUserBundle
 [2]: http://symfony.com/doc/current/bundles/FOSUserBundle/index.html
 [3]: http://symfony.com/doc/current/bundles/FOSUserBundle/user_manager.html
 [4]: ../book/4-edit-new-configuration.md#customizing-the-behavior-of-edit-and-new-views

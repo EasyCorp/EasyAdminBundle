@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2016-03-20T14:44:35Z
+
+Great refactor! and it looks very well. You think this solves this issue #611 ? Thanks.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-21T18:29:02Z
+
+@yceruto I've tried putting a `continue;` inside the `foreach ($entityConfig['search']['fields'] as $name => $metadata) { ... }` loop to skip defining any `orWhere()` clause and it works as expected: it returns all results. So #611 will probably be fixed by this.

@@ -12,7 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 
@@ -89,11 +88,6 @@ class QueryBuilder
                 // adding '0' turns the string into a numeric value
                 $queryParameters['exact_query'] = 0 + $searchQuery;
             } elseif ($isTextField) {
-                // PostgreSQL doesn't allow to search string values in non-string columns
-                if ($databaseIsPostgreSql) {
-                    continue;
-                }
-
                 $queryBuilder->orWhere(sprintf('entity.%s LIKE :fuzzy_query', $name));
                 $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
 
@@ -111,21 +105,5 @@ class QueryBuilder
         }
 
         return $queryBuilder;
-    }
-
-    /**
-     * Returns true if the data of the given entity are stored in a database
-     * of type PostgreSQL.
-     *
-     * @param string $entityClass
-     *
-     * @return bool
-     */
-    private function isPostgreSqlPlatform($entityClass)
-    {
-        /** @var EntityManager */
-        $em = $this->doctrine->getManagerForClass($entityClass);
-
-        return $em->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform;
     }
 }

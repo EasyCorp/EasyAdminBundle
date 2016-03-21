@@ -76,8 +76,6 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $databaseIsPostgreSql = $this->isPostgreSqlPlatform($entityConfig['class']);
-
         $queryParameters = array();
         foreach ($entityConfig['search']['fields'] as $name => $metadata) {
             $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));

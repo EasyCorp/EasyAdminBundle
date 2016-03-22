@@ -11,13 +11,14 @@ Creating New Users
 ------------------
 
 FOSUserBundle defines a [user manager][3] to handle all operations on user
-instances, such as creating and editing users. This manager makes the bundle
-"agnostic" to where the users are stored and it's a good practice to use it.
+instances, such as creating and editing users. This manager, which is accessed
+through the `fos_user.user_manager` service, makes the bundle "agnostic" to
+where the users are stored and it's a good practice to use it.
 
 Before using this manager, [create your own AdminController][4] if you haven't
 done it already so you can modify the behavior of the new action. Then,
-override the `createNewUserEntity()` and `prePersistUserEntity()` methods and
-call the `fos_user.user_manager` event to create and save new users:
+override the `createNewUserEntity()` and `prePersistUserEntity()` methods to
+override the way users are created and persisted:
 
 ```php
 // src/AppBundle/Controller/AdminController.php

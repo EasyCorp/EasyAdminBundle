@@ -29,12 +29,12 @@ class AdminController extends BaseAdminController
 {
     public function createNewUserEntity()
     {
-        return $this->container->get('fos_user.user_manager')->createUser();
+        return $this->get('fos_user.user_manager')->createUser();
     }
 
     public function prePersistUserEntity($user)
     {
-        $this->container->get('fos_user.user_manager')->updateUser($user, false);
+        $this->get('fos_user.user_manager')->updateUser($user, false);
     }
 }
 ```
@@ -74,7 +74,7 @@ class AdminController extends BaseAdminController
 
     public function preUpdateUserEntity($user)
     {
-        $this->container->get('fos_user.user_manager')->updateUser($user, false);
+        $this->get('fos_user.user_manager')->updateUser($user, false);
     }
 }
 ```

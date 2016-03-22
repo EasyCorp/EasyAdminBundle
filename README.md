@@ -58,6 +58,7 @@ read before using EasyAdmin.
   * [How to translate the backend](Resources/doc/tutorials/i18n.md)
   * [How to define custom actions](Resources/doc/tutorials/custom-actions.md)
   * [How to define custom options for entity properties](Resources/doc/tutorials/custom-property-options.md)
+  * [How to integrate FOSUserBundle to manage users](Resources/doc/tutorials/fosuserbundle-integration.md)
   * [How to use a WYSIWYG editor](Resources/doc/tutorials/wysiwyg-editor.md)
   * [How to upload files and images](Resources/doc/tutorials/upload-files-and-images.md)
   * [How To integrate FOSRestBundle and EasyAdmin](Resources/doc/tutorials/fosrestbundle-integration.md)

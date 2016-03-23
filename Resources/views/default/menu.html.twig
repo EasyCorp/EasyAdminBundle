@@ -5,10 +5,18 @@
         {% set menu_params = { menuIndex: item.menu_index, submenuIndex: item.submenu_index } %}
         {% set path =
             item.type == 'link' ? item.url :
-            item.type == 'route' ? path(item.route, menu_params|merge(item.params)) :
+            item.type == 'route' ? path(item.route, item.params) :
             item.type == 'entity' ? path('easyadmin', { entity: item.entity, action: 'list' }|merge(menu_params)|merge(item.params)) :
             item.type == 'empty' ? '#' : ''
         %}
+
+        {# if the URL generated for the route belongs to the backend, regenerate
+           the URL to include the menu_params to display the selected menu item
+           (this is checked comparing the beginning of the route URL with the backend homepage URL)
+        #}
+        {% if item.type == 'route' and (path starts with path('easyadmin')) %}
+            {% set path = path(item.route, menu_params|merge(item.params)) %}
+        {% endif %}
 
         <a href="{{ path }}" {% if item.target|default(false) %}target="{{ item.target }}"{% endif %}>
             {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}

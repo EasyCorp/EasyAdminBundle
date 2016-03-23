@@ -174,10 +174,10 @@ class CustomMenuTest extends AbstractTestCase
 
     public function testMenuItemTypes()
     {
-        $expectedTypesMainMenu = array('empty', 'entity', 'entity', 'divider', 'link', 'link', 'link');
+        $expectedTypesMainMenu = array('empty', 'entity', 'entity', 'divider', 'link', 'link', 'link', 'divider', 'route', 'route');
         $expectedTypesSubMenu = array('entity', 'entity', 'divider', 'entity', 'link');
 
-        $crawler = $this->getBackendHomepage();
+        $this->getBackendHomepage();
         $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
         $menuConfig = $backendConfig['design']['menu'];
 
@@ -188,5 +188,20 @@ class CustomMenuTest extends AbstractTestCase
         foreach ($menuConfig[0]['children'] as $i => $itemConfig) {
             $this->assertEquals($expectedTypesSubMenu[$i], $itemConfig['type']);
         }
+    }
+
+    public function testExternalRoutesDontIncludeIndexParameters()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $this->assertEquals(
+            '/custom-route?custom_parameter=Lorem+Ipsum',
+            $crawler->filter('.sidebar-menu li:contains("Custom External Route") a')->attr('href')
+        );
+
+        $this->assertEquals(
+            '/admin/?menuIndex=9&submenuIndex=-1',
+            $crawler->filter('.sidebar-menu li:contains("Custom Internal Route") a')->attr('href')
+        );
     }
 }

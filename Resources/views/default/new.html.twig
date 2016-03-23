@@ -30,15 +30,16 @@
     {{ parent() }}
 
     <script src="{{ asset('bundles/easyadmin/javascript/jquery.are-you-sure.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.waypoints.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.easyadmin-sticky.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+
     <script type="text/javascript">
         $(function() {
             $('.new-form').areYouSure({ 'message': 'You haven\'t saved the changes made on this form.' });
-        });
-    </script>
 
-    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
-    <script type="text/javascript">
-        $(function() {
+            $('.form-actions').easyAdminSticky();
+
             // Select2 widget is only enabled for the <select> elements which explicitly ask for it
             $('#main form select[data-widget="select2"]').select2({
                 theme: 'bootstrap'

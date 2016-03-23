@@ -378,6 +378,24 @@ button.btn:active {
    padding-top: 5px;
 }
 
+.form-actions.stuck {
+    bottom: 0;
+    position: fixed;
+{% if 'dark' == color_scheme %}
+    background-color: {{ colors.gray_lighter }};
+    box-shadow: 0 -1px 4px {{ colors.gray_light }};
+{% elseif 'light' == color_scheme %}
+    background-color: {{ colors.gray_light }};
+    box-shadow: 0 -1px 4px {{ colors.gray }};
+{% endif %}
+    height: 52px;
+    padding-top: 10px;
+{% if app.environment|default('prod') == 'dev' %}
+    height: 85px;
+    padding-bottom: 45px;
+{% endif %}
+}
+
 /* Field: collection
    ------------------------------------------------------------------------- */
 .field-collection .collection-empty {

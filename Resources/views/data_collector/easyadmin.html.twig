@@ -75,7 +75,7 @@
         <div class="tab">
             <h3 class="tab-title">Current Entity Configuration</h3>
             <div class="tab-content">
-                {{ collector.dump(collector.currentEntityConfiguration)|raw }}
+                {{ collector.dump(collector.currentEntityConfig)|raw }}
             </div>
 
             <br>
@@ -87,32 +87,32 @@
 
                 <h4>Basic Configuration</h4>
                 {{ collector.dump({
-                    'site_name': collector.backendConfiguration['site_name'],
-                    'formats': collector.backendConfiguration['formats']
+                    'site_name': collector.backendConfig['site_name'],
+                    'formats': collector.backendConfig['formats']
                 })|raw }}
 
                 <h4>Design Configuration</h4>
                 {{ collector.dump({
-                    'design': collector.backendConfiguration['design']
+                    'design': collector.backendConfig['design']
                 })|raw }}
 
                 <h4>Actions Configuration</h4>
                 {{ collector.dump({
-                    'disabled_actions': collector.backendConfiguration['disabled_actions'],
-                    'list': collector.backendConfiguration['list'],
-                    'edit': collector.backendConfiguration['edit'],
-                    'new': collector.backendConfiguration['new'],
-                    'show': collector.backendConfiguration['show'],
+                    'disabled_actions': collector.backendConfig['disabled_actions'],
+                    'list': collector.backendConfig['list'],
+                    'edit': collector.backendConfig['edit'],
+                    'new': collector.backendConfig['new'],
+                    'show': collector.backendConfig['show'],
                 })|raw }}
 
                 <h4>Entities Configuration</h4>
                 {{ collector.dump({
-                    'entities': collector.backendConfiguration['entities']
+                    'entities': collector.backendConfig['entities']
                 })|raw }}
 
                 <h4>Full Backend Configuration</h4>
                 {{ collector.dump({
-                    'easy_admin': collector.backendConfiguration
+                    'easy_admin': collector.backendConfig
                 })|raw }}
             </div>
         </div>

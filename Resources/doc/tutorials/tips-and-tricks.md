@@ -165,7 +165,7 @@ class AdminController extends BaseAdminController
     protected function initialize(Request $request)
     {
         $this->get('translator')->setLocale('en');
-        parent::initialize();
+        parent::initialize($request);
     }
 }
 ```

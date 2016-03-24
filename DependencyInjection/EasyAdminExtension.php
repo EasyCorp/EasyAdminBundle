@@ -49,13 +49,14 @@ class EasyAdminExtension extends Extension
 
         // compile commonly used classes
         $this->addClassesToCompile(array(
-            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Controller\\AdminController',
-            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Event\\EasyAdminEvents',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\Configuration\\Configurator',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Event\\EasyAdminEvents',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\ExceptionListener',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\RequestPostInitializeListener',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Extension\EasyAdminExtension',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Search\\Paginator',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Search\\QueryBuilder',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension',
-            'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\ExceptionListener',
         ));
 
         $this->ensureBackwardCompatibility($container);

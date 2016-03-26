@@ -163,6 +163,7 @@ class AdminController extends Controller
 
         $fields = $this->entity['list']['fields'];
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
+        $supportedActions = $this->get('easyadmin.batch.manager')->getSupportedActions($this->entity);
 
         $this->dispatch(EasyAdminEvents::POST_LIST, array('paginator' => $paginator));
 
@@ -170,6 +171,7 @@ class AdminController extends Controller
             'paginator' => $paginator,
             'fields' => $fields,
             'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
+            'supported_actions' => $supportedActions,
         ));
     }
 
@@ -362,6 +364,7 @@ class AdminController extends Controller
         $searchableFields = $this->entity['search']['fields'];
         $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
         $fields = $this->entity['list']['fields'];
+        $supportedActions = $this->get('easyadmin.batch.manager')->getSupportedActions($this->entity, 'search');
 
         $this->dispatch(EasyAdminEvents::POST_SEARCH, array(
             'fields' => $fields,
@@ -372,6 +375,38 @@ class AdminController extends Controller
             'paginator' => $paginator,
             'fields' => $fields,
             'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
+            'supported_actions' => $supportedActions,
+        ));
+    }
+
+    /**
+     * The method that is executed when the user performs a 'batch action'.
+     *
+     * @return RedirectResponse
+     */
+    protected function processAction()
+    {
+        // TODO: dispatch PRE_BATCH_PROCESS event.
+
+        if (null === $action = $this->request->query->get('batch_action')) {
+            return $this->redirectToBackendHomepage();
+        }
+
+        $data = $this->request->query->get('data');
+
+        $manager = $this->get('easyadmin.batch.manager');
+
+        list($status, $message) = $manager->processAction($action, $data, $entity = $this->entity);
+
+        $type = $status ? 'success' : 'error';
+
+        $this->addFlash($type, $message);
+
+        // TODO: dispatch POST_BATCH_PROCESS event.
+
+        return $this->redirectToRoute('easyadmin', array(
+            'action' => 'list',
+            'entity' => $this->entity['name'],
         ));
     }
 

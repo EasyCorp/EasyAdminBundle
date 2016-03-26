@@ -11,6 +11,14 @@
             <tag name="twig.extension" />
         </service>
 
+        <service id="easyadmin.batch.manager" class="JavierEguiluz\Bundle\EasyAdminBundle\Batch\BatchActionManager">
+        </service>
+
+        <service id="easyadmin.batch.action.delete" class="JavierEguiluz\Bundle\EasyAdminBundle\Batch\Action\BatchDeleteAction" public="false">
+            <argument type="service" id="doctrine" />
+            <tag name="easyadmin.batch.action" />
+        </service>
+
         <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
             <argument /> <!-- easyadmin.config parameter -->
             <argument type="service" id="property_accessor" />

@@ -122,7 +122,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
             // when a virtual field doesn't define it's type, consider it a string
             if (true === $fieldMetadata['virtual'] && null === $fieldType) {
-                $templateParameters['value'] = strval($value);
+                $templateParameters['value'] = (string) $value;
             }
 
             if ('image' === $fieldType) {

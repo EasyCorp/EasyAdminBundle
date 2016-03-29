@@ -281,6 +281,8 @@ class ActionConfigPass implements ConfigPassInterface
      * This allows to provide some nice defaults for backends that don't
      * define their own actions.
      *
+     * @param string $view
+     *
      * @return array
      */
     private function getDefaultActions($view)

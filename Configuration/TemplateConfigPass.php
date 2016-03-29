@@ -155,7 +155,7 @@ class TemplateConfigPass implements ConfigPassInterface
      * Determines the templates used to render each backend element when no
      * entity configuration is available. It's similar to processEntityTemplates()
      * but it doesn't take into account the details of each entity.
-     * This is needed for example when an exception is triggered and no entitiy
+     * This is needed for example when an exception is triggered and no entity
      * configuration is available to know which template should be rendered.
      *
      * @param array $backendConfig

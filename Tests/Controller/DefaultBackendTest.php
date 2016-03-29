@@ -363,7 +363,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestEditView();
         $this->client->followRedirects();
 
-        $categoryName = sprintf('Modified Category %s', md5(rand()));
+        $categoryName = sprintf('Modified Category %s', md5(mt_rand()));
         $form = $crawler->selectButton('Save changes')->form(array(
             'category[name]' => $categoryName,
         ));
@@ -477,7 +477,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestNewView();
         $this->client->followRedirects();
 
-        $categoryName = sprintf('The New Category %s', md5(rand()));
+        $categoryName = sprintf('The New Category %s', md5(mt_rand()));
         $form = $crawler->selectButton('Save changes')->form(array(
             'category[name]' => $categoryName,
         ));

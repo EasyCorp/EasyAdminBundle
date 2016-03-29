@@ -30,7 +30,7 @@ class PurchaseItem
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id = null;
+    protected $id;
 
     /**
      * The ordered quantity.

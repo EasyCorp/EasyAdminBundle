@@ -198,7 +198,7 @@
 
     <script type="text/javascript">
         $(function() {
-            $('#main table .toggle input[type="checkbox"]').change(function() {
+            $('#main').find('table .toggle input[type="checkbox"]').change(function() {
                 var toggle = $(this);
                 var newValue = toggle.prop('checked');
                 var oldValue = !newValue;
@@ -215,7 +215,7 @@
 
                 toggleRequest.done(function(result) {});
 
-                toggleRequest.fail(function(result) {
+                toggleRequest.fail(function() {
                     // in case of error, restore the original value and disable the toggle
                     toggle.bootstrapToggle(oldValue == true ? 'on' : 'off');
                     toggle.bootstrapToggle('disable');
@@ -228,7 +228,7 @@
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })
                     .off('click', '#modal-delete-button')
-                    .on('click', '#modal-delete-button', function (e) {
+                    .on('click', '#modal-delete-button', function () {
                         var deleteForm = $('#delete-form');
                         deleteForm.attr('action', deleteForm.attr('action').replace('__id__', id));
                         deleteForm.trigger('submit');
@@ -243,7 +243,7 @@
         <script type="text/javascript">
             var _search_query = "{{ app.request.get('query')|default('')|e('js') }}";
             // the original query is prepended to allow matching exact phrases in addition to single words
-            $('#main table tbody').highlight($.merge([_search_query], _search_query.split(' ')));
+            $('#main').find('table tbody').highlight($.merge([_search_query], _search_query.split(' ')));
         </script>
     {% endif %}
 {% endblock %}

@@ -13,7 +13,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
-use Symfony\Component\Form\Extension\DataCollector\FormDataCollector;
 
 class CustomizedBackendTest extends AbstractTestCase
 {

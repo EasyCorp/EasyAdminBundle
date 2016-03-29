@@ -123,8 +123,8 @@ class ExceptionListener extends BaseExceptionListener
      * Code copied from Symfony\Component\HttpKernel\EventListener\ExceptionListener
      *
      * @param GetResponseForExceptionEvent $event
-     *
      * @return Response
+     * @throws \Exception
      */
     private function legacyOnKernelException(GetResponseForExceptionEvent $event)
     {

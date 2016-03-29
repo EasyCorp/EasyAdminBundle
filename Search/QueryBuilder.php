@@ -94,7 +94,7 @@ class QueryBuilder
             }
         }
 
-        if (!empty($queryParameters)) {
+        if (0 !== count($queryParameters)) {
             $queryBuilder->setParameters($queryParameters);
         }
 

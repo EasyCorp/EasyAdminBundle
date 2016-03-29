@@ -17,6 +17,7 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -378,9 +379,11 @@ class AdminController extends Controller
     /**
      * It updates the value of some property of some entity to the new given value.
      *
-     * @param mixed  $entity   The instance of the entity to modify
+     * @param mixed $entity The instance of the entity to modify
      * @param string $property The name of the property to change
-     * @param bool   $value    The new value of the property
+     * @param bool $value The new value of the property
+     *
+     * @throws \RuntimeException
      */
     private function updateEntityProperty($entity, $property, $value)
     {
@@ -388,7 +391,7 @@ class AdminController extends Controller
 
         // the method_exists() check is needed because Symfony 2.3 doesn't have isWritable() method
         if (method_exists($this->get('property_accessor'), 'isWritable') && !$this->get('property_accessor')->isWritable($entity, $property)) {
-            throw new \Exception(sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
+            throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
         }
 
         $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $value));
@@ -609,7 +612,7 @@ class AdminController extends Controller
         if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EntityForm')) {
             $form = $this->{$customMethodName}($entity, $entityProperties, $view);
             if (!$form instanceof FormInterface) {
-                throw new \Exception(sprintf(
+                throw new \UnexpectedValueException(sprintf(
                     'The "%s" method must return a FormInterface, "%s" given.',
                     $customMethodName, is_object($form) ? get_class($form) : gettype($form)
                 ));
@@ -621,7 +624,7 @@ class AdminController extends Controller
         $formBuilder = $this->executeDynamicMethod('create<EntityName>EntityFormBuilder', array($entity, $view));
 
         if (!$formBuilder instanceof FormBuilderInterface) {
-            throw new \Exception(sprintf(
+            throw new \UnexpectedValueException(sprintf(
                 'The "%s" method must return a FormBuilderInterface, "%s" given.',
                 'createEntityForm', is_object($formBuilder) ? get_class($formBuilder) : gettype($formBuilder)
             ));

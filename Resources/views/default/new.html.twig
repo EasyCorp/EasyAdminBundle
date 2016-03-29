@@ -41,7 +41,7 @@
             $('.form-actions').easyAdminSticky();
 
             // Select2 widget is only enabled for the <select> elements which explicitly ask for it
-            $('#main form select[data-widget="select2"]').select2({
+            $('#main').find('form select[data-widget="select2"]').select2({
                 theme: 'bootstrap'
             });
         });

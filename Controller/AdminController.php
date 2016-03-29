@@ -378,9 +378,11 @@ class AdminController extends Controller
     /**
      * It updates the value of some property of some entity to the new given value.
      *
-     * @param mixed  $entity   The instance of the entity to modify
+     * @param mixed $entity The instance of the entity to modify
      * @param string $property The name of the property to change
-     * @param bool   $value    The new value of the property
+     * @param bool $value The new value of the property
+     *
+     * @throws \RuntimeException
      */
     private function updateEntityProperty($entity, $property, $value)
     {

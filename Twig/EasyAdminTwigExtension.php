@@ -89,12 +89,15 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * property doesn't exist or its value is not accessible. This ensures that
      * the function never generates a warning or error message when calling it.
      *
-     * @param string $view          The view in which the item is being rendered
-     * @param string $entityName    The name of the entity associated with the item
-     * @param object $item          The item which is being rendered
-     * @param array  $fieldMetadata The metadata of the actual field being rendered
+     * @param \Twig_Environment $twig
+     * @param string $view The view in which the item is being rendered
+     * @param string $entityName The name of the entity associated with the item
+     * @param object $item The item which is being rendered
+     * @param array $fieldMetadata The metadata of the actual field being rendered
      *
      * @return string
+     *
+     * @throws \Exception
      */
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {

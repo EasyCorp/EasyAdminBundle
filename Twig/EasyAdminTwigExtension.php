@@ -207,6 +207,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * Checks whether the given 'action' is enabled for the given 'entity'.
      *
+     * @param string $view
      * @param string $action
      * @param string $entityName
      *
@@ -220,6 +221,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * Returns the full action configuration for the given 'entity' and 'view'.
      *
+     * @param string $view
      * @param string $action
      * @param string $entityName
      *
@@ -235,6 +237,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * This method is needed because some actions are displayed globally for the
      * entire view (e.g. 'new' action in 'list' view).
      *
+     * @param string $view
      * @param string $entityName
      *
      * @return array

@@ -23,7 +23,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
         $this->initClient(array('environment' => 'read_only_backend'));
     }
 
-    public function testListViewContaisNoDisabledActions()
+    public function testListViewContainsNoDisabledActions()
     {
         $crawler = $this->requestListView();
 
@@ -31,7 +31,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
         $this->assertCount(0, $crawler->filter('#main .table td.actions a:contains("Edit")'), '"edit" action is disabled.');
     }
 
-    public function testSearchViewContaisNoDisabledActions()
+    public function testSearchViewContainsNoDisabledActions()
     {
         $crawler = $this->requestSearchView();
 
@@ -39,7 +39,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
         $this->assertCount(0, $crawler->filter('#main .table td.actions a:contains("Edit")'), '"edit" action is disabled.');
     }
 
-    public function testShowViewContaisNoDisabledActions()
+    public function testShowViewContainsNoDisabledActions()
     {
         $crawler = $this->requestShowView();
 

@@ -248,7 +248,7 @@ class Purchase
     {
         $uid = date('YmdHi');
 
-        return sprintf('%d%O13d', $storeId, $uid);
+        return sprintf('%d%013d', $storeId, $uid);
     }
 
     /** {@inheritdoc} */

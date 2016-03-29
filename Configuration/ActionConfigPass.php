@@ -203,7 +203,7 @@ class ActionConfigPass implements ConfigPassInterface
                 $actionsConfig = $entityConfig[$view]['actions'];
                 // if the name of the action starts with a dash ('-'), remove it
                 $removedActions = array_filter($actionsConfig, function ($action) {
-                    return '-' === $action['name']{0};
+                    return '-' === $action['name'][0];
                 });
 
                 $filteredActions = array_filter($actionsConfig, function ($action) use ($removedActions) {

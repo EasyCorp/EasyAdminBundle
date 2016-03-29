@@ -82,7 +82,7 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
             'wearables',
         );
 
-        $numTags = rand(2, 4);
+        $numTags = mt_rand(2, 4);
         shuffle($tags);
 
         return array_slice($tags, 0, $numTags - 1);
@@ -94,7 +94,7 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
         $count = count($chars) - 1;
         $ean13 = '';
         do {
-            $ean13 .= $chars[rand(0, $count)];
+            $ean13 .= $chars[mt_rand(0, $count)];
         } while (strlen($ean13) < 13);
 
         $checksum = 0;
@@ -125,12 +125,12 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
     {
         $cents = array('00', '29', '39', '49', '99');
 
-        return (float) rand(2, 79).'.'.$cents[array_rand($cents)];
+        return (float) mt_rand(2, 79).'.'.$cents[array_rand($cents)];
     }
 
     public function getRandomDescription()
     {
-        $numPhrases = rand(5, 10);
+        $numPhrases = mt_rand(5, 10);
         shuffle($this->phrases);
 
         return implode(' ', array_slice($this->phrases, 0, $numPhrases - 1));

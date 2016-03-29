@@ -25,6 +25,10 @@
 
             var containerDiv = $('#{{ id }}').parents('.form-group:first');
             containerDiv.remove();
+            
+            if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
+                $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
+            }
             });
         {% endset %}
 
@@ -328,13 +332,18 @@
 
 {%- block form_widget_compound -%}
     {% if value is empty %}
-        <div class="empty collection-empty">
-            <span class="label label-empty">{{ 'label.empty'|trans({}, 'EasyAdminBundle') }}</span>
-        </div>
+        {{ block('empty_collection') }}
+        {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
     {% endif %}
 
     {{ parent() }}
 {%- endblock form_widget_compound -%}
+
+{% block empty_collection %}
+    <div class="empty collection-empty">
+        <span class="label label-empty">{{ 'label.empty'|trans({}, 'EasyAdminBundle') }}</span>
+    </div>
+{% endblock empty_collection %}
 
 {% block vich_file_widget %}
 {% spaceless %}

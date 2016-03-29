@@ -132,7 +132,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 }
 
                 // absolute URLs (http or https) and protocol-relative URLs (//) are rendered unmodified
-                if (1 === preg_match('/^(http[s]?|\/\/).*/i', $value)) {
+                if (1 === preg_match('/^(http[s]?|\/\/)/i', $value)) {
                     $imageUrl = $value;
                 } else {
                     $imageUrl = isset($fieldMetadata['base_path'])

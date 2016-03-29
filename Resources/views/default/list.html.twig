@@ -198,7 +198,7 @@
 
     <script type="text/javascript">
         $(function() {
-            $('#main table .toggle input[type="checkbox"]').change(function() {
+            $('#main').find('table .toggle input[type="checkbox"]').change(function() {
                 var toggle = $(this);
                 var newValue = toggle.prop('checked');
                 var oldValue = !newValue;
@@ -243,7 +243,7 @@
         <script type="text/javascript">
             var _search_query = "{{ app.request.get('query')|default('')|e('js') }}";
             // the original query is prepended to allow matching exact phrases in addition to single words
-            $('#main table tbody').highlight($.merge([_search_query], _search_query.split(' ')));
+            $('#main').find('table tbody').highlight($.merge([_search_query], _search_query.split(' ')));
         </script>
     {% endif %}
 {% endblock %}

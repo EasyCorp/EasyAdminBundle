@@ -32,7 +32,7 @@ class Purchase
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    public $id = null;
+    public $id;
 
     /**
      * The Unique id of the purchase.
@@ -40,7 +40,7 @@ class Purchase
      * @var string
      * @ORM\Column(type="guid")
      */
-    public $guid = null;
+    public $guid;
 
     /**
      * The day of the delivery.
@@ -48,7 +48,7 @@ class Purchase
      * @var \DateTime
      * @ORM\Column(type="date")
      */
-    public $deliverySelected = null;
+    public $deliverySelected;
 
     /**
      * The purchase date in the customer timezone.
@@ -56,7 +56,7 @@ class Purchase
      * @var \DateTime
      * @ORM\Column(type="datetimetz")
      */
-    public $purchaseAt = null;
+    public $purchaseAt;
 
     /**
      * The shipping information.
@@ -64,7 +64,7 @@ class Purchase
      * @var Shipment
      * @ORM\Column(type="object")
      */
-    public $shipping = null;
+    public $shipping;
 
     /**
      * The customer preferred time of the day for the delivery.
@@ -72,7 +72,7 @@ class Purchase
      * @var \DateTime
      * @ORM\Column(type="time")
      */
-    public $preferredDeliveryHour = null;
+    public $preferredDeliveryHour;
 
     /**
      * The customer billing address.
@@ -248,7 +248,7 @@ class Purchase
     {
         $uid = date('YmdHi');
 
-        return sprintf('%d%O13d', $storeId, $uid);
+        return sprintf('%d%013d', $storeId, $uid);
     }
 
     /** {@inheritdoc} */

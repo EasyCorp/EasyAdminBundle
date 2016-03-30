@@ -71,7 +71,7 @@
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })
                     .off('click', '#modal-delete-button')
-                    .on('click', '#modal-delete-button', function (e) {
+                    .on('click', '#modal-delete-button', function () {
                         $('#delete-form').trigger('submit');
                     });
             });

@@ -30,6 +30,10 @@ class DefaultConfigPass implements ConfigPassInterface
     /**
      * Finds the default entity to display when the backend index is not
      * defined explicitly.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
      */
     private function processDefaultEntity(array $backendConfig)
     {
@@ -42,6 +46,10 @@ class DefaultConfigPass implements ConfigPassInterface
 
     /**
      * Finds the default menu item to display when browsing the backend index.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
      */
     private function processDefaultMenuItem(array $backendConfig)
     {
@@ -60,6 +68,10 @@ class DefaultConfigPass implements ConfigPassInterface
      * Finds the first menu item whose 'default' option is 'true' (if any).
      * It looks for the option both in the first level items and in the
      * submenu items.
+     *
+     * @param array $menuConfig
+     *
+     * @return mixed
      */
     private function findDefaultMenuItem(array $menuConfig)
     {
@@ -81,6 +93,10 @@ class DefaultConfigPass implements ConfigPassInterface
      * use as the default backend homepage when none is defined explicitly.
      * (Note: we store the route/params instead of generating the URL because
      * the 'router' service cannot be used inside a compiler pass).
+     *
+     * @param array $backendConfig
+     *
+     * @return array
      */
     private function processDefaultHomepage(array $backendConfig)
     {

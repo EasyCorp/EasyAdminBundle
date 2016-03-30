@@ -31,7 +31,7 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id = null;
+    protected $id;
 
     /**
      * The creation date of the product.
@@ -39,7 +39,7 @@ class Product
      * @var \DateTime
      * @ORM\Column(type="datetime", name="created_at")
      */
-    protected $createdAt = null;
+    protected $createdAt;
 
     /**
      * List of tags associated to the product.

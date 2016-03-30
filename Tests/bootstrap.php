@@ -31,7 +31,7 @@ AnnotationRegistry::registerLoader(function ($class) use ($autoload) {
 });
 
 // Test Setup: remove all the contents in the build/ directory
-// (PHP doesn't allow to delete direcctories unless they are empty)
+// (PHP doesn't allow to delete directories unless they are empty)
 if (is_dir($buildDir = __DIR__.'/../build')) {
     $files = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($buildDir, RecursiveDirectoryIterator::SKIP_DOTS),

@@ -203,7 +203,7 @@ class ActionConfigPass implements ConfigPassInterface
                 $actionsConfig = $entityConfig[$view]['actions'];
                 // if the name of the action starts with a dash ('-'), remove it
                 $removedActions = array_filter($actionsConfig, function ($action) {
-                    return '-' === $action['name']{0};
+                    return '-' === $action['name'][0];
                 });
 
                 $filteredActions = array_filter($actionsConfig, function ($action) use ($removedActions) {
@@ -280,6 +280,8 @@ class ActionConfigPass implements ConfigPassInterface
      * Returns the built-in actions defined by EasyAdmin for the given view.
      * This allows to provide some nice defaults for backends that don't
      * define their own actions.
+     *
+     * @param string $view
      *
      * @return array
      */

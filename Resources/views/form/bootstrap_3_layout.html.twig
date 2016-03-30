@@ -24,7 +24,9 @@
             if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
             var containerDiv = $('#{{ id }}').parents('.form-group:first');
+            var parentDiv = containerDiv.parents('[data-prototype]:first');
             containerDiv.remove();
+            parentDiv.trigger('easyadmin.collection.item-deleted');
             });
         {% endset %}
 
@@ -254,7 +256,7 @@
                     .replace(/{{ name }}\]\[__name__\]/g, '{{ name }}][' + numItems + ']')
                 ;
 
-                collection.append(newItem);
+                collection.append(newItem).trigger('easyadmin.collection.item-added');
             });
         {% endset %}
 

@@ -344,6 +344,8 @@
 {%- block form_widget_compound -%}
     {% if value is empty %}
         {{ block('empty_collection') }}
+    {% endif %}
+    {% if value is empty or form.vars.prototype is defined %}
         {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
     {% endif %}
 

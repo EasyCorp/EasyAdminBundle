@@ -49,7 +49,6 @@ class DefaultBackendTest extends AbstractTestCase
             '/bundles/easyadmin/stylesheet/font-awesome.min.css',
             '/bundles/easyadmin/stylesheet/adminlte.min.css',
             '/bundles/easyadmin/stylesheet/featherlight.min.css',
-            '/admin/_css/easyadmin.css',
         );
 
         $crawler = $this->getBackendHomepage();
@@ -89,11 +88,10 @@ class DefaultBackendTest extends AbstractTestCase
         }
     }
 
-    public function testAdminCssFile()
+    public function testCustomCssFile()
     {
-        $this->client->request('GET', '/admin/_css/easyadmin.css');
+        $this->getBackendHomepage();
 
-        $this->assertEquals('text/css; charset=UTF-8', $this->client->getResponse()->headers->get('Content-Type'));
         $this->assertEquals(13, substr_count($this->client->getResponse()->getContent(), '#205081'), 'The admin.css file uses the default brand color.');
         // #222222 color is only used by the "dark" color scheme, not the "light" one
         $this->assertEquals(7, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');

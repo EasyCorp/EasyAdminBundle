@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 /**
  * Introspects the metadata of the Doctrine entities to complete the
@@ -33,7 +34,10 @@ class MetadataConfigPass implements ConfigPassInterface
     public function process(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+            if (null === $em = $this->doctrine->getManagerForClass($entityConfig['class'])) {
+                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "easy_admin.entities.%s" is no mapped entity.', $entityConfig['class'], $entityName));
+            }
+
             $entityMetadata = $em->getMetadataFactory()->getMetadataFor($entityConfig['class']);
 
             $entityConfig['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();

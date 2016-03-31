@@ -37,7 +37,9 @@ class EasyAdminConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $expectedConfiguration = Yaml::parse(file_get_contents($expectedConfigFile));
         $actualConfiguration = $container->getParameter('easyadmin.config');
 
-        $this->assertEquals($expectedConfiguration['easy_admin'], $actualConfiguration);
+        // 'assertEquals()' is not used because storing the full processed backend
+        // configuration would make fixtures too big
+        $this->assertArraySubset($expectedConfiguration['easy_admin'], $actualConfiguration);
     }
 
     public function provideConfigurationFiles()

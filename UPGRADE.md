@@ -15,8 +15,17 @@ Upgrade to 2.0.0 (XX/XXX/2016)
    In order to upgrade, you just need to replace `admin` by `easyadmin` in all
    `path()`, `generateUrl()` and `redirectToRoute()` calls.
 
-Upgrade to 1.11.6 (XX/XXX/2016)
+Upgrade to 1.12.5 (XX/XXX/2016)
 -------------------------------
+
+ * The `renderCssAction()` method of the AdminController has been deprecated and
+   its associated route `@Route("/_css/easyadmin.css", name="_easyadmin_render_css")`
+   has been removed. The custom CSS now is preprocessed during container compilation
+   and the result is stored in the `_internal.custom_css` option of the processed
+   backend configuration.
+
+Upgrade to 1.11.6 (26/February/2016)
+------------------------------------
 
  * `findBy()` and `createSearchQueryBuilder()` methods now receive two new
    parameters called `$sortField` and `$sortDirection` to allow sorting the

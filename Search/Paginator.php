@@ -23,13 +23,13 @@ class Paginator
     /**
      * Creates a Doctrine ORM paginator for the given query builder.
      *
-     * @param DoctrineQueryBuilder $queryBuilder
-     * @param int                  $page
-     * @param int                  $maxPerPage
+     * @param mixed $queryBuilder
+     * @param int   $page
+     * @param int   $maxPerPage
      *
      * @return Pagerfanta
      */
-    public function createOrmPaginator(DoctrineQueryBuilder $queryBuilder, $page, $maxPerPage)
+    public function createOrmPaginator($queryBuilder, $page, $maxPerPage)
     {
         $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
         $paginator->setMaxPerPage($maxPerPage);

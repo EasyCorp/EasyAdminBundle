@@ -97,6 +97,16 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals(7, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');
     }
 
+    public function testCustomCssProperty()
+    {
+        $this->getBackendHomepage();
+        $customCssContent = $this->client->getContainer()->getParameter('easyadmin.config');
+
+        $this->assertEquals(13, substr_count($customCssContent['_internal']['custom_css'], '#205081'), 'The generated custom CSS uses the default brand color.');
+        // #222222 color is only used by the "dark" color scheme, not the "light" one
+        $this->assertEquals(7, substr_count($customCssContent['_internal']['custom_css'], '#222222'), 'The generated custom CSS uses the dark color scheme.');
+    }
+
     public function testListViewTitle()
     {
         $crawler = $this->requestListView();

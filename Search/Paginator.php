@@ -11,7 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
 
-use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 

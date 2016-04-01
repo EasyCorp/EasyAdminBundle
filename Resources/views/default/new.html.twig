@@ -36,7 +36,7 @@
 
     <script type="text/javascript">
         $(function() {
-            $('.new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans(_trans_parameters, 'EasyAdminBundle')|e('js') }}' });
+            $('.new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
 
             $('.form-actions').easyAdminSticky();
 

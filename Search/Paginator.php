@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
 
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -22,9 +24,9 @@ class Paginator
     /**
      * Creates a Doctrine ORM paginator for the given query builder.
      *
-     * @param mixed $queryBuilder
-     * @param int   $page
-     * @param int   $maxPerPage
+     * @param Query|QueryBuilder $queryBuilder
+     * @param int                $page
+     * @param int                $maxPerPage
      *
      * @return Pagerfanta
      */

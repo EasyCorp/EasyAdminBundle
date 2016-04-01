@@ -1,0 +1,38 @@
+---------------------------------------------------------------------------
+
+by xabbuh at 2016-03-31T20:25:28Z
+
+@javiereguiluz What is the exception message you got?
+
+---------------------------------------------------------------------------
+
+by rubengc at 2016-04-01T05:58:27Z
+
+It would be nice in the production environment returns a 404 instead of 500
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-01T06:23:47Z
+
+@rubengc I'm not sure about that because in my opinion this is a critical mistake: either the entity doesn't exist or you defined the wrong namespace. In either case you must fix those errors.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-01T06:26:55Z
+
+@xabbuh this is the error when I remove the `try...catch`:
+
+```
+Failed asserting that exception of type "ReflectionException" matches expected exception
+"Symfony\Component\Config\Definition\Exception\InvalidTypeException".
+
+Message was: "Class ThisBundleDoesNotExist\Entity\ThisEntityDoesNotExist does not exist" at
+<easy-admin-bundle>/vendor/doctrine/common/lib/Doctrine/Common/Persistence/AbstractManagerRegistry.php:197
+<easy-admin-bundle>/Configuration/MetadataConfigPass.php:37
+<easy-admin-bundle>/DependencyInjection/Compiler/EasyAdminConfigurationPass.php:49
+<easy-admin-bundle>/vendor/symfony/dependency-injection/Compiler/Compiler.php:107
+<easy-admin-bundle>/vendor/symfony/dependency-injection/ContainerBuilder.php:540
+<easy-admin-bundle>/vendor/symfony/http-kernel/Kernel.php:477
+<easy-admin-bundle>/vendor/symfony/http-kernel/Kernel.php:117
+<easy-admin-bundle>/Tests/DependencyInjection/Compiler/EasyAdminConfigurationPassExceptionsTest.php:34
+```

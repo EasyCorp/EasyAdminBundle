@@ -13,7 +13,9 @@
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}">
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/adminlte.min.css') }}">
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/featherlight.min.css') }}">
-            <link rel="stylesheet" href="{{ path('_easyadmin_render_css') }}">
+            <style>
+                {{ easyadmin_config('_internal.custom_css')|raw }}
+            </style>
         {% endblock %}
 
         {% for css_asset in easyadmin_config('design.assets.css') %}

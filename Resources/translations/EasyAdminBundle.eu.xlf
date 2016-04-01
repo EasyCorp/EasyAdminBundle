@@ -135,6 +135,10 @@
                 <source>errors</source>
                 <target>Errore|Erroreak</target>
             </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Formularioen aldaketak ez dituzu gorde.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

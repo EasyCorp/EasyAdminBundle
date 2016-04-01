@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by rubengc at 2016-03-31T19:17:43Z
+
+I don't use the default theme that brings EasyAdmin but for some time I wanted to comment you some errors I had found
+
+One was the suppression of charging method you have and move it to less php and generate css files manually (or through implementing something on asset:install command)
+
+another problem he had was the use of opacity to lighten the color of buttons and links that caused blurred text (tested on chrome and edge) with the implementation of less php would solve this and there methods to obtain these colors
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-31T19:49:40Z
+
+@rubengc don't hesitate to open new issues showing those errors. Please attach a screenshot of the issue and please make sure that are reproducible with the standard CSS theme that we include. Thanks!
+
+---------------------------------------------------------------------------
+
+by rubengc at 2016-03-31T21:14:29Z
+
+when I get more time I will send you all this reports
+
+What do you think about use less php for build the style?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-01T06:34:46Z
+
+@rubengc I prefer to keep using pure CSS (+Twig) instead of adding LESS. For complex backends people can set up complex JavaScript-based solutions to generate the assets and then just include the final assets in the backend.
+
+By the way, in my opinion LESS has no future because Sass won this battle. All major projects (including Bootstrap) have switched to Sass in their latest versions.

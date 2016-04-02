@@ -356,7 +356,9 @@ defined by EasyAdmin.
 ### Autocomplete
 
 It's similar to Symfony's `Entity` type, but the values are loaded on demand via
-Ajax based on your input:
+Ajax based on your input. This type is useful when a field is related to an
+entity with lots of database records. Autocompleting those fields improve
+backend performance and user experience:
 
 ```yaml
 easy_admin:
@@ -370,8 +372,13 @@ easy_admin:
     # ...
 ```
 
-This type is useful when a field is related to an entity with lots of database
-records. Otherwise loading the form will be awfully slow.
+The `easyadmin_autocomplete` type configures the class of the related entity
+automatically. If you prefer to define it explicitly, do it in the type options:
+
+```yaml
+# ...
+- { property: 'category', type: 'easyadmin_autocomplete', type_options: { class: 'AppBundle\Entity\Category' } }
+```
 
 Advanced Design Configuration
 -----------------------------

@@ -383,7 +383,7 @@
 {% endspaceless %}
 {% endblock %}
 
-{# Easy admin form type #}
+{# EasyAdmin form type #}
 {% block easyadmin_widget %}
     {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
 
@@ -431,3 +431,25 @@
         </div>
     </div>
 {% endblock easyadmin_widget %}
+
+{# EasyAdminAutocomplete form type #}
+{% block easyadmin_autocomplete_widget %}
+    {{ form_widget(form) }}
+
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
+    <script>
+        $(function() {
+            $('#{{ form.vars.id }}').select2({
+                theme: 'bootstrap',
+                ajax: {
+                    url: '{{ path('easyadmin', { action: 'autocomplete', entity: 'User' })|raw }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { 'query': params.term };
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock easyadmin_autocomplete_widget %}

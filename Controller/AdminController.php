@@ -25,6 +25,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -127,6 +128,19 @@ class AdminController extends Controller
         $event = new GenericEvent($subject, $arguments);
 
         $this->get('event_dispatcher')->dispatch($eventName, $event);
+    }
+
+    protected function autocompleteAction()
+    {
+        $query = $this->request->query->get('query', null);
+        $entities = $this->em->getRepository('AppBundle\\Entity\\User')->findByUsername($query);
+
+        $results = array();
+        foreach ($entities as $entity) {
+            $results[$entity->getId()] = (string) $entity;
+        }
+
+        return new JsonResponse($results);
     }
 
     /**

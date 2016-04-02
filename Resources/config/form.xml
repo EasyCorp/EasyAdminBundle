@@ -26,6 +26,11 @@
 
         <!-- Type Configurators -->
 
+        <service id="easyadmin.form.type.configurator.autocomplete" public="false"
+                 class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="30"/>
+        </service>
+
         <service id="easyadmin.form.type.configurator.collection" public="false"
                  class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator">
             <tag name="easyadmin.form.type.configurator" priority="20"/>

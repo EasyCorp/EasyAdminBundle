@@ -380,6 +380,21 @@ automatically. If you prefer to define it explicitly, do it in the type options:
 - { property: 'category', type: 'easyadmin_autocomplete', type_options: { class: 'AppBundle\Entity\Category' } }
 ```
 
+When the user types in an autocomplete field, EasyAdmin performs a fuzzy search
+on all the properties of the related entity. This is the same behavior applied
+when using the backend search form.
+
+The autocomplete action sends to the browser a JSON array of `{ id: '...', text: '...' }`
+tuples. The `id` is stored as the form field value and `text` is the value
+displayed to the user.
+
+By default, the entity's primary key is used for the `id` property and the
+`(string) %entity` conversion is used for the `text` property. Therefore, you
+must define the `__toString()` method in any autocomplete entity.
+
+If you need to customize this behavior, override the `autocompleteAction()` in
+the `AdminController` as explained later in this chapter.
+
 Advanced Design Configuration
 -----------------------------
 

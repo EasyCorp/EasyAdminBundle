@@ -21,6 +21,8 @@ use Pagerfanta\Pagerfanta;
  */
 class Paginator
 {
+    const MAX_ITEMS = 15;
+
     /**
      * Creates a Doctrine ORM paginator for the given query builder.
      *
@@ -30,7 +32,7 @@ class Paginator
      *
      * @return Pagerfanta
      */
-    public function createOrmPaginator($queryBuilder, $page, $maxPerPage)
+    public function createOrmPaginator($queryBuilder, $page = 1, $maxPerPage = Paginator::MAX_ITEMS)
     {
         $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
         $paginator->setMaxPerPage($maxPerPage);

@@ -25,7 +25,6 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -132,15 +131,12 @@ class AdminController extends Controller
 
     protected function autocompleteAction()
     {
-        $query = $this->request->query->get('query', null);
-        $entities = $this->em->getRepository('AppBundle\\Entity\\User')->findByUsername($query);
-
-        $results = array();
-        foreach ($entities as $entity) {
-            $results[] = array('id' => $entity->getId(), 'text' => (string) $entity);
-        }
-
-        return new JsonResponse(array('results' => $results));
+        return $this->get('easyadmin.autocomplete')->find(
+            $this->request->query->get('entity'),
+            $this->request->query->get('property'),
+            $this->request->query->get('view'),
+            $this->request->query->get('query')
+        );
     }
 
     /**

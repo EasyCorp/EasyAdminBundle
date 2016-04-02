@@ -137,10 +137,10 @@ class AdminController extends Controller
 
         $results = array();
         foreach ($entities as $entity) {
-            $results[$entity->getId()] = (string) $entity;
+            $results[] = array('id' => $entity->getId(), 'text' => (string) $entity);
         }
 
-        return new JsonResponse($results);
+        return new JsonResponse(array('results' => $results));
     }
 
     /**

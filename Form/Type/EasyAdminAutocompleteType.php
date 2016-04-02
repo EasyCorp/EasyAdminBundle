@@ -8,7 +8,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\DataTransformer\EntityToIdTransformer;
 
 class EasyAdminAutocompleteType extends AbstractType
 {
@@ -21,10 +20,6 @@ class EasyAdminAutocompleteType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $class = 'AppBundle\\Entity\\User';
-
-        $transformer = new EntityToIdTransformer($this->om, $class);
-        $builder->addViewTransformer($transformer);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
@@ -33,12 +28,12 @@ class EasyAdminAutocompleteType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        //$resolver->setRequired(array('class'));
+        $resolver->setRequired(array('class'));
     }
 
     public function getParent()
     {
-        return 'text';
+        return 'entity';
     }
 
     public function getName()

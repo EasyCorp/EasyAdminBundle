@@ -4,9 +4,9 @@
 # EXCEPTION
 expected_exception:
     class: Symfony\Component\Config\Definition\Exception\InvalidTypeException
-    message_string: 'The configured class "ThisBundleDoesNotExist\Entity\ThisEntityDoesNotExist" for the path "easy_admin.entities.TestEntity" is no mapped entity. Did you forget to create the entity class or to define its namespace?'
+    message_string: 'The configured class "JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Dummy" for the path "easy_admin.entities.TestEntity" is no mapped entity.'
 
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity: ThisBundleDoesNotExist\Entity\ThisEntityDoesNotExist
+        TestEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Dummy

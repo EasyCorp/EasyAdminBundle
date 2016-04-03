@@ -37,7 +37,11 @@ class MetadataConfigPass implements ConfigPassInterface
             try {
                 $em = $this->doctrine->getManagerForClass($entityConfig['class']);
             } catch (\ReflectionException $e) {
-                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "easy_admin.entities.%s" is no mapped entity. Did you forget to create the entity class or to define its namespace?', $entityConfig['class'], $entityName));
+                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "easy_admin.entities.%s" does not exist. Did you forget to create the entity class or to define its namespace?', $entityConfig['class'], $entityName));
+            }
+
+            if (null === $em) {
+                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "easy_admin.entities.%s" is no mapped entity.', $entityConfig['class'], $entityName));
             }
 
             $entityMetadata = $em->getMetadataFactory()->getMetadataFor($entityConfig['class']);

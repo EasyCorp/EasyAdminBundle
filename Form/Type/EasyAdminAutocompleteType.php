@@ -3,17 +3,30 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class EasyAdminAutocompleteType extends AbstractType
 {
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired(array(
             'class'
         ));
     }
 
+    // BC for SF < 2.7
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         // BC for Symfony < 3
@@ -24,11 +37,17 @@ class EasyAdminAutocompleteType extends AbstractType
         return 'Symfony\Bridge\Doctrine\Form\Type\EntityType';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'easyadmin_autocomplete';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getBlockPrefix()
     {
         return $this->getName();

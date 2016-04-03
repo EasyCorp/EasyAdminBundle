@@ -390,7 +390,7 @@ button.btn:active {
 {% endif %}
     height: 52px;
     padding-top: 10px;
-{% if app.environment|default('prod') == 'dev' %}
+{% if kernel_debug|default(false) %}
     height: 85px;
     padding-bottom: 45px;
 {% endif %}

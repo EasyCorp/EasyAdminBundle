@@ -21,9 +21,12 @@ class DesignConfigPass implements ConfigPassInterface
 {
     /** @var \Twig_Environment */
     private $twig;
+    private $kernelDebug;
 
-    public function __construct()
+    public function __construct($kernelDebug)
     {
+        $this->kernelDebug = $kernelDebug;
+
         // it's not possible to inject the 'twig' service because it's synthetic
         $loader = new \Twig_Loader_Filesystem(__DIR__.'/../Resources/views/css');
         $this->twig = new \Twig_Environment($loader);
@@ -41,6 +44,7 @@ class DesignConfigPass implements ConfigPassInterface
         $customCssContent = $this->twig->render('easyadmin.css.twig', array(
             'brand_color' => $backendConfig['design']['brand_color'],
             'color_scheme' => $backendConfig['design']['color_scheme'],
+            'kernel_debug' => $this->kernelDebug,
         ));
 
         // this avoids Symfony interpreting '%' used in CSS properties as container parameters

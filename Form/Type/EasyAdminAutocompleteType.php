@@ -10,14 +10,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class EasyAdminAutocompleteType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-    }
-
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-    }
-
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setRequired(array(

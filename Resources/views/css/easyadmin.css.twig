@@ -44,25 +44,25 @@
 {% set colors = color_schemes[color_scheme] %}
 
 {% autoescape false %}
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    RESET STYLES
-   ------------------------------------------------------------------------- */
-/* make the Symfony Web Toolbar look nice by neutralizing the aliasing applied
-   globally by the AdminLTE template styles */
+   ------------------------------------------------------------------------- #}
+{# make the Symfony Web Toolbar look nice by neutralizing the aliasing applied
+   globally by the AdminLTE template styles #}
 .sf-toolbarreset {
     -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: auto;
 }
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    BASIC STYLES
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 body {
     font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* Links
-   ------------------------------------------------------------------------- */
+{# Links
+   ------------------------------------------------------------------------- #}
 a        { color: {{ colors.link }}; }
 a:hover  { opacity: 0.9; }
 a:active { outline: 0; }
@@ -85,8 +85,8 @@ a.text-danger:hover {
     opacity: 0.9;
 }
 
-/* Lists
-   ------------------------------------------------------------------------- */
+{# Lists
+   ------------------------------------------------------------------------- #}
 ul, ol {
     margin: 1em 0 1em 1em;
     padding: 0;
@@ -103,8 +103,8 @@ ul.inline li {
     margin: 0;
 }
 
-/* Flash messages
-   ------------------------------------------------------------------------- */
+{# Flash messages
+   ------------------------------------------------------------------------- #}
 div.flash {
     padding: .5em;
 }
@@ -120,9 +120,9 @@ div.flash-error strong {
     padding-right: .5em;
 }
 
-/* Labels
-   ------------------------------------------------------------------------- */
-/* this prevents overriding default styles for labels (label-info, label-primary, etc.) */
+{# Labels
+   ------------------------------------------------------------------------- #}
+{# this prevents overriding default styles for labels (label-info, label-primary, etc.) #}
 .label:not([class*=label-]) {
     background: {{ colors.gray_darker }};
 }
@@ -135,11 +135,11 @@ div.flash-error strong {
 }
 
 .label-success {
-    /* !important is required to override AdminLTE styles */
+    {# !important is required to override AdminLTE styles #}
     background: {{ colors.success }} !important;
 }
 .label-danger {
-    /* !important is required to override AdminLTE styles */
+    {# !important is required to override AdminLTE styles #}
     background: {{ colors.danger }} !iportant;
 }
 .label-empty {
@@ -150,14 +150,14 @@ div.flash-error strong {
     padding: 4px 8px;
 }
 
-/* this makes boolean labels to be of the same width for most languages */
+{# this makes boolean labels to be of the same width for most languages #}
 .boolean .label,
 .toggle .label {
     min-width: 33px;
 }
 
-/* Switches / toggles
-   ------------------------------------------------------------------------- */
+{# Switches / toggles
+   ------------------------------------------------------------------------- #}
 .toggle.btn-xs {
  width: 44px;
 }
@@ -217,14 +217,14 @@ div.flash-error strong {
     box-shadow: 2px 0 1px rgba(0, 0, 0, .2);
 }
 
-/* Badges
-   ------------------------------------------------------------------------- */
+{# Badges
+   ------------------------------------------------------------------------- #}
 span.badge {
     background-color: {{ brand_color }};
 }
 
-/* Buttons
-   ------------------------------------------------------------------------- */
+{# Buttons
+   ------------------------------------------------------------------------- #}
 .btn:focus {
     outline: none;
 }
@@ -296,7 +296,7 @@ button.btn:active {
     color: {{ colors.white }};
 }
 
-/* .bnt-secondary is for 'buttons' displayed as text links */
+{# .bnt-secondary is for 'buttons' displayed as text links #}
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:active,
@@ -329,8 +329,8 @@ button.btn:active {
     border-radius: 0;
 }
 
-/* Forms
-   ------------------------------------------------------------------------- */
+{# Forms
+   ------------------------------------------------------------------------- #}
 .form-inline .form-control {
     margin-bottom: 5px;
 }
@@ -396,21 +396,21 @@ button.btn:active {
 {% endif %}
 }
 
-/* Field: checkbox
-   ------------------------------------------------------------------------- */
+{# Field: checkbox
+   ------------------------------------------------------------------------- #}
 form:not(.form-horizontal) .field-checkbox label {
     padding-top: 23px;
 }
 
-/* Field: collection
-   ------------------------------------------------------------------------- */
+{# Field: collection
+   ------------------------------------------------------------------------- #}
 .field-collection .collection-empty {
     margin: .5em 0;
 }
 
-/* Select2 widget
-   ------------------------------------------------------------------------- */
-/* these styles must be applied after loading the default select2 styles */
+{# Select2 widget
+   ------------------------------------------------------------------------- #}
+{# these styles must be applied after loading the default select2 styles #}
 .select2-container {
     width: 100% !important;
 }
@@ -460,8 +460,8 @@ form:not(.form-horizontal) .field-checkbox label {
     border: 0;
 }
 
-/* VichUploaderBundle files and images
-   ------------------------------------------------------------------------- */
+{# VichUploaderBundle files and images
+   ------------------------------------------------------------------------- #}
 .easyadmin-vich-image img {
     border: 3px solid {{ colors.white }};
     box-shadow: 0 0 3px {{ colors.gray }};
@@ -476,7 +476,7 @@ form:not(.form-horizontal) .field-checkbox label {
     display: inline-block;
     padding-top: 7px;
 }
-/* the checkbox to delete the image/file */
+{# the checkbox to delete the image/file #}
 .easyadmin-vich-file .field-checkbox {
     margin-bottom: 0;
 }
@@ -485,8 +485,8 @@ form:not(.form-horizontal) .field-checkbox label {
     display: none;
 }
 
-/* Thumbnails and image lightbox
-   ------------------------------------------------------------------------- */
+{# Thumbnails and image lightbox
+   ------------------------------------------------------------------------- #}
 .easyadmin-thumbnail img {
     border: 3px solid {{ colors.white }};
     box-shadow: 0 0 3px {{ colors.gray }};
@@ -509,8 +509,8 @@ form:not(.form-horizontal) .field-checkbox label {
     max-width: 100%;
 }
 
-/* Modal windows
-   ------------------------------------------------------------------------- */
+{# Modal windows
+   ------------------------------------------------------------------------- #}
 .modal-dialog .modal-content {
     border-radius: 0;
 }
@@ -524,12 +524,12 @@ form:not(.form-horizontal) .field-checkbox label {
     margin-top: 1.5em;
 }
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    LAYOUT
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 
-/* Wrapper
-   ------------------------------------------------------------------------- */
+{# Wrapper
+   ------------------------------------------------------------------------- #}
 .content-wrapper {
     background: {{ colors.page_background }};
 }
@@ -537,15 +537,15 @@ form:not(.form-horizontal) .field-checkbox label {
     padding-top: 50px;
 }
 
-/* Header
-   ------------------------------------------------------------------------- */
+{# Header
+   ------------------------------------------------------------------------- #}
 .main-header {
     background: {{ brand_color }};
 }
 .main-header .logo {
     background: rgba(0, 0, 0, 0.15);
     color: {{ colors.white }};
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif; /* needed to override AdminLTE styles */
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif; {# needed to override AdminLTE styles #}
     font-weight: bold;
     height: 40px;
 }
@@ -604,8 +604,8 @@ form:not(.form-horizontal) .field-checkbox label {
     padding: 10px;
 }
 
-/* Main body
-   ------------------------------------------------------------------------- */
+{# Main body
+   ------------------------------------------------------------------------- #}
 #content #main {
     padding-bottom: 3em;
 }
@@ -620,8 +620,8 @@ form:not(.form-horizontal) .field-checkbox label {
     font-size: 24px;
 }
 
-/* Sidebar
-   ------------------------------------------------------------------------- */
+{# Sidebar
+   ------------------------------------------------------------------------- #}
 .main-sidebar,
 .wrapper {
 {% if 'dark' == color_scheme %}
@@ -694,7 +694,7 @@ form:not(.form-horizontal) .field-checkbox label {
     padding: 0;
 }
 
-/* applied to the menu item which is active and has its submenu revealed */
+{# applied to the menu item which is active and has its submenu revealed #}
 .sidebar-menu > li.active.submenu-active > a {
 {% if 'dark' == color_scheme %}
     background: rgb(34, 34, 34);
@@ -703,31 +703,31 @@ form:not(.form-horizontal) .field-checkbox label {
 {% endif %}
     border-left-color: transparent;
 }
-/* icon displayed for collapsed submenus */
+{# icon displayed for collapsed submenus #}
 .sidebar-menu li > a > .pull-right {
     font-weight: bold;
     text-align: right;
 }
-/* icon displayed for revealed submenus */
+{# icon displayed for revealed submenus #}
 .sidebar-menu li.active > a > .fa-angle-left {
     top: 30px;
     right: 0;
 }
-/* when the sidebar is collapsed, make the icons wider to just display them and not the labels */
+{# when the sidebar is collapsed, make the icons wider to just display them and not the labels #}
 .sidebar-collapse .sidebar-menu > li > a > .fa {
     width: 28px;
 }
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    COMMON ADMIN PAGES
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 body.easyadmin h1.title {
     margin-bottom: 10px;
 }
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    LIST PAGE
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 
 body.list .global-actions {
     display: table;
@@ -762,8 +762,8 @@ body.list .global-actions .input-group-btn a.btn {
     margin-left: 10px;
 }
 
-/* Responsive tables
-   ------------------------------------------------------------------------- */
+{# Responsive tables
+   ------------------------------------------------------------------------- #}
 body.list .table-responsive,
 body.list table {
     background: transparent;
@@ -820,8 +820,8 @@ body.list table tbody td.actions a {
     margin-left: 10px;
 }
 
-/* Search results
-   ------------------------------------------------------------------------- */
+{# Search results
+   ------------------------------------------------------------------------- #}
 body.list .table tbody span.highlight {
     background: #FF9;
     border-radius: 2px;
@@ -833,8 +833,8 @@ body.list .table tbody .actions span.highlight {
     border-radius: 0;
 }
 
-/* Pagination
-   ------------------------------------------------------------------------- */
+{# Pagination
+   ------------------------------------------------------------------------- #}
 body.list .pagination {
     float: right;
     margin: 0;
@@ -865,17 +865,17 @@ body.list .pagination > li > a:hover {
 body.list .pagination > li i {
     padding: 0 3px;
 }
-/* this hack is needed to avoid the last pagination page from showing wrong
+{# this hack is needed to avoid the last pagination page from showing wrong
    borders for the second pagination element (we need to put this element above
-   the third element) */
+   the third element) #}
 body.list .pagination.last-page li:nth-child(2) {
     position: relative;
     z-index: 1;
 }
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    FORM PAGE
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 form label.control-label.required:after {
     content: "\00a0*";
     color: {{ colors.danger }};
@@ -883,9 +883,9 @@ form label.control-label.required:after {
     position: absolute;
 }
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    NEW PAGE
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 body.new textarea {
     min-height: 250px;
 }
@@ -905,9 +905,9 @@ body.new .form-horizontal #form-actions-row {
     padding-right: 15px;
 }
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    EDIT PAGE
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 body.edit textarea {
     min-height: 250px;
 }
@@ -927,9 +927,9 @@ body.edit .form-horizontal #form-actions-row {
     padding-right: 15px;
 }
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    SHOW PAGE
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 body.show .form-control {
 {% if 'dark' == color_scheme %}
     background: {{ colors.white }};
@@ -947,9 +947,9 @@ body.show .form-control.text {
     overflow-y: auto;
 }
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    ERROR PAGES
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 body.error .error-description {
     background: {{ colors.white }};
     border: 1px solid {{ colors.gray_lighter }};
@@ -973,13 +973,13 @@ body.error .error-message {
     padding: 15px;
 }
 
-/* =========================================================================
+{# =========================================================================
    RESPONSIVE
-   ========================================================================= */
+   ========================================================================= #}
 
-/* -------------------------------------------------------------------------
+{# -------------------------------------------------------------------------
    VERTICAL TABLETS and LANDSCAPE SMARTPHONES
-   ------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- #}
 @media (min-width: 768px) {
     ul, ol {
         margin-left: 2em;
@@ -1010,7 +1010,7 @@ body.error .error-message {
         padding-top: 50px;
     }
 
-    /* these table styles are needed to override the "responsive tables" styles */
+    {# these table styles are needed to override the "responsive tables" styles #}
     body.list table {
         background: {{ colors.white }};
         border: 1px solid {{ colors.table_border }};
@@ -1064,7 +1064,7 @@ body.error .error-message {
     body.list .table thead tr th.sorted {
         border-bottom: 2px outset {{ brand_color }};
     }
-    /* these styles are needed to fix some visual glitches when the sort field is the first column */
+    {# these styles are needed to fix some visual glitches when the sort field is the first column #}
     body.list .table thead tr th:first-child.sorted {
 {% if 'dark' == color_scheme %}
         border-left: 1px solid {{ brand_color }};

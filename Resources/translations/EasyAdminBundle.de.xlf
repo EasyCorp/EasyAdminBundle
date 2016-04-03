@@ -97,8 +97,20 @@
                 <source>user.logged_in_as</source>
                 <target>Angemeldet als</target>
             </trans-unit>
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>Nicht benannter Benutzer</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>Anonymer Benutzer</target>
+            </trans-unit>
 
             <!-- misc. elements -->
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Navigation ein-/ausblenden</target>
+            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Soll das Element wirklich gelöscht werden?</target>
@@ -126,6 +138,10 @@
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Fehler</target>
+            </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Vorgenommene Änderungen wurden noch nicht gespeichert.</target>
             </trans-unit>
         </body>
     </file>

@@ -174,6 +174,8 @@ class EasyAdminFormType extends AbstractType
             'time' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimeType',
             'timezone' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimezoneType',
             'url' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\UrlType',
+            // EasyAdmin custom types
+            'easyadmin_autocomplete' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminAutocompleteType',
             // Popular third-party bundles types
             'ckeditor' => 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType',
             'vich_file' => 'Vich\\UploaderBundle\\Form\\Type\\VichFileType',

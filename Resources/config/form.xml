@@ -11,7 +11,6 @@
         </service>
 
         <service id="easyadmin.form.type.autocomplete" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType">
-            <argument type="service" id="doctrine.orm.entity_manager"/>
             <tag name="form.type" alias="easyadmin_autocomplete" />
         </service>
 

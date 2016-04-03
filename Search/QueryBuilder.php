@@ -38,7 +38,7 @@ class QueryBuilder
      *
      * @return DoctrineQueryBuilder
      */
-    public function createListQueryBuilder(array $entityConfig, $sortField, $sortDirection)
+    public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null)
     {
         /** @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
@@ -66,7 +66,7 @@ class QueryBuilder
      *
      * @return DoctrineQueryBuilder
      */
-    public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField, $sortDirection)
+    public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField = null, $sortDirection = null)
     {
         /** @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
@@ -99,7 +99,7 @@ class QueryBuilder
         }
 
         if (null !== $sortField) {
-            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection);
+            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection ?: 'DESC');
         }
 
         return $queryBuilder;

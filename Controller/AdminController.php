@@ -129,6 +129,16 @@ class AdminController extends Controller
         $this->get('event_dispatcher')->dispatch($eventName, $event);
     }
 
+    protected function autocompleteAction()
+    {
+        return $this->get('easyadmin.autocomplete')->find(
+            $this->request->query->get('entity'),
+            $this->request->query->get('property'),
+            $this->request->query->get('view'),
+            $this->request->query->get('query')
+        );
+    }
+
     /**
      * The method that is executed when the user performs a 'list' action on an entity.
      *

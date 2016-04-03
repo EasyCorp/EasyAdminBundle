@@ -10,6 +10,10 @@
             <tag name="form.type" alias="easyadmin" />
         </service>
 
+        <service id="easyadmin.form.type.autocomplete" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType">
+            <tag name="form.type" alias="easyadmin_autocomplete" />
+        </service>
+
         <service id="easyadmin.form.type.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension">
             <argument type="service" id="request_stack" on-invalid="null" />
             <tag name="form.type_extension" alias="form" extended-type="Symfony\Component\Form\Extension\Core\Type\FormType" />
@@ -20,6 +24,11 @@
         </service>
 
         <!-- Type Configurators -->
+
+        <service id="easyadmin.form.type.configurator.autocomplete" public="false"
+                 class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="30"/>
+        </service>
 
         <service id="easyadmin.form.type.configurator.collection" public="false"
                  class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator">

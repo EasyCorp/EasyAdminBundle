@@ -145,7 +145,7 @@ displayed in the same order as defined in the related Doctrine entity.
 > **NOTE**
 >
 > If any of the fields is an association with another entity, the values of the
-> related entity are displated as a `<select>` list. For that reason, you must
+> related entity are displayed as a `<select>` list. For that reason, you must
 > define the `__toString()` PHP method in any entity which is related to other
 > entities. Otherwise you'll see an error message because the backend cannot
 > represent the related object as a string.
@@ -247,12 +247,15 @@ These are the options that you can define for each field:
     contains the entire form field. For example, when using the default
     Bootstrap form theme, this value is applied to the `<div>` element which
     wraps the label, the widget and the error messages of the field.
-  * `type` (optional): the Symfony Form type used to render this field. All the
-    [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html)
-    are supported. You can use the short type name (e.g. `email`) instead of its
-    fully qualified class name (e.g. `Symfony\Component\Form\Extension\Core\Type\EmailType`)
-    even if your application runs on Symfony 3 (the needed conversion is done
-    internally by the bundle).
+
+  * `type` (optional): the Symfony Form type used to render this field. You can
+    use the short type name (e.g. `email`) instead of its fully qualified class
+    name (e.g. `Symfony\Component\Form\Extension\Core\Type\EmailType`) even if
+    your application runs on Symfony 3 (the needed conversion is done internally
+    by the bundle).The allowed values are:
+    * Any of the [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html).
+    * Any of the custom EasyAdmin form types: `easyadmin_autocomplete` (they are
+      explained later in this chapter).
   * `type_options` (optional), a hash with the options passed to the Symfony
     Form type associated with the field.
 
@@ -343,6 +346,54 @@ easy_admin:
 This problem is solved defining a custom `utcdatetime` Form Type. Read the [How
 to Create a Custom Form Field Type][1] article of the official Symfony
 documentation to learn how to define custom form types.
+
+EasyAdmin Form Types
+--------------------
+
+In addition to the Symfony Form types, fields can use any of the following types
+defined by EasyAdmin.
+
+### Autocomplete
+
+It's similar to Symfony's `Entity` type, but the values are loaded on demand via
+Ajax based on your input. This type is useful when a field is related to an
+entity with lots of database records. Autocompleting those fields improve
+backend performance and user experience:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            form:
+                fields:
+                    - { property: 'category', type: 'easyadmin_autocomplete' }
+                    # ...
+    # ...
+```
+
+The `easyadmin_autocomplete` type configures the class of the related entity
+automatically. If you prefer to define it explicitly, do it in the type options:
+
+```yaml
+# ...
+- { property: 'category', type: 'easyadmin_autocomplete', type_options: { class: 'AppBundle\Entity\Category' } }
+```
+
+When the user types in an autocomplete field, EasyAdmin performs a fuzzy search
+on all the properties of the related entity. This is the same behavior applied
+when using the backend search form.
+
+The autocomplete action sends to the browser a JSON array of `{ id: '...', text: '...' }`
+tuples. The `id` is stored as the form field value and `text` is the value
+displayed to the user.
+
+By default, the entity's primary key is used for the `id` property and the
+`(string) %entity` conversion is used for the `text` property. Therefore, you
+must define the `__toString()` method in any autocomplete entity.
+
+If you need to customize this behavior, override the `autocompleteAction()` in
+the `AdminController` as explained later in this chapter.
 
 Advanced Design Configuration
 -----------------------------

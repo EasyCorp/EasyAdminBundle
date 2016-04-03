@@ -20,8 +20,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class Autocomplete
 {
-    const MAX_RESULTS = 15;
-
     /** @var Configurator */
     private $configurator;
     /** @var Finder */
@@ -57,7 +55,7 @@ class Autocomplete
 
         $targetEntityClass = $backendConfig['entities'][$entity][$view]['fields'][$property]['targetEntity'];
         $targetEntityConfig = $this->configurator->getEntityConfigByClass($targetEntityClass);
-        $entities = $this->finder->findByAllProperties($targetEntityConfig, $query, Autocomplete::MAX_RESULTS);
+        $entities = $this->finder->findByAllProperties($targetEntityConfig, $query, $backendConfig['list']['max_results']);
 
         return new JsonResponse(array('results' => $this->processResults($entities, $targetEntityConfig)));
     }

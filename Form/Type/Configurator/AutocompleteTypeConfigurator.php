@@ -32,6 +32,9 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
             $options['class'] = $metadata['targetEntity'];
         }
 
+        // this prevents the form field to load all the entity records from the database
+        $options['choices'] = array();
+
         return $options;
     }
 

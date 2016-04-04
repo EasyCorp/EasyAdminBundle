@@ -1,0 +1,5 @@
+{% if view == 'show' %}
+    <a href="mailto:{{ value }}">{{ value }}</a>
+{% else %}
+    <a href="mailto:{{ value }}">{{ value|easyadmin_truncate }}</a>
+{% endif %}

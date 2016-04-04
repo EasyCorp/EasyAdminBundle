@@ -21,6 +21,9 @@ class EasyAdminAutocompleteType extends AbstractType
     private $preSetData = false;
     private $preSubmit = false;
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if (!$this->preSetData) {

@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -18,6 +19,7 @@ use Symfony\Component\Form\FormConfigInterface;
  * and is used to configure the class of the autocompleted entity.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
 class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
 {
@@ -32,8 +34,9 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
             $options['class'] = $metadata['targetEntity'];
         }
 
-        // this prevents the form field to load all the entity records from the database
-        $options['choices'] = array();
+        if (!isset($options['multiple']) && $metadata['associationType'] & ClassMetadata::TO_MANY) {
+            $options['multiple'] = true;
+        }
 
         return $options;
     }

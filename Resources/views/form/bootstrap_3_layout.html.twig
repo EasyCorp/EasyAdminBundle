@@ -452,8 +452,10 @@
                     delay: 250,
                     data: function (params) {
                         return { 'query': params.term };
-                    }
-                }
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1
             });
         });
     </script>

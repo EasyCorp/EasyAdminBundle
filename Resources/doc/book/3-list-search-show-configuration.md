@@ -344,6 +344,56 @@ EasyAdmin Data Types
 In addition to the Doctrine data types, properties can use any of the following
 data types defined by EasyAdmin.
 
+### Email Data Type
+
+It displays the contents of the property as a clickable `mailto:` link:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\User
+            list:
+                fields:
+                    - { property: 'contact', type: 'email' }
+                    # ...
+    # ...
+```
+
+### URL Data Type
+
+It displays the contents of the property as a clickable link which opens in a
+new browser tab:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\User
+            list:
+                fields:
+                    - { property: 'blogUrl', type: 'url' }
+                    # ...
+    # ...
+```
+
+### Telephone Data Type
+
+It displays the contents of the property as a clickable telephone number. Beware
+that some browsers don't support these links:
+
+```yaml
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\User
+            list:
+                fields:
+                    - { property: 'workPhoneNumber', type: 'tel' }
+                    # ...
+    # ...
+```
+
 ### Toogle and Boolean Data Types
 
 If an entity is editable, the `list` view applies the `type: 'toggle'` option to

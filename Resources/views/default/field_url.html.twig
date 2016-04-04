@@ -1,0 +1,5 @@
+{% if view == 'show' %}
+    <a target="_blank" href="{{ value }}">{{ value }}</a>
+{% else %}
+    <a target="_blank" href="{{ value }}">{{ value|replace({ 'https://': '', 'http://': '' })|easyadmin_truncate }}</a>
+{% endif %}

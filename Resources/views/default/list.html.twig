@@ -22,11 +22,6 @@
 {% block body_id 'easyadmin-list-' ~ _entity_config.name %}
 {% block body_class 'list list-' ~ _entity_config.name|lower %}
 
-{% block head_stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap-toggle.min.css') }}">
-{% endblock %}
-
 {% set _content_title %}
 {% spaceless %}
     {% if 'search' == app.request.get('action') %}
@@ -194,8 +189,6 @@
 {% block body_javascript %}
     {{ parent() }}
 
-    <script src="{{ asset('bundles/easyadmin/javascript/bootstrap-toggle.min.js') }}"></script>
-
     <script type="text/javascript">
         $(function() {
             $('#main').find('table .toggle input[type="checkbox"]').change(function() {
@@ -238,8 +231,6 @@
     </script>
 
     {% if 'search' == app.request.get('action') %}
-        <script src="{{ asset('bundles/easyadmin/javascript/jquery.highlight.min.js') }}"></script>
-
         <script type="text/javascript">
             var _search_query = "{{ app.request.get('query')|default('')|e('js') }}";
             // the original query is prepended to allow matching exact phrases in addition to single words

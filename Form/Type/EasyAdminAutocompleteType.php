@@ -2,7 +2,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -34,7 +33,7 @@ class EasyAdminAutocompleteType extends AbstractType
                 $form = $event->getForm();
                 $data = $event->getData();
                 // settings selected data
-                $options['choices'] = is_array($data) || $data instanceof Collection ? $data : array($data);
+                $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
                 // redefine form and choices option
                 $form->getParent()->add($form->getName(), 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType', $options);
             };

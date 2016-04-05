@@ -35,7 +35,7 @@ class EasyAdminAutocompleteType extends AbstractType
                 // settings selected data
                 $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
                 // redefine form and choices option
-                $form->getParent()->add($form->getName(), 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType', $options);
+                $form->getParent()->add($form->getName(), __CLASS__, $options);
             };
 
             $builder->addEventListener(FormEvents::PRE_SET_DATA, $preSetDataListener);
@@ -57,7 +57,7 @@ class EasyAdminAutocompleteType extends AbstractType
                 $options['choices'] = $normData;
 
                 // redefine form and choices option
-                $form->getParent()->add($form->getName(), 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType', $options);
+                $form->getParent()->add($form->getName(), __CLASS__, $options);
                 // submit data to new form
                 $form->getParent()->get($form->getName())->submit($data);
             };

@@ -35,6 +35,10 @@
                 <source>action.list</source>
                 <target>Terug naar overzicht</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Geen</target>
+            </trans-unit>
 
             <!-- forms -->
             <trans-unit id="form.label.collections">

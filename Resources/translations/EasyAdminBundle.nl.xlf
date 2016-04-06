@@ -97,8 +97,20 @@
                 <source>user.logged_in_as</source>
                 <target>Aangemeld als</target>
             </trans-unit>
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>Naamloze gebruiker</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>Anonieme gebruiker</target>
+            </trans-unit>
 
             <!-- misc. elements -->
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Schakel navigatie</target>
+            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Weet je zeker dat je dit item wilt verwijderen?</target>
@@ -106,6 +118,10 @@
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
                 <target>Deze actie kan niet ongedaan worden gemaakt.</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>Verwijder</target>
             </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
@@ -122,6 +138,10 @@
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Fout|Fouten</target>
+            </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Je hebt de wijzigingen op dit formulier nog niet opgeslagen.</target>
             </trans-unit>
         </body>
     </file>

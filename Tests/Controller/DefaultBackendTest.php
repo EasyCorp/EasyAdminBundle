@@ -42,20 +42,24 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals('en', trim($crawler->filter('html')->attr('lang')));
     }
 
-    public function testDefaultCssFilesAreLinked()
+    public function testDefaultCssStylesAreLinked()
     {
-        $cssFiles = array(
-            '/bundles/easyadmin/stylesheet/bootstrap.min.css',
-            '/bundles/easyadmin/stylesheet/font-awesome.min.css',
-            '/bundles/easyadmin/stylesheet/adminlte.min.css',
-            '/bundles/easyadmin/stylesheet/featherlight.min.css',
-        );
-
         $crawler = $this->getBackendHomepage();
 
-        foreach ($cssFiles as $i => $url) {
-            $this->assertEquals($url, $crawler->filterXPath('//link[@rel="stylesheet"]')->eq($i)->attr('href'));
-        }
+        $this->assertEquals(
+            '/bundles/easyadmin/stylesheet/easyadmin-all.min.css',
+            $crawler->filter('link[rel="stylesheet"]')->eq(0)->attr('href')
+        );
+    }
+
+    public function testDefaultJsScriptsAreLinked()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $this->assertEquals(
+            '/bundles/easyadmin/javascript/easyadmin-all.min.js',
+            $crawler->filter('script')->eq(0)->attr('src')
+        );
     }
 
     public function testLogo()

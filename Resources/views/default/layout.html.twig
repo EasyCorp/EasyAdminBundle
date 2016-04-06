@@ -9,10 +9,7 @@
         <title>{% block page_title %}{{ block('content_title')|striptags|raw }}{% endblock %}</title>
 
         {% block head_stylesheets %}
-            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/font-awesome.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/adminlte.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/featherlight.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/easyadmin-all.min.css') }}">
             <style>
                 {{ easyadmin_config('_internal.custom_css')|raw }}
             </style>
@@ -27,12 +24,28 @@
             <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}" />
         {% endblock %}
 
+        {% block head_javascript %}
+            <script src="{{ asset('bundles/easyadmin/javascript/easyadmin-all.min.js') }}"></script>
+
+            {% block adminlte_options %}
+                <script type="text/javascript">
+                    var AdminLTEOptions = {
+                        animationSpeed: 'fast',
+                        sidebarExpandOnHover: true,
+                        enableBoxRefresh: false,
+                        enableBSToppltip: false,
+                        enableFastclick: false,
+                        enableControlSidebar: false,
+                        enableBoxWidget: false
+                    };
+                </script>
+            {% endblock %}
+        {% endblock head_javascript %}
+
         <!--[if lt IE 9]>
             <script src="{{ asset('bundles/easyadmin/stylesheet/html5shiv.min.css') }}"></script>
             <script src="{{ asset('bundles/easyadmin/stylesheet/respond.min.css') }}"></script>
         <![endif]-->
-
-        {% block head_javascript %}{% endblock %}
     </head>
 
     {% block body %}
@@ -105,29 +118,7 @@
         {% endblock wrapper %}
         </div>
 
-        {% block body_javascript %}
-            <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
-            <script src="{{ asset('bundles/easyadmin/javascript/bootstrap.min.js') }}"></script>
-
-            {% block adminlte_options %}
-                <script type="text/javascript">
-                    var AdminLTEOptions = {
-                        animationSpeed: 'fast',
-                        sidebarExpandOnHover: true,
-                        enableBoxRefresh: false,
-                        enableBSToppltip: false,
-                        enableFastclick: false,
-                        enableControlSidebar: false,
-                        enableBoxWidget: false
-                    };
-                </script>
-            {% endblock %}
-
-            <script src="{{ asset('bundles/easyadmin/javascript/jquery.slimscroll.min.js') }}"></script>
-            <script src="{{ asset('bundles/easyadmin/javascript/adminlte.min.js') }}"></script>
-            <script src="{{ asset('bundles/easyadmin/javascript/jquery.featherlight.min.js') }}"></script>
-            <script src="{{ asset('bundles/easyadmin/javascript/easyadmin.js') }}"></script>
-        {% endblock body_javascript %}
+        {% block body_javascript %}{% endblock body_javascript %}
 
         {% for js_asset in easyadmin_config('design.assets.js') %}
             <script src="{{ asset(js_asset) }}"></script>

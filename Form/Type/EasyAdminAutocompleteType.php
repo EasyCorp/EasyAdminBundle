@@ -3,6 +3,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -17,53 +18,45 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class EasyAdminAutocompleteType extends AbstractType
 {
-    private $preSetData = false;
-    private $preSubmit = false;
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (!$this->preSetData) {
-            // avoid infinite call to PRE_SET_DATA event
-            $this->preSetData = true;
+        $preSetDataListener = function (FormEvent $event) use ($options) {
+            $form = $event->getForm();
+            $data = $event->getData();
+            // adjust inherited options
+            $options['compound'] = false;
+            // normalize choices list
+            $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
+            // create autocomplete form field
+            $form->add('autocomplete', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', $options);
+        };
 
-            $preSetDataListener = function (FormEvent $event) use ($options) {
-                $form = $event->getForm();
-                $data = $event->getData();
-                // settings selected data
-                $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
-                // redefine form and choices option
-                $form->getParent()->add($form->getName(), __CLASS__, $options);
-            };
+        $preSubmitListener = function (FormEvent $event) {
+            $form = $event->getForm();
+            $data = $event->getData();
+            // reuse autocomplete options
+            $options = $form->get('autocomplete')->getConfig()->getOptions();
+            // replace initial choices with submitted data
+            $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
+                $options['id_reader']->getIdField() => $data['autocomplete'],
+            ));
+            // recreate autocomplete form field with new choices list
+            $form->add('autocomplete', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', $options);
+        };
 
-            $builder->addEventListener(FormEvents::PRE_SET_DATA, $preSetDataListener);
-        }
-
-        if (!$this->preSubmit) {
-            $self = $this;
-            $preSubmitListener = function (FormEvent $event) use ($self, $options) {
-                // avoid infinite call to PRE_SUBMIT event
-                $self->preSubmit = true;
-
-                $form = $event->getForm();
-                $data = $event->getData();
-                // normalize data choices
-                $normData = $options['em']->getRepository($options['class'])->findBy(array(
-                    $options['id_reader']->getIdField() => $data
-                ));
-                // settings selected data
-                $options['choices'] = $normData;
-
-                // redefine form and choices option
-                $form->getParent()->add($form->getName(), __CLASS__, $options);
-                // submit data to new form
-                $form->getParent()->get($form->getName())->submit($data);
-            };
-
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, $preSubmitListener);
-        }
+        $builder
+            ->addEventListener(FormEvents::PRE_SET_DATA, $preSetDataListener)
+            ->addEventListener(FormEvents::PRE_SUBMIT, $preSubmitListener)
+            ->addModelTransformer(new CallbackTransformer(
+                // transforms an entity to compound array
+                function ($entity) {
+                    return array('autocomplete' => $entity);
+                },
+                // transforms a compound array to entity
+                function (array $compound) {
+                    return $compound['autocomplete'];
+                }
+            ));
     }
 
     /**
@@ -72,28 +65,17 @@ class EasyAdminAutocompleteType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            // this prevents the form field to load all the entity records from the database
-            'choices' => array(),
+            'multiple' => false,
+            // force display errors on this form field
+            'error_bubbling' => false,
         ));
+        $resolver->setRequired(array('class'));
     }
 
     // BC for SF < 2.7
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $this->configureOptions($resolver);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        // BC for Symfony < 3
-        if (!method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix')) {
-            return 'entity';
-        }
-
-        return 'Symfony\Bridge\Doctrine\Form\Type\EntityType';
     }
 
     /**

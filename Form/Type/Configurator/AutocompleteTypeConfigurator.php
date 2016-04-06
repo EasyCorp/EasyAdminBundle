@@ -34,6 +34,7 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
             $options['class'] = $metadata['targetEntity'];
         }
 
+        // settings multiple autocomplete choices by default for OneToMany and ManyToMany association types
         if (!isset($options['multiple']) && $metadata['associationType'] & ClassMetadata::TO_MANY) {
             $options['multiple'] = true;
         }

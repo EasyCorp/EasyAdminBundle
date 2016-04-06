@@ -434,7 +434,8 @@
 
 {# EasyAdminAutocomplete form type #}
 {% block easyadmin_autocomplete_widget %}
-    {{ form_widget(form) }}
+    {# display form row, but never its label #}
+    {{ form_row(form.autocomplete, {'label': false}) }}
 
     <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
     <script>

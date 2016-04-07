@@ -31,6 +31,10 @@ class LegacyFormHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetType($shortType, $expected)
     {
+        if (LegacyFormHelper::useLegacyFormComponent()) {
+            $expected = $shortType;
+        }
+
         $this->assertSame($expected, LegacyFormHelper::getType($shortType));
     }
 }

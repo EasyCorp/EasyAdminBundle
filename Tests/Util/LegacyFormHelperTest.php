@@ -18,9 +18,9 @@ class LegacyFormHelperTest extends \PHPUnit_Framework_TestCase
     public function shortTypesToFqcnProvider()
     {
         return array(
-            'Symfony Type (regular name)'   => array('integer', 'Symfony\Component\Form\Extension\Core\Type\IntegerType'),
-            'Symfony Type (irregular name)' => array('datetime', 'Symfony\Component\Form\Extension\Core\Type\DateTimeType'),
-            'Doctrine Bridge Type'          => array('entity', 'Symfony\Bridge\Doctrine\Form\Type\EntityType'),
+            'Symfony Type (regular name)'   => array('integer', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\IntegerType'),
+            'Symfony Type (irregular name)' => array('datetime', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType'),
+            'Doctrine Bridge Type'          => array('entity', 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType'),
             'Custom Type (short name)'      => array('foo', 'foo'),
             'Custom Type (FQCN)'            => array('Foo\Bar', 'Foo\Bar'),
         );

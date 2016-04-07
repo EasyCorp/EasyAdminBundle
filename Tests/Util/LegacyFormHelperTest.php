@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Form\Type;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Util\Type;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
+use JavierEguiluz\Bundle\EasyAdminBundle\Util\LegacyFormHelper;
 
-class EasyAdminFormTypeTest extends \PHPUnit_Framework_TestCase
+class LegacyFormHelperTest extends \PHPUnit_Framework_TestCase
 {
     public function shortTypesToFqcnProvider()
     {
@@ -29,16 +29,8 @@ class EasyAdminFormTypeTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider shortTypesToFqcnProvider
      */
-    public function testGetFormTypeFqcn($shortType, $expected)
+    public function testGetType($shortType, $expected)
     {
-        $configuratorMock = $this->getMockBuilder('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator')->disableOriginalConstructor()->getMock();
-        $type = new EasyAdminFormType($configuratorMock, array(), array());
-
-        $method = new \ReflectionMethod($type, 'getFormTypeFqcn');
-        $method->setAccessible(true);
-
-        $this->assertSame($expected, $method->invoke($type, $shortType));
-
-        $method->setAccessible(false);
+        $this->assertSame($expected, LegacyFormHelper::getType($shortType));
     }
 }

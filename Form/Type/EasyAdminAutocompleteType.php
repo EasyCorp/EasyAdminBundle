@@ -2,6 +2,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,7 +29,7 @@ class EasyAdminAutocompleteType extends AbstractType
             // normalize choices list
             $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
             // create autocomplete form field
-            $form->add('autocomplete', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', $options);
+            $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
         };
 
         $preSubmitListener = function (FormEvent $event) {
@@ -40,8 +41,8 @@ class EasyAdminAutocompleteType extends AbstractType
             $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
                 $options['id_reader']->getIdField() => $data['autocomplete'],
             ));
-            // recreate autocomplete form field with new choices list
-            $form->add('autocomplete', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', $options);
+            // reset autocomplete form field with new choices list
+            $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
         };
 
         $builder

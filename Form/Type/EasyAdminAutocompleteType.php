@@ -23,7 +23,10 @@ class EasyAdminAutocompleteType extends AbstractType
     {
         $preSetDataListener = function (FormEvent $event) use ($options) {
             $form = $event->getForm();
-            $data = $event->getData();
+            // normalize null data
+            if (null === $data = $event->getData()) {
+                $data = array();
+            }
             // settings inherited options
             $options['compound'] = false;
             // normalize choices list
@@ -34,7 +37,11 @@ class EasyAdminAutocompleteType extends AbstractType
 
         $preSubmitListener = function (FormEvent $event) {
             $form = $event->getForm();
-            $data = $event->getData();
+            // normalize null data
+            if (null === $data = $event->getData()) {
+                $data = array('autocomplete' => array());
+                $event->setData($data);
+            }
             // reuse autocomplete options
             $options = $form->get('autocomplete')->getConfig()->getOptions();
             // replace initial choices with submitted data

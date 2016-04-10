@@ -44,8 +44,7 @@ Product:
             # ...
 ```
 
-Using Custom Property Options in Templates
-------------------------------------------
+### Using Custom Property Options in Templates
 
 Property templates receive a parameter called `field_options` which is an array
 that contains all the options defined in the configuration file for that
@@ -106,3 +105,42 @@ The custom `tag_collection.html.twig` template would look as follows:
 And this property would be rendered in the `list` view as follows:
 
 ![Default listing interface](../images/easyadmin-design-customization-custom-data-types.png)
+
+Custom Entity Options
+---------------------
+
+This very same technique can be applied to entities too. Since the configuration
+options are not constrained, you can add as many custom entity properties as
+needed. Just define their name and value to use them everywhere on the backend:
+
+```yaml
+# app/config.yml
+easy_admin:
+    entities:
+        User:
+            class: AppBundle\Entity\User
+            export_path: '%kernel.root_dir/../var/export/user'
+            password_encoding: { algorithm: 'bcrypt', cost: 12 }
+            # ...
+```
+
+In the above example, the backend defines the `export_path` and `password_encoding`
+custom options, which will be included by EasyAdmin in the processed `User`
+configuration.
+
+Instead of defining the custom options at the same level of the built-in options,
+it's better to define them under a custom parent option. This eases the maintenance
+of your custom options and reduces the risk of option name collisions. You can
+even use the name of your project as the name of the parent option:
+
+```yaml
+# app/config.yml
+easy_admin:
+    entities:
+        User:
+            class: AppBundle\Entity\User
+            acme_project:
+                export_path: '%kernel.root_dir/../var/export/user'
+                password_encoding: { algorithm: 'bcrypt', cost: 12 }
+            # ...
+```

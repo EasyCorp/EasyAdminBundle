@@ -437,10 +437,9 @@
     {# display form row, but never its label #}
     {{ form_row(form.autocomplete, {'label': false}) }}
 
-    <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
     <script>
         $(function() {
-            $('#{{ form.vars.id }}').select2({
+            $('#{{ form.autocomplete.vars.id }}').select2({
                 theme: 'bootstrap',
                 ajax: {
                     url: '{{ path('easyadmin', {

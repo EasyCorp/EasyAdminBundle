@@ -2,18 +2,23 @@
 {% if value is iterable %}
     {% if 'show' == view %}
         {% if value|length > 0 %}
-            <ul class="{{ value|length < 2 ? 'inline' }}">
-                {% for item in value %}
-                    <li>
-                        {% if link_parameters is defined %}
-                            {% set primary_key_value = attribute(item, link_parameters.primary_key_name) %}
-                            <a href="{{ path('easyadmin', link_parameters|merge({ id: primary_key_value, referer: '' })) }}">{{ item }}</a>
-                        {% else %}
-                            {{ item }}
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
+            {% if value | length < 15 %}
+                <ul class="{{ value|length < 2 ? 'inline' }}">
+                    {% for item in value %}
+                        <li>
+                            {% if link_parameters is defined %}
+                                {% set primary_key_value = attribute(item, link_parameters.primary_key_name) %}
+                                <a href="{{ path('easyadmin', link_parameters|merge({ id: primary_key_value, referer: '' })) }}">{{ item }}</a>
+                            {% else %}
+                                {{ item }}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                {# Don't use list for large assoc. #}
+                <span class="badge">{{ value|length }}</span>
+            {% endif %}
         {% else %}
             <div class="empty collection-empty">
                 <span class="label label-empty">{{ 'label.empty'|trans({}, 'EasyAdminBundle') }}</span>

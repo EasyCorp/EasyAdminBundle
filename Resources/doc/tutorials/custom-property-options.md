@@ -2,7 +2,10 @@ How to Define Custom Options for Entity Properties
 ==================================================
 
 This article explains how to define custom options for any entity property and
-how to use those options in the `list`, `search` or `show` views.
+how to use those options in the `list`, `search` or `show` views. This technique
+is useful for complex or highly customized backends, but it should be used
+sparingly because it could require you some maintenance work when new versions
+of this bundle are released.
 
 Default Property Options
 ------------------------

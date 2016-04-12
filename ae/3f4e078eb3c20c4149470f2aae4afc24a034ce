@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-12T17:33:15Z
+
+@GaryPEGEOT-WIC thanks for this contribution. I always remove these fields when the associations have lots of elements ... but it makes sense to change this behavior by default for people who don't remove those fields. Thanks!

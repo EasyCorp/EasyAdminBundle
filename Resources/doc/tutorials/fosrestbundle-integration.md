@@ -13,21 +13,20 @@ This listener provided by FOSRestBundle determines the best format for the
 request based on the HTTP Accept header included in the request and some format
 priority configuration.
 
-Since EasyAdmin doesn't define the format of the request, it's recommended to
-define this format for all the backend URLs using the FOSRestBundle
-configuration.
+If you have enabled this format listener, disable it for the backend routes:
 
-Open your main configuration file, look for the `fos_rest` configuration block
-and add the following `format_listener` configuration (change the value of
-the `path` option if your backend customized the URL prefix):
-
-```yaml
+```
 # app/config/config.yml
 fos_rest:
     format_listener:
-        enabled: false # Can be removed since it's the default configuration. If set to true it'll break responses on your others routes or you will have to specify a return type for your other routes. 
+        enabled: true
         rules:
-            - { path: '^/admin', methods: ['GET', 'POST'], priorities: ['html'], fallback_format: 'html', prefer_extension: false }
+            # ... previous rules declarations
+            - { path: '^/admin', stop: true }  # <-- add this line
 ```
 
+When using FOSRestBundle 2.0, you may also need to configure the "zones" as
+explained in [this chapter][2] of the FOSRestBundle documentation.
+
 [1]: https://github.com/FriendsOfSymfony/FOSRestBundle
+[2]: http://symfony.com/doc/master/bundles/FOSRestBundle/3-listener-support.html

@@ -25,10 +25,9 @@ the `path` option if your backend customized the URL prefix):
 # app/config/config.yml
 fos_rest:
     format_listener:
-        enabled: true
+        enabled: false # Can be removed since it's the default configuration. If set to true it'll break responses on your others routes or you will have to specify a return type for your other routes. 
         rules:
-            - { path: '^/admin', methods: ['GET', 'POST'], priorities: ['html'],
-                fallback_format: 'html', prefer_extension: false }
+            - { path: '^/admin', methods: ['GET', 'POST'], priorities: ['html'], fallback_format: 'html', prefer_extension: false }
 ```
 
 [1]: https://github.com/FriendsOfSymfony/FOSRestBundle

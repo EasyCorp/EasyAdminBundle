@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-15T18:13:18Z
+
+I made a variable because all this Twig code is ugly and I wanted to make the template easier to read. But obviously you are right and this must be a block to make it "overridable".

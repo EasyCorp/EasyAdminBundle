@@ -549,7 +549,7 @@ Depending on your needs you can choose any of these two customization options
   * Customization based on **controller methods**, which is easy to set up but
     requires you to put all the customization code in a single controller which
     extends from the default `AdminController` provided by EasyAdmin.
-  * Customization based on **Symfony events**, which is hader to set up but
+  * Customization based on **Symfony events**, which is harder to set up but
     allows you define the customization code anywhere in your application.
 
 ### Customization Based on Controller Methods

@@ -1,0 +1,114 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2016-04-04T20:01:32Z
+
+@javiereguiluz ready for review! :tada:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-05T17:42:08Z
+
+@yceruto thank you very much for this! I've tested and it works like a charm :heart_eyes:
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-04-06T11:39:15Z
+
+@ogizanagi your idea is the best, Thanks!.
+
+@javiereguiluz Ready for Review!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-04-06T11:57:31Z
+
+@yceruto : Glad it helped !
+I've left a comment, but don't loose too much time on it. I'm :+1: to merge this if it's working as well as it looks !
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-04-06T12:00:02Z
+
+@javiereguiluz I've a commit that fix BC for SF <= 2.7 in this form type:
+```php
+$form->add('autocomplete', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', $options);
+```
+I wish reuse [this code](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Form/Type/EasyAdminFormType.php#L133-L199) but is necessary refactorization one. The question is, I should  submit this refactor in this PR? or separate one?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-04-06T12:33:19Z
+
+Forget to upload the latter commit, my bad. Updated!
+
+---------------------------------------------------------------------------
+
+by rubengc at 2016-04-06T13:14:42Z
+
+that great progress in just two days!!!
+
+Nice work guys, really amazing! :+1:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-07T16:27:52Z
+
+@yceruto I saw your nice new `LegacyFormHelper` :+1:  We're almost there! Thanks for your great work.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-04-07T16:45:06Z
+
+Your welcome, it was a great pleasure! I've finished, ready for final review!
+
+---------------------------------------------------------------------------
+
+by antondachauer at 2016-04-08T11:23:33Z
+
+When will this nice feature released?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-04-08T11:39:33Z
+
+@javiereguiluz I've fixed an issue. Now, we can clear the autocomplete value (tested with `multiple` option too).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-09T10:25:27Z
+
+I was testing the latest changes of this PR before merging it ... and suddenly everything stopped working 😭  The autocomplete fields no longer works for me:
+
+![autocomplete](https://cloud.githubusercontent.com/assets/73419/14403181/ff94ea20-fe4d-11e5-955f-194eddd3c3a1.gif)
+
+I'll check in detail later today to see if it's my fault.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-10T09:14:24Z
+
+I'm sorry but I cannot make this work. It worked great in the past ... but now the autocomplete field doesn't work for me. Can someone reproduce this error? Just use the Symfony Demo app and change the Category entity to use the autocomplete type:
+
+```yaml
+easy_admin:
+    entities:
+        Category:
+            class: AppBundle\Entity\Category
+            # ...
+            form:
+                fields:
+                    # ...
+                    - { property: 'parent', type: 'easyadmin_autocomplete' }
+```
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-04-11T12:15:30Z
+
+Updated following the @ogizanagi comments.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-04-11T21:02:24Z
+
+Note that once this PR is merged or rebased on master, the `easyadmin-all.min.js` file needs to be re-built.

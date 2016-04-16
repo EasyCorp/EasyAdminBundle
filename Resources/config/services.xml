@@ -40,6 +40,16 @@
             <argument type="service" id="doctrine" />
         </service>
 
+        <service id="easyadmin.finder" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Finder">
+            <argument type="service" id="easyadmin.query_builder" />
+        </service>
+
+        <service id="easyadmin.autocomplete" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Autocomplete">
+            <argument type="service" id="easyadmin.configurator" />
+            <argument type="service" id="easyadmin.finder" />
+            <argument type="service" id="property_accessor" />
+        </service>
+
         <service id="easyadmin.paginator" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator">
         </service>
     </services>

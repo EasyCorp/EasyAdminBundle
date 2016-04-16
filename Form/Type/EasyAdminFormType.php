@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use JavierEguiluz\Bundle\EasyAdminBundle\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
@@ -63,7 +64,7 @@ class EasyAdminFormType extends AbstractType
                 }
             }
 
-            $formFieldType = $this->useLegacyFormComponent() ? $metadata['fieldType'] : $this->getFormTypeFqcn($metadata['fieldType']);
+            $formFieldType = LegacyFormHelper::getType($metadata['fieldType']);
             $builder->add($name, $formFieldType, $formFieldOptions);
         }
     }
@@ -87,7 +88,7 @@ class EasyAdminFormType extends AbstractType
             ))
             ->setRequired(array('entity', 'view'));
 
-        if ($this->useLegacyFormComponent()) {
+        if (LegacyFormHelper::useLegacyFormComponent()) {
             $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer()));
         } else {
             $resolver->setNormalizer('attr', $this->getAttributesNormalizer());
@@ -128,72 +129,5 @@ class EasyAdminFormType extends AbstractType
                 'id' => sprintf('%s-%s-form', $options['view'], strtolower($options['entity'])),
             ), $value);
         };
-    }
-
-    /**
-     * It returns the FQCN of the given short type name.
-     * Example: 'text' -> 'Symfony\Component\Form\Extension\Core\Type\TextType'
-     *
-     * @param string $shortType
-     *
-     * @return string
-     */
-    private function getFormTypeFqcn($shortType)
-    {
-        $supportedTypes = array(
-            // Symfony's built-in types
-            'birthday' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\BirthdayType',
-            'button' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\ButtonType',
-            'checkbox' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CheckboxType',
-            'choice' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\ChoiceType',
-            'collection' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CollectionType',
-            'country' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CountryType',
-            'currency' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CurrencyType',
-            'datetime' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType',
-            'date' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateType',
-            'email' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\EmailType',
-            'entity' => 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType',
-            'file' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FileType',
-            'form' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType',
-            'hidden' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\HiddenType',
-            'integer' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\IntegerType',
-            'language' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\LanguageType',
-            'locale' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\LocaleType',
-            'money' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\MoneyType',
-            'number' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\NumberType',
-            'password' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\PasswordType',
-            'percent' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\PercentType',
-            'radio' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\RadioType',
-            'range' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\RangeType',
-            'repeated' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\RepeatedType',
-            'reset' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\ResetType',
-            'search' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\SearchType',
-            'submit' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\SubmitType',
-            'textarea' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TextareaType',
-            'text' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TextType',
-            'time' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimeType',
-            'timezone' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimezoneType',
-            'url' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\UrlType',
-            // Popular third-party bundles types
-            'ckeditor' => 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType',
-            'vich_file' => 'Vich\\UploaderBundle\\Form\\Type\\VichFileType',
-            'vich_image' => 'Vich\\UploaderBundle\\Form\\Type\\VichImageType',
-        );
-
-        if (array_key_exists($shortType, $supportedTypes)) {
-            return $supportedTypes[$shortType];
-        }
-
-        return $shortType;
-    }
-
-    /**
-     * Returns true if the legacy Form component is being used by the application.
-     *
-     * @return bool
-     */
-    private function useLegacyFormComponent()
-    {
-        return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
     }
 }

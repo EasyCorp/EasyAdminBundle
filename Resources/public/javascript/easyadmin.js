@@ -7,6 +7,7 @@ $(function () {
     ;
 
     createNullableControls();
+    easyAdminAutoComplete();
 });
 
 function createNullableControls() {
@@ -48,4 +49,27 @@ function createPersistentCookie(name, value)
 function deleteCookie(name)
 {
     document.cookie = encodeURIComponent(name) + "=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+}
+
+function easyAdminAutoComplete() {
+    var autocompletedFields = $('[data-easyadmin-autocomplete-url]');
+
+    autocompletedFields.each(function () {
+        var url = $(this).data('easyadmin-autocomplete-url');
+        $(this).select2({
+            theme: 'bootstrap',
+            ajax: {
+                url: url,
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {'query': params.term};
+                },
+                cache: true
+            },
+            placeholder: "",
+            allowClear: true,
+            minimumInputLength: 1
+        });
+    });
 }

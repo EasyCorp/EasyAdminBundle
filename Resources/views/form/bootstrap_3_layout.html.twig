@@ -394,7 +394,7 @@
 {% endspaceless %}
 {% endblock %}
 
-{# Easy admin form type #}
+{# EasyAdmin form type #}
 {% block easyadmin_widget %}
     {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
 
@@ -442,3 +442,14 @@
         </div>
     </div>
 {% endblock easyadmin_widget %}
+
+{# EasyAdminAutocomplete form type #}
+{% block easyadmin_autocomplete_widget %}
+    {# display form row, but never its label #}
+    {{ form_row(form.autocomplete, {'label': false, 'attr': attr|merge({ 'data-easyadmin-autocomplete-url' : path('easyadmin', {
+        action: 'autocomplete',
+        entity: easyadmin.entity.name,
+        property: easyadmin.field.fieldName,
+        view: easyadmin.view
+    })|raw })}) }}
+{% endblock easyadmin_autocomplete_widget %}

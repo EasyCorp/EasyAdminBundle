@@ -40,7 +40,7 @@
             <argument type="service" id="doctrine" />
         </service>
 
-        <service id="easyadmin.finder" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Finder">
+        <service id="easyadmin.finder" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Finder" public="false">
             <argument type="service" id="easyadmin.query_builder" />
         </service>
 

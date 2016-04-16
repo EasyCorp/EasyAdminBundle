@@ -12,7 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**

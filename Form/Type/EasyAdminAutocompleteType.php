@@ -2,7 +2,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Util\LegacyFormHelper;
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,7 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Autocomplete form type.
  *
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
 class EasyAdminAutocompleteType extends AbstractType
@@ -23,31 +22,31 @@ class EasyAdminAutocompleteType extends AbstractType
     {
         $preSetDataListener = function (FormEvent $event) use ($options) {
             $form = $event->getForm();
-            // normalize null data
-            if (null === $data = $event->getData()) {
-                $data = array();
-            }
+            $data = $event->getData() ?: array();
+
             // settings inherited options
             $options['compound'] = false;
             // normalize choices list
             $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
+
             // create autocomplete form field
             $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
         };
 
         $preSubmitListener = function (FormEvent $event) {
             $form = $event->getForm();
-            // normalize null data
+
             if (null === $data = $event->getData()) {
                 $data = array('autocomplete' => array());
                 $event->setData($data);
             }
-            // reuse autocomplete options
+
+            // reuse autocomplete options, but replace initial choices with submitted data
             $options = $form->get('autocomplete')->getConfig()->getOptions();
-            // replace initial choices with submitted data
             $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
                 $options['id_reader']->getIdField() => $data['autocomplete'],
             ));
+
             // reset autocomplete form field with new choices list
             $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
         };
@@ -77,6 +76,7 @@ class EasyAdminAutocompleteType extends AbstractType
             // force display errors on this form field
             'error_bubbling' => false,
         ));
+
         $resolver->setRequired(array('class'));
     }
 

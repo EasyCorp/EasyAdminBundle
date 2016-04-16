@@ -356,9 +356,8 @@ defined by EasyAdmin.
 ### Autocomplete
 
 It's similar to Symfony's `Entity` type, but the values are loaded on demand via
-Ajax based on your input. This type is useful when a field is related to an
-entity with lots of database records. Autocompleting those fields improve
-backend performance and user experience:
+Ajax requests based on your input. This type is useful to improve the backend
+performance when a field is related to an entity with lots of database records:
 
 ```yaml
 easy_admin:
@@ -384,16 +383,16 @@ When the user types in an autocomplete field, EasyAdmin performs a fuzzy search
 on all the properties of the related entity. This is the same behavior applied
 when using the backend search form.
 
-The autocomplete action sends to the browser a JSON array of `{ id: '...', text: '...' }`
-tuples. The `id` is stored as the form field value and `text` is the value
-displayed to the user.
+The autocomplete action returns to the browser a JSON array of
+`{ id: '...', text: '...' }` tuples. The `id` is used as the form field value
+and the `text` is the value displayed to the user.
 
 By default, the entity's primary key is used for the `id` property and the
-`(string) %entity` conversion is used for the `text` property. Therefore, you
+`(string) $entity` conversion is used for the `text` property. Therefore, you
 must define the `__toString()` method in any autocomplete entity.
 
-If you need to customize this behavior, override the `autocompleteAction()` in
-the `AdminController` as explained later in this chapter.
+If you need to customize this behavior, override the `autocompleteAction()`
+method in your own `AdminController` as explained later in this chapter.
 
 Advanced Design Configuration
 -----------------------------

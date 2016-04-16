@@ -9,12 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Util;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Util;
 
 /**
- * @internal
+ * Utility class to map Symfony 2.x short form types to Symfony 3.x FQCN form types.
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
+ *
+ * @internal
  */
 final class LegacyFormHelper
 {
@@ -85,13 +87,5 @@ final class LegacyFormHelper
     public static function useLegacyFormComponent()
     {
         return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
-    }
-
-    private function __construct()
-    {
-    }
-
-    private function __clone()
-    {
     }
 }

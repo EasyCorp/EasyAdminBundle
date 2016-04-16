@@ -28,13 +28,12 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
      */
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
-        // if the autocomplete field doesn't define the mandatory 'class' option,
-        // guess it from the metadata provided by Doctrine
+        // by default, guess the mandatory 'class' option from the Doctrine metadata
         if (!isset($options['class']) && isset($metadata['targetEntity'])) {
             $options['class'] = $metadata['targetEntity'];
         }
 
-        // settings multiple autocomplete choices by default for OneToMany and ManyToMany association types
+        // by default, allow to autocomplete multiple values for OneToMany and ManyToMany associations
         if (!isset($options['multiple']) && $metadata['associationType'] & ClassMetadata::TO_MANY) {
             $options['multiple'] = true;
         }

@@ -26,7 +26,7 @@ class Finder
         $this->queryBuilder = $queryBuilder;
     }
 
-    public function findByAllProperties(array $entityConfig, $searchQuery, $maxResults = Query::MAX_RESULTS, $sortField = null, $sortDirection = null)
+    public function findByAllProperties(array $entityConfig, $searchQuery, $maxResults = Finder::MAX_RESULTS, $sortField = null, $sortDirection = null)
     {
         $queryBuilder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField, $sortDirection);
 

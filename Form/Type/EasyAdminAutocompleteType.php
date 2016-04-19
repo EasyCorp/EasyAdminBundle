@@ -24,7 +24,7 @@ class EasyAdminAutocompleteType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData() ?: array();
 
-            // settings inherited options
+            // modify some of the settings inherited from the parent form type
             $options['compound'] = false;
             // normalize choices list
             $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);

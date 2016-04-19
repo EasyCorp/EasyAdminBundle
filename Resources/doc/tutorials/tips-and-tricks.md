@@ -21,7 +21,7 @@ doctrine:
 
 In addition to `apc`, Doctrine metadata cache supports `memcache`, `memcached`,
 `xcache` and `service` (for using a custom cache service). Read the
-documentation about [Doctrine caching drivers](http://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers).
+documentation about [Doctrine caching drivers][1].
 
 Note that the previous example configures metadata caching in `config_prod.yml`
 file, which is the configuration used for the production environment. It's not
@@ -51,7 +51,7 @@ In case you want to unload these files in addition to loading your own assets,
 override the default `layout.html.twig` template and empty the
 `head_stylesheets` and `head_javascript` Twig blocks.
 
-Read the [Advanced Design Customization][1] section to learn how to override
+Read the [Advanced Design Customization][2] section to learn how to override
 default templates.
 
 Removing Action Labels and Displaying Just Icons
@@ -107,8 +107,7 @@ language for the backend?
 
 You just need to get the `translator` service and execute the `setLocale()` method
 befor executing the code of EasyAdmin. The easiest way to do that is to create
-a [custom admin controller] [override-admin-controller] and override the
-`initialize()` method as follows:
+a [custom admin controller][3] and override the `initialize()` method as follows:
 
 ```php
 // src/AppBundle/Controller/AdminController.php
@@ -126,4 +125,6 @@ class AdminController extends BaseAdminController
 }
 ```
 
-[1]: ../book/3-list-search-show-configuration.md#advanced-design-configuration
+[1]: http://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
+[2]: ../book/3-list-search-show-configuration.md#advanced-design-configuration
+[3]: ../book/3-list-search-show-configuration.md#customizing-the-behavior-of-list-search-and-show-views

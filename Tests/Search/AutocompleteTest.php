@@ -97,14 +97,14 @@ class AutocompleteTest extends AbstractTestCase
     public function provideMissingParameters()
     {
         return array(
-            array('', 'name', 'edit', 'John Doe'),
-            array('User', '', 'edit', 'John Doe'),
-            array('User', 'name', '', 'John Doe'),
-            array('User', 'name', 'edit', ''),
-            array(null, 'name', 'edit', 'John Doe'),
-            array('User', null, 'edit', 'John Doe'),
-            array('User', 'name', null, 'John Doe'),
-            array('User', 'name', 'edit', null),
+            array('', 'parent', 'edit', 'Categ'),
+            array('Category', '', 'edit', 'Categ'),
+            array('Category', 'parent', '', 'Categ'),
+            array('Category', 'parent', 'edit', ''),
+            array(null, 'parent', 'edit', 'Categ'),
+            array('Category', null, 'edit', 'Categ'),
+            array('Category', 'parent', null, 'Categ'),
+            array('Category', 'parent', 'edit', null),
         );
     }
 }

@@ -28,6 +28,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * The controller used to render all the default EasyAdmin actions.
@@ -129,14 +130,22 @@ class AdminController extends Controller
         $this->get('event_dispatcher')->dispatch($eventName, $event);
     }
 
+    /**
+     * The method that returns the values displayed by an autocomplete field
+     * based on the user's input.
+     *
+     * @return JsonResponse
+     */
     protected function autocompleteAction()
     {
-        return $this->get('easyadmin.autocomplete')->find(
+        $results = $this->get('easyadmin.autocomplete')->find(
             $this->request->query->get('entity'),
             $this->request->query->get('property'),
             $this->request->query->get('view'),
             $this->request->query->get('query')
         );
+
+        return new JsonResponse($results);
     }
 
     /**

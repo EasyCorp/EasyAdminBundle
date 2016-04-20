@@ -63,11 +63,11 @@ function easyAdminAutoComplete() {
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
-                    return {'query': params.term};
+                    return { 'query': params.term };
                 },
                 cache: true
             },
-            placeholder: "",
+            placeholder: '',
             allowClear: true,
             minimumInputLength: 1
         });

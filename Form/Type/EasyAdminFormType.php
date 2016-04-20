@@ -13,7 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
-use JavierEguiluz\Bundle\EasyAdminBundle\Util\LegacyFormHelper;
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;

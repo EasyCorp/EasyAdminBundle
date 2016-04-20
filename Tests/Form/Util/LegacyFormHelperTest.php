@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Util\Type;
+namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Form\Util\Type;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Util\LegacyFormHelper;
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 
 class LegacyFormHelperTest extends \PHPUnit_Framework_TestCase
 {

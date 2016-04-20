@@ -455,8 +455,8 @@
 
 {# EasyAdminAutocomplete form type #}
 {% block easyadmin_autocomplete_widget %}
-    {# display form row, but never its label #}
-    {{ form_row(form.autocomplete, {'label': false, 'attr': attr|merge({ 'data-easyadmin-autocomplete-url' : path('easyadmin', {
+    {# display the form row, but don't display its label #}
+    {{ form_row(form.autocomplete, { label: false, attr: attr|merge({ 'data-easyadmin-autocomplete-url' : path('easyadmin', {
         action: 'autocomplete',
         entity: easyadmin.entity.name,
         property: easyadmin.field.fieldName,

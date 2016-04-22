@@ -11,35 +11,50 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * ...
+ * Executes all the defined "config passes" to transform the original backend
+ * configuration into the fully processed configuration used by the application.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class Processor
 {
-    private $container;
+    /** @var Registry */
+    private $doctrine;
+    /** @var \Twig_Environment */
+    private $twig;
+    private $parameters;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Registry $doctrine, \Twig_Environment $twig, array $parameters)
     {
-        $this->container = $container;
+        $this->doctrine = $doctrine;
+        $this->twig = $twig;
+        $this->parameters = $parameters;
     }
 
+    /**
+     * Takes the 'easyadmin.config' container parameter and turns it into the
+     * fully processed configuration by applying the different "config passes"
+     * in a row.
+     *
+     * @return array
+     */
     public function processConfig()
     {
-        $backendConfig = $this->container->getParameter('easyadmin.config');
+        $backendConfig = $this->parameters['easyadmin.config'];
 
         $configPasses = array(
             new NormalizerConfigPass(),
-            new DesignConfigPass($this->container->get('twig'), $this->container->getParameter('kernel.debug')),
+            new DesignConfigPass($this->twig, $this->parameters['kernel.debug']),
             new MenuConfigPass(),
             new ActionConfigPass(),
-            new MetadataConfigPass($this->container->get('doctrine')),
+            new MetadataConfigPass($this->doctrine),
             new PropertyConfigPass(),
             new ViewConfigPass(),
-            new TemplateConfigPass($this->container->getParameter('kernel.root_dir').'/Resources/views'),
+            new TemplateConfigPass($this->parameters['kernel.root_dir'].'/Resources/views'),
             new DefaultConfigPass(),
         );
 

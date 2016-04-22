@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedConfigurationException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -22,17 +23,12 @@ class Configurator
 {
     private $backendConfig;
     private $accessor;
+    private $cachedConfigFilePath;
 
-    public function __construct(PropertyAccessor $accessor, $processedBackendConfigFilepath)
+    public function __construct(PropertyAccessor $accessor, $cachedConfigFilePath)
     {
         $this->accessor = $accessor;
-
-        // try {
-            $this->backendConfig = @unserialize(file_get_contents($processedBackendConfigFilepath));
-        // } catch (\Exception $e) {
-        //     $this->backendConfig = $backendConfig = $processor->processConfig();
-        //     file_put_contents($processedBackendConfigFilepath, serialize($backendConfig));
-        // }
+        $this->cachedConfigFilePath = $cachedConfigFilePath;
     }
 
     /**
@@ -45,6 +41,10 @@ class Configurator
      */
     public function getBackendConfig($propertyPath = null)
     {
+        if (empty($this->backendConfig)) {
+            $this->backendConfig = $this->loadBackendConfig();
+        }
+
         if (empty($propertyPath)) {
             return $this->backendConfig;
         }
@@ -81,11 +81,12 @@ class Configurator
      */
     public function getEntityConfig($entityName)
     {
-        if (!isset($this->backendConfig['entities'][$entityName])) {
+        $backendConfig = $this->getBackendConfig();
+        if (!isset($backendConfig['entities'][$entityName])) {
             throw new \InvalidArgumentException(sprintf('Entity "%s" is not managed by EasyAdmin.', $entityName));
         }
 
-        return $this->backendConfig['entities'][$entityName];
+        return $backendConfig['entities'][$entityName];
     }
 
     /**
@@ -145,5 +146,25 @@ class Configurator
 
         return !in_array($action, $entityConfig['disabled_actions'])
             && array_key_exists($action, $entityConfig[$view]['actions']);
+    }
+
+    /**
+     * This method is needed in case the cache warmer hasn't been executed
+     * (usually because the developer executed "rm -fr var/cache/*"). It also
+     * checks the validity of the configuration and throws an exception if needed.
+     *
+     * @return array
+     *
+     * @throws UndefinedConfigurationException if the config file doesn't exist or it's malformed
+     */
+    private function loadBackendConfig()
+    {
+        try {
+            $backendConfig = unserialize(file_get_contents($this->cachedConfigFilePath));
+        } catch (\Exception $e) {
+            throw new UndefinedConfigurationException(array('cachedConfigFilePath' => $this->cachedConfigFilePath));
+        }
+
+        return $backendConfig;
     }
 }

@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\FlattenException;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedConfigurationException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,7 +54,7 @@ class ExceptionListener extends BaseExceptionListener
         $exception = $event->getException();
         $this->currentEntityName = $event->getRequest()->query->get('entity', null);
 
-        if (!$exception instanceof BaseException) {
+        if (!$exception instanceof BaseException || $exception instanceof UndefinedConfigurationException) {
             return;
         }
 

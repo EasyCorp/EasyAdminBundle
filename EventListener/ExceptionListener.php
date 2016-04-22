@@ -54,6 +54,9 @@ class ExceptionListener extends BaseExceptionListener
         $exception = $event->getException();
         $this->currentEntityName = $event->getRequest()->query->get('entity', null);
 
+        // UndefinedConfigurationException means that there is no backend configuration,
+        // so our exception template cannot be rendered because it would cause other
+        // exceptions when trying to access the entity or backend configuration
         if (!$exception instanceof BaseException || $exception instanceof UndefinedConfigurationException) {
             return;
         }

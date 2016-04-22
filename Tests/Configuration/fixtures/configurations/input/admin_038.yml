@@ -1,0 +1,15 @@
+# TEST
+# 'new' and 'edit' option override 'form' values
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            form:
+                fields: ['field1', 'field2']
+                custom_option: 'custom value'
+            new:
+                custom_option: 'another custom value'
+            edit:
+                fields: ['field3', 'field4']

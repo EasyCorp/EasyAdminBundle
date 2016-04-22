@@ -1,6 +1,0 @@
-# TEST
-# the global 'list_max_results' option has been deprecated. It shouldn't be
-# included in the default configuration options
-
-# CONFIGURATION
-easy_admin: ~

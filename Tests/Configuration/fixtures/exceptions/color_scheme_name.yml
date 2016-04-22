@@ -1,0 +1,14 @@
+# TEST
+# the color scheme can only be 'dark' or 'light'
+
+# EXCEPTION
+expected_exception:
+    class: \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+    message_string: 'The value "custom_value" is not allowed for path "easy_admin.design.color_scheme". Permissible values: "dark", "light"'
+
+# CONFIGURATION
+easy_admin:
+    design:
+        color_scheme: 'custom_value'
+    entities:
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

@@ -1,0 +1,12 @@
+# TEST
+# the name of the entity cannot start with a number
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The name of the "7TestEntity" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        7TestEntity: AppTestBundle\Entity\UnitTests\Category

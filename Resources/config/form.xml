@@ -5,7 +5,7 @@
 
     <services>
         <service id="easyadmin.form.type" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType">
-            <argument type="service" id="easyadmin.configurator" />
+            <argument type="service" id="easyadmin.config.manager" />
             <argument type="collection" /> <!-- type configurators -->
             <tag name="form.type" alias="easyadmin" />
         </service>

@@ -4,5 +4,5 @@ easy_admin:
         color_scheme: 'wrong_value'
     entities:
         Category:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            class: AppTestBundle\Entity\FunctionalTests\Category
             label: 'Categories'

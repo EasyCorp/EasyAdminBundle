@@ -44,7 +44,6 @@ if (is_dir($buildDir = __DIR__.'/../build')) {
 }
 
 include __DIR__.'/Fixtures/App/AppKernel.php';
-include __DIR__.'/Fixtures/App/ConfigPassKernel.php';
 
 $application = new Application(new AppKernel('default_backend', true));
 $application->setAutoExit(false);
@@ -61,7 +60,7 @@ $application->run($input, new NullOutput());
 $input = new ArrayInput(array('command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => true));
 $application->run($input, new NullOutput());
 
-// Make a copy of the original SQLite database to use a clean db in every test
+// Make a copy of the original SQLite database to use the same unmodified database in every test
 copy($buildDir.'/test.db', $buildDir.'/original_test.db');
 
 unset($input, $application);

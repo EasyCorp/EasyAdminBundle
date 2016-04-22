@@ -25,7 +25,7 @@ class AutocompleteTest extends AbstractTestCase
     /**
      * @dataProvider provideMissingParameters
      */
-    public function testAutocompleteActionWithMissingParameters($property, $view, $query)
+    public function testAutocompleteWithMissingParameters($property, $view, $query)
     {
         $queryParameters = array(
             'action' => 'autocomplete',
@@ -46,7 +46,7 @@ class AutocompleteTest extends AbstractTestCase
         );
     }
 
-    public function testAutocompleteTextAction()
+    public function testAutocompleteText()
     {
         $this->getBackendPage(array(
             'action' => 'autocomplete',
@@ -64,7 +64,7 @@ class AutocompleteTest extends AbstractTestCase
         }
     }
 
-    public function testAutocompleteNumberAction()
+    public function testAutocompleteNumber()
     {
         $this->getBackendPage(array(
             'action' => 'autocomplete',

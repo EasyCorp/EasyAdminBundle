@@ -18,7 +18,7 @@ class MultipleConfigSyntaxTest extends AbstractTestCase
     public function testConfigurationInDifferentFiles()
     {
         $this->initClient(array('environment' => 'multiple_config_syntax'));
-        $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
+        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $expectedEntityNames = array(
             'Product', 'Product2', 'Product3', 'Product4', 'Inventory', 'Product22', 'Product5', 'Inventory2'
@@ -28,7 +28,7 @@ class MultipleConfigSyntaxTest extends AbstractTestCase
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             $this->assertEquals($expectedEntityNames[$i], $entityName);
             $this->assertEquals($expectedEntityNames[$i], $entityConfig['label']);
-            $this->assertEquals('JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product', $entityConfig['class']);
+            $this->assertEquals('AppTestBundle\Entity\FunctionalTests\Product', $entityConfig['class']);
 
             $i++;
         }

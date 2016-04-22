@@ -3,8 +3,8 @@ imports:
 
 easy_admin:
     entities:
-        Category:     JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-        Image:        JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Image
-        Purchase:     JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Purchase
-        PurchaseItem: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\PurchaseItem
-        Product:      JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+        Category:     AppTestBundle\Entity\FunctionalTests\Category
+        Image:        AppTestBundle\Entity\FunctionalTests\Image
+        Purchase:     AppTestBundle\Entity\FunctionalTests\Purchase
+        PurchaseItem: AppTestBundle\Entity\FunctionalTests\PurchaseItem
+        Product:      AppTestBundle\Entity\FunctionalTests\Product

@@ -8,7 +8,7 @@ framework:
 easy_admin:
     entities:
         Product:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+            class: AppTestBundle\Entity\FunctionalTests\Product
             label: 'Products'
             list:
                 fields:

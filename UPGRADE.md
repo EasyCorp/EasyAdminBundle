@@ -5,7 +5,7 @@ This document describes the backwards incompatible changes introduced by each
 EasyAdminBundle version and the needed changes to be made before upgrading to
 the next version.
 
-Upgrade to 2.0.0 (XX/XXX/2016)
+Upgrade to 2.0.0 (XX/XXX/201X)
 ------------------------------
 
  * The route used to generate every backend URL is now called `easyadmin` instead
@@ -14,6 +14,45 @@ Upgrade to 2.0.0 (XX/XXX/2016)
 
    In order to upgrade, you just need to replace `admin` by `easyadmin` in all
    `path()`, `generateUrl()` and `redirectToRoute()` calls.
+
+Upgrade to 1.13.0 (XX/April/2016)
+---------------------------------
+
+* The configuration of the backend is no longer processed in a compiler pass
+  but generated with a cache warmer. This is done to avoid issues with Doctrine
+  and Twig services, which are needed to process the configuration but they are
+  not fully available during the container compilation.
+* In the development environment, the backend config is fully processed for each
+  request, so you might notice a slight performance impact. In exchange, you
+  won't suffer any cache problem or any outdated config problem. In production
+  the backend config is fully processed in the cache warmer or, if any problem
+  happened, during the first request. Then the config is cached in the file
+  system and reused in the following requests.
+* The `easyadmin.configurator` service has been renamed to `easyadmin.config.manager`
+* The `easyadmin.config` container parameter no longer contains the fully
+  processed backend configuration. Now it only contains the configuration that
+  the developer defined in their YAML files. The equivalent way to get the
+  fully processed backend config is to use the `easyadmin.config.manager`
+  service:
+
+  // Before
+  $backendConfig = $this->getParameter('easyadmin.config');
+
+  // After
+  $backendConfig = $this->get('easyadmin.config.manager')->getBackendConfig();
+
+Upgrade to 1.12.6 (15/April/2016)
+---------------------------------
+
+* Web assets are now combined and minified to improve frontend performance. In
+  previous versions, CSS and JS were included by loading lots of small files.
+  Starting from this version, the backend only loads one CSS file (called
+  `easyadmin-all.min.css`) and one JS file (called `easyadmin-all.min.js`).
+  The individual CSS/JS files are still available in case you override the
+  backend design and want to pick some of them individually.
+  The new CSS/JSS files should be available in your application after upgrading
+  this version bundle. If you have any problem, install the new assets executing
+  the `assets:install --symlinks` console command.
 
 Upgrade to 1.12.5 (03/March/2016)
 ---------------------------------

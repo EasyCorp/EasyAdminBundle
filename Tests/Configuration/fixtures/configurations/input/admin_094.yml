@@ -1,0 +1,9 @@
+# TEST
+# the brand color can be defined using the hsla() CSS notation
+
+# CONFIGURATION
+easy_admin:
+    design:
+        brand_color: 'hsla(0, 100%, 50%, 0.7)'
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category

@@ -12,7 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -22,14 +22,14 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class EasyAdminTwigExtension extends \Twig_Extension
 {
-    private $configurator;
-    private $accessor;
+    private $configManager;
+    private $propertyAccessor;
     private $debug;
 
-    public function __construct(Configurator $configurator, PropertyAccessor $accessor, $debug = false)
+    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, $debug = false)
     {
-        $this->configurator = $configurator;
-        $this->accessor = $accessor;
+        $this->configManager = $configManager;
+        $this->propertyAccessor = $propertyAccessor;
         $this->debug = $debug;
     }
 
@@ -66,7 +66,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getBackendConfiguration($key = null)
     {
-        return $this->configurator->getBackendConfig($key);
+        return $this->configManager->getBackendConfig($key);
     }
 
     /**
@@ -79,7 +79,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getEntityConfiguration($entityName)
     {
         return null !== $this->getBackendConfiguration('entities.'.$entityName)
-            ? $this->configurator->getEntityConfig($entityName)
+            ? $this->configManager->getEntityConfig($entityName)
             : null;
     }
 
@@ -101,11 +101,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
-        $entityConfiguration = $this->configurator->getEntityConfig($entityName);
+        $entityConfiguration = $this->configManager->getEntityConfig($entityName);
         $fieldName = $fieldMetadata['property'];
 
         try {
-            $value = $this->accessor->getValue($item, $fieldName);
+            $value = $this->propertyAccessor->getValue($item, $fieldName);
         } catch (\Exception $e) {
             return $twig->render($entityConfiguration['templates']['label_inaccessible'], array('view' => $view));
         }
@@ -152,7 +152,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if ('association' === $fieldType) {
-                $targetEntityConfig = $this->configurator->getEntityConfigByClass($fieldMetadata['targetEntity']);
+                $targetEntityConfig = $this->configManager->getEntityConfigByClass($fieldMetadata['targetEntity']);
                 if (null === $targetEntityConfig) {
                     // the associated entity is not managed by EasyAdmin
                     return $twig->render($fieldMetadata['template'], $templateParameters);
@@ -163,9 +163,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
             if ('association' === $fieldType && ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE)) {
                 // the try..catch block is required because we can't use
-                // $accessor->isReadable(), which is unavailable in Symfony 2.3
+                // $propertyAccessor->isReadable(), which is unavailable in Symfony 2.3
                 try {
-                    $primaryKeyValue = $this->accessor->getValue($value, $targetEntityConfig['primary_key_field_name']);
+                    $primaryKeyValue = $this->propertyAccessor->getValue($value, $targetEntityConfig['primary_key_field_name']);
                 } catch (\Exception $e) {
                     $primaryKeyValue = null;
                 }
@@ -215,7 +215,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function isActionEnabled($view, $action, $entityName)
     {
-        return $this->configurator->isActionEnabled($entityName, $view, $action);
+        return $this->configManager->isActionEnabled($entityName, $view, $action);
     }
 
     /**
@@ -229,7 +229,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getActionConfiguration($view, $action, $entityName)
     {
-        return $this->configurator->getActionConfig($entityName, $view, $action);
+        return $this->configManager->getActionConfig($entityName, $view, $action);
     }
 
     /**
@@ -245,7 +245,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getActionsForItem($view, $entityName)
     {
         try {
-            $entityConfig = $this->configurator->getEntityConfig($entityName);
+            $entityConfig = $this->configManager->getEntityConfig($entityName);
         } catch (\Exception $e) {
             return array();
         }

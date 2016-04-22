@@ -104,7 +104,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testCustomCssProperty()
     {
         $this->getBackendHomepage();
-        $customCssContent = $this->client->getContainer()->getParameter('easyadmin.config');
+        $customCssContent = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertEquals(13, substr_count($customCssContent['_internal']['custom_css'], '#205081'), 'The generated custom CSS uses the default brand color.');
         // #222222 color is only used by the "dark" color scheme, not the "light" one
@@ -391,13 +391,13 @@ class DefaultBackendTest extends AbstractTestCase
     public function testEntityModificationViaAjax()
     {
         $em = $this->client->getContainer()->get('doctrine');
-        $product = $em->getRepository('AppTestBundle:Product')->find(1);
+        $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertTrue($product->isEnabled(), 'Initially the product is enabled.');
 
         $queryParameters = array('action' => 'edit', 'view' => 'list', 'entity' => 'Product', 'id' => '1', 'property' => 'enabled', 'newValue' => 'false');
         $this->client->request('GET', '/admin/?'.http_build_query($queryParameters), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
 
-        $product = $em->getRepository('AppTestBundle:Product')->find(1);
+        $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertFalse($product->isEnabled(), 'After editing it via Ajax, the product is not enabled.');
     }
 
@@ -633,7 +633,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testEntityDeletion()
     {
         $em = $this->client->getContainer()->get('doctrine');
-        $product = $em->getRepository('AppTestBundle:Product')->find(1);
+        $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertNotNull($product, 'Initially the product exists.');
 
         $crawler = $this->requestEditView('Product', '1');
@@ -641,7 +641,7 @@ class DefaultBackendTest extends AbstractTestCase
         $form = $crawler->filter('#delete_form_submit')->form();
         $this->client->submit($form);
 
-        $product = $em->getRepository('AppTestBundle:Product')->find(1);
+        $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertNull($product, 'After removing it via the delete form, the product no longer exists.');
     }
 

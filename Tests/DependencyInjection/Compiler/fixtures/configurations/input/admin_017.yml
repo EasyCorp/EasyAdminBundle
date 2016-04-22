@@ -1,9 +1,0 @@
-# TEST
-# configuration format #3 expanded to define the entity label explicitly
-
-# CONFIGURATION
-easy_admin:
-    entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
-            label: TestEntity

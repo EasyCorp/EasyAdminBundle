@@ -1,0 +1,40 @@
+# TEST
+# in the filesystem there are some files that override the default templates
+# for the backend, but templates are also overridden in the global
+# design configuration option (the latter should win)
+
+# CONFIGURATION
+easy_admin:
+    design:
+        templates:
+            edit: 'custom_template/edit.html.twig'
+            field_array: 'custom_template/field_array.html.twig'
+            field_association: 'custom_template/field_association.html.twig'
+            field_bigint: 'custom_template/field_bigint.html.twig'
+            field_boolean: 'custom_template/field_boolean.html.twig'
+            field_date: 'custom_template/field_date.html.twig'
+            field_datetime: 'custom_template/field_datetime.html.twig'
+            field_datetimetz: 'custom_template/field_datetimetz.html.twig'
+            field_decimal: 'custom_template/field_decimal.html.twig'
+            field_float: 'custom_template/field_float.html.twig'
+            field_id: 'custom_template/field_id.html.twig'
+            field_image: 'custom_template/field_image.html.twig'
+            field_integer: 'custom_template/field_integer.html.twig'
+            field_simple_array: 'custom_template/field_simple_array.html.twig'
+            field_smallint: 'custom_template/field_smallint.html.twig'
+            field_string: 'custom_template/field_string.html.twig'
+            field_text: 'custom_template/field_text.html.twig'
+            field_time: 'custom_template/field_time.html.twig'
+            field_toggle: 'custom_template/field_toggle.html.twig'
+            label_empty: 'custom_template/label_empty.html.twig'
+            label_inaccessible: 'custom_template/label_inaccessible.html.twig'
+            label_null: 'custom_template/label_null.html.twig'
+            label_undefined: 'custom_template/label_undefined.html.twig'
+            layout: 'custom_template/layout.html.twig'
+            list: 'custom_template/list.html.twig'
+            new: 'custom_template/new.html.twig'
+            paginator: 'custom_template/paginator.html.twig'
+            show: 'custom_template/show.html.twig'
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

@@ -1,0 +1,13 @@
+# 'new' and 'edit' actions 'form_options' overrides 'form' ones
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            form:
+                form_options: { validation_groups: ['Default'] }
+            new:
+                form_options: { validation_groups: ['Register'] }
+            edit:
+                form_options: { validation_groups: ['Update'] }

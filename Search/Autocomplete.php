@@ -11,7 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -22,16 +22,16 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class Autocomplete
 {
-    /** @var Configurator */
-    private $configurator;
+    /** @var ConfigManager */
+    private $configManager;
     /** @var Finder */
     private $finder;
     /** @var PropertyAccessor */
     private $propertyAccessor;
 
-    public function __construct(Configurator $configurator, Finder $finder, PropertyAccessor $propertyAccessor)
+    public function __construct(ConfigManager $configManager, Finder $finder, PropertyAccessor $propertyAccessor)
     {
-        $this->configurator = $configurator;
+        $this->configManager = $configManager;
         $this->finder = $finder;
         $this->propertyAccessor = $propertyAccessor;
     }
@@ -52,7 +52,7 @@ class Autocomplete
             return array('results' => array());
         }
 
-        $backendConfig = $this->configurator->getBackendConfig();
+        $backendConfig = $this->configManager->getBackendConfig();
         if (!isset($backendConfig['entities'][$entity])) {
             throw new \InvalidArgumentException(sprintf('The "entity" argument must contain the name of an entity managed by EasyAdmin ("%s" given).', $entity));
         }
@@ -66,7 +66,7 @@ class Autocomplete
         }
 
         $targetEntityClass = $backendConfig['entities'][$entity][$view]['fields'][$property]['targetEntity'];
-        $targetEntityConfig = $this->configurator->getEntityConfigByClass($targetEntityClass);
+        $targetEntityConfig = $this->configManager->getEntityConfigByClass($targetEntityClass);
         $entities = $this->finder->findByAllProperties($targetEntityConfig, $query, $backendConfig['list']['max_results']);
 
         return array('results' => $this->processResults($entities, $targetEntityConfig));

@@ -23,10 +23,16 @@ class Configurator
     private $backendConfig;
     private $accessor;
 
-    public function __construct(array $backendConfig, PropertyAccessor $accessor)
+    public function __construct(PropertyAccessor $accessor, $processedBackendConfigFilepath)
     {
-        $this->backendConfig = $backendConfig;
         $this->accessor = $accessor;
+
+        // try {
+            $this->backendConfig = @unserialize(file_get_contents($processedBackendConfigFilepath));
+        // } catch (\Exception $e) {
+        //     $this->backendConfig = $backendConfig = $processor->processConfig();
+        //     file_put_contents($processedBackendConfigFilepath, serialize($backendConfig));
+        // }
     }
 
     /**

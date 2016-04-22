@@ -4,6 +4,12 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="easyadmin.configuration_cache_warmer" class="JavierEguiluz\Bundle\EasyAdminBundle\Cache\ConfigurationCacheWarmer" public="false">
+            <argument type="service" id="easyadmin.configuration.processor" />
+            <argument>%easyadmin.processed_config_filepath%</argument>
+            <tag name="kernel.cache_warmer" priority="-2048" />
+        </service>
+
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.configurator" />
             <argument type="service" id="property_accessor" />
@@ -12,8 +18,13 @@
         </service>
 
         <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
-            <argument /> <!-- easyadmin.config parameter -->
             <argument type="service" id="property_accessor" />
+            <!-- <argument type="service" id="easyadmin.configuration.processor" /> -->
+            <argument>%easyadmin.processed_config_filepath%</argument>
+        </service>
+
+        <service id="easyadmin.configuration.processor" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Processor" public="false">
+            <argument type="service" id="service_container" />
         </service>
 
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">

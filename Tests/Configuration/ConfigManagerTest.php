@@ -20,7 +20,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideConfigFilePaths
      */
-    public function testBackendConfigs($backendConfigFilePath, $expectedConfigFilePath)
+    public function testLoadConfig($backendConfigFilePath, $expectedConfigFilePath)
     {
         if (!$this->isTestCompatible($backendConfigFilePath)) {
             $this->markTestSkipped('This test is not compatible with this Symfony Version.');
@@ -30,16 +30,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         $app = new \ConfigProcessorKernel($configuration['easy_admin']);
         $app->boot();
 
-        $backendConfig = unserialize(file_get_contents($app->getContainer()->getParameter('easyadmin.cache.processed_config_filepath')));
+        $backendConfig = $app->getContainer()->get('easyadmin.config.manager')->loadConfig();
         $expectedConfig = Yaml::parse(file_get_contents($expectedConfigFilePath));
 
         // 'assertEquals()' is not used because storing the full processed backend
         // configuration would make fixtures too big
         $this->assertArraySubset($expectedConfig['easy_admin'], $backendConfig);
-
-        // delete the application cache to force its regeneration, which is
-        // needed to execute the "cache warmer" that generates the backend config
-        exec('rm -fr '.$app->getContainer()->getParameter('kernel.cache_dir'));
     }
 
     /**
@@ -73,10 +69,6 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
                 'easyadmin.config' => $app->getContainer()->getParameter('easyadmin.config'),
             )
         );
-
-        // delete the application cache to force its regeneration, which is
-        // needed to execute the "cache warmer" that generates the backend config
-        exec('rm -fr '.$app->getContainer()->getParameter('kernel.cache_dir'));
 
         $configProcessor->processConfig();
     }

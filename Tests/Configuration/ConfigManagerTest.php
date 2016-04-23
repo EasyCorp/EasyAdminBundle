@@ -27,10 +27,10 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         }
 
         $configuration = Yaml::parse(file_get_contents($backendConfigFilePath));
-        $app = new \ConfigProcessorKernel($configuration['easy_admin']);
+        $app = new \DynamicConfigLoadingKernel($configuration['easy_admin']);
         $app->boot();
-
         $backendConfig = $app->getContainer()->get('easyadmin.config.manager')->loadConfig();
+
         $expectedConfig = Yaml::parse(file_get_contents($expectedConfigFilePath));
 
         // 'assertEquals()' is not used because storing the full processed backend

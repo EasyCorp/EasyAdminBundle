@@ -13,16 +13,15 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * The kernel used in the unit tests related to the configuration passes.
+ * The kernel used in the unit tests related to the configuration processing.
  */
-class ConfigProcessorKernel extends AppKernel
+class DynamicConfigLoadingKernel extends AppKernel
 {
     private $backendConfig;
 
     public function __construct($backendConfig)
     {
         parent::__construct('test', true);
-
         $this->backendConfig = $backendConfig;
     }
 

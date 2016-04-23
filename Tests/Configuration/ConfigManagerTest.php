@@ -17,6 +17,8 @@ use Symfony\Component\Yaml\Yaml;
 
 class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 {
+    const CACHED_CONTAINER_PATH = __DIR__.'/../../build/cache/test/AppTestDebugProjectContainer.php';
+
     /**
      * @dataProvider provideConfigFilePaths
      */
@@ -26,11 +28,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('This test is not compatible with this Symfony Version.');
         }
 
-        $configuration = Yaml::parse(file_get_contents($backendConfigFilePath));
-        $app = new \DynamicConfigLoadingKernel($configuration['easy_admin']);
-        $app->boot();
-        $backendConfig = $app->getContainer()->get('easyadmin.config.manager')->loadConfig();
-
+        $backendConfig = $this->loadConfig($backendConfigFilePath);
         $expectedConfig = Yaml::parse(file_get_contents($expectedConfigFilePath));
 
         // 'assertEquals()' is not used because storing the full processed backend
@@ -43,11 +41,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackendExceptions($backendConfigFilePath)
     {
-        $this->markTestSkipped('This test needs to be updated.');
-
         $backendConfig = Yaml::parse(file_get_contents($backendConfigFilePath));
-        $this->setExpectedException($backendConfig['expected_exception']['class']);
-
         if (isset($backendConfig['expected_exception']['class'])) {
             if (isset($backendConfig['expected_exception']['message_string'])) {
                 $this->setExpectedException($backendConfig['expected_exception']['class'], $backendConfig['expected_exception']['message_string']);
@@ -56,21 +50,12 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
             }
         }
 
-        $app = new \ConfigProcessorKernel($backendConfig['easy_admin']);
-        $app->boot();
+        // delete the container stored in the cache and which was created after
+        // booting the kernel. Otherwise, all the tests will use the cached
+        // container and therefore, all of them would use the first loaded config
+        @unlink(self::CACHED_CONTAINER_PATH);
 
-        // the service of the configuration processor is private; instantiate its class manually
-        $configProcessor = new Processor(
-            $app->getContainer()->get('doctrine'),
-            $app->getContainer()->get('twig'),
-            array(
-                'kernel.debug' => $app->getContainer()->getParameter('kernel.debug'),
-                'kernel.root_dir' => $app->getContainer()->getParameter('kernel.root_dir'),
-                'easyadmin.config' => $app->getContainer()->getParameter('easyadmin.config'),
-            )
-        );
-
-        $configProcessor->processConfig();
+        $this->loadConfig($backendConfigFilePath);
     }
 
     public function provideConfigFilePaths()
@@ -118,5 +103,32 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
         );
 
         return !in_array(substr($filePath, -34), $incompatibleTests);
+    }
+
+    /**
+     * Given the path of the YAML file which defines the backend config, it
+     * fully processes it to generate the real and complete config used by
+     * the application.
+     *
+     * @param string $backendConfigFilePath
+     *
+     * @return array
+     */
+    private function loadConfig($backendConfigFilePath)
+    {
+        // to get the processed config, boot a special Symfony kernel to load
+        // the backend config dynamically
+        $configuration = Yaml::parse(file_get_contents($backendConfigFilePath));
+        $app = new \DynamicConfigLoadingKernel($configuration['easy_admin']);
+        $app->boot();
+
+        $backendConfig = $app->getContainer()->get('easyadmin.config.manager')->loadConfig();
+
+        // delete the container stored in the cache and which was created after
+        // booting the kernel. Otherwise, all the tests will use the cached
+        // container and therefore, all of them would use the first loaded config
+        @unlink(self::CACHED_CONTAINER_PATH);
+
+        return $backendConfig;
     }
 }

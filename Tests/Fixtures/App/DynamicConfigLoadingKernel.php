@@ -31,6 +31,7 @@ class DynamicConfigLoadingKernel extends AppKernel
 
         $backendConfig = $this->backendConfig; // needed for PHP 5.3
         $loader->load(function (ContainerBuilder $container) use ($backendConfig) {
+//var_dump("LOADING THIS CONFIG -->", md5(serialize($backendConfig)), $backendConfig);
             $container->loadFromExtension('easy_admin', $backendConfig);
         });
     }

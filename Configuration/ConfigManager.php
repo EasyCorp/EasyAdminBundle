@@ -22,6 +22,7 @@ class ConfigManager
 {
     const CACHED_CONFIG_KEY = 'processed_config';
 
+    private $backendConfig;
     /** @var ContainerInterface */
     private $container;
 
@@ -40,7 +41,7 @@ class ConfigManager
      */
     public function getBackendConfig($propertyPath = null)
     {
-        if (empty($this->backendConfig)) {
+        if (null === $this->backendConfig) {
             $this->backendConfig = $this->loadConfig();
         }
 

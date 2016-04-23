@@ -15,7 +15,7 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Processor;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
 
-class ProcessorTest extends \PHPUnit_Framework_TestCase
+class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider provideConfigFilePaths

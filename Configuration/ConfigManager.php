@@ -11,24 +11,23 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedConfigurationException;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Exposes the configuration of the backend fully and on a per-entity basis.
+ * ...
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class Configurator
+class ConfigManager
 {
-    private $backendConfig;
-    private $accessor;
-    private $configManager;
+    const CACHED_CONFIG_KEY = 'processed_config';
 
-    public function __construct(PropertyAccessor $accessor, $configManager)
+    /** @var ContainerInterface */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
     {
-        $this->accessor = $accessor;
-        $this->configManager = $configManager;
+        $this->container = $container;
     }
 
     /**
@@ -42,7 +41,7 @@ class Configurator
     public function getBackendConfig($propertyPath = null)
     {
         if (empty($this->backendConfig)) {
-            $this->backendConfig = $this->loadBackendConfig();
+            $this->backendConfig = $this->loadConfig();
         }
 
         if (empty($propertyPath)) {
@@ -52,7 +51,7 @@ class Configurator
         // turns 'design.menu' into '[design][menu]', the format required by PropertyAccess
         $propertyPath = '['.str_replace('.', '][', $propertyPath).']';
 
-        return $this->accessor->getValue($this->backendConfig, $propertyPath);
+        return $this->container->get('property_accessor')->getValue($this->backendConfig, $propertyPath);
     }
 
     /**
@@ -149,16 +148,54 @@ class Configurator
     }
 
     /**
-     * This method is needed in case the cache warmer hasn't been executed
-     * (usually because the developer executed "rm -fr var/cache/*"). It also
-     * checks the validity of the configuration and throws an exception if needed.
+     * ...
+     * @return [type] [description]
+     */
+    public function loadConfig()
+    {
+        $cache = $this->container->get('easyadmin.cache.manager');
+
+        if (true === $this->container->getParameter('kernel.debug')) {
+            return $this->processConfig();
+        }
+
+        if ($cache->contains(self::CACHED_CONFIG_KEY)) {
+            return $cache->fetch(self::CACHED_CONFIG_KEY);
+        }
+
+        $backendConfig = $this->processConfig();
+        $cache->save(self::CACHED_CONFIG_KEY, $backendConfig);
+
+        return $backendConfig;
+    }
+
+    /**
+     * Takes the 'easyadmin.config' container parameter and turns it into the
+     * fully processed configuration by applying the different "config passes"
+     * in a row.
      *
      * @return array
-     *
-     * @throws UndefinedConfigurationException if the config file doesn't exist or it's malformed
      */
-    private function loadBackendConfig()
+    private function processConfig()
     {
-        return $this->configManager->processConfig();
+        $backendConfig = $this->container->getParameter('easyadmin.config');
+
+        $configPasses = array(
+            new NormalizerConfigPass(),
+            new DesignConfigPass($this->container->get('twig'), $this->container->getParameter('kernel.debug')),
+            new MenuConfigPass(),
+            new ActionConfigPass(),
+            new MetadataConfigPass($this->container->get('doctrine')),
+            new PropertyConfigPass(),
+            new ViewConfigPass(),
+            new TemplateConfigPass($this->container->getParameter('kernel.root_dir').'/Resources/views'),
+            new DefaultConfigPass(),
+        );
+
+        foreach ($configPasses as $configPass) {
+            $backendConfig = $configPass->process($backendConfig);
+        }
+
+        return $backendConfig;
     }
 }

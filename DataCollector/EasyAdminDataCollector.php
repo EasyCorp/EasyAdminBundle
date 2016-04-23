@@ -14,7 +14,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\DataCollector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 use Symfony\Component\Yaml\Yaml;
@@ -27,16 +27,16 @@ use Symfony\Component\Yaml\Yaml;
  */
 class EasyAdminDataCollector extends DataCollector
 {
-    private $configurator;
+    private $configManager;
 
-    public function __construct(Configurator $configurator)
+    public function __construct(ConfigManager $configManager)
     {
-        $this->configurator = $configurator;
+        $this->configManager = $configManager;
     }
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $backendConfig = $this->configurator->getBackendConfig();
+        $backendConfig = $this->configManager->getBackendConfig();
         $entityName = $request->query->get('entity', null);
         $currentEntityConfig = array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : array();
 

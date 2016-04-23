@@ -5,7 +5,8 @@
 
 # CONFIGURATION
 easy_admin:
-    TestEntity:
-        class: AppBundle\Entity\TestEntity
-        edit:
-            actions: ['delete']
+    entities:
+        TestEntity:
+            class: AppBundle\Entity\TestEntity
+            edit:
+                actions: ['delete']

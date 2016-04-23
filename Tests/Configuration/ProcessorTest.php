@@ -36,6 +36,10 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         // 'assertEquals()' is not used because storing the full processed backend
         // configuration would make fixtures too big
         $this->assertArraySubset($expectedConfig['easy_admin'], $backendConfig);
+
+        // delete the application cache to force its regeneration, which is
+        // needed to execute the "cache warmer" that generates the backend config
+        exec('rm -fr '.$app->getContainer()->getParameter('kernel.cache_dir'));
     }
 
     /**
@@ -69,6 +73,10 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
                 'easyadmin.config' => $app->getContainer()->getParameter('easyadmin.config'),
             )
         );
+
+        // delete the application cache to force its regeneration, which is
+        // needed to execute the "cache warmer" that generates the backend config
+        exec('rm -fr '.$app->getContainer()->getParameter('kernel.cache_dir'));
 
         $configProcessor->processConfig();
     }

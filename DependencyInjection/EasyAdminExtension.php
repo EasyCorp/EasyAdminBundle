@@ -50,7 +50,7 @@ class EasyAdminExtension extends Extension
 
         // compile commonly used classes
         $this->addClassesToCompile(array(
-            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Configuration\\Configurator',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Configuration\\ConfigManager',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\Event\\EasyAdminEvents',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\ExceptionListener',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\RequestPostInitializeListener',

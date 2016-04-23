@@ -15,13 +15,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 /**
  * The kernel used in the unit tests related to the configuration passes.
  */
-class ConfigPassKernel extends AppKernel
+class ConfigProcessorKernel extends AppKernel
 {
     private $backendConfig;
 
     public function __construct($backendConfig)
     {
-        parent::__construct('test', false);
+        parent::__construct('test', true);
 
         $this->backendConfig = $backendConfig;
     }

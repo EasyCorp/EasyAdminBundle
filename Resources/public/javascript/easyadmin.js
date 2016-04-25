@@ -7,7 +7,7 @@ $(function () {
     ;
 
     createNullableControls();
-    easyAdminAutoComplete();
+    createAutoCompleteFields();
 });
 
 function createNullableControls() {
@@ -51,10 +51,10 @@ function deleteCookie(name)
     document.cookie = encodeURIComponent(name) + "=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 }
 
-function easyAdminAutoComplete() {
-    var autocompletedFields = $('[data-easyadmin-autocomplete-url]');
+function createAutoCompleteFields() {
+    var autocompleteFields = $('[data-easyadmin-autocomplete-url]');
 
-    autocompletedFields.each(function () {
+    autocompleteFields.each(function () {
         var url = $(this).data('easyadmin-autocomplete-url');
         $(this).select2({
             theme: 'bootstrap',

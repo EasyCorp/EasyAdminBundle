@@ -506,27 +506,26 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertEquals('<strong>200</strong> results found', trim($crawler->filter('h1.title')->html()), 'The visible content contains HTML tags.');
     }
 
-    /**
-     * @dataProvider provideEmptyQueries
-     */
-    public function testSearchViewEmptyQuery($emptyQuery)
+    public function testSearchViewEmptyQuery()
     {
+        // empty queries redirect to "list" action
         $this->getBackendPage(array(
             'action' => 'search',
             'entity' => 'Category',
-            'query' => $emptyQuery,
+            'query' => '',
         ));
 
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC', $this->client->getResponse()->headers->get('location'));
-    }
 
-    public function provideEmptyQueries()
-    {
-        return array(
-            array(''),
-            array('     '),
-        );
+        // pseudo-empty queries (e.g. strings which only contain white spaces) don't redirect to "list" action
+        $crawler = $this->getBackendPage(array(
+            'action' => 'search',
+            'entity' => 'Category',
+            'query' => '    ',
+        ));
+
+        $this->assertEquals('No results found', $crawler->filter('h1.title')->text());
     }
 
     public function testSearchViewTableIdColumn()

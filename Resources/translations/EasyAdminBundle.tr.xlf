@@ -139,6 +139,10 @@
                 <source>errors</source>
                 <target>Hata|Hatalar</target>
             </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Formdaki değişiklikleri kaydetmediniz.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

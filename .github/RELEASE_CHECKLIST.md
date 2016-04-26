@@ -14,7 +14,7 @@ How to release a new EasyAdmin version
 6. Prepare the changelog of the new version with the custom `changelog` Git
    command. Example: `git changelog v1.12.5` (the version passed to the command
    is the previous version used as a reference to list the changes).
-7. Got to https://github.com/javiereguiluz/EasyAdminBundle/releases and click
+7. Go to https://github.com/javiereguiluz/EasyAdminBundle/releases and click
    on `Draft a new release`. Select the tag pushed before and paste the
    changelog contents.
 8. Update again the value of the `EasyAdminBundle::VERSION` constant to start

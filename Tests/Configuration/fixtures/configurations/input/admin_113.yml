@@ -3,7 +3,7 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
             form:
                 form_options: { validation_groups: ['Default', 'my_validation_group'] }

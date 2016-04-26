@@ -6,8 +6,8 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
             templates:
                 edit: 'custom_template/edit.html.twig'
                 field_array: 'custom_template/field_array.html.twig'

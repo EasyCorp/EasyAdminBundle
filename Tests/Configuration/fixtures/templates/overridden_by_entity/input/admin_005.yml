@@ -11,15 +11,15 @@ easy_admin:
             field_string: 'global_custom_template/field_string.html.twig'
             label_null: 'global_custom_template/label_null.html.twig'
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
             templates:
                 layout: 'entity_custom_template/layout.html.twig'
                 list: 'entity_custom_template/list.html.twig'
                 field_string: 'entity_custom_template/field_string.html.twig'
                 label_null: 'entity_custom_template/label_null.html.twig'
-        AnotherTestEntity:
-            class: AppBundle\Entity\AnotherTestEntity
+        Product:
+            class: AppTestBundle\Entity\UnitTests\Product
             templates:
                 layout: 'another_entity_custom_template/layout.html.twig'
                 list: 'another_entity_custom_template/list.html.twig'

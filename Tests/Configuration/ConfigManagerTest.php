@@ -17,7 +17,12 @@ use Symfony\Component\Yaml\Yaml;
 
 class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 {
-    const CACHED_CONTAINER_PATH = __DIR__.'/../../build/cache/test/AppTestDebugProjectContainer.php';
+    public static function tearDownAfterClass()
+    {
+        // this is important because this test generates a different Symfony
+        // kernel for each configuration to avoid cache issues
+        self::deleteDirectory(__DIR__.'/../../build/cache/test');
+    }
 
     /**
      * @dataProvider provideConfigFilePaths
@@ -33,7 +38,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 
         // 'assertEquals()' is not used because storing the full processed backend
         // configuration would make fixtures too big
-        $this->assertArraySubset($expectedConfig['easy_admin'], $backendConfig);
+        $this->assertEquals($expectedConfig['easy_admin'], $backendConfig);
     }
 
     /**
@@ -49,11 +54,6 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
                 $this->setExpectedExceptionRegExp($backendConfig['expected_exception']['class'], $backendConfig['expected_exception']['message_regexp']);
             }
         }
-
-        // delete the container stored in the cache and which was created after
-        // booting the kernel. Otherwise, all the tests will use the cached
-        // container and therefore, all of them would use the first loaded config
-        @unlink(self::CACHED_CONTAINER_PATH);
 
         $this->loadConfig($backendConfigFilePath);
     }
@@ -124,11 +124,27 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 
         $backendConfig = $app->getContainer()->get('easyadmin.config.manager')->loadConfig();
 
-        // delete the container stored in the cache and which was created after
-        // booting the kernel. Otherwise, all the tests will use the cached
-        // container and therefore, all of them would use the first loaded config
-        @unlink(self::CACHED_CONTAINER_PATH);
-
         return $backendConfig;
+    }
+
+    /**
+     * Utility method because PHP doesn't allow to delete non-empty directories.
+     */
+    private static function deleteDirectory($dir)
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $fileinfo) {
+            $fileinfo->isDir() ? rmdir($fileinfo->getRealPath()) : unlink($fileinfo->getRealPath());
+        }
+
+        rmdir($dir);
     }
 }

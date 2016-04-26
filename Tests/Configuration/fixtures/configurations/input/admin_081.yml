@@ -13,5 +13,5 @@ easy_admin:
     new:
         actions: ['CamelCaseAction', 'snakeCaseAction', 'underscore_action', 'UPPERCASE_ACTION', 'lowercaseaction', 'WEIRD_caseAction']
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

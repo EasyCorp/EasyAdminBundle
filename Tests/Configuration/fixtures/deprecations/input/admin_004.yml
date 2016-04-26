@@ -4,4 +4,4 @@
 
 # CONFIGURATION
 easy_admin:
-    list_actions: ['custom_action', '-search', { action: 'edit', label: 'Custom Label' }]
+    list_actions: ['custom_action', '-search', { name: 'edit', label: 'Custom Label' }]

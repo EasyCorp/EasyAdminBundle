@@ -25,13 +25,23 @@ class DynamicConfigLoadingKernel extends AppKernel
         $this->backendConfig = $backendConfig;
     }
 
+    /**
+     * This method is overridden to generate a different kernel name for each
+     * configuration. Otherwise the config loaded for one unit test can end up
+     * used by a different test. After lots of trials and different approaches,
+     * this is the only one which always worked as expected.
+     */
+    public function getContainerClass()
+    {
+        return 'TestDynamicConfigContainer'.md5(serialize($this->backendConfig));
+    }
+
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         parent::registerContainerConfiguration($loader);
 
         $backendConfig = $this->backendConfig; // needed for PHP 5.3
         $loader->load(function (ContainerBuilder $container) use ($backendConfig) {
-//var_dump("LOADING THIS CONFIG -->", md5(serialize($backendConfig)), $backendConfig);
             $container->loadFromExtension('easy_admin', $backendConfig);
         });
     }

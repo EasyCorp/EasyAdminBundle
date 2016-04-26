@@ -6,4 +6,4 @@ easy_admin:
     design:
         form_theme: ~
     entities:
-        - AppBundle\Entity\TestEntity
+        - AppTestBundle\Entity\UnitTests\Category

@@ -4,8 +4,8 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
             form:
                 fields: ['field1', 'field2']
                 custom_option: 'custom value'

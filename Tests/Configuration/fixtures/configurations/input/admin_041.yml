@@ -4,8 +4,8 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
             list:
                 fields:
                     - { property: 'field1', type: 'image', base_path: '/field_img/' }

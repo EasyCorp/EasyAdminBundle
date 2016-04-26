@@ -7,9 +7,9 @@
 easy_admin:
     # these are the deprecated options
     list_max_results: 50
-    list_actions: ['custom_deprecated_action', '-search', { action: 'edit', label: 'Custom Deprecated Label' }]
+    list_actions: ['custom_deprecated_action', '-search', { name: 'edit', label: 'Custom Deprecated Label' }]
     # these are the new options
     list:
         max_results: 100
         actions:
-            ['custom_action', '-show', { action: 'edit', label: 'Custom Label' }]
+            ['custom_action', '-show', { name: 'edit', label: 'Custom Label' }]

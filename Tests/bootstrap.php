@@ -62,6 +62,6 @@ $input = new ArrayInput(array('command' => 'doctrine:fixtures:load', '--no-inter
 $application->run($input, new NullOutput());
 
 // Make a copy of the original SQLite database to use a clean db in every test
-copy($buildDir.'/test.db', $buildDir.'/original_test.db');
+@copy($buildDir.'/test.db', $buildDir.'/original_test.db');
 
 unset($input, $application);

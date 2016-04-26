@@ -17,5 +17,5 @@ easy_admin:
         actions:
             - { name: '-list' }
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

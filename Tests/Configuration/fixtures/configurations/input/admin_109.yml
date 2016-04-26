@@ -5,4 +5,4 @@
 easy_admin:
     disabled_actions: ['action1']
     entities:
-        TestEntity: AppBundle\Entity\TestEntity
+        Category: AppTestBundle\Entity\UnitTests\Category

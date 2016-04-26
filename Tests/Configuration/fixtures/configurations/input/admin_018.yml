@@ -4,6 +4,6 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
-            label: CustomEntityLabel
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            label: CustomCategoryLabel

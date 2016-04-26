@@ -6,4 +6,4 @@ easy_admin:
     design:
         color_scheme: 'light'
     entities:
-        - AppBundle\Entity\TestEntity
+        - AppTestBundle\Entity\UnitTests\Category

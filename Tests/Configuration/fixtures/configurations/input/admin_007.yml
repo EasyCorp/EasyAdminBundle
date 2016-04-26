@@ -5,5 +5,5 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity: AppBundle\Entity\TestEntity
-        TestEntity: AppBundle\OtherNamespace\Entity\TestEntity
+        Category: AppTestBundle\Entity\UnitTests\Category
+        Category: AppTestBundle\Entity\UnitTests\SubNamespace\Category

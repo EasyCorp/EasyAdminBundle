@@ -5,9 +5,9 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
-            label: 'Custom #Entity ~ Label'
-        AnotherTestEntity:
-            class: AppBundle\AnotherNamespace\Entity\TestEntity
-            label: 'Custom #Entity ~ Label'
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            label: 'Custom #Category ~ Label'
+        AnotherCategory:
+            class: AppTestBundle\Entity\UnitTests\SubNamespace\Category
+            label: 'Custom #AnotherCategory ~ Label'

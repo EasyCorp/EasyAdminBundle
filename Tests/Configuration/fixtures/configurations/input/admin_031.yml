@@ -5,8 +5,8 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
             custom_option_1: 'custom value 1'
             custom_option_2:
                 - 'custom value 2-1'

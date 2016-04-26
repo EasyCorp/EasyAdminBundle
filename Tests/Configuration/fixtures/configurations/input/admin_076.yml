@@ -13,8 +13,8 @@ easy_admin:
     new:
         actions: ['list']
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
             list:
                 actions: ['show', 'edit']
             edit:

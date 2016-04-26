@@ -6,4 +6,4 @@ easy_admin:
     design:
         brand_color: 'red'
     entities:
-        - AppBundle\Entity\TestEntity
+        - AppTestBundle\Entity\UnitTests\Category

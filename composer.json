@@ -53,6 +53,10 @@
         "symfony/yaml"                      : "~2.3|~3.0"
     },
     "autoload": {
-        "psr-4": { "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "" }
+        "psr-4": { "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "" },
+        "exclude-from-classmap": ["/Tests/"]
+    },
+    "autoload-dev": {
+        "psr-4": { "AppTestBundle\\": "Tests/Fixtures/AppTestBundle/" }
     }
 }

@@ -12,5 +12,5 @@ easy_admin:
     new:
         actions: ['-list', { name: 'custom_action_for_new', label: 'custom-action-label' }]
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

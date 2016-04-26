@@ -4,4 +4,4 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity: AppBundle\Entity\TestEntity
+        Category: AppTestBundle\Entity\UnitTests\Category

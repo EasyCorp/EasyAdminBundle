@@ -1,102 +1,33 @@
 easy_admin:
+    edit:
+        actions:
+            delete:
+                name: delete
+                type: method
+                label: action.delete
+                css_class: 'btn btn-default'
+                icon: trash-o
+            list:
+                name: list
+                type: method
+                label: action.list
+                css_class: 'btn btn-secondary'
+                icon: null
+    show:
+        actions:
+            edit:
+                name: edit
+                type: method
+                label: action.edit
+                css_class: 'btn btn-primary'
+                icon: edit
     entities:
         Category:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            class: AppTestBundle\Entity\UnitTests\Category
             name: Category
             label: Category
             edit:
-                fields:
-                    name:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: string
-                        fieldType: text
-                        dataType: string
-                        virtual: false
-                        sortable: true
-                        template: null
-                        type_options: {  }
-                        fieldName: name
-                        scale: 0
-                        length: null
-                        unique: false
-                        nullable: false
-                        precision: 0
-                        columnName: name
-                        property: name
-                    products:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: association
-                        fieldType: entity
-                        dataType: association
-                        virtual: false
-                        sortable: false
-                        template: null
-                        type_options: {  }
-                        fieldName: products
-                        joinTable: {  }
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
-                        mappedBy: categories
-                        inversedBy: null
-                        cascade: {  }
-                        orphanRemoval: false
-                        fetch: 2
-                        isOwningSide: false
-                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        isCascadeRemove: false
-                        isCascadePersist: false
-                        isCascadeRefresh: false
-                        isCascadeMerge: false
-                        isCascadeDetach: false
-                        associationType: 8
-                        property: products
-                    parent:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: association
-                        fieldType: entity
-                        dataType: association
-                        virtual: false
-                        sortable: true
-                        template: null
-                        type_options: {  }
-                        fieldName: parent
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        joinColumns:
-                            -
-                                name: parent_id
-                                unique: true
-                                nullable: true
-                                onDelete: null
-                                columnDefinition: null
-                                referencedColumnName: id
-                        mappedBy: null
-                        inversedBy: null
-                        cascade: {  }
-                        orphanRemoval: false
-                        fetch: 2
-                        isOwningSide: true
-                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        isCascadeRemove: false
-                        isCascadePersist: false
-                        isCascadeRefresh: false
-                        isCascadeMerge: false
-                        isCascadeDetach: false
-                        sourceToTargetKeyColumns:
-                            parent_id: id
-                        joinColumnFieldNames:
-                            parent_id: parent_id
-                        targetToSourceKeyColumns:
-                            id: parent_id
-                        associationType: 1
-                        property: parent
+                fields: {  }
                 form_options: {  }
                 actions:
                     delete:
@@ -131,100 +62,9 @@ easy_admin:
                         unique: false
                         nullable: false
                         precision: 0
-                        columnName: id
                         id: true
+                        columnName: id
                         property: id
-                    name:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: string
-                        fieldType: text
-                        dataType: string
-                        virtual: false
-                        sortable: true
-                        template: '@EasyAdmin/default/field_string.html.twig'
-                        type_options: {  }
-                        fieldName: name
-                        scale: 0
-                        length: null
-                        unique: false
-                        nullable: false
-                        precision: 0
-                        columnName: name
-                        property: name
-                    products:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: association
-                        fieldType: entity
-                        dataType: association
-                        virtual: false
-                        sortable: false
-                        template: '@EasyAdmin/default/field_association.html.twig'
-                        type_options: {  }
-                        fieldName: products
-                        joinTable: {  }
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
-                        mappedBy: categories
-                        inversedBy: null
-                        cascade: {  }
-                        orphanRemoval: false
-                        fetch: 2
-                        isOwningSide: false
-                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        isCascadeRemove: false
-                        isCascadePersist: false
-                        isCascadeRefresh: false
-                        isCascadeMerge: false
-                        isCascadeDetach: false
-                        associationType: 8
-                        property: products
-                    parent:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: association
-                        fieldType: entity
-                        dataType: association
-                        virtual: false
-                        sortable: true
-                        template: '@EasyAdmin/default/field_association.html.twig'
-                        type_options: {  }
-                        fieldName: parent
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        joinColumns:
-                            -
-                                name: parent_id
-                                unique: true
-                                nullable: true
-                                onDelete: null
-                                columnDefinition: null
-                                referencedColumnName: id
-                        mappedBy: null
-                        inversedBy: null
-                        cascade: {  }
-                        orphanRemoval: false
-                        fetch: 2
-                        isOwningSide: true
-                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        isCascadeRemove: false
-                        isCascadePersist: false
-                        isCascadeRefresh: false
-                        isCascadeMerge: false
-                        isCascadeDetach: false
-                        sourceToTargetKeyColumns:
-                            parent_id: id
-                        joinColumnFieldNames:
-                            parent_id: parent_id
-                        targetToSourceKeyColumns:
-                            id: parent_id
-                        associationType: 1
-                        property: parent
                 actions:
                     edit:
                         name: edit
@@ -251,98 +91,7 @@ easy_admin:
                         css_class: ' action-search'
                         icon: null
             new:
-                fields:
-                    name:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: string
-                        fieldType: text
-                        dataType: string
-                        virtual: false
-                        sortable: true
-                        template: null
-                        type_options: {  }
-                        fieldName: name
-                        scale: 0
-                        length: null
-                        unique: false
-                        nullable: false
-                        precision: 0
-                        columnName: name
-                        property: name
-                    products:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: association
-                        fieldType: entity
-                        dataType: association
-                        virtual: false
-                        sortable: false
-                        template: null
-                        type_options: {  }
-                        fieldName: products
-                        joinTable: {  }
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
-                        mappedBy: categories
-                        inversedBy: null
-                        cascade: {  }
-                        orphanRemoval: false
-                        fetch: 2
-                        isOwningSide: false
-                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        isCascadeRemove: false
-                        isCascadePersist: false
-                        isCascadeRefresh: false
-                        isCascadeMerge: false
-                        isCascadeDetach: false
-                        associationType: 8
-                        property: products
-                    parent:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: association
-                        fieldType: entity
-                        dataType: association
-                        virtual: false
-                        sortable: true
-                        template: null
-                        type_options: {  }
-                        fieldName: parent
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        joinColumns:
-                            -
-                                name: parent_id
-                                unique: true
-                                nullable: true
-                                onDelete: null
-                                columnDefinition: null
-                                referencedColumnName: id
-                        mappedBy: null
-                        inversedBy: null
-                        cascade: {  }
-                        orphanRemoval: false
-                        fetch: 2
-                        isOwningSide: true
-                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        isCascadeRemove: false
-                        isCascadePersist: false
-                        isCascadeRefresh: false
-                        isCascadeMerge: false
-                        isCascadeDetach: false
-                        sourceToTargetKeyColumns:
-                            parent_id: id
-                        joinColumnFieldNames:
-                            parent_id: parent_id
-                        targetToSourceKeyColumns:
-                            id: parent_id
-                        associationType: 1
-                        property: parent
+                fields: {  }
                 form_options: {  }
                 actions:
                     list:
@@ -371,29 +120,9 @@ easy_admin:
                         unique: false
                         nullable: false
                         precision: 0
-                        columnName: id
                         id: true
+                        columnName: id
                         property: id
-                    name:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: string
-                        fieldType: text
-                        dataType: string
-                        virtual: false
-                        sortable: true
-                        template: null
-                        type_options: {  }
-                        fieldName: name
-                        scale: 0
-                        length: null
-                        unique: false
-                        nullable: false
-                        precision: 0
-                        columnName: name
-                        property: name
             show:
                 fields:
                     id:
@@ -414,100 +143,9 @@ easy_admin:
                         unique: false
                         nullable: false
                         precision: 0
-                        columnName: id
                         id: true
+                        columnName: id
                         property: id
-                    name:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: string
-                        fieldType: text
-                        dataType: string
-                        virtual: false
-                        sortable: true
-                        template: '@EasyAdmin/default/field_string.html.twig'
-                        type_options: {  }
-                        fieldName: name
-                        scale: 0
-                        length: null
-                        unique: false
-                        nullable: false
-                        precision: 0
-                        columnName: name
-                        property: name
-                    products:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: association
-                        fieldType: entity
-                        dataType: association
-                        virtual: false
-                        sortable: false
-                        template: '@EasyAdmin/default/field_association.html.twig'
-                        type_options: {  }
-                        fieldName: products
-                        joinTable: {  }
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
-                        mappedBy: categories
-                        inversedBy: null
-                        cascade: {  }
-                        orphanRemoval: false
-                        fetch: 2
-                        isOwningSide: false
-                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        isCascadeRemove: false
-                        isCascadePersist: false
-                        isCascadeRefresh: false
-                        isCascadeMerge: false
-                        isCascadeDetach: false
-                        associationType: 8
-                        property: products
-                    parent:
-                        css_class: ''
-                        format: null
-                        help: null
-                        label: null
-                        type: association
-                        fieldType: entity
-                        dataType: association
-                        virtual: false
-                        sortable: true
-                        template: '@EasyAdmin/default/field_association.html.twig'
-                        type_options: {  }
-                        fieldName: parent
-                        targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        joinColumns:
-                            -
-                                name: parent_id
-                                unique: true
-                                nullable: true
-                                onDelete: null
-                                columnDefinition: null
-                                referencedColumnName: id
-                        mappedBy: null
-                        inversedBy: null
-                        cascade: {  }
-                        orphanRemoval: false
-                        fetch: 2
-                        isOwningSide: true
-                        sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                        isCascadeRemove: false
-                        isCascadePersist: false
-                        isCascadeRefresh: false
-                        isCascadeMerge: false
-                        isCascadeDetach: false
-                        sourceToTargetKeyColumns:
-                            parent_id: id
-                        joinColumnFieldNames:
-                            parent_id: parent_id
-                        targetToSourceKeyColumns:
-                            id: parent_id
-                        associationType: 1
-                        property: parent
                 actions:
                     edit:
                         name: edit
@@ -548,100 +186,9 @@ easy_admin:
                     unique: false
                     nullable: false
                     precision: 0
-                    columnName: id
                     id: true
+                    columnName: id
                     property: id
-                name:
-                    css_class: ''
-                    format: null
-                    help: null
-                    label: null
-                    type: string
-                    fieldType: text
-                    dataType: string
-                    virtual: false
-                    sortable: true
-                    template: null
-                    type_options: {  }
-                    fieldName: name
-                    scale: 0
-                    length: null
-                    unique: false
-                    nullable: false
-                    precision: 0
-                    columnName: name
-                    property: name
-                products:
-                    css_class: ''
-                    format: null
-                    help: null
-                    label: null
-                    type: association
-                    fieldType: entity
-                    dataType: association
-                    virtual: false
-                    sortable: false
-                    template: null
-                    type_options: {  }
-                    fieldName: products
-                    joinTable: {  }
-                    targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
-                    mappedBy: categories
-                    inversedBy: null
-                    cascade: {  }
-                    orphanRemoval: false
-                    fetch: 2
-                    isOwningSide: false
-                    sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                    isCascadeRemove: false
-                    isCascadePersist: false
-                    isCascadeRefresh: false
-                    isCascadeMerge: false
-                    isCascadeDetach: false
-                    associationType: 8
-                    property: products
-                parent:
-                    css_class: ''
-                    format: null
-                    help: null
-                    label: null
-                    type: association
-                    fieldType: entity
-                    dataType: association
-                    virtual: false
-                    sortable: true
-                    template: null
-                    type_options: {  }
-                    fieldName: parent
-                    targetEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                    joinColumns:
-                        -
-                            name: parent_id
-                            unique: true
-                            nullable: true
-                            onDelete: null
-                            columnDefinition: null
-                            referencedColumnName: id
-                    mappedBy: null
-                    inversedBy: null
-                    cascade: {  }
-                    orphanRemoval: false
-                    fetch: 2
-                    isOwningSide: true
-                    sourceEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
-                    isCascadeRemove: false
-                    isCascadePersist: false
-                    isCascadeRefresh: false
-                    isCascadeMerge: false
-                    isCascadeDetach: false
-                    sourceToTargetKeyColumns:
-                        parent_id: id
-                    joinColumnFieldNames:
-                        parent_id: parent_id
-                    targetToSourceKeyColumns:
-                        id: parent_id
-                    associationType: 1
-                    property: parent
             templates:
                 layout: '@EasyAdmin/default/layout.html.twig'
                 menu: '@EasyAdmin/default/menu.html.twig'
@@ -660,6 +207,7 @@ easy_admin:
                 field_datetime: '@EasyAdmin/default/field_datetime.html.twig'
                 field_datetimetz: '@EasyAdmin/default/field_datetimetz.html.twig'
                 field_decimal: '@EasyAdmin/default/field_decimal.html.twig'
+                field_email: '@EasyAdmin/default/field_email.html.twig'
                 field_float: '@EasyAdmin/default/field_float.html.twig'
                 field_guid: '@EasyAdmin/default/field_guid.html.twig'
                 field_id: '@EasyAdmin/default/field_id.html.twig'
@@ -671,9 +219,11 @@ easy_admin:
                 field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
                 field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
                 field_string: '@EasyAdmin/default/field_string.html.twig'
+                field_tel: '@EasyAdmin/default/field_tel.html.twig'
                 field_text: '@EasyAdmin/default/field_text.html.twig'
                 field_time: '@EasyAdmin/default/field_time.html.twig'
                 field_toggle: '@EasyAdmin/default/field_toggle.html.twig'
+                field_url: '@EasyAdmin/default/field_url.html.twig'
                 label_empty: '@EasyAdmin/default/label_empty.html.twig'
                 label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
                 label_null: '@EasyAdmin/default/label_null.html.twig'
@@ -720,6 +270,7 @@ easy_admin:
             field_datetime: '@EasyAdmin/default/field_datetime.html.twig'
             field_datetimetz: '@EasyAdmin/default/field_datetimetz.html.twig'
             field_decimal: '@EasyAdmin/default/field_decimal.html.twig'
+            field_email: '@EasyAdmin/default/field_email.html.twig'
             field_float: '@EasyAdmin/default/field_float.html.twig'
             field_guid: '@EasyAdmin/default/field_guid.html.twig'
             field_id: '@EasyAdmin/default/field_id.html.twig'
@@ -731,9 +282,11 @@ easy_admin:
             field_simple_array: '@EasyAdmin/default/field_simple_array.html.twig'
             field_smallint: '@EasyAdmin/default/field_smallint.html.twig'
             field_string: '@EasyAdmin/default/field_string.html.twig'
+            field_tel: '@EasyAdmin/default/field_tel.html.twig'
             field_text: '@EasyAdmin/default/field_text.html.twig'
             field_time: '@EasyAdmin/default/field_time.html.twig'
             field_toggle: '@EasyAdmin/default/field_toggle.html.twig'
+            field_url: '@EasyAdmin/default/field_url.html.twig'
             label_empty: '@EasyAdmin/default/label_empty.html.twig'
             label_inaccessible: '@EasyAdmin/default/label_inaccessible.html.twig'
             label_null: '@EasyAdmin/default/label_null.html.twig'
@@ -747,12 +300,10 @@ easy_admin:
     list:
         actions: {  }
         max_results: 15
-    edit:
-        actions: {  }
     new:
         actions: {  }
-    show:
-        actions: {  }
+    _internal:
+        custom_css: "\n\n\n.sf-toolbarreset {\n    -webkit-font-smoothing: subpixel-antialiased;\n    -moz-osx-font-smoothing: auto;\n}\n\nbody {\n    font-family: Helvetica, \"Helvetica Neue\", Arial, sans-serif;\n}\n\na        { color: #205081; }\na:hover  { opacity: 0.9; }\na:active { outline: 0; }\n\n#main a:active {\n    position: relative;\n    top: 1px;\n}\n\na.text-primary,\na.text-primary:focus {\n    color: #205081;\n}\na.text-danger,\na.text-danger:focus {\n    color: #D42124;\n}\na.text-primary:hover,\na.text-danger:hover {\n    opacity: 0.9;\n}\n\nul, ol {\n    margin: 1em 0 1em 1em;\n    padding: 0;\n}\nli {\n    margin-bottom: 1em;\n}\n\nul.inline {\n    list-style: none;\n    margin: 0;\n}\nul.inline li {\n    margin: 0;\n}\n\ndiv.flash {\n    padding: .5em;\n}\ndiv.flash-success {\n    background: #006B2E;\n    color: #FFFFFF;\n}\ndiv.flash-error {\n    background: #D42124;\n    color: #FFFFFF;\n}\ndiv.flash-error strong {\n    padding-right: .5em;\n}\n\n.label:not([class*=label-]) {\n    background: #252525;\n}\n.label {\n    color: #FFFFFF;\n    display: inline-block;\n    font-size: 11px;\n    padding: 4px;\n    text-transform: uppercase;\n}\n\n.label-success {\n        background: #006B2E !important;\n}\n.label-danger {\n        background: #D42124 !iportant;\n}\n.label-empty {\n    background: transparent;\n    border: 2px dotted;\n    border-radius: 4px;\n    color: #CCC;\n    padding: 4px 8px;\n}\n\n.boolean .label,\n.toggle .label {\n    min-width: 33px;\n}\n\n.toggle.btn-xs {\n width: 44px;\n}\n.toggle-group .btn,\n.toggle-group .btn:hover {\n   border-radius: 3px;\n   font-size: 10px;\n   font-weight: bold;\n   text-transform: uppercase;\n}\n.toggle-group .btn {\n   padding: 4px 6px;\n}\n.toggle-group .btn:hover {\n    border: 0;\n}\n.toggle-group .btn + .btn {\n    margin-left: 0;\n}\n.toggle-group .toggle-on,\n.toggle-group .toggle-on.btn-xs,\n.toggle-group .toggle-on:hover,\n.toggle-group .toggle-on:active,\n.toggle-group .toggle-on:active:hover {\n    background: #006B2E;\n    border-color: #006B2E;\n    color: #FFFFFF;\n    padding: 4px 5px 4px 0;\n    border: 0;\n}\n.toggle-group .toggle-off,\n.toggle-group .toggle-off.btn-xs,\n.toggle-group .toggle-off:hover,\n.toggle-group .toggle-off:active,\n.toggle-group .toggle-off:active:hover {\n    background: #D42124;\n    border-color: #D42124;\n    color: #FFFFFF;\n    padding: 4px 0 4px 5px;\n    border: 0;\n}\n.toggle-group .toggle-handle,\n.toggle-group .toggle-handle:hover,\n.toggle-group .toggle-handle:active,\n.toggle-group .toggle-handle:active:hover {\n    background: #F5F5F5;\n    border: 0;\n    border-radius: 2px;\n    height: 19px;\n    margin-top: 2px;\n    padding: 5px;\n}\n.toggle .btn-success .toggle-handle {\n    box-shadow: -2px 0 1px rgba(0, 0, 0, .2);\n}\n.toggle .btn-danger .toggle-handle {\n    box-shadow: 2px 0 1px rgba(0, 0, 0, .2);\n}\n\nspan.badge {\n    background-color: #205081;\n}\n\n.btn:focus {\n    outline: none;\n}\n.btn + .btn {\n    margin-left: 5px;\n}\n\nbutton.btn:active {\n    position: relative;\n    top: 1px;\n}\n\n.btn,\n.btn:hover,\n.btn:active,\n.btn:focus,\n.btn:active:hover  {\n    background: #CCC;\n    border: 1px solid transparent;\n    border-radius: 4px;\n    box-shadow: none;\n    color: #222222;\n    display: inline-block;\n    line-height: 1.42857143;\n    opacity: 1;\n    outline: none;\n    padding: 6px 12px;\n    text-align: center;\n}\n\n.btn-primary,\n.btn-primary:hover,\n.btn-primary:active,\n.btn-primary:focus,\n.btn-primary:active:hover {\n    background-color: #205081;\n    border-color: transparent;\n    color: #FFFFFF;\n}\n.btn-default,\n.btn-default:hover,\n.btn-default:active,\n.btn-default:focus,\n.btn-default:active:hover {\n    border-color: transparent;\n}\n\n.btn-danger,\n.btn-danger:hover,\n.btn-danger:active,\n.btn-danger:focus,\n.btn-danger:active:hover {\n    background-color: #D42124;\n    border-color: transparent;\n    color: #FFFFFF;\n}\n\n.btn-success,\n.btn-success:hover,\n.btn-success:active,\n.btn-success:focus,\n.btn-success:active:hover {\n    background-color: #006B2E;\n    border-color: transparent;\n    color: #FFFFFF;\n}\n\n.btn-secondary,\n.btn-secondary:hover,\n.btn-secondary:active,\n.btn-secondary:focus,\n.btn-secondary:active:hover {\n    background: transparent;\n    color: #205081;\n    text-decoration: underline;\n}\n.btn-secondary:hover {\n    text-decoration: none;\n}\n\n.btn-primary,\n.btn-danger,\n.btn-success {\n    font-weight: bold;\n}\n\n.btn i {\n    font-size: 16px;\n    margin-right: 2px;\n}\n\n.btn-flat,\n.btn-flat:hover,\n.btn-flat:active,\n.btn-flat:focus,\n.btn-flat:active:hover {\n    border-radius: 0;\n}\n\n.form-inline .form-control {\n    margin-bottom: 5px;\n}\n.form-control,\n.form-inline .form-control {\n    border: 1px solid #AAA;\n    border-radius: 0;\n    box-shadow: 0 0 3px rgba(0, 0, 0, .15);\n    color: #222222;\n    -webkit-transition: none;\n    transition: none;\n}\n.form-control:focus {\n    border-color: #444;\n    box-shadow: 0 0 3px rgba(0, 0, 0, .15);\n}\n\n.has-error .error-block {\n    color: #D42124;\n    font-weight: bold;\n    padding-top: 5px;\n}\n.has-error .error-block .label-danger {\n    margin-right: 3px;\n}\n.has-error .error-block ul {\n    margin: .5em 0 .5em 1.5em;\n}\n.has-error .error-block ul li {\n    margin-bottom: .5em;\n}\n\n.help-block,\n.has-error .help-block {\n    color: #737373;\n    font-size: 13px;\n}\n.nullable-control {\n   padding-top: 5px;\n}\n\n.form-actions.stuck {\n    bottom: 0;\n    position: fixed;\n    background-color: #F5F5F5;\n    box-shadow: 0 -1px 4px #CCC;\n    height: 52px;\n    padding-top: 10px;\n    height: 85px;\n    padding-bottom: 45px;\n}\n\nform:not(.form-horizontal) .field-checkbox label {\n    padding-top: 23px;\n}\n\n.field-collection .collection-empty {\n    margin: .5em 0;\n}\n\n.select2-container {\n    width: 100% !important;\n}\n.select2-container--bootstrap .select2-selection {\n    border: 1px solid #AAA;\n    border-radius: 0;\n    box-shadow: 0 0 3px rgba(0, 0, 0, .15);\n    color: #222222;\n    -webkit-transition: none;\n    transition: none;\n}\n.select2-container--bootstrap .select2-selection .select2-search--inline {\n    margin: 0;\n}\n.select2-container--bootstrap .select2-selection--single .select2-selection__rendered {\n    color: #222222;\n    padding-top: 4px;\n}\n.select2-container--bootstrap .select2-results__option {\n    margin-bottom: 0;\n}\n.select2-container--bootstrap .select2-results__option[aria-selected=true] {\n    background-color: #CCC;\n    font-weight: bold;\n}\n.select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {\n    background-color: #205081;\n}\n.select2-container--bootstrap .select2-selection--multiple .select2-selection__choice {\n    color: #222222;\n}\n.select2-container--bootstrap .select2-selection--multiple .select2-selection__choice__remove {\n    color: #D42124;\n    font-weight: bold;\n    position: relative;\n    top: -1px;\n}\n.select2-container--bootstrap .select2-search--dropdown .select2-search__field {\n    border: 1px solid #444;\n    border-radius: 0;\n    margin: 5px 10px;\n    padding: 6px;\n    width: 96%;\n}\n.select2-search--inline .select2-search__field:focus {\n    outline: 0;\n    border: 0;\n}\n\n.easyadmin-vich-image img {\n    border: 3px solid #FFFFFF;\n    box-shadow: 0 0 3px #AAA;\n    max-height: 300px;\n    max-width: 400px;\n}\n.easyadmin-vich-image input[type=\"file\"],\n.easyadmin-vich-file input[type=\"file\"] {\n    padding-top: 7px;\n}\n.easyadmin-vich-file a {\n    display: inline-block;\n    padding-top: 7px;\n}\n.easyadmin-vich-file .field-checkbox {\n    margin-bottom: 0;\n}\n.easyadmin-vich-file .field-checkbox .col-sm-2,\n.easyadmin-vich-image .field-checkbox .col-sm-2 {\n    display: none;\n}\n\n.easyadmin-thumbnail img {\n    border: 3px solid #FFFFFF;\n    box-shadow: 0 0 3px #AAA;\n    max-height: 100px;\n    max-width: 100%;\n}\n.easyadmin-thumbnail img:hover {\n    cursor: zoom-in;\n}\n.featherlight .easyadmin-lightbox:hover {\n    cursor: zoom-out;\n}\n.easyadmin-lightbox {\n    display: none;\n}\n.featherlight .easyadmin-lightbox {\n    display: block;\n}\n.easyadmin-lightbox img {\n    max-width: 100%;\n}\n\n.modal-dialog .modal-content {\n    border-radius: 0;\n}\n.modal-dialog .modal-content .modal-body h4 {\n    font-size: 21px;\n    margin: .5em 0;\n}\n.modal-dialog .modal-footer {\n    background: #F5F5F5;\n    border-top: 1px solid #CCC;\n    margin-top: 1.5em;\n}\n\n\n.content-wrapper {\n    background: #F5F5F5;\n}\n.fixed .content-wrapper {\n    padding-top: 50px;\n}\n\n.main-header {\n    background: #205081;\n}\n.main-header .logo {\n    background: rgba(0, 0, 0, 0.15);\n    color: #FFFFFF;\n    font-family: Helvetica, \"Helvetica Neue\", Arial, sans-serif;     font-weight: bold;\n    height: 40px;\n}\n.main-header .logo-lg {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.main-header .logo-mini {\n    font-weight: bold;\n    text-align: center;\n}\n.main-header .logo-long .logo-lg {\n    font-size: 16px;\n}\n.main-header > img {\n    margin-top: -2px;\n    max-height: 26px;\n    max-width: 94%;\n}\n.main-header li {\n    margin-bottom: 0;\n}\n\n.main-header > .navbar {\n    background-color: #205081;\n    color: #FFFFFF;\n    min-height: 40px;\n}\n\n.main-header .navbar .sidebar-toggle {\n    color: #FFFFFF;\n    padding: 10px;\n}\n.main-header .navbar .sidebar-toggle:hover {\n    background: rgba(0, 0, 0, 0.15);\n}\n\n.navbar-custom-menu .user-menu {\n    color: rgba(255, 255, 255, 0.8);\n    font-size: 13px;\n    font-weight: bold;\n    padding: 10px;\n}\n\n#content #main {\n    padding-bottom: 3em;\n}\n.content {\n    padding-top: 10px;\n}\n.content-header {\n    padding: 12px 15px 0 15px;\n}\n.content-header h1 {\n    margin: 0;\n    font-size: 24px;\n}\n\n.main-sidebar,\n.wrapper {\n    background-color: rgb(34, 34, 34);\n}\n.main-sidebar {\n    padding-top: 40px;\n}\n\n.sidebar-menu li.header {\n    color: #FFFFFF;\n    font-size: 12px;\n    font-weight: bold;\n    opacity: 0.4;\n    text-transform: uppercase;\n}\n.treeview-menu > li.header {\n    padding-left: 28px;\n}\n\n.sidebar-menu > li > a,\n.sidebar-menu .treeview-menu > li > a {\n    color: #FFFFFF;\n    opacity: 0.8;\n    border-left: 3px solid transparent;\n    display: block;\n    font-weight: bold;\n}\n.sidebar-menu .treeview-menu > li > a {\n    font-size: 13px;\n    padding: 8px 5px 8px 25px;\n}\n.sidebar-menu > li:hover > a,\n.sidebar-menu > li.active > a,\n.sidebar-menu .treeview-menu > li:hover > a,\n.sidebar-menu .treeview-menu > li.active > a {\n    color: #FFFFFF;\n    background: rgb(15, 15, 15);\n    border-left-color: rgb(115, 115, 115);\n    opacity: 1;\n}\n\n.sidebar-menu > li > a > .fa {\n    width: 22px;\n}\n\n.sidebar-menu .treeview-menu {\n    background: rgb(60, 60, 60);\n    margin: 0;\n    padding: 0;\n}\n\n.sidebar-menu > li.active.submenu-active > a {\n    background: rgb(34, 34, 34);\n    border-left-color: transparent;\n}\n.sidebar-menu li > a > .pull-right {\n    font-weight: bold;\n    text-align: right;\n}\n.sidebar-menu li.active > a > .fa-angle-left {\n    top: 30px;\n    right: 0;\n}\n.sidebar-collapse .sidebar-menu > li > a > .fa {\n    width: 28px;\n}\n\nbody.easyadmin h1.title {\n    margin-bottom: 10px;\n}\n\n\nbody.list .global-actions {\n    display: table;\n    width: 100%;\n}\nbody.list .global-actions .button-action {\n    display: table-cell;\n    padding-left: 10px;\n    vertical-align: middle;\n    width: 120px;\n}\nbody.list .global-actions .button-action a {\n    float: right;\n}\nbody.list .global-actions .form-action {\n    display: table-cell;\n    width: 100%;\n}\nbody.list .global-actions .form-action .input-group {\n    width: 100%;\n}\n\nbody.list .global-actions .form-control {\n    box-shadow: none;\n}\nbody.list .global-actions .input-group-btn > button.btn:not(:last-child) {\n    border-bottom-right-radius: 3px;\n    border-top-right-radius: 3px;\n}\nbody.list .global-actions .input-group-btn a.btn {\n    border-radius: 3px;\n    margin-left: 10px;\n}\n\nbody.list .table-responsive,\nbody.list table {\n    background: transparent;\n    border: 0;\n}\nbody.list table thead {\n    display: none;\n}\nbody.list .table tbody {\n    background: transparent;\n    border: 0;\n}\nbody.list table tbody tr {\n    background: #FFFFFF;\n    border: 1px solid #CCC;\n    display: block;\n    margin-bottom: 1em;\n}\nbody.list table tbody td {\n    border-bottom: 1px solid #DDD;\n    border-top: 0;\n    display: block;\n    text-align: right;\n    vertical-align: middle;\n}\nbody.list table tbody td:last-child {\n    border-bottom: 0;\n}\ntable td:before {\n    content: attr(data-label);\n    float: left;\n    font-weight: bold;\n}\ntable td:after {\n    clear: both;\n    content: \"\";\n    display: block;\n}\n\nbody.list table tbody td.image .easyadmin-thumbnail img {\n    border-width: 2px;\n    max-height: 50px;\n    max-width: 150px;\n}\nbody.list table tbody td.association .badge {\n    font-size: 13px;\n}\nbody.list table tbody td.actions a {\n    font-weight: bold;\n    margin-left: 10px;\n}\n\nbody.list .table tbody span.highlight {\n    background: #FF9;\n    border-radius: 2px;\n    padding: 1px;\n}\nbody.list .table tbody .no-results span.highlight,\nbody.list .table tbody .actions span.highlight {\n    background: 0;\n    border-radius: 0;\n}\n\nbody.list .pagination {\n    float: right;\n    margin: 0;\n}\nbody.list .pagination > .disabled > span {\n    background: transparent;\n    border: 1px solid transparent;\n    color: #737373;\n}\nbody.list .pagination > li > a {\n    background: #FFFFFF;\n    border-color: #CCC;\n    border-radius: 0;\n    color: #222222;\n}\nbody.list .pagination > li > a:hover {\n    background: #205081;\n    color: #FFFFFF;\n}\n.pagination > li > a,\n.pagination > li > span {\n    padding: 6px 8px;\n}\nbody.list .pagination > li i {\n    padding: 0 3px;\n}\nbody.list .pagination.last-page li:nth-child(2) {\n    position: relative;\n    z-index: 1;\n}\n\nform label.control-label.required:after {\n    content: \"\\00a0*\";\n    color: #D42124;\n    font-size: 16px;\n    position: absolute;\n}\n\nbody.new textarea {\n    min-height: 250px;\n}\nbody.new .field-collection-action {\n    margin: -15px 0 10px;\n}\nbody.new .field-collection-item-action {\n    margin: 5px 0 0;\n}\n\nbody.new #form-actions-row button,\nbody.new #form-actions-row a.btn {\n    margin-bottom: 10px;\n}\nbody.new .form-horizontal #form-actions-row {\n    padding-left: 15px;\n    padding-right: 15px;\n}\n\nbody.edit textarea {\n    min-height: 250px;\n}\nbody.edit .field-collection-action {\n    margin: -15px 0 10px;\n}\nbody.edit .field-collection-item-action {\n    margin: 5px 0 0;\n}\n\nbody.edit #form-actions-row button,\nbody.edit #form-actions-row a.btn {\n    margin-bottom: 10px;\n}\nbody.edit .form-horizontal #form-actions-row {\n    padding-left: 15px;\n    padding-right: 15px;\n}\n\nbody.show .form-control {\n    background: #FFFFFF;\n    border: 0;\n    border-radius: 0;\n    box-shadow: none;\n    height: auto;\n}\nbody.show .form-control.text {\n    min-height: 34px;\n    max-height: 250px;\n    overflow-y: auto;\n}\n\nbody.error .error-description {\n    background: #FFFFFF;\n    border: 1px solid #F5F5F5;\n    box-shadow: 0 0 3px #CCC;\n    margin: 2em auto 2em;\n    max-width: 90%;\n    min-height: 150px;\n    padding: 0;\n}\nbody.error .error-description h1 {\n    background: #D42124;\n    color: #FFFFFF;\n    font-size: 18px;\n    font-weight: bold;\n    margin-top: 0;\n    padding: 10px;\n    text-transform: uppercase;\n}\nbody.error .error-message {\n    font-size: 16px;\n    padding: 15px;\n}\n\n\n@media (min-width: 768px) {\n    ul, ol {\n        margin-left: 2em;\n    }\n\n    .main-header > .navbar {\n      min-height: 50px;\n    }\n    .main-header .logo {\n        text-align: left;\n        height: 50px;\n    }\n    .main-header .logo img {\n        max-height: 48px;\n    }\n\n    .main-header .navbar .sidebar-toggle {\n        padding: 15px;\n    }\n    .navbar-custom-menu .user-menu {\n        padding: 17px 15px 13px;\n    }\n    .navbar-custom-menu .user-menu i {\n        padding-right: 4px;\n    }\n\n    .main-sidebar {\n        padding-top: 50px;\n    }\n\n        body.list table {\n        background: #FFFFFF;\n        border: 1px solid #CCC;\n    }\n    body.list table thead {\n        display: table-header-group;\n    }\n    body.list table thead th {\n        background: #EEE;\n        padding: 0;\n    }\n    body.list table thead th i {\n        color: #AAA;\n        padding: 0 3px;\n    }\n    body.list table thead th a,\n    body.list table thead th span {\n        color: #222222;\n        display: block;\n        padding: 10px 6px;\n        white-space: nowrap;\n    }\n    body.list table thead th a:hover {\n        background: #CCC;\n        text-decoration: none;\n    }\n    body.list table thead th.sorted,\n    body.list table thead th.sorted a {\n        background: #205081;\n        color: #FFFFFF;\n    }\n    body.list table thead th.sorted a:hover i,\n    body.list table thead th.sorted i {\n        color: #FFFFFF;\n    }\n    body.list th.boolean, body.list td.boolean,\n    body.list th.toggle, body.list td.toggle,\n    body.list td.image {\n        text-align: center;\n    }\n\n    body.list .table thead tr th {\n        border-bottom: 2px solid #CCC;\n    }\n    body.list .table thead tr th.sorted {\n        border-bottom: 2px outset #205081;\n    }\n        body.list .table thead tr th:first-child.sorted {\n        border-left: 1px solid #205081;\n        border-top: 1px solid #205081;\n    }\n    body.list .table tbody {\n        border-bottom: 2px double #CCC;\n    }\n    body.list table tbody tr {\n        border: 0;\n        display: table-row;\n        margin-bottom: 0;\n    }\n    body.list table tbody td {\n        border-bottom: 0;\n        border-top: 1px solid #DDD;\n        display: table-cell;\n        text-align: left;\n    }\n    table td:before {\n        content: none;\n        float: none;\n    }\n    body.list table tbody td.sorted {\n        background: #F5F5F5;\n        border-color: #DDD;\n    }\n    body.list .table tbody tr:hover td {\n        background: #F5F5F5;\n    }\n    body.list table tbody td.actions a {\n        margin-left: 0;\n        margin-right: 10px;\n    }\n\n    .field-date select + select,\n    .field-time select + select,\n    .field-datetime select + select {\n        margin-left: 2px;\n    }\n\n    body.error .error-description {\n        max-width: 70%;\n    }\n\n    .pagination > li > a,\n    .pagination > li > span {\n        padding: 6px 12px;\n    }\n\n    .form-inline .form-control {\n        margin-bottom: 0;\n    }\n\n    body.new .form-horizontal #form-actions-row {\n        margin-left: 16.66666667%;\n    }\n\n    body.edit .form-horizontal #form-actions-row {\n        margin-left: 16.66666667%;\n    }\n}\n"
     default_entity_name: Category
     default_menu_item: null
     homepage:

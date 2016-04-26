@@ -12,8 +12,8 @@ easy_admin:
     show:
         actions: ['edit']
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
             edit:
                 actions: ['delete', 'list']
             show:

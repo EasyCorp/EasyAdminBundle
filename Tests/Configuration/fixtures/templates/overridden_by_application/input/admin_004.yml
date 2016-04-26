@@ -7,7 +7,7 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
-        AnotherTestEntity:
-            class: AppBundle\Entity\AnotherTestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+        Product:
+            class: AppTestBundle\Entity\UnitTests\Product

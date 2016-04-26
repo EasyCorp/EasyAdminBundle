@@ -6,4 +6,4 @@ easy_admin:
     design:
         brand_color: 'hsl(0, 100%, 50%)'
     entities:
-        - AppBundle\Entity\TestEntity
+        - AppTestBundle\Entity\UnitTests\Category

@@ -7,4 +7,4 @@ easy_admin:
     design:
         form_theme: '@AppBundle/form/custom_layout.html.twig'
     entities:
-        - AppBundle\Entity\TestEntity
+        - AppTestBundle\Entity\UnitTests\Category

@@ -36,5 +36,5 @@ easy_admin:
             paginator: 'custom_template/paginator.html.twig'
             show: 'custom_template/show.html.twig'
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

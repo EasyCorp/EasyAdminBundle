@@ -5,8 +5,8 @@
 # CONFIGURATION
 easy_admin:
     # this is the deprecated option
-    list_actions: ['custom_deprecated_action', '-search', { action: 'edit', label: 'Custom Deprecated Label' }]
+    list_actions: ['custom_deprecated_action', '-search', { name: 'edit', label: 'Custom Deprecated Label' }]
     # this is the new option
     list:
         actions:
-            ['custom_action', '-show', { action: 'edit', label: 'Custom Label' }]
+            ['custom_action', '-show', { name: 'edit', label: 'Custom Label' }]

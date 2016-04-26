@@ -4,5 +4,5 @@
 # CONFIGURATION
 easy_admin:
     entities:
-        - AppBundle\Entity\TestEntity
-        - AppBundle\Entity\OtherTestEntity
+        - AppTestBundle\Entity\UnitTests\Category
+        - AppTestBundle\Entity\UnitTests\Product

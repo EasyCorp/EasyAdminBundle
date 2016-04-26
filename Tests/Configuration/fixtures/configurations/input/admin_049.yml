@@ -10,5 +10,5 @@ easy_admin:
         actions:
             ['-edit', '-list', '-new', '-search', '-show']
     entities:
-        TestEntity:
-            class: AppBundle\Entity\TestEntity
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

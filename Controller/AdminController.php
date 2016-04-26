@@ -356,7 +356,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_SEARCH);
 
         // if the search query is empty, redirect to the 'list' action
-        if ('' === trim($this->request->query->get('query'))) {
+        if ('' === $this->request->query->get('query')) {
             $queryParameters = array_replace($this->request->query->all(), array('action' => 'list', 'query' => null));
             $queryParameters = array_filter($queryParameters);
 

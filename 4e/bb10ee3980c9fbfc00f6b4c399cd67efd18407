@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-04-26T08:15:50Z
+
+I need time to review and test this (Don't have time and I'm currently working on non-easyadmin backends) but if others can test and check this based on #1106's comments, it would be awesome 👍
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-26T17:38:57Z
+
+@Pierstoval I've tested this and it should work as you expect. I'm going to merge to be able to finally release the new version of the bundle. If you find any error in your apps, rest assured that we'll fix it as soon as possible.

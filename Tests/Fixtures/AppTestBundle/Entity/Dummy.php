@@ -1,6 +1,6 @@
 <?php
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity;
+namespace AppTestBundle\Entity;
 
 class Dummy
 {

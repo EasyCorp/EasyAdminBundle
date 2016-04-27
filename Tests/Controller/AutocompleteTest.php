@@ -25,7 +25,7 @@ class AutocompleteTest extends AbstractTestCase
     /**
      * @dataProvider provideMissingParameters
      */
-    public function testAutocompleteActionWithMissingParameters($property, $view, $query)
+    public function testAutocompleteWithMissingParameters($property, $view, $query)
     {
         $queryParameters = array(
             'action' => 'autocomplete',
@@ -46,7 +46,7 @@ class AutocompleteTest extends AbstractTestCase
         );
     }
 
-    public function testAutocompleteTextAction()
+    public function testAutocompleteText()
     {
         $this->getBackendPage(array(
             'action' => 'autocomplete',
@@ -58,13 +58,14 @@ class AutocompleteTest extends AbstractTestCase
 
         // the results are the first 15 parent categories
         $response = json_decode($this->client->getResponse()->getContent(), true);
+var_dump($this->client->getResponse());
         foreach (range(1, 15) as $i) {
             $this->assertEquals($i, $response['results'][$i-1]['id']);
             $this->assertEquals('Parent Category #'.$i, $response['results'][$i-1]['text']);
         }
     }
 
-    public function testAutocompleteNumberAction()
+    public function testAutocompleteNumber()
     {
         $this->getBackendPage(array(
             'action' => 'autocomplete',

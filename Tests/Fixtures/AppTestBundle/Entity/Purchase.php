@@ -8,10 +8,10 @@
  * at https://github.com/MacFJA/Doctrine-TestSet
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity;
+namespace AppTestBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Model\Shipment;
+use AppTestBundle\Model\Shipment;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

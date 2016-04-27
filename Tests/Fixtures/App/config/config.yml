@@ -33,6 +33,13 @@ doctrine:
                 alias: 'UnitTests'
                 prefix: 'AppTestBundle\Entity\UnitTests'
                 is_bundle: false
+            AppTestBundle:
+                mapping: true
+                type: annotation
+                dir: '%kernel.root_dir%/../AppTestBundle/Entity/'
+                alias: 'AppTestBundle'
+                prefix: 'AppTestBundle\Entity'
+                is_bundle: true
 
 security:
     firewalls:

@@ -8,12 +8,12 @@ framework:
 easy_admin:
     entities:
         Category:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            class: AppTestBundle\Entity\Category
             form:
                 fields:
                     - name
                     - { property: 'parent', type: 'easyadmin_autocomplete' }
-        Image: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Image
-        Purchase: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Purchase
-        PurchaseItem: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\PurchaseItem
-        Product: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+        Image: AppTestBundle\Entity\Image
+        Purchase: AppTestBundle\Entity\Purchase
+        PurchaseItem: AppTestBundle\Entity\PurchaseItem
+        Product: AppTestBundle\Entity\Product

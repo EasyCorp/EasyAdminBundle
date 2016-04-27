@@ -29,7 +29,8 @@ class ConfigWarmer implements CacheWarmerInterface
 
     public function warmUp($cacheDir)
     {
-        $this->configManager->processConfig();
+        // this forces the full processing of the backend configuration
+        $this->configManager->getBackendConfig();
     }
 
     public function isOptional()

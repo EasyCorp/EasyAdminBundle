@@ -29,7 +29,7 @@ class ConfigWarmer implements CacheWarmerInterface
 
     public function warmUp($cacheDir)
     {
-        $this->configManager->loadConfig();
+        $this->configManager->processConfig();
     }
 
     public function isOptional()

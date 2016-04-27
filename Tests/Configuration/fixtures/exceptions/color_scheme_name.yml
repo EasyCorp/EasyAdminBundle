@@ -11,4 +11,4 @@ easy_admin:
     design:
         color_scheme: 'custom_value'
     entities:
-        TestEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

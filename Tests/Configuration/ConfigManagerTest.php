@@ -36,8 +36,6 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
         $backendConfig = $this->loadConfig($backendConfigFilePath);
         $expectedConfig = Yaml::parse(file_get_contents($expectedConfigFilePath));
 
-        // 'assertEquals()' is not used because storing the full processed backend
-        // configuration would make fixtures too big
         $this->assertEquals($expectedConfig['easy_admin'], $backendConfig);
     }
 
@@ -116,9 +114,11 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
      */
     private function loadConfig($backendConfigFilePath)
     {
+        $configuration = Yaml::parse(file_get_contents($backendConfigFilePath));
+
         // to get the processed config, boot a special Symfony kernel to load
         // the backend config dynamically
-        $configuration = Yaml::parse(file_get_contents($backendConfigFilePath));
+        include_once __DIR__.'/../Fixtures/App/DynamicConfigLoadingKernel.php';
         $app = new \DynamicConfigLoadingKernel($configuration['easy_admin']);
         $app->boot();
 

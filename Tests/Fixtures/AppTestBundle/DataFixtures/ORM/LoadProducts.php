@@ -14,7 +14,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Data
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product;
+use AppTestBundle\Entity\FunctionalTests\Product;
 
 class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
 {

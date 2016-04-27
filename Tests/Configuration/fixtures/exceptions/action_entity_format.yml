@@ -12,4 +12,4 @@ easy_admin:
         TestEntity:
             list:
                 actions: 'show'
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            class: AppTestBundle\Entity\UnitTests\Category

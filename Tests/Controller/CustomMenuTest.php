@@ -47,7 +47,7 @@ class CustomMenuTest extends AbstractTestCase
     public function testBackendHomepageConfig()
     {
         $this->getBackendHomepage();
-        $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
+        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->loadConfig();
 
         $this->assertArraySubset(array(
             'route' => 'easyadmin',
@@ -58,7 +58,7 @@ class CustomMenuTest extends AbstractTestCase
     public function testDefaultMenuItem()
     {
         $this->getBackendHomepage();
-        $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
+        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->loadConfig();
 
         $this->assertArraySubset(array(
             'label' => 'Categories',
@@ -178,7 +178,7 @@ class CustomMenuTest extends AbstractTestCase
         $expectedTypesSubMenu = array('entity', 'entity', 'divider', 'entity', 'link');
 
         $this->getBackendHomepage();
-        $backendConfig = $this->client->getContainer()->getParameter('easyadmin.config');
+        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->loadConfig();
         $menuConfig = $backendConfig['design']['menu'];
 
         foreach ($menuConfig as $i => $itemConfig) {

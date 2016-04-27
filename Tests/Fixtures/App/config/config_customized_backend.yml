@@ -13,7 +13,7 @@ easy_admin:
         brand_color:  '#123456'
     entities:
         Category:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+            class: AppTestBundle\Entity\FunctionalTests\Category
             label: 'Categories'
             list:
                 title: 'Product %%entity_label%%'
@@ -51,16 +51,16 @@ easy_admin:
             new:
                 form_options: { validation_groups: ['Default', 'Validate'], attr: { novalidate: 'novalidate' } }
         Image:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Image
+            class: AppTestBundle\Entity\FunctionalTests\Image
             label: 'Images'
         Purchase:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Purchase
+            class: AppTestBundle\Entity\FunctionalTests\Purchase
             label: 'Purchases'
         PurchaseItem:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\PurchaseItem
+            class: AppTestBundle\Entity\FunctionalTests\PurchaseItem
             label: 'Purchase Items'
         Product:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+            class: AppTestBundle\Entity\FunctionalTests\Product
             label: 'Products'
             list:
                 fields:

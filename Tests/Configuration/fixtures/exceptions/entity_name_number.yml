@@ -9,4 +9,4 @@ expected_exception:
 # CONFIGURATION
 easy_admin:
     entities:
-        7TestEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+        7TestEntity: AppTestBundle\Entity\UnitTests\Category

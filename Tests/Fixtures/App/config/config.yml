@@ -26,20 +26,20 @@ doctrine:
         auto_generate_proxy_classes: true
         auto_mapping: true
         mappings:
-            TestEntities:
+            # UnitTestEntities:
+            #     mapping: true
+            #     type: annotation
+            #     dir: '%kernel.root_dir%/../AppTestBundle/Entity/UnitTests/'
+            #     alias: 'UnitTests'
+            #     prefix: 'AppTestBundle\Entity\UnitTests'
+            #     is_bundle: false
+            FunctionalTestEntities:
                 mapping: true
                 type: annotation
-                dir: '%kernel.root_dir%/../AppTestBundle/Entity/UnitTests/'
-                alias: 'UnitTests'
-                prefix: 'AppTestBundle\Entity\UnitTests'
+                dir: '%kernel.root_dir%/../AppTestBundle/Entity/FunctionalTests/'
+                alias: 'FunctionalTests'
+                prefix: 'AppTestBundle\Entity\FunctionalTests'
                 is_bundle: false
-            AppTestBundle:
-                mapping: true
-                type: annotation
-                dir: '%kernel.root_dir%/../AppTestBundle/Entity/'
-                alias: 'AppTestBundle'
-                prefix: 'AppTestBundle\Entity'
-                is_bundle: true
 
 security:
     firewalls:

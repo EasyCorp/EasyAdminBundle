@@ -21,7 +21,7 @@ class DynamicConfigLoadingKernel extends AppKernel
 
     public function __construct($backendConfig)
     {
-        parent::__construct('test', true);
+        parent::__construct('dynamic_config_loading_kernel', true);
         $this->backendConfig = $backendConfig;
     }
 

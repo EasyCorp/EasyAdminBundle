@@ -12,4 +12,4 @@ easy_admin:
         actions:
             - { name: '7invalidActionName' }
     entities:
-        TestEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

@@ -10,4 +10,4 @@ expected_exception:
 # CONFIGURATION
 easy_admin:
     entities:
-        'Invalid-Entity~Name!!': JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+        'Invalid-Entity~Name!!': AppTestBundle\Entity\UnitTests\Category

@@ -4,4 +4,4 @@ imports:
 
 easy_admin:
     entities:
-        Product: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+        Product: AppTestBundle\Entity\FunctionalTests\Product

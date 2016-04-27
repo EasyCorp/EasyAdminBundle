@@ -58,7 +58,6 @@ class AutocompleteTest extends AbstractTestCase
 
         // the results are the first 15 parent categories
         $response = json_decode($this->client->getResponse()->getContent(), true);
-var_dump($this->client->getResponse());
         foreach (range(1, 15) as $i) {
             $this->assertEquals($i, $response['results'][$i-1]['id']);
             $this->assertEquals('Parent Category #'.$i, $response['results'][$i-1]['text']);

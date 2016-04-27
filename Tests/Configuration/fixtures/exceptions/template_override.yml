@@ -12,4 +12,4 @@ easy_admin:
         templates:
             this_template_name_is_not_valid: 'template.html.twig'
     entities:
-        TestEntity: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

@@ -4,4 +4,4 @@ imports:
 easy_admin:
     disabled_actions: ['delete', 'edit', 'new']
     entities:
-        Category:     JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Category
+        Category:     AppTestBundle\Entity\FunctionalTests\Category

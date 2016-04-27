@@ -1,5 +1,5 @@
 easy_admin:
     entities:
-        - JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
-        - JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
-        - JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+        - AppTestBundle\Entity\FunctionalTests\Product
+        - AppTestBundle\Entity\FunctionalTests\Product
+        - AppTestBundle\Entity\FunctionalTests\Product

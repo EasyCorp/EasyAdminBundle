@@ -104,7 +104,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testCustomCssProperty()
     {
         $this->getBackendHomepage();
-        $customCssContent = $this->client->getContainer()->get('easyadmin.config.manager')->loadConfig();
+        $customCssContent = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertEquals(13, substr_count($customCssContent['_internal']['custom_css'], '#205081'), 'The generated custom CSS uses the default brand color.');
         // #222222 color is only used by the "dark" color scheme, not the "light" one

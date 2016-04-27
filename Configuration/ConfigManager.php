@@ -20,8 +20,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ConfigManager
 {
-    const CACHED_CONFIG_KEY = 'processed_config';
-
     private $backendConfig;
     /** @var ContainerInterface */
     private $container;
@@ -42,7 +40,7 @@ class ConfigManager
     public function getBackendConfig($propertyPath = null)
     {
         if (null === $this->backendConfig) {
-            $this->backendConfig = $this->loadConfig();
+            $this->backendConfig = $this->processConfig();
         }
 
         if (empty($propertyPath)) {
@@ -149,38 +147,40 @@ class ConfigManager
     }
 
     /**
-     * ...
-     * @return [type] [description]
-     */
-    public function loadConfig()
-    {
-        $cache = $this->container->get('easyadmin.cache.manager');
-
-        if (true === $this->container->getParameter('kernel.debug')) {
-            return $this->processConfig();
-        }
-
-        if ($cache->contains(self::CACHED_CONFIG_KEY)) {
-            return $cache->fetch(self::CACHED_CONFIG_KEY);
-        }
-
-        $backendConfig = $this->processConfig();
-        $cache->save(self::CACHED_CONFIG_KEY, $backendConfig);
-
-        return $backendConfig;
-    }
-
-    /**
-     * Takes the 'easyadmin.config' container parameter and turns it into the
-     * fully processed configuration by applying the different "config passes"
-     * in a row.
+     * It processes the original backend configuration defined by the end-users
+     * to generate the full configuration used by the application. Depending on
+     * the environment, the configuration is processed every time or once and
+     * the result cached for later reuse.
      *
      * @return array
      */
     private function processConfig()
     {
-        $backendConfig = $this->container->getParameter('easyadmin.config');
+        if (true === $this->container->getParameter('kernel.debug')) {
+            return $this->doProcessConfig();
+        }
 
+        $cache = $this->container->get('easyadmin.cache.manager');
+        if ($cache->contains('processed_config')) {
+            return $cache->fetch('processed_config');
+        }
+
+        $backendConfig = $this->doProcessConfig($this->container->getParameter('easyadmin.config'));
+        $cache->save('processed_config', $backendConfig);
+
+        return $backendConfig;
+    }
+
+    /**
+     * It processes the given backend configuration to generate the fully
+     * processed configuration used in the application.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function doProcessConfig(array $backendConfig)
+    {
         $configPasses = array(
             new NormalizerConfigPass(),
             new DesignConfigPass($this->container->get('twig'), $this->container->getParameter('kernel.debug')),

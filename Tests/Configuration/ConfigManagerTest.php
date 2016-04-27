@@ -122,7 +122,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
         $app = new \DynamicConfigLoadingKernel($configuration['easy_admin']);
         $app->boot();
 
-        $backendConfig = $app->getContainer()->get('easyadmin.config.manager')->loadConfig();
+        $backendConfig = $app->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         return $backendConfig;
     }

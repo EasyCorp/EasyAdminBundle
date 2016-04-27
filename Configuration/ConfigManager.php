@@ -156,16 +156,18 @@ class ConfigManager
      */
     private function processConfig()
     {
+        $originalBackendConfig = $this->container->getParameter('easyadmin.config');
+
         if (true === $this->container->getParameter('kernel.debug')) {
-            return $this->doProcessConfig();
+            return $this->doProcessConfig($originalBackendConfig);
         }
 
         $cache = $this->container->get('easyadmin.cache.manager');
-        if ($cache->contains('processed_config')) {
-            return $cache->fetch('processed_config');
+        if ($cache->hasItem('processed_config')) {
+            return $cache->getItem('processed_config');
         }
 
-        $backendConfig = $this->doProcessConfig($this->container->getParameter('easyadmin.config'));
+        $backendConfig = $this->doProcessConfig($originalBackendConfig);
         $cache->save('processed_config', $backendConfig);
 
         return $backendConfig;
@@ -175,11 +177,11 @@ class ConfigManager
      * It processes the given backend configuration to generate the fully
      * processed configuration used in the application.
      *
-     * @param array $backendConfig
+     * @param string $backendConfig
      *
      * @return array
      */
-    private function doProcessConfig(array $backendConfig)
+    private function doProcessConfig($backendConfig)
     {
         $configPasses = array(
             new NormalizerConfigPass(),

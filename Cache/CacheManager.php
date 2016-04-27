@@ -22,4 +22,19 @@ class CacheManager extends FilesystemCache
     {
         parent::__construct($cacheDir);
     }
+
+    public function getItem($key)
+    {
+        return parent::fetch($key);
+    }
+
+    public function hasItem($key)
+    {
+        return parent::contains($key);
+    }
+
+    public function save($key, $item)
+    {
+        parent::save($key, $item);
+    }
 }

@@ -1,0 +1,175 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-04-23T09:29:58Z
+
+@javiereguiluz : The `Processor::processConfig` method seems to be called only in the cache warmer. Which means that we need to remove the cache and warm the application each time we change the easyadmin config, even in debug environments ? 😕
+I think, with this solution, we should not cache anything in debug mode. (Or we could rely on the symfony's `ConfigCache` class to detect changes in the configuration in debug mode, but that means externalize all the easyadmin config in a dedicated file named after a convention, or explicitly loaded by a bundle option...)
+
+Also, why not using a filesystem `doctrine/cache` instead of a manual implementation ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T09:38:36Z
+
+@ogizanagi when I change anything in the `dev` env, the backend is updated without clearing/warming the cache. I need to test it better, but it seems to be working.
+
+About Doctrine ... let me first finish this and then we'll see if the other option is better.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T09:43:31Z
+
+@ogizanagi in the unit tests it's true that the cache must be cleared for each tests (see this ugly code here: https://github.com/javiereguiluz/EasyAdminBundle/pull/1107/commits/44b59d409837a54f921664a29478105be04480d4#diff-e642e792947da78a4698b302a0bba9d3R39)  Otherwise the first loaded config is cached and reused for every test.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-04-23T09:54:54Z
+
+@javiereguiluz I guess the cache is warmed up in dev environment because you modify the app config files, and thus the symfony's ConfigCache is invalidated. So the cache need to be warmed up again, but that's quite ~~unstable~~ hazardous IMHO 😕
+In tests, you do not change any configuration file, but you simply create a `\ConfigProcessorKernel` with another backend config in memory. Thus the ConfigCache is not invalidated, because there is no change in the files loaded by the `registerContainerConfiguration` method.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T10:55:27Z
+
+@ogizanagi I'm a bit lost. I need ideas to solve this in a better way. Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-04-23T11:51:38Z
+
+@javiereguiluz : For now with this implementation, I suggest:
+
+1. To make the `Processor` class aware of its cache (by creating an intermediate cache service and injecting it) and use it/injecting it only if not in debug mode.
+I mentioned `doctrine/cache` because it'll be easy to configure this intermediate service and use a clear interface for caching in `Processor`.
+2. The `Configurator` class should not load the cache itself, but simply call `Processor::processConfig`, that will generate the cache at first call in non-debug mode, and return the processed config from cache if already computed.
+3. The only thing the warmer will do is calling `Processor::processConfig`, that will pre generate the cache before the first request hitting the application.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T14:32:31Z
+
+@ogizanagi your proposal is infinitely better than my original proposal 🙇 🙇
+
+I've implemented it in 636b663  It's WIP but it should be almost definitive. I'll fix tests now. Two comments:
+
+ * `easyadmin.configurator` service (and class) disappear in favor of `easyadmin.config.manager` (and there's a new `easyadmin.cache.manager` too)
+ * I've injected `service_container` into `easyadmin.config.manager` because otherwise I was getting circular service exceptions. By the way, we were injecting 4 services and 3 parameters individually ... so injecting the whole container is not worse at all ... but I'm open to suggestions of course!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-04-23T16:14:18Z
+
+@javiereguiluz : It actually looks better :)
+However, I'm indeed not fan of the `service_container` being injected in the `easyadmin.config.manager`, but I don't know from where comes the circular reference, so I can't help right now.
+
+I think the most elegant solution for enabling the cache is having it as an optional dependency of the `easyadmin.config.manager`, and only inject it from the bundle extension if the `kernel.debug` parameter is true. But as you already inject the whole container... ¯\\\_(ツ)\_/¯
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T16:18:43Z
+
+@ogizanagi this is one of the messages I saved about the circular service error:
+
+```
+[2016-04-23 16:14:25] request.CRITICAL: Uncaught PHP Exception
+Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException:
+"Circular reference detected for service "easyadmin.config.manager",
+path: "easyadmin.config.manager -> twig"." at easy-admin-demo/var/bootstrap.php.cache
+line 2081 {"exception":"[object] (Symfony\\Component\\DependencyInjection\\Exception\\ServiceCircularReferenceException(code: 0):
+Circular reference detected for service \"easyadmin.config.manager\", path:
+\"easyadmin.config.manager -> twig\". at easy-admin-demo/var/bootstrap.php.cache:2081)"} []
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T16:23:17Z
+
+@ogizanagi I have a big problem which I cannot solve. I'm going crazy. In [this test](https://github.com/javiereguiluz/EasyAdminBundle/blob/fix_1060/Tests/Configuration/ConfigManagerTest.php#L18) there is a problem with [these lines](https://github.com/javiereguiluz/EasyAdminBundle/blob/fix_1060/Tests/Configuration/ConfigManagerTest.php#L29-32). I'm using a data provider to load +150 different configurations. Well, only the first configuration is loaded correctly. After that, the rest of configs are ignored, and the kernel always returns the same config. It seems like the `$app` variable is created once for the test suite and reused it after all. Is a PHPUnit issue? Is a Symfony issue? Is something I did wrong? I'm so stuck at this!!!! 😡 😡
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T16:25:36Z
+
+@ogizanagi about my previous comment, if I add this line:
+
+```php
+$configuration = Yaml::parse(file_get_contents($backendConfigFilePath));
+$app = new \DynamicConfigLoadingKernel($configuration['easy_admin']);
+$app->boot();
+$backendConfig = $app->getContainer()->get('easyadmin.config.manager')->loadConfig();
+echo md5(serialize($backendConfig)); // <-- I've added this line
+```
+
+The result is always the same, so the kernel always return the same config ... but we are using a data provider and the original config is different each time!!!!!!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-04-23T16:39:53Z
+
+@javiereguiluz: Hmmm. I doubt it is a PHPUnit issue. It simply looks like there is an issue with the cache being used even in debug mode, but as far as I can tell, your code looks good 😕
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T16:46:25Z
+
+This is crazy! I've added this in the kernel which loads the config:
+
+```php
+    public function registerContainerConfiguration(LoaderInterface $loader)
+    {
+        parent::registerContainerConfiguration($loader);
+
+        $backendConfig = $this->backendConfig; // needed for PHP 5.3
+        $loader->load(function (ContainerBuilder $container) use ($backendConfig) {
+var_dump("LOADING THIS CONFIG -->", md5(serialize($backendConfig)));
+            $container->loadFromExtension('easy_admin', $backendConfig);
+        });
+    }
+```
+
+And this is the output of PHPUnit:
+
+![phpunit_output](https://cloud.githubusercontent.com/assets/73419/14762770/8d36f32e-0983-11e6-8eb3-acc237a4cee6.png)
+
+Even if we are executing a data provider with 168 different configs ... Symfony/PHPUnit/our tests only instance the kernel once!
+
+😱 😱 😱
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T16:48:56Z
+
+**Update** if I add this at the end of the test:
+
+```php
+exec('rm -fr '.$app->getContainer()->getParameter('kernel.cache_dir'));
+```
+
+It loads each config correctly:
+
+![phpunit_output_2](https://cloud.githubusercontent.com/assets/73419/14762775/04152826-0984-11e6-9c66-d4377a7880bd.png)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-04-23T17:02:43Z
+
+@javiereguiluz : This is due to the fact the [`Kernel` class does not call `registerContainerConfiguration` if the ConfigCache already exists and is valid.](https://github.com/symfony/http-kernel/blob/master/Kernel.php#L470-L491).  You can eventually overwrite the [`getContainerClass`](https://github.com/symfony/http-kernel/blob/master/Kernel.php#L447-L450) method of the `Kernel` class to return a different string for each config (and thus generate a new cache for each), or keep removing it as you did.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-23T17:06:14Z
+
+@ogizanagi thank you very much for the info! Right now I'm solving it just by deleting the class of the container, because it's faster than removing the entire cache dir:
+
+```php
+unlink($app->getContainer()->getParameter('kernel.cache_dir').'/AppTestDebugProjectContainer.php');
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-04-28T19:41:00Z
+
+After tens and tens of hours of exasperating work on this PR, tests finally were fixed 😌  I'm merging it because it's impossible to review due to all the test fixtures changes. In any case, the main changes are simple: the compiler pass is gone, the config is processed in the new ConfigManager class and performance is good in production thanks to a cache warmer + filesystem cache.
+
+@ogizanagi thanks for your great help. I couldn't make it without you 🙇

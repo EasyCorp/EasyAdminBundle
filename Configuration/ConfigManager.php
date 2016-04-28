@@ -14,7 +14,9 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * ...
+ * Manages the loading and processing of backend configuration and it provides
+ * useful methods to get the configuration for the entire backend, for a single
+ * entity, for a single action, etc.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */

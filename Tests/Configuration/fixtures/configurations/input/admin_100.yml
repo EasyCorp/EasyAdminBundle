@@ -1,0 +1,9 @@
+# TEST
+# the 'light' color scheme can be selected
+
+# CONFIGURATION
+easy_admin:
+    design:
+        color_scheme: 'light'
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category

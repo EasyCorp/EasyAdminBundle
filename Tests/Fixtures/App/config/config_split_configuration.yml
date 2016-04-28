@@ -8,4 +8,4 @@ easy_admin:
     design:
         brand_color: 'blue'
     entities:
-        Product: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+        Product: AppTestBundle\Entity\FunctionalTests\Product

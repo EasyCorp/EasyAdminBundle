@@ -1,0 +1,9 @@
+# TEST
+# configuration format #3 expanded to define a custom entity label explicitly
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            label: CustomCategoryLabel

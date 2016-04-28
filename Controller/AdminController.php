@@ -82,7 +82,7 @@ class AdminController extends Controller
     {
         $this->dispatch(EasyAdminEvents::PRE_INITIALIZE);
 
-        $this->config = $this->container->getParameter('easyadmin.config');
+        $this->config = $this->get('easyadmin.config.manager')->getBackendConfig();
 
         if (0 === count($this->config['entities'])) {
             throw new NoEntitiesConfiguredException();
@@ -98,7 +98,7 @@ class AdminController extends Controller
             throw new UndefinedEntityException(array('entity_name' => $entityName));
         }
 
-        $this->entity = $this->get('easyadmin.configurator')->getEntityConfiguration($entityName);
+        $this->entity = $this->get('easyadmin.config.manager')->getEntityConfiguration($entityName);
 
         if (!$request->query->has('sortField')) {
             $request->query->set('sortField', $this->entity['primary_key_field_name']);

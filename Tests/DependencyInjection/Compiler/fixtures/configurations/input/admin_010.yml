@@ -1,8 +1,0 @@
-# TEST
-# configuration format #3: entity name doesn't match its class name
-
-# CONFIGURATION
-easy_admin:
-    entities:
-        CustomEntityName:
-            class: AppBundle\Entity\TestEntity

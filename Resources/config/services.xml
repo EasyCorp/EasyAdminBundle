@@ -4,36 +4,17 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
-            <argument type="service" id="easyadmin.configurator" />
-            <argument type="service" id="property_accessor" />
-            <argument>%kernel.debug%</argument>
-            <tag name="twig.extension" />
+        <service id="easyadmin.cache.manager" class="JavierEguiluz\Bundle\EasyAdminBundle\Cache\CacheManager">
+            <argument>%easyadmin.cache.dir%</argument>
         </service>
 
-        <service id="easyadmin.configurator" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator">
-            <argument /> <!-- easyadmin.config parameter -->
-            <argument type="service" id="property_accessor" />
+        <service id="easyadmin.cache.config_warmer" class="JavierEguiluz\Bundle\EasyAdminBundle\Cache\ConfigWarmer" public="false">
+            <argument type="service" id="easyadmin.config.manager" />
+            <tag name="kernel.cache_warmer" priority="-2048" />
         </service>
 
-        <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
-            <argument type="service" id="templating" />
-            <argument>%easyadmin.config%</argument>
-            <argument type="string">easyadmin.listener.exception:showExceptionPageAction</argument>
-            <argument type="service" id="logger" on-invalid="null" />
-            <tag name="monolog.logger" channel="request" />
-            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="-64" />
-        </service>
-
-        <service id="easyadmin.data_collector" class="JavierEguiluz\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector" public="false">
-            <argument type="service" id="easyadmin.configurator" />
-            <tag name="data_collector" template="@EasyAdmin/data_collector/easyadmin.html.twig" id="easyadmin" />
-        </service>
-
-        <service id="easyadmin.listener.request_post_initialize" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener">
-            <argument type="service" id="doctrine" />
-            <argument type="service" id="request_stack" on-invalid="null" />
-            <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />
+        <service id="easyadmin.config.manager" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager">
+            <argument type="service" id="service_container" />
         </service>
 
         <service id="easyadmin.query_builder" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder">
@@ -45,12 +26,39 @@
         </service>
 
         <service id="easyadmin.autocomplete" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Autocomplete">
-            <argument type="service" id="easyadmin.configurator" />
+            <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="easyadmin.finder" />
             <argument type="service" id="property_accessor" />
         </service>
 
         <service id="easyadmin.paginator" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator">
+        </service>
+
+        <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="service" id="property_accessor" />
+            <argument>%kernel.debug%</argument>
+            <tag name="twig.extension" />
+        </service>
+
+        <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
+            <argument type="service" id="templating" />
+            <argument>%easyadmin.config%</argument>
+            <argument type="string">easyadmin.listener.exception:showExceptionPageAction</argument>
+            <argument type="service" id="logger" on-invalid="null" />
+            <tag name="monolog.logger" channel="request" />
+            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="-64" />
+        </service>
+
+        <service id="easyadmin.listener.request_post_initialize" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="request_stack" on-invalid="null" />
+            <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />
+        </service>
+
+        <service id="easyadmin.data_collector" class="JavierEguiluz\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector" public="false">
+            <argument type="service" id="easyadmin.config.manager" />
+            <tag name="data_collector" template="@EasyAdmin/data_collector/easyadmin.html.twig" id="easyadmin" />
         </service>
     </services>
 </container>

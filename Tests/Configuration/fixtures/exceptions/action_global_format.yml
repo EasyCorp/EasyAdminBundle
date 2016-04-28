@@ -1,0 +1,14 @@
+# TEST
+# the "actions" option must be an array, not a string
+
+# EXCEPTION
+expected_exception:
+    class: Symfony\Component\Config\Definition\Exception\InvalidTypeException
+    message_regexp: '/Invalid type for path "easy_admin.list.actions". Expected array, but got string/'
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions: 'show'
+    entities:
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

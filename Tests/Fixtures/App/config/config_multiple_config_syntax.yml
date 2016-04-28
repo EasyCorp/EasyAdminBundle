@@ -8,6 +8,6 @@ imports:
 
 easy_admin:
     entities:
-        Product: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+        Product: AppTestBundle\Entity\FunctionalTests\Product
         Inventory:
-            class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Entity\Product
+            class: AppTestBundle\Entity\FunctionalTests\Product

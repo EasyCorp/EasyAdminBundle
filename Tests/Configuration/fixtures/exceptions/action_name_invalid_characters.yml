@@ -1,0 +1,16 @@
+# TEST
+# the name of the actions cannot contain invalid characters (anything
+# different than letters, numbers and underscores)
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The name of the "invalid-Action~Name!!" action defined in the "list" view of the "TestEntity" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).'
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions:
+            - { name: 'invalid-Action~Name!!' }
+    entities:
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

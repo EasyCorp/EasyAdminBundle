@@ -1,0 +1,10 @@
+# TEST
+# 'form' option is correctly processed
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            form:
+                fields: ['field1', 'field2']

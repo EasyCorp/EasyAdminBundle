@@ -12,7 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Configurator;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,19 +28,19 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class EasyAdminFormType extends AbstractType
 {
-    /** @var Configurator */
-    private $configurator;
+    /** @var ConfigManager */
+    private $configManager;
 
     /** @var TypeConfiguratorInterface[] */
     private $configurators;
 
     /**
-     * @param Configurator                $configurator
+     * @param ConfigManager               $configManager
      * @param TypeConfiguratorInterface[] $configurators
      */
-    public function __construct(Configurator $configurator, array $configurators = array())
+    public function __construct(ConfigManager $configManager, array $configurators = array())
     {
-        $this->configurator = $configurator;
+        $this->configManager = $configManager;
         $this->configurators = $configurators;
     }
 
@@ -51,7 +51,7 @@ class EasyAdminFormType extends AbstractType
     {
         $entity = $options['entity'];
         $view = $options['view'];
-        $entityConfig = $this->configurator->getEntityConfig($entity);
+        $entityConfig = $this->configManager->getEntityConfig($entity);
         $entityProperties = $entityConfig[$view]['fields'];
 
         foreach ($entityProperties as $name => $metadata) {
@@ -74,14 +74,14 @@ class EasyAdminFormType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $configurator = $this->configurator;
+        $configManager = $this->configManager;
 
         $resolver
             ->setDefaults(array(
                 'allow_extra_fields' => true,
-                'data_class' => function (Options $options) use ($configurator) {
+                'data_class' => function (Options $options) use ($configManager) {
                     $entity = $options['entity'];
-                    $entityConfig = $configurator->getEntityConfig($entity);
+                    $entityConfig = $configManager->getEntityConfig($entity);
 
                     return $entityConfig['class'];
                 },

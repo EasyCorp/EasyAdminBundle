@@ -1,7 +1,0 @@
-# TEST
-# simplest configuration possible with just one entity
-
-# CONFIGURATION
-easy_admin:
-    entities:
-        - JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration\TestEntity

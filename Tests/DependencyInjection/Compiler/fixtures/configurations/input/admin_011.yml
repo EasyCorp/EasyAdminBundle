@@ -1,9 +1,0 @@
-# NOTE: this test is empty because it was related to a feature that is no longer
-# used in EasyAdmin
-
-# TEST
-# configuration format #3 with custom entity name that doesn't match its class name
-# and which contains special YAML characters
-
-# CONFIGURATION
-easy_admin: ~

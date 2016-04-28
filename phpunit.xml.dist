@@ -28,7 +28,9 @@
 
     <php>
         <server name="KERNEL_DIR" value="./Tests/Fixtures/App" />
-        <ini name="error_reporting" value="-1" />
+        <ini name="error_reporting" value="E_ALL" />
+        <ini name="display_errors" value="1" />
+        <ini name="display_startup_errors" value="1" />
         <ini name="memory_limit" value="-1" />
         <ini name="zend.enable_gc" value="1" />
     </php>

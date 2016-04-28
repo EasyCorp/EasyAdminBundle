@@ -1,9 +1,0 @@
-# TEST
-# combining configuration formats #2 and #3 without using the explicit 'label' option
-
-# CONFIGURATION
-easy_admin:
-    entities:
-        TestEntity: AppBundle\Entity\TestEntity
-        AnotherTestEntity:
-            class: AppBundle\AnotherNamespace\Entity\TestEntity

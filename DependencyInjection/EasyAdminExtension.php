@@ -36,6 +36,7 @@ class EasyAdminExtension extends Extension
         $configs = $this->processConfigFiles($configs);
         $backendConfig = $this->processConfiguration(new Configuration(), $configs);
         $container->setParameter('easyadmin.config', $backendConfig);
+        $container->setParameter('easyadmin.cache.dir', $container->getParameter('kernel.cache_dir').'/easy_admin');
 
         // load bundle's services
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
@@ -49,7 +50,7 @@ class EasyAdminExtension extends Extension
 
         // compile commonly used classes
         $this->addClassesToCompile(array(
-            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Configuration\\Configurator',
+            'JavierEguiluz\\Bundle\\EasyAdminBundle\\Configuration\\ConfigManager',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\Event\\EasyAdminEvents',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\ExceptionListener',
             'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\RequestPostInitializeListener',

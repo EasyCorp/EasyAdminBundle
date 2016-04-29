@@ -31,7 +31,7 @@
                 <script type="text/javascript">
                     var AdminLTEOptions = {
                         animationSpeed: 'fast',
-                        sidebarExpandOnHover: true,
+                        sidebarExpandOnHover: false,
                         enableBoxRefresh: false,
                         enableBSToppltip: false,
                         enableFastclick: false,
@@ -49,7 +49,7 @@
     </head>
 
     {% block body %}
-    <body id="{% block body_id %}{% endblock %}" class="easyadmin sidebar-mini fixed {% block body_class %}{% endblock %} {{ app.request.cookies.has('_easyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
+    <body id="{% block body_id %}{% endblock %}" class="easyadmin sidebar-mini {% block body_class %}{% endblock %} {{ app.request.cookies.has('_easyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
         <div class="wrapper">
         {% block wrapper %}
             <header class="main-header">
@@ -62,7 +62,7 @@
                     {% endblock header_logo %}
                 </div>
 
-                <nav class="navbar navbar-fixed-top" role="navigation">
+                <nav class="navbar nnavbar-fixed-top" role="navigation">
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                         <span class="sr-only">{{ 'toggle_navigation'|trans(domain = 'EasyAdminBundle') }}</span>
                     </a>

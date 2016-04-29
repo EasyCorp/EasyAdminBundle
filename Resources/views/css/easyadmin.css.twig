@@ -713,11 +713,35 @@ form:not(.form-horizontal) .field-checkbox label {
     top: 30px;
     right: 0;
 }
-{# when the sidebar is collapsed, make the icons wider to just display them and not the labels #}
-.sidebar-collapse .sidebar-menu > li > a > .fa {
-    width: 28px;
-}
 
+{# when the sidebar is collapsed #}
+.sidebar-collapse .sidebar-menu > li > a {
+    padding: 12px 5px 12px 12px;
+}
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span {
+    padding-left: 5px;
+}
+.sidebar-collapse .sidebar-menu > li > a > i.fa {
+    font-size: 18px;
+}
+.sidebar-collapse .sidebar-menu > li.active.submenu-active > a {
+    {% if 'dark' == color_scheme %}
+        color: {{ colors.white }};
+        background: rgb(15, 15, 15);
+        border-left-color: rgb(115, 115, 115);
+    {% elseif 'light' == color_scheme %}
+        background: rgb(200, 200, 200);
+        border-left-color: rgb(128, 128, 128);
+    {% endif %}
+}
+.sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li.active > a,
+.sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li > a:hover {
+    background: rgba(15, 15, 15, 0.7);
+}
+.sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
+    padding: 0;
+}
+.treeview.active.submenu-active { display: block !important; }
 {# -------------------------------------------------------------------------
    COMMON ADMIN PAGES
    ------------------------------------------------------------------------- #}

@@ -43,7 +43,8 @@ class DesignConfigPass implements ConfigPassInterface
             'kernel_debug' => $this->kernelDebug,
         ));
 
-        $backendConfig['_internal']['custom_css'] = $customCssContent;
+        $minifiedCss = preg_replace(array('/\n/', '/\s{2,}/'), ' ', $customCssContent);
+        $backendConfig['_internal']['custom_css'] = $minifiedCss;
 
         return $backendConfig;
     }

@@ -82,12 +82,12 @@ class QueryBuilder
             $isTextField = in_array($metadata['dataType'], array('string', 'text', 'guid'));
 
             if ($isNumericField && is_numeric($searchQuery)) {
-                $queryBuilder->orWhere(sprintf('LOWER(entity.%s) = :exact_query', $name));
+                $queryBuilder->orWhere(sprintf('entity.%s = :exact_query', $name));
                 // adding '0' turns the string into a numeric value
                 $queryParameters['exact_query'] = 0 + $searchQuery;
             } elseif ($isTextField) {
                 $searchQuery = strtolower($searchQuery);
-                
+
                 $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));
                 $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
 

@@ -547,7 +547,7 @@ form:not(.form-horizontal) .field-checkbox label {
     color: {{ colors.white }};
     font-family: Helvetica, "Helvetica Neue", Arial, sans-serif; {# needed to override AdminLTE styles #}
     font-weight: bold;
-    height: 40px;
+    height: 50px;
 }
 .main-header .logo-lg {
     overflow: hidden;
@@ -561,9 +561,9 @@ form:not(.form-horizontal) .field-checkbox label {
 .main-header .logo-long .logo-lg {
     font-size: 16px;
 }
-.main-header > img {
+.main-header img {
     margin-top: -2px;
-    max-height: 26px;
+    max-height: 36px;
     max-width: 94%;
 }
 .main-header li {
@@ -631,21 +631,21 @@ form:not(.form-horizontal) .field-checkbox label {
 {% endif %}
 }
 .main-sidebar {
-    padding-top: 40px;
+    padding-top: 90px;
 }
 
 .sidebar-menu li.header {
 {% if 'dark' == color_scheme %}
-    color: {{ colors.white }};
+    color: #777;
 {% elseif 'light' == color_scheme %}
     color: {{ colors.black }};
 {% endif %}
     font-size: 12px;
     font-weight: bold;
-    opacity: 0.4;
     text-transform: uppercase;
 }
 .treeview-menu > li.header {
+    background: #404040;
     padding-left: 28px;
 }
 
@@ -653,7 +653,7 @@ form:not(.form-horizontal) .field-checkbox label {
 .sidebar-menu .treeview-menu > li > a {
 {% if 'dark' == color_scheme %}
     background: #333;
-    color: rgba(255, 255, 255, 0.7);
+    color: #CCC;
 {% elseif 'light' == color_scheme %}
     color: {{ colors.gray_darker }};
 {% endif %}
@@ -663,18 +663,20 @@ form:not(.form-horizontal) .field-checkbox label {
     opacity: 1;
 }
 .sidebar-menu .treeview-menu > li > a {
+    background: #404040;
     font-size: 13px;
     padding: 8px 5px 8px 25px;
 }
 .sidebar-menu > li:hover > a,
 .sidebar-menu .treeview-menu > li:hover > a,
 .sidebar-menu > li.active > a,
-.sidebar-menu .treeview-menu > li.active > a {
+.sidebar-menu .treeview-menu > li.active > a,
+.sidebar-collapse .sidebar-menu > li.active.submenu-active > a,
+.sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li.active > a {
 {% if 'dark' == color_scheme %}
     color: {{ colors.white }};
-    background: #555;
-    border-left-color: transparent;
-    box-shadow: -1px 0 1px #222;
+    background: #4D4D4D;
+    border-left-color: #BBB;
 {% elseif 'light' == color_scheme %}
     background: rgb(220, 220, 220);
     border-left-color: rgb(128, 128, 128);
@@ -683,20 +685,10 @@ form:not(.form-horizontal) .field-checkbox label {
 .sidebar-menu > li > a > .fa {
     width: 22px;
 }
-
 .sidebar-menu .treeview-menu {
     padding: 0;
 }
 
-{# applied to the menu item which is active and has its submenu revealed #}
-.sidebar-menu > li.active.submenu-active > a {
-{% if 'dark' == color_scheme %}
-    background: #333;
-{% elseif 'light' == color_scheme %}
-    background: rgb(220, 220, 220);
-{% endif %}
-    border-left-color: transparent;
-}
 {# icon displayed for collapsed submenus #}
 .sidebar-menu li > a > .pull-right {
     font-weight: bold;
@@ -712,50 +704,22 @@ form:not(.form-horizontal) .field-checkbox label {
 .sidebar-collapse .sidebar-menu > li > a {
     padding: 12px 5px 12px 12px;
 }
-.sidebar-collapse .sidebar-menu > li.active > a {
-    border-left-color: #999;
-}
 .sidebar-collapse .sidebar-menu > li .treeview-menu > li > a {
     padding-left: 12px;
-}
-.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span {
-    padding-left: 5px;
 }
 .sidebar-collapse .sidebar-menu > li > a > i.fa {
     font-size: 18px;
 }
-.sidebar-collapse .sidebar-menu > li.active.submenu-active > a,
-.sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li.active > a {
-    {% if 'dark' == color_scheme %}
-        color: {{ colors.white }};
-        background: #555;
-        border-left-color: rgb(180, 180, 180);
-    {% elseif 'light' == color_scheme %}
-        background: rgb(220, 220, 220);
-        border-left-color: rgb(128, 128, 128);
-    {% endif %}
-}
-.sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li.active > a {
-    background-color: #555;
-}
 .sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
     padding: 0;
 }
-.sidebar-collapse .sidebar-menu > li.active.submenu-active:hover a {
-    {% if 'dark' == color_scheme %}
-        background: #333;
-        border-left-color: transparent;
-    {% elseif 'light' == color_scheme %}
-        background: rgb(220, 220, 220);
-        border-left-color: rgb(128, 128, 128);
-    {% endif %}
-}
 .sidebar-collapse .sidebar-menu > li:hover > a,
-.sidebar-collapse .sidebar-menu .treeview-menu > li:hover > a {
+.sidebar-collapse .sidebar-menu .treeview-menu > li:hover > a,
+.sidebar-menu > li.active.submenu-active > a,
+.sidebar-collapse .sidebar-menu > li.active.submenu-active:hover > a {
 {% if 'dark' == color_scheme %}
     background: #333;
     border-left-color: transparent;
-    box-shadow: none;
 {% elseif 'light' == color_scheme %}
     background: rgb(220, 220, 220);
     border-left-color: rgb(128, 128, 128);
@@ -763,9 +727,9 @@ form:not(.form-horizontal) .field-checkbox label {
 }
 
 {# when collapsed, menu dividers are displayed as a straight line #}
-.sidebar-mini.sidebar-collapse .sidebar-menu > li.header {
+.sidebar-mini.sidebar-collapse .sidebar-menu li.header {
 {% if 'dark' == color_scheme %}
-    border-bottom: 1px solid rgb(180, 180, 180);
+    border-bottom: 1px solid #777;
 {% elseif 'light' == color_scheme %}
     border-bottom: 1px solid rgb(128, 128, 128);
 {% endif %}
@@ -1048,10 +1012,6 @@ body.error .error-message {
     }
     .main-header .logo {
         text-align: left;
-        height: 50px;
-    }
-    .main-header .logo img {
-        max-height: 48px;
     }
 
     .main-header .navbar .sidebar-toggle {
@@ -1066,6 +1026,10 @@ body.error .error-message {
 
     .main-sidebar {
         padding-top: 50px;
+    }
+
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span {
+        padding-left: 5px;
     }
 
     {# these table styles are needed to override the "responsive tables" styles #}

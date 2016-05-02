@@ -638,14 +638,18 @@ form:not(.form-horizontal) .field-checkbox label {
 {% if 'dark' == color_scheme %}
     color: #777;
 {% elseif 'light' == color_scheme %}
-    color: {{ colors.black }};
+    color: {{ colors.gray_dark }};
 {% endif %}
     font-size: 12px;
     font-weight: bold;
     text-transform: uppercase;
 }
 .treeview-menu > li.header {
+{% if 'dark' == color_scheme %}
     background: #404040;
+{% elseif 'light' == color_scheme %}
+    background-color: {{ colors.gray_lighter }};
+{% endif %}
     padding-left: 28px;
 }
 
@@ -663,7 +667,11 @@ form:not(.form-horizontal) .field-checkbox label {
     opacity: 1;
 }
 .sidebar-menu .treeview-menu > li > a {
+{% if 'dark' == color_scheme %}
     background: #404040;
+{% elseif 'light' == color_scheme %}
+    background-color: {{ colors.gray_lighter }};
+{% endif %}
     font-size: 13px;
     padding: 8px 5px 8px 25px;
 }
@@ -678,8 +686,8 @@ form:not(.form-horizontal) .field-checkbox label {
     background: #4D4D4D;
     border-left-color: #BBB;
 {% elseif 'light' == color_scheme %}
-    background: rgb(220, 220, 220);
-    border-left-color: rgb(128, 128, 128);
+    background: #DCDCDC;
+    border-left-color: #808080;
 {% endif %}
 }
 .sidebar-menu > li > a > .fa {
@@ -721,8 +729,8 @@ form:not(.form-horizontal) .field-checkbox label {
     background: #333;
     border-left-color: transparent;
 {% elseif 'light' == color_scheme %}
-    background: rgb(220, 220, 220);
-    border-left-color: rgb(128, 128, 128);
+    background: #DCDCDC;
+    border-left-color: #808080;
 {% endif %}
 }
 
@@ -731,7 +739,7 @@ form:not(.form-horizontal) .field-checkbox label {
 {% if 'dark' == color_scheme %}
     border-bottom: 1px solid #777;
 {% elseif 'light' == color_scheme %}
-    border-bottom: 1px solid rgb(128, 128, 128);
+    border-bottom: 1px solid #BBB;
 {% endif %}
     display: block !important;
     font-size: 0;

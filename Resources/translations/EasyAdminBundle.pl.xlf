@@ -105,7 +105,7 @@
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>Tej operacji nie można anulować.</target>
+                <target>Tej operacji nie można cofnąć.</target>
             </trans-unit>
             <trans-unit id="delete_modal.action">
                 <source>delete_modal.action</source>

@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by rubengc at 2016-05-02T11:32:29Z
+
+Haha I use this sidebar style too
+
+About the `overflow: hidden` and `position: fixed` problem I overrides dropdowns functionality making them absolute and following their item position on scroll
+
+I'm not sure what is the best solution, but this works for me
+
+---------------------------------------------------------------------------
+
+by ktrzos at 2016-05-02T11:55:24Z
+
+That would be great! BTW. How you make such GIFs?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-03T11:23:05Z
+
+@ktrzos I make the GIFs with a free tool called LICEcap: http://www.cockos.com/licecap/
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-03T17:55:21Z
+
+I've made some further tweaks to the sidebar. The changes are subtle but I think that the overall design is better now. As a bonus, the menu dividers are now displayed as straight separator lines when collapsing the sidebar:
+
+| Sidebar normal | Sidebar collapsed
+| --- | ---
+| ![sidebar_normal](https://cloud.githubusercontent.com/assets/73419/14992950/dc5ba1d8-1168-11e6-8a73-7e54ba33cca9.png) | ![sidebar_compact](https://cloud.githubusercontent.com/assets/73419/14992939/cec4045c-1168-11e6-8f77-619c2838e43e.png)

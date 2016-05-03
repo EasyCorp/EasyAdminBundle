@@ -20,7 +20,7 @@
 
         <a href="{{ path }}" {% if item.target|default(false) %}target="{{ item.target }}"{% endif %}>
             {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}
-            {{ item.label|trans }}
+            <span>{{ item.label|trans }}</span>
             {% if item.children|default([]) is not empty %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
         </a>
     {% endif %}

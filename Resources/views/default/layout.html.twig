@@ -53,19 +53,19 @@
         <div class="wrapper">
         {% block wrapper %}
             <header class="main-header">
-                <div id="header-logo">
-                    {% block header_logo %}
-                        <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
-                            <span class="logo-mini">{{ easyadmin_config('site_name')|striptags|first|upper }}</span>
-                            <span class="logo-lg">{{ easyadmin_config('site_name')|raw }}</span>
-                        </a>
-                    {% endblock header_logo %}
-                </div>
-
                 <nav class="navbar" role="navigation">
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                         <span class="sr-only">{{ 'toggle_navigation'|trans(domain = 'EasyAdminBundle') }}</span>
                     </a>
+
+                    <div id="header-logo">
+                        {% block header_logo %}
+                            <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
+                                {{ easyadmin_config('site_name')|raw }}
+                            </a>
+                        {% endblock header_logo %}
+                    </div>
+
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
                             <li class="user user-menu">

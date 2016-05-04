@@ -541,67 +541,69 @@ form:not(.form-horizontal) .field-checkbox label {
    ------------------------------------------------------------------------- #}
 .main-header {
     background: {{ brand_color }};
+    position: relative;
 }
 .main-header .logo {
-    background: rgba(0, 0, 0, 0.15);
     color: {{ colors.white }};
     font-family: Helvetica, "Helvetica Neue", Arial, sans-serif; {# needed to override AdminLTE styles #}
+    font-size: 18px;
     font-weight: bold;
-    height: 50px;
+    height: 45px;
+    line-height: 45px;
+    padding: 0;
+}
+.main-header .logo-long .logo-lg {
+    font-size: 16px;
 }
 .main-header .logo-lg {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.main-header .logo-mini {
-    font-weight: bold;
-    text-align: center;
-}
-.main-header .logo-long .logo-lg {
-    font-size: 16px;
+.main-header #header-logo {
 }
 .main-header img {
     margin-top: -2px;
     max-height: 36px;
-    max-width: 94%;
 }
 .main-header li {
     margin-bottom: 0;
 }
 
 .main-header > .navbar {
-{% if 'dark' == color_scheme %}
     background-color: {{ brand_color }};
-    color: {{ colors.white }};
-{% elseif 'light' == color_scheme %}
-    background-color: {{ colors.gray_light }};
-    color: {{ brand_color }};
-{% endif %}
+    color: rgba(255, 255, 255, 0.9);
+    margin-left: 0;
     min-height: 40px;
 }
 
 .main-header .navbar .sidebar-toggle {
-{% if 'dark' == color_scheme %}
-    color: {{ colors.white }};
-{% elseif 'light' == color_scheme %}
-    color: {{ colors.text_muted }};
-{% endif %}
-    padding: 10px;
-}
-.main-header .navbar .sidebar-toggle:hover {
-    background: rgba(0, 0, 0, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+    display: inline-block;
+    height: 35px;
+    left: 0;
+    line-height: 35px;
+    padding: 0 15px;
+    position: absolute;
+    text-align: center;
+    top: 45px;
 }
 
-.navbar-custom-menu .user-menu {
-{% if 'dark' == color_scheme %}
+.navbar-custom-menu,
+.navbar-custom-menu ul.navbar-nav,
+.navbar-custom-menu ul.navbar-nav .user-menu {
+    float: none;
+}
+.navbar-custom-menu {
+    background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.8);
-{% elseif 'light' == color_scheme %}
-    color: {{ colors.text_muted }};
-{% endif %}
     font-size: 13px;
     font-weight: bold;
-    padding: 10px;
+    height: 35px;
+    line-height: 35px;
+    padding: 0 15px;
+    text-align: right;
+    width: 100%;
 }
 
 {# Main body
@@ -631,7 +633,7 @@ form:not(.form-horizontal) .field-checkbox label {
 {% endif %}
 }
 .main-sidebar {
-    padding-top: 90px;
+    padding-top: 80px;
 }
 
 .sidebar-menu li.header {
@@ -725,12 +727,11 @@ form:not(.form-horizontal) .field-checkbox label {
 .sidebar-collapse .sidebar-menu .treeview-menu > li:hover > a,
 .sidebar-menu > li.active.submenu-active > a,
 .sidebar-collapse .sidebar-menu > li.active.submenu-active:hover > a {
+    border-left-color: transparent;
 {% if 'dark' == color_scheme %}
     background: #333;
-    border-left-color: transparent;
 {% elseif 'light' == color_scheme %}
-    background: #DCDCDC;
-    border-left-color: #808080;
+    background: {{ colors.gray_light }};
 {% endif %}
 }
 
@@ -1018,15 +1019,42 @@ body.error .error-message {
     .main-header > .navbar {
       min-height: 50px;
     }
+    .sidebar-mini.sidebar-collapse .main-header .navbar {
+        margin-left: 0;
+    }
+    .main-header #header-logo {
+        float: left;
+    }
     .main-header .logo {
+        font-size: 21px;
+        line-height: 50px;
         text-align: left;
+    }
+    .sidebar-mini.sidebar-collapse .main-header .logo {
+        padding-left: 15px;
+        width: auto; {# neutralizes AdminLTE styles #}
     }
 
     .main-header .navbar .sidebar-toggle {
-        padding: 15px;
+        height: 50px;
+        line-height: 50px;
+        position: static;
     }
-    .navbar-custom-menu .user-menu {
-        padding: 17px 15px 13px;
+    .sidebar-mini.sidebar-collapse .sidebar-toggle {
+        background: rgba(0, 0, 0, 0.15);
+        width: 50px;
+    }
+
+    .navbar-custom-menu,
+    .navbar-custom-menu ul.navbar-nav,
+    .navbar-custom-menu ul.navbar-nav .user-menu {
+        float: right;
+    }
+    .navbar-custom-menu {
+        background: inherit;
+        height: 50px;
+        line-height: 50px;
+        width: auto;
     }
     .navbar-custom-menu .user-menu i {
         padding-right: 4px;

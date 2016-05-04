@@ -58,7 +58,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertEquals(
             '/bundles/easyadmin/javascript/easyadmin-all.min.js',
-            $crawler->filter('script')->eq(0)->attr('src')
+            $crawler->filter('script')->eq(1)->attr('src')
         );
     }
 
@@ -66,8 +66,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        $this->assertEquals('E', $crawler->filter('#header-logo a .logo-mini')->text());
-        $this->assertEquals('EasyAdmin', $crawler->filter('#header-logo a .logo-lg')->text());
+        $this->assertEquals('EasyAdmin', trim($crawler->filter('#header-logo a')->text()));
         $this->assertEquals('/admin/', $crawler->filter('#header-logo a')->attr('href'));
     }
 

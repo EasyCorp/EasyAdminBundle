@@ -86,10 +86,12 @@ class QueryBuilder
                 // adding '0' turns the string into a numeric value
                 $queryParameters['exact_query'] = 0 + $searchQuery;
             } elseif ($isTextField) {
-                $queryBuilder->orWhere(sprintf('entity.%s LIKE :fuzzy_query', $name));
+                $searchQuery = strtolower($searchQuery);
+
+                $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));
                 $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
 
-                $queryBuilder->orWhere(sprintf('entity.%s IN (:words_query)', $name));
+                $queryBuilder->orWhere(sprintf('LOWER(entity.%s) IN (:words_query)', $name));
                 $queryParameters['words_query'] = explode(' ', $searchQuery);
             }
         }

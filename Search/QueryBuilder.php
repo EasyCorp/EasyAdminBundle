@@ -59,10 +59,10 @@ class QueryBuilder
      * Creates the query builder used to get the results of the search query
      * performed by the user in the "search" view.
      *
-     * @param array $entityConfig
-     * @param $searchQuery
-     * @param $sortField
-     * @param $sortDirection
+     * @param array       $entityConfig
+     * @param string      $searchQuery
+     * @param string|null $sortField
+     * @param string|null $sortDirection
      *
      * @return DoctrineQueryBuilder
      */

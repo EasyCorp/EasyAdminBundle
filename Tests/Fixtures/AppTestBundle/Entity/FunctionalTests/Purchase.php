@@ -238,13 +238,13 @@ class Purchase
      *
      * @param int $storeId
      *
-     * @return string
+     * @return int
      */
     public function generateIncrementId($storeId = 1)
     {
         $uid = date('YmdHi');
 
-        return sprintf('%d%013d', $storeId, $uid);
+        return (int) sprintf('%d%013d', $storeId, $uid);
     }
 
     /** {@inheritdoc} */

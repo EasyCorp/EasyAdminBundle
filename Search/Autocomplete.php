@@ -67,6 +67,10 @@ class Autocomplete
 
         $targetEntityClass = $backendConfig['entities'][$entity][$view]['fields'][$property]['targetEntity'];
         $targetEntityConfig = $this->configManager->getEntityConfigByClass($targetEntityClass);
+        if (null === $targetEntityConfig) {
+            throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field in the "%s" view of the "%s" entity).', $targetEntityClass, $property, $view, $entity));
+        }
+
         $entities = $this->finder->findByAllProperties($targetEntityConfig, $query, $backendConfig['list']['max_results']);
 
         return array('results' => $this->processResults($entities, $targetEntityConfig));

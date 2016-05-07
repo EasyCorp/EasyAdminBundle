@@ -454,7 +454,7 @@
 {% endblock easyadmin_widget %}
 
 {# EasyAdminAutocomplete form type #}
-{% block easyadmin_autocomplete_widget %}
+{% block easyadmin_autocomplete_row %}
     {# display the form widget, but don't display its label #}
     {{ form_widget(form.autocomplete, { attr: attr|merge({ 'data-easyadmin-autocomplete-url' : path('easyadmin', {
         action: 'autocomplete',

@@ -179,9 +179,9 @@ These are the options that you can define for each field:
 The fields of the `list` and `search` views define another option:
 
   * `sortable` (optional): if `true` the backend allows to sort results by this
-    property. Set it to `false` to disable sorting. All properties are *sortable*
+    property; set it to `false` to disable sorting. All properties are *sortable*
     by default except virtual properties (explained later in this chapter) and
-    those related with associations of any type (one-to-*, *-to-one, *-to-many).
+    those related with Doctrine associations of any type.
 
 The fields of the `show` view define another two options:
 

@@ -125,6 +125,48 @@ class AdminController extends BaseAdminController
 }
 ```
 
+Don't Apply Global Doctrine Filters in the Backend
+--------------------------------------------------
+
+[Doctrine filters][4] add conditions to your queries automatically. They are
+useful to solve cases like *"never display products which haven't been published"*
+or *"don't display comments marked as deleted"*.
+
+These filters can be enabled for each query, but they are usually enabled
+globally for the entire application thanks to a request listener:
+
+```php
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+
+class DoctrineFilterListener
+{
+    // ...
+
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        $this->em->getFilters()->enable('is_published');
+    }
+}
+```
+
+When using global Doctrine filters, you probably don't want to apply them in the
+backend. Otherwise you won't see unpublished items or deleted comments in the
+listings. Given that all EasyAdmin URLs are generated with a single route called
+`easyadmin`, you can add the following to disable the Doctrine filters in the
+backend:
+
+```php
+public function onKernelRequest(GetResponseEvent $event)
+{
+    if ('easyadmin' === $event->getRequest()->attributes->get('_route')) {
+        return;
+    }
+
+    // ...
+}
+```
+
 [1]: http://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
 [2]: ../book/3-list-search-show-configuration.md#advanced-design-configuration
 [3]: ../book/3-list-search-show-configuration.md#customizing-the-behavior-of-list-search-and-show-views
+[4]: http://doctrine-orm.readthedocs.io/projects/doctrine-orm/en/latest/reference/filters.html

@@ -176,6 +176,13 @@ These are the options that you can define for each field:
     * Any of the custom EasyAdmin types: `image`, `toggle`, `raw` (they are
       explained later in this chapter).
 
+The fields of the `list` and `search` views define another option:
+
+  * `sortable` (optional): if `true` the backend allows to sort results by this
+    property; set it to `false` to disable sorting. All properties are *sortable*
+    by default except virtual properties (explained later in this chapter) and
+    those related with Doctrine associations of any type.
+
 The fields of the `show` view define another two options:
 
   * `help` (optional): the help message displayed below the field contents.

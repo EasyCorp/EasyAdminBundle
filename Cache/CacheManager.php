@@ -53,6 +53,6 @@ class CacheManager extends FilesystemCache
      */
     public function save($key, $item, $lifetime = 0)
     {
-        parent::save($key, $item, $lifetime);
+        return parent::save($key, $item, $lifetime);
     }
 }

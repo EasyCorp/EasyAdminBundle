@@ -25,12 +25,10 @@
         {% endblock %}
 
         {% block head_javascript %}
-            <script src="{{ asset('bundles/easyadmin/javascript/easyadmin-all.min.js') }}"></script>
-
             {% block adminlte_options %}
                 <script type="text/javascript">
                     var AdminLTEOptions = {
-                        animationSpeed: 'fast',
+                        animationSpeed: 'normal',
                         sidebarExpandOnHover: false,
                         enableBoxRefresh: false,
                         enableBSToppltip: false,
@@ -40,6 +38,8 @@
                     };
                 </script>
             {% endblock %}
+
+            <script src="{{ asset('bundles/easyadmin/javascript/easyadmin-all.min.js') }}"></script>
         {% endblock head_javascript %}
 
         <!--[if lt IE 9]>

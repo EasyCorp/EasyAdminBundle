@@ -580,13 +580,18 @@ form:not(.form-horizontal) .field-checkbox label {
 .main-header .navbar .sidebar-toggle {
     color: rgba(255, 255, 255, 0.8);
     display: inline-block;
+    font-size: 18px;
     height: 35px;
     left: 0;
     line-height: 35px;
-    padding: 0 15px;
+    padding: 0 10px 0 18px;
     position: absolute;
     text-align: center;
     top: 45px;
+}
+.sidebar-mini.sidebar-collapse .sidebar-toggle {
+    color: {{ colors.white }};
+    padding-left: 12px;
 }
 
 .navbar-custom-menu,
@@ -1029,10 +1034,14 @@ body.error .error-message {
         font-size: 21px;
         line-height: 50px;
         text-align: left;
+        transform: rotate3d(0, 0, 0, 0deg);
+        transition: all .3s linear;
     }
     .sidebar-mini.sidebar-collapse .main-header .logo {
         padding-left: 15px;
         width: auto; {# neutralizes AdminLTE styles #}
+        transform: rotate3d(0, 0, 0, 0deg);
+        transition: all .3s linear;
     }
 
     .main-header .navbar .sidebar-toggle {

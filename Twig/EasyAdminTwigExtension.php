@@ -225,7 +225,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * @param string $action
      * @param string $entityName
      *
-     * @return bool
+     * @return array
      */
     public function getActionConfiguration($view, $action, $entityName)
     {

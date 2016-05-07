@@ -99,6 +99,6 @@ class EasyAdminAutocompleteType extends AbstractType
      */
     public function getName()
     {
-        $this->getBlockPrefix();
+        return $this->getBlockPrefix();
     }
 }

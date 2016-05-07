@@ -455,11 +455,13 @@
 
 {# EasyAdminAutocomplete form type #}
 {% block easyadmin_autocomplete_widget %}
-    {# display the form row, but don't display its label #}
-    {{ form_row(form.autocomplete, { label: false, attr: attr|merge({ 'data-easyadmin-autocomplete-url' : path('easyadmin', {
+    {# display the form widget, but don't display its label #}
+    {{ form_widget(form.autocomplete, { attr: attr|merge({ 'data-easyadmin-autocomplete-url' : path('easyadmin', {
         action: 'autocomplete',
         entity: easyadmin.entity.name,
         property: easyadmin.field.fieldName,
         view: easyadmin.view
     })|raw })}) }}
+
+    {{ form_errors(form.autocomplete) }}
 {% endblock easyadmin_autocomplete_widget %}

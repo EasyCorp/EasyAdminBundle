@@ -40,14 +40,18 @@ class RequestPostInitializeListener
      * To be replaced by the usage of the request stack when 2.3 support is dropped.
      *
      * @param Request|null $request
-     *
-     * @return $this
      */
     public function setRequest(Request $request = null)
     {
         $this->request = $request;
     }
 
+    /**
+     * Adds to the request some attributes with useful information, such as the
+     * current entity and the selected item, if any.
+     *
+     * @param GenericEvent $event
+     */
     public function initializeRequest(GenericEvent $event)
     {
         if (null !== $this->requestStack) {

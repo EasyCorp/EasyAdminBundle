@@ -152,7 +152,7 @@ class DoctrineFilterListener
 When using global Doctrine filters, you probably don't want to apply them in the
 backend. Otherwise you won't see unpublished items or deleted comments in the
 listings. Given that all EasyAdmin URLs are generated with a single route called
-`easyadmin`, you can add the following to not apply the Doctrine filters in the
+`easyadmin`, you can add the following to disable the Doctrine filters in the
 backend:
 
 ```php

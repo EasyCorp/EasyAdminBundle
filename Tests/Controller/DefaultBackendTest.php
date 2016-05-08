@@ -58,7 +58,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertEquals(
             '/bundles/easyadmin/javascript/easyadmin-all.min.js',
-            $crawler->filter('script')->eq(0)->attr('src')
+            $crawler->filter('script')->eq(1)->attr('src')
         );
     }
 

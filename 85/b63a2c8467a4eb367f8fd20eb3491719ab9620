@@ -1,0 +1,130 @@
+---------------------------------------------------------------------------
+
+by forsetius at 2016-05-04T19:16:24Z
+
+As I mentioned in a [comment](https://github.com/javiereguiluz/EasyAdminBundle/issues/1137#issuecomment-216953760) to #1137, I see it a bit differently. Here are pics:
+
+![f069a994-1231-11e6-9b36-aac958684ca9](https://cloud.githubusercontent.com/assets/12886198/15025980/3d7a0224-123c-11e6-854c-34a0607c9895.png)
+![f3d8fc06-1231-11e6-8ffa-991904862a19](https://cloud.githubusercontent.com/assets/12886198/15025977/38466efa-123c-11e6-811d-5cfb21f4face.png)
+
+Notice that:
+- Icon + title doesn't change nor move at all
+- All the titlebar has the same color
+- There is an external "handle" to switch sidebar state
+- I'm no graphic artist so please treat the handle shape as approximation - perhaps it'd be better if it was smaller or bigger or had rounded corners or another symbol on it...
+
+That's my opinion only. Even if you doesn't agree with it and would rather keep your solution, please fix the size of "three bars" icon. It's quite jarring when it changes size on sidebar state change.
+
+Best regards
+
+---------------------------------------------------------------------------
+
+by davialexandre at 2016-05-05T21:24:40Z
+
+I really like how https://github.com/locaweb/locawebstyle implements the sidebar toggle. For the Desktop version it is placed at the bottom of the sidedar. For the Mobile it is, as usual, placed at the top left side of the screen:
+
+| Desktop | Mobile |
+-------------|------------
+| ![untitled3](https://cloud.githubusercontent.com/assets/388373/15057430/249cc9ba-12ed-11e6-9f6c-d4dc86d8c5f7.gif) | ![untitled2](https://cloud.githubusercontent.com/assets/388373/15057589/eb14b29c-12ed-11e6-95ac-f9c02218bead.gif) |
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-06T18:25:08Z
+
+First, thank you for your comments and for providing screenshots and GIFs to better compare them. That's great!
+
+@forsetius what I don't like about this proposal is that the handle looks "out of place" and that the clickable surface is very small (that always annoys users!)  By the way, I don't understand the issue about the menu icon, could you please post a screenshot? Thanks!
+
+@davialexandre I don't understand why in the Desktop version the toggle icon is very small and faded at the bottom ... but in the header they show a huge icon which I'd definitely click to toggle the sidebar. I'm not fan either about having different toggle patterns in desktop/mobile ... even if they are very different mediums.
+
+---
+
+I'm going to post some examples of popular products which use a similar design as the one proposed in this PR.
+
+Gmail (in tablets):
+
+![ipad1](https://cloud.githubusercontent.com/assets/73419/15082477/36ce1a7c-13c8-11e6-9a71-9079bd4580a6.png)
+
+Google Adsense:
+
+![google_adsense](https://cloud.githubusercontent.com/assets/73419/15082486/44c8ee22-13c8-11e6-81b8-cdaaa9b5ff60.gif)
+
+Atlassian Jira:
+
+![attlasian](https://cloud.githubusercontent.com/assets/73419/15082513/63af1b90-13c8-11e6-9284-51fa4740e6d3.png)
+
+YouTube:
+
+![youtube](https://cloud.githubusercontent.com/assets/73419/15084370/42216892-13d3-11e6-8c3e-f9143e097bab.png)
+
+---------------------------------------------------------------------------
+
+by davialexandre at 2016-05-06T20:08:52Z
+
+I agree. I don't mind different toggles for different screen sizes, but having similar toggle is definitely better. I like the Google Adsense toggle and how the title don't move while toggling the sidebar.
+
+Jira also uses the toggle at the bottom of the side bar in some places:
+
+![untitled3](https://cloud.githubusercontent.com/assets/388373/15084883/d197e252-13ac-11e6-8d13-d7cb16344501.gif)
+
+---------------------------------------------------------------------------
+
+by forsetius at 2016-05-06T22:57:06Z
+
+Hi,
+Please look at the close-up:
+![out1](https://cloud.githubusercontent.com/assets/12886198/15086655/8e67db46-13e2-11e6-9923-ca19f0bc1d43.gif)
+It starts with expanded state: icon is near left edge, title a bit to the right.
+Now we contract the sidebar: icon goes a bit to the right, distance between icon and title is doubled - this is instant switch between states, no animation. Meanwhile, below menuitems' icons go bigger and sidebar gradually contracts to the left.
+So, upper part goes right - different parts at different length, lower part goes left and part of it changes size. It's too much movement and in conflicting directions. I'd at least keep titlebar static no matter what's the sidebar state (as I said before - sidebar state has no logical connection to backend's titlebar) and only animate sidebar *below* the titlebar.
+Now, the sidebar animation is wonderful. I like both contracting animation and growing icons. It's esthetic, non-distracting and has clear purpose.
+
+As for the position of sidebar's icon and it's relation to logo picture. Indeed, the pics you attached are proof that the standard I mentioned is changing as designers try to unify experience on desktops and mobiles. I'm not entirely convinced, but who am I to stand in the way of industry's progress? ;) Seriously though, top-left position of sidebar icon isn't bad and even better if users are already taught such visual pattern.  The key problem is to place the icon in such a way it doesn't steal attention from logo+title. So perhaps the sidebar icon could be smaller, more subtle - something like this:
+![3](https://cloud.githubusercontent.com/assets/12886198/15087871/7425c116-13ed-11e6-985c-68db926d062c.png)
+![2](https://cloud.githubusercontent.com/assets/12886198/15087872/74274d9c-13ed-11e6-8633-00ff91133ca9.png)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-07T07:33:05Z
+
+@forsetius you are right about the movement of the backend title. But we do this to achieve perfect alignment in both position: normal and collapsed.
+
+In normal position, the title is aligned with the menu items:
+
+![header-1](https://cloud.githubusercontent.com/assets/73419/15090843/720eaca0-1436-11e6-9912-44b4556cb05b.png)
+
+In collapsed position, the title is aligned with the page title:
+
+![header-2](https://cloud.githubusercontent.com/assets/73419/15090846/7a81122e-1436-11e6-88c0-b1e527db6f4e.png)
+
+We can't do this if we don't move the title. It may be annoying ... but keep in mind that this movement won't be triggered continuously. In the past we toggled the sidebar when you put the mouse hover it. But now we no longer toggle it. So most people will never see the movement. They'll toggle the sidebar and it will stay there forever.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-07T10:51:09Z
+
+I've made some more tweaks. The toggle icon is now aligned too and the movement of the backend name is done with a smooth transition:
+
+![toggle](https://cloud.githubusercontent.com/assets/73419/15091739/4826d46e-1452-11e6-998f-2817798eaa3a.gif)
+
+---------------------------------------------------------------------------
+
+by davialexandre at 2016-05-07T21:51:14Z
+
+wow! A change, but a huge difference. It looks much better now
+
+---------------------------------------------------------------------------
+
+by forsetius at 2016-05-08T11:16:30Z
+
+First, sorry for delay - Fatherland called.
+Now, I've noticed the alignment. This can be solved by giving the icons' column the same width regardless of sidebar state. In expanded state the icons would just have more padding.
+
+But ultimately, this is a matter of taste. *De gustibus non disputandum est* so there is no solution that would fit all. You already said that you don't want too much config options for everything (and I find it good decision) but I've got another, broader idea: perhaps you could set up a repository for alternative designs, custom templates for fields and Symfony form elements? I've already done some fields that integrate color picker, datetime setter, labelling the groups and more will come. I could contribute it to javiereguiluz/EasyAdminBundle (after some polishing) but in time a library of such content could overshadow EasyAdmin proper. Of course, such repository would need your overseeing, so it could be a burden but IMHO it could be worth it.
+
+If you think it's a good idea I could add a feature request so that discussion on that would have its place.
+
+Best regards,
+Marcin
+
+Off topic: even having so much years writing in English I find it uncomfortable that "I" is to be written uppercase and "you/your" - lowercase. In my language it's the other way - in correspondence it's a matter of courtesy to uppercase "you". Just a random thought :)

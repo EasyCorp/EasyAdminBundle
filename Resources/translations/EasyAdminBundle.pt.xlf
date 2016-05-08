@@ -139,6 +139,10 @@
                 <source>errors</source>
                 <target>Erro|Erros</target>
             </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Você não salvou as alterações feitas nesse formulário.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

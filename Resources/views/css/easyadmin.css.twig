@@ -659,6 +659,18 @@ form:not(.form-horizontal) .field-checkbox label {
     padding-left: 28px;
 }
 
+.sidebar-menu li a,
+.sidebar-menu li a span,
+.sidebar-menu li.header,
+.sidebar-mini.sidebar-collapse .sidebar-menu .treeview-menu a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.sidebar-mini.sidebar-collapse .sidebar-menu li a {
+    overflow: visible;
+}
+
 .sidebar-menu > li > a,
 .sidebar-menu .treeview-menu > li > a {
 {% if 'dark' == color_scheme %}

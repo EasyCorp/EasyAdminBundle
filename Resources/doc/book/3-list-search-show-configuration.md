@@ -165,6 +165,9 @@ These are the options that you can define for each field:
   * `label` (optional): the title displayed for the property. The default
     title is the "humanized" version of the property name (e.g. `published` is
     displayed as `Published` and `dateOfBirth` as `Date of birth`).
+  * `css_class` (optional): the CSS class applied to the HTML element that
+    encloses the field contents. In the `list` and `search` listings, this class
+    is also applied to the `<th>` header of the column associated with this field.
   * `template` (optional): the name of the custom template used to render the
     contents of the field. This option is fully explained later in this chapter.
   * `type` (optional): the type of data displayed. This allows to select the
@@ -183,10 +186,9 @@ The fields of the `list` and `search` views define another option:
     by default except virtual properties (explained later in this chapter) and
     those related with Doctrine associations of any type.
 
-The fields of the `show` view define another two options:
+The fields of the `show` view define another option:
 
   * `help` (optional): the help message displayed below the field contents.
-  * `css_class` (optional): the CSS class applied to the field container element.
 
 > **TIP**
 >

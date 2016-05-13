@@ -23,7 +23,7 @@ easy_admin:
                     - { name: 'search', label: 'Look for %%entity_label%%', css_class: 'custom_class_search' }
                 fields:
                     - 'id'
-                    - { property: 'name', label: 'Label' }
+                    - { property: 'name', label: 'Label', css_class: 'custom_class_list' }
                     - { property: 'parent', label: 'Parent category' }
             show:
                 title: 'Details for %%entity_name%% number %%entity_id%%'

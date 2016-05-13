@@ -133,7 +133,7 @@
                         {% set isSortingField = metadata.property == app.request.get('sortField') %}
                         {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters)  %}
 
-                        <td data-label="{{ _column_label }}" class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }}">
+                        <td data-label="{{ _column_label }}" class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}">
                             {{ easyadmin_render_field_for_list_view(_entity_config.name, item, metadata) }}
                         </td>
                     {% endfor %}

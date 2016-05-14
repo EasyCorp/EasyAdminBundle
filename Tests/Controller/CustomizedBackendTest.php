@@ -128,6 +128,14 @@ class CustomizedBackendTest extends AbstractTestCase
         }
     }
 
+    public function testListViewFieldClasses()
+    {
+        $crawler = $this->requestListView();
+
+        $this->assertEquals('string custom_class_list', trim($crawler->filter('.table thead tr th[data-property-name="name"]')->eq(0)->attr('class')));
+        $this->assertEquals('string custom_class_list', trim($crawler->filter('.table tbody tr td[data-label="Label"]')->eq(0)->attr('class')));
+    }
+
     public function testListViewPagination()
     {
         $crawler = $this->requestListView();

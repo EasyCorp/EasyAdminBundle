@@ -20,7 +20,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 class PropertyConfigPass implements ConfigPassInterface
 {
     private $defaultEntityFieldConfig = array(
-        // CSS class or classes applied to form field
+        // CSS class or classes applied to form field or list/show property
         'css_class' => '',
         // date/time/datetime/number format applied to form field value
         'format' => null,

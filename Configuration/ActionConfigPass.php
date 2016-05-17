@@ -271,6 +271,7 @@ class ActionConfigPass implements ConfigPassInterface
             $actions['delete']['css_class'] = 'text-danger';
             $actions['edit']['icon'] = null;
             $actions['edit']['css_class'] = 'text-primary';
+            $actions['list']['css_class'] = '';
         }
 
         return $actions;

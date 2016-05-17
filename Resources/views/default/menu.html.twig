@@ -28,6 +28,8 @@
 
 {% import _self as helper %}
 
+{% block main_menu_before %}{% endblock %}
+
 <ul class="sidebar-menu">
     {% block main_menu %}
         {% for item in easyadmin_config('design.menu') %}
@@ -47,3 +49,5 @@
         {% endfor %}
     {% endblock main_menu %}
 </ul>
+
+{% block main_menu_after %}{% endblock %}

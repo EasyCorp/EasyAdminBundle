@@ -57,7 +57,7 @@ easy_admin:
 Adding Custom Web Assets
 ------------------------
 
-Complex backends may require to load custom CSS nad JavaScript files. Add the
+Complex backends may require to load custom CSS and JavaScript files. Add the
 `assets` option to define the paths of the web assets to load in the backend
 layout. All kinds of assets are supported and linked accordingly:
 

@@ -46,6 +46,11 @@ class EasyAdminAutocompleteType extends AbstractType
             $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
                 $options['id_reader']->getIdField() => $data['autocomplete'],
             ));
+            
+            if (isset($options['choice_list'])) {
+                // clear choice list for SF < 3.0
+                $options['choice_list'] = null;
+            }
 
             // reset autocomplete form field with new choices list
             $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);

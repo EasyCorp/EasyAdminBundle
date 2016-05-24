@@ -34,6 +34,10 @@
         <service id="easyadmin.paginator" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator">
         </service>
 
+        <service id="easyadmin.controller_resolver" class="JavierEguiluz\Bundle\EasyAdminBundle\Controller\ControllerResolver">
+            <argument type="service" id="service_container" />
+        </service>
+
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="property_accessor" />

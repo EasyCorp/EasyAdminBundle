@@ -816,27 +816,27 @@ Customizing the Behavior of `list`, `search` and `show` Views
 In the previous sections you've learned how to override or tweak the templates
 associated with each view or property. This is the most common way to customize
 backends because it's simple yet powerful. However, EasyAdmin provides a more
-advanced customization mechanism based on PHP to customize the behavior of the
-backend.
+advanced customization mechanism based on PHP.
 
-Depending on your needs you can choose any of these two customization options
-(or combine both, if your backend is very complex):
+Depending on your needs you can choose any of these three customization options
+(or combine them, if your backend is very complex):
 
-  * Customization based on **controller methods**, which is easy to set up but
-    requires you to put all the customization code in a single controller which
-    extends from the default `AdminController` provided by EasyAdmin.
-  * Customization based on **Symfony events**, which is hader to set up but
-    allows you define the customization code anywhere in your application.
+  1. **Override the default AdminController**, which is easy to set up and best
+     suited for very simple backends.
+  2. **Define a different controller for some or all entities**, which is also
+     easy to set up and scales well for medium-sized backends.
+  3. **Define event listeners or subscribers** that listen to the events triggered
+     by EasyAdmin. This is harder to set up but allows you to define the
+     customization code anywhere in your application.
 
-### Customization Based on Controller Methods
+### Customization Based on Overriding the default AdminController
 
 This technique requires you to create a new controller in your Symfony
 application and make it extend from the default `AdminController`. Then you
-just add one or more methods in your controller to override the default ones.
+just add some methods in your controller to override the default ones.
 
-The first step is to **create a new controller** anywhere in your Symfony
-application. Its class name or namespace doesn't matter as long as it extends
-the default `AdminController`:
+**Step 1.** Create a new controller class anywhere in your Symfony application
+and make it extend from the default `AdminController` class:
 
 ```php
 // src/AppBundle/Controller/AdminController.php
@@ -846,12 +846,12 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdmin
 
 class AdminController extends BaseAdminController
 {
+    // ...
 }
 ```
 
-Then you must **update the routing configuration** to associate the `easyadmin`
-route to the new controller. Open the `app/config/routing.yml` file and change
-the `resource` option of the `easy_admin_bundle` route:
+**Step 2.** Open the `app/config/routing.yml` file and change the `resource`
+option of the `easy_admin_bundle` route to point to the new controller:
 
 ```yaml
 # app/config/routing.yml
@@ -862,15 +862,18 @@ easy_admin_bundle:
     prefix:   /admin
 ```
 
-Save the changes and the backend will start using your own controller. Keep
-reading the practical examples of the next sections to learn which methods you
-can override in the controller.
+Save the changes and the backend will start using your own controller.
 
-#### Tweak the Default Actions for All Entities
+**Step 3.** You can now override in your own controller any of the methods
+executed in the default `AdminController`. The next sections show some practical
+examples about this overriding mechanism.
 
-This use case is only useful for very complex backends which need to override
-the entire behavior of some default action. Define a method with the same name
-of the view which you want to override (`list`, `search` or `show`):
+#### Update Some Properties for All Entities
+
+Imagine that some or all of your entities define a property called `updatedAt`.
+Instead of editing this value using the backend interface and instead of relying
+on Doctrine extensions, you can make use of the `preUpdateEntity()` method, which
+is called just before saving the changes made on an existing entity:
 
 ```php
 // src/AppBundle/Controller/AdminController.php
@@ -880,9 +883,90 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdmin
 
 class AdminController extends BaseAdminController
 {
+    // ...
+
+    public function preUpdateEntity($entity)
+    {
+        if (method_exists($entity, 'setUpdatedAt')) {
+            $entity->setUpdatedAt(new \DateTime());
+        }
+    }
+}
+```
+
+The following example shows how to automatically set the slug of the entities
+when creating (`prePersistEntity()`) or editing (`preUpdateEntity()`) them:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+
+class AdminController extends BaseAdminController
+{
+    // ...
+
+    public function prePersistEntity($entity)
+    {
+        $this->updateSlug($entity);
+    }
+
+    public function preUpdateEntity($entity)
+    {
+        $this->updateSlug($entity);
+    }
+
+    private function updateSlug($entity)
+    {
+        if (method_exists($entity, 'setSlug') and method_exists($entity, 'getTitle')) {
+            $entity->setSlug($this->get('app.slugger')->slugify($entity->getTitle()));
+        }
+    }
+}
+```
+
+#### Tweak the Default Actions for All Entities
+
+If your backend is heavily customized and want to completely override some of
+the built-in actions, just override their controller methods:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+
+class AdminController extends BaseAdminController
+{
+    // properties that you can use in your actions
+    protected $config;  // full backend configuration
+    protected $entity;  // full configuration of the current entity
+    protected $request; // the current Symfony request object
+    protected $em;      // the entity manager of the current entity
+
+    // main methods that can be overridden
     public function listAction()   { ... }
     public function searchAction() { ... }
     public function showAction()   { ... }
+
+    // initializes the value of the $config, $entity, $em and $request properties
+    protected function initialize(Request $request)
+    {
+        // ...
+    }
+
+    // returns the query builder used to look for the records displayed in the 'list' view
+    protected function createListQueryBuilder($entityClass, $sortDirection, $sortField = null)
+    {
+        // ...
+    }
+
+    // returns the query builder used to look for for the records displayed in the 'search' view
+    protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null)
+    {
+        // ...
+    }
 }
 ```
 
@@ -892,13 +976,13 @@ extend from them to make your work easier.
 #### Tweak the Default Actions for a Specific Entity
 
 Before executing the general methods (`listAction()`, `showAction()`, etc.), the
-controller looks for the existence of methods created for the current entity. In
-particular, this is the syntax used to name these specific methods:
+controller looks for the existence of methods created for the current entity.
+The syntax used to name these methods is as follows:
 
 ```php
-public function list<EntityName>Action()   { ... }
-public function search<EntityName>Action() { ... }
-public function show<EntityName>Action()   { ... }
+public function list<EntityName>Action()
+public function search<EntityName>Action()
+public function show<EntityName>Action()
 ```
 
 > **TIP**
@@ -921,6 +1005,44 @@ class AdminController extends BaseAdminController
     }
 }
 ```
+
+### Customization Based on Entity Controllers
+
+If your backend is medium-sized, the previous overriding mechanism doesn't scale
+well because it requires you to put all the code in the same AdminController.
+In those cases, you can define a different custom controller for each entity.
+
+**Step 1.** Create a new controller class (for example `ProductController`)
+anywhere in your Symfony application and make it extend from the default
+`AdminController` class:
+
+```php
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Admin;
+
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+
+class ProductController extends BaseAdminController
+{
+    // ...
+}
+```
+
+**Step 2.** Define the `controller` configuration option for the entity that
+will use that controller and use the fully qualified class name as its value:
+
+```yaml
+easy_admin:
+    entities:
+        # ...
+        Product:
+            controller: AppBundle\Admin\ProductController
+            # ...
+```
+
+**Step 3.** You can now override any of the default `AdminController` methods
+and they will be executed only for the `Product` entity. Repeat these steps for
+the other backend entities that you want to customize.
 
 ### Customization Based on Symfony Events
 

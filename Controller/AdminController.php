@@ -20,6 +20,7 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
@@ -704,12 +705,21 @@ class AdminController extends Controller
      */
     private function executeDynamicMethod($methodNamePattern, array $arguments = array())
     {
-        $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
-        if (!is_callable(array($this, $methodName))) {
-            $methodName = str_replace('<EntityName>', '', $methodNamePattern);
+        $defaultMethodName = str_replace('<EntityName>', '', $methodNamePattern);
+        $customMethodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
+
+        if (!isset($this->entity['controller'])) {
+            $controller = $this;
+        } else {
+            $controller = $this->get('easyadmin.controller_resolver')->instantiate($this->entity['controller']);
+            if (method_exists($controller, 'initialize')) {
+                $controller->initialize($this->request);
+            }
         }
 
-        return call_user_func_array(array($this, $methodName), $arguments);
+        $methodName = is_callable(array($controller, $customMethodName)) ? $customMethodName : $defaultMethodName;
+
+        return call_user_func_array(array($controller, $methodName), $arguments);
     }
 
     /**

@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\ControllerResolver;
+
 /**
  * Normalizes the different configuration formats available for entities, views,
  * actions and properties.
@@ -19,6 +21,14 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class NormalizerConfigPass implements ConfigPassInterface
 {
+    /** @var ControllerResolver */
+    private $controllerResolver;
+
+    public function __construct(ControllerResolver $controllerResolver)
+    {
+        $this->controllerResolver = $controllerResolver;
+    }
+
     public function process(array $backendConfig)
     {
         $backendConfig = $this->normalizeEntityConfig($backendConfig);
@@ -26,6 +36,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         $backendConfig = $this->normalizeViewConfig($backendConfig);
         $backendConfig = $this->normalizePropertyConfig($backendConfig);
         $backendConfig = $this->normalizeActionConfig($backendConfig);
+        $backendConfig = $this->normalizeControllerConfig($backendConfig);
 
         return $backendConfig;
     }
@@ -196,6 +207,17 @@ class NormalizerConfigPass implements ConfigPassInterface
                 if (!is_array($backendConfig['entities'][$entityName][$view]['actions'])) {
                     throw new \InvalidArgumentException(sprintf('The "actions" configuration for the "%s" view of the "%s" entity must be an array (a string was provided).', $view, $entityName));
                 }
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    private function normalizeControllerConfig(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            if (isset($entityConfig['controller'])) {
+                $backendConfig['entities'][$entityName]['controller'] = $this->controllerResolver->getClass($entityConfig['controller']);
             }
         }
 

@@ -30,6 +30,6 @@ class BackendErrorsTest extends AbstractTestCase
         ));
 
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('Error: The "InexistentEntity" entity is not defined in the configuration of your backend. Solution: Open your "app/config/config.yml" file and add the "InexistentEntity" entity to the list of entities managed by EasyAdmin.', $crawler->filter('head title')->text());
+        $this->assertContains('Entity "InexistentEntity" is not managed by EasyAdmin.', $crawler->filter('head title')->text());
     }
 }

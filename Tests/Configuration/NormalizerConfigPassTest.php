@@ -30,7 +30,7 @@ class NormalizerConfigPassTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $configPass = new NormalizerConfigPass();
+        $configPass = new NormalizerConfigPass($this->getServiceContainer());
         $configPass->process($backendConfig);
     }
 
@@ -51,7 +51,14 @@ class NormalizerConfigPassTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $configPass = new NormalizerConfigPass();
+        $configPass = new NormalizerConfigPass($this->getServiceContainer());
         $configPass->process($backendConfig);
+    }
+
+    private function getServiceContainer()
+    {
+        return $this->getMockBuilder('Symfony\Component\DependencyInjection\Container')
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

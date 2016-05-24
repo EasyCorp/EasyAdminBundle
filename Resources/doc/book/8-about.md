@@ -1,4 +1,4 @@
-Chapter 7. About this Project
+Chapter 8. About this Project
 =============================
 
 The main author of this bundle works for SensioLabs, the company behind the
@@ -50,4 +50,4 @@ any of the following alternative admin generators:
 
 -------------------------------------------------------------------------------
 
-&larr; [Chapter 6. Menu Configuration](6-menu-configuration.md)
+&larr; [Chapter 7. Creating Complex and Dynamic Backends](7-complex-dynamic-backends.md)

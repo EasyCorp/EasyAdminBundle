@@ -109,7 +109,6 @@ class AdminController extends Controller
         }
 
         $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
-
         $this->request = $request;
 
         $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
@@ -705,6 +704,7 @@ class AdminController extends Controller
     private function executeDynamicMethod($methodNamePattern, array $arguments = array())
     {
         $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
+
         if (!is_callable(array($this, $methodName))) {
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }

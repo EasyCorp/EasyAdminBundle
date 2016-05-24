@@ -1,0 +1,15 @@
+# TEST
+# the 'controller' option must refer to a valid service name (controller as service)
+# or a fully qualified class name (regular controller class)
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The "ThisIsNotAValidControllerClassOrService" value defined in the "controller" option of the "TestEntity" entity is not a valid controller. For a regular controller, set its FQCN as the value; for a controller defined as service, set its service name as the value.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppTestBundle\Entity\UnitTests\Category
+            controller: ThisIsNotAValidControllerClassOrService

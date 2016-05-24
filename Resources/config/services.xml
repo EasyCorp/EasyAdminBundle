@@ -41,6 +41,12 @@
             <tag name="twig.extension" />
         </service>
 
+        <service id="easyadmin.listener.controller" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ControllerListener">
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="service" id="controller_resolver" />
+            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
+        </service>
+
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
             <argument type="service" id="templating" />
             <argument>%easyadmin.config%</argument>

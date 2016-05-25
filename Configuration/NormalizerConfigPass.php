@@ -11,8 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\ControllerResolver;
-
 /**
  * Normalizes the different configuration formats available for entities, views,
  * actions and properties.
@@ -21,14 +19,6 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Controller\ControllerResolver;
  */
 class NormalizerConfigPass implements ConfigPassInterface
 {
-    /** @var ControllerResolver */
-    private $controllerResolver;
-
-    public function __construct(ControllerResolver $controllerResolver)
-    {
-        $this->controllerResolver = $controllerResolver;
-    }
-
     public function process(array $backendConfig)
     {
         $backendConfig = $this->normalizeEntityConfig($backendConfig);
@@ -217,7 +207,12 @@ class NormalizerConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             if (isset($entityConfig['controller'])) {
-                $backendConfig['entities'][$entityName]['controller'] = $this->controllerResolver->getClass($entityConfig['controller']);
+                $controllerClass = trim($entityConfig['controller']);
+                if (!class_exists($controllerClass)) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" class defined in the "controller" option of the "%s" entity does not exist.', $controllerClass, $entityName));
+                }
+
+                $backendConfig['entities'][$entityName]['controller'] = $controllerClass;
             }
         }
 

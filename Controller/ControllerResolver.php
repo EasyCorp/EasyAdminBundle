@@ -28,11 +28,6 @@ class ControllerResolver
         $this->container = $container;
     }
 
-    public function getClass($controllerConfig)
-    {
-        return $controllerConfig;
-    }
-
     public function instantiate($controllerClass)
     {
         $controller = new $controllerClass();

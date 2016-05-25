@@ -30,7 +30,7 @@ class NormalizerConfigPassTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $configPass = new NormalizerConfigPass();
+        $configPass = new NormalizerConfigPass($this->getControllerResolver());
         $configPass->process($backendConfig);
     }
 
@@ -51,7 +51,14 @@ class NormalizerConfigPassTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $configPass = new NormalizerConfigPass();
+        $configPass = new NormalizerConfigPass($this->getControllerResolver());
         $configPass->process($backendConfig);
+    }
+
+    private function getControllerResolver()
+    {
+        return $this->getMockBuilder('JavierEguiluz\Bundle\EasyAdminBundle\Controller\controllerResolver')
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

@@ -26,13 +26,13 @@ class CustomEntityControllerTest extends AbstractTestCase
     public function testListAction()
     {
         $this->requestListView();
-        $this->assertContains('Overridden list action.', $this->client->getResponse());
+        $this->assertContains('Overridden list action.', $this->client->getResponse()->getContent());
     }
 
     public function testShowAction()
     {
         $this->requestShowView();
-        $this->assertContains('Overridden show action.', $this->client->getResponse());
+        $this->assertContains('Overridden show action.', $this->client->getResponse()->getContent());
     }
 
     /**

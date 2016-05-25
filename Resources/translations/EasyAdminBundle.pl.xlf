@@ -97,7 +97,15 @@
                 <source>user.logged_in_as</source>
                 <target>Zalogowany jako</target>
             </trans-unit>
-
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>Użytkownik bez nazwy</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>Anonimowy użytkownik</target>
+            </trans-unit>
+            
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
@@ -126,6 +134,10 @@
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Błąd|Błędy</target>
+            </trans-unit>
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Przełącz nawigację</target>
             </trans-unit>
         </body>
     </file>

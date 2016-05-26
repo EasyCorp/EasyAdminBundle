@@ -47,7 +47,7 @@ class AdminController extends Controller
     /** @var EntityManager The Doctrine entity manager for the current entity */
     protected $em;
     /** @var boolean True if the initialize() method has been called once */
-    protected $initialized = false;
+    protected $isInitialized = false;
 
     /**
      * @Route("/", name="easyadmin")
@@ -83,7 +83,7 @@ class AdminController extends Controller
      */
     protected function initialize(Request $request)
     {
-        if (true === $this->initialized) {
+        if (true === $this->isInitialized) {
             return;
         }
 
@@ -120,7 +120,7 @@ class AdminController extends Controller
 
         $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
 
-        $this->initialized = true;
+        $this->isInitialized = true;
     }
 
     protected function dispatch($eventName, array $arguments = array())

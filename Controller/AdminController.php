@@ -46,6 +46,8 @@ class AdminController extends Controller
     protected $request;
     /** @var EntityManager The Doctrine entity manager for the current entity */
     protected $em;
+    /** @var boolean True if the initialize() method has been called once */
+    protected $initialized = false;
 
     /**
      * @Route("/", name="easyadmin")
@@ -81,6 +83,10 @@ class AdminController extends Controller
      */
     protected function initialize(Request $request)
     {
+        if (true === $this->initialized) {
+            return;
+        }
+
         $this->dispatch(EasyAdminEvents::PRE_INITIALIZE);
 
         $this->config = $this->get('easyadmin.config.manager')->getBackendConfig();
@@ -110,10 +116,11 @@ class AdminController extends Controller
         }
 
         $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
-
         $this->request = $request;
 
         $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
+
+        $this->initialized = true;
     }
 
     protected function dispatch($eventName, array $arguments = array())
@@ -712,7 +719,8 @@ class AdminController extends Controller
             $controller = $this;
         } else {
             $controller = $this->get('easyadmin.controller_resolver')->instantiate($this->entity['controller']);
-            if (method_exists($controller, 'initialize')) {
+            // custom controllers usually extend from AdminController, but there is not guarantee
+            if ($controller instanceof self) {
                 $controller->initialize($this->request);
             }
         }

@@ -109,7 +109,7 @@
             <!-- misc. elements -->
             <trans-unit id="toggle_navigation">
                 <source>toggle_navigation</source>
-                <target>Activer la navigation</target>
+                <target>Activer ou désactiver la navigation</target>
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>

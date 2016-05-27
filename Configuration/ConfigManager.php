@@ -22,9 +22,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ConfigManager
 {
-    private $backendConfig;
+    protected $backendConfig;
     /** @var ContainerInterface */
-    private $container;
+    protected $container;
 
     public function __construct(ContainerInterface $container)
     {
@@ -156,7 +156,7 @@ class ConfigManager
      *
      * @return array
      */
-    private function processConfig()
+    protected function processConfig()
     {
         $originalBackendConfig = $this->container->getParameter('easyadmin.config');
 
@@ -183,7 +183,7 @@ class ConfigManager
      *
      * @return array
      */
-    private function doProcessConfig($backendConfig)
+    protected function doProcessConfig($backendConfig)
     {
         $configPasses = array(
             new NormalizerConfigPass(),

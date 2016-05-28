@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Normalizes the different configuration formats available for entities, views,
  * actions and properties.
@@ -19,6 +21,14 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class NormalizerConfigPass implements ConfigPassInterface
 {
+    /** @var ContainerInterface */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     public function process(array $backendConfig)
     {
         $backendConfig = $this->normalizeEntityConfig($backendConfig);
@@ -203,16 +213,35 @@ class NormalizerConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
+    /**
+     * It processes the optional 'controller' config option to check if the
+     * given controller exists. It supports controllers as services (@service_name)
+     * and regular controllers (AppBundle\Controller\ControllerName)
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
     private function normalizeControllerConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             if (isset($entityConfig['controller'])) {
-                $controllerClass = trim($entityConfig['controller']);
-                if (!class_exists($controllerClass)) {
-                    throw new \InvalidArgumentException(sprintf('The "%s" class defined in the "controller" option of the "%s" entity does not exist.', $controllerClass, $entityName));
+                $controller = trim($entityConfig['controller']);
+
+                if ('@' !== $controller[0]) {
+                    // this is a regular controller
+                    if (!class_exists($controller)) {
+                        throw new \InvalidArgumentException(sprintf('The "%s" class defined in the "controller" option of the "%s" entity does not exist.', $controller, $entityName));
+                    }
+                } else {
+                    // this is a controller as a service
+                    $controller = substr($controller, 1);
+                    if (!$this->container->has($controller)) {
+                        throw new \InvalidArgumentException(sprintf('The "@%s" service defined in the "controller" option of the "%s" entity does not exist.', $controller, $entityName));
+                    }
                 }
 
-                $backendConfig['entities'][$entityName]['controller'] = $controllerClass;
+                $backendConfig['entities'][$entityName]['controller'] = $controller;
             }
         }
 

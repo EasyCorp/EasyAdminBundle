@@ -20,7 +20,6 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
@@ -46,8 +45,6 @@ class AdminController extends Controller
     protected $request;
     /** @var EntityManager The Doctrine entity manager for the current entity */
     protected $em;
-    /** @var boolean True if the initialize() method has been called once */
-    protected $isInitialized = false;
 
     /**
      * @Route("/", name="easyadmin")
@@ -83,10 +80,6 @@ class AdminController extends Controller
      */
     protected function initialize(Request $request)
     {
-        if (true === $this->isInitialized) {
-            return;
-        }
-
         $this->dispatch(EasyAdminEvents::PRE_INITIALIZE);
 
         $this->config = $this->get('easyadmin.config.manager')->getBackendConfig();
@@ -119,8 +112,6 @@ class AdminController extends Controller
         $this->request = $request;
 
         $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
-
-        $this->isInitialized = true;
     }
 
     protected function dispatch($eventName, array $arguments = array())
@@ -712,22 +703,13 @@ class AdminController extends Controller
      */
     private function executeDynamicMethod($methodNamePattern, array $arguments = array())
     {
-        $defaultMethodName = str_replace('<EntityName>', '', $methodNamePattern);
-        $customMethodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
+        $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
 
-        if (!isset($this->entity['controller'])) {
-            $controller = $this;
-        } else {
-            $controller = $this->get('easyadmin.controller_resolver')->instantiate($this->entity['controller']);
-            // custom controllers usually extend from AdminController, but there is not guarantee
-            if ($controller instanceof self) {
-                $controller->initialize($this->request);
-            }
+        if (!is_callable(array($this, $methodName))) {
+            $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }
 
-        $methodName = is_callable(array($controller, $customMethodName)) ? $customMethodName : $defaultMethodName;
-
-        return call_user_func_array(array($controller, $methodName), $arguments);
+        return call_user_func_array(array($this, $methodName), $arguments);
     }
 
     /**

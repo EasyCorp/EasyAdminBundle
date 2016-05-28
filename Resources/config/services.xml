@@ -34,15 +34,17 @@
         <service id="easyadmin.paginator" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator">
         </service>
 
-        <service id="easyadmin.controller_resolver" class="JavierEguiluz\Bundle\EasyAdminBundle\Controller\ControllerResolver">
-            <argument type="service" id="service_container" />
-        </service>
-
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="property_accessor" />
             <argument>%kernel.debug%</argument>
             <tag name="twig.extension" />
+        </service>
+
+        <service id="easyadmin.listener.controller" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ControllerListener">
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="service" id="controller_resolver" />
+            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">

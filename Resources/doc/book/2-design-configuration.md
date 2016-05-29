@@ -1,15 +1,23 @@
 Chapter 2. Design Configuration
 ===============================
 
-The design of the backend can be customized in two ways:
+The design of the backend is based on the popular [AdminLTE template][1] and it
+also uses [Bootstrap 3][2], [jQuery][3] and [Font Awesome icons][4]. You can
+customize this design in two ways:
 
-  1. Defining some global YAML configuration options, which is enough for simple
-     backends (as explained in this chapter).
-  2. Overriding the default templates and fragments used to render the backend,
-     which is useful for very complex backends (as explained in the following
-     chapters).
+  1. For **simple backends**, you can change the value of some YAML configuration
+     options, as explained in this chapter.
+  2. For **more complex backends**, you can override every template and fragment
+     used to render the backend pages, as explained in the following chapters.
 
-General design options are defined under the `design` YAML key.
+All the configuration options explained in this chapter are defined under the
+global `design` YAML key:
+
+```yaml
+easy_admin:
+    design:
+        # ... design configuration options
+```
 
 Changing the Main Backend Color
 -------------------------------
@@ -26,7 +34,7 @@ easy_admin:
 
 ![Using a custom brand color in the backend](../images/easyadmin-design-brand-color.png)
 
-The value of the `brand_color` option can use any of the valid CSS color formats:
+The value of the `brand_color` option can be any of the valid CSS color formats:
 
 ```yaml
 easy_admin:
@@ -57,9 +65,9 @@ easy_admin:
 Adding Custom Web Assets
 ------------------------
 
-Complex backends may require to load custom CSS and JavaScript files. Add the
+Complex backends may require to load your own CSS and JavaScript files. Add the
 `assets` option to define the paths of the web assets to load in the backend
-layout. All kinds of assets are supported and linked accordingly:
+pages. All kinds of assets are supported and linked accordingly:
 
 ```yaml
 easy_admin:
@@ -73,7 +81,7 @@ easy_admin:
                 # absolute secure URL
                 - 'https://example.org/css/admin3.css'
                 # absolute internal bundle URL
-                - '/bundles/acmedemo/css/admin4.css'
+                - '/bundles/user/css/admin4.css'
                 # relative internal bundle URL
                 - 'bundles/app/css/admin5.css'
             js:
@@ -81,16 +89,15 @@ easy_admin:
                 - '//example.org/js/admin1.js'
                 - 'http://example.org/js/admin2.js'
                 - 'https://example.org/js/admin3.js'
-                - '/bundles/acmedemo/js/admin4.js'
+                - '/bundles/user/js/admin4.js'
                 - 'bundles/app/js/admin5.js'
     # ...
 ```
 
 ### CSS Selectors
 
-Every backend page applies some `id` and `class` attributes to its `<body>`
-element. The `id` attribute allows you to target specific entity instances and
-its value follows this pattern:
+The `<body>` element of every backend page includes different `id` and `class`
+attributes to help you target your own styles. The `id` follows this pattern:
 
 | View   | `<body>` ID attribute
 | ------ | --------------------------------------------------------------------
@@ -99,8 +106,11 @@ its value follows this pattern:
 | `new`  | `easyadmin-new-<entity_name>`
 | `show` | `easyadmin-show-<entity_name>-<entity_id>`
 
-The `class` attribute allows you to target entire sections of the backend and
-their values follow these patterns:
+If you are editing for example the element with `id = 200` of the `User` entity,
+the `<body>` of that page will be `<body id="easyadmin-edit-User-200" ...>`.
+
+The pattern of the `class` attribute is different because it applies several
+CSS classes at the same time:
 
 | View   | `<body>` CSS class
 | ------ | --------------------------------------------------------------------
@@ -109,6 +119,9 @@ their values follow these patterns:
 | `new`  | `easyadmin new new-<entity_name>`
 | `show` | `easyadmin show show-<entity_name>`
 
+If you are displaying for example the listing of `User` entity elements, the
+`<body>` of that page will be `<body class="easyadmin list list-User" ...>`.
+
 Changing the favicon
 --------------------
 
@@ -116,9 +129,8 @@ A nice trick for backends is to change their favicon to better differentiate
 the backend from the public website (this is specially useful when opening lots
 of tabs in your browser).
 
-If you want to apply this technique to your backends, create the favicon image
-(using any common format: `.ico`, `.png`, `.gif`, `.jpg`) and set the `favicon`
-option:
+If you want to apply this technique, create the favicon image (using any common
+format: `.ico`, `.png`, `.gif`, `.jpg`) and set the `favicon` option:
 
 ```yaml
 easy_admin:
@@ -129,7 +141,7 @@ easy_admin:
 ```
 
 The value of the `favicon` option is used as the value of the `href` attribute
-of the `<link rel="icon">` element in the backend's layout.
+of the `<link rel="icon" ...>` element in the backend's layout.
 
 If your favicon uses an uncommon graphic format, you must define both the `path`
 of the favicon and its `mime_type`:
@@ -146,4 +158,9 @@ easy_admin:
 
 -------------------------------------------------------------------------------
 
-&larr; [Chapter 1. General Configuration](1-general-configuration.md)  |  [Chapter 3. List, Search and Show Views Configuration](3-list-search-show-configuration.md) &rarr;
+&larr; [Chapter 1. Basic Configuration](1-basic-configuration.md)  |  [Chapter 3. List, Search and Show Views Configuration](3-list-search-show-configuration.md) &rarr;
+
+[1]: https://github.com/almasaeed2010/AdminLTE
+[2]: https://github.com/twbs/bootstrap
+[3]: https://github.com/jquery/jquery
+[4]: https://github.com/FortAwesome/Font-Awesome

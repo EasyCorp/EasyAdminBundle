@@ -1,14 +1,9 @@
-Chapter 1. General Configuration
-================================
+Chapter 1. Basic Configuration
+==============================
 
-EasyAdmin proposes a hybrid approach to customize the backends:
-
-  * Use YAML-based configuration when it's simple to do so;
-  * Use PHP methods and Twig templates for more advanced customization.
-
-This chapter explains all the general YAML-based configuration options. The rest
-of chapters explain how to do extreme backend customizations using PHP methods
-and Twig templates.
+This chapter explains all the basic and general configuration options available
+for your backends. It's common to change some of these options as soon as the
+backend is created.
 
 Changing the URL Used to Access the Backend
 -------------------------------------------
@@ -40,8 +35,8 @@ easy_admin:
     # ...
 ```
 
-The contents of this option are not escaped before displaying them, so you can
-use HTML tags if needed:
+The contents of this option are not escaped in the template, so you can use
+HTML tags if needed:
 
 ```yaml
 # app/config/config.yml
@@ -75,7 +70,7 @@ access to your backend. Read the [Symfony Security documentation][2] to learn
 how to protect the backend URLs.
 
 When accessing a protected backend, EasyAdmin displays the name of user who is
-logged in the application. Otherwise it displays: "Anonymous User".
+logged in the application. Otherwise it displays *"Anonymous User"*.
 
 -------------------------------------------------------------------------------
 

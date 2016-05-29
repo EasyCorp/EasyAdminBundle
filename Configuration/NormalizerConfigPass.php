@@ -215,8 +215,8 @@ class NormalizerConfigPass implements ConfigPassInterface
 
     /**
      * It processes the optional 'controller' config option to check if the
-     * given controller exists. It supports controllers as services (@service_name)
-     * and regular controllers (AppBundle\Controller\ControllerName)
+     * given controller exists (it doesn't matter if it's a normal controller
+     * or if it's defined as a service).
      *
      * @param array $backendConfig
      *
@@ -228,17 +228,8 @@ class NormalizerConfigPass implements ConfigPassInterface
             if (isset($entityConfig['controller'])) {
                 $controller = trim($entityConfig['controller']);
 
-                if ('@' !== $controller[0]) {
-                    // this is a regular controller
-                    if (!class_exists($controller)) {
-                        throw new \InvalidArgumentException(sprintf('The "%s" class defined in the "controller" option of the "%s" entity does not exist.', $controller, $entityName));
-                    }
-                } else {
-                    // this is a controller as a service
-                    $controller = substr($controller, 1);
-                    if (!$this->container->has($controller)) {
-                        throw new \InvalidArgumentException(sprintf('The "@%s" service defined in the "controller" option of the "%s" entity does not exist.', $controller, $entityName));
-                    }
+                if (!$this->container->has($controller) && !class_exists($controller)) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" value defined in the "controller" option of the "%s" entity is not a valid controller. You must provide the FQCN of the controller class or the name of the controller defined as a service.', $controller, $entityName));
                 }
 
                 $backendConfig['entities'][$entityName]['controller'] = $controller;

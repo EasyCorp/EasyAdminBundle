@@ -1,0 +1,13 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            controller: app.controller
+
+services:
+    app.controller:
+        class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryControllerAsService
+        arguments: ['@request_stack']

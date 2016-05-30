@@ -11,16 +11,17 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomCategoryControllerAsService
 {
-    private $requestStack;
+    private $container;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(ContainerInterface $container)
     {
-        $this->requestStack = $requestStack;
+        $this->container = $container;
     }
 
     /**
@@ -29,7 +30,7 @@ class CustomCategoryControllerAsService
      */
     public function indexAction()
     {
-        $actionName = $this->requestStack->getMasterRequest()->query->get('action', 'list');
+        $actionName = $this->container->get('request_stack')->getMasterRequest()->query->get('action', 'list');
         $actionMethod = is_callable(array($this, $actionName.'CategoryAction')) ? $actionName.'CategoryAction' : $actionName.'Action';
 
         return $this->{$actionMethod}();

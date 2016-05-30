@@ -25,12 +25,20 @@ class CustomEntityControllerAsServiceTest extends AbstractTestCase
 
     public function testListAction()
     {
+        if (2 === Kernel::MAJOR_VERSION && 3 === Kernel::MINOR_VERSION) {
+            $this->markTestSkipped('This test is not compatible with this Symfony 2.3 because it requires the RequestStack service.');
+        }
+
         $this->requestListView();
         $this->assertContains('Overridden list action as a service.', $this->client->getResponse()->getContent());
     }
 
     public function testShowAction()
     {
+        if (2 === Kernel::MAJOR_VERSION && 3 === Kernel::MINOR_VERSION) {
+            $this->markTestSkipped('This test is not compatible with this Symfony 2.3 because it requires the RequestStack service.');
+        }
+
         $this->requestShowView();
         $this->assertContains('Overridden show action as a service.', $this->client->getResponse()->getContent());
     }

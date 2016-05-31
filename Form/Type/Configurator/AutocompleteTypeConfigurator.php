@@ -38,6 +38,10 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
             $options['multiple'] = true;
         }
 
+        if (null !== $metadata['label'] && !isset($options['label'])) {
+            $options['label'] = $metadata['label'];
+        }
+
         return $options;
     }
 

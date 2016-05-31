@@ -229,7 +229,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                 $controller = trim($entityConfig['controller']);
 
                 if (!$this->container->has($controller) && !class_exists($controller)) {
-                    throw new \InvalidArgumentException(sprintf('The "%s" value defined in the "controller" option of the "%s" entity is not a valid controller. You must provide the FQCN of the controller class or the name of the controller defined as a service.', $controller, $entityName));
+                    throw new \InvalidArgumentException(sprintf('The "%s" value defined in the "controller" option of the "%s" entity is not a valid controller. For a regular controller, set its FQCN as the value; for a controller defined as service, set its service name as the value.', $controller, $entityName));
                 }
 
                 $backendConfig['entities'][$entityName]['controller'] = $controller;

@@ -38,7 +38,7 @@ class AutocompleteTest extends AbstractTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The "entity" argument must contain the name of an entity managed by EasyAdmin ("ThisEntityDoesNotExist" given).
      */
     public function testAutocompleteWrongEntity()
@@ -48,7 +48,7 @@ class AutocompleteTest extends AbstractTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The "property" argument must contain the name of a property configured in the "edit" view of the "Product" entity ("ThisPropertyDoesNotExist" given).
      */
     public function testAutocompleteWrongProperty()
@@ -58,7 +58,7 @@ class AutocompleteTest extends AbstractTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The "name" property configured in the "edit" view of the "Product" entity can't be of type "easyadmin_autocomplete" because it's not related to another entity.
      */
     public function testAutocompleteWrongTargetEntity()
@@ -74,9 +74,9 @@ class AutocompleteTest extends AbstractTestCase
         $autocomplete = $this->client->getContainer()->get('easyadmin.autocomplete')->find('Category', 'parent', 'edit', 'Parent Categ');
 
         // the results are the first 15 parent categories
-        foreach (range(1, 15) as $i) {
-            $this->assertEquals($i, $autocomplete['results'][$i-1]['id']);
-            $this->assertEquals('Parent Category #'.$i, $autocomplete['results'][$i-1]['text']);
+        foreach (range(1, 15) as $i => $n) {
+            $this->assertEquals($n, $autocomplete['results'][$i]['id']);
+            $this->assertEquals('Parent Category #'.$n, $autocomplete['results'][$i]['text']);
         }
     }
 
@@ -92,6 +92,19 @@ class AutocompleteTest extends AbstractTestCase
             ),
             $autocomplete['results']
         );
+    }
+
+    public function testAutocompletePaginator()
+    {
+        $this->getBackendHomepage();
+        // testing page 2
+        $autocomplete = $this->client->getContainer()->get('easyadmin.autocomplete')->find('Category', 'parent', 'edit', 'Parent Categ', 2);
+
+        // the results are the seconds 15 parent categories
+        foreach (range(16, 30) as $i => $n) {
+            $this->assertEquals($n, $autocomplete['results'][$i]['id']);
+            $this->assertEquals('Parent Category #'.$n, $autocomplete['results'][$i]['text']);
+        }
     }
 
     public function provideMissingParameters()

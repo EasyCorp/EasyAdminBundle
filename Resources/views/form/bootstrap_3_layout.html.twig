@@ -456,12 +456,17 @@
 {# EasyAdminAutocomplete form type #}
 {% block easyadmin_autocomplete_row %}
     {# display the form widget, but don't display its label #}
-    {{ form_widget(form.autocomplete, { attr: attr|merge({ 'data-easyadmin-autocomplete-url' : path('easyadmin', {
-        action: 'autocomplete',
-        entity: easyadmin.entity.name,
-        property: easyadmin.field.fieldName,
-        view: easyadmin.view
-    })|raw })}) }}
+    {{ form_widget(form.autocomplete, {
+        attr: attr|merge({
+            'data-easyadmin-autocomplete-max-results': easyadmin_config('list.max_results'),
+            'data-easyadmin-autocomplete-url' : path('easyadmin', {
+                action: 'autocomplete',
+                entity: easyadmin.entity.name,
+                property: easyadmin.field.fieldName,
+                view: easyadmin.view
+            })|raw })
+        })
+    }}
 
     {{ form_errors(form.autocomplete) }}
 {% endblock easyadmin_autocomplete_row %}

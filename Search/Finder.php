@@ -21,19 +21,19 @@ class Finder
     /** @var QueryBuilder */
     private $queryBuilder;
 
-    public function __construct(QueryBuilder $queryBuilder)
+    /** @var Paginator */
+    private $paginator;
+
+    public function __construct(QueryBuilder $queryBuilder, Paginator $paginator)
     {
         $this->queryBuilder = $queryBuilder;
+        $this->paginator = $paginator;
     }
 
-    public function findByAllProperties(array $entityConfig, $searchQuery, $maxResults = self::MAX_RESULTS, $sortField = null, $sortDirection = null)
+    public function findByAllProperties(array $entityConfig, $searchQuery, $page = 1, $maxResults = self::MAX_RESULTS, $sortField = null, $sortDirection = null)
     {
         $queryBuilder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField, $sortDirection);
 
-        if (null !== $maxResults) {
-            $queryBuilder->setMaxResults($maxResults);
-        }
-
-        return $queryBuilder->getQuery()->getResult();
+        return $this->paginator->createOrmPaginator($queryBuilder, $page, $maxResults);
     }
 }

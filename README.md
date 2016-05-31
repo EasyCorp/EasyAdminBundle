@@ -44,13 +44,14 @@ read before using EasyAdmin.
 
 #### The Book
 
-  * [Chapter 1 - General configuration](Resources/doc/book/1-general-configuration.md)
+  * [Chapter 1 - Basic configuration](Resources/doc/book/1-basic-configuration.md)
   * [Chapter 2 - Design configuration](Resources/doc/book/2-design-configuration.md)
   * [Chapter 3 - `list`, `search` and `show` views configuration](Resources/doc/book/3-list-search-show-configuration.md)
   * [Chapter 4 - `edit` and `new` views configuration](Resources/doc/book/4-edit-new-configuration.md)
   * [Chapter 5 - Actions configuration](Resources/doc/book/5-actions-configuration.md)
   * [Chapter 6 - Menu configuration](Resources/doc/book/6-menu-configuration.md)
-  * [Chapter 7 - About this project](Resources/doc/book/7-about.md)
+  * [Chapter 7 - Creating complex and dynamic backends](Resources/doc/book/7-complex-dynamic-backends.md)
+  * [Chapter 8 - About this project](Resources/doc/book/8-about.md)
   * [Appendix - Full configuration reference](Resources/doc/book/configuration-reference.md)
 
 #### Tutorials

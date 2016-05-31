@@ -1,26 +1,25 @@
 Chapter 3. List, Search and Show Views Configuration
 ====================================================
 
-This chaper explains how to customize the `list`, `search` and `show` views.
-You'll learn all their configuration options, how to override or tweak their
-templates and how to completely override their behavior with custom controllers
-and Symfony events.
+This chapter explains how to customize the read-only views: `list`, `search` and
+`show`. You'll learn all their configuration options and how to override or
+tweak their templates.
 
 List, Search and Show Views
 ---------------------------
 
-The **List View** displays the list of items that match the given criteria and
-provides automatic pagination and column sorting:
+The **List View** displays the items that match the given criteria and provides
+automatic pagination and column sorting:
 
 ![List view interface](../images/easyadmin-list-view.png)
 
-The **Search View** is used to display the results of any query performed by
-the user. It reuses most of the design and features of the `list` view to
-ensure a consistent user experience:
+The **Search View** displays the results of any query performed by the user.
+It reuses most of the design and features of the `list` view to ensure a
+consistent user experience:
 
 ![Search view interface](../images/easyadmin-search-view.png)
 
-The **Show View** is used when displaying the contents of any entity:
+The **Show View** displays the contents of a given entity:
 
 ![Show view interface](../images/easyadmin-show-view.png)
 
@@ -28,13 +27,14 @@ General Configuration
 ---------------------
 
 In order to make examples more concise, this section only shows the
-configuration for the `list` view, but you can apply the same options to the
-other `search` and `show` views.
+configuration for the `list` view, but you can apply the exact same options to
+the other `search` and `show` views.
 
 ### Customize the Title of the Page
 
-Page titles display by default the name of the entity. Define the `title` option
-to set a custom page title:
+This option refers both to the value of the `<title>` element and to the visible
+title displayed at the top of the page. By default the title is just the name of
+the entity. Define the `title` option to set a custom page title:
 
 ```yaml
 # app/config/config.yml
@@ -48,7 +48,7 @@ easy_admin:
         # ...
 ```
 
-The `title` option can include the following special variables:
+The `title` value can include the following special variables:
 
   * `%entity_label%`, resolves to the value defined in the `label` option of
     the entity. If you haven't defined it, this value will be equal to the
@@ -61,20 +61,22 @@ The `title` option can include the following special variables:
     is called `entity_id`, it also works for primary keys with names different
     from `id`.
 
-Beware that, in Symfony applications, YAML values enclosed with `%` and `%` have
-a special meaning (they are considered container parameters). Escape these
-values doubling the `%` characters:
-
-```yaml
-easy_admin:
-    entities:
-        Customer:
-            class: AppBundle\Entity\Customer
-            label: 'Customers'
-            list:
-                title: '%%entity_name%% listing'
-        # ...
-```
+> **CAUTION**
+>
+> In Symfony applications, YAML values enclosed with `%` and `%` have a special
+> meaning (they are considered container parameters). Escape these values
+> doubling the `%` characters:
+>
+> ```yaml
+> easy_admin:
+>     entities:
+>         Customer:
+>             class: AppBundle\Entity\Customer
+>             label: 'Customers'
+>             list:
+>                 title: '%%entity_name%% listing'
+>         # ...
+> ```
 
 ### Customize the Number of Rows Displayed
 
@@ -91,9 +93,9 @@ easy_admin:
 
 ### Customize the Properties Displayed
 
-By default, the `show` view displays all the entity properties. The `list` and
-`search` views make some "smart guesses" to decide which columns to display to
-make listings look good.
+By default, the `show` view displays all the entity properties and the `list`
+and `search` views make some "smart guesses" to decide which columns to display
+to make listings look good.
 
 Use the `fields` option to explicitly set the properties to display:
 
@@ -108,8 +110,8 @@ easy_admin:
     # ...
 ```
 
-This option is useful to reorder the properties, because by default they are
-displayed in the same order as defined in the related Doctrine entity.
+This option is also useful to reorder the properties, because by default they
+are displayed in the same order as defined in the related Doctrine entity.
 
 In the case of the `search` view, this `fields` option defines the properties
 included in the search query. Otherwise, the query is performed on all entity
@@ -119,10 +121,9 @@ properties except those with special data types, such as `binary`, `blob`,
 Customize the Properties Appearance
 -----------------------------------
 
-When entity properties are not configured explicitly, the backend makes some
-smart guesses to display them with the most appropriate appearance according to
-their data types. If you prefer to control their appearance, start by using the
-extended field configuration:
+When entity properties are not configured explicitly, the backend displays them
+with the most appropriate appearance according to their data types. If you
+prefer to control their appearance, start by using the extended field configuration:
 
 ```yaml
 # app/config/config.yml
@@ -135,13 +136,13 @@ easy_admin:
     # ...
 ```
 
-Instead of using a string to define the name of the property (e.g. `'email'`)
-you have to define a hash with the name of the property (`{ property: 'email'
-}`) and the options you want to define for it (`{ ..., label: 'Contact' }`).
+Instead of using a string to define the property (e.g. `'email'`) you have to
+define a hash with the name of the property (`{ property: 'email' }`) and the
+options you want to define for it (`{ ..., label: 'Contact' }`).
 
 If your entity contains lots of properties, consider using the alternative YAML
-syntax for sequences to improve the legibility of your backend configuration.
-The following example is equivalent to the above example:
+sequence syntax to improve the legibility of your backend configuration. The
+following example is equivalent to the above example:
 
 ```yaml
 # app/config/config.yml
@@ -159,25 +160,25 @@ easy_admin:
 
 These are the options that you can define for each field:
 
-  * `property` (mandatory): the name of the entity property which you want to
-    display. The `property` option is the only mandatory option when using the
-    extended field configuration format.
-  * `label` (optional): the title displayed for the property. The default
-    title is the "humanized" version of the property name (e.g. `published` is
-    displayed as `Published` and `dateOfBirth` as `Date of birth`).
-  * `css_class` (optional): the CSS class applied to the HTML element that
-    encloses the field contents. In the `list` and `search` listings, this class
+  * `property` (mandatory): the name of the property to be displayed. This is
+    the only mandatory option when using the extended field configuration format.
+  * `label` (optional): the title displayed for the field (as the column name in
+    the `list` and `search` views and as the `<label>` element in the `show` view).
+    The default title is the "humanized" version of the property name (e.g.
+    `published` is displayed as `Published` and `dateOfBirth` as `Date of birth`).
+  * `css_class` (optional): the CSS class applied to the parent HTML element that
+    encloses the field contents. In the `list` and `search` views, this class
     is also applied to the `<th>` header of the column associated with this field.
   * `template` (optional): the name of the custom template used to render the
     contents of the field. This option is fully explained later in this chapter.
-  * `type` (optional): the type of data displayed. This allows to select the
-    most appropriate template to display the contents. The allowed values are:
+  * `type` (optional): the type of data stored in the property, which affects
+    how the contents are displayed. The allowed values are:
     * Any of the Doctrine types: `array`, `association`, `bigint`, `blob`,
       `boolean`, `date`, `datetime`, `datetimetz`, `decimal`, `float`, `guid`,
       `integer`, `json_array`, `object`, `simple_array`, `smallint`, `string`,
       `text`, `time`.
-    * Any of the custom EasyAdmin types: `image`, `toggle`, `raw` (they are
-      explained later in this chapter).
+    * Any of the custom EasyAdmin types: `email`, `image`, `raw`, `tel`,
+      `toggle`, `url` (they are explained later in this chapter).
 
 The fields of the `list` and `search` views define another option:
 
@@ -212,7 +213,7 @@ meaning of these formats):
 
 These default formats can be overridden in two ways: globally for all entities
 and locally for each entity property. The global `formats` option sets the
-formats for all entities:
+formats for all entities and their properties:
 
 ```yaml
 easy_admin:
@@ -347,8 +348,8 @@ easy_admin:
 The main limitation of virtual properties is that you cannot sort listings
 using these fields.
 
-EasyAdmin Data Types
---------------------
+Property Types Defined by EasyAdmin
+-----------------------------------
 
 In addition to the Doctrine data types, properties can use any of the following
 data types defined by EasyAdmin.
@@ -406,7 +407,7 @@ easy_admin:
 ### Toogle and Boolean Data Types
 
 If an entity is editable, the `list` view applies the `type: 'toggle'` option to
-all the boolean properties. This data type makes these properties be rendered as
+all its boolean properties. This data type makes these properties be rendered as
 "flip switches" that allow to toggle their values very easily:
 
 ![Advanced boolean fields](../images/easyadmin-boolean-field-toggle.gif)
@@ -442,10 +443,7 @@ modified from the `list` view:
 
 If any of your properties stores the URL or path of an image, this type allows
 you to display the actual image instead of its path. In most cases, you just
-need to set the `type` property to `image`.
-
-In the following example, the `photo` property is displayed as a `<img>` HTML
-element whose `src` attribute is the value stored in the property:
+need to set the `type` property to `image`:
 
 ```yaml
 easy_admin:
@@ -458,6 +456,9 @@ easy_admin:
                     # ...
     # ...
 ```
+
+In the above example, the `photo` property is displayed as a `<img>` HTML
+element whose `src` attribute is the value stored in the property.
 
 If the property stores relative paths, define the `base_path` option to set the
 path to be prefixed to the image path:
@@ -538,18 +539,23 @@ render them.
 EasyAdmin defines seven Twig templates to create its interface. These are the
 four templates related to `list`, `search` and `show` views:
 
-  * `layout`, the common layout that decorates the `list`, `edit`, `new` and
-    `show` templates;
+  * `layout`, the common layout that decorates the rest of the main templates;
   * `show`, renders the contents stored by a given entity;
   * `list`, renders the entity listings and the search results page;
   * `paginator`, renders the paginator of the `list` view.
 
-Depending on your needs you can override these templates in different ways.
+Depending on your needs you can override these templates in different ways:
+
+  * Override the templates **via configuration**, when you want to decide where
+    to store the custom templates;
+  * Override the templates **via convention**, which is faster to set up because
+    you store the custom templates in a specific directory defined by EasyAdmin.
 
 ### Selecting the Template to Render
 
-These are all the configuration options and paths checked before selecting the
-template to render (the first template which exists is used):
+Before selecting a template to render some contents, EasyAdmin looks for these
+configuration options and directory locations to check if your backend has
+overridden it (the first template which exists is used):
 
   1. `easy_admin.entities.<EntityName>.templates.<TemplateName>` configuration
      option.
@@ -558,14 +564,20 @@ template to render (the first template which exists is used):
   4. `app/Resources/views/easy_admin/<TemplateName>.html.twig`
   5. `@EasyAdmin/default/<TemplateName>.html.twig`
 
-The last one is the template path of the built-in templates and they are always
-available. The following sections explain the first four ways to customize the
-templates used by the backend.
+The last one is the path of the built-in templates and they are always available.
+The following sections explain the first four ways to customize the templates
+used by the backend.
+
+> **TIP**
+>
+> Regardless of how you override the default templates, it's convenient to check
+> first the variables provided by the backend to those templates. The easiest
+> way to do this is to include an empty `{{ dump() }}` call in your templates.
 
 #### Overriding the Default Templates By Configuration
 
-If you prefer to define your custom templates in some specific location of the
-application, it's more convenient to use the `templates` option.
+If you prefer to decide where to store your custom templates, use the `templates`
+option globally or for some specific entities.
 
 For example, to override the `paginator` template just for the `Customer` entity,
 create the `paginator.html.twig` template somewhere in your application and then,
@@ -577,9 +589,10 @@ easy_admin:
         Customer:
             # ...
             templates:
-                paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
-                # namespace syntax works too:
-                # paginator: '@App/Default/fragments/_paginator.html.twig'
+                # Twig namespace template syntax
+                paginator: '@App/Default/fragments/_paginator.html.twig'
+                # legacy template syntax works too:
+                # paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
 ```
 
 Similarly, to override some template for all entities, define the `templates`
@@ -589,9 +602,10 @@ option under the global `design` option:
 easy_admin:
     design:
         templates:
+            # Twig namespace template syntax
+            paginator: '@App/Default/fragments/_paginator.html.twig'
+            # legacy template syntax works too:
             paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
-            # namespace syntax works too:
-            # paginator: '@App/Default/fragments/_paginator.html.twig'
     entities:
         # ...
 ```
@@ -640,9 +654,10 @@ your-project/
 #### Tweaking the Design of the Default Templates
 
 Most often than not, customizing the design of the backend is a matter of just
-tweaking some element of the default templates. The easiest way to do that is
-to create a new template that extends from the default one and override just the
-specific Twig block you want to customize.
+tweaking some element of the default templates instead of overriding them
+completely. The easiest way to do that is to create a new template that extends
+from the default one and override just the specific Twig block you want to
+customize.
 
 Suppose you want to change the search form of the `list` view. First, create a
 new `list.html.twig` template as explained in the previous sections. Then, make
@@ -681,6 +696,8 @@ These are all the available templates for each property type:
   * `field_datetime.html.twig`
   * `field_datetimetz.html.twig`
   * `field_decimal.html.twig`
+  * `field_email.html.twig`, related to the special `email` data type defined by
+    EasyAdmin.
   * `field_float.html.twig`
   * `field_id.html.twig`, special template to render any property called `id`.
     This avoids formatting the value of the primary key as a numeric value, with
@@ -693,10 +710,14 @@ These are all the available templates for each property type:
   * `field_simple_array.html.twig`
   * `field_smallint.html.twig`
   * `field_string.html.twig`
+  * `field_tel.html.twig`, related to the special `tel` data type defined by
+    EasyAdmin.
   * `field_text.html.twig`
   * `field_time.html.twig`
   * `field_toggle.html.twig`, related to the special `toggle` data type defined
     by EasyAdmin for boolean properties.
+  * `field_url.html.twig`, related to the special `url` data type defined by
+    EasyAdmin.
 
 In addition, there are other templates defined to render special labels:
 
@@ -709,52 +730,14 @@ In addition, there are other templates defined to render special labels:
     happens when trying to access the value of the property.
 
 The same template overriding mechanism explained in the previous sections can be
-applied to customize the template used to render each property. All the built-in
-templates are defined under the `@EasyAdmin/default/...` namespace, so your own
-templates can extend from them.
+applied to customize the templates used to render each property. Therefore, you
+can override these templates globally or for each entity and you can do that
+defining the `template` configuration option or storing the templates in the
+`app/Resources/views/easy_admin/` directory.
 
-Suppose that in your backend you don't want to display a `NULL` text for `null`
-values and prefer to display a more human friendly value, such as `Undefined`.
-If you prefer convention over configuration, create this template in this exact
-location:
-
-```twig
-{# app/Resources/views/easy_admin/label_null.html.twig #}
-<span class="null">Undefined</span>
-```
-
-Create this other template to override the `label_null.html.twig` template just
-for one specific entity called `Invoice`:
-
-```twig
-{# app/Resources/views/easy_admin/Invoice/label_null.html.twig #}
-<span class="null">Unpaid</span>
-```
-
-If you prefer to store your custom templates somewhere in your application
-instead of the `app/Resources/views/easy_admin/` directory, use the `templates`
-option to define their location:
-
-```yaml
-easy_admin:
-    design:
-        templates:
-            label_null: 'AppBundle:Default:labels/null.html.twig'
-            # namespace syntax works too:
-            # label_null: '@App/Default/labels/null.html.twig'
-    # ...
-    entities:
-      Invoice:
-        templates:
-            label_null: 'AppBundle:Invoice:backend/label_null.html.twig'
-            # namespace syntax works too:
-            # label_null: '@App/Invoice/backend/label_null.html.twig'
-```
-
-Before customizing any of these templates, it's recommended to check out the
-contents of the default `field_*.html.twig` and `label_*.html.twig` templates,
-so you can learn about their features. Inside these templates you have access to
-the following variables:
+Before customizing these templates, it's recommended to check out the default
+`field_*.html.twig` and `label_*.html.twig` templates to learn about their
+features. Inside these templates you have access to the following variables:
 
   * `field_options`, an array with the options configured for this field in the
     backend configuration file.
@@ -766,13 +749,14 @@ the following variables:
 
 ### Rendering Entity Properties with Custom Templates
 
-The property templates explained in the previous section are applied to all the
-properties of the same type (strings, dates, arrays, etc.) However, when your
-backend is very complex, it may be useful to use a custom template just to
-render a single property of some entity.
+The `templates` property explained in the previous section is an "all or nothing"
+option. If you override for example the `field_integer.html.twig` template, the
+changes are applied to all the properties of type integer for that entity or
+the entire backend.
 
-To do so, define the name of the custom template in the `template` option of
-the property:
+However, when your backend is very complex, it may be useful to use a custom
+template just to render a single property of some entity. To do so, define the
+path of the custom template in the `template` option of the property:
 
 ```yaml
 easy_admin:
@@ -810,173 +794,10 @@ easy_admin:
 Custom templates receive the same parameters as built-in templates
 (`field_options`, `item`, `value` and `view`).
 
-Customizing the Behavior of `list`, `search` and `show` Views
--------------------------------------------------------------
-
-In the previous sections you've learned how to override or tweak the templates
-associated with each view or property. This is the most common way to customize
-backends because it's simple yet powerful. However, EasyAdmin provides a more
-advanced customization mechanism based on PHP to customize the behavior of the
-backend.
-
-Depending on your needs you can choose any of these two customization options
-(or combine both, if your backend is very complex):
-
-  * Customization based on **controller methods**, which is easy to set up but
-    requires you to put all the customization code in a single controller which
-    extends from the default `AdminController` provided by EasyAdmin.
-  * Customization based on **Symfony events**, which is hader to set up but
-    allows you define the customization code anywhere in your application.
-
-### Customization Based on Controller Methods
-
-This technique requires you to create a new controller in your Symfony
-application and make it extend from the default `AdminController`. Then you
-just add one or more methods in your controller to override the default ones.
-
-The first step is to **create a new controller** anywhere in your Symfony
-application. Its class name or namespace doesn't matter as long as it extends
-the default `AdminController`:
-
-```php
-// src/AppBundle/Controller/AdminController.php
-namespace AppBundle\Controller;
-
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
-
-class AdminController extends BaseAdminController
-{
-}
-```
-
-Then you must **update the routing configuration** to associate the `easyadmin`
-route to the new controller. Open the `app/config/routing.yml` file and change
-the `resource` option of the `easy_admin_bundle` route:
-
-```yaml
-# app/config/routing.yml
-easy_admin_bundle:
-    # resource: "@EasyAdminBundle/Controller/"           <-- REMOVE this line
-    resource: "@AppBundle/Controller/AdminController.php" # <-- ADD this line
-    type:     annotation
-    prefix:   /admin
-```
-
-Save the changes and the backend will start using your own controller. Keep
-reading the practical examples of the next sections to learn which methods you
-can override in the controller.
-
-#### Tweak the Default Actions for All Entities
-
-This use case is only useful for very complex backends which need to override
-the entire behavior of some default action. Define a method with the same name
-of the view which you want to override (`list`, `search` or `show`):
-
-```php
-// src/AppBundle/Controller/AdminController.php
-namespace AppBundle\Controller;
-
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
-
-class AdminController extends BaseAdminController
-{
-    public function listAction()   { ... }
-    public function searchAction() { ... }
-    public function showAction()   { ... }
-}
-```
-
-Take a look at the code of these methods in the original `AdminController` or
-extend from them to make your work easier.
-
-#### Tweak the Default Actions for a Specific Entity
-
-Before executing the general methods (`listAction()`, `showAction()`, etc.), the
-controller looks for the existence of methods created for the current entity. In
-particular, this is the syntax used to name these specific methods:
-
-```php
-public function list<EntityName>Action()   { ... }
-public function search<EntityName>Action() { ... }
-public function show<EntityName>Action()   { ... }
-```
-
-> **TIP**
->
-> Given the syntax of method names, it's recommended to use CamelCase notation
-> to set the entity names.
-
-Suppose that you want to customize the behavior of the `list` view just for the
-`Product` entity. Instead of overriding the general `listAction()` method and
-checking for the right entity, is easier to define this method in your
-controller:
-
-```php
-// ...
-class AdminController extends BaseAdminController
-{
-    public function listProductAction()
-    {
-        // ...
-    }
-}
-```
-
-### Customization Based on Symfony Events
-
-Lots of events are triggered during the execution of each backend action. Use
-Symfony's event listeners or event subscribers and hook to these events to
-modify the behavior of your backend.
-
-EasyAdmin events are defined in the `EasyAdmin\Event\EasyAdminEvents` class
-and these are the most relevant events for `list`, `search` and `show` views.
-
-#### Initialization related events
-
-The `initialize()` method is executed before any other action method
-(`listAction()`, etc.) It checks for some common errors and initializes the
-variables used by the rest of the methods (`$entity`, `$request`, `$config`,
-etc.)
-
-The two events related to this `initialize()` method are:
-
-  * `PRE_INITIALIZE`, executed just at the beginning of the method, before any
-    variable has been initialized and any error checked.
-  * `POST_INITIALIZE`, executed at the very end of the method, just before
-    executing the method associated with the current action.
-
-#### Views related events
-
-Each view defines two events which are dispatched respectively at the very
-beginning of each method and at the very end of it, just before executing the
-`$this->render()` instruction:
-
-  * `PRE_LIST`, `POST_LIST`
-  * `PRE_SEARCH`, `POST_SEARCH`
-  * `PRE_SHOW`, `POST_SHOW`
-
-#### The Event Object
-
-Event listeners and subscribers receive an event object based on the
-[GenericEvent class][2] defined by Symfony. The subject of the
-event depends on the current action:
-
-  * `show` action receives the current `$entity` object (this object is also
-    available in the event arguments as `$event['entity']`).
-  * `list` and `search` actions receive the `$paginator` object which contains
-    the collection of entities that meet the criteria of the current listing
-    (this object is also available in the event arguments as
-    `$event['paginator']`).
-
-In addition, the event arguments contain all the action method variables. You
-can access to them through the `getArgument()` method or via the array access
-provided by the `GenericEvent` class.
-
 -------------------------------------------------------------------------------
 
 &larr; [Chapter 2. Design Configuration](2-design-configuration.md)  |  [Chapter 4. Edit and New Views Configuration](4-edit-new-configuration.md) &rarr;
 
 [1]: ../tutorials/custom-property-options.md
-[2]: http://symfony.com/doc/current/components/event_dispatcher/generic_event.html
 [3]: http://php.net/manual/en/function.date.php
 [4]: http://php.net/manual/en/function.sprintf.php

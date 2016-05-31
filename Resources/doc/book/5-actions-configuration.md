@@ -20,16 +20,15 @@ These are the built-in actions included by default in each view:
 | `new`  | `list`
 | `show` | `delete`, `edit`, `list`
 
-In this chapter you'll learn how to enable/disable actions for entities and
-views, and how to customize the built-in actions. If you want to create your own
-actions read the [How to Define Custom Actions][1] tutorial.
+In this chapter you'll learn how to enable, disable and customize these built-in
+actions. If you want to create your own actions read the
+[How to Define Custom Actions][1] tutorial.
 
 Disable Actions for Some or All Entities
 ----------------------------------------
 
 Use the `disabled_actions` option to disable any action globally or just for
-some entity. For example, to disable the `show` action for all entities, define
-the following configuration:
+some entity. For example, to disable the `show` action for all entities:
 
 ```yaml
 easy_admin:
@@ -41,8 +40,8 @@ When an action is disabled, the backend no longer displays it in any of the
 views. Moreover, if some user tries to *hack* the URL to access to a disabled
 action, they'll see a *Forbidden Action* error page.
 
-The `disabled_actions` option can also be defined for each entity. If you want
-to disable the `new` action just for the `User` entity, use this configuration:
+The `disabled_actions` option can also be defined per entity. For example, to
+disable the `new` action just for the `User` entity:
 
 ```yaml
 easy_admin:
@@ -91,7 +90,7 @@ the default actions and the last one is explicitly configured).
 ### Removing Actions Globally
 
 Instead of adding new actions, sometimes you want to remove them. To do so, use
-the same `actions` option but prefix each action to remove with a dash (`-`):
+the same `actions` option but prefix each action name with a dash (`-`):
 
 ```yaml
 easy_admin:
@@ -193,13 +192,14 @@ Customizing the Actions Displayed in Each View
 ----------------------------------------------
 
 In addition to adding or removing actions, you can also configure their
-properties, such as their labels and icons. To do so, you must use the expanded configuration format:
+properties, such as their labels and icons. To do so, you must use the expanded
+configuration format:
 
 ```yaml
 easy_admin:
     list:
         # shortcut configuration format
-        # actions: ['edit']
+        actions: ['edit']
 
         # expanded configuration format
         actions:

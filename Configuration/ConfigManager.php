@@ -186,7 +186,7 @@ class ConfigManager
     private function doProcessConfig($backendConfig)
     {
         $configPasses = array(
-            new NormalizerConfigPass(),
+            new NormalizerConfigPass($this->container),
             new DesignConfigPass($this->container->get('twig'), $this->container->getParameter('kernel.debug')),
             new MenuConfigPass(),
             new ActionConfigPass(),

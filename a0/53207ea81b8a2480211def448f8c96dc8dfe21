@@ -1,0 +1,152 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-25T18:38:07Z
+
+I need ideas from the community to **help me solve a very strange issue**:
+
+1) After applying this PR, the demo application keeps working as usual.
+
+2) Travis says that tests pass for this PR
+
+![travis_tests](https://cloud.githubusercontent.com/assets/73419/15551889/54d6d938-22b8-11e6-90f3-cf92a96a6d3d.png)
+
+3) However, in my local computer tests are a mess:
+
+![local_tests](https://cloud.githubusercontent.com/assets/73419/15551903/5d720a0e-22b8-11e6-9891-161322c2dc64.png)
+
+---
+
+I'm getting errors like this one:
+
+![error_message](https://cloud.githubusercontent.com/assets/73419/15551911/676c3c50-22b8-11e6-9841-b3b7e1acacef.png)
+
+This is the full text stack trace:
+
+```
+[1] InvalidArgumentException: The controller for URI "/admin/" is not callable. Class "JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController" does not have a method "__invoke".
+    at n/a
+        in EasyAdminBundle/vendor/symfony/http-kernel/Controller/ControllerResolver.php line 79
+
+    at Symfony\Component\HttpKernel\Controller\ControllerResolver->getController(object(Request))
+        in EasyAdminBundle/vendor/symfony/http-kernel/Controller/TraceableControllerResolver.php line 46
+
+    at Symfony\Component\HttpKernel\Controller\TraceableControllerResolver->getController(object(Request))
+        in EasyAdminBundle/vendor/symfony/http-kernel/HttpKernel.php line 127
+
+    at Symfony\Component\HttpKernel\HttpKernel->handleRaw(object(Request), '1')
+        in EasyAdminBundle/vendor/symfony/http-kernel/HttpKernel.php line 62
+
+    at Symfony\Component\HttpKernel\HttpKernel->handle(object(Request), '1', true)
+        in EasyAdminBundle/vendor/symfony/http-kernel/Kernel.php line 169
+
+    at Symfony\Component\HttpKernel\Kernel->handle(object(Request))
+        in EasyAdminBundle/vendor/symfony/http-kernel/Client.php line 79
+
+    at Symfony\Component\HttpKernel\Client->doRequest(object(Request))
+        in EasyAdminBundle/vendor/symfony/framework-bundle/Client.php line 131
+
+    at Symfony\Bundle\FrameworkBundle\Client->doRequest(object(Request))
+        in EasyAdminBundle/vendor/symfony/browser-kit/Client.php line 317
+
+    at Symfony\Component\BrowserKit\Client->request('GET', '/admin/?action=list&entity=Category&view=list')
+        in EasyAdminBundle/Tests/Fixtures/AbstractTestCase.php line 62
+
+    at JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase->getBackendPage(array('action' => 'list', 'entity' => 'Category', 'view' => 'list'))
+        in EasyAdminBundle/Tests/Controller/CustomEntityControllerTest.php line 48
+
+    at JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller\CustomEntityControllerTest->requestListView()
+        in EasyAdminBundle/Tests/Controller/CustomEntityControllerTest.php line 28
+
+    at JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller\CustomEntityControllerTest->testListAction()
+        in  line
+
+    at ReflectionMethod->invokeArgs(object(CustomEntityControllerTest), array())
+        in phar:///usr/local/bin/phpunit/phpunit/Framework/TestCase.php line 910
+
+    at PHPUnit_Framework_TestCase->runTest()
+        in phar:///usr/local/bin/phpunit/phpunit/Framework/TestCase.php line 770
+
+    at PHPUnit_Framework_TestCase->runBare()
+        in phar:///usr/local/bin/phpunit/phpunit/Framework/TestResult.php line 685
+
+    at PHPUnit_Framework_TestResult->run(object(CustomEntityControllerTest))
+        in phar:///usr/local/bin/phpunit/phpunit/Framework/TestCase.php line 726
+
+    at PHPUnit_Framework_TestCase->run(object(PHPUnit_Framework_TestResult))
+        in phar:///usr/local/bin/phpunit/phpunit/Framework/TestSuite.php line 747
+
+    at PHPUnit_Framework_TestSuite->run(object(PHPUnit_Framework_TestResult))
+        in phar:///usr/local/bin/phpunit/phpunit/TextUI/TestRunner.php line 429
+
+    at PHPUnit_TextUI_TestRunner->doRun(object(PHPUnit_Framework_TestSuite), array('listGroups' => false, 'loader' => null, 'useDefaultConfiguration' => true, 'testSuffixes' => array('Test.php', '.phpt'), 'configuration' => 'EasyAdminBundle/phpunit.xml.dist'))
+        in phar:///usr/local/bin/phpunit/phpunit/TextUI/Command.php line 155
+
+    at PHPUnit_TextUI_Command->run(array('/usr/local/bin/phpunit', 'EasyAdminBundle/Tests/Controller/CustomEntityControllerTest.php'), true)
+        in phar:///usr/local/bin/phpunit/phpunit/TextUI/Command.php line 106
+
+    at PHPUnit_TextUI_Command::main()
+        in /usr/local/bin/phpunit line 514
+```
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-05-26T12:21:46Z
+
+I have tried to reproduce this bug locally, but all tests has been passed successfully. :disappointed:
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-05-26T18:43:23Z
+
+@javiereguiluz : Sorry I can't review this fully right now, however one quick question : Why not using a [`kernel.controller`](http://symfony.com/doc/current/components/http_kernel/introduction.html#the-kernel-controller-event) event listener to change the controller according to the entity config ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-26T18:49:16Z
+
+@ogizanagi that's a very nice proposal! I'll need to make some tests, specially for these two scenarios that should work:
+
+1) It's not mandatory for the custom controller to extend from the default `AdminController`
+2) If it extends from AdminController ... the `initialize()` method should be called automatically without the user having to do so.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-26T18:50:41Z
+
+@yceruto thanks for trying to reproduce the bug locally. I'm still suffering it. Let's see if it persists when I try @ogizanagi's idea.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-05-26T19:08:11Z
+
+https://github.com/javiereguiluz/EasyAdminBundle/pull/883#issuecomment-190855427 here is an example using `kernel.controller` listener
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-29T14:39:55Z
+
+**Update**: I've changed the code completely according to @yceruto and @ogizanagi comments and using @yceruto's code. Thanks guys! Your solution is infinitely better than mine.
+
+I still suffer the same weird issues with the tests locally ... but Travis says that everything is OK.
+
+I've tweaked the entire documentation and I've added a new "Chapter 7" to explain the override mechanism based on PHP. I think everything is better explained now. Please tell me what you think about it.
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-29T16:11:04Z
+
+**Update**: everything is working again on my local computer. The problems were caused by some modifications that I made in the Symfony code inside the `vendor/` directory and which I didn't remember. 😡
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-05-29T16:56:24Z
+
+:+1: LGTM and congratulations for the 1,000 stars! :tada:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-05-29T17:24:19Z
+
+@yceruto thanks ;) We achieved 1,000 stars yesterday ... but I'm waiting until tomorrow Monday to make some noise on Twitter 😄

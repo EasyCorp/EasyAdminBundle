@@ -1,0 +1,33 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2016-05-31T18:52:10Z
+
+**Updated:** Following the @ogizanagi's comments :+1: I think that is much better remaining the common form options into form type. Plus, was solved `false|default(...)` issue for empty label.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-05-31T20:56:14Z
+
+**Updated:** By default all options for compound form is passed to the autocomplete form child, BUT, when the label is empty we need settings the label for autocomplete form child, otherwise will be displayed "autocomplete" label value.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-06-01T14:01:50Z
+
+**Updated:** I try to follows the ready-witted @ogizanagi's comments:
+1. Not alter the FormView data (Done)
+2. Allow to override the behavior by replacing the form_label block in a custom template/form theme (when autocomplete label is null this change to parent form's name, so for `form_label` block this work as a custom label text)
+3. Avoid edge cases or forget about some particular behaviors present in default form themes (same point 2.)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-06-01T20:12:25Z
+
+After an exhaustive test I think all the premises aren't satisfied, so I've implemented the @ogizanagi's solution. :+1:  Thanks!!!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-06-01T22:56:17Z
+
+@yceruto: Thank you for your patience and for taking the time to study the different solutions. 👍
+I think this is now ready for the final review & merge :)

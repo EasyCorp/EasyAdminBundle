@@ -8,6 +8,8 @@ use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -18,6 +20,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class EasyAdminAutocompleteType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $preSetDataListener = function (FormEvent $event) use ($options) {
@@ -46,7 +51,7 @@ class EasyAdminAutocompleteType extends AbstractType
             $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
                 $options['id_reader']->getIdField() => $data['autocomplete'],
             ));
-            
+
             if (isset($options['choice_list'])) {
                 // clear choice list for SF < 3.0
                 $options['choice_list'] = null;
@@ -69,6 +74,15 @@ class EasyAdminAutocompleteType extends AbstractType
                     return $compound['autocomplete'];
                 }
             ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        // Add a custom block prefix to inner field to ease theming:
+        array_splice($view['autocomplete']->vars['block_prefixes'], -1, 0, 'easyadmin_autocomplete_inner');
     }
 
     /**

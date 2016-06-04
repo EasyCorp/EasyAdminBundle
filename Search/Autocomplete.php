@@ -43,10 +43,11 @@ class Autocomplete
      * @param string $property
      * @param string $view
      * @param string $query
+     * @param int    $page
      *
      * @return array
      */
-    public function find($entity, $property, $view, $query)
+    public function find($entity, $property, $view, $query, $page = 1)
     {
         if (empty($entity) || empty($property) || empty($view) || empty($query)) {
             return array('results' => array());
@@ -71,9 +72,9 @@ class Autocomplete
             throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field in the "%s" view of the "%s" entity).', $targetEntityClass, $property, $view, $entity));
         }
 
-        $entities = $this->finder->findByAllProperties($targetEntityConfig, $query, $backendConfig['list']['max_results']);
+        $paginator = $this->finder->findByAllProperties($targetEntityConfig, $query, $page, $backendConfig['list']['max_results']);
 
-        return array('results' => $this->processResults($entities, $targetEntityConfig));
+        return array('results' => $this->processResults($paginator->getCurrentPageResults(), $targetEntityConfig));
     }
 
     private function processResults($entities, $targetEntityConfig)

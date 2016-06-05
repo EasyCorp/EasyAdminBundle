@@ -71,13 +71,13 @@ class AdminController extends BaseAdminController
 
         // redirect to the 'list' view of the given entity
         return $this->redirectToRoute('easyadmin', array(
-            'view' => 'list',
+            'action' => 'list',
             'entity' => $this->request->query->get('entity'),
         ));
 
         // redirect to the 'edit' view of the given entity item
         return $this->redirectToRoute('easyadmin', array(
-            'view' => 'edit',
+            'action' => 'edit',
             'id' => $id,
             'entity' => $this->request->query->get('entity'),
         ));
@@ -170,13 +170,13 @@ class ProductController extends Controller
 
         // redirect to the 'list' view of the given entity
         return $this->redirectToRoute('easyadmin', array(
-            'view' => 'list',
+            'action' => 'list',
             'entity' => $this->request->query->get('entity'),
         ));
 
         // redirect to the 'edit' view of the given entity item
         return $this->redirectToRoute('easyadmin', array(
-            'view' => 'edit',
+            'action' => 'edit',
             'id' => $id,
             'entity' => $this->request->query->get('entity'),
         ));

@@ -20,3 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+-------------------------------------------------------------------------------
+
+This software includes and makes use of many other third-party Open-Source
+libraries. Browse the Resources/public/ directory to know the details of each
+library license.

@@ -2,7 +2,10 @@
 {% if value is iterable %}
     {% if 'show' == view %}
         {% if value|length > 0 %}
-            {% if value | length < 15 %}
+            {% if value|length > 15 %}
+                {# don't list elements for large collections #}
+                <span class="badge">{{ value|length }}</span>
+            {% else %}
                 <ul class="{{ value|length < 2 ? 'inline' }}">
                     {% for item in value %}
                         <li>
@@ -15,9 +18,6 @@
                         </li>
                     {% endfor %}
                 </ul>
-            {% else %}
-                {# Don't use list for large assoc. #}
-                <span class="badge">{{ value|length }}</span>
             {% endif %}
         {% else %}
             <div class="empty collection-empty">

@@ -91,6 +91,19 @@ easy_admin:
     # ...
 ```
 
+In addition, the `show` view displays a maximum of 10 items for fields related
+with other entities (e.g. if `Category` and `Product` entities are related, it
+displays a maximum of 10 products when browsing the details of some category).
+Define the `max_results` option under the global `show` key to change this value:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    show:
+        max_results: 20
+    # ...
+```
+
 ### Customize the Properties Displayed
 
 By default, the `show` view displays all the entity properties and the `list`

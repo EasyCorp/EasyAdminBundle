@@ -24,6 +24,7 @@ easy_admin:
                 label: 'Global Edit Label'
                 css_class: 'btn btn-primary'
                 icon: global-edit-icon
+        max_results: 10
     new:
         actions:
             list:

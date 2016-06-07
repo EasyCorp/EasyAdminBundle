@@ -143,6 +143,10 @@
                 <source>form.are_you_sure</source>
                 <target>No has guardado los cambios realizados en este formulario.</target>
             </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} existe otro elemento que no se muestra en este listado|]1,Inf] existen otros %count% elementos que no se muestran en este listado]]></target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

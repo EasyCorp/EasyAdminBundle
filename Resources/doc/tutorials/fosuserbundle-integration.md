@@ -61,6 +61,7 @@ the same way you manage any property of any other entity:
 easy_admin:
     entities:
         User:
+            class: AppBundle\Entity\User
             form:
                 fields: ['enabled', 'username', 'email', 'roles', 'lastLogin']
 ```

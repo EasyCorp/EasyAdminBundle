@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-06-08T18:26:24Z
+
+Something escapes me ... Weren't those changes included in #1195 ?
+
+So...seems totally legit 😄
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-06-08T18:27:07Z
+
+Looks like a bad rebase/merge conflict resolving: https://github.com/javiereguiluz/EasyAdminBundle/commit/0a9132e3b705f7698bf4c2e372fb8d0bd7636c80
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-06-08T19:39:27Z
+
+@ogizanagi thanks for validating this change ... and I'm sorry @yceruto for having lost some of your changes while rebasing/merging!

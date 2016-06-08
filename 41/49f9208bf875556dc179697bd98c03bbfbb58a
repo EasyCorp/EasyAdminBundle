@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-06-08T12:44:00Z
+
+No luck. PHP 5.3 keeps failing:
+
+```
+Loading composer repositories with package information Updating dependencies
+(including require-dev)
+
+PHP Fatal error:  Allowed memory size of 1073741824 bytes exhausted (tried to
+allocate 71 bytes) in phar:///home/travis/.phpenv/versions/5.3.29/bin/composer/s
+rc/Composer/DependencyResolver/RuleWatchGraph.php on line 47
+
+Fatal error: Allowed memory size of 1073741824 bytes exhausted (tried to
+allocate 71 bytes) in phar:///home/travis/.phpenv/versions/5.3.29/bin/composer/s
+rc/Composer/DependencyResolver/RuleWatchGraph.php on line 47
+
+Check https://getcomposer.org/doc/articles/troubleshooting.md#memory-limit-
+errors for more info on how to handle out of memory errors.
+
+The command "composer update --prefer-dist --no-interaction $COMPOSER_FLAGS"
+failed and exited with 255 during .
+```

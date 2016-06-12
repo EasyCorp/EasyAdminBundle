@@ -396,16 +396,96 @@ button.btn:active {
 {% endif %}
 }
 
-{# Field: checkbox
-   ------------------------------------------------------------------------- #}
-form:not(.form-horizontal) .field-checkbox label {
-    padding-top: 23px;
-}
-
 {# Field: collection
    ------------------------------------------------------------------------- #}
 .field-collection .collection-empty {
     margin: .5em 0;
+}
+
+{# Field: special Form Fields (dividers, groups, sections)
+   ------------------------------------------------------------------------- #}
+.field-divider hr {
+    margin-top: 15px;
+    margin-bottom: 26px;
+    border: 0;
+    border-top: 1px solid;
+{% if 'dark' == color_scheme %}
+    border-top-color: #DDD;
+{% elseif 'light' == color_scheme %}
+    border-top-color: {{ colors.gray_lighter }};
+{% endif %}
+}
+.field-group .field-divider hr {
+{% if 'dark' == color_scheme %}
+    border-top-color: #DDD;
+{% elseif 'light' == color_scheme %}
+    border-top-color: #EEE;
+{% endif %}
+}
+
+.field-section {
+    margin: 16px 0 15px;
+}
+.field-section h2 {
+{% if 'dark' == color_scheme %}
+    border-bottom: 1px solid {{ colors.gray_light }};
+    color: {{ colors.gray_dark }};
+{% elseif 'light' == color_scheme %}
+    border-bottom: 1px solid #EEE;
+    color: {{ colors.gray_darker }};
+{% endif %}
+    font-size: 16px;
+    padding-bottom: 6px;
+}
+.field-section h2 i {
+{% if 'dark' == color_scheme %}
+    color: #555;
+{% elseif 'light' == color_scheme %}
+    color: #777;
+{% endif %}
+    margin-right: 2px;
+}
+.field-section p.help-block {
+    margin: 8px 0 0;
+}
+
+.field-group .box {
+{% if 'dark' == color_scheme %}
+    border: 1px solid #DDD;
+{% elseif 'light' == color_scheme %}
+    border: 1px solid #EEE;
+{% endif %}
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+.field-group .box-header i {
+{% if 'dark' == color_scheme %}
+    color: #555;
+{% elseif 'light' == color_scheme %}
+    color: #777;
+{% endif %}
+    margin-right: 2px;
+}
+.field-group .box-header.with-border {
+{% if 'dark' == color_scheme %}
+    background: #F0F0F0;
+    border-bottom-color: #DDD;
+{% elseif 'light' == color_scheme %}
+    background: {{ colors.gray_light }};
+    border-bottom-color: #EEE;
+    color: {{ colors.gray_darker }};
+{% endif %}
+    padding: 11px 10px 9px;
+}
+{% if 'light' == color_scheme %}
+.field-group .box-header .box-title {
+    color: #777;
+}
+{% endif %}
+.field-group .box-body {
+    padding: 15px 15px 5px;
+}
+.field-group .box-body > .help-block {
+    margin-top: 0;
 }
 
 {# Select2 widget
@@ -522,6 +602,13 @@ form:not(.form-horizontal) .field-checkbox label {
     background: {{ colors.gray_lighter }};
     border-top: 1px solid {{ colors.gray_light }};
     margin-top: 1.5em;
+}
+
+{# Utils
+   ------------------------------------------------------------------------- #}
+.newrow, .new-row {
+    clear: both;
+    display: block;
 }
 
 {# -------------------------------------------------------------------------
@@ -1206,6 +1293,15 @@ body.error .error-message {
 
     body.edit .form-horizontal #form-actions-row {
         margin-left: 16.66666667%;
+    }
+
+    {# Field: checkbox
+       ------------------------------------------------------------------------- #}
+    .form-vertical .field-checkbox label {
+        padding-top: 23px;
+    }
+    .form-vertical .field-group .field-checkbox label {
+        padding-top: 0;
     }
 }
 {% endautoescape %}

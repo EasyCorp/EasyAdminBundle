@@ -67,6 +67,8 @@ class EasyAdminFormType extends AbstractType
             $formFieldType = LegacyFormHelper::getType($metadata['fieldType']);
             $builder->add($name, $formFieldType, $formFieldOptions);
         }
+
+        $builder->add('xxx', 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminDividerType', array('mapped' => false, 'required' => false));
     }
 
     /**

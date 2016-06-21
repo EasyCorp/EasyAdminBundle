@@ -394,10 +394,10 @@ By default, the entity's primary key is used for the `id` property and the
 must define the `__toString()` method in all the entities used in autocomplete
 form fields.
 
-Advanced Design Configuration
------------------------------
+Advanced Form Design
+--------------------
 
-### Customizing the Form Theme
+### Selecting the Form Theme
 
 By default, forms are displayed using the **horizontal style** defined by the
 Bootstrap 3 CSS framework:
@@ -450,31 +450,95 @@ easy_admin:
     # ...
 ```
 
-### Multi-Column Forms
+### Customizing the Form Layout
 
-EasyAdmin doesn't support multi-column form layouts. However, you can use the
-`css_class` option of each form field to create these advanced layouts:
+The default form layout is pretty basic: fields are displayed in the same order
+they were defined and they span the full browser window width. However, for more
+advanced backends forms can include elements such as dividers, fieldsets and
+sections. Moreover, you can combine them all to create complex form layouts.
 
-![Multi-column form](../images/easyadmin-form-multi-column.png)
+#### Form Dividers
 
-The configuration used to display this form is the following:
+This is the simplest form element because it just displays a straight horizontal
+line. It's useful to easily divide fields in long forms:
 
- ```yaml
+```yaml
 easy_admin:
-    design:
-        form_theme: 'vertical'
     entities:
-        Product:
-            # ...
+        Customer:
+            class: AppBundle\Entity\Customer
             form:
                 fields:
-                    - { property: name, css_class: 'col-sm-12' }
-                    - { property: price, type: 'number', css_class: 'col-sm-6' }
-                    - { property: 'ean', css_class: 'col-sm-6' }
-                    - { property: 'enabled', css_class: 'col-sm-12' }
-                    - { property: 'description', css_class: 'col-sm-12' }
+                    - id
+                    - { type: 'divider' }
+                    - name
+                    - surname
+                    - { type: 'divider' }
+                    - email
+                    - phoneNumber
     # ...
 ```
+
+.. SCREENSHOT showing a form divider in action
+
+#### Form Fieldsets
+
+This element groups several form fields under a common title and it can optionally
+define an icon, a help message and a CSS class:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields:
+                    - id
+                    - { type: 'fieldset', label: 'User Details' }
+                    - name
+                    - surname
+                    - { type: 'fieldset', label: 'Contact information', icon: 'contact',
+                        help: 'Phone number is preferred', css_class: 'danger' }
+                    - email
+                    - phoneNumber
+    # ...
+```
+
+A form that includes fieldsets is still displayed as a single form that spans
+the entire browser window width. Multi-column forms are created with "sections"
+as explained below.
+
+.. SCREENSHOT showing a form fieldset in action
+
+### Form Sections
+
+This element groups some form fields and displays them separately from the rest
+of the form fields. It's useful to create multi-column forms and to create very
+advanced layouts.
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields:
+                    - { type: 'section', label: 'Admin', css_class: 'danger' }
+                    - id
+                    - { type: 'section', css_class: 'col-sm-4', help: 'Basic user information' }
+                    - name
+                    - surname
+                    - { type: 'section', label: 'Contact information', icon: 'contact',
+                        help: 'Phone number is preferred', css_class: 'col-sm-4' }
+                    - email
+                    - phoneNumber
+    # ...
+```
+
+.. SCREENSHOT showing a form section in action
+
+Advanced Design Configuration
+-----------------------------
 
 ### Default Templates
 

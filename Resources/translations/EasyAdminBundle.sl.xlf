@@ -139,6 +139,10 @@
                 <source>errors</source>
                 <target>Napaka|Napake</target>
             </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Sprememb, ki ste jih naredili na tem obrazcu, niste shranili.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

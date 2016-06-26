@@ -143,7 +143,7 @@ What's Next?
 Do you have any question about this bundle? [Open an issue][4] in our official
 repository or [post a question][5] in StackOverflow.
 
-[1]: ./book/1-general-configuration.md
+[1]: ./book/configuration-reference.md
 [2]: https://github.com/javiereguiluz/easy-admin-demo
 [3]: ./tutorials/
 [4]: https://github.com/javiereguiluz/EasyAdminBundle/issues

@@ -35,6 +35,8 @@
 {% block body_javascript %}
     {{ parent() }}
 
+    <script src="{{ asset('bundles/easyadmin/javascript/select2/i18n/' ~ app.request.locale ~ '.js') }}"></script>
+
     <script type="text/javascript">
         $(function() {
             $('.edit-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
@@ -53,7 +55,8 @@
 
             // Select2 widget is only enabled for the <select> elements which explicitly ask for it
             $('#main').find('form select[data-widget="select2"]').select2({
-                theme: 'bootstrap'
+                theme: 'bootstrap',
+                language: '{{ app.request.locale }}'
             });
         });
     </script>

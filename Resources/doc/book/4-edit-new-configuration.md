@@ -454,8 +454,8 @@ easy_admin:
 
 The default form layout is pretty basic: fields are displayed in the same order
 they were defined and they span the full browser window width. However, for more
-advanced backends forms can include elements such as dividers, fieldsets and
-sections. Moreover, you can combine them all to create complex form layouts.
+advanced backends forms can include elements such as dividers, sections and
+groups. Moreover, you can combine them all to create complex form layouts.
 
 #### Form Dividers
 
@@ -481,7 +481,7 @@ easy_admin:
 
 .. SCREENSHOT showing a form divider in action
 
-#### Form Fieldsets
+#### Form Sections
 
 This element groups several form fields under a common title and it can optionally
 define an icon, a help message and a CSS class:
@@ -494,23 +494,23 @@ easy_admin:
             form:
                 fields:
                     - id
-                    - { type: 'fieldset', label: 'User Details' }
+                    - { type: 'section', label: 'User Details' }
                     - name
                     - surname
-                    - { type: 'fieldset', label: 'Contact information', icon: 'contact',
+                    - { type: 'section', label: 'Contact information', icon: 'contact',
                         help: 'Phone number is preferred', css_class: 'danger' }
                     - email
                     - phoneNumber
     # ...
 ```
 
-A form that includes fieldsets is still displayed as a single form that spans
-the entire browser window width. Multi-column forms are created with "sections"
+A form that includes sections is still displayed as a single form that spans
+the entire browser window width. Multi-column forms are created with "groups"
 as explained below.
 
 .. SCREENSHOT showing a form fieldset in action
 
-### Form Sections
+### Form Groups
 
 This element groups some form fields and displays them separately from the rest
 of the form fields. It's useful to create multi-column forms and to create very
@@ -523,12 +523,12 @@ easy_admin:
             class: AppBundle\Entity\Customer
             form:
                 fields:
-                    - { type: 'section', label: 'Admin', css_class: 'danger' }
+                    - { type: 'group', label: 'Admin', css_class: 'danger' }
                     - id
-                    - { type: 'section', css_class: 'col-sm-4', help: 'Basic user information' }
+                    - { type: 'group', css_class: 'col-sm-4', help: 'Basic user information' }
                     - name
                     - surname
-                    - { type: 'section', label: 'Contact information', icon: 'contact',
+                    - { type: 'group', label: 'Contact information', icon: 'contact',
                         help: 'Phone number is preferred', css_class: 'col-sm-4' }
                     - email
                     - phoneNumber

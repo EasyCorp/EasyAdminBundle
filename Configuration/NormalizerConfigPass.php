@@ -32,8 +32,9 @@ class NormalizerConfigPass implements ConfigPassInterface
     public function process(array $backendConfig)
     {
         $backendConfig = $this->normalizeEntityConfig($backendConfig);
-        $backendConfig = $this->normalizeFormViewConfig($backendConfig);
+        $backendConfig = $this->normalizeFormConfig($backendConfig);
         $backendConfig = $this->normalizeViewConfig($backendConfig);
+        $backendConfig = $this->normalizeFormDesignConfig($backendConfig);
         $backendConfig = $this->normalizePropertyConfig($backendConfig);
         $backendConfig = $this->normalizeActionConfig($backendConfig);
         $backendConfig = $this->normalizeControllerConfig($backendConfig);
@@ -74,7 +75,7 @@ class NormalizerConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function normalizeFormViewConfig(array $backendConfig)
+    private function normalizeFormConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             if (isset($entityConfig['form'])) {
@@ -114,6 +115,40 @@ class NormalizerConfigPass implements ConfigPassInterface
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * Normalizes the configuration of the special elements that forms may include
+     * to create advanced designs (such as dividers and fieldsets).
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function normalizeFormDesignConfig(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (array('edit', 'new') as $view) {
+                $designElementNumber = 0;
+                foreach ($entityConfig[$view]['fields'] as $i => $field) {
+                    if (!isset($field['property']) && isset($field['type'])) {
+                        // allowed form design elements are 'divider', 'section' and 'group'
+                        // assign them a random property name that will be treated
+                        // later as an unmapped form field
+                        $field['property'] = sprintf('_easyadmin_form_design_element_%s_%d', $field['type'], ++$designElementNumber);
+
+                        // transform the form type shortcuts into the real form type short names
+                        if (in_array($field['type'], array('divider', 'group', 'section'))) {
+                            $field['type'] = 'easyadmin_'.$field['type'];
+                        }
+                    }
+
+                    $backendConfig['entities'][$entityName][$view]['fields'][$i] = $field;
+                }
+            }
         }
 
         return $backendConfig;

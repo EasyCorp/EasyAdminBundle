@@ -65,10 +65,18 @@ class EasyAdminFormType extends AbstractType
             }
 
             $formFieldType = LegacyFormHelper::getType($metadata['fieldType']);
+
+            // these are 'fake' form fields used to create the design elements of
+            // the complex form layouts: define them as unmapped and non-required
+            if (preg_match('/^_easyadmin_form_design_element_.*/', $metadata['property'])) {
+                $formFieldOptions['mapped'] = false;
+                $formFieldOptions['required'] = false;
+            }
+
             $builder->add($name, $formFieldType, $formFieldOptions);
         }
 
-        $builder->add('xxx', 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminDividerType', array('mapped' => false, 'required' => false));
+        $builder->add('xxx', 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupCloseType', array('mapped' => false, 'required' => false));
     }
 
     /**

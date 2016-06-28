@@ -416,7 +416,7 @@
         <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
 
         {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
-            <div class="{{ field.vars.easyadmin.field.css_class|default('col-xs-12') }}">
+            <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
                 {{ form_row(field) }}
             </div>
         {% endfor %}
@@ -479,3 +479,43 @@
         <hr>
     </div>
 {% endblock easyadmin_divider_row %}
+
+{# EasyAdminSection form type #}
+{% block easyadmin_section_row %}
+    <div class="section {{ easyadmin.field.css_class|default('') }}">
+        {% if easyadmin.field.label|default(false) or easyadmin.field.icon|default(false) %}
+            <h2>
+                {% if easyadmin.field.icon|default(false) %}<i class="fa fa-{{ easyadmin.field.icon }}"></i>{% endif %}
+                {{ easyadmin.field.label|default('') }}
+            </h2>
+        {% endif %}
+
+        {% if easyadmin.field.help|default(false) %}
+            <p class="help-block">{{ easyadmin.field.help|nl2br }}</p>
+        {% endif %}
+    </div>
+{% endblock easyadmin_section_row %}
+
+{# EasyAdminGroup form type #}
+{% block easyadmin_group_row %}
+    <div class="box box-default {{ easyadmin.field.css_class|default('') }}">
+        {% if easyadmin.field.label|default(false) or easyadmin.field.icon|default(false) %}
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ easyadmin.field.label }}</h3>
+                {% if easyadmin.field.icon|default(false) %}
+                    <div class="box-tools pull-left">
+                        <i class="fa fa-{{ easyadmin.field.icon }}"></i>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="box-body">
+            {% if easyadmin.field.help|default(false) %}
+                <p class="help-block">{{ easyadmin.field.help }}</p>
+            {% endif %}
+{% endblock easyadmin_group_row %}
+
+{% block easyadmin_group_close_row %}
+        </div>
+    </div>
+{% endblock easyadmin_group_close_row %}

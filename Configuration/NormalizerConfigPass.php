@@ -34,8 +34,8 @@ class NormalizerConfigPass implements ConfigPassInterface
         $backendConfig = $this->normalizeEntityConfig($backendConfig);
         $backendConfig = $this->normalizeFormConfig($backendConfig);
         $backendConfig = $this->normalizeViewConfig($backendConfig);
-        $backendConfig = $this->normalizeFormDesignConfig($backendConfig);
         $backendConfig = $this->normalizePropertyConfig($backendConfig);
+        $backendConfig = $this->normalizeFormDesignConfig($backendConfig);
         $backendConfig = $this->normalizeActionConfig($backendConfig);
         $backendConfig = $this->normalizeControllerConfig($backendConfig);
 
@@ -121,40 +121,6 @@ class NormalizerConfigPass implements ConfigPassInterface
     }
 
     /**
-     * Normalizes the configuration of the special elements that forms may include
-     * to create advanced designs (such as dividers and fieldsets).
-     *
-     * @param array $backendConfig
-     *
-     * @return array
-     */
-    private function normalizeFormDesignConfig(array $backendConfig)
-    {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'new') as $view) {
-                $designElementNumber = 0;
-                foreach ($entityConfig[$view]['fields'] as $i => $field) {
-                    if (!isset($field['property']) && isset($field['type'])) {
-                        // allowed form design elements are 'divider', 'section' and 'group'
-                        // assign them a random property name that will be treated
-                        // later as an unmapped form field
-                        $field['property'] = sprintf('_easyadmin_form_design_element_%s_%d', $field['type'], ++$designElementNumber);
-
-                        // transform the form type shortcuts into the real form type short names
-                        if (in_array($field['type'], array('divider', 'group', 'section'))) {
-                            $field['type'] = 'easyadmin_'.$field['type'];
-                        }
-                    }
-
-                    $backendConfig['entities'][$entityName][$view]['fields'][$i] = $field;
-                }
-            }
-        }
-
-        return $backendConfig;
-    }
-
-    /**
      * Fields can be defined using two different formats:.
      *
      * # Config format #1: simple configuration
@@ -183,7 +149,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
                 $fields = array();
-                foreach ($entityConfig[$view]['fields'] as $field) {
+                foreach ($entityConfig[$view]['fields'] as $i => $field) {
                     if (!is_string($field) && !is_array($field)) {
                         throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" view of the "%s" entity can only be strings or arrays.', $view, $entityConfig['class']));
                     }
@@ -193,9 +159,9 @@ class NormalizerConfigPass implements ConfigPassInterface
                         $fieldConfig = array('property' => $field);
                     } else {
                         // Config format #1: field is an array that defines one or more
-                        // options. Check that the mandatory 'property' option is set
-                        if (!array_key_exists('property', $field)) {
-                            throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" view of the "%s" entity does not define the "property" option.', $view, $entityConfig['class']));
+                        // options. Check that either 'property' or 'type' option is set
+                        if (!array_key_exists('property', $field) && !array_key_exists('type', $field)) {
+                            throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" view of the "%s" entity does not define neither of the mandatory options ("property" or "type").', $view, $entityConfig['class']));
                         }
 
                         $fieldConfig = $field;
@@ -209,11 +175,62 @@ class NormalizerConfigPass implements ConfigPassInterface
                         }
                     }
 
-                    $fieldName = $fieldConfig['property'];
+                    $fieldName = isset($fieldConfig['property']) ? $fieldConfig['property'] : 'field_'.$i;
                     $fields[$fieldName] = $fieldConfig;
                 }
 
                 $backendConfig['entities'][$entityName][$view]['fields'] = $fields;
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * Normalizes the configuration of the special elements that forms may include
+     * to create advanced designs (such as dividers and fieldsets).
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function normalizeFormDesignConfig(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (array('edit', 'new') as $view) {
+                $realFormfields = array();
+                $designElementNumber = 0;
+                $currentFormGroup = null;
+
+                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
+                    // this is a form design element instead of a regular property
+                    if (!isset($fieldConfig['property']) && isset($fieldConfig['type'])) {
+                        // 'group' form elements are not transformed into form types
+                        // the trick is to assign this group as an option to the form fields defined after this group
+                        if ('group' === $fieldConfig['type']) {
+                            // a 'group' element defines the form group where the
+                            // following form fields are displayed (until a new 'group' is found)
+                            $currentFormGroup = sprintf('_easyadmin_form_group_%s', ++$designElementNumber);
+
+                            continue;
+                        }
+
+                        // 'divider' and 'section' elements are transformed into special form types
+                        if (in_array($fieldConfig['type'], array('divider', 'section'))) {
+                            // assign them a random property name (they are later added as unmapped form fields)
+                            $fieldConfig['property'] = sprintf('_easyadmin_form_design_element_%s_%d', $fieldConfig['type'], ++$designElementNumber);
+
+                            // transform the form type shortcuts into the real form type short names
+                            $fieldConfig['type'] = 'easyadmin_'.$fieldConfig['type'];
+                        }
+                    }
+
+                    $fieldConfig['form_group'] = $currentFormGroup;
+
+                    $realFormfields[$fieldName] = $fieldConfig;
+                }
+
+                $backendConfig['entities'][$entityName][$view]['fields'] = $realFormfields;
             }
         }
 

@@ -75,8 +75,6 @@ class EasyAdminFormType extends AbstractType
 
             $builder->add($name, $formFieldType, $formFieldOptions);
         }
-
-        $builder->add('xxx', 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupCloseType', array('mapped' => false, 'required' => false));
     }
 
     /**

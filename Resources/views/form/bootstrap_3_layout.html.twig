@@ -513,9 +513,6 @@
             {% if easyadmin.field.help|default(false) %}
                 <p class="help-block">{{ easyadmin.field.help }}</p>
             {% endif %}
-{% endblock easyadmin_group_row %}
-
-{% block easyadmin_group_close_row %}
         </div>
     </div>
-{% endblock easyadmin_group_close_row %}
+{% endblock easyadmin_group_row %}

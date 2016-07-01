@@ -16,6 +16,8 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -33,6 +35,8 @@ class EasyAdminFormType extends AbstractType
 
     /** @var TypeConfiguratorInterface[] */
     private $configurators;
+
+    private $formGroups = array();
 
     /**
      * @param ConfigManager               $configManager
@@ -53,6 +57,7 @@ class EasyAdminFormType extends AbstractType
         $view = $options['view'];
         $entityConfig = $this->configManager->getEntityConfig($entity);
         $entityProperties = $entityConfig[$view]['fields'];
+        $currentFormGroup = null;
 
         foreach ($entityProperties as $name => $metadata) {
             $formFieldOptions = $metadata['type_options'];
@@ -66,15 +71,35 @@ class EasyAdminFormType extends AbstractType
 
             $formFieldType = LegacyFormHelper::getType($metadata['fieldType']);
 
-            // these are 'fake' form fields used to create the design elements of
-            // the complex form layouts: define them as unmapped and non-required
-            if (preg_match('/^_easyadmin_form_design_element_.*/', $metadata['property'])) {
+            // if the form field is a special 'group' design element, don't add to the
+            // form fields, set it as the current form group (for the subsequent form
+            // fields) and store the form 'group' details in a special property
+            if ('JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType' === $formFieldType) {
+                $currentFormGroup = $metadata['fieldName'];
+                $this->formGroups[$currentFormGroup] = $metadata;
+
+                continue;
+            }
+
+            $formFieldOptions['attr']['formGroup'] = $currentFormGroup;
+
+            // 'divider' and 'section' are 'fake' form fields used to create the design
+            // elements of the complex form layouts: define them as unmapped and non-required
+            if (preg_match('/^_easyadmin_form_design_element_\d+/', $metadata['property'])) {
                 $formFieldOptions['mapped'] = false;
                 $formFieldOptions['required'] = false;
             }
 
             $builder->add($name, $formFieldType, $formFieldOptions);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['easyadmin_form_groups'] = $this->formGroups;
     }
 
     /**

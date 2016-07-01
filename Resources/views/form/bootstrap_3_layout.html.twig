@@ -412,15 +412,46 @@
         {{ form_errors(form) }}
     {% endif %}
 
+    <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
+
     <div class="row">
-        <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
+        {% for group_name, group_config in easyadmin_form_groups %}
+            <div class="{{ group_config.css_class|default('') }}">
+                <div class="box box-default">
+                    {% if group_config.label|default(false) or group_config.icon|default(false) %}
+                        <div class="box-header with-border">
+                            <h3 class="box-title">{{ group_config.label }}</h3>
+                            {% if group_config.icon|default(false) %}
+                                <div class="box-tools pull-left">
+                                    <i class="fa fa-{{ group_config.icon }}"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
 
-        {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
-            <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
-                {{ form_row(field) }}
+                    <div class="box-body">
+                        {% if group_config.help|default(false) %}
+                            <p class="help-block">{{ group_config.help }}</p>
+                        {% endif %}
+
+                        {% for field in form.children if 'hidden' not in field.vars.block_prefixes and field.vars.attr.formGroup == group_name %}
+                            <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                                {{ form_row(field) }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
+        {% else %}
+            {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
+                <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                    {{ form_row(field) }}
+                </div>
+            {% endfor %}
         {% endfor %}
+    </div>
 
+    <div class="row">
         <div class="col-xs-12 form-actions">
             <div class="form-group">
                 <div id="form-actions-row">
@@ -495,24 +526,3 @@
         {% endif %}
     </div>
 {% endblock easyadmin_section_row %}
-
-{# EasyAdminGroup form type #}
-{% block easyadmin_group_row %}
-    <div class="box box-default {{ easyadmin.field.css_class|default('') }}">
-        {% if easyadmin.field.label|default(false) or easyadmin.field.icon|default(false) %}
-            <div class="box-header with-border">
-                <h3 class="box-title">{{ easyadmin.field.label }}</h3>
-                {% if easyadmin.field.icon|default(false) %}
-                    <div class="box-tools pull-left">
-                        <i class="fa fa-{{ easyadmin.field.icon }}"></i>
-                    </div>
-                {% endif %}
-            </div>
-        {% endif %}
-        <div class="box-body">
-            {% if easyadmin.field.help|default(false) %}
-                <p class="help-block">{{ easyadmin.field.help }}</p>
-            {% endif %}
-        </div>
-    </div>
-{% endblock easyadmin_group_row %}

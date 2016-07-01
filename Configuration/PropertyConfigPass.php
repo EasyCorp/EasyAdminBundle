@@ -43,7 +43,7 @@ class PropertyConfigPass implements ConfigPassInterface
         // the options passed to the Symfony Form type used to render the form field
         'type_options' => array(),
         // the name of the group where this form field is displayed (only for complex form layouts)
-        'form_group' => null,
+        'formGroup' => null,
     );
 
     private $defaultVirtualFieldMetadata = array(

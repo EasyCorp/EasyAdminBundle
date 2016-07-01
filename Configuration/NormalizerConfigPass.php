@@ -175,7 +175,8 @@ class NormalizerConfigPass implements ConfigPassInterface
                         }
                     }
 
-                    $fieldName = isset($fieldConfig['property']) ? $fieldConfig['property'] : 'field_'.$i;
+                    // fields that don't define the 'property' name are special form design elements
+                    $fieldName = isset($fieldConfig['property']) ? $fieldConfig['property'] : '_easyadmin_form_design_element_'.$i;
                     $fields[$fieldName] = $fieldConfig;
                 }
 
@@ -198,39 +199,20 @@ class NormalizerConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'new') as $view) {
-                $realFormfields = array();
-                $designElementNumber = 0;
-                $currentFormGroup = null;
-
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // this is a form design element instead of a regular property
                     if (!isset($fieldConfig['property']) && isset($fieldConfig['type'])) {
-                        // 'group' form elements are not transformed into form types
-                        // the trick is to assign this group as an option to the form fields defined after this group
-                        if ('group' === $fieldConfig['type']) {
-                            // a 'group' element defines the form group where the
-                            // following form fields are displayed (until a new 'group' is found)
-                            $currentFormGroup = sprintf('_easyadmin_form_group_%s', ++$designElementNumber);
-
-                            continue;
-                        }
-
-                        // 'divider' and 'section' elements are transformed into special form types
-                        if (in_array($fieldConfig['type'], array('divider', 'section'))) {
-                            // assign them a random property name (they are later added as unmapped form fields)
-                            $fieldConfig['property'] = sprintf('_easyadmin_form_design_element_%s_%d', $fieldConfig['type'], ++$designElementNumber);
+                        if (in_array($fieldConfig['type'], array('divider', 'group', 'section'))) {
+                            // assign them a property name to add them later as unmapped form fields
+                            $fieldConfig['property'] = $fieldName;
 
                             // transform the form type shortcuts into the real form type short names
                             $fieldConfig['type'] = 'easyadmin_'.$fieldConfig['type'];
                         }
                     }
 
-                    $fieldConfig['form_group'] = $currentFormGroup;
-
-                    $realFormfields[$fieldName] = $fieldConfig;
+                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
                 }
-
-                $backendConfig['entities'][$entityName][$view]['fields'] = $realFormfields;
             }
         }
 

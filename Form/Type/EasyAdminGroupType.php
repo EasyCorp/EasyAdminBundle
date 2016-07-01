@@ -10,9 +10,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Section form type.
+ * Group form type.
  */
-class EasyAdminSectionType extends AbstractType
+class EasyAdminGroupType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -46,7 +46,7 @@ class EasyAdminSectionType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'easyadmin_section';
+        return 'easyadmin_group';
     }
 
     /**

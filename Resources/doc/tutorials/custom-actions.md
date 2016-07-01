@@ -188,4 +188,4 @@ Similarly to method based actions, you can configure any option for these
 actions (icons, labels, etc.) and you can also leverage the action inheritance
 mechanism.
 
-[1]: ../book/3-list-search-show-configuration.md#customization-based-on-controller-methods
+[1]: ../book/7-complex-dynamic-backends.md#customization-based-on-overriding-the-default-admincontroller

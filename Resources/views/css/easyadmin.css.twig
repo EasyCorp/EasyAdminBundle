@@ -85,19 +85,6 @@ a.text-danger:hover {
     opacity: 0.9;
 }
 
-{# Misc.
-   ------------------------------------------------------------------------- #}
-hr {
-    margin-top: 15px;
-    margin-bottom: 26px;
-    border: 0;
-    border-top: 1px solid;
-    border-top-color: #DDD;
-}
-.easyadmin-form-group hr {
-    border-top-color: #EEE;
-}
-
 {# Lists
    ------------------------------------------------------------------------- #}
 ul, ol {
@@ -413,6 +400,51 @@ button.btn:active {
    ------------------------------------------------------------------------- #}
 .field-collection .collection-empty {
     margin: .5em 0;
+}
+
+{# Field: special Form Fields (dividers, groups, sections)
+   ------------------------------------------------------------------------- #}
+.field-divider hr {
+    margin-top: 15px;
+    margin-bottom: 26px;
+    border: 0;
+    border-top: 1px solid;
+    border-top-color: {{ colors.gray_lighter }};
+}
+.field-group .field-divider hr {
+    border-top-color: #DDD;
+}
+
+.field-section h2 {
+    border-bottom: 1px solid {{ colors.gray_light }};
+    color: {{ colors.gray_dark }};
+    font-size: 16px;
+    margin: 16px 0 8px;
+    padding-bottom: 6px;
+}
+.field-section h2 i {
+    color: #555;
+    margin-right: 2px;
+}
+.field-section p.help-block {
+    margin: 0 0 15px;
+}
+
+.field-group .box {
+    border: 1px solid #DDD;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+.field-group .box-header i {
+    color: #555;
+    margin-right: 2px;
+}
+.field-group .box-header.with-border {
+    background: #F0F0F0;
+    border-bottom-color: #DDD;
+    padding: 11px 10px 9px;
+}
+.field-group .box-body {
+    padding: 15px 10px;
 }
 
 {# Select2 widget
@@ -1227,7 +1259,7 @@ body.error .error-message {
     .form-vertical .field-checkbox label {
         padding-top: 23px;
     }
-    .form-vertical .easyadmin-form-group .field-checkbox label {
+    .form-vertical .field-group .field-checkbox label {
         padding-top: 0;
     }
 }

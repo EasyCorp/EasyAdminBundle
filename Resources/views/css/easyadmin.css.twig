@@ -396,12 +396,6 @@ button.btn:active {
 {% endif %}
 }
 
-{# Field: checkbox
-   ------------------------------------------------------------------------- #}
-form:not(.form-horizontal) .field-checkbox label {
-    padding-top: 23px;
-}
-
 {# Field: collection
    ------------------------------------------------------------------------- #}
 .field-collection .collection-empty {
@@ -522,6 +516,13 @@ form:not(.form-horizontal) .field-checkbox label {
     background: {{ colors.gray_lighter }};
     border-top: 1px solid {{ colors.gray_light }};
     margin-top: 1.5em;
+}
+
+{# Utils
+   ------------------------------------------------------------------------- #}
+.newline, .new-line {
+    clear: both;
+    display: block;
 }
 
 {# -------------------------------------------------------------------------
@@ -1206,6 +1207,15 @@ body.error .error-message {
 
     body.edit .form-horizontal #form-actions-row {
         margin-left: 16.66666667%;
+    }
+
+    {# Field: checkbox
+       ------------------------------------------------------------------------- #}
+    .form-vertical .field-checkbox label {
+        padding-top: 23px;
+    }
+    .form-vertical .easyadmin-form-group .field-checkbox label {
+        padding-top: 0;
     }
 }
 {% endautoescape %}

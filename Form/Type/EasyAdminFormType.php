@@ -36,8 +36,6 @@ class EasyAdminFormType extends AbstractType
     /** @var TypeConfiguratorInterface[] */
     private $configurators;
 
-    private $formGroups = array();
-
     /**
      * @param ConfigManager               $configManager
      * @param TypeConfiguratorInterface[] $configurators
@@ -57,6 +55,7 @@ class EasyAdminFormType extends AbstractType
         $view = $options['view'];
         $entityConfig = $this->configManager->getEntityConfig($entity);
         $entityProperties = $entityConfig[$view]['fields'];
+        $formGroups = array();
         $currentFormGroup = null;
 
         foreach ($entityProperties as $name => $metadata) {
@@ -71,12 +70,13 @@ class EasyAdminFormType extends AbstractType
 
             $formFieldType = LegacyFormHelper::getType($metadata['fieldType']);
 
-            // if the form field is a special 'group' design element, don't add to the
-            // form fields, set it as the current form group (for the subsequent form
-            // fields) and store the form 'group' details in a special property
+            // if the form field is a special 'group' design element, don't add it
+            // to the form. Instead, consider it the current form group (this is
+            // applied to the form fields defined after it) and store its details
+            // in a property to get them in form template
             if ('JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType' === $formFieldType) {
                 $currentFormGroup = $metadata['fieldName'];
-                $this->formGroups[$currentFormGroup] = $metadata;
+                $formGroups[$currentFormGroup] = $metadata;
 
                 continue;
             }
@@ -92,6 +92,8 @@ class EasyAdminFormType extends AbstractType
 
             $builder->add($name, $formFieldType, $formFieldOptions);
         }
+
+        $builder->setAttribute('easyadmin_form_groups', $formGroups);
     }
 
     /**
@@ -99,7 +101,7 @@ class EasyAdminFormType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['easyadmin_form_groups'] = $this->formGroups;
+        $view->vars['easyadmin_form_groups'] = $form->getConfig()->getAttribute('easyadmin_form_groups');
     }
 
     /**

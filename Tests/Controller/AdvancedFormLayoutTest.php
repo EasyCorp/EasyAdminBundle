@@ -171,16 +171,16 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'Save changes',
-                trim($crawler->filter('form .row')->eq(1)->filter('#form-actions-row button')->eq(0)->text())
+                trim($crawler->filter('#form-actions-row button')->eq(0)->text())
             );
             $this->assertSame(
                 'Back to listing',
-                trim($crawler->filter('form .row')->eq(1)->filter('#form-actions-row a.action-list')->text())
+                trim($crawler->filter('#form-actions-row a.action-list')->text())
             );
             if ('edit' === $view) {
                 $this->assertSame(
                     'Delete',
-                    trim($crawler->filter('form .row')->eq(1)->filter('#form-actions-row a.action-delete')->text())
+                    trim($crawler->filter('#form-actions-row a.action-delete')->text())
                 );
             }
         }

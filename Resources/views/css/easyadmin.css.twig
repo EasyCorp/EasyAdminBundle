@@ -409,7 +409,11 @@ button.btn:active {
     margin-bottom: 26px;
     border: 0;
     border-top: 1px solid;
+{% if 'dark' == color_scheme %}
+    border-top-color: #DDD;
+{% elseif 'light' == color_scheme %}
     border-top-color: {{ colors.gray_lighter }};
+{% endif %}
 }
 .field-group .field-divider hr {
 {% if 'dark' == color_scheme %}
@@ -419,6 +423,9 @@ button.btn:active {
 {% endif %}
 }
 
+.field-section {
+    margin: 16px 0 15px;
+}
 .field-section h2 {
 {% if 'dark' == color_scheme %}
     border-bottom: 1px solid {{ colors.gray_light }};
@@ -428,7 +435,6 @@ button.btn:active {
     color: {{ colors.gray_darker }};
 {% endif %}
     font-size: 16px;
-    margin: 16px 0 8px;
     padding-bottom: 6px;
 }
 .field-section h2 i {
@@ -440,7 +446,7 @@ button.btn:active {
     margin-right: 2px;
 }
 .field-section p.help-block {
-    margin: 0 0 15px;
+    margin: 8px 0 0;
 }
 
 .field-group .box {
@@ -476,7 +482,10 @@ button.btn:active {
 }
 {% endif %}
 .field-group .box-body {
-    padding: 15px 10px;
+    padding: 15px 15px 5px;
+}
+.field-group .box-body > .help-block {
+    margin-top: 0;
 }
 
 {# Select2 widget

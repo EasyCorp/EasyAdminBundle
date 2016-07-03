@@ -81,7 +81,7 @@ class EasyAdminFormType extends AbstractType
                 continue;
             }
 
-            $formFieldOptions['attr']['formGroup'] = $currentFormGroup;
+            $formFieldOptions['attr']['form_group'] = $currentFormGroup;
 
             // 'divider' and 'section' are 'fake' form fields used to create the design
             // elements of the complex form layouts: define them as unmapped and non-required

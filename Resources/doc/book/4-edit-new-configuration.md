@@ -479,7 +479,7 @@ easy_admin:
     # ...
 ```
 
-.. SCREENSHOT showing a form divider in action
+![A form using dividers to separate its fields](../images/easyadmin-form-divider.png)
 
 #### Form Sections
 
@@ -497,7 +497,7 @@ easy_admin:
                     - { type: 'section', label: 'User Details' }
                     - name
                     - surname
-                    - { type: 'section', label: 'Contact information', icon: 'contact',
+                    - { type: 'section', label: 'Contact information', icon: 'phone',
                         help: 'Phone number is preferred', css_class: 'danger' }
                     - email
                     - phoneNumber
@@ -508,7 +508,7 @@ A form that includes sections is still displayed as a single form that spans
 the entire browser window width. Multi-column forms are created with "groups"
 as explained below.
 
-.. SCREENSHOT showing a form fieldset in action
+![A form using sections to separate its fields](../images/easyadmin-form-section.png)
 
 ### Form Groups
 
@@ -523,15 +523,15 @@ easy_admin:
             class: AppBundle\Entity\Customer
             form:
                 fields:
-                    - { type: 'group', label: 'Admin', css_class: 'danger' }
-                    - id
-                    - { type: 'group', css_class: 'col-sm-4', help: 'Basic user information' }
+                    - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
                     - name
                     - surname
-                    - { type: 'group', label: 'Contact information', icon: 'contact',
-                        help: 'Phone number is preferred', css_class: 'col-sm-4' }
+                    - { type: 'group', label: 'Contact information', icon: 'phone',
+                        css_class: 'col-sm-6' }
                     - email
                     - phoneNumber
+                    - { type: 'group', css_class: 'col-sm-6', help: 'Only for administrators' }
+                    - id
     # ...
 ```
 
@@ -540,7 +540,7 @@ easy_admin:
 > When using form groups, it's recommended to use the `vertical` form theme.
 > Otherwise, the field label will take up too much space.
 
-.. SCREENSHOT showing a form section in action
+![A form using groups to separate its fields](../images/easyadmin-form-group.png)
 
 > **TIP**
 >
@@ -553,6 +553,11 @@ easy_admin:
 >
 > This solves most of the issues, but sometimes you might be forced to also
 > reorder the form group positions.
+
+Design elements can be combined to display dividers and sections inside groups
+and create advanced layouts:
+
+![A complex form layout combining dividers, sections and groups](../images/easyadmin-form-complex-layout.png)
 
 Advanced Design Configuration
 -----------------------------

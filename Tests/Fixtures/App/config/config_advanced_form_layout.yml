@@ -18,7 +18,7 @@ easy_admin:
                     - { type: 'section', label: 'Advanced Settings', icon: 'warning', help: 'Reserved for administrators use' }
                     - 'enabled'
                     - 'createdAt'
-                    - { type: 'group', css_class: 'col-sm-8 newline' }
+                    - { type: 'group', css_class: 'col-sm-8 new-row' }
                     - 'features'
                     - { type: 'group', css_class: 'col-sm-4' }
                     - 'tags'

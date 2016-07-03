@@ -123,7 +123,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-8 newline',
+                'field-group col-xs-12 col-sm-8 new-row',
                 $crawler->filter('form .field-group')->eq(3)->attr('class')
             );
             $this->assertCount(

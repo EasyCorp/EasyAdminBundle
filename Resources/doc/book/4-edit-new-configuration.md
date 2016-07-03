@@ -453,14 +453,14 @@ easy_admin:
 ### Customizing the Form Layout
 
 The default form layout is pretty basic: fields are displayed in the same order
-they were defined and they span the full browser window width. However, for more
-advanced backends forms can include elements such as dividers, sections and
-groups. Moreover, you can combine them all to create complex form layouts.
+they were defined and they span the full browser window width. However, forms
+can also include special design elements (dividers, groups, sections) to create
+more advanced layouts.
 
 #### Form Dividers
 
-This is the simplest form element because it just displays a straight horizontal
-line. It's useful to easily divide fields in long forms:
+This is the simplest form design element. It just displays a straight horizontal
+line. It's useful to easily separate fields in long forms:
 
 ```yaml
 easy_admin:
@@ -483,8 +483,8 @@ easy_admin:
 
 #### Form Sections
 
-This element groups several form fields under a common title and it can optionally
-define an icon, a help message and a CSS class:
+This design element helps you divide a long form into different sections defined
+by a title and, optionally, an icon, a help message and a custom CSS class:
 
 ```yaml
 easy_admin:
@@ -512,9 +512,9 @@ as explained below.
 
 ### Form Groups
 
-This element groups some form fields and displays them separately from the rest
-of the form fields. It's useful to create multi-column forms and to create very
-advanced layouts.
+This element groups one or more fields and displays them separately from the
+rest of the form fields. It's useful to create multi-column forms and to create
+very advanced layouts.
 
 ```yaml
 easy_admin:
@@ -535,7 +535,24 @@ easy_admin:
     # ...
 ```
 
+> **TIP**
+>
+> When using form groups, it's recommended to use the `vertical` form theme.
+> Otherwise, the field label will take up too much space.
+
 .. SCREENSHOT showing a form section in action
+
+> **TIP**
+>
+> Because of the way CSS works, when creating multi-column forms is common to
+> have ugly gaps between some rows and columns. EasyAdmin provides a `.new-row`
+> CSS class that forces the form group to be displayed in a new row:
+>
+>     # ...
+>     - { type: 'group', css_class: 'new-row ...' }
+>
+> This solves most of the issues, but sometimes you might be forced to also
+> reorder the form group positions.
 
 Advanced Design Configuration
 -----------------------------

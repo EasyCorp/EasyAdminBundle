@@ -3,38 +3,15 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Divider form type.
+ * The 'divider' form type is a special form type used to display a design
+ * element needed to create complex form layouts. This "fake" type just displays
+ * some HTML tags and it must be added to a form as "unmapped" and "non required".
  */
 class EasyAdminDividerType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-    }
-
     // BC for SF < 2.7
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {

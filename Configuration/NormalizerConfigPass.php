@@ -197,18 +197,43 @@ class NormalizerConfigPass implements ConfigPassInterface
      */
     private function normalizeFormDesignConfig(array $backendConfig)
     {
+        // edge case: if the first 'group' type is not the first form field,
+        // all the previous form fields are "ungrouped". To avoid design issues,
+        // insert an empty 'group' type (no label, no icon) as the first form element.
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (array('edit', 'new') as $view) {
+                $fieldNumber = 0;
+                $isTheFirstGroupElement = true;
+
+                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
+                    ++$fieldNumber;
+                    if (!isset($fieldConfig['property']) && isset($fieldConfig['type']) && 'group' === $fieldConfig['type']) {
+                        if ($isTheFirstGroupElement && $fieldNumber > 1) {
+                            $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
+                                array('_easyadmin_form_design_element_forced_first_group' => array('type' => 'group')),
+                                $backendConfig['entities'][$entityName][$view]['fields']
+                            );
+
+                            break;
+                        }
+
+                        $isTheFirstGroupElement = false;
+                    }
+                }
+            }
+        }
+
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'new') as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // this is a form design element instead of a regular property
-                    if (!isset($fieldConfig['property']) && isset($fieldConfig['type'])) {
-                        if (in_array($fieldConfig['type'], array('divider', 'group', 'section'))) {
-                            // assign them a property name to add them later as unmapped form fields
-                            $fieldConfig['property'] = $fieldName;
+                    $isFormDesignElement = !isset($fieldConfig['property']) && isset($fieldConfig['type']);
+                    if ($isFormDesignElement && in_array($fieldConfig['type'], array('divider', 'group', 'section'))) {
+                        // assign them a property name to add them later as unmapped form fields
+                        $fieldConfig['property'] = $fieldName;
 
-                            // transform the form type shortcuts into the real form type short names
-                            $fieldConfig['type'] = 'easyadmin_'.$fieldConfig['type'];
-                        }
+                        // transform the form type shortcuts into the real form type short names
+                        $fieldConfig['type'] = 'easyadmin_'.$fieldConfig['type'];
                     }
 
                     $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;

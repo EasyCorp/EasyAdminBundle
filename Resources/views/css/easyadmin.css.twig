@@ -412,18 +412,31 @@ button.btn:active {
     border-top-color: {{ colors.gray_lighter }};
 }
 .field-group .field-divider hr {
+{% if 'dark' == color_scheme %}
     border-top-color: #DDD;
+{% elseif 'light' == color_scheme %}
+    border-top-color: #EEE;
+{% endif %}
 }
 
 .field-section h2 {
+{% if 'dark' == color_scheme %}
     border-bottom: 1px solid {{ colors.gray_light }};
     color: {{ colors.gray_dark }};
+{% elseif 'light' == color_scheme %}
+    border-bottom: 1px solid #EEE;
+    color: {{ colors.gray_darker }};
+{% endif %}
     font-size: 16px;
     margin: 16px 0 8px;
     padding-bottom: 6px;
 }
 .field-section h2 i {
+{% if 'dark' == color_scheme %}
     color: #555;
+{% elseif 'light' == color_scheme %}
+    color: #777;
+{% endif %}
     margin-right: 2px;
 }
 .field-section p.help-block {
@@ -431,18 +444,37 @@ button.btn:active {
 }
 
 .field-group .box {
+{% if 'dark' == color_scheme %}
     border: 1px solid #DDD;
+{% elseif 'light' == color_scheme %}
+    border: 1px solid #EEE;
+{% endif %}
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 .field-group .box-header i {
+{% if 'dark' == color_scheme %}
     color: #555;
+{% elseif 'light' == color_scheme %}
+    color: #777;
+{% endif %}
     margin-right: 2px;
 }
 .field-group .box-header.with-border {
+{% if 'dark' == color_scheme %}
     background: #F0F0F0;
     border-bottom-color: #DDD;
+{% elseif 'light' == color_scheme %}
+    background: {{ colors.gray_light }};
+    border-bottom-color: #EEE;
+    color: {{ colors.gray_darker }};
+{% endif %}
     padding: 11px 10px 9px;
 }
+{% if 'light' == color_scheme %}
+.field-group .box-header .box-title {
+    color: #777;
+}
+{% endif %}
 .field-group .box-body {
     padding: 15px 10px;
 }

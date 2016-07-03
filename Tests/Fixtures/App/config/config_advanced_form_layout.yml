@@ -12,7 +12,7 @@ easy_admin:
                     - 'description'
                     - { type: 'divider' }
                     - 'categories'
-                    - { type: 'group', css_class: 'col-sm-4', label: 'Product Details', icon: 'cube' }
+                    - { type: 'group', css_class: 'col-sm-4', label: 'Product Details' }
                     - 'ean'
                     - 'price'
                     - { type: 'section', label: 'Advanced Settings', icon: 'warning', help: 'Reserved for administrators use' }

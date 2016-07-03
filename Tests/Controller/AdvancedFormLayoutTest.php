@@ -85,9 +85,9 @@ class AdvancedFormLayoutTest extends AbstractTestCase
                 'Product Details',
                 trim($crawler->filter('form .field-group')->eq(2)->filter('.box .box-title')->text())
             );
-            $this->assertSame(
-                'fa fa-cube',
-                $crawler->filter('form .field-group')->eq(2)->filter('.box .box-title i')->attr('class')
+            $this->assertCount(
+                0,
+                $crawler->filter('form .field-group')->eq(2)->filter('.box .box-title i')
             );
             $this->assertSame(
                 'product_ean',

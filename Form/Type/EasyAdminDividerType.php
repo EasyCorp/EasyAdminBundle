@@ -3,7 +3,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * The 'divider' form type is a special form type used to display a design

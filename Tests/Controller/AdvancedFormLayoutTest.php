@@ -36,7 +36,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
                 'edit' === $view ? array('id' => 1) : array()
             );
             $crawler = $this->getBackendPage($queryParams);
-
+var_dump($this->client->getResponse());exit;
             $this->assertSame(
                 'product_name',
                 $crawler->filter('form .field-group')->eq(0)->filter('.box .box-body input')->attr('id'),

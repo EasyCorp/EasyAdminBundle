@@ -18,11 +18,11 @@
             <tag name="form.type" alias="easyadmin_divider" />
         </service>
 
-        <service id="easyadmin.form.type.divider" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType">
+        <service id="easyadmin.form.type.section" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType">
             <tag name="form.type" alias="easyadmin_section" />
         </service>
 
-        <service id="easyadmin.form.type.divider" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType">
+        <service id="easyadmin.form.type.group" class="JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType">
             <tag name="form.type" alias="easyadmin_group" />
         </service>
 

@@ -1,0 +1,120 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-06-28T20:57:20Z
+
+The POC looks clever, but I think only the divider can be considered as a form type. I don't really see how you can achieve to implement the "section" & "group" feature with this method (and the current way to close a group seems hacky). 😕
+
+However, maybe the groups & sections can simply be form options, used by the `EasyAdminFormType` in the `finishView` method, in order to create `FormView` instances gathering form fields by the given options, and with custom block prefixes to allow easy theming of sections & groups.
+
+Then, when rendering the `easyadmin_widget`, we won't try to render the classic form view as now, but our new groups & sections ones instead, by calling `form_row/widget` on each of the `FormView` instances we added in the `EasyAdminFormType::finishView()` method.
+
+Note that I didn't try this myself. I don't know at all if it's feasible. I only try to give some new ideas. 😅
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-06-28T21:01:59Z
+
+@ogizanagi thanks for your comments! I think you are right for the "group" element. I saw that Sonata solves this differently but I thought ... maybe a simpler solution would do the trick. But it won't! I'm facing lots of troubles in my local testing of this "group" element. So I'd opt for the Sonata solution. For the others, the divider and the section, it looks like it's working, so maybe we can keep using the trick. We'll see. This is still very WIP.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-07-01T20:57:11Z
+
+**Update:**  this is still *"work in progress"* ... but I'm starting to like how things are going on. Let me show you an example.
+
+This is the form to add/edit `Product` in the EasyAdmin Demo app:
+
+![form_before](https://cloud.githubusercontent.com/assets/73419/16534279/efea8f94-3fde-11e6-9e32-b5012a6e9fe1.png)
+
+And, thanks to this PR, if we add five simple lines to the form config:
+
+```diff
+easy_admin:
+    entities:
+        Product:
+            class: AppBundle\Entity\Product
+            # ...
+            form:
+                fields:
++                   - { type: 'group', css_class: 'col-sm-8' }
+                    - { property: 'name', css_class: 'large' }
+                    - { property: 'description', type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType' }
++                   - { type: 'group', css_class: 'col-sm-4' }
+                    - { property: 'ean', help: 'EAN-13 valid code. Leave empty if unknown.' }
+                    - { property: 'price', type: 'number' }
+                    - { property: 'enabled', label: 'Published' }
+                    - { property: 'createdAt' }
++                   - { type: 'group', css_class: 'col-sm-4' }
+                    - { property: 'imageFile', type: 'Vich\UploaderBundle\Form\Type\VichImageType', type_options: { required: true } }
++                   - { type: 'group', css_class: 'col-sm-8' }
+                    - { property: 'features' }
++                   - { type: 'group', css_class: 'col-sm-4' }
+                    - { property: 'categories', type: 'easyadmin_autocomplete' }
+                    - { property: 'tags' }
+```
+
+This is how the form looks now:
+
+![form_after](https://cloud.githubusercontent.com/assets/73419/16534304/0c82de22-3fdf-11e6-988c-a2e984bd2423.png)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-07-02T18:20:18Z
+
+**Update:** the design of the new form elements is now finished. This is how they look:
+
+![new_form_elements](https://cloud.githubusercontent.com/assets/73419/16541876/103cfbde-4092-11e6-985d-d53f0da73a91.png)
+
+What's left to do:
+
+* Take care of some edge cases (e.g. group some form fields but not all of them)
+* Code cleaning, optimizing, etc.
+* Fix tests
+
+So, if someone is interested, this is now ready for review. Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-07-03T00:44:55Z
+
+@javiereguiluz : I left some minor comments. By time, we can probably enhance the code, but honestly this already looks very promising. Great work ! 👏
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-07-03T20:23:57Z
+
+**Update:**
+
+* Tests are green
+* New feature is fully tested
+* Doc has been completed and screenshots have been added
+* Code has been optimized
+
+This is now ready to be tested in real applications before merging it into master. Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-07-04T15:47:04Z
+
+Tests are green for Symfony 2.8 and 3.x, but are failing for 2.3 and 2.7 because of this error:
+
+```
+Could not load type "easyadmin_group"
+```
+
+2.3 details: https://travis-ci.org/javiereguiluz/EasyAdminBundle/jobs/142241761#L444
+2.7 details: https://travis-ci.org/javiereguiluz/EasyAdminBundle/jobs/142241764#L443
+
+Could anyone please help me to find what I'm missing here? Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-07-04T16:03:06Z
+
+@javiereguiluz : The services declarations for those form types are missing. (it's mandatory in 2.3 & 2.7, because it wasn't guessed by FQCN before, but by aliases registered in the `form.type` tag.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-07-04T16:03:59Z
+
+Oh. Seems you find out the issue 😅

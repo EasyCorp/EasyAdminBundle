@@ -11,7 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Configuration;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\Processor;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
 

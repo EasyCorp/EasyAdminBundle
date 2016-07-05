@@ -90,10 +90,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * the function never generates a warning or error message when calling it.
      *
      * @param \Twig_Environment $twig
-     * @param string $view The view in which the item is being rendered
-     * @param string $entityName The name of the entity associated with the item
-     * @param object $item The item which is being rendered
-     * @param array $fieldMetadata The metadata of the actual field being rendered
+     * @param string            $view          The view in which the item is being rendered
+     * @param string            $entityName    The name of the entity associated with the item
+     * @param object            $item          The item which is being rendered
+     * @param array             $fieldMetadata The metadata of the actual field being rendered
      *
      * @return string
      *

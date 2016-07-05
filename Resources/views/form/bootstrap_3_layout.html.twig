@@ -3,7 +3,11 @@
 {% block form_start -%}
     {% if 'easyadmin' == block_prefixes|slice(-2)|first %}
         {% set attr = attr|merge({
-            'class': attr.class|default('') ~ ' ' ~ easyadmin.view ~ '-form',
+            'class': [
+                _easyadmin_form_type|default('') == 'horizontal' ? 'form-horizontal' : 'form-vertical',
+                attr.class|default(''),
+                easyadmin.view ~ '-form'
+            ]|join(' '),
             'data-view': easyadmin.view,
             'data-entity': easyadmin.entity.name,
             'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name),
@@ -412,15 +416,48 @@
         {{ form_errors(form) }}
     {% endif %}
 
+    <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
+
     <div class="row">
-        <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
+        {% for group_name, group_config in easyadmin_form_groups %}
+            <div class="field-group col-xs-12 {{ group_config.css_class|default('') }}">
+                <div class="box box-default">
+                    {% if group_config.label|default(false) or group_config.icon|default(false) %}
+                        <div class="box-header with-border">
+                            <h3 class="box-title">
+                                {% if group_config.icon|default(false) %}
+                                    <i class="fa fa-{{ group_config.icon }}"></i>
+                                {% endif %}
+                                {{ group_config.label }}
+                            </h3>
+                        </div>
+                    {% endif %}
 
-        {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
-            <div class="{{ field.vars.easyadmin.field.css_class|default('col-xs-12') }}">
-                {{ form_row(field) }}
+                    <div class="box-body">
+                        {% if group_config.help|default(false) %}
+                            <p class="help-block">{{ group_config.help }}</p>
+                        {% endif %}
+
+                        <div class="row">
+                            {% for field in form.children if 'hidden' not in field.vars.block_prefixes and field.vars.attr.form_group == group_name %}
+                                <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                                    {{ form_row(field) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
+        {% else %}
+            {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
+                <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                    {{ form_row(field) }}
+                </div>
+            {% endfor %}
         {% endfor %}
+    </div>
 
+    <div class="row">
         <div class="col-xs-12 form-actions">
             <div class="form-group">
                 <div id="form-actions-row">
@@ -472,3 +509,26 @@
     {% set name = form.parent.vars.name %}
     {{- block('form_label') -}}
 {% endblock easyadmin_autocomplete_inner_label %}
+
+{# EasyAdminDivider form type #}
+{% block easyadmin_divider_row %}
+    <div class="field-divider">
+        <hr>
+    </div>
+{% endblock easyadmin_divider_row %}
+
+{# EasyAdminSection form type #}
+{% block easyadmin_section_row %}
+    <div class="field-section {{ easyadmin.field.css_class|default('') }}">
+        {% if easyadmin.field.label|default(false) or easyadmin.field.icon|default(false) %}
+            <h2>
+                {% if easyadmin.field.icon|default(false) %}<i class="fa fa-{{ easyadmin.field.icon }}"></i>{% endif %}
+                {{ easyadmin.field.label|default('') }}
+            </h2>
+        {% endif %}
+
+        {% if easyadmin.field.help|default(false) %}
+            <p class="help-block">{{ easyadmin.field.help|nl2br }}</p>
+        {% endif %}
+    </div>
+{% endblock easyadmin_section_row %}

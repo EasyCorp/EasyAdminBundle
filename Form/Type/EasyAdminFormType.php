@@ -16,6 +16,8 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -53,6 +55,8 @@ class EasyAdminFormType extends AbstractType
         $view = $options['view'];
         $entityConfig = $this->configManager->getEntityConfig($entity);
         $entityProperties = $entityConfig[$view]['fields'];
+        $formGroups = array();
+        $currentFormGroup = null;
 
         foreach ($entityProperties as $name => $metadata) {
             $formFieldOptions = $metadata['type_options'];
@@ -65,8 +69,39 @@ class EasyAdminFormType extends AbstractType
             }
 
             $formFieldType = LegacyFormHelper::getType($metadata['fieldType']);
+
+            // if the form field is a special 'group' design element, don't add it
+            // to the form. Instead, consider it the current form group (this is
+            // applied to the form fields defined after it) and store its details
+            // in a property to get them in form template
+            if (in_array($formFieldType, array('easyadmin_group', 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType'))) {
+                $currentFormGroup = $metadata['fieldName'];
+                $formGroups[$currentFormGroup] = $metadata;
+
+                continue;
+            }
+
+            $formFieldOptions['attr']['form_group'] = $currentFormGroup;
+
+            // 'divider' and 'section' are 'fake' form fields used to create the design
+            // elements of the complex form layouts: define them as unmapped and non-required
+            if (0 === strpos($metadata['property'], '_easyadmin_form_design_element_')) {
+                $formFieldOptions['mapped'] = false;
+                $formFieldOptions['required'] = false;
+            }
+
             $builder->add($name, $formFieldType, $formFieldOptions);
         }
+
+        $builder->setAttribute('easyadmin_form_groups', $formGroups);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['easyadmin_form_groups'] = $form->getConfig()->getAttribute('easyadmin_form_groups');
     }
 
     /**
@@ -88,10 +123,12 @@ class EasyAdminFormType extends AbstractType
             ))
             ->setRequired(array('entity', 'view'));
 
-        if (LegacyFormHelper::useLegacyFormComponent()) {
-            $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer()));
-        } else {
+        // setNormalizer() is available since Symfony 2.6
+        if (method_exists($resolver, 'setNormalizer')) {
             $resolver->setNormalizer('attr', $this->getAttributesNormalizer());
+        } else {
+            // BC for Symfony < 2.6
+            $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer()));
         }
     }
 

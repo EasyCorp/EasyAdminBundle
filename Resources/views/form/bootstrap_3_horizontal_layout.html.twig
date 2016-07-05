@@ -1,7 +1,7 @@
 {% extends "@EasyAdmin/form/bootstrap_3_layout.html.twig" %}
 
 {% block form_start -%}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-horizontal')|trim}) %}
+    {% set _easyadmin_form_type = 'horizontal' %}
     {{- parent() -}}
 {%- endblock form_start %}
 

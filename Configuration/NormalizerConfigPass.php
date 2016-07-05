@@ -32,9 +32,10 @@ class NormalizerConfigPass implements ConfigPassInterface
     public function process(array $backendConfig)
     {
         $backendConfig = $this->normalizeEntityConfig($backendConfig);
-        $backendConfig = $this->normalizeFormViewConfig($backendConfig);
+        $backendConfig = $this->normalizeFormConfig($backendConfig);
         $backendConfig = $this->normalizeViewConfig($backendConfig);
         $backendConfig = $this->normalizePropertyConfig($backendConfig);
+        $backendConfig = $this->normalizeFormDesignConfig($backendConfig);
         $backendConfig = $this->normalizeActionConfig($backendConfig);
         $backendConfig = $this->normalizeControllerConfig($backendConfig);
 
@@ -74,7 +75,7 @@ class NormalizerConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function normalizeFormViewConfig(array $backendConfig)
+    private function normalizeFormConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             if (isset($entityConfig['form'])) {
@@ -148,7 +149,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
                 $fields = array();
-                foreach ($entityConfig[$view]['fields'] as $field) {
+                foreach ($entityConfig[$view]['fields'] as $i => $field) {
                     if (!is_string($field) && !is_array($field)) {
                         throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" view of the "%s" entity can only be strings or arrays.', $view, $entityConfig['class']));
                     }
@@ -158,9 +159,9 @@ class NormalizerConfigPass implements ConfigPassInterface
                         $fieldConfig = array('property' => $field);
                     } else {
                         // Config format #1: field is an array that defines one or more
-                        // options. Check that the mandatory 'property' option is set
-                        if (!array_key_exists('property', $field)) {
-                            throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" view of the "%s" entity does not define the "property" option.', $view, $entityConfig['class']));
+                        // options. Check that either 'property' or 'type' option is set
+                        if (!array_key_exists('property', $field) && !array_key_exists('type', $field)) {
+                            throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" view of the "%s" entity does not define neither of the mandatory options ("property" or "type").', $view, $entityConfig['class']));
                         }
 
                         $fieldConfig = $field;
@@ -174,11 +175,69 @@ class NormalizerConfigPass implements ConfigPassInterface
                         }
                     }
 
-                    $fieldName = $fieldConfig['property'];
+                    // fields that don't define the 'property' name are special form design elements
+                    $fieldName = isset($fieldConfig['property']) ? $fieldConfig['property'] : '_easyadmin_form_design_element_'.$i;
                     $fields[$fieldName] = $fieldConfig;
                 }
 
                 $backendConfig['entities'][$entityName][$view]['fields'] = $fields;
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * Normalizes the configuration of the special elements that forms may include
+     * to create advanced designs (such as dividers and fieldsets).
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function normalizeFormDesignConfig(array $backendConfig)
+    {
+        // edge case: if the first 'group' type is not the first form field,
+        // all the previous form fields are "ungrouped". To avoid design issues,
+        // insert an empty 'group' type (no label, no icon) as the first form element.
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (array('edit', 'new') as $view) {
+                $fieldNumber = 0;
+                $isTheFirstGroupElement = true;
+
+                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
+                    ++$fieldNumber;
+                    if (!isset($fieldConfig['property']) && isset($fieldConfig['type']) && 'group' === $fieldConfig['type']) {
+                        if ($isTheFirstGroupElement && $fieldNumber > 1) {
+                            $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
+                                array('_easyadmin_form_design_element_forced_first_group' => array('type' => 'group')),
+                                $backendConfig['entities'][$entityName][$view]['fields']
+                            );
+
+                            break;
+                        }
+
+                        $isTheFirstGroupElement = false;
+                    }
+                }
+            }
+        }
+
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (array('edit', 'new') as $view) {
+                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
+                    // this is a form design element instead of a regular property
+                    $isFormDesignElement = !isset($fieldConfig['property']) && isset($fieldConfig['type']);
+                    if ($isFormDesignElement && in_array($fieldConfig['type'], array('divider', 'group', 'section'))) {
+                        // assign them a property name to add them later as unmapped form fields
+                        $fieldConfig['property'] = $fieldName;
+
+                        // transform the form type shortcuts into the real form type short names
+                        $fieldConfig['type'] = 'easyadmin_'.$fieldConfig['type'];
+                    }
+
+                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
+                }
             }
         }
 

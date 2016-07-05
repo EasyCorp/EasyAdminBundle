@@ -394,10 +394,10 @@ By default, the entity's primary key is used for the `id` property and the
 must define the `__toString()` method in all the entities used in autocomplete
 form fields.
 
-Advanced Design Configuration
------------------------------
+Advanced Form Design
+--------------------
 
-### Customizing the Form Theme
+### Selecting the Form Theme
 
 By default, forms are displayed using the **horizontal style** defined by the
 Bootstrap 3 CSS framework:
@@ -450,31 +450,117 @@ easy_admin:
     # ...
 ```
 
-### Multi-Column Forms
+### Customizing the Form Layout
 
-EasyAdmin doesn't support multi-column form layouts. However, you can use the
-`css_class` option of each form field to create these advanced layouts:
+The default form layout is pretty basic: fields are displayed in the same order
+they were defined and they span the full browser window width. However, forms
+can also include special design elements (dividers, groups, sections) to create
+more advanced layouts.
 
-![Multi-column form](../images/easyadmin-form-multi-column.png)
+#### Form Dividers
 
-The configuration used to display this form is the following:
+This is the simplest form design element. It just displays a straight horizontal
+line. It's useful to easily separate fields in long forms:
 
- ```yaml
+```yaml
 easy_admin:
-    design:
-        form_theme: 'vertical'
     entities:
-        Product:
-            # ...
+        Customer:
+            class: AppBundle\Entity\Customer
             form:
                 fields:
-                    - { property: name, css_class: 'col-sm-12' }
-                    - { property: price, type: 'number', css_class: 'col-sm-6' }
-                    - { property: 'ean', css_class: 'col-sm-6' }
-                    - { property: 'enabled', css_class: 'col-sm-12' }
-                    - { property: 'description', css_class: 'col-sm-12' }
+                    - id
+                    - { type: 'divider' }
+                    - name
+                    - surname
+                    - { type: 'divider' }
+                    - email
+                    - phoneNumber
     # ...
 ```
+
+![A form using dividers to separate its fields](../images/easyadmin-form-divider.png)
+
+#### Form Sections
+
+This design element helps you divide a long form into different sections defined
+by a title and, optionally, an icon, a help message and a custom CSS class:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields:
+                    - id
+                    - { type: 'section', label: 'User Details' }
+                    - name
+                    - surname
+                    - { type: 'section', label: 'Contact information', icon: 'phone',
+                        help: 'Phone number is preferred', css_class: 'danger' }
+                    - email
+                    - phoneNumber
+    # ...
+```
+
+A form that includes sections is still displayed as a single form that spans
+the entire browser window width. Multi-column forms are created with "groups"
+as explained below.
+
+![A form using sections to separate its fields](../images/easyadmin-form-section.png)
+
+### Form Groups
+
+This element groups one or more fields and displays them separately from the
+rest of the form fields. It's useful to create multi-column forms and to create
+very advanced layouts.
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields:
+                    - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
+                    - name
+                    - surname
+                    - { type: 'group', label: 'Contact information', icon: 'phone',
+                        css_class: 'col-sm-6' }
+                    - email
+                    - phoneNumber
+                    - { type: 'group', css_class: 'col-sm-6', help: 'Only for administrators' }
+                    - id
+    # ...
+```
+
+> **TIP**
+>
+> When using form groups, it's recommended to use the `vertical` form theme.
+> Otherwise, the field label will take up too much space.
+
+![A form using groups to separate its fields](../images/easyadmin-form-group.png)
+
+> **TIP**
+>
+> Because of the way CSS works, when creating multi-column forms is common to
+> have ugly gaps between some rows and columns. EasyAdmin provides a `.new-row`
+> CSS class that forces the form group to be displayed in a new row:
+>
+>     # ...
+>     - { type: 'group', css_class: 'new-row ...' }
+>
+> This solves most of the issues, but sometimes you might be forced to also
+> reorder the form group positions.
+
+Design elements can be combined to display dividers and sections inside groups
+and create advanced layouts:
+
+![A complex form layout combining dividers, sections and groups](../images/easyadmin-form-complex-layout.png)
+
+Advanced Design Configuration
+-----------------------------
 
 ### Default Templates
 

@@ -123,10 +123,12 @@ class EasyAdminFormType extends AbstractType
             ))
             ->setRequired(array('entity', 'view'));
 
-        if (LegacyFormHelper::useLegacyFormComponent()) {
-            $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer()));
-        } else {
+        // setNormalizer() is available since Symfony 2.6
+        if (method_exists($resolver, 'setNormalizer')) {
             $resolver->setNormalizer('attr', $this->getAttributesNormalizer());
+        } else {
+            // BC for Symfony < 2.6
+            $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer()));
         }
     }
 

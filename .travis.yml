@@ -45,7 +45,7 @@ matrix:
     - env: ENABLE_CODE_COVERAGE="true"
 
 before_install:
-  - echo 'memory_limit=-1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - if [[ "$TRAVIS_PHP_VERSION" != hhvm ]]; then echo 'memory_limit=-1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi;
   - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == "3.0.*" ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
   - if [[ "$ENABLE_CODE_COVERAGE" != "true" && "$TRAVIS_PHP_VERSION" != hhvm ]]; then phpenv config-rm xdebug.ini; fi;
   - composer selfupdate

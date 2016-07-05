@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-06-29T19:04:55Z
+
+I'm 👍  Thanks @Pierstoval.
+
+However, could we please change the block name? The pattern we use is `block_name_wrapper` (e.g. `main_menu` and `main_menu_wrapper`) Thanks!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-06-30T06:14:35Z
+
+What about `main_content_title`?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-06-30T06:23:29Z
+
+I'd prefer `content_title` and thus, this block should be called `content_title_wrapper`
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-06-30T06:27:35Z
+
+Done :)

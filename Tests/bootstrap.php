@@ -12,7 +12,7 @@
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\ConsoleOutput as NullOutput;
 
 /*
  * Code inspired by https://github.com/Orbitale/CmsBundle/blob/master/Tests/bootstrap.php

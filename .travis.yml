@@ -29,6 +29,7 @@ matrix:
       env: SYMFONY_VERSION="2.7.*"
     - php: 5.6
       env: SYMFONY_VERSION="2.8.*"
+      env: ENABLE_CODE_COVERAGE="true"
     - php: 5.3
       env: COMPOSER_FLAGS="--prefer-lowest"
       env: SYMFONY_VERSION="2.8.*"
@@ -39,7 +40,6 @@ matrix:
       group: edge
     - php: 7.0
       env: SYMFONY_VERSION="3.0.*"
-      env: ENABLE_CODE_COVERAGE="true"
     - php: 5.6
       env: TWIG_VERSION="2.0.x-dev"
   allow_failures:

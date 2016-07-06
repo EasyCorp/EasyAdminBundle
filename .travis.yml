@@ -33,7 +33,7 @@ matrix:
       env: SYMFONY_VERSION="2.8.*"
       env: ENABLE_CODE_COVERAGE="true"
     - php: 5.3
-      env: SYMFONY_VERSION="2.8.*"
+      env: SYMFONY_VERSION="2.3.*"
       env: COMPOSER_FLAGS="--prefer-lowest"
     - php: hhvm-3.12
       env: SYMFONY_VERSION="2.8.*"

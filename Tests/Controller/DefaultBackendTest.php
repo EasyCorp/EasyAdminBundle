@@ -639,7 +639,7 @@ class DefaultBackendTest extends AbstractTestCase
         $this->client->followRedirects();
         $form = $crawler->filter('#delete_form_submit')->form();
         $this->client->submit($form);
-var_dump($this->client->getResponse());exit;
+
         $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertNull($product, 'After removing it via the delete form, the product no longer exists.');
     }

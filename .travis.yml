@@ -21,8 +21,8 @@ matrix:
     # jobs are ordered in a specific way to get Travis results faster (first
     # execute the fastest jobs, then the slowest and finally the jobs that can fail)
     - php: 7.0
-      env: CHECK_PHP_SYNTAX="yes"
       env: SYMFONY_VERSION="3.0.*"
+      env: CHECK_PHP_SYNTAX="yes"
     - php: 5.6
       env: SYMFONY_VERSION="2.3.*"
     - php: 5.6
@@ -31,15 +31,13 @@ matrix:
       env: SYMFONY_VERSION="2.8.*"
       env: ENABLE_CODE_COVERAGE="true"
     - php: 5.3
-      env: COMPOSER_FLAGS="--prefer-lowest"
       env: SYMFONY_VERSION="2.8.*"
+      env: COMPOSER_FLAGS="--prefer-lowest"
     - php: hhvm-3.12
       env: SYMFONY_VERSION="2.8.*"
       sudo: required
       dist: trusty
       group: edge
-    - php: 7.0
-      env: SYMFONY_VERSION="3.0.*"
     - php: 5.6
       env: TWIG_VERSION="2.0.x-dev"
   allow_failures:

@@ -382,9 +382,9 @@ class AdminController extends Controller
     /**
      * It updates the value of some property of some entity to the new given value.
      *
-     * @param mixed $entity The instance of the entity to modify
+     * @param mixed  $entity   The instance of the entity to modify
      * @param string $property The name of the property to change
-     * @param bool $value The new value of the property
+     * @param bool   $value    The new value of the property
      *
      * @throws \RuntimeException
      */
@@ -742,7 +742,6 @@ class AdminController extends Controller
      * allows to generate dynamic CSS files that use variables without the need
      * to set up a CSS preprocessing toolchain.
      *
-     * @return null
      * @deprecated The CSS styles are no longer rendered at runtime but preprocessed during container compilation. Use the $container['easyadmin.config']['_internal']['custom_css'] variable instead.
      */
     public function renderCssAction()

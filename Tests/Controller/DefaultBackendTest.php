@@ -639,7 +639,10 @@ class DefaultBackendTest extends AbstractTestCase
         $this->client->followRedirects();
         $form = $crawler->filter('#delete_form_submit')->form();
         $this->client->submit($form);
-var_dump($this->client->getResponse());exit;
+
+        // force the Doctrine flush after having removed the entity to avoid issues on Symfony 2.3
+        $em->flush();
+
         $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertNull($product, 'After removing it via the delete form, the product no longer exists.');
     }

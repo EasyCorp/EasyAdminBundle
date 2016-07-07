@@ -24,6 +24,7 @@ easy_admin:
                 label: null
                 css_class: null
                 icon: null
+        max_results: 10
     new:
         actions:
             '-list':

@@ -24,6 +24,7 @@ easy_admin:
                 label: custom-show-label
                 css_class: custom-show-class
                 icon: custom-show-icon
+        max_results: 10
     new:
         actions:
             custom_action_for_new:

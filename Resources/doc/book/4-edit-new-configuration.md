@@ -394,6 +394,18 @@ By default, the entity's primary key is used for the `id` property and the
 must define the `__toString()` method in all the entities used in autocomplete
 form fields.
 
+If the number of autocomplete suggestions is large, they are paginated to
+display a maximum of `10` results. Define the `show.max_results` option to
+change this value:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    show:
+        max_results: 20
+    # ...
+```
+
 Advanced Form Design
 --------------------
 

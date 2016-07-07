@@ -494,7 +494,7 @@
 {% block easyadmin_autocomplete_row %}
     {{ form_row(form.autocomplete, {
         attr: attr|merge({
-            'data-easyadmin-autocomplete-max-results': easyadmin_config('list.max_results'),
+            'data-easyadmin-autocomplete-max-results': easyadmin_config('show.max_results'),
             'data-easyadmin-autocomplete-url' : path('easyadmin', {
                 action: 'autocomplete',
                 entity: easyadmin.entity.name,

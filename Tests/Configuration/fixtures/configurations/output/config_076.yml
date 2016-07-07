@@ -30,6 +30,7 @@ easy_admin:
                 label: action.edit
                 css_class: 'btn btn-primary'
                 icon: edit
+        max_results: 10
     new:
         actions:
             list:

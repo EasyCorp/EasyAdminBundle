@@ -72,7 +72,7 @@ class Autocomplete
             throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field in the "%s" view of the "%s" entity).', $targetEntityClass, $property, $view, $entity));
         }
 
-        $paginator = $this->finder->findByAllProperties($targetEntityConfig, $query, $page, $backendConfig['list']['max_results']);
+        $paginator = $this->finder->findByAllProperties($targetEntityConfig, $query, $page, $backendConfig['show']['max_results']);
 
         return array('results' => $this->processResults($paginator->getCurrentPageResults(), $targetEntityConfig));
     }

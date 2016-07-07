@@ -46,6 +46,7 @@ customize your backends.
       [actions](#actions)
   * [show](#show)
       [actions](#actions)
+      [max_results](#max_results)
   * [entities](#entities)
 
 ### easy_admin
@@ -447,9 +448,26 @@ enabled for this view, as explained above for the `list` view.
 
 ### show
 
-Defines the options applied globally for the `show` view of all entities. The
-only option available for now is called `actions`, which defines the actions
-enabled for this view, as explained above for the `list` view.
+Defines the options applied globally for the `show` view of all entities.
+
+#### actions
+
+(**default value**: empty array, **type**: array)
+
+It works as explained above for the `list` view.
+
+#### max_results
+
+(**default value**: 10, **type**: integer)
+
+If some entity property defines a relation with another entity, in the `show`
+view this property is displayed as a list of links to the related items. For
+example, if your `User` and `Article` entities are related, when displaying the
+details of any user you'll also see a list of links to their articles.
+
+This option defines the maximum number of items displayed for those relations,
+preventing issues when relations contains lots of elements. This option is also
+used as the maximum number of suggestions displayed for autocomplete fields.
 
 ### entities
 

@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ *
  * @author MacFJA
  */
 class Product

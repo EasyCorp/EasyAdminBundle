@@ -21,7 +21,7 @@ class MultipleConfigSyntaxTest extends AbstractTestCase
         $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $expectedEntityNames = array(
-            'Product', 'Product2', 'Product3', 'Product4', 'Inventory', 'Product22', 'Product5', 'Inventory2'
+            'Product', 'Product2', 'Product3', 'Product4', 'Inventory', 'Product22', 'Product5', 'Inventory2',
         );
 
         $i = 0;
@@ -30,7 +30,7 @@ class MultipleConfigSyntaxTest extends AbstractTestCase
             $this->assertEquals($expectedEntityNames[$i], $entityConfig['label']);
             $this->assertEquals('AppTestBundle\Entity\FunctionalTests\Product', $entityConfig['class']);
 
-            $i++;
+            ++$i;
         }
     }
 }

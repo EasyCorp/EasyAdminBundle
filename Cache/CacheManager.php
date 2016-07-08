@@ -26,7 +26,7 @@ class CacheManager extends FilesystemCache
     }
 
     /**
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -36,7 +36,7 @@ class CacheManager extends FilesystemCache
     }
 
     /**
-     * @param  string $key
+     * @param string $key
      *
      * @return bool
      */
@@ -46,8 +46,8 @@ class CacheManager extends FilesystemCache
     }
 
     /**
-     * @param  string $key
-     * @param  mixed $item
+     * @param string $key
+     * @param mixed  $item
      *
      * @return bool
      */

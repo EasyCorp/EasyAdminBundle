@@ -12,7 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpKernel\Kernel;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomEntityControllerAsServiceTest extends AbstractTestCase

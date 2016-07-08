@@ -40,9 +40,9 @@ class QueryBuilder
      */
     public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null)
     {
-        /** @var EntityManager */
+        /* @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
-        /** @var DoctrineQueryBuilder */
+        /* @var DoctrineQueryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
             ->from($entityConfig['class'], 'entity')
@@ -68,9 +68,9 @@ class QueryBuilder
      */
     public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField = null, $sortDirection = null)
     {
-        /** @var EntityManager */
+        /* @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
-        /** @var DoctrineQueryBuilder */
+        /* @var DoctrineQueryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
             ->from($entityConfig['class'], 'entity')

@@ -61,6 +61,7 @@ class ConfigManager
      * @param string $entityName
      *
      * @deprecated Use getEntityConfig()
+     *
      * @return array The full entity configuration
      *
      * @throws \InvalidArgumentException when the entity isn't managed by EasyAdmin

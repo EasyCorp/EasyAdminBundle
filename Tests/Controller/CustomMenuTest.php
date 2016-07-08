@@ -42,7 +42,7 @@ class CustomMenuTest extends AbstractTestCase
             'Categories',
             trim($crawler->filter('.sidebar-menu .treeview-menu li.active a')->text())
         );
-   }
+    }
 
     public function testBackendHomepageConfig()
     {

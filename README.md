@@ -71,7 +71,7 @@ read before using EasyAdmin.
 
 > **❮ NOTE ❯** you are reading the documentation of the bundle's **development**
 > version. You can also [read the documentation of the latest stable version ➜]
-> (https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.14.0/).
+> (https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.15.0/).
 
 Demo Application
 ----------------

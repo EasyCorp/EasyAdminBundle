@@ -428,7 +428,7 @@
                                 {% if group_config.icon|default(false) %}
                                     <i class="fa fa-{{ group_config.icon }}"></i>
                                 {% endif %}
-                                {{ group_config.label }}
+                                {{ group_config.label|trans }}
                             </h3>
                         </div>
                     {% endif %}

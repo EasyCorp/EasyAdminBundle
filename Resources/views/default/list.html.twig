@@ -33,7 +33,7 @@
 {% endspaceless %}
 {% endset %}
 
-{% block page_title %}{{ _content_title|striptags }}{% endblock %}
+{% block page_title %}{{ _content_title|striptags|raw }}{% endblock %}
 
 {% block content_header %}
     <div class="row">

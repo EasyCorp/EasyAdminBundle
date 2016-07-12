@@ -107,6 +107,10 @@
             </trans-unit>
             
             <!-- misc. elements -->
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Przełącz nawigację</target>
+            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Czy na pewno chcesz usunąć ten element?</target>
@@ -135,9 +139,13 @@
                 <source>errors</source>
                 <target>Błąd|Błędy</target>
             </trans-unit>
-            <trans-unit id="toggle_navigation">
-                <source>toggle_navigation</source>
-                <target>Przełącz nawigację</target>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Nie zapisano zmian wprowadzonych w tym formularzu.</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} pozostała jedna pozycja nie wyświetlona na tym listingu|{2,3,4} pozostały %count% pozycje nie wyświetlone na tym listingu|{5,21} pozostało %count% pozycji nie wyświetlonych na tym listingu|{22,Inf} liczba pozycji nie wyświetlonych na tym listingu: %count%]]></target>
             </trans-unit>
         </body>
     </file>

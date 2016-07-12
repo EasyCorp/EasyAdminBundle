@@ -446,7 +446,7 @@ built-in form themes. But you can also use your own form themes:
 ```yaml
 easy_admin:
     design:
-        form_theme: '@AppBundle/form/custom_layout.html.twig'
+        form_theme: '@App/form/custom_layout.html.twig'
     # ...
 ```
 
@@ -457,7 +457,7 @@ them will be used when rendering the backend forms:
 easy_admin:
     design:
         form_theme:
-            - '@AppBundle/form/custom_layout.html.twig'
+            - '@App/form/custom_layout.html.twig'
             - 'form_div_layout.html.twig'
     # ...
 ```

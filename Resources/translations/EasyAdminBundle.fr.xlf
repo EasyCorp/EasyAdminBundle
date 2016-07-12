@@ -141,7 +141,7 @@
             </trans-unit>
             <trans-unit id="form.are_you_sure">
                 <source>form.are_you_sure</source>
-                <target>Vous n'avez pas sauvegardé vor modification.</target>
+                <target>Vous n'avez pas sauvegardé vos modifications.</target>
             </trans-unit>
         </body>
     </file>

@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-07-12T20:35:30Z
+
+@forsetius thanks a lot for updating this translation, specially considering how hard is to translate one of the messages. I loved your clever trick to make it a bit easier!
+
+Regarding your question, I'm not a super expert in i18n, but I think that `]1, Inf]` is correct to say "any positive number higher than 1". In the Symfony Docs they use it too:
+
+![symfony_translation](https://cloud.githubusercontent.com/assets/73419/16782677/ea5f7f08-4880-11e6-9e77-e915a343bbfa.png)

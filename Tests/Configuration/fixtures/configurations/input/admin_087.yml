@@ -5,6 +5,6 @@
 # CONFIGURATION
 easy_admin:
     design:
-        form_theme: '@AppBundle/form/custom_layout.html.twig'
+        form_theme: '@App/form/custom_layout.html.twig'
     entities:
         - AppTestBundle\Entity\UnitTests\Category

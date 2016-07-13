@@ -48,7 +48,7 @@ option of the `easy_admin_bundle` route to point to the new controller:
 # app/config/routing.yml
 easy_admin_bundle:
     # resource: "@EasyAdminBundle/Controller/"           <-- REMOVE this line
-    resource: "@AppBundle/Controller/AdminController.php" # <-- ADD this line
+    resource: "@App/Controller/AdminController.php" # <-- ADD this line
     type:     annotation
     prefix:   /admin
 ```

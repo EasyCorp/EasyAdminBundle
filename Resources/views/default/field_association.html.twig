@@ -16,7 +16,7 @@
 
                 {% set _remaining_items = value|length - easyadmin_config('show.max_results') %}
                 {% if _remaining_items > 0 %}
-                    <li>({{ 'show.remaining_items'|transchoice(count = _remaining_items, domain = 'EasyAdminBundle') }})</li>
+                    <li class="metainfo">({{ 'show.remaining_items'|transchoice(count = _remaining_items, domain = 'EasyAdminBundle') }})</li>
                 {% endif %}
             </ul>
         {% else %}

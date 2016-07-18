@@ -5,7 +5,7 @@
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
-                <target>Ustvarite novo %entity_name%</target>
+                <target>Dodaj %entity_name%</target>
             </trans-unit>
             <trans-unit id="show.page_title">
                 <source>show.page_title</source>
@@ -21,7 +21,7 @@
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
-                <target><![CDATA[{0} Rezultati niso bili najdeni|{1} <strong>1</strong> rezultat najden|{2} <strong>%count%</strong> rezultata najdena|{3} <strong>%count%</strong> rezultati najdeni|[5,Inf] <strong>%count%</strong>rezultatov najdenih]]></target>
+                <target><![CDATA[Najden <strong>%count%</strong> rezultat|Najdena <strong>%count%</strong> rezultata|Najdeni <strong>%count%</strong> rezultati|<strong>%count%</strong>rezultatov]]></target>
             </trans-unit>
 
             <!-- 'search' view -->
@@ -33,7 +33,7 @@
             <!-- 'list' view -->
             <trans-unit id="list.row_actions">
                 <source>list.row_actions</source>
-                <target>Akcije</target>
+                <target>Dejanja</target>
             </trans-unit>
 
             <!-- paginator -->
@@ -77,7 +77,7 @@
             </trans-unit>
             <trans-unit id="label.nullable_field">
                 <source>label.nullable_field</source>
-                <target>Pustite prazno</target>
+                <target>Pusti prazno</target>
             </trans-unit>
             <trans-unit id="label.object">
                 <source>label.object</source>
@@ -121,27 +121,31 @@
             </trans-unit>
             <trans-unit id="delete_modal.action">
                 <source>delete_modal.action</source>
-                <target>Izbrišite</target>
+                <target>Izbriši</target>
             </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
-                <target>Dodajte nov element</target>
+                <target>Dodaj nov element</target>
             </trans-unit>
             <trans-unit id="action.add_another_item">
                 <source>action.add_another_item</source>
-                <target>Dodajte naslednji element</target>
+                <target>Dodaj naslednji element</target>
             </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
-                <target>Odstranite element</target>
+                <target>Odstrani element</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
-                <target>Napaka|Napake</target>
+                <target>%count% napaka|%count% napaki|%count% napake|%count% napak</target>
             </trans-unit>
             <trans-unit id="form.are_you_sure">
                 <source>form.are_you_sure</source>
                 <target>Sprememb, ki ste jih naredili na tem obrazcu, niste shranili.</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[Obstaja še %count% element, ki ni prikazan na tem seznamu|Obstajata še %count% elementa, ki nista prikazana na tem seznamu|Obstajajo še %count% elementi, ki niso prikazani na tem seznamu|%count% ostalih elementov ni prikazanih na tem seznamu]]></target>
             </trans-unit>
         </body>
     </file>

@@ -145,7 +145,7 @@
             </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
-                <target><![CDATA[{1} pozostała jedna pozycja nie wyświetlona na tym listingu|{2,3,4} pozostały %count% pozycje nie wyświetlone na tym listingu|{5,21} pozostało %count% pozycji nie wyświetlonych na tym listingu|{22,Inf} liczba pozycji nie wyświetlonych na tym listingu: %count%]]></target>
+                <target><![CDATA[{1} pozostała jedna pozycja nie wyświetlona na tym listingu|{2,3,4} pozostały %count% pozycje nie wyświetlone na tym listingu|[5,21] pozostało %count% pozycji nie wyświetlonych na tym listingu|[22,Inf[ liczba pozycji nie wyświetlonych na tym listingu: %count%]]></target>
             </trans-unit>
         </body>
     </file>

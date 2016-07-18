@@ -5,15 +5,15 @@
             <!-- generic actions displayed on buttons and links -->
             <trans-unit id="action.new">
                 <source>action.new</source>
-                <target>Novo %entity_name%</target>
+                <target>Dodaj %entity_name%</target>
             </trans-unit>
             <trans-unit id="action.show">
                 <source>action.show</source>
-                <target>Prikažite</target>
+                <target>Prikaži</target>
             </trans-unit>
             <trans-unit id="action.edit">
                 <source>action.edit</source>
-                <target>Urejanje</target>
+                <target>Uredi</target>
             </trans-unit>
             <trans-unit id="action.search">
                 <source>action.search</source>
@@ -21,15 +21,15 @@
             </trans-unit>
             <trans-unit id="action.delete">
                 <source>action.delete</source>
-                <target>Izbrišite</target>
+                <target>Izbriši</target>
             </trans-unit>
             <trans-unit id="action.save">
                 <source>action.save</source>
-                <target>Shranite spremembe</target>
+                <target>Shrani spremembe</target>
             </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
-                <target>Prekličite</target>
+                <target>Prekliči</target>
             </trans-unit>
             <trans-unit id="action.list">
                 <source>action.list</source>

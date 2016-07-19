@@ -428,14 +428,14 @@
                                 {% if group_config.icon|default(false) %}
                                     <i class="fa fa-{{ group_config.icon }}"></i>
                                 {% endif %}
-                                {{ group_config.label }}
+                                {{ group_config.label|trans|raw }}
                             </h3>
                         </div>
                     {% endif %}
 
                     <div class="box-body">
                         {% if group_config.help|default(false) %}
-                            <p class="help-block">{{ group_config.help }}</p>
+                            <p class="help-block">{{ group_config.help|trans|raw }}</p>
                         {% endif %}
 
                         <div class="row">

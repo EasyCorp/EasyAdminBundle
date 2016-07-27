@@ -7,7 +7,7 @@
         </ul>
     {% else %}
         <div class="empty collection-empty">
-            <span class="label label-empty">{{ 'label.empty'|trans({}, 'EasyAdminBundle') }}</span>
+            {{ include(entity_config.templates.label_empty) }}
         </div>
     {% endif %}
 {% else %}

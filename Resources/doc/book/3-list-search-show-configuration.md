@@ -758,7 +758,10 @@ features. Inside these templates you have access to the following variables:
   * `value`, the content of the property being rendered, which can be a variable
     of any type (string, numeric, boolean, array, etc.)
   * `view`, a string with the name of the view where the field is being rendered
-    (`show` or `list`).
+    (`show` or `list`);
+  * `entity_config`, an array with the full configuration of the currently
+    selected entity;
+  * `backend_config`, an array with the full backend configuration.
 
 ### Rendering Entity Properties with Custom Templates
 

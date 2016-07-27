@@ -107,7 +107,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
         try {
             $value = $this->propertyAccessor->getValue($item, $fieldName);
         } catch (\Exception $e) {
-            return $twig->render($entityConfiguration['templates']['label_inaccessible'], array('view' => $view));
+            return $twig->render($entityConfiguration['templates']['label_inaccessible'], array(
+                'view' => $view,
+                'backend_config' => $this->getBackendConfiguration(),
+            ));
         }
 
         try {
@@ -117,6 +120,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 'item' => $item,
                 'value' => $value,
                 'view' => $view,
+                'entity_config' => $entityConfiguration,
+                'backend_config' => $this->getBackendConfiguration(),
             );
 
             if (null === $value) {

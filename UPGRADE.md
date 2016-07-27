@@ -18,13 +18,17 @@ Upgrade to 2.0.0 (XX/XXX/201X)
 Upgrade to 1.15.X (XX/October/2016)
 -----------------------------------
 
+* The template fragments used to render each property value (e.g.
+  `field_array.html.twig`, `label_null.html.twig`, etc.) now receive two new
+  variables called `entity_config` and `backend_config`, which are useful for
+  advanced backends.
 * The `image` fields and the VichUploader files and images now are rendered
   using the `asset()` Twig function. Depending on your configuration, you may
   need to change or remove EasyAdmin's `base_path` option and define the proper
   base path using Symfony's asset configuration.
 
 Upgrade to 1.13.0 (11/May/2016)
--------------------------------
+---------------------------------
 
 * The configuration of the backend is no longer processed in a compiler pass
   but generated with a cache warmer. This is done to avoid issues with Doctrine

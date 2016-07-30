@@ -148,6 +148,7 @@ would look as follows:
 namespace AppBundle\Controller;
 
 // ...
+use Symfony\Component\HttpFoundation\Request;
 
 class ProductController extends Controller
 {
@@ -157,13 +158,13 @@ class ProductController extends Controller
      * @Route(path = "/admin/product/restock", name = "product_restock")
      * @Security("has_role('ROLE_ADMIN')")
      */
-    public function restockAction()
+    public function restockAction(Request $request)
     {
         // change the properties of the given entity and save the changes
         $em = $this->getDoctrine()->getManager();
         $repository = $this->getDoctrine()->getRepository('AppBundle:Product');
 
-        $id = $this->request->query->get('id');
+        $id = $request->query->get('id');
         $entity = $repository->find($id);
         $entity->setStock(100 + $entity->getStock());
         $em->flush();

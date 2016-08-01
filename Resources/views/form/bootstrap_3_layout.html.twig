@@ -439,7 +439,7 @@
                         {% endif %}
 
                         <div class="row">
-                            {% for field in form.children if 'hidden' not in field.vars.block_prefixes and field.vars.attr.form_group == group_name %}
+                            {% for field in form.children if 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name %}
                                 <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
                                     {{ form_row(field) }}
                                 </div>

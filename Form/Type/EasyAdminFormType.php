@@ -88,10 +88,10 @@ class EasyAdminFormType extends AbstractType
                 $formFieldOptions['required'] = false;
             }
 
-            $child = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
-            $child->setAttribute('easyadmin_form_group', $currentFormGroup);
+            $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
+            $formField->setAttribute('easyadmin_form_group', $currentFormGroup);
 
-            $builder->add($child);
+            $builder->add($formField);
         }
 
         $builder->setAttribute('easyadmin_form_groups', $formGroups);

@@ -81,8 +81,6 @@ class EasyAdminFormType extends AbstractType
                 continue;
             }
 
-            $formFieldOptions['attr']['form_group'] = $currentFormGroup;
-
             // 'divider' and 'section' are 'fake' form fields used to create the design
             // elements of the complex form layouts: define them as unmapped and non-required
             if (0 === strpos($metadata['property'], '_easyadmin_form_design_element_')) {
@@ -90,7 +88,10 @@ class EasyAdminFormType extends AbstractType
                 $formFieldOptions['required'] = false;
             }
 
-            $builder->add($name, $formFieldType, $formFieldOptions);
+            $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
+            $formField->setAttribute('easyadmin_form_group', $currentFormGroup);
+
+            $builder->add($formField);
         }
 
         $builder->setAttribute('easyadmin_form_groups', $formGroups);

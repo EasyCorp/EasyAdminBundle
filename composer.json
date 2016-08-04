@@ -29,6 +29,7 @@
         "symfony/doctrine-bridge"       : "~2.3|~3.0",
         "symfony/event-dispatcher"      : "~2.3|~3.0",
         "symfony/form"                  : "~2.3|~3.0",
+        "symfony/asset"                 : "~2.3|~3.0",
         "symfony/framework-bundle"      : "~2.3|~3.0",
         "symfony/http-foundation"       : "~2.3|~3.0",
         "symfony/http-kernel"           : "~2.3|~3.0",

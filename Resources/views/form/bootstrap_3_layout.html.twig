@@ -363,7 +363,7 @@
     <div class="easyadmin-vich-file">
         {% if download_uri|default('') is not empty %}
             {% set download_title = download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') %}
-            <a href="{{ download_uri }}">{{ download_title }}</a>
+            <a href="{{ asset(download_uri) }}">{{ download_title }}</a>
         {% endif %}
 
         <div class="row">
@@ -397,11 +397,11 @@
             {% set _lightbox_id = 'easyadmin-lightbox-' ~ id %}
 
             <a href="#" class="easyadmin-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
-                <img src="{{ download_uri }}">
+                <img src="{{ asset(download_uri) }}">
             </a>
 
             <div id="{{ _lightbox_id }}" class="easyadmin-lightbox">
-                <img src="{{ download_uri }}">
+                <img src="{{ asset(download_uri) }}">
             </div>
         {% endif %}
     </div>

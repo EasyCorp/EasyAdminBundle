@@ -110,6 +110,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             return $twig->render($entityConfiguration['templates']['label_inaccessible'], array(
                 'view' => $view,
                 'backend_config' => $this->getBackendConfiguration(),
+                'entity_config' => $entityConfiguration,
             ));
         }
 
@@ -120,8 +121,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 'item' => $item,
                 'value' => $value,
                 'view' => $view,
-                'entity_config' => $entityConfiguration,
                 'backend_config' => $this->getBackendConfiguration(),
+                'entity_config' => $entityConfiguration,
             );
 
             if (null === $value) {

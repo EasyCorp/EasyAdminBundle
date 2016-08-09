@@ -165,6 +165,11 @@ class Configuration implements ConfigurationInterface
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
 
+                ->scalarNode('translation_domain')
+                    ->defaultValue('messages')
+                    ->info('The translation domain.')
+                ->end()
+
                 ->arrayNode('formats')
                     ->addDefaultsIfNotSet()
                     ->children()

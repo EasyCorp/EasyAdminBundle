@@ -1,7 +1,7 @@
 {% form_theme form with easyadmin_config('design.form_theme') %}
 
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
-{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans } %}
+{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans({}, easyadmin_config('translation_domain')), '%entity_label%': _entity_config.label|trans({}, easyadmin_config('translation_domain')) } %}
 
 {% extends _entity_config.templates.layout %}
 
@@ -11,7 +11,7 @@
 {% block content_title %}
 {% spaceless %}
     {% set _default_title = 'new.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-    {{ _entity_config.new.title is defined ? _entity_config.new.title|trans(_trans_parameters) : _default_title }}
+    {{ _entity_config.new.title is defined ? _entity_config.new.title|trans(_trans_parameters, easyadmin_config('translation_domain')) : _default_title }}
 {% endspaceless %}
 {% endblock %}
 

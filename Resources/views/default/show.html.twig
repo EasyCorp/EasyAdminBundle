@@ -1,6 +1,6 @@
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
 {% set _entity_id = attribute(entity, _entity_config.primary_key_field_name) %}
-{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': _entity_id } %}
+{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans({}, easyadmin_config('translation_domain')), '%entity_label%': _entity_config.label|trans({}, easyadmin_config('translation_domain')), '%entity_id%': _entity_id } %}
 
 {% extends _entity_config.templates.layout %}
 
@@ -10,7 +10,7 @@
 {% block content_title %}
 {% spaceless %}
     {% set _default_title = 'show.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-    {{ _entity_config.show.title is defined ? _entity_config.show.title|trans(_trans_parameters) : _default_title }}
+    {{ _entity_config.show.title is defined ? _entity_config.show.title|trans(_trans_parameters, easyadmin_config('translation_domain')) : _default_title }}
 {% endspaceless %}
 {% endblock %}
 
@@ -19,7 +19,7 @@
         {% for field, metadata in fields %}
             <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
                 <label class="col-sm-2 control-label">
-                    {{ (metadata.label ?: field|humanize)|trans(_trans_parameters) }}
+                    {{ (metadata.label ?: field|humanize)|trans(_trans_parameters, easyadmin_config('translation_domain')) }}
                 </label>
                 <div class="col-sm-10">
                     <div class="form-control">
@@ -27,7 +27,7 @@
                     </div>
 
                     {% if metadata.help|default('') != '' %}
-                        <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help|trans|raw }}</span>
+                        <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help|trans({}, easyadmin_config('translation_domain'))|raw }}</span>
                     {% endif %}
                 </div>
             </div>

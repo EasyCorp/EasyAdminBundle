@@ -257,12 +257,12 @@ class ActionConfigPass implements ConfigPassInterface
     private function getDefaultActionsConfig($view)
     {
         $actions = $this->doNormalizeActionsConfig(array(
-            'delete' => array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash-o', 'css_class' => 'btn btn-default'),
-            'edit' => array('name' => 'edit', 'label' => 'action.edit', 'icon' => 'edit', 'css_class' => 'btn btn-primary'),
-            'new' => array('name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'),
-            'search' => array('name' => 'search', 'label' => 'action.search'),
-            'show' => array('name' => 'show', 'label' => 'action.show'),
-            'list' => array('name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary'),
+            'delete' => array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash-o', 'css_class' => 'btn btn-default', 'translation_domain' => 'messages'),
+            'edit' => array('name' => 'edit', 'label' => 'action.edit', 'icon' => 'edit', 'css_class' => 'btn btn-primary', 'translation_domain' => 'messages'),
+            'new' => array('name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary', 'translation_domain' => 'messages'),
+            'search' => array('name' => 'search', 'label' => 'action.search', 'translation_domain' => 'messages'),
+            'show' => array('name' => 'show', 'label' => 'action.show', 'translation_domain' => 'messages'),
+            'list' => array('name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary', 'translation_domain' => 'messages'),
         ));
 
         // minor tweaks for some action + view combinations

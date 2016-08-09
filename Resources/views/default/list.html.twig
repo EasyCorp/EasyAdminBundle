@@ -1,5 +1,5 @@
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
-{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans } %}
+{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans({}, easyadmin_config('translation_domain')), '%entity_label%': _entity_config.label|trans({}, easyadmin_config('translation_domain')) } %}
 
 {% extends _entity_config.templates.layout %}
 
@@ -28,7 +28,7 @@
         {{ 'search.page_title'|transchoice(count = paginator.nbResults, domain = 'EasyAdminBundle')|raw }}
     {% else %}
         {% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-        {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title }}
+        {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters, easyadmin_config('translation_domain')) : _default_title }}
     {% endif %}
 {% endspaceless %}
 {% endset %}
@@ -80,7 +80,7 @@
                             <div class="button-action">
                                 <a class="{{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                                    {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
+                                    {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters, _action.translation_domain|default(easyadmin_config('translation_domain'))) }}
                                 </a>
                             </div>
                         {% endblock new_action %}
@@ -102,7 +102,7 @@
                 {% for field, metadata in fields %}
                     {% set isSortingField = metadata.property == app.request.get('sortField') %}
                     {% set nextSortDirection = isSortingField ? (app.request.get('sortDirection') == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
-                    {% set _column_label = (metadata.label ?: field|humanize)|trans(_trans_parameters) %}
+                    {% set _column_label = (metadata.label ?: field|humanize)|trans(_trans_parameters, easyadmin_config('translation_domain')) %}
                     {% set _column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-caret-up' : 'fa-caret-down') : 'fa-sort' %}
 
                     <th data-property-name="{{ metadata.property }}" class="{{ isSortingField ? 'sorted' }} {{ metadata.virtual ? 'virtual' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}">
@@ -133,7 +133,7 @@
                 <tr data-id="{{ _item_id }}">
                     {% for field, metadata in fields %}
                         {% set isSortingField = metadata.property == app.request.get('sortField') %}
-                        {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters)  %}
+                        {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters, easyadmin_config('translation_domain'))  %}
 
                         <td data-label="{{ _column_label }}" class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}">
                             {{ easyadmin_render_field_for_list_view(_entity_config.name, item, metadata) }}

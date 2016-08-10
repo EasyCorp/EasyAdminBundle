@@ -119,6 +119,12 @@ class Product
      * @var File
      */
     private $imageFile;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     * @var \DateTime
+     */
+    private $updatedAt;
 
     // ...
 

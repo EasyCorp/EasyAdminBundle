@@ -44,7 +44,6 @@ easy_admin:
                         label: 'Custom list action'
                         css_class: ' action-custom_list_action'
                         icon: null
-                        translation_domain: 'messages'
                     edit:
                         name: edit
                         type: method
@@ -104,7 +103,6 @@ easy_admin:
                         label: 'Custom edit action'
                         css_class: ' action-custom_edit_action'
                         icon: null
-                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
@@ -129,7 +127,6 @@ easy_admin:
                         label: 'Custom show action'
                         css_class: ' action-custom_show_action'
                         icon: null
-                        translation_domain: 'messages'
                     edit:
                         name: edit
                         type: method
@@ -182,7 +179,6 @@ easy_admin:
                         label: 'Custom new action'
                         css_class: ' action-custom_new_action'
                         icon: null
-                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method

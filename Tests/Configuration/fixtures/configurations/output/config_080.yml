@@ -7,6 +7,7 @@ easy_admin:
                 label: 'Global Edit Label'
                 css_class: text-primary
                 icon: global-edit-icon
+                translation_domain: 'messages'
         max_results: 15
     edit:
         actions:
@@ -16,6 +17,7 @@ easy_admin:
                 label: 'Global Delete Label'
                 css_class: 'btn btn-default'
                 icon: global-delete-icon
+                translation_domain: 'messages'
     show:
         actions:
             edit:
@@ -24,6 +26,7 @@ easy_admin:
                 label: 'Global Edit Label'
                 css_class: 'btn btn-primary'
                 icon: global-edit-icon
+                translation_domain: 'messages'
         max_results: 10
     new:
         actions:
@@ -33,6 +36,7 @@ easy_admin:
                 label: 'Global List Label'
                 css_class: 'btn btn-secondary'
                 icon: global-list-icon
+                translation_domain: 'messages'
     entities:
         Category:
             class: AppTestBundle\Entity\UnitTests\Category
@@ -44,6 +48,7 @@ easy_admin:
                         label: 'Entity Edit Label'
                         css_class: 'text-primary action-edit'
                         icon: entity-edit-icon
+                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
@@ -96,6 +101,7 @@ easy_admin:
                         label: 'Entity Delete Label'
                         css_class: 'btn btn-default action-delete'
                         icon: entity-delete-icon
+                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method
@@ -113,6 +119,7 @@ easy_admin:
                         label: 'Entity Edit Label'
                         css_class: 'btn btn-primary action-edit'
                         icon: entity-edit-icon
+                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
@@ -158,6 +165,7 @@ easy_admin:
                         label: 'Entity List Label'
                         css_class: 'btn btn-secondary action-list'
                         icon: entity-list-icon
+                        translation_domain: 'messages'
                 fields: {  }
                 form_options: {  }
             name: Category

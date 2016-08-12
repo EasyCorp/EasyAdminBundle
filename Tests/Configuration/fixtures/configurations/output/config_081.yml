@@ -168,42 +168,36 @@ easy_admin:
                         label: 'Camel case action'
                         css_class: ' action-CamelCaseAction'
                         icon: null
-                        translation_domain: 'messages'
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
                         css_class: ' action-snakeCaseAction'
                         icon: null
-                        translation_domain: 'messages'
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
                         css_class: ' action-underscore_action'
                         icon: null
-                        translation_domain: 'messages'
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
                         css_class: ' action-UPPERCASE_ACTION'
                         icon: null
-                        translation_domain: 'messages'
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
                         css_class: ' action-lowercaseaction'
                         icon: null
-                        translation_domain: 'messages'
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
                         css_class: ' action-WEIRD_caseAction'
                         icon: null
-                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
@@ -249,42 +243,36 @@ easy_admin:
                         label: 'Camel case action'
                         css_class: ' action-CamelCaseAction'
                         icon: null
-                        translation_domain: 'messages'
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
                         css_class: ' action-snakeCaseAction'
                         icon: null
-                        translation_domain: 'messages'
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
                         css_class: ' action-underscore_action'
                         icon: null
-                        translation_domain: 'messages'
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
                         css_class: ' action-UPPERCASE_ACTION'
                         icon: null
-                        translation_domain: 'messages'
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
                         css_class: ' action-lowercaseaction'
                         icon: null
-                        translation_domain: 'messages'
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
                         css_class: ' action-WEIRD_caseAction'
                         icon: null
-                        translation_domain: 'messages'
                     edit:
                         name: edit
                         type: method
@@ -323,42 +311,36 @@ easy_admin:
                         label: 'Camel case action'
                         css_class: ' action-CamelCaseAction'
                         icon: null
-                        translation_domain: 'messages'
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
                         css_class: ' action-snakeCaseAction'
                         icon: null
-                        translation_domain: 'messages'
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
                         css_class: ' action-underscore_action'
                         icon: null
-                        translation_domain: 'messages'
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
                         css_class: ' action-UPPERCASE_ACTION'
                         icon: null
-                        translation_domain: 'messages'
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
                         css_class: ' action-lowercaseaction'
                         icon: null
-                        translation_domain: 'messages'
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
                         css_class: ' action-WEIRD_caseAction'
                         icon: null
-                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method
@@ -421,42 +403,36 @@ easy_admin:
                         label: 'Camel case action'
                         css_class: ' action-CamelCaseAction'
                         icon: null
-                        translation_domain: 'messages'
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
                         css_class: ' action-snakeCaseAction'
                         icon: null
-                        translation_domain: 'messages'
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
                         css_class: ' action-underscore_action'
                         icon: null
-                        translation_domain: 'messages'
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
                         css_class: ' action-UPPERCASE_ACTION'
                         icon: null
-                        translation_domain: 'messages'
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
                         css_class: ' action-lowercaseaction'
                         icon: null
-                        translation_domain: 'messages'
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
                         css_class: ' action-WEIRD_caseAction'
                         icon: null
-                        translation_domain: 'messages'
                     edit:
                         name: edit
                         type: method

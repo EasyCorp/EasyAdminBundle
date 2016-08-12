@@ -77,3 +77,4 @@ easy_admin:
         params:
             action: list
             entity: null
+    translation_domain: 'messages'

@@ -10,6 +10,7 @@ easy_admin:
                         label: action.delete
                         css_class: 'custom-class action-delete'
                         icon: custom-icon
+                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method

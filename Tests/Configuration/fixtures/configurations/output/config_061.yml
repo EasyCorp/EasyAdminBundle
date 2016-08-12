@@ -7,6 +7,7 @@ easy_admin:
                 label: custom-edit-label
                 css_class: custom-edit-class
                 icon: custom-edit-icon
+                translation_domain: 'messages'
         max_results: 15
     edit:
         actions:
@@ -16,6 +17,7 @@ easy_admin:
                 label: custom-delete-label
                 css_class: custom-delete-class
                 icon: custom-delete-icon
+                translation_domain: 'messages'
     show:
         actions:
             list:
@@ -24,6 +26,7 @@ easy_admin:
                 label: custom-list-label
                 css_class: custom-list-class
                 icon: custom-list-icon
+                translation_domain: 'messages'
         max_results: 10
     new:
         actions:
@@ -33,6 +36,7 @@ easy_admin:
                 label: custom-list-label
                 css_class: custom-list-class
                 icon: custom-list-icon
+                translation_domain: 'messages'
     entities:
         Category:
             class: AppTestBundle\Entity\UnitTests\Category
@@ -48,6 +52,7 @@ easy_admin:
                         label: custom-delete-label
                         css_class: 'custom-delete-class action-delete'
                         icon: custom-delete-icon
+                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method
@@ -86,6 +91,7 @@ easy_admin:
                         label: custom-edit-label
                         css_class: 'custom-edit-class action-edit'
                         icon: custom-edit-icon
+                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
@@ -117,6 +123,7 @@ easy_admin:
                         label: custom-list-label
                         css_class: 'custom-list-class action-list'
                         icon: custom-list-icon
+                        translation_domain: 'messages'
             search:
                 fields:
                     id:
@@ -172,6 +179,7 @@ easy_admin:
                         label: custom-list-label
                         css_class: 'custom-list-class action-list'
                         icon: custom-list-icon
+                        translation_domain: 'messages'
                     edit:
                         name: edit
                         type: method

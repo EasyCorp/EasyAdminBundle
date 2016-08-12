@@ -308,3 +308,4 @@ easy_admin:
         params:
             action: list
             entity: CustomCategory
+    translation_domain: 'messages'

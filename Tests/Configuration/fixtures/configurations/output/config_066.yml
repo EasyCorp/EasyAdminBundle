@@ -7,12 +7,14 @@ easy_admin:
                 label: action.edit
                 css_class: text-primary
                 icon: null
+                translation_domain: 'messages'
             search:
                 name: search
                 type: method
                 label: 'This label should not be action.search'
                 css_class: null
                 icon: null
+                translation_domain: 'messages'
         max_results: 15
     entities:
         Category:

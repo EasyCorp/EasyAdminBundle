@@ -7,12 +7,14 @@ easy_admin:
                 label: action.delete
                 css_class: 'btn btn-default'
                 icon: trash-o
+                translation_domain: 'messages'
             list:
                 name: list
                 type: method
                 label: action.list
                 css_class: 'btn btn-secondary'
                 icon: null
+                translation_domain: 'messages'
     show:
         actions:
             edit:
@@ -21,6 +23,7 @@ easy_admin:
                 label: action.edit
                 css_class: 'btn btn-primary'
                 icon: edit
+                translation_domain: 'messages'
         max_results: 10
     entities:
         Category:
@@ -33,12 +36,14 @@ easy_admin:
                         label: action.delete
                         css_class: 'btn btn-default action-delete'
                         icon: trash-o
+                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method
                         label: action.list
                         css_class: 'btn btn-secondary action-list'
                         icon: null
+                        translation_domain: 'messages'
                 fields: {  }
                 form_options: {  }
             show:
@@ -49,18 +54,21 @@ easy_admin:
                         label: action.edit
                         css_class: 'btn btn-primary action-edit'
                         icon: edit
+                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
                         label: action.delete
                         css_class: 'btn btn-default action-delete'
                         icon: trash-o
+                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method
                         label: action.list
                         css_class: 'btn btn-secondary action-list'
                         icon: null
+                        translation_domain: 'messages'
                 fields:
                     id:
                         css_class: ''
@@ -117,24 +125,28 @@ easy_admin:
                         label: action.edit
                         css_class: 'text-primary action-edit'
                         icon: null
+                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
                         label: action.delete
                         css_class: 'text-danger action-delete'
                         icon: null
+                        translation_domain: 'messages'
                     new:
                         name: new
                         type: method
                         label: action.new
                         css_class: 'btn btn-primary action-new'
                         icon: null
+                        translation_domain: 'messages'
                     search:
                         name: search
                         type: method
                         label: action.search
                         css_class: ' action-search'
                         icon: null
+                        translation_domain: 'messages'
             new:
                 fields: {  }
                 form_options: {  }
@@ -145,6 +157,7 @@ easy_admin:
                         label: action.list
                         css_class: 'btn btn-secondary action-list'
                         icon: null
+                        translation_domain: 'messages'
             search:
                 fields:
                     id:
@@ -316,3 +329,4 @@ easy_admin:
         params:
             action: list
             entity: Category
+    translation_domain: 'messages'

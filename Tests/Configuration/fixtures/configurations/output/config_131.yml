@@ -7,12 +7,14 @@ easy_admin:
                 label: action.list
                 css_class: 'btn btn-secondary'
                 icon: null
+                translation_domain: 'messages'
             delete:
                 name: delete
                 type: method
                 label: action.delete
                 css_class: 'btn btn-default'
                 icon: trash-o
+                translation_domain: 'messages'
     design:
         assets:
             css: {  }
@@ -89,3 +91,4 @@ easy_admin:
         params:
             action: list
             entity: null
+    translation_domain: 'messages'

@@ -10,60 +10,70 @@ easy_admin:
                         label: 'Camel case action'
                         css_class: ' action-CamelCaseAction'
                         icon: null
+                        translation_domain: 'messages'
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
                         css_class: ' action-snakeCaseAction'
                         icon: null
+                        translation_domain: 'messages'
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
                         css_class: ' action-underscore_action'
                         icon: null
+                        translation_domain: 'messages'
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
                         css_class: ' action-UPPERCASE_ACTION'
                         icon: null
+                        translation_domain: 'messages'
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
                         css_class: ' action-lowercaseaction'
                         icon: null
+                        translation_domain: 'messages'
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
                         css_class: ' action-WEIRD_caseAction'
                         icon: null
+                        translation_domain: 'messages'
                     edit:
                         name: edit
                         type: method
                         label: action.edit
                         css_class: 'text-primary action-edit'
                         icon: null
+                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
                         label: action.delete
                         css_class: 'text-danger action-delete'
                         icon: null
+                        translation_domain: 'messages'
                     new:
                         name: new
                         type: method
                         label: action.new
                         css_class: 'btn btn-primary action-new'
                         icon: null
+                        translation_domain: 'messages'
                     search:
                         name: search
                         type: method
                         label: action.search
                         css_class: ' action-search'
                         icon: null
+                        translation_domain: 'messages'
                 fields:
                     id:
                         css_class: ''
@@ -95,48 +105,56 @@ easy_admin:
                         label: 'Camel case action'
                         css_class: ' action-CamelCaseAction'
                         icon: null
+                        translation_domain: 'messages'
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
                         css_class: ' action-snakeCaseAction'
                         icon: null
+                        translation_domain: 'messages'
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
                         css_class: ' action-underscore_action'
                         icon: null
+                        translation_domain: 'messages'
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
                         css_class: ' action-UPPERCASE_ACTION'
                         icon: null
+                        translation_domain: 'messages'
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
                         css_class: ' action-lowercaseaction'
                         icon: null
+                        translation_domain: 'messages'
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
                         css_class: ' action-WEIRD_caseAction'
                         icon: null
+                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
                         label: action.delete
                         css_class: 'btn btn-default action-delete'
                         icon: trash-o
+                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method
                         label: action.list
                         css_class: 'btn btn-secondary action-list'
                         icon: null
+                        translation_domain: 'messages'
                 fields: {  }
                 form_options: {  }
             show:
@@ -147,54 +165,63 @@ easy_admin:
                         label: 'Camel case action'
                         css_class: ' action-CamelCaseAction'
                         icon: null
+                        translation_domain: 'messages'
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
                         css_class: ' action-snakeCaseAction'
                         icon: null
+                        translation_domain: 'messages'
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
                         css_class: ' action-underscore_action'
                         icon: null
+                        translation_domain: 'messages'
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
                         css_class: ' action-UPPERCASE_ACTION'
                         icon: null
+                        translation_domain: 'messages'
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
                         css_class: ' action-lowercaseaction'
                         icon: null
+                        translation_domain: 'messages'
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
                         css_class: ' action-WEIRD_caseAction'
                         icon: null
+                        translation_domain: 'messages'
                     edit:
                         name: edit
                         type: method
                         label: action.edit
                         css_class: 'btn btn-primary action-edit'
                         icon: edit
+                        translation_domain: 'messages'
                     delete:
                         name: delete
                         type: method
                         label: action.delete
                         css_class: 'btn btn-default action-delete'
                         icon: trash-o
+                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method
                         label: action.list
                         css_class: 'btn btn-secondary action-list'
                         icon: null
+                        translation_domain: 'messages'
                 fields:
                     id:
                         css_class: ''
@@ -226,42 +253,49 @@ easy_admin:
                         label: 'Camel case action'
                         css_class: ' action-CamelCaseAction'
                         icon: null
+                        translation_domain: 'messages'
                     snakeCaseAction:
                         name: snakeCaseAction
                         type: method
                         label: 'Snake case action'
                         css_class: ' action-snakeCaseAction'
                         icon: null
+                        translation_domain: 'messages'
                     underscore_action:
                         name: underscore_action
                         type: method
                         label: 'Underscore action'
                         css_class: ' action-underscore_action'
                         icon: null
+                        translation_domain: 'messages'
                     UPPERCASE_ACTION:
                         name: UPPERCASE_ACTION
                         type: method
                         label: 'U p p e r c a s e a c t i o n'
                         css_class: ' action-UPPERCASE_ACTION'
                         icon: null
+                        translation_domain: 'messages'
                     lowercaseaction:
                         name: lowercaseaction
                         type: method
                         label: Lowercaseaction
                         css_class: ' action-lowercaseaction'
                         icon: null
+                        translation_domain: 'messages'
                     WEIRD_caseAction:
                         name: WEIRD_caseAction
                         type: method
                         label: 'W e i r d case action'
                         css_class: ' action-WEIRD_caseAction'
                         icon: null
+                        translation_domain: 'messages'
                     list:
                         name: list
                         type: method
                         label: action.list
                         css_class: 'btn btn-secondary action-list'
                         icon: null
+                        translation_domain: 'messages'
                 fields: {  }
                 form_options: {  }
             name: Category
@@ -442,3 +476,4 @@ easy_admin:
         params:
             action: list
             entity: Category
+    translation_domain: 'messages'

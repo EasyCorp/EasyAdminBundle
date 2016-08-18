@@ -21,7 +21,7 @@
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
-                <target><![CDATA[{0} Sonuç bulunamadı|{1} <strong>1</strong> sonuç bulundu|]1,Inf] <strong>%count%</strong> sonuç bulundu]]></target>
+                <target><![CDATA[{0} Sonuç bulunamadı|<strong>%count%</strong> sonuç bulundu]]></target>
             </trans-unit>
 
             <!-- 'search' view -->
@@ -142,6 +142,10 @@
             <trans-unit id="form.are_you_sure">
                 <source>form.are_you_sure</source>
                 <target>Formdaki değişiklikleri kaydetmediniz.</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target>Diğer %count% öğe bu listede görüntülenemiyor</target>
             </trans-unit>
         </body>
     </file>

@@ -144,7 +144,7 @@ easy_admin:
     # ...
 ```
 
-#### disabled_actions
+### disabled_actions
 
 (**default value**: empty array, **type**: array)
 
@@ -410,7 +410,7 @@ Defines the options applied globally for the `list` view of all entities.
 (**default value**: empty array, **type**: array)
 
 Defines the actions available in the `list` view, which can be built-in actions
-(`edit`, `list`, `new`, `search`, `show`) or [custom actions](customizing-backend-actions.md).
+(`edit`, `list`, `new`, `search`, `show`) or [custom actions](../tutorials/custom-actions.md).
 
 ```yaml
 easy_admin:

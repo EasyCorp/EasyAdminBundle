@@ -63,7 +63,14 @@ easy_admin:
         User:
             class: AppBundle\Entity\User
             form:
-                fields: ['enabled', 'username', 'email', 'roles', 'lastLogin']
+                fields:
+                    - username
+                    - email
+                    - enabled
+                    - lastLogin
+                    # If you want the possibility for the administrator to be able to edit users passwords
+                    - { property: 'plainPassword', type: text, type_options: { required: false } }
+                    - { property: 'roles', type: choice, type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
 ```
 
 However, it's recommended to save changes using FOSUserBundle's user manager.

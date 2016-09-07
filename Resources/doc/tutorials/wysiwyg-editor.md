@@ -39,8 +39,14 @@ class AppKernel extends Kernel
 
 3) Install the JavaScript/CSS files used by the bundle:
 
+For Symfony 2.x
 ```bash
 $ php app/console assets:install --symlink
+```
+
+For Symfony 3.x
+```bash
+$ php bin/console assets:install --symlink
 ```
 
 Using the Rich Text Editor

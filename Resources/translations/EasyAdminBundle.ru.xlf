@@ -139,6 +139,14 @@
                 <source>errors</source>
                 <target>Ошибка|Ошибки</target>
             </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Вы не сохранили сделанные изменения.</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} %count% элемент не отображается в этом списке|{2,3,4} %count% элемента не отображаются в этом списке|]5,Inf] %count% элементов не отображаются в этом списке]]></target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

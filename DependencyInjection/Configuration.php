@@ -42,7 +42,9 @@ class Configuration implements ConfigurationInterface
             // 'list_max_results' global option was deprecated in 1.0.8
             // and replaced by 'list -> max_results'
             ->beforeNormalization()
-                ->ifTrue(function ($v) { return isset($v['list_max_results']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['list_max_results']);
+                })
                 ->then(function ($v) {
                     if (!isset($v['list'])) {
                         $v['list'] = array();
@@ -62,7 +64,9 @@ class Configuration implements ConfigurationInterface
             // 'list_actions' global option was deprecated in 1.0.8
             // and replaced by 'list -> actions'
             ->beforeNormalization()
-                ->ifTrue(function ($v) { return isset($v['list_actions']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['list_actions']);
+                })
                 ->then(function ($v) {
                     // if the new option is defined, don't override it with the legacy option
                     if (!isset($v['list']['actions'])) {
@@ -91,7 +95,9 @@ class Configuration implements ConfigurationInterface
             // 'assets -> css' global option was deprecated in 1.1.0
             // and replaced by 'design -> assets -> css'
             ->beforeNormalization()
-                ->ifTrue(function ($v) { return isset($v['assets']['css']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['assets']['css']);
+                })
                 ->then(function ($v) {
                     // if the new option is defined, don't override it with the legacy option
                     if (!isset($v['design']['assets']['css'])) {
@@ -107,7 +113,9 @@ class Configuration implements ConfigurationInterface
             // 'assets -> js' global option was deprecated in 1.1.0
             // and replaced by 'design -> assets -> js'
             ->beforeNormalization()
-                ->ifTrue(function ($v) { return isset($v['assets']['js']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['assets']['js']);
+                })
                 ->then(function ($v) {
                     // if the new option is defined, don't override it with the legacy option
                     if (!isset($v['design']['assets']['js'])) {
@@ -194,7 +202,9 @@ class Configuration implements ConfigurationInterface
                     ->info('The names of the actions disabled for all backend entities.')
                     ->defaultValue(array())
                     ->validate()
-                        ->ifTrue(function ($v) { return false === is_array($v); })
+                        ->ifTrue(function ($v) {
+                            return false === is_array($v);
+                        })
                         ->thenInvalid('The disabled_actions option must be an array of action names.')
                     ->end()
                 ->end()
@@ -232,8 +242,12 @@ class Configuration implements ConfigurationInterface
                             ->treatNullLike('#205081')
                             ->validate()
                                 // if present, remove the trailing ';' to avoid CSS issues
-                                ->ifTrue(function ($v) { return ';' === substr(trim($v), -1); })
-                                ->then(function ($v) { return trim(substr(trim($v), 0, -1)); })
+                                ->ifTrue(function ($v) {
+                                    return ';' === substr(trim($v), -1);
+                                })
+                                ->then(function ($v) {
+                                    return trim(substr(trim($v), 0, -1));
+                                })
                             ->end()
                         ->end()
 
@@ -242,7 +256,9 @@ class Configuration implements ConfigurationInterface
                             ->treatNullLike(array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'))
                             ->info('The form theme applied to backend forms. Allowed values: "horizontal", "vertical", any valid form theme path or an array of theme paths.')
                             ->validate()
-                                ->ifString()->then(function ($v) { return array($v); })
+                                ->ifString()->then(function ($v) {
+                                    return array($v);
+                                })
                             ->end()
                             ->validate()
                                 ->ifArray()->then(function ($values) {
@@ -299,7 +315,9 @@ class Configuration implements ConfigurationInterface
                                         })
                                     ->end()
                                     ->validate()
-                                        ->ifTrue(function ($v) { return empty($v['mime_type']); })
+                                        ->ifTrue(function ($v) {
+                                            return empty($v['mime_type']);
+                                        })
                                         ->thenInvalid('The "mime_type" key is required as we were unable to guess it from the favicon extension.')
                                     ->end()
                                 ->end()

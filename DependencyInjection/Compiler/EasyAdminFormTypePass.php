@@ -33,7 +33,9 @@ class EasyAdminFormTypePass implements CompilerPassInterface
     {
         $definition = $container->getDefinition('easyadmin.form.type_guesser_chain');
         $guesserIds = array_keys($container->findTaggedServiceIds('form.type_guesser'));
-        $guessers = array_map(function ($id) { return new Reference($id); }, $guesserIds);
+        $guessers = array_map(function ($id) {
+            return new Reference($id);
+        }, $guesserIds);
         $definition->replaceArgument(0, $guessers);
     }
 

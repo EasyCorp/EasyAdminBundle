@@ -68,9 +68,9 @@ easy_admin:
                     - email
                     - enabled
                     - lastLogin
-                    # If you want the possibility for the administrator to be able to edit users passwords
-                    - { property: 'plainPassword', type: text, type_options: { required: false } }
-                    - { property: 'roles', type: choice, type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
+                    # if administrators are allowed to edit users' passwords and roles, add this:
+                    - { property: 'plainPassword', type: 'text', type_options: { required: false } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
 ```
 
 However, it's recommended to save changes using FOSUserBundle's user manager.

@@ -679,7 +679,7 @@ class AdminController extends Controller
      *
      * @param string $action
      *
-     * @deprecated Use the ForbiddenException instead of this method.
+     * @deprecated Use the ForbiddenException instead of this method
      *
      * @return Response
      */
@@ -742,7 +742,7 @@ class AdminController extends Controller
      * allows to generate dynamic CSS files that use variables without the need
      * to set up a CSS preprocessing toolchain.
      *
-     * @deprecated The CSS styles are no longer rendered at runtime but preprocessed during container compilation. Use the $container['easyadmin.config']['_internal']['custom_css'] variable instead.
+     * @deprecated The CSS styles are no longer rendered at runtime but preprocessed during container compilation. Use the $container['easyadmin.config']['_internal']['custom_css'] variable instead
      */
     public function renderCssAction()
     {

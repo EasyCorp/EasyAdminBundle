@@ -156,7 +156,9 @@ class ActionConfigPass implements ConfigPassInterface
         foreach ($actionsConfig as $actionName => $actionConfig) {
             if (array_key_exists($actionName, $defaultActionsConfig)) {
                 // remove null config options but maintain empty options (this allows to set an empty label for the action)
-                $actionConfig = array_filter($actionConfig, function ($element) { return null !== $element; });
+                $actionConfig = array_filter($actionConfig, function ($element) {
+                    return null !== $element;
+                });
                 $actionsConfig[$actionName] = array_merge($defaultActionsConfig[$actionName], $actionConfig);
             }
         }

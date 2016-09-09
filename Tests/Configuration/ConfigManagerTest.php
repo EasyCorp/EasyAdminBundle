@@ -75,7 +75,9 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
     {
         // glob() returns an array of strings and fixtures require an array of arrays
         return array_map(
-            function ($filePath) { return array($filePath); },
+            function ($filePath) {
+                return array($filePath);
+            },
             glob(__DIR__.'/fixtures/exceptions/*.yml')
         );
     }

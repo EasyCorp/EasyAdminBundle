@@ -214,7 +214,7 @@
         {% endif %}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
             {{- widget|raw -}}
-            {{- label is not same as(false) ? label|trans({}, 'messages') -}}
+            {{- label is not same as(false) ? label|trans({}, easyadmin_config('translation_domain')) -}}
         </label>
     {% endif %}
 {% endblock checkbox_radio_label %}
@@ -225,7 +225,7 @@
     {% set _field_type = easyadmin.field.fieldType|default('default') %}
     <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
         {% set _field_label = easyadmin.field['label']|default(null) %}
-        {{- form_label(form, _field_label, { translation_domain: 'messages' }) -}}
+        {{- form_label(form, _field_label, { translation_domain: easyadmin_config('translation_domain') }) -}}
         {{- form_widget(form) -}}
 
         {% if _field_type in ['datetime', 'datetimetz', 'date', 'time'] and easyadmin.field.nullable|default(false) %}
@@ -240,7 +240,7 @@
         {{- form_errors(form) -}}
 
         {% if easyadmin.field.help|default('') != '' %}
-            <span class="help-block"><i class="fa fa-info-circle"></i> {{ easyadmin.field.help|trans|raw }}</span>
+            <span class="help-block"><i class="fa fa-info-circle"></i> {{ easyadmin.field.help|trans({}, easyadmin_config('translation_domain'))|raw }}</span>
         {% endif %}
     </div>
 {%- endblock form_row %}
@@ -414,7 +414,7 @@
 
 {# EasyAdmin form type #}
 {% block easyadmin_widget %}
-    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
+    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans({}, easyadmin_config('translation_domain')), '%entity_label%': easyadmin.entity.label|trans({}, easyadmin_config('translation_domain')) } %}
 
     {% if form.vars.errors|length > 0 %}
         {{ form_errors(form) }}
@@ -432,14 +432,14 @@
                                 {% if group_config.icon|default(false) %}
                                     <i class="fa fa-{{ group_config.icon }}"></i>
                                 {% endif %}
-                                {{ group_config.label|trans|raw }}
+                                {{ group_config.label|trans({}, easyadmin_config('translation_domain'))|raw }}
                             </h3>
                         </div>
                     {% endif %}
 
                     <div class="box-body">
                         {% if group_config.help|default(false) %}
-                            <p class="help-block">{{ group_config.help|trans|raw }}</p>
+                            <p class="help-block">{{ group_config.help|trans({}, easyadmin_config('translation_domain'))|raw }}</p>
                         {% endif %}
 
                         <div class="row">

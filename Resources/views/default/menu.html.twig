@@ -1,6 +1,6 @@
 {% macro render_menu_item(item) %}
     {% if item.type == 'divider' %}
-        {{ item.label|trans }}
+        {{ item.label|trans({}, easyadmin_config('translation_domain')) }}
     {% else %}
         {% set menu_params = { menuIndex: item.menu_index, submenuIndex: item.submenu_index } %}
         {% set path =
@@ -20,7 +20,7 @@
 
         <a href="{{ path }}" {% if item.target|default(false) %}target="{{ item.target }}"{% endif %}>
             {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}
-            <span>{{ item.label|trans }}</span>
+            <span>{{ item.label|trans({}, easyadmin_config('translation_domain')) }}</span>
             {% if item.children|default([]) is not empty %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
         </a>
     {% endif %}

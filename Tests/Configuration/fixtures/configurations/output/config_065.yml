@@ -13,6 +13,7 @@ easy_admin:
                 label: custom-edit-label
                 css_class: text-primary
                 icon: null
+                translation_domain: 'messages'
             custom_action_for_list:
                 name: custom_action_for_list
                 type: method
@@ -34,6 +35,7 @@ easy_admin:
                 label: custom-list-label
                 css_class: 'btn btn-secondary'
                 icon: null
+                translation_domain: 'messages'
             custom_action_for_edit:
                 name: custom_action_for_edit
                 type: method
@@ -54,6 +56,7 @@ easy_admin:
                 label: custom-edit-label
                 css_class: 'btn btn-primary'
                 icon: edit
+                translation_domain: 'messages'
             custom_action_for_show:
                 name: custom_action_for_show
                 type: method
@@ -90,6 +93,7 @@ easy_admin:
                         label: custom-list-label
                         css_class: 'btn btn-secondary action-list'
                         icon: null
+                        translation_domain: 'messages'
                     custom_action_for_edit:
                         name: custom_action_for_edit
                         type: method
@@ -127,6 +131,7 @@ easy_admin:
                         label: custom-edit-label
                         css_class: 'text-primary action-edit'
                         icon: null
+                        translation_domain: 'messages'
                     custom_action_for_list:
                         name: custom_action_for_list
                         type: method
@@ -139,12 +144,14 @@ easy_admin:
                         label: action.delete
                         css_class: 'text-danger action-delete'
                         icon: null
+                        translation_domain: 'messages'
                     new:
                         name: new
                         type: method
                         label: action.new
                         css_class: 'btn btn-primary action-new'
                         icon: null
+                        translation_domain: 'messages'
             new:
                 fields: {  }
                 form_options: {  }
@@ -210,6 +217,7 @@ easy_admin:
                         label: custom-edit-label
                         css_class: 'btn btn-primary action-edit'
                         icon: edit
+                        translation_domain: 'messages'
                     custom_action_for_show:
                         name: custom_action_for_show
                         type: method
@@ -222,6 +230,7 @@ easy_admin:
                         label: action.delete
                         css_class: 'btn btn-default action-delete'
                         icon: trash-o
+                        translation_domain: 'messages'
             disabled_actions: {  }
             primary_key_field_name: id
             properties:
@@ -364,3 +373,4 @@ easy_admin:
         params:
             action: list
             entity: Category
+    translation_domain: 'messages'

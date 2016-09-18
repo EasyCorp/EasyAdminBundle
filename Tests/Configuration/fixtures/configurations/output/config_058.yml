@@ -115,6 +115,7 @@ easy_admin:
                         label: action.delete
                         css_class: 'text-danger action-delete'
                         icon: null
+                        translation_domain: 'messages'
             new:
                 fields: {  }
                 form_options: {  }
@@ -310,3 +311,4 @@ easy_admin:
         params:
             action: list
             entity: Category
+    translation_domain: 'messages'

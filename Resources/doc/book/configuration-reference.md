@@ -469,6 +469,12 @@ This option defines the maximum number of items displayed for those relations,
 preventing issues when relations contains lots of elements. This option is also
 used as the maximum number of suggestions displayed for autocomplete fields.
 
+### translation_domain
+
+(**default value**: messages, **type**: string)
+
+Defines the translation domain for all custom labels.
+
 ### entities
 
 (**default value**: empty array, **type**: array)

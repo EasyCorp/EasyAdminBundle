@@ -220,6 +220,7 @@ Then, define any of the following options to customize the action:
     inside the button used to render the action. You don't have to include the
     `fa-` prefix of the icon name (e.g. to display the icon of a user, don't
     use `fa fa-user` or `fa-user`; just use `user`).
+  * `translation_domain`, is the domain for translation label.
 
 -------------------------------------------------------------------------------
 

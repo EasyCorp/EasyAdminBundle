@@ -254,7 +254,8 @@
                 if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
 
                 var collection = $('#{{ id }}');
-                var numItems = collection.children('div.form-group').length;
+                // Use a counter to avoid having the same index more than once
+                var numItems = collection.data('count') || collection.children('div.form-group').length;
 
                 collection.prev('.collection-empty').remove();
 
@@ -263,6 +264,9 @@
                     .replace(/_{{ name }}___name__/g, '_{{ name }}_' + numItems)
                     .replace(/{{ name }}\]\[__name__\]/g, '{{ name }}][' + numItems + ']')
                 ;
+
+                // Increment the counter and store it in the collection
+                collection.data('count', ++numItems);
 
                 collection.append(newItem).trigger('easyadmin.collection.item-added');
             });

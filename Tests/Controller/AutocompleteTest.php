@@ -25,13 +25,11 @@ class AutocompleteTest extends AbstractTestCase
     /**
      * @dataProvider provideMissingParameters
      */
-    public function testAutocompleteWithMissingParameters($property, $view, $query)
+    public function testAutocompleteWithMissingParameters($query)
     {
         $queryParameters = array(
             'action' => 'autocomplete',
             'entity' => 'Category',
-            'property' => $property,
-            'view' => $view,
             'query' => $query,
         );
 
@@ -51,8 +49,6 @@ class AutocompleteTest extends AbstractTestCase
         $this->getBackendPage(array(
             'action' => 'autocomplete',
             'entity' => 'Category',
-            'property' => 'parent',
-            'view' => 'edit',
             'query' => 'Parent Categ',
         ));
 
@@ -69,8 +65,6 @@ class AutocompleteTest extends AbstractTestCase
         $this->getBackendPage(array(
             'action' => 'autocomplete',
             'entity' => 'Category',
-            'property' => 'parent',
-            'view' => 'edit',
             'query' => 21,
         ));
 
@@ -87,13 +81,9 @@ class AutocompleteTest extends AbstractTestCase
     public function provideMissingParameters()
     {
         return array(
-            // property, view, query
-            array('', 'edit', 'Categ'),
-            array('parent', '', 'Categ'),
-            array('parent', 'edit', ''),
-            array(null, 'edit', 'Categ'),
-            array('parent', null, 'Categ'),
-            array('parent', 'edit', null),
+            // query
+            array(''),
+            array(null),
         );
     }
 }

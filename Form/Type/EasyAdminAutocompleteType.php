@@ -3,7 +3,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -91,7 +90,7 @@ class EasyAdminAutocompleteType extends AbstractType
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         if (null === $config = $this->configManager->getEntityConfigByClass($options['class'])) {
-            throw new UndefinedEntityException(array('entity_name' => $options['class']));
+            throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field).', $options['class'], $form->getName()));
         }
 
         $view->vars['autocomplete_entity_name'] = $config['name'];

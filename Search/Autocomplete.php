@@ -19,6 +19,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  * the autocomplete field types.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
 class Autocomplete
 {

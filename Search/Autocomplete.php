@@ -40,16 +40,14 @@ class Autocomplete
      * Finds the values of the given entity which match the query provided.
      *
      * @param string $entity
-     * @param string $property
-     * @param string $view
      * @param string $query
      * @param int    $page
      *
      * @return array
      */
-    public function find($entity, $property, $view, $query, $page = 1)
+    public function find($entity, $query, $page = 1)
     {
-        if (empty($entity) || empty($property) || empty($view) || empty($query)) {
+        if (empty($entity) || empty($query)) {
             return array('results' => array());
         }
 
@@ -58,23 +56,9 @@ class Autocomplete
             throw new \InvalidArgumentException(sprintf('The "entity" argument must contain the name of an entity managed by EasyAdmin ("%s" given).', $entity));
         }
 
-        if (!isset($backendConfig['entities'][$entity][$view]['fields'][$property])) {
-            throw new \InvalidArgumentException(sprintf('The "property" argument must contain the name of a property configured in the "%s" view of the "%s" entity ("%s" given).', $view, $entity, $property));
-        }
+        $paginator = $this->finder->findByAllProperties($backendConfig['entities'][$entity], $query, $page, $backendConfig['show']['max_results']);
 
-        if (!isset($backendConfig['entities'][$entity][$view]['fields'][$property]['targetEntity'])) {
-            throw new \InvalidArgumentException(sprintf('The "%s" property configured in the "%s" view of the "%s" entity can\'t be of type "easyadmin_autocomplete" because it\'s not related to another entity.', $property, $view, $entity));
-        }
-
-        $targetEntityClass = $backendConfig['entities'][$entity][$view]['fields'][$property]['targetEntity'];
-        $targetEntityConfig = $this->configManager->getEntityConfigByClass($targetEntityClass);
-        if (null === $targetEntityConfig) {
-            throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field in the "%s" view of the "%s" entity).', $targetEntityClass, $property, $view, $entity));
-        }
-
-        $paginator = $this->finder->findByAllProperties($targetEntityConfig, $query, $page, $backendConfig['show']['max_results']);
-
-        return array('results' => $this->processResults($paginator->getCurrentPageResults(), $targetEntityConfig));
+        return array('results' => $this->processResults($paginator->getCurrentPageResults(), $backendConfig['entities'][$entity]));
     }
 
     private function processResults($entities, $targetEntityConfig)

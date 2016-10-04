@@ -2,6 +2,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -20,6 +22,13 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class EasyAdminAutocompleteType extends AbstractType
 {
+    private $configManager;
+
+    public function __construct(ConfigManager $configManager)
+    {
+        $this->configManager = $configManager;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -81,6 +90,12 @@ class EasyAdminAutocompleteType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
+        if (null === $config = $this->configManager->getEntityConfigByClass($options['class'])) {
+            throw new UndefinedEntityException(array('entity_name' => $options['class']));
+        }
+
+        $view->vars['autocomplete_entity_name'] = $config['name'];
+
         // Add a custom block prefix to inner field to ease theming:
         array_splice($view['autocomplete']->vars['block_prefixes'], -1, 0, 'easyadmin_autocomplete_inner');
     }

@@ -97,4 +97,4 @@ class AdminController extends BaseAdminController
 [1]: https://github.com/FriendsOfSymfony/FOSUserBundle
 [2]: http://symfony.com/doc/current/bundles/FOSUserBundle/index.html
 [3]: http://symfony.com/doc/current/bundles/FOSUserBundle/user_manager.html
-[4]: ../book/4-edit-new-configuration.md#customizing-the-behavior-of-edit-and-new-views
+[4]: ../tutorials/custom-actions.md#method-based-actions

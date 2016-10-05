@@ -15,8 +15,16 @@ Upgrade to 2.0.0 (XX/XXX/201X)
    In order to upgrade, you just need to replace `admin` by `easyadmin` in all
    `path()`, `generateUrl()` and `redirectToRoute()` calls.
 
-Upgrade to 1.13.0 (XX/April/2016)
----------------------------------
+Upgrade to 1.15.X (XX/October/2016)
+-----------------------------------
+
+* The `image` fields and the VichUploader files and images now are rendered
+  using the `asset()` Twig function. Depending on your configuration, you may
+  need to change or remove EasyAdmin's `base_path` option and define the proper
+  base path using Symfony's asset configuration.
+
+Upgrade to 1.13.0 (11/May/2016)
+-------------------------------
 
 * The configuration of the backend is no longer processed in a compiler pass
   but generated with a cache warmer. This is done to avoid issues with Doctrine

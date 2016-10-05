@@ -527,7 +527,7 @@
         {% if easyadmin.field.label|default(false) or easyadmin.field.icon|default(false) %}
             <h2>
                 {% if easyadmin.field.icon|default(false) %}<i class="fa fa-{{ easyadmin.field.icon }}"></i>{% endif %}
-                {{ easyadmin.field.label|default('') }}
+                {{ easyadmin.field.label|trans|default('') }}
             </h2>
         {% endif %}
 

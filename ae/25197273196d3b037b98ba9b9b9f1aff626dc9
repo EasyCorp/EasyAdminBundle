@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-08-04T19:49:32Z
+
+@alborq I'm not sure if this proposed change would break existing backends. Have you tried using the `base_path` config option? See https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Resources/doc/book/3-list-search-show-configuration.md#image-data-type
+
+---------------------------------------------------------------------------
+
+by alborq at 2016-08-04T20:03:19Z
+
+I have see this option, but this option is not enough:
+1) if you want only use this option, you must define server information into your configuration. Result : You dont split responsability. Bad practice.
+2) You create rigidity in your app, you cant translate|modify routing without break link..
+3) you ask yourself, in your template, you use {{ asset() }} or not ;) and why ? but you cant really write path in.
+
+Yes, i totaly agree, if you merge this PR, BC Break will be created, Wait major to merge.
+
+---------------------------------------------------------------------------
+
+by alborq at 2016-08-05T07:23:33Z
+
+Haha...
+
+You use {{ asset() }} into layout, without requiring it.
+![...](https://puu.sh/qquXH/0ecde8335a.png)
+
+---------------------------------------------------------------------------
+
+by fibis at 2016-09-02T13:39:23Z
+
+\+ 1

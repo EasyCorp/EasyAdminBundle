@@ -94,6 +94,32 @@ class AdminController extends BaseAdminController
 > name. For example, if the entity is called `Customers`, the method to define
 > is `preUpdateCustomersEntity()`.
 
+### Using Different Validation when Creating or Editing the User
+
+A common need when managing users is to apply different validation rules when
+creating or editing them. In the following example, the form applies different
+validation groups for each action and the password is mandatory only when the
+user is created:
+
+```yaml
+easy_admin:
+    entities:
+        User:
+            class: AppBundle\Entity\User
+            edit:
+                fields:
+                    # ...
+                    - { property: 'plainPassword', type_options: { required: false} }
+                    # ...
+                form_options: { validation_groups: ['Profile'] }
+            new:
+                fields:
+                    # ...
+                    - { property: 'plainPassword', type_options: { required: true} }
+                    # ...
+                form_options: { validation_groups: ['Registration'] }
+```
+
 [1]: https://github.com/FriendsOfSymfony/FOSUserBundle
 [2]: http://symfony.com/doc/current/bundles/FOSUserBundle/index.html
 [3]: http://symfony.com/doc/current/bundles/FOSUserBundle/user_manager.html

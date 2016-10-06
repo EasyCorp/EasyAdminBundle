@@ -353,7 +353,7 @@
 
 {% block empty_collection %}
     <div class="empty collection-empty">
-        <span class="label label-empty">{{ 'label.empty'|trans({}, 'EasyAdminBundle') }}</span>
+        {{ include(easyadmin.entity.templates.label_empty) }}
     </div>
 {% endblock empty_collection %}
 

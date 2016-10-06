@@ -439,7 +439,7 @@
 
                     <div class="box-body">
                         {% if group_config.help|default(false) %}
-                            <p class="help-block">{{ group_config.help|trans|raw }}</p>
+                            <p class="help-block">{{ group_config.help|trans|nl2br|raw }}</p>
                         {% endif %}
 
                         <div class="row">
@@ -527,12 +527,12 @@
         {% if easyadmin.field.label|default(false) or easyadmin.field.icon|default(false) %}
             <h2>
                 {% if easyadmin.field.icon|default(false) %}<i class="fa fa-{{ easyadmin.field.icon }}"></i>{% endif %}
-                {{ easyadmin.field.label|default('') }}
+                {{ easyadmin.field.label|default('')|trans|raw }}
             </h2>
         {% endif %}
 
         {% if easyadmin.field.help|default(false) %}
-            <p class="help-block">{{ easyadmin.field.help|nl2br }}</p>
+            <p class="help-block">{{ easyadmin.field.help|trans|nl2br|raw }}</p>
         {% endif %}
     </div>
 {% endblock easyadmin_section_row %}

@@ -1,14 +1,21 @@
 <?php
 
+/*
+ * This file is part of the EasyAdminBundle.
+ *
+ * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -33,45 +40,8 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $preSetDataListener = function (FormEvent $event) use ($options) {
-            $form = $event->getForm();
-            $data = $event->getData() ?: array();
-
-            // modify some of the settings inherited from the parent form type
-            $options['compound'] = false;
-            // normalize choices list
-            $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
-
-            // create autocomplete form field
-            $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
-        };
-
-        $preSubmitListener = function (FormEvent $event) {
-            $form = $event->getForm();
-
-            if (null === $data = $event->getData()) {
-                $data = array('autocomplete' => array());
-                $event->setData($data);
-            }
-
-            // reuse autocomplete options, but replace initial choices with submitted data
-            $options = $form->get('autocomplete')->getConfig()->getOptions();
-            $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
-                $options['id_reader']->getIdField() => $data['autocomplete'],
-            ));
-
-            if (isset($options['choice_list'])) {
-                // clear choice list for SF < 3.0
-                $options['choice_list'] = null;
-            }
-
-            // reset autocomplete form field with new choices list
-            $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
-        };
-
         $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, $preSetDataListener)
-            ->addEventListener(FormEvents::PRE_SUBMIT, $preSubmitListener)
+            ->addEventSubscriber(new EasyAdminAutocompleteSubscriber())
             ->setDataMapper($this);
     }
 

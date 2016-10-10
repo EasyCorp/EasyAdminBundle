@@ -24,6 +24,14 @@
 {% block body_javascript %}
     {{ parent() }}
 
+    {% if app.request.locale in ['ar', 'az', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'gl', 'he', 'hi', 'hr', 'hu', 'id', 'is', 'it', 'ja', 'km', 'ko', 'lt', 'lv', 'mk', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt', 'ro', 'ru', 'sk', 'sr-Cyrl', 'sr', 'sv', 'th', 'tr', 'uk', 'vi', 'zh-CN', 'zh-TW'] %}
+        {% set select2_locale = app.request.locale %}
+    {% else %}
+        {% set select2_locale = 'en' %}
+    {% endif %}
+
+    <script src="{{ asset('bundles/easyadmin/javascript/select2/i18n/' ~ select2_locale ~ '.js') }}"></script>
+
     <script type="text/javascript">
         $(function() {
             $('.new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
@@ -32,7 +40,8 @@
 
             // Select2 widget is only enabled for the <select> elements which explicitly ask for it
             $('#main').find('form select[data-widget="select2"]').select2({
-                theme: 'bootstrap'
+                theme: 'bootstrap',
+                language: '{{ select2_locale }}'
             });
         });
     </script>

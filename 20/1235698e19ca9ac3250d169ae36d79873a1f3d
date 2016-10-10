@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-07-18T18:30:51Z
+
+I agree with this proposal to make things easier to style. However, I don't like the proposed class name much (`.metainfo`) because it's too generic. What if we use `.more` or `.more-items` or `.show-more-items` or ...?
+
+---------------------------------------------------------------------------
+
+by forsetius at 2016-07-18T20:06:32Z
+
+I'm not a big fan of the name myself. I wanted a name that wouldn"t be used only in that place but could denote a text that is additional information on data proper. Apart from "more items" case it could be used in cases like "some text was ellipsised", "the list is filtered" etc. But perhaps due to hard takeoff on this Monday I can't came up with anything better than "metainfo" ;)
+
+Feel free to change it :)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-07-22T08:14:53Z
+
+`association_item`  for the list and `remaining_association_items` for the message sounds good to me, what do you think?
+
+---------------------------------------------------------------------------
+
+by forsetius at 2016-09-07T08:30:22Z
+
+Well, let's stick to simplest name: the name of Twig variable :)
+Hence: `.remaining-items`. PR updated. Is that ok?

@@ -201,7 +201,7 @@ class AdminController extends Controller
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
         $editForm->handleRequest($this->request);
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity));
 
             $this->executeDynamicMethod('preUpdate<EntityName>Entity', array($entity));
@@ -275,7 +275,7 @@ class AdminController extends Controller
         $newForm = $this->executeDynamicMethod('create<EntityName>NewForm', array($entity, $fields));
 
         $newForm->handleRequest($this->request);
-        if ($newForm->isValid()) {
+        if ($newForm->isSubmitted() && $newForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, array('entity' => $entity));
 
             $this->executeDynamicMethod('prePersist<EntityName>Entity', array($entity));
@@ -323,7 +323,7 @@ class AdminController extends Controller
         $form = $this->createDeleteForm($this->entity['name'], $id);
         $form->handleRequest($this->request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $easyadmin = $this->request->attributes->get('easyadmin');
             $entity = $easyadmin['item'];
 

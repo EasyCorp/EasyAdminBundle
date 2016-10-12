@@ -1,0 +1,195 @@
+---------------------------------------------------------------------------
+
+by CruzyCruz at 2016-10-05T06:19:45Z
+
+@yceruto
+
+Thanks for your reactivity. I have tried with the following configuration:
+
+**admin.yml**
+
+``` yml
+easy_admin:
+    entities:
+        Restaurant:
+            class : FBN\GuideBundle\Entity\Restaurant
+            form:
+                fields:
+                    - { property: 'coordinates', type: 'FBN\GuideBundle\Form\CoordinatesType', type_options: { required: true } }
+        CoordinatesFRCity:
+            class : FBN\GuideBundle\Entity\CoordinatesFRCity
+```
+
+**CoordinatesType.php**
+
+```php
+class CoordinatesType extends AbstractType
+{
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('coordinatesFR', CoordinatesFRType::class)
+        ;
+    }
+}
+```
+**CoordinatesFRType.php**
+
+``` php
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
+
+class CoordinatesFRType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('coordinatesFRCity', EasyAdminAutocompleteType::class, array(
+                'class' => 'FBNGuideBundle:CoordinatesFRCity',
+                ))
+        ;
+    }
+}
+```
+**CoordinatesFRCity.php (entity)**
+
+``` php
+class CoordinatesFRCity extends CoordinatesISOCity
+{
+    public function __toString()
+    {
+        return $this->city.' ('.$this->postCode.')';
+    }
+}
+```
+The `InvalidArgumentException` is thrown with an error (an argument is missing for the second placeholder `%s`):
+
+```
+ Warning: sprintf(): Too few arguments
+500 Internal Server Error - ContextErrorException
+```
+
+with
+
+Stack Trace
+
+in `vendor/javiereguiluz/easyadmin-bundle/Form/Type/EasyAdminAutocompleteType.php` at line 93  -
+```php
+public function finishView(FormView $view, FormInterface $form, array $options)
+{
+    if (null === $config = $this->configManager->getEntityConfigByClass($options['class'])) {
+        throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field).', $options['class']));
+}
+
+$view->vars['autocomplete_entity_name'] = $config['name'];
+```
+
+So I think my configuration is not correct ?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-10-05T13:06:22Z
+
+I just fixed the bug, however you needs to use a FQCN for `class` option in this case:
+```
+$builder
+    ->add('coordinatesFRCity', EasyAdminAutocompleteType::class, array(
+        'class' => CoordinatesFRCity::class, //or FBN\GuideBundle\Entity\CoordinatesFRCity
+    );
+```
+Please, try again :)
+
+---------------------------------------------------------------------------
+
+by CruzyCruz at 2016-10-05T17:57:43Z
+
+@yceruto
+
+It works like a charm :)
+
+Do you think it could be useful to improve the documentation to precise that, in case of use in embedded form:
+
+- it's mandatory that the entity related to the autocomplete field has to be managed by EasyAdmin
+- for that entity, the FQCN has to be used
+
+I hope this PR will be merged soon !
+
+Thanks again.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-10-05T19:01:47Z
+
+> Do you think it could be useful to improve the documentation to precise that, in case of use in embedded form:
+
+:+1:
+
+> it's mandatory that the entity related to the autocomplete field has to be managed by EasyAdmin
+
+Yes, it's required for EasyAdmin backends, because autocomplete `find` method use the same `Finder` service that `search` action, to `findByAllProperties` and it use the entity configuration for search the query term.
+
+> for that entity, the FQCN has to be used
+
+For the moment let's say yes, but it's not required by `EasyAdminAutocompleteType` itself but   `'data_class'` form option normalized in `EasyAdminFormType`, BTW currently you cannot use short entity name for `easy_admin` entity configuration because that ;)
+
+---------------------------------------------------------------------------
+
+by CruzyCruz at 2016-10-05T19:06:51Z
+
+I understand :)
+
+> for that entity, the FQCN has to be used
+
+I meant just in the embedded form (not in easy admin configuration even if it is also mandatory), to make work the autocomplete field as it is required by 'data_class' option (i.e not to make the same mistake as mine!). Thanks for this explanation.
+
+---------------------------------------------------------------------------
+
+by CruzyCruz at 2016-10-06T09:52:24Z
+
+To close the conversation and help, I propose the following addition (based on your example) to [autocomplete section](EasyAdmin Form Types) in [4-edit-new-configuration.md](https://github.com/yceruto/EasyAdminBundle/blob/fix_1313/Resources/doc/book/4-edit-new-configuration.md):
+
+__________________________________________________________________________________________________________
+
+If used in embedded forms, the entity related to aucomplete field has also to be defined in configuration:
+
+````yml
+easy_admin:
+    entities:
+        Category:
+            class: AppBundle\Entity\Category
+````
+And in the embedded form type
+
+````php
+$builder->add('category', EasyAdminAutocompleteType::class, array('class' => Category::class));
+````
+Note that the `class` option needs a FQCN (`Category::class` or `AppBundle\Entity\Category`).
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-10-10T18:30:44Z
+
+Updated with minor refactor/improvement
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-10-12T14:15:03Z
+
+@javiereguiluz any problem about this PR?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-10-12T14:44:58Z
+
+@yceruto not at all 😄  I'm sorry I haven't reviewed it yet 😢  I'll do it soon. Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-10-12T18:07:43Z
+
+To be honest, I don't fully understand the code. But that's because Symfony Forms and I don't get along 😁
+
+In any case, I'm going to merge this because tests pass and I because I trust you blindly!  @yceruto  thank you for working on this. I love the overall refactor/simplification!

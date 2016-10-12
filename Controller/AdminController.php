@@ -139,8 +139,6 @@ class AdminController extends Controller
     {
         $results = $this->get('easyadmin.autocomplete')->find(
             $this->request->query->get('entity'),
-            $this->request->query->get('property'),
-            $this->request->query->get('view'),
             $this->request->query->get('query'),
             $this->request->query->get('page', 1)
         );

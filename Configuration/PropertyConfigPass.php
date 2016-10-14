@@ -112,7 +112,6 @@ class PropertyConfigPass implements ConfigPassInterface
                         'property' => $propertyName,
                         'dataType' => $propertyMetadata['type'],
                         'fieldType' => $this->getFormTypeFromDoctrineType($propertyMetadata['type']),
-                        'format' => $this->getFieldFormat($propertyMetadata['type'], $backendConfig),
                     )
                 );
 

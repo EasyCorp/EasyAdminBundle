@@ -29,11 +29,8 @@
             $('.new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
 
             $('.form-actions').easyAdminSticky();
-
-            // Select2 widget is only enabled for the <select> elements which explicitly ask for it
-            $('#main').find('form select[data-widget="select2"]').select2({
-                theme: 'bootstrap'
-            });
         });
     </script>
+
+    {{ include('@EasyAdmin/default/includes/_select2_widget.html.twig') }}
 {% endblock %}

@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2016-10-10T21:26:26Z
+
+We could implement [these](https://github.com/javiereguiluz/EasyAdminBundle/pull/1219#issuecomment-230567885) options here ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-10-12T17:53:21Z
+
+@yceruto thanks for the review!  Regarding the comment that you linked, I'd say that we've taking into account most of @ogizanagi's comments. The only missing thing would be the merge of all the i18n files into the big `easyadmin.js` file. I'm not sure about that because there are a lot of translations and it would make the file pretty big.

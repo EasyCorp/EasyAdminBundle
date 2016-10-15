@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-10-14T16:34:10Z
+
+I think that's the only exception we should care. Maybe we should even check the exception error code (1049 - Unknown database) because this can probably hide other issues when the database exists otherwise.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-10-15T09:34:46Z
+
+@ogizanagi I was going to restrict this to `1049` error, but then I looked up a bit about PDO errors and found several of them that could also occur:
+
+* 1045: Access denied for user '%s'@'%s' (using password: %s)
+* 1049: Unknown database '%s'
+* 2005: Unknown MySQL server host '%s' (%d)
+* 2003: Can't connect to MySQL server on '%s' (%d)
+* etc.
+
+So maybe it's better to not check the exception code?
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-10-15T09:38:28Z
+
+@javiereguiluz : Fair enough, I think you're right :) 👍

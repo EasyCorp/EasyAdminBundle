@@ -125,6 +125,19 @@ The `title` option can include the following special variables:
 >         # ...
 > ```
 
+If several entities use the same custom title, you can define the default title
+for all entities in the global `edit.title` and `new.title` options (these
+global titles are always overridden by the title defined by each entity):
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    edit:
+        title: '%%entity_label%%_edit'
+    new:
+        title: 'New %%entity_label%%'
+```
+
 ### Customize the Properties Displayed
 
 By default, the `edit` and `new` views display all the entity properties. Use

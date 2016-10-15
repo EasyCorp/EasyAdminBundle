@@ -60,21 +60,6 @@ The `title` value can include the following special variables:
     the value of the primary key of the entity being showed. Even if the option
     is called `entity_id`, it also works for primary keys with names different
     from `id`.
-    
-You can define a translatable title for each action only one time for all entities. This global title have smaller priority than a title for each entity. 
-
-```yaml
-# app/config/config.yml
-easy_admin:
-    list:
-      title: 'list.%%entity_label%%'
-    edit:
-      title: '%%entity_label%%_edit'
-    new:
-      title: 'New %%entity_label%%'
-    show:
-      title: '%%entity_label%% (#%%entity_id%%)'
-```
 
 > **CAUTION**
 >
@@ -92,6 +77,19 @@ easy_admin:
 >                 title: '%%entity_name%% listing'
 >         # ...
 > ```
+
+If several entities use the same custom title, you can define the default title
+for all entities in the global `list.title` and `show.title` options (these
+global titles are always overridden by the title defined by each entity):
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    list:
+        title: 'list.%%entity_label%%'
+    show:
+        title: '%%entity_label%% (#%%entity_id%%)'
+```
 
 ### Customize the Number of Rows Displayed
 

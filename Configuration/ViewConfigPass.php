@@ -38,6 +38,7 @@ class ViewConfigPass implements ConfigPassInterface
      */
     private function processViewConfig(array $backendConfig)
     {
+        // if a view doesn't define its fields, add some fields automatically
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
                 if (0 === count($entityConfig[$view]['fields'])) {
@@ -49,6 +50,15 @@ class ViewConfigPass implements ConfigPassInterface
                     );
 
                     $backendConfig['entities'][$entityName][$view]['fields'] = $fieldsConfig;
+                }
+            }
+
+            // resolve page title inheritance
+            foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+                foreach (array('edit', 'list', 'new', 'show') as $view) {
+                    if (!isset($entityConfig[$view]['title']) && isset($backendConfig[$view]['title'])) {
+                        $backendConfig['entities'][$entityName][$view]['title'] = $backendConfig[$view]['title'];
+                    }
                 }
             }
         }

@@ -35,7 +35,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
         $backendConfig = $this->loadConfig($backendConfigFilePath);
         $expectedConfig = Yaml::parse(file_get_contents($expectedConfigFilePath));
 
-        $this->assertEquals($expectedConfig['easy_admin'], $backendConfig);
+        $this->assertArraySubset($expectedConfig['easy_admin'], $backendConfig);
     }
 
     /**

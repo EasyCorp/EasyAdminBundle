@@ -28,7 +28,7 @@ These are some of our **development principles**:
 How to Collaborate in this Project
 ----------------------------------
 
-Read the [Contributing Guide](../../../CONTRIBUTING.md)
+Read the [Contributing Guide](../../../.github/CONTRIBUTING.md)
 
 Alternative Projects
 --------------------

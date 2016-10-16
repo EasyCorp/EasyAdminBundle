@@ -434,6 +434,18 @@ easy_admin:
 The maximum number of rows displayed in the `list` view and in the search result
 page.
 
+#### title
+
+(**type**: string)
+
+The default title for all entities.
+
+```yaml
+easy_admin:
+    list:
+      title: 'list.%%entity_label%%'
+```
+
 ### edit
 
 Defines the options applied globally for the `edit` view of all entities. The

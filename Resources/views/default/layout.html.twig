@@ -74,7 +74,7 @@
                                 {% block user_menu %}
                                     <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
                                     <i class="hidden-xs fa fa-user"></i>
-                                    {% if app.user %}
+                                    {% if app.user|default %}
                                         {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
                                     {% else %}
                                         {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}

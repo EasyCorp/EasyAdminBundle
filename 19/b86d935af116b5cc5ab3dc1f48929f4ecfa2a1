@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2016-10-16T19:16:17Z
+
+Not sure what your intentions are, but re-reading the template:
+
+```
+{% if app.user %}
+    {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
+{% else %}
+    {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
+{% endif %}
+```
+
+It looks like you want to support anonymous users. So, not sure if making security bundle a requirement is the right path.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-10-16T19:22:53Z
+
+In theory, the security bundle shouldn't be mandatory. In practice it's hard to imagine a backend without security protection, so I'm totally 👍 about this PR.
+
+Regarding the template code, we included a lot of safeguards here and there to make sure the backend never fails when some features are not enabled. We wanted to make the bundle setup as simple as possible.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2016-10-16T19:33:11Z
+
+This safeguard does not work as `app.user` throws an exception if security bundle is not enabled.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-10-16T19:50:12Z
+
+There are other means than the security bundle in order to secure the backend access (the infrastructure for instance). I think that's why anonymous users were allowed at first. However, I can't find any related comment about this decision. There is only [this issue](https://github.com/javiereguiluz/EasyAdminBundle/issues/749) mentioning anonymous users.
+
+So maybe it's better to fix the template ?

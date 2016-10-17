@@ -405,6 +405,19 @@ and `edit` views, use the `easy_admin.design.form_theme` option.
 
 Defines the options applied globally for the `list` view of all entities.
 
+#### title
+
+(**type**: string)
+
+The default title for all entities (it can be overridden individually by each
+entity).
+
+```yaml
+easy_admin:
+    list:
+        title: 'list.%%entity_label%%'
+```
+
 #### actions
 
 (**default value**: empty array, **type**: array)
@@ -437,18 +450,31 @@ page.
 ### edit
 
 Defines the options applied globally for the `edit` view of all entities. The
-only option available for now is called `actions`, which defines the actions
-enabled for this view, as explained above for the `list` view.
+available options are `actions` and `title`, which behave in the same way as
+explained above for the `list` view.
 
 ### new
 
 Defines the options applied globally for the `new` view of all entities. The
-only option available for now is called `actions`, which defines the actions
-enabled for this view, as explained above for the `list` view.
+available options are `actions` and `title`, which behave in the same way as
+explained above for the `list` view.
 
 ### show
 
 Defines the options applied globally for the `show` view of all entities.
+
+#### title
+
+(**type**: string)
+
+The default title for all entities (it can be overridden individually by each
+entity).
+
+```yaml
+easy_admin:
+    show:
+        title: 'show.%%entity_label%%'
+```
 
 #### actions
 

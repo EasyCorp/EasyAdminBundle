@@ -78,6 +78,19 @@ The `title` value can include the following special variables:
 >         # ...
 > ```
 
+If several entities use the same custom title, you can define the default title
+for all entities in the global `list.title` and `show.title` options (these
+global titles are always overridden by the title defined by each entity):
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    list:
+        title: 'list.%%entity_label%%'
+    show:
+        title: '%%entity_label%% (#%%entity_id%%)'
+```
+
 ### Customize the Number of Rows Displayed
 
 By default, listings in the `list` and `search` display a maximum of 15 rows.

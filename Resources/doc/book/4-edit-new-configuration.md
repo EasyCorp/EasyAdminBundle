@@ -601,8 +601,8 @@ four templates related to `edit` and `new` views:
 >
 > Unlike the properties displayed on the `list`, `search` and `show` views, you
 > can't easily override the template fragment used to render each form field.
-> Instead, use the `form_theme` option to make EasyAdmin use your own Symfony
-> Form theme when rendering the backend forms.
+> Instead, use the `form_theme` option explained in the previous sections to
+> make EasyAdmin use your own Symfony Form theme when rendering the backend forms.
 
 Depending on your needs you can override these templates in different ways:
 

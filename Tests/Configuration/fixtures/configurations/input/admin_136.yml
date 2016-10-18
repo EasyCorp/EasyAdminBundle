@@ -8,5 +8,5 @@ easy_admin:
         Category:
             class: AppTestBundle\Entity\UnitTests\Category
             list:
-                dql_filter: "entity.id > 10 AND entity.slug LIKE '%%Subcategory%%'"
+                dql_filter: "entity.id > 10 AND entity.name LIKE '%%Subcategory%%'"
             search: ~

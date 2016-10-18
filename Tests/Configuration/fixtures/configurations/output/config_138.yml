@@ -3,6 +3,6 @@ easy_admin:
         Category:
             class: AppTestBundle\Entity\UnitTests\Category
             list:
-                dql_filter: null
+                dql_filter: 'entity.id > 10 AND entity.slug LIKE %Subcategory%'
             search:
-                dql_filter: null
+                dql_filter: ''

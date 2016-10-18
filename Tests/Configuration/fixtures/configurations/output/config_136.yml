@@ -5,4 +5,4 @@ easy_admin:
             list:
                 dql_filter: 'entity.id > 10 AND entity.slug LIKE %Subcategory%'
             search:
-                dql_filter: ''
+                dql_filter: 'entity.id > 10 AND entity.slug LIKE %Subcategory%'

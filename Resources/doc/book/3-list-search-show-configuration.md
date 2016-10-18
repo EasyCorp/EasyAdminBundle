@@ -364,14 +364,14 @@ using these fields.
 Filtering Entities
 ------------------
 
-A common need for backends is to filter entities with some basic conditions
-before listing them. You can achieve this with the features explained later in
+A common need for backends is to filter the entities included in listings (for
+example: don't display expired offers, display only clients that spend more than
+a given amount, etc.) You can achieve this with the features explained later in
 this chapter to modify the behavior of the `list`, `search` and `show` views.
 
 However, for simple filters it's more convenient to use the `dql_filter` option,
-which defines the conditions passed to the `WHERE` clause of the Doctrine query.
-The only restriction is that you must use the `entity` name to refer to the
-current entity.
+which defines the conditions passed to the `WHERE` clause of the Doctrine query
+used to get the entities displayed in the `list` and `search` views.
 
 The following example manages the same `User` entity in two different ways using
 a basic filter to differentiate each type of user:
@@ -389,6 +389,9 @@ easy_admin:
                 dql_filter: 'entity.budget <= 100000'
 ```
 
+The Doctrine DQL expression defined in the `dql_filter` option must always use
+`entity` as the name of the entity, regardless of your actual entity name.
+
 Since this is a regular YAML configuration file, you can also include container
 parameters inside the filter to use different values depending on the environment
 or even dynamic values:
@@ -400,14 +403,11 @@ easy_admin:
             class: AppBundle\Entity\User
             list:
                 dql_filter: 'entity.budget > %customers.budget_threshold%'
-        RegularCustomers:
-            class: AppBundle\Entity\User
-            list:
-                dql_filter: 'entity.budget <= %customers.budget_threshold%'
+        # ...
 ```
 
 The value of the `dql_filter` can combine several conditions (in fact, you can
-put anything valid as a `WHERE` clause in a Doctrine query):
+put anything that is considered valid as a `WHERE` clause in a Doctrine query):
 
 ```yaml
 easy_admin:
@@ -424,15 +424,31 @@ easy_admin:
             class: AppBundle\Entity\Issue
 ```
 
+> **NOTE**
+>
+> By default the `dql_filter` option from the `list` view is also used in the
+> `search` view. If you prefer to apply different filters, define the
+> `dql_filter` option explicitly for the `search` view:
+>
+> ```yaml
+> easy_admin:
+>     entities:
+>         Issues:
+>             class: AppBundle\Entity\Issue
+>             list:
+>                 dql_filter: "LOWER(entity.title) LIKE '%%issue%%'"
+>             search:
+>                 # defining a different condition than 'list'
+>                 dql_filter: 'entity.status != "DELETED"'
+>                 # using an empty value to not apply any condition when searching
+>                 # elements (this prevents inheriting the 'dql_filter' value defined in 'list')
+>                 dql_filter: ''
+> ```
+
 > **TIP**
 >
 > Combine the `dql_filter` option with a custom menu (as explained in the next
 > chapters) to improve the navigation of the backend.
-
-> **CAUTION**
->
-> The `dql_filter` option is only available for the `list` view and not the
-> `search` view.
 
 Property Types Defined by EasyAdmin
 -----------------------------------

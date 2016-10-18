@@ -21,6 +21,28 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class NormalizerConfigPass implements ConfigPassInterface
 {
+    private $defaultViewConfig = array(
+        'list' => array(
+            'dql_filter' => null,
+            'fields' => array(),
+        ),
+        'search' => array(
+            'dql_filter' => null,
+            'fields' => array(),
+        ),
+        'show' => array(
+            'fields' => array(),
+        ),
+        'edit' => array(
+            'fields' => array(),
+            'form_options' => array(),
+        ),
+        'new' => array(
+            'fields' => array(),
+            'form_options' => array(),
+        ),
+    );
+
     /** @var ContainerInterface */
     private $container;
 
@@ -100,18 +122,16 @@ class NormalizerConfigPass implements ConfigPassInterface
     private function normalizeViewConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            // if the original 'search' config doesn't define its own DQL filter, use the one form 'list'
+           if (!isset($entityConfig['search']) || !array_key_exists('dql_filter', $entityConfig['search'])) {
+                $entityConfig['search']['dql_filter'] = isset($entityConfig['list']['dql_filter']) ? $entityConfig['list']['dql_filter'] : null;
+            }
+
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
-                if (!isset($entityConfig[$view])) {
-                    $entityConfig[$view] = array('fields' => array());
-                }
-
-                if (!isset($entityConfig[$view]['fields'])) {
-                    $entityConfig[$view]['fields'] = array();
-                }
-
-                if (in_array($view, array('edit', 'new')) && !isset($entityConfig[$view]['form_options'])) {
-                    $entityConfig[$view]['form_options'] = array();
-                }
+                $entityConfig[$view] = array_replace_recursive(
+                    $this->defaultViewConfig[$view],
+                    isset($entityConfig[$view]) ? $entityConfig[$view] : array()
+                );
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;

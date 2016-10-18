@@ -123,7 +123,7 @@ class NormalizerConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             // if the original 'search' config doesn't define its own DQL filter, use the one form 'list'
-           if (!isset($entityConfig['search']) || !array_key_exists('dql_filter', $entityConfig['search'])) {
+            if (!isset($entityConfig['search']) || !array_key_exists('dql_filter', $entityConfig['search'])) {
                 $entityConfig['search']['dql_filter'] = isset($entityConfig['list']['dql_filter']) ? $entityConfig['list']['dql_filter'] : null;
             }
 

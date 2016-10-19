@@ -1,5 +1,5 @@
 # TEST
-# 'new' option overrides 'form' values
+# the 'new' and 'form' options are merged recursively
 
 # CONFIGURATION
 easy_admin:

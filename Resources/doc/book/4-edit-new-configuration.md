@@ -14,11 +14,11 @@ The design of both views is almost identical:
 
 ![Edit view interface](../images/easyadmin-edit-view.png)
 
-### The Special Form View
+### The Special `form` View
 
-Most of the times you apply the same configuration to both the `edit` and `new`
-views. Instead of duplicating the configuration, you can use the special `form`
-view:
+Most of the times you apply the same or very similar configuration to both the
+`edit` and `new` views. Instead of duplicating the configuration, you can use
+the special `form` view:
 
 ```yaml
 easy_admin:
@@ -45,10 +45,10 @@ easy_admin:
         Customer:
             class: AppBundle\Entity\Customer
             form:
-                fields: ['id', 'name', 'email']
-                title:  'Add customer'
+                title: 'Add customer'
+                form_options: { validation_groups: ['Default'] }
             new:
-                fields: ['name', 'email']
+                form_options: { validation_groups: ['Default', 'Customer'] }
             edit:
                 title:  'Edit customer'
     # ...
@@ -62,11 +62,65 @@ easy_admin:
         Customer:
             class: AppBundle\Entity\Customer
             new:
-                fields: ['name', 'email']
                 title:  'Add customer'
+                form_options: { validation_groups: ['Default', 'Customer'] }
             edit:
-                fields: ['id', 'name', 'email']
                 title:  'Edit customer'
+                form_options: { validation_groups: ['Default'] }
+    # ...
+```
+
+The merging of the `form` fields configuration is done recursively, so you can
+change or add any option to any property. In addition, the following processing
+takes place:
+
+1. All the fields defined in the `form` view are copied in the same order into
+   the `edit` and `new` views.
+2. Any field defined in the `edit` or `new` view which is not present in the
+  `form` view is added after the `form` fields.
+3. The `edit` and `new` views can remove any field defined in the `form` view
+   just by prefixing the name of the removed field with a dash `-` (e.g. add
+   a property called `-name` to remove the `name` property defined in `form`)
+
+Consider the following complex form field configuration:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            form:
+                fields:
+                    - id
+                    - { property: 'name', icon: 'user' }
+                    - { property: 'email', css_class: 'input-large' }
+            new:
+                fields:
+                    - '-id'
+                    - { property: 'email', type_options: { required: false } }
+            edit:
+                fields:
+                    - { property: 'name', icon: 'customer' }
+                    - { property: 'email', help: 'Phone number is preferred' }
+                    - phone
+    # ...
+```
+
+The above configuration is equivalent to the following:
+
+```yaml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            new:
+                - { property: 'name', icon: 'user' }
+                - { property: 'email', css_class: 'input-large', type_options: { required: false } }
+            edit:
+                - id
+                - { property: 'name', icon: 'customer' }
+                - { property: 'email', css_class: 'input-large', help: 'Phone number is preferred' }
+                - phone
     # ...
 ```
 

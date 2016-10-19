@@ -1,5 +1,5 @@
 # TEST
-# 'edit' option overrides 'form' values
+# the 'edit' and 'form' options are merged recursively
 
 # CONFIGURATION
 easy_admin:

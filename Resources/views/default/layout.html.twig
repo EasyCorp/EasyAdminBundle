@@ -106,7 +106,7 @@
             {% block content %}
                 {% block flash_messages %}
                     {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@EasyAdmin/default/flash_messages.html.twig') }}
-                {% endblock %}
+                {% endblock flash_messages %}
 
                 <section class="content-header">
                 {% block content_header %}

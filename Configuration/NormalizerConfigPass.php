@@ -102,8 +102,8 @@ class NormalizerConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             if (isset($entityConfig['form'])) {
-                $entityConfig['new'] = isset($entityConfig['new']) ? array_replace($entityConfig['form'], $entityConfig['new']) : $entityConfig['form'];
-                $entityConfig['edit'] = isset($entityConfig['edit']) ? array_replace($entityConfig['form'], $entityConfig['edit']) : $entityConfig['form'];
+                $entityConfig['new'] = isset($entityConfig['new']) ? array_replace_recursive($entityConfig['form'], $entityConfig['new']) : $entityConfig['form'];
+                $entityConfig['edit'] = isset($entityConfig['edit']) ? array_replace_recursive($entityConfig['form'], $entityConfig['edit']) : $entityConfig['form'];
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;

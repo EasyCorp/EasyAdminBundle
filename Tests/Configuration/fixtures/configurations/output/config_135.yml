@@ -1,8 +1,43 @@
+<<<<<<< 0b71fa34f7952b842ec8160406cd0d77da472aeb
+=======
+# TEST
+# 'new' and 'edit' option override 'form' config recursively
+
+# CONFIGURATION
+>>>>>>> Allow to override individual form fields when using the special 'form' view
 easy_admin:
     entities:
         Category:
             class: AppTestBundle\Entity\UnitTests\Category
+<<<<<<< 0b71fa34f7952b842ec8160406cd0d77da472aeb
             list:
                 dql_filter: null
             search:
                 dql_filter: null
+=======
+            new:
+                custom_option: 'new custom value'
+                form_options:
+                    validation_groups: ['Default', 'form_group']
+                fields:
+                    field1:
+                        type: form_type
+                        type_options:
+                            required: true
+                            disabled: false
+                        property: field1
+                    field3:
+                        label: 'New Label'
+                        property: field3
+            edit:
+                custom_option: 'form custom value'
+                form_options:
+                    validation_groups: ['edit_group', 'form_group']
+                fields:
+                    field2:
+                        label: 'Form Label'
+                        type: text
+                        type_options:
+                            disabled: true
+                        property: field2
+>>>>>>> Allow to override individual form fields when using the special 'form' view

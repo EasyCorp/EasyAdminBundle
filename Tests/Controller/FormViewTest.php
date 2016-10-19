@@ -29,7 +29,7 @@ class FormViewTest extends AbstractTestCase
         $this->assertEquals('Group Label 1', trim($crawler->filter('form .box .box-title')->eq(0)->text()));
 
         $this->assertCount(1, $crawler->filter('form .box-body #product_ean'));
-        $this->assertNull($crawler->filter('form .box-body input')->eq(0)->attr('required'));
+        $this->assertEmpty($crawler->filter('form .box-body input')->eq(0)->attr('required'));
 
         $this->assertEquals('Section Label 1', trim($crawler->filter('form .box-body .field-section h2')->eq(0)->text()));
 

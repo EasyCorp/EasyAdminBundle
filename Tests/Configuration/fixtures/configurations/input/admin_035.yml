@@ -1,5 +1,5 @@
 # TEST
-# 'form' option is correctly processed
+# 'form' view options are correctly copied into the missing 'new' and 'edit' views
 
 # CONFIGURATION
 easy_admin:

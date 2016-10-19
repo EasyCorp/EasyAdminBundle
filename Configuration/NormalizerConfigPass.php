@@ -343,50 +343,50 @@ class NormalizerConfigPass implements ConfigPassInterface
         return $backendConfig;
 
     /**
-     * [mergeFormConfig description]
-     * @param  array  $parentConfig [description]
-     * @param  array  $childConfig  [description]
-     * @return [type]               [description]
+     * Merges the form configuration recursively from the 'form' view to the
+     * 'edit' and 'new' views. It processes the configuration of the form fields
+     * in a special way to keep all their configuration and allow overriding and
+     * removing of fields.
+     *
+     * @param  array  $parentConfig The config of the 'form' view
+     * @param  array  $childConfig  The config of the 'edit' and 'new' views
+     *
+     * @return array
      */
     private function mergeFormConfig(array $parentConfig, array $childConfig)
     {
         // save the fields config for later processing
         $parentFields = isset($parentConfig['fields']) ? $parentConfig['fields'] : array();
         $childFields = isset($childConfig['fields']) ? $childConfig['fields'] : array();
-
-        // fields can be removed when the child field property starts with '-' (e.g. property: '-name')
-        $removedParentFields = array();
-        foreach ($childFields as $childFieldConfig) {
-            if (isset($childFieldConfig['property']) && '-' === substr($childFieldConfig['property'], 0, 1)) {
-                $removedParentFields[] = substr($childFieldConfig['property'], 1);
-            }
-        }
+        $removedFieldNames = $this->getRemovedFieldNames($childFields);
 
         // first, perform a recursive replace to merge both configs
         $mergedConfig = array_replace_recursive($parentConfig, $childConfig);
 
         // merge the config of each field individually
         $mergedFields = array();
-        $parentPropertyNames = array();
         foreach ($parentFields as $parentFieldName => $parentFieldConfig) {
-            if (!isset($parentFieldConfig['property'])) {
-                $fieldConfig = $parentFieldConfig;
-            } else {
-                if (in_array($parentFieldConfig['property'], $removedParentFields)) {
-                    continue;
-                }
-
-                $childFieldConfig = $this->findPropertyConfigByName($childFields, $parentFieldConfig['property']) ?: array();
-                $fieldConfig = array_replace_recursive($parentFieldConfig, $childFieldConfig);
-                $parentPropertyNames[] = $parentFieldConfig['property'];
+            if (isset($parentFieldConfig['property']) && in_array($parentFieldConfig['property'], $removedFieldNames)) {
+                continue;
             }
 
-            $mergedFields[$parentFieldName] = $fieldConfig;
+            if (!isset($parentFieldConfig['property'])) {
+                // this isn't a regular form field but a special design element (group, section, divider); add it
+                $mergedFields[$parentFieldName] = $parentFieldConfig;
+                continue;
+            }
+
+            $childFieldConfig = $this->findFieldConfigByProperty($childFields, $parentFieldConfig['property']) ?: array();
+            $mergedFields[$parentFieldName] = array_replace_recursive($parentFieldConfig, $childFieldConfig);
         }
 
         // add back the fields that are defined in child config but not in parent config
         foreach ($childFields as $childFieldName => $childFieldConfig) {
-            if (isset($childFieldConfig['property']) && '-' !== substr($childFieldConfig['property'], 0, 1)) {
+            $isFormDesignElement = !isset($childFieldConfig['property']);
+            $isNotRemovedField = isset($childFieldConfig['property']) && '-' !== substr($childFieldConfig['property'], 0, 1);
+            $isNotAlreadyIncluded = isset($childFieldConfig['property']) && !in_array($childFieldConfig['property'], array_keys($mergedFields));
+
+            if ($isFormDesignElement || ($isNotRemovedField && $isNotAlreadyIncluded)) {
                 $mergedFields[$childFieldName] = $childFieldConfig;
             }
         }
@@ -397,7 +397,28 @@ class NormalizerConfigPass implements ConfigPassInterface
         return $mergedConfig;
     }
 
-    private function findPropertyConfigByName(array $fieldsConfig, $propertyName)
+    /**
+     * The 'edit' and 'new' views can remove fields defined in the 'form' view
+     * by defining fields with a '-' dash at the beginning of its name (e.g.
+     * { property: '-name' } to remove the 'name' property).
+     *
+     * @param  array  $fieldsConfig
+     *
+     * @return array
+     */
+    private function getRemovedFieldNames(array $fieldsConfig)
+    {
+        $removedFieldNames = array();
+        foreach ($fieldsConfig as $fieldConfig) {
+            if (isset($fieldConfig['property']) && '-' === substr($fieldConfig['property'], 0, 1)) {
+                $removedFieldNames[] = substr($fieldConfig['property'], 1);
+            }
+        }
+
+        return $removedFieldNames;
+    }
+
+    private function findFieldConfigByProperty(array $fieldsConfig, $propertyName)
     {
         foreach ($fieldsConfig as $fieldConfig) {
             if (isset($fieldConfig['property']) && $propertyName === $fieldConfig['property']) {

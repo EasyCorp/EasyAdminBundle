@@ -54,11 +54,11 @@ class NormalizerConfigPass implements ConfigPassInterface
     public function process(array $backendConfig)
     {
         $backendConfig = $this->normalizeEntityConfig($backendConfig);
-        $backendConfig = $this->normalizeFormConfig($backendConfig);
         $backendConfig = $this->normalizeViewConfig($backendConfig);
         $backendConfig = $this->normalizePropertyConfig($backendConfig);
         $backendConfig = $this->normalizeFormDesignConfig($backendConfig);
         $backendConfig = $this->normalizeActionConfig($backendConfig);
+        $backendConfig = $this->normalizeFormConfig($backendConfig);
         $backendConfig = $this->normalizeControllerConfig($backendConfig);
         $backendConfig = $this->normalizeTranslationConfig($backendConfig);
 
@@ -102,8 +102,8 @@ class NormalizerConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             if (isset($entityConfig['form'])) {
-                $entityConfig['new'] = isset($entityConfig['new']) ? array_replace_recursive($entityConfig['form'], $entityConfig['new']) : $entityConfig['form'];
-                $entityConfig['edit'] = isset($entityConfig['edit']) ? array_replace_recursive($entityConfig['form'], $entityConfig['edit']) : $entityConfig['form'];
+                $entityConfig['new'] = isset($entityConfig['new']) ? $this->mergeFormConfig($entityConfig['form'], $entityConfig['new']) : $entityConfig['form'];
+                $entityConfig['edit'] = isset($entityConfig['edit']) ? $this->mergeFormConfig($entityConfig['form'], $entityConfig['edit']) : $entityConfig['form'];
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;
@@ -128,11 +128,18 @@ class NormalizerConfigPass implements ConfigPassInterface
                 $entityConfig['search']['dql_filter'] = isset($entityConfig['list']['dql_filter']) ? $entityConfig['list']['dql_filter'] : null;
             }
 
-            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
-                $entityConfig[$view] = array_replace_recursive(
-                    $this->defaultViewConfig[$view],
-                    isset($entityConfig[$view]) ? $entityConfig[$view] : array()
-                );
+            foreach (array('form', 'edit', 'list', 'new', 'search', 'show') as $view) {
+                if (!isset($entityConfig[$view])) {
+                    $entityConfig[$view] = array('fields' => array());
+                }
+
+                if (!isset($entityConfig[$view]['fields'])) {
+                    $entityConfig[$view]['fields'] = array();
+                }
+
+                if (in_array($view, array('form', 'edit', 'new')) && !isset($entityConfig[$view]['form_options'])) {
+                    $entityConfig[$view]['form_options'] = array();
+                }
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;
@@ -168,7 +175,7 @@ class NormalizerConfigPass implements ConfigPassInterface
     private function normalizePropertyConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
+            foreach (array('form', 'edit', 'list', 'new', 'search', 'show') as $view) {
                 $fields = array();
                 foreach ($entityConfig[$view]['fields'] as $i => $field) {
                     if (!is_string($field) && !is_array($field)) {
@@ -222,7 +229,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         // all the previous form fields are "ungrouped". To avoid design issues,
         // insert an empty 'group' type (no label, no icon) as the first form element.
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'new') as $view) {
+            foreach (array('form', 'edit', 'new') as $view) {
                 $fieldNumber = 0;
                 $isTheFirstGroupElement = true;
 
@@ -245,7 +252,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         }
 
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'new') as $view) {
+            foreach (array('form', 'edit', 'new') as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // this is a form design element instead of a regular property
                     $isFormDesignElement = !isset($fieldConfig['property']) && isset($fieldConfig['type']);
@@ -267,7 +274,7 @@ class NormalizerConfigPass implements ConfigPassInterface
 
     private function normalizeActionConfig(array $backendConfig)
     {
-        $views = array('edit', 'list', 'new', 'show');
+        $views = array('edit', 'list', 'new', 'show', 'form');
 
         foreach ($views as $view) {
             if (!isset($backendConfig[$view]['actions'])) {
@@ -334,5 +341,70 @@ class NormalizerConfigPass implements ConfigPassInterface
         }
 
         return $backendConfig;
+
+    /**
+     * [mergeFormConfig description]
+     * @param  array  $parentConfig [description]
+     * @param  array  $childConfig  [description]
+     * @return [type]               [description]
+     */
+    private function mergeFormConfig(array $parentConfig, array $childConfig)
+    {
+        // save the fields config for later processing
+        $parentFields = isset($parentConfig['fields']) ? $parentConfig['fields'] : array();
+        $childFields = isset($childConfig['fields']) ? $childConfig['fields'] : array();
+
+        // fields can be removed when the child field property starts with '-' (e.g. property: '-name')
+        $removedParentFields = array();
+        foreach ($childFields as $childFieldConfig) {
+            if (isset($childFieldConfig['property']) && '-' === substr($childFieldConfig['property'], 0, 1)) {
+                $removedParentFields[] = substr($childFieldConfig['property'], 1);
+            }
+        }
+
+        // first, perform a recursive replace to merge both configs
+        $mergedConfig = array_replace_recursive($parentConfig, $childConfig);
+
+        // merge the config of each field individually
+        $mergedFields = array();
+        $parentPropertyNames = array();
+        foreach ($parentFields as $parentFieldName => $parentFieldConfig) {
+            if (!isset($parentFieldConfig['property'])) {
+                $fieldConfig = $parentFieldConfig;
+            } else {
+                if (in_array($parentFieldConfig['property'], $removedParentFields)) {
+                    continue;
+                }
+
+                $childFieldConfig = $this->findPropertyConfigByName($childFields, $parentFieldConfig['property']) ?: array();
+                $fieldConfig = array_replace_recursive($parentFieldConfig, $childFieldConfig);
+                $parentPropertyNames[] = $parentFieldConfig['property'];
+            }
+
+            $mergedFields[$parentFieldName] = $fieldConfig;
+        }
+
+        // add back the fields that are defined in child config but not in parent config
+        foreach ($childFields as $childFieldName => $childFieldConfig) {
+            if (isset($childFieldConfig['property']) && '-' !== substr($childFieldConfig['property'], 0, 1)) {
+                $mergedFields[$childFieldName] = $childFieldConfig;
+            }
+        }
+
+        // finally, copy the processed field config into the merged config
+        $mergedConfig['fields'] = $mergedFields;
+
+        return $mergedConfig;
+    }
+
+    private function findPropertyConfigByName(array $fieldsConfig, $propertyName)
+    {
+        foreach ($fieldsConfig as $fieldConfig) {
+            if (isset($fieldConfig['property']) && $propertyName === $fieldConfig['property']) {
+                return $fieldConfig;
+            }
+        }
+
+        return null;
     }
 }

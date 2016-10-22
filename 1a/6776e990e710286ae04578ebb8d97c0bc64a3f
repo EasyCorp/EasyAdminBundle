@@ -1,0 +1,273 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2016-03-11T19:48:11Z
+
+> ...the only restriction is that you must use the `entity` name to refer to the current entity.
+
+Why? We could not do it without this restriction? `property = 'value'`?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-11T19:52:35Z
+
+> Why? We could not do it without this restriction?
+
+Because we use a hardcoded `entity.` in all our current queries. For example: https://github.com/javiereguiluz/EasyAdminBundle/blob/master/Controller/AdminController.php#L494-L503  I don't see it like a problem because `entity.` name is easy to understand that it refers to the current entity. (SonataAdmin uses this other convention: `$query->getRootAlias()` which in my opinion is harder to understand)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-03-11T20:19:45Z
+
+What do you think about adding some example by using container parameter? Something like this:
+```yaml
+easy_admin:
+    entities:
+        VipCustomers:
+            class: AppBundle\Entity\User
+            list:
+                dql_filter: 'entity.budget > %budget%'
+```
+This makes it possible to use different values depending on the environment or maybe dynamic values.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-12T08:37:14Z
+
+@yceruto thanks for the review. I've added an example with parameters.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-12T08:44:23Z
+
+I think I've found a "pain point" for this feature.
+
+In this example:
+
+```yaml
+easy_admin:
+    entities:
+        VipCustomers:
+            class: AppBundle\Entity\User
+            list:
+                dql_filter: 'entity.budget > 100000'
+        RegularCustomers:
+            class: AppBundle\Entity\User
+            list:
+                dql_filter: 'entity.budget <= 100000'
+```
+
+The `dql_filter` config is very easy ... but you must duplicate all the customizations made for the `User` entity.
+
+I see two possible solutions:
+
+**1)** Introduce a `extends` config which makes an entity inherit all the config from another one:
+
+```yaml
+easy_admin:
+    entities:
+        VipCustomers:
+            class: AppBundle\Entity\User
+            # customize a lot of things ...
+            list:
+                # customize everything about the 'list' option...
+                dql_filter: 'entity.budget > 100000'
+        RegularCustomers:
+            extends: VipCustomers
+            list:
+                dql_filter: 'entity.budget <= 100000'
+```
+
+**2)** Copy the "Index Scopes" feature from Ruby's ActiveAdmin (see http://activeadmin.info/docs/3-index-pages.html)
+
+The config would look like this:
+
+```yaml
+easy_admin:
+    entities:
+        Customers:
+            class: AppBundle\Entity\User
+            # customize a lot of things ...
+            list:
+                # customize everything about the 'list' option...
+                scopes:
+                    - { label: 'VIP', dql_filter: 'entity.budget > 100000' }
+                    - { label: 'Normal', dql_filter: 'entity.budget <= 100000' }
+                    - { label: 'All Customers', default: true }
+```
+
+And the `list` page would show this as a filter:
+
+![scope](https://cloud.githubusercontent.com/assets/73419/13721989/f31a6392-e836-11e5-8daa-9471b5b8818c.png)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-03-14T12:18:44Z
+
+I like the second option and it's really easy to understand. However, when we need a little more complexity e.g: use authenticated user or values coming from a service:
+```yaml
+easy_admin:
+    entities:
+        Reports:
+            class: AppBundle\Entity\Report
+            list:
+                scopes:
+                    - { label: 'My Reports', dql_filter: 'entity.user = :user' }
+                    - { label: 'All Reports', default: true }
+```
+
+then we must use one of these alternatives to complete the query (`$qb->setParameters(...)`):
+* create the `createReportListQueryBuilder` method.
+* overwrite the `createListQueryBuilder` method.
+* Listen from `EasyAdminEvents::POST_LIST_QUERY_BUILDER` event.
+
+You think you can add an advanced tutorial for this?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-14T12:25:42Z
+
+@yceruto very nice comment. I faced the problem about users as well. I need to think about this.
+
+---
+
+In addition, I think that we can implement both `dql_filter` and `scopes`. First option comes in very handy in lots of situations and the second one is useful while we don't have filters.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-03-24T14:37:09Z
+
+Actually, when talking about `dql_filter` I couldn't agree because it would've created 2 backends for one single entity.
+
+But then with the `scopes` notion from Ruby (Ruby is good, but painful :stuck_out_tongue: ) I find this very much acceptable !
+
+Actually, implementing `dql_filter` **only** under `scopes` sounds like the best option to me.
+
+For the `:user` and dynamic parameters, I don't see what use there can be: as long as we need a dynamic parameter, it comes to PHP, and then we need to go to the `AdminController`, and therefore we can add the filter **manually** in the `createListQueryBuilder` or `createSearchQueryBuilder` like this:
+
+```yml
+easy_admin:
+    entities:
+        Reports:
+            class: AppBundle\Entity\Report
+            list:
+                scopes:
+                    # No notion of "default". Here, the default is always the first.
+                    # BUT there is a notion of "scope ID" that is important to refer to it anywhere.
+                    all_reports: { label: 'All Reports' }
+                    my_reports: { label: 'My Reports' }
+```
+
+```php
+public function createListQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null) {
+    $qb = parent::createSearchQueryBuilder($entityClass, $searchQuery, $searchableFields, $sortField, $sortDirection);
+    if ($this->scope === 'my_reports') {
+        $qb->andWhere('entity.user = :user')->setParameter('user', $this->getUser());
+    }
+}
+```
+
+And voilà, easy dynamic query builder customization.
+
+Obviously, the same can be done in `search` action (which I still want to be merged with `list` action because they're basically the same)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-24T14:48:09Z
+
+@Pierstoval I disagree with you about `dql_filter`. I think this small feature would provide lots of value to our users. Filtering the list of elements is a very common and basic need.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-03-24T15:01:03Z
+
+Exactly, that's why the `scopes` option would be here for
+
+---------------------------------------------------------------------------
+
+by tiraeth at 2016-03-30T23:05:45Z
+
+Guys, if you could find time, please take a look at my fork — commits e19551a (scopes functionality) and af4a21b (tests). **I took a shot at the scopes functionality.** If this is the approach you wish EasyAdminBundle should go with, I can work on documentation updates (and include missing translation keys for ``list.scopes.all`` default label), rebase everything to a single commit, and prepare a PR for easy merge.
+
+I tried to keep things fully backward compatible, so existing extensions around ``QueryBuilder`` do not break.
+
+:smile:
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-03-31T07:23:21Z
+
+@tiraeth Sounds good to me, could not review "deeply", but I think you can prepare a PR. If needed, @javiereguiluz will rebase it manually to add modifications :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-31T08:12:39Z
+
+@Pierstoval actually ... I'm not ready yet to merge the "scopes" feature. I'd like to do that in the future as part of the filter feature. What I'm willing to add right away is the `dql_filter` feature.
+
+---------------------------------------------------------------------------
+
+by tiraeth at 2016-03-31T08:25:53Z
+
+@javiereguiluz any reason to add functionality that will be removed in future (replaced by scopes) :-) introducing BCB, need for depreciations etc.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-31T08:28:05Z
+
+@tiraeth sorry I didn't explain myself better: I'd like to have both features. The `dql_filter` is a quick way to do things that you commonly need. The scopes (and filters) feature takes more time to configure but they are more powerful and useful for complex backends. I think both are needed (and therefore, your work will be needed when implementing the "scopes"). Thanks!
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-03-31T08:36:08Z
+
+@javiereguiluz I don't understand why you want to make things "slower" for this two features. If @tiraeth makes a PR and if it's compliant with EasyAdmin needs and practices, I don't see why you need time to integrate the feature "later" while a fully-developed & tested PR is available for both features.
+
+---------------------------------------------------------------------------
+
+by tiraeth at 2016-03-31T08:39:30Z
+
+I can add global filter under list configuration node too that will be used with query builder if not false/null :-)  also I would keep query_ prefix instead of dql_ or none at all. If easyadminbundle is going to be used with other orms/odms in future :-)
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2016-03-31T10:27:09Z
+
+> If easyadminbundle is going to be used with other orms/odms in future :-)
+
+I bet it will not, but at least, consistency with query and dql is important, I also agree with the idea because actually we're writing a "piece of query" , not a "dql query" even if it "looks" like dql :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-31T10:29:55Z
+
+I prefer to keep the name `dql_filter` because it's self-explanatory: it only accepts Doctrine DQL code. In the future, if we support ODM, etc. (very unlikely), we can rename it to `query_filter`. By the way, I plan to introduce for the `search` view another option called `dql_query` (so you can define the entire DQL query to look for in joined entities, etc.)
+
+---------------------------------------------------------------------------
+
+by tiraeth at 2016-03-31T11:52:30Z
+
+@javiereguiluz @Pierstoval please check my new commits a4635c5 and 1443572 — renamed ``filter`` to ``dql_filter``, added global ``dql_filter``, modified tests and fixed a small bug in ``paginator.html.twig`` HTML structure.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-03-31T19:48:12Z
+
+@tiraeth I'm sorry I didn't reply to you. The reason is that I need to find enough time to review your work. Thanks for your patience.
+
+---------------------------------------------------------------------------
+
+by anthony-launay at 2016-05-30T20:15:57Z
+
++1
+
+---------------------------------------------------------------------------
+
+by kesar at 2016-06-18T14:04:47Z
+
+fix conflicts and 👍
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-10-18T13:18:30Z
+
+This feature is now completed and ready to be reviewed. Thanks!

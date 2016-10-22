@@ -11,7 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
-use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class EmptyActionLabelsTest extends AbstractTestCase
@@ -56,17 +55,5 @@ class EmptyActionLabelsTest extends AbstractTestCase
         // custom action with 'false' label used as a string instead of a boolean
         $this->assertEquals('false', trim($crawler->filter('#main table tr:first-child td.actions a')->eq(4)->text()));
         $this->assertEquals('fa fa-icon3', trim($crawler->filter('#main table tr:first-child td.actions a i')->eq(4)->attr('class')));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView($entityName = 'Category')
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => $entityName,
-            'view' => 'list',
-        ));
     }
 }

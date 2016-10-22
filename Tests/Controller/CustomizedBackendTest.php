@@ -11,7 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
-use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomizedBackendTest extends AbstractTestCase
@@ -574,64 +573,5 @@ class CustomizedBackendTest extends AbstractTestCase
             'Getter method does not exist for this field or the property is not public',
             $firstVirtualField->attr('title')
         );
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView($entityName = 'Category')
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => $entityName,
-            'view' => 'list',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestShowView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'show',
-            'entity' => 'Category',
-            'id' => '200',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestEditView($entityName = 'Category', $entityId = '200')
-    {
-        return $this->getBackendPage(array(
-            'action' => 'edit',
-            'entity' => $entityName,
-            'id' => $entityId,
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestNewView($entityName = 'Category')
-    {
-        return $this->getBackendPage(array(
-            'action' => 'new',
-            'entity' => $entityName,
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestSearchView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'search',
-            'entity' => 'Category',
-            'query' => 'cat',
-        ));
     }
 }

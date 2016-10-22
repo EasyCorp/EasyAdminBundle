@@ -34,6 +34,7 @@ class ActionTargetTest extends AbstractTestCase
         $this->assertEquals('_parent', $crawler->filter('table a:contains("Custom action")')->attr('target'));
         $this->assertEquals('_self', $crawler->filter('table a:contains("Another custom action")')->attr('target'));
         $this->assertEquals('_self', $crawler->filter('table a:contains("Delete")')->attr('target'));
+        $this->assertEquals('_self', $crawler->filter('#modal-delete-button')->attr('formtarget'));
     }
 
     public function testEditViewActions()

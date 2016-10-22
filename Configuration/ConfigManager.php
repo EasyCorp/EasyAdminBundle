@@ -33,7 +33,7 @@ class ConfigManager
 
     /**
      * Returns the entire backend configuration or just the configuration for
-     * the optional property path. Example: getBackendConfig('design.menu')
+     * the optional property path. Example: getBackendConfig('design.menu').
      *
      * @param string|null $propertyPath
      *

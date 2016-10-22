@@ -60,13 +60,14 @@ class NormalizerConfigPass implements ConfigPassInterface
         $backendConfig = $this->normalizeFormDesignConfig($backendConfig);
         $backendConfig = $this->normalizeActionConfig($backendConfig);
         $backendConfig = $this->normalizeControllerConfig($backendConfig);
+        $backendConfig = $this->normalizeTranslationConfig($backendConfig);
 
         return $backendConfig;
     }
 
     /**
      * By default the entity name is used as its label (showed in buttons, the
-     * main menu, etc.) unless the entity config defines the 'label' option:
+     * main menu, etc.) unless the entity config defines the 'label' option:.
      *
      * easy_admin:
      *     entities:
@@ -313,6 +314,23 @@ class NormalizerConfigPass implements ConfigPassInterface
 
                 $backendConfig['entities'][$entityName]['controller'] = $controller;
             }
+        }
+
+        return $backendConfig;
+    }
+
+    private function normalizeTranslationConfig(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            if (!isset($entityConfig['translation_domain'])) {
+                $entityConfig['translation_domain'] = $backendConfig['translation_domain'];
+            }
+
+            if (empty($entityConfig['translation_domain'])) {
+                throw new \InvalidArgumentException(sprintf('The value defined in the "translation_domain" option of the "%s" entity is not a valid translation domain name.', $entityName));
+            }
+
+            $backendConfig['entities'][$entityName] = $entityConfig;
         }
 
         return $backendConfig;

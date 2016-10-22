@@ -1,0 +1,5 @@
+easy_admin:
+    translation_domain: 'messages'
+    entities:
+        Category:
+            translation_domain: 'messages'

@@ -20,7 +20,7 @@
 
                 {% if easyadmin_action_is_enabled(view, 'delete', _entity_config.name) %}
                     {% set _delete_action = easyadmin_get_action(view, 'delete', _entity_config.name) %}
-                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button" formtarget="{{ _delete_action.target|default('_self') }}">
                         {% if _delete_action.icon %}<i class="fa fa-{{ _delete_action.icon }}"></i>{% endif %}
                         {{ 'delete_modal.action'|trans(_trans_parameters, 'EasyAdminBundle') }}
                     </button>

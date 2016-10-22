@@ -62,7 +62,7 @@
                                         <div class="input-group">
                                             <input class="form-control" type="search" name="query" value="{{ app.request.get('query')|default('') }}">
                                             <span class="input-group-btn">
-                                                <button class="btn" type="submit">
+                                                <button class="btn" type="submit" formtarget="{{ _action.target|default('_self') }}">
                                                     <i class="fa fa-search"></i>
                                                     <span class="hidden-xs hidden-sm">{{ _action.label|default('action.search')|trans(_trans_parameters) }}</span>
                                                 </button>
@@ -78,7 +78,7 @@
                         {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
                         {% block new_action %}
                             <div class="button-action">
-                                <a class="{{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}">
+                                <a class="{{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}" target="{{ _action.target|default('_self') }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                     {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
                                 </a>

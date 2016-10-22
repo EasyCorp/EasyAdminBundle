@@ -1,0 +1,25 @@
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                actions:
+                    edit: { target: '_blank' }
+                    custom_action: { target: '_parent' }
+                    another_custom_action: { target: ~ }
+                    delete: { target: ~ }
+                    new: { target: ~ }
+                    search: { target: ~ }
+            edit:
+                actions:
+                    list: { target: '_parent' }
+                    delete: { target: ~ }
+            new:
+                actions:
+                    list: { target: '_top' }
+            show:
+                actions:
+                    edit: { target: '_self' }
+                    list: { target: ~ }
+                    custom_action: { target: 'custom_target' }
+                    delete: { target: ~ }

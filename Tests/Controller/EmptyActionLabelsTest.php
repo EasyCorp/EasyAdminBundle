@@ -57,16 +57,4 @@ class EmptyActionLabelsTest extends AbstractTestCase
         $this->assertEquals('false', trim($crawler->filter('#main table tr:first-child td.actions a')->eq(4)->text()));
         $this->assertEquals('fa fa-icon3', trim($crawler->filter('#main table tr:first-child td.actions a i')->eq(4)->attr('class')));
     }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView($entityName = 'Category')
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => $entityName,
-            'view' => 'list',
-        ));
-    }
 }

@@ -25,39 +25,15 @@ class RawFieldTest extends AbstractTestCase
 
     public function testListViewRawField()
     {
-        $crawler = $this->requestListView();
+        $crawler = $this->requestListView('Product');
 
         $this->assertRegExp('/\s*<ul>\s*(<li>.*<\/li>\s*){2}\s*<\/ul>/', $crawler->filter('#main table td[data-label="Html features"]')->eq(0)->html());
     }
 
     public function testShowViewRawField()
     {
-        $crawler = $this->requestShowView();
+        $crawler = $this->requestShowView('Product', 50);
 
         $this->assertRegExp('/\s*<ul>\s*(<li>.*<\/li>\s*){2}\s*<\/ul>/', $crawler->filter('#main .form-control')->eq(0)->html());
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => 'Product',
-            'view' => 'list',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestShowView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'show',
-            'entity' => 'Product',
-            'id' => '50',
-        ));
     }
 }

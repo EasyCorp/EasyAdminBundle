@@ -42,27 +42,4 @@ class TypeOptionsTest extends AbstractTestCase
         $this->assertContains('col-sm-4', $crawler->filter('#main form label[for=category_parent]')->attr('class'));
         $this->assertContains('col-sm-10', $crawler->filter('#main form select#category_parent')->attr('class'));
     }
-
-    /**
-     * @return Crawler
-     */
-    private function requestNewView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'new',
-            'entity' => 'Category',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestEditView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'edit',
-            'entity' => 'Category',
-            'id' => '50',
-        ));
-    }
 }

@@ -53,13 +53,13 @@ abstract class AbstractTestCase extends WebTestCase
     }
 
     /**
-     * @param array $parameters
+     * @param array $queryParameters
      *
      * @return Crawler
      */
-    protected function getBackendPage(array $parameters)
+    protected function getBackendPage(array $queryParameters)
     {
-        return $this->client->request('GET', '/admin/?'.http_build_query($parameters, '', '&'));
+        return $this->client->request('GET', '/admin/?'.http_build_query($queryParameters, '', '&'));
     }
 
     /**
@@ -68,5 +68,64 @@ abstract class AbstractTestCase extends WebTestCase
     protected function getBackendHomepage()
     {
         return $this->getBackendPage(array('entity' => 'Category', 'view' => 'list'));
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestListView($entityName = 'Category')
+    {
+        return $this->getBackendPage(array(
+            'action' => 'list',
+            'entity' => $entityName,
+            'view' => 'list',
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestShowView($entityName = 'Category', $entityId = 200)
+    {
+        return $this->getBackendPage(array(
+            'action' => 'show',
+            'entity' => $entityName,
+            'id' => $entityId,
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestSearchView($searchQuery = 'cat', $entityName = 'Category')
+    {
+        return $this->getBackendPage(array(
+            'action' => 'search',
+            'entity' => $entityName,
+            'query' => $searchQuery,
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestNewView($entityName = 'Category')
+    {
+        return $this->getBackendPage(array(
+            'action' => 'new',
+            'entity' => $entityName,
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestEditView($entityName = 'Category', $entityId = '200')
+    {
+        return $this->getBackendPage(array(
+            'action' => 'edit',
+            'entity' => $entityName,
+            'id' => $entityId,
+        ));
     }
 }

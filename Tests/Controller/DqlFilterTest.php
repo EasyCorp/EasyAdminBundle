@@ -43,27 +43,4 @@ class DqlFilterTest extends AbstractTestCase
             $crawler->filter('#main .table tbody tr')->extract('data-id')
         );
     }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => 'Category',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestSearchView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'search',
-            'entity' => 'Category',
-            'query' => 'cat',
-        ));
-    }
 }

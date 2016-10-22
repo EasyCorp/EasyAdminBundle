@@ -78,27 +78,4 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
         $backendConfig = $collector->getBackendConfig();
         $this->assertCount(5, $backendConfig['entities']);
     }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => 'Category',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestEditView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'edit',
-            'entity' => 'Category',
-            'id' => '200',
-        ));
-    }
 }

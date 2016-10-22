@@ -1,0 +1,14 @@
+# TEST
+# the 'translation_domain' option must be a valid domain name
+
+# EXCEPTION
+expected_exception:
+    class: \InvalidArgumentException
+    message_string: 'The value defined in the "translation_domain" option of the "Category" entity is not a valid translation domain name.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            translation_domain: ''

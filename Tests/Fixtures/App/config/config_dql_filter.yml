@@ -1,0 +1,11 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            list:
+                dql_filter: 'entity.id > 50 AND entity.id < 55'
+            search:
+                dql_filter: "LOWER(entity.name) LIKE '%%parent category #2%%'"

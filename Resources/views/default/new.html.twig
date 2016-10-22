@@ -1,6 +1,7 @@
 {% form_theme form with easyadmin_config('design.form_theme') %}
 
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
+{% trans_default_domain _entity_config.translation_domain|default('messages') %}
 {% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans } %}
 
 {% extends _entity_config.templates.layout %}

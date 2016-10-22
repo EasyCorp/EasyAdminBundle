@@ -10,7 +10,7 @@
     <a class="{{ action.css_class|default('') }}" href="{{ action_href }}">
         {%- if action.icon %}<i class="fa fa-{{ action.icon }}"></i> {% endif -%}
         {%- if action.label is defined and not action.label is empty -%}
-            {{ action.label|trans(trans_parameters|merge({ '%entity_id%': item_id }), 'messages') }}
+            {{ action.label|trans(arguments = trans_parameters|merge({ '%entity_id%': item_id }), domain = translation_domain|default('messages')) }}
         {%- endif -%}
     </a>
 {% endfor %}

@@ -208,6 +208,12 @@ class Configuration implements ConfigurationInterface
                         ->thenInvalid('The disabled_actions option must be an array of action names.')
                     ->end()
                 ->end()
+
+                ->scalarNode('translation_domain')
+                    ->cannotBeEmpty()
+                    ->defaultValue('messages')
+                    ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
+                ->end()
             ->end()
         ;
     }

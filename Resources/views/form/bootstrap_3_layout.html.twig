@@ -214,7 +214,7 @@
         {% endif %}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
             {{- widget|raw -}}
-            {{- label is not same as(false) ? label|trans({}, 'messages') -}}
+            {{- label is not same as(false) ? label|trans({}, easyadmin.entity.translation_domain|default('messages')) -}}
         </label>
     {% endif %}
 {% endblock checkbox_radio_label %}
@@ -225,7 +225,7 @@
     {% set _field_type = easyadmin.field.fieldType|default('default') %}
     <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
         {% set _field_label = easyadmin.field['label']|default(null) %}
-        {{- form_label(form, _field_label, { translation_domain: 'messages' }) -}}
+        {{- form_label(form, _field_label, { translation_domain: easyadmin.entity.translation_domain|default('messages') }) -}}
         {{- form_widget(form) -}}
 
         {% if _field_type in ['datetime', 'date', 'time', 'birthday'] and easyadmin.field.nullable|default(false) %}
@@ -240,7 +240,7 @@
         {{- form_errors(form) -}}
 
         {% if easyadmin.field.help|default('') != '' %}
-            <span class="help-block"><i class="fa fa-info-circle"></i> {{ easyadmin.field.help|trans|raw }}</span>
+            <span class="help-block"><i class="fa fa-info-circle"></i> {{ easyadmin.field.help|trans(domain = easyadmin.entity.translation_domain|default('messages'))|raw }}</span>
         {% endif %}
     </div>
 {%- endblock form_row %}
@@ -414,6 +414,7 @@
 
 {# EasyAdmin form type #}
 {% block easyadmin_widget %}
+    {% set _translation_domain = easyadmin.entity.translation_domain|default('messages') %}
     {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
 
     {% if form.vars.errors|length > 0 %}
@@ -432,14 +433,14 @@
                                 {% if group_config.icon|default(false) %}
                                     <i class="fa fa-{{ group_config.icon }}"></i>
                                 {% endif %}
-                                {{ group_config.label|trans|raw }}
+                                {{ group_config.label|trans(domain = _translation_domain)|raw }}
                             </h3>
                         </div>
                     {% endif %}
 
                     <div class="box-body">
                         {% if group_config.help|default(false) %}
-                            <p class="help-block">{{ group_config.help|trans|nl2br|raw }}</p>
+                            <p class="help-block">{{ group_config.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
                         {% endif %}
 
                         <div class="row">
@@ -468,7 +469,7 @@
                     {% block item_actions %}
                         {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
                         <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, 'messages') }}
+                            <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, _translation_domain) }}
                         </button>
 
                         {% set _entity_actions = (easyadmin.view == 'new')
@@ -484,6 +485,7 @@
                         {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
                             actions: _entity_actions,
                             request_parameters: _request_parameters,
+                            translation_domain: _translation_domain,
                             trans_parameters: _trans_parameters,
                             item_id: _entity_id
                         }, with_context = false) }}
@@ -521,16 +523,17 @@
 
 {# EasyAdminSection form type #}
 {% block easyadmin_section_row %}
+    {% set _translation_domain = easyadmin.entity.translation_domain|default('messages') %}
     <div class="field-section {{ easyadmin.field.css_class|default('') }}">
         {% if easyadmin.field.label|default(false) or easyadmin.field.icon|default(false) %}
             <h2>
                 {% if easyadmin.field.icon|default(false) %}<i class="fa fa-{{ easyadmin.field.icon }}"></i>{% endif %}
-                {{ easyadmin.field.label|default('')|trans|raw }}
+                {{ easyadmin.field.label|default('')|trans(domain = _translation_domain)|raw }}
             </h2>
         {% endif %}
 
         {% if easyadmin.field.help|default(false) %}
-            <p class="help-block">{{ easyadmin.field.help|trans|nl2br|raw }}</p>
+            <p class="help-block">{{ easyadmin.field.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
         {% endif %}
     </div>
 {% endblock easyadmin_section_row %}

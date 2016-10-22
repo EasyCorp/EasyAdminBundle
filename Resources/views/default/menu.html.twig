@@ -1,6 +1,6 @@
-{% macro render_menu_item(item) %}
+{% macro render_menu_item(item, translation_domain) %}
     {% if item.type == 'divider' %}
-        {{ item.label|trans }}
+        {{ item.label|trans(domain = translation_domain) }}
     {% else %}
         {% set menu_params = { menuIndex: item.menu_index, submenuIndex: item.submenu_index } %}
         {% set path =
@@ -20,7 +20,7 @@
 
         <a href="{{ path }}" {% if item.target|default(false) %}target="{{ item.target }}"{% endif %}>
             {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}
-            <span>{{ item.label|trans }}</span>
+            <span>{{ item.label|trans(domain = translation_domain) }}</span>
             {% if item.children|default([]) is not empty %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
         </a>
     {% endif %}
@@ -34,13 +34,13 @@
     {% block main_menu %}
         {% for item in easyadmin_config('design.menu') %}
             <li class="{{ item.type == 'divider' ? 'header' }} {{ item.children is not empty ? 'treeview' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.index0 ? 'active' }} {{ app.request.query.get('submenuIndex')|default(-1) != -1 ? 'submenu-active' }}">
-                {{ helper.render_menu_item(item) }}
+                {{ helper.render_menu_item(item, _entity_config.translation_domain|default('messages')) }}
 
                 {% if item.children|default([]) is not empty %}
                     <ul class="treeview-menu">
                         {% for subitem in item.children %}
                             <li class="{{ subitem.type == 'divider' ? 'header' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.parent.loop.index0 and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
-                                {{ helper.render_menu_item(subitem) }}
+                                {{ helper.render_menu_item(subitem, _entity_config.translation_domain|default('messages')) }}
                             </li>
                         {% endfor %}
                     </ul>

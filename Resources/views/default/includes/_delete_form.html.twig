@@ -15,7 +15,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn">
-                    {{ 'action.cancel'|trans(_trans_parameters) }}
+                    {{ 'action.cancel'|trans(_trans_parameters, translation_domain|default('messages')) }}
                 </button>
 
                 {% if easyadmin_action_is_enabled(view, 'delete', _entity_config.name) %}

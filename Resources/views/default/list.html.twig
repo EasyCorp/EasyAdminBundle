@@ -1,4 +1,5 @@
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
+{% trans_default_domain _entity_config.translation_domain|default('messages') %}
 {% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans } %}
 
 {% extends _entity_config.templates.layout %}
@@ -147,6 +148,7 @@
                             {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
                                 actions: _list_item_actions,
                                 request_parameters: _request_parameters,
+                                translation_domain: _entity_config.translation_domain|default('messages'),
                                 trans_parameters: _trans_parameters,
                                 item_id: _item_id
                             }, with_context = false) }}
@@ -180,6 +182,7 @@
             view: 'list',
             referer: referer|url_encode,
             delete_form: delete_form_template,
+            _translation_domain: _entity_config.translation_domain|default('messages'),
             _trans_parameters: _trans_parameters,
             _entity_config: _entity_config,
         }, with_context = false) }}

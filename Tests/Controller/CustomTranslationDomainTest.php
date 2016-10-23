@@ -36,6 +36,21 @@ class CustomTranslationDomainTest extends AbstractTestCase
         $this->assertEquals('__Delete__', trim($crawler->filter('td.actions')->first()->filter('a.action-delete')->text()));
     }
 
+    public function testShowView()
+    {
+        $crawler = $this->requestShowView();
+
+        $this->assertEquals('__Category__', trim($crawler->filter('.sidebar-menu li')->first()->text()));
+        $this->assertEquals('__Category__ (#200)', trim($crawler->filter('h1.title')->text()));
+        $this->assertEquals('__ID__', trim($crawler->filter('.form-group .control-label')->eq(0)->text()));
+        $this->assertEquals('__Name__', trim($crawler->filter('.form-group .control-label')->eq(1)->text()));
+        $this->assertEquals('__Products__', trim($crawler->filter('.form-group .control-label')->eq(2)->text()));
+        $this->assertEquals('__Parent__', trim($crawler->filter('.form-group .control-label')->eq(3)->text()));
+        $this->assertEquals('__Edit__', trim($crawler->filter('.form-actions a.action-edit')->text()));
+        $this->assertEquals('__Delete__', trim($crawler->filter('.form-actions a.action-delete')->text()));
+        $this->assertEquals('__Back to list__', trim($crawler->filter('.form-actions a.action-list')->text()));
+    }
+
     public function testEditView()
     {
         $crawler = $this->requestEditView();
@@ -47,6 +62,19 @@ class CustomTranslationDomainTest extends AbstractTestCase
         $this->assertEquals('__Parent__', trim($crawler->filter('form label')->eq(2)->text()));
         $this->assertEquals('__Save__', trim($crawler->filter('.form-actions button[type="submit"]')->text()));
         $this->assertEquals('__Delete__', trim($crawler->filter('.form-actions .action-delete')->text()));
+    }
+
+    public function testNewView()
+    {
+        $crawler = $this->requestNewView();
+
+        $this->assertEquals('__Category__', trim($crawler->filter('.sidebar-menu li')->first()->text()));
+        $this->assertEquals('Create __Category__', trim($crawler->filter('h1.title')->text()));
+        $this->assertEquals('__Name__', trim($crawler->filter('form label')->eq(0)->text()));
+        $this->assertEquals('__Products__', trim($crawler->filter('form label')->eq(1)->text()));
+        $this->assertEquals('__Parent__', trim($crawler->filter('form label')->eq(2)->text()));
+        $this->assertEquals('__Save__', trim($crawler->filter('.form-actions button[type="submit"]')->text()));
+        $this->assertEquals('__Back to list__', trim($crawler->filter('.form-actions .action-list')->text()));
     }
 
     /**
@@ -63,12 +91,35 @@ class CustomTranslationDomainTest extends AbstractTestCase
     /**
      * @return Crawler
      */
+    private function requestShowView()
+    {
+        return $this->getBackendPage(array(
+            'action' => 'show',
+            'entity' => 'Category',
+            'id' => 200,
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
     private function requestEditView()
     {
         return $this->getBackendPage(array(
             'action' => 'edit',
             'entity' => 'Category',
             'id' => 200,
+        ));
+    }
+
+    /**
+     * @return Crawler
+     */
+    private function requestNewView()
+    {
+        return $this->getBackendPage(array(
+            'action' => 'new',
+            'entity' => 'Category',
         ));
     }
 }

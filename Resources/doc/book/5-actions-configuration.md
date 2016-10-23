@@ -220,6 +220,9 @@ Then, define any of the following options to customize the action:
     inside the button used to render the action. You don't have to include the
     `fa-` prefix of the icon name (e.g. to display the icon of a user, don't
     use `fa fa-user` or `fa-user`; just use `user`).
+  * `target`, is the value of the `target` HTML attribute applied to the button
+    or link associated with the action (e.g. `_blank` to open the action in a
+    new browser tab/window).
 
 -------------------------------------------------------------------------------
 

@@ -130,6 +130,7 @@ class DefaultBackendTest extends AbstractTestCase
         );
 
         $this->assertEquals('Search', trim($crawler->filter('.action-search button[type=submit]')->text()));
+        $this->assertEquals('_self', $crawler->filter('.action-search button')->attr('formtarget'));
 
         $i = 0;
         foreach ($hiddenParameters as $name => $value) {
@@ -145,6 +146,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertEquals('Add Category', trim($crawler->filter('.global-actions a.btn')->text()));
+        $this->assertEquals('_self', $crawler->filter('.global-actions a.btn')->attr('target'));
         $this->assertCount(0, $crawler->filter('.global-actions a.btn i'), 'The default "new" button shows no icon.');
         $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('.global-actions a.btn')->attr('href'));
     }
@@ -154,6 +156,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertEquals('_self', $crawler->filter('#main .table td.actions a')->eq(0)->attr('target'));
         $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
     }
 
@@ -259,12 +262,14 @@ class DefaultBackendTest extends AbstractTestCase
 
         // edit action
         $this->assertContains('fa-edit', trim($crawler->filter('.form-actions a:contains("Edit") i')->attr('class')));
+        $this->assertEquals('_self', $crawler->filter('.form-actions a:contains("Edit")')->attr('target'));
 
         // delete action
         $this->assertContains('fa-trash', trim($crawler->filter('.form-actions a:contains("Delete") i')->attr('class')));
 
         // list action
         $this->assertEquals('btn btn-secondary action-list', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
+        $this->assertEquals('_self', $crawler->filter('.form-actions a:contains("Back to listing")')->attr('target'));
     }
 
     public function testShowViewReferer()
@@ -342,6 +347,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         // list action
         $this->assertEquals('btn btn-secondary action-list', trim($crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('class')));
+        $this->assertEquals('_self', $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('target'));
     }
 
     public function testEditViewReferer()
@@ -457,6 +463,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         // list action
         $this->assertEquals('btn btn-secondary action-list', trim($crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('class')));
+        $this->assertEquals('_self', $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('target'));
     }
 
     public function testNewViewReferer()
@@ -601,6 +608,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestSearchView();
 
         $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertEquals('_self', $crawler->filter('#main .table td.actions a')->eq(0)->attr('target'));
         $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
     }
 

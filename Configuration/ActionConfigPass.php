@@ -32,7 +32,7 @@ class ActionConfigPass implements ConfigPassInterface
         // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
         'icon' => null,
         // the value of the HTML 'target' attribute add to the links of the actions (e.g. '_blank')
-        'target' => null,
+        'target' => '_self',
     );
 
     public function process(array $backendConfig)

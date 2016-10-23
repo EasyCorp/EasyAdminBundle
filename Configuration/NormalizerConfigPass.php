@@ -67,7 +67,7 @@ class NormalizerConfigPass implements ConfigPassInterface
 
     /**
      * By default the entity name is used as its label (showed in buttons, the
-     * main menu, etc.) unless the entity config defines the 'label' option:
+     * main menu, etc.) unless the entity config defines the 'label' option:.
      *
      * easy_admin:
      *     entities:
@@ -318,7 +318,6 @@ class NormalizerConfigPass implements ConfigPassInterface
 
         return $backendConfig;
     }
-
 
     private function normalizeTranslationConfig(array $backendConfig)
     {

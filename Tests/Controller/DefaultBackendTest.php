@@ -12,7 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class DefaultBackendTest extends AbstractTestCase
@@ -669,63 +668,5 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', $this->client->getResponse()->getContent());
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => 'Category',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestShowView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'show',
-            'entity' => 'Category',
-            'id' => '200',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestEditView($entityName = 'Category', $entityId = '200')
-    {
-        return $this->getBackendPage(array(
-            'action' => 'edit',
-            'entity' => $entityName,
-            'id' => $entityId,
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestNewView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'new',
-            'entity' => 'Category',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestSearchView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'search',
-            'entity' => 'Category',
-            'query' => 'cat',
-        ));
     }
 }

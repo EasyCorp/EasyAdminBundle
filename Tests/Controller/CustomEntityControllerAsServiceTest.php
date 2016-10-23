@@ -11,7 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
-use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomEntityControllerAsServiceTest extends AbstractTestCase
@@ -43,29 +42,5 @@ class CustomEntityControllerAsServiceTest extends AbstractTestCase
         }
 
         $this->assertContains('Overridden show action as a service.', $this->client->getResponse()->getContent());
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => 'Category',
-            'view' => 'list',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestShowView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'show',
-            'entity' => 'Category',
-            'id' => '200',
-        ));
     }
 }

@@ -11,7 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
-use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class ReadOnlyBackendTest extends AbstractTestCase
@@ -61,63 +60,5 @@ class ReadOnlyBackendTest extends AbstractTestCase
 
         $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Error: The requested &quot;new&quot; action is not allowed for the &quot;Category&quot; entity. Solution: Remove the &quot;new&quot; action from the &quot;disabled_actions&quot; option, which can be configured globally for the entire backend or locally for the &quot;Category&quot; entity.', $this->client->getResponse()->getContent());
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => 'Category',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestShowView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'show',
-            'entity' => 'Category',
-            'id' => '200',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestEditView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'edit',
-            'entity' => 'Category',
-            'id' => '200',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestNewView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'new',
-            'entity' => 'Category',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestSearchView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'search',
-            'entity' => 'Category',
-            'query' => 'cat',
-        ));
     }
 }

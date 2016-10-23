@@ -11,7 +11,6 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
-use Symfony\Component\DomCrawler\Crawler;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomFieldTemplateTest extends AbstractTestCase
@@ -37,29 +36,5 @@ class CustomFieldTemplateTest extends AbstractTestCase
 
         $this->assertContains('Custom template for "name" field in the "show" view.', $crawler->filter('#main .form-control')->eq(0)->text());
         $this->assertContains('The value of the custom option is "custom_show_value".', $crawler->filter('#main .form-control')->eq(0)->text());
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestListView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'list',
-            'entity' => 'Category',
-            'view' => 'list',
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestShowView()
-    {
-        return $this->getBackendPage(array(
-            'action' => 'show',
-            'entity' => 'Category',
-            'id' => '200',
-        ));
     }
 }

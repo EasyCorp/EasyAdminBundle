@@ -29,6 +29,12 @@ easy_admin:
 Custom Property Options
 -----------------------
 
+> **NOTE**
+>
+> After the publication of this article, EasyAdmin added a new configuration
+> option called `translation_domain` which defines the domain used when
+> translating contents (default value = `messages`).
+
 Adding custom options is as simple as defining their names and values in each
 property configuration. Imagine that you want to translate the contents of a
 property called `name` in the `list` view. To do so, define a custom option

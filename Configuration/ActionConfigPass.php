@@ -139,7 +139,7 @@ class ActionConfigPass implements ConfigPassInterface
      * If the user overrides the configuration of a default action, they usually
      * define just the options they want to change. For example:
      *   actions: ['delete', 'list'] just to redefine the order
-     *   actions: [ { name: 'list', label: 'Listing' }] just to redefine the label
+     *   actions: [ { name: 'list', label: 'Listing' }] just to redefine the label.
      *
      * For that reason, this method merges the full configuration of the default
      * actions with the new action configuration. This means that you get the
@@ -324,7 +324,7 @@ class ActionConfigPass implements ConfigPassInterface
 
     /**
      * copied from Symfony\Component\Form\FormRenderer::humanize()
-     * (author: Bernhard Schussek <bschussek@gmail.com>)
+     * (author: Bernhard Schussek <bschussek@gmail.com>).
      *
      * @param string $content
      *

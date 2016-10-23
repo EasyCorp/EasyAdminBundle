@@ -1,0 +1,10 @@
+# TEST
+# the default translation domain can be overridden per entity
+
+# CONFIGURATION
+easy_admin:
+    translation_domain: 'custom_global_domain'
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            translation_domain: 'custom_entity_domain'

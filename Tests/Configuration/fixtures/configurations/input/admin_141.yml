@@ -1,0 +1,8 @@
+# TEST
+# 'messages' is the default translation domain applied to all entities
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

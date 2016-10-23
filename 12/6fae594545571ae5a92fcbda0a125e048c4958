@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-10-22T19:17:25Z
+
+`translation_domain` is fine and echoes Symfony's form type option name 👍 . Also, I do think the length of such an option does not matter much anyway ^^.

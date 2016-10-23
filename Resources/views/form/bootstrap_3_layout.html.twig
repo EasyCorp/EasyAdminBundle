@@ -326,7 +326,7 @@
     {% set error_count = errors|length %}
     {% if error_count >= 1 %}
         <div class="error-block">
-            <span class="label label-danger">{{ 'errors'|transchoice(count = error_count, domain = 'EasyAdminBundle') }}</span>
+            <span class="label label-danger">{{ 'errors'|transchoice(error_count, {}, 'EasyAdminBundle') }}</span>
             {% if error_count == 1 %}
                 {{ errors|first.message }}
             {% else %}

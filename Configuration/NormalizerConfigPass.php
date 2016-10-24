@@ -33,6 +33,10 @@ class NormalizerConfigPass implements ConfigPassInterface
         'show' => array(
             'fields' => array(),
         ),
+        'form' => array(
+            'fields' => array(),
+            'form_options' => array(),
+        ),
         'edit' => array(
             'fields' => array(),
             'form_options' => array(),
@@ -128,18 +132,11 @@ class NormalizerConfigPass implements ConfigPassInterface
                 $entityConfig['search']['dql_filter'] = isset($entityConfig['list']['dql_filter']) ? $entityConfig['list']['dql_filter'] : null;
             }
 
-            foreach (array('form', 'edit', 'list', 'new', 'search', 'show') as $view) {
-                if (!isset($entityConfig[$view])) {
-                    $entityConfig[$view] = array('fields' => array());
-                }
-
-                if (!isset($entityConfig[$view]['fields'])) {
-                    $entityConfig[$view]['fields'] = array();
-                }
-
-                if (in_array($view, array('form', 'edit', 'new')) && !isset($entityConfig[$view]['form_options'])) {
-                    $entityConfig[$view]['form_options'] = array();
-                }
+            foreach (array('edit', 'form', 'list', 'new', 'search', 'show') as $view) {
+                $entityConfig[$view] = array_replace_recursive(
+                    $this->defaultViewConfig[$view],
+                    isset($entityConfig[$view]) ? $entityConfig[$view] : array()
+                );
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;

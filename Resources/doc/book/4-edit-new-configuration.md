@@ -121,7 +121,7 @@ The `title` option can include the following special variables:
 >             class: AppBundle\Entity\Customer
 >             label: 'Customers'
 >             form:
->                 title: '%%entity_name%% listing'
+>                 title: '%%entity_label%% listing'
 >         # ...
 > ```
 

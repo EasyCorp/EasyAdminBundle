@@ -74,7 +74,7 @@ The `title` value can include the following special variables:
 >             class: AppBundle\Entity\Customer
 >             label: 'Customers'
 >             list:
->                 title: '%%entity_name%% listing'
+>                 title: '%%entity_label%% listing'
 >         # ...
 > ```
 

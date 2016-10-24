@@ -61,27 +61,4 @@ class FormViewTest extends AbstractTestCase
         $this->assertCount(1, $crawler->filter('form .box-body #product_description'));
         $this->assertCount(1, $crawler->filter('form .box-body #product_price'));
     }
-
-    /**
-     * @return Crawler
-     */
-    private function requestEditView($entityName = 'Category', $entityId = '200')
-    {
-        return $this->getBackendPage(array(
-            'action' => 'edit',
-            'entity' => $entityName,
-            'id' => $entityId,
-        ));
-    }
-
-    /**
-     * @return Crawler
-     */
-    private function requestNewView($entityName = 'Category')
-    {
-        return $this->getBackendPage(array(
-            'action' => 'new',
-            'entity' => $entityName,
-        ));
-    }
 }

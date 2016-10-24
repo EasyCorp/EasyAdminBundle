@@ -341,6 +341,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         }
 
         return $backendConfig;
+    }
 
     /**
      * Merges the form configuration recursively from the 'form' view to the

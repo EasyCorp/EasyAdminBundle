@@ -44,10 +44,10 @@ matrix:
       dist: trusty
       group: edge
     - php: 5.6
-      env: TWIG_VERSION="2.0.x-dev"
+      env: TWIG_VERSION="2.x-dev"
   allow_failures:
     - php: hhvm-stable
-    - env: TWIG_VERSION="2.0.x-dev"
+    - env: TWIG_VERSION="2.x-dev"
     - env: ENABLE_CODE_COVERAGE="true"
 
 before_install:

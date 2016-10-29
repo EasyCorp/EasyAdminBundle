@@ -134,10 +134,10 @@ class ViewConfigPass implements ConfigPassInterface
                 if (is_string($sortConfig)) {
                     $sortConfig = array('field' => $sortConfig, 'direction' => 'DESC');
                 } else {
-                    $sortConfig = array('field' => $sortConfig[0], 'direction' => $sortConfig[1]);
+                    $sortConfig = array('field' => $sortConfig[0], 'direction' => strtoupper($sortConfig[1]));
                 }
 
-                if (!in_array(strtoupper($sortConfig['direction']), array('ASC', 'DESC'))) {
+                if (!in_array($sortConfig['direction'], array('ASC', 'DESC'))) {
                     throw new \InvalidArgumentException(sprintf('If defined, the second value of the "sort" option of the "%s" view of the "%s" entity can only be "ASC" or "DESC".', $view, $entityName));
                 }
 

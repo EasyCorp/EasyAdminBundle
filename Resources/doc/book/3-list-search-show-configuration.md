@@ -395,6 +395,9 @@ easy_admin:
                 sort: ['updatedAt', 'ASC']
 ```
 
+The `sort` option of each entity overrides any other sorting configuration
+defined in the application, including the sorting defined by a custom menu.
+
 Filtering Entities
 ------------------
 

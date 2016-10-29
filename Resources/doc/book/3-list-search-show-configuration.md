@@ -395,8 +395,11 @@ easy_admin:
                 sort: ['updatedAt', 'ASC']
 ```
 
-The `sort` option of each entity overrides any other sorting configuration
-defined in the application, including the sorting defined by a custom menu.
+The `sort` option of each entity is only used as the default content sorting. If
+the query string includes the optional `sortField` and `sortDirection`
+parameters, their values override this `sort` option. This happens for example
+when defining a different sorting in a custom menu and when clicking on the
+listings columns to reorder the displayed contents.
 
 Filtering Entities
 ------------------

@@ -1,0 +1,49 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-10-19T15:15:48Z
+
+@CruzyCruz the new code committed in this PR should fix your issue in #1311 and it also brings in some new features. If you can, please read the docs for the new feature and review this PR. Thanks!
+
+---------------------------------------------------------------------------
+
+by CruzyCruz at 2016-10-19T16:35:56Z
+
+@javiereguiluz
+
+Thanks for your reactivity !
+
+Here is for the documentation. It is very clear for me. Sorry for the multiple comments in this conversation, it is my first time at PR reviewing... Github button "Start a review" should have been a better option !
+
+I will have a look at the new method `mergeFormConfig()`  later (tonight or tomorrow morningbefore work).
+
+Edit : when all tests will be successfull, I can install this branch and test it locally in my project if you want.
+
+---------------------------------------------------------------------------
+
+by CruzyCruz at 2016-10-24T06:57:25Z
+
+@javiereguiluz
+
+Symfony 2.8.12
+
+I tried to install this branch (`fix_1311`) but I got a warning message from composer:
+
+> _Your requirements could not be resolved to an installable set of packages._
+
+I attach the complete composer log but may be it would preferable that I wait for the next release of EasyAdmin. Just trying to help, I don't want to waste your time.
+
+My composer.json file (this is the only difference with my regular composer.json file)
+
+``` json
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/javiereguiluz/EasyAdminBundle"
+        }
+    ],
+    "require": {
+        "javiereguiluz/easyadmin-bundle": "dev-fix_1311",
+    },
+```
+
+[composer.txt](https://github.com/javiereguiluz/EasyAdminBundle/files/547094/composer.txt)

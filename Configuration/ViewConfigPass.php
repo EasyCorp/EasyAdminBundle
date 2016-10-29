@@ -114,7 +114,7 @@ class ViewConfigPass implements ConfigPassInterface
      * 'search' views can define to override the default (id, DESC) sorting
      * applied to their contents.
      *
-     * @param array  $backendConfig
+     * @param array $backendConfig
      *
      * @return array
      */

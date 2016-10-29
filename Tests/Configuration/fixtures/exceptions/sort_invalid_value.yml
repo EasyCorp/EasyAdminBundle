@@ -1,0 +1,15 @@
+# TEST
+# 'sort' config value can only be a string or an array
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The "sort" option of the "list" view of the "Category" entity contains an invalid value (it can only be a string or an array).'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                sort: 7

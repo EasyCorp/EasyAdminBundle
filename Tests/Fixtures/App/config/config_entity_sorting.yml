@@ -1,0 +1,16 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    design:
+        menu:
+            - { label: 'Product 1', entity: 'Product', params: { sortField: 'price' } }
+            - { label: 'Product 2', entity: 'Product', params: { sortField: 'price', sortDirection: 'ASC' } }
+            - { label: 'Product 3', entity: 'Product', params: { sortField: 'id' } }
+    entities:
+        Product:
+            class: AppTestBundle\Entity\FunctionalTests\Product
+            list:
+                sort: name
+            search:
+                sort: [createdAt, ASC]

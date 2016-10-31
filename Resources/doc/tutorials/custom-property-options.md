@@ -62,7 +62,7 @@ property. If you add custom options, they will also be available in that
 easily.
 
 Considering that the `name` property is of type `string`, override the built-in
-`field_string.html.twig` templateto add support for the `trans` and `domain`
+`field_string.html.twig` template to add support for the `trans` and `domain`
 options:
 
 ```twig

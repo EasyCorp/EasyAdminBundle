@@ -86,7 +86,6 @@ class ViewConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-
     /**
      * This method resolves the page title inheritance when some global view
      * (list, edit, etc.) defines a global title for all entities that can be

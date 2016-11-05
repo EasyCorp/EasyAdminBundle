@@ -253,7 +253,7 @@ easy_admin:
               icon: 'users'
               children:
                 - { label: 'New Invoice', icon: 'file-new', route: 'createInvoice' }
-                - { label: 'Invoices', icon: 'file-list', entity: 'Invoice' }
+                - { label: 'Invoices', icon: 'file-list', entity: 'Invoice', id: 'some-route' }
                 - { label: 'Payments Received', entity: 'Payment', params: { sortField: 'paidAt' } }
             - label: 'About'
               children:
@@ -261,6 +261,8 @@ easy_admin:
                 - { label: 'Docs', url: 'http://example.com/external-docs' }
                 - { label: %app.version% }
 ```
+
+The *ID* can be set for the menu children item. If the definition of easy_admin is divided between bundles then the *ID* is used to merge the item under the same key
 
 -------------------------------------------------------------------------------
 

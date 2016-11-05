@@ -1,0 +1,49 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-10-29T17:27:44Z
+
+I have a question: should this new option be called `sort` or `sort_by` ?
+
+```yaml
+entities:
+    Product:
+        list:
+            sort: 'name'
+            # sort: ['name', 'ASC']
+
+    Product:
+        list:
+            sort_by: 'name'
+            # sort_by: ['name', 'ASC']
+
+    Product:
+        list:
+            order_by: 'name'
+            # order_by: ['name', 'ASC']
+```
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-10-29T17:32:05Z
+
+What about `order_by` ?
+Otherwise, `sort` is fine to me 👍
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-10-29T17:42:30Z
+
+@ogizanagi I've added the `order_by` to the list of candidates. Thanks for this nice proposal!
+
+---------------------------------------------------------------------------
+
+by dayofr at 2016-11-05T07:58:01Z
+
+`order_by` feels a lot like SQL.
+`sort` feels more natural.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-11-05T09:46:10Z
+
+OK, let's keep this option as `sort` to not give the impression that you can use the same syntax as SQL `order_by`. Thanks!

@@ -1,0 +1,22 @@
+# TEST
+# the entity classes used in autocomplete types must define a __toString() method
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The "AppTestBundle\Entity\UnitTests\Exceptions\CategoryWithoutToString" class must define a "__toString()" method because it is used as the "parent" autocomplete field in the "edit" view of the "Category" entity.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Exceptions\CategoryWithoutToString
+            # don't include the 'parent' field in the 'list' and 'show' views to avoid
+            # exceptions that would prevent to test the exception thrown in the 'form' view
+            list:
+                fields: ['id']
+            show:
+                fields: ['id']
+            form:
+                fields:
+                    - { property: parent, type: easyadmin_autocomplete }

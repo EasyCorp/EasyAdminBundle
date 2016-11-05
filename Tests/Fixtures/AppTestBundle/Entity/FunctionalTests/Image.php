@@ -45,6 +45,11 @@ class Image
      */
     protected $thumbnail;
 
+    public function __toString()
+    {
+        return 'Image #'.$this->id();
+    }
+
     /**
      * Set the content of the full size image.
      *

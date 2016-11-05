@@ -66,7 +66,6 @@ class Category
         $this->products = new ArrayCollection();
     }
 
-    /** {@inheritdoc} */
     public function __toString()
     {
         return $this->getName();

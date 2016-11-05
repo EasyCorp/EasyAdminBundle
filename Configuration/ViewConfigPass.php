@@ -21,8 +21,10 @@ class ViewConfigPass implements ConfigPassInterface
 {
     public function process(array $backendConfig)
     {
-        $backendConfig = $this->processViewConfig($backendConfig);
+        $backendConfig = $this->processDefaultFieldsConfig($backendConfig);
         $backendConfig = $this->processFieldConfig($backendConfig);
+        $backendConfig = $this->processPageTitleConfig($backendConfig);
+        $backendConfig = $this->processSortingConfig($backendConfig);
 
         return $backendConfig;
     }
@@ -36,9 +38,8 @@ class ViewConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function processViewConfig(array $backendConfig)
+    private function processDefaultFieldsConfig(array $backendConfig)
     {
-        // if a view doesn't define its fields, add some fields automatically
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
                 if (0 === count($entityConfig[$view]['fields'])) {
@@ -50,15 +51,6 @@ class ViewConfigPass implements ConfigPassInterface
                     );
 
                     $backendConfig['entities'][$entityName][$view]['fields'] = $fieldsConfig;
-                }
-            }
-        }
-
-        // resolve page title inheritance
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'list', 'new', 'show') as $view) {
-                if (!isset($entityConfig[$view]['title']) && isset($backendConfig[$view]['title'])) {
-                    $backendConfig['entities'][$entityName][$view]['title'] = $backendConfig[$view]['title'];
                 }
             }
         }
@@ -88,6 +80,75 @@ class ViewConfigPass implements ConfigPassInterface
 
                     $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
                 }
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * This method resolves the page title inheritance when some global view
+     * (list, edit, etc.) defines a global title for all entities that can be
+     * overridden individually by each entity.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function processPageTitleConfig(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (array('edit', 'list', 'new', 'show') as $view) {
+                if (!isset($entityConfig[$view]['title']) && isset($backendConfig[$view]['title'])) {
+                    $backendConfig['entities'][$entityName][$view]['title'] = $backendConfig[$view]['title'];
+                }
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * This method processes the optional 'sort' config that the 'list' and
+     * 'search' views can define to override the default (id, DESC) sorting
+     * applied to their contents.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function processSortingConfig(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (array('list', 'search') as $view) {
+                if (!isset($entityConfig[$view]['sort'])) {
+                    continue;
+                }
+
+                $sortConfig = $entityConfig[$view]['sort'];
+                if (!is_string($sortConfig) && !is_array($sortConfig)) {
+                    throw new \InvalidArgumentException(sprintf('The "sort" option of the "%s" view of the "%s" entity contains an invalid value (it can only be a string or an array).', $view, $entityName));
+                }
+
+                if (is_string($sortConfig)) {
+                    $sortConfig = array('field' => $sortConfig, 'direction' => 'DESC');
+                } else {
+                    $sortConfig = array('field' => $sortConfig[0], 'direction' => strtoupper($sortConfig[1]));
+                }
+
+                if (!in_array($sortConfig['direction'], array('ASC', 'DESC'))) {
+                    throw new \InvalidArgumentException(sprintf('If defined, the second value of the "sort" option of the "%s" view of the "%s" entity can only be "ASC" or "DESC".', $view, $entityName));
+                }
+
+                if (isset($entityConfig[$view]['fields'][$sortConfig['field']]) && true === $entityConfig[$view]['fields'][$sortConfig['field']]['virtual']) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" field cannot be used in the "sort" option of the "%s" view of the "%s" entity because it\'s a virtual property that is not persisted in the database.', $sortConfig['field'], $view, $entityName));
+                }
+
+                if (!array_key_exists($sortConfig['field'], $entityConfig['properties']) && !isset($entityConfig[$view]['fields'][$sortConfig['field']])) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" field used in the "sort" option of the "%s" view of the "%s" entity does not exist neither as a property of that entity nor as a virtual field of that view.', $sortConfig['field'], $view, $entityName));
+                }
+
+                $backendConfig['entities'][$entityName][$view]['sort'] = $sortConfig;
             }
         }
 

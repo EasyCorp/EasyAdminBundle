@@ -374,6 +374,33 @@ easy_admin:
 The main limitation of virtual properties is that you cannot sort listings
 using these fields.
 
+Sorting Entity Listings
+-----------------------
+
+By default the `list` and `search` views sort the rows in descending order
+according to the value of the primary key. You can sort by any other entity
+property using the `sort` configuration option:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Product:
+            # ...
+            list:
+                # if the sort order is not specified, 'DESC' is used
+                sort: 'updatedAt'
+            search:
+                # use an array to also define the sorting direction
+                sort: ['updatedAt', 'ASC']
+```
+
+The `sort` option of each entity is only used as the default content sorting. If
+the query string includes the optional `sortField` and `sortDirection`
+parameters, their values override this `sort` option. This happens for example
+when defining a different sorting in a custom menu and when clicking on the
+listings columns to reorder the displayed contents.
+
 Filtering Entities
 ------------------
 

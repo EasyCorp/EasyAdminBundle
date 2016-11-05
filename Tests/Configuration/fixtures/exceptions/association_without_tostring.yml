@@ -1,0 +1,14 @@
+# TEST
+# the entity classes used in associations must define a __toString() method
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    # the message refers to the 'edit' view because that's the first view processed
+    message_string: 'The "AppTestBundle\Entity\UnitTests\Exceptions\CategoryWithoutToString" class must define a "__toString()" method because it is used in the "parent" field of the "edit" view in the "Category" entity.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Exceptions\CategoryWithoutToString

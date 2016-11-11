@@ -11,7 +11,7 @@ EasyAdmin
 [![Build Status](https://travis-ci.org/javiereguiluz/EasyAdminBundle.svg?branch=master)](https://travis-ci.org/javiereguiluz/EasyAdminBundle)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/a3bfb8d9-7b2d-47ab-a95f-382af395bd51/mini.png)](https://insight.sensiolabs.com/projects/a3bfb8d9-7b2d-47ab-a95f-382af395bd51)
 [![Coverage Status](https://coveralls.io/repos/javiereguiluz/EasyAdminBundle/badge.svg?branch=master)](https://coveralls.io/r/javiereguiluz/EasyAdminBundle?branch=master)
-[![Symfony](https://img.shields.io/badge/Symfony-%202.x%20and%203.x-green.svg "Supports Symfony 2.x and 3.x")](http://symfony.com/)
+[![Symfony](https://img.shields.io/badge/Symfony-%202.x%20and%203.x-green.svg "Supports Symfony 2.x and 3.x")](https://symfony.com/)
 
 <img src="https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-promo.png" alt="Symfony Backends created with EasyAdmin" align="right" />
 

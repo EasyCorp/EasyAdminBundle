@@ -2,7 +2,11 @@
 
 $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->in(__DIR__)
-    ->exclude(array('vendor', 'build'))
+    ->ignoreDotFiles(true)
+    ->ignoreVCS(true)
+    ->exclude(array('build', 'vendor'))
+    ->files()
+    ->name('*.php')
 ;
 
 return Symfony\CS\Config\Config::create()

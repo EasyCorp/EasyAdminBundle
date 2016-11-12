@@ -18,13 +18,18 @@ use AppTestBundle\Entity\FunctionalTests\Category;
 
 class LoadCategories extends AbstractFixture implements OrderedFixtureInterface
 {
+    public function getOrder()
+    {
+        return 20;
+    }
+
     public function load(ObjectManager $manager)
     {
         foreach (range(1, 100) as $i) {
             $category = new Category();
             $category->setName('Parent Category #'.$i);
 
-            $this->addReference('parent-category-'.$i, $category);
+            $this->addReference('category-'.$i, $category);
             $manager->persist($category);
         }
 
@@ -33,17 +38,12 @@ class LoadCategories extends AbstractFixture implements OrderedFixtureInterface
         foreach (range(1, 100) as $i) {
             $category = new Category();
             $category->setName('Category #'.$i);
-            $category->setParent($this->getReference('parent-category-'.$i));
+            $category->setParent($this->getReference('category-'.$i));
 
-            $this->addReference('category-'.$i, $category);
+            $this->addReference('category-'.(100+$i), $category);
             $manager->persist($category);
         }
 
         $manager->flush();
-    }
-
-    public function getOrder()
-    {
-        return 10;
     }
 }

@@ -164,7 +164,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                     return $twig->render($fieldMetadata['template'], $templateParameters);
                 }
 
-                $isShowActionAllowed = $this->isActionEnabled($view, 'show', $targetEntityConfig['name']);
+                $isShowActionAllowed = !in_array('show', $targetEntityConfig['disabled_actions']);
             }
 
             if ('association' === $fieldType && ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE)) {

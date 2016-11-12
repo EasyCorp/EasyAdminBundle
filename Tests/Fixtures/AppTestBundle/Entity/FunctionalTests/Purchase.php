@@ -24,12 +24,11 @@ class Purchase
     /**
      * The purchase increment id. This identifier will be use in all communication between the customer and the store.
      *
-     * @var int
-     * @ORM\Column(type="integer", name="id", nullable=false)
+     * @var string
+     * @ORM\Column(type="string", name="id", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    public $id;
+    protected $id = null;
 
     /**
      * The Unique id of the purchase.
@@ -37,23 +36,23 @@ class Purchase
      * @var string
      * @ORM\Column(type="guid")
      */
-    public $guid;
+    protected $guid = null;
 
     /**
-     * The day of the delivery.
+     * The date of the delivery (it doesn't include the time).
      *
      * @var \DateTime
      * @ORM\Column(type="date")
      */
-    public $deliverySelected;
+    protected $deliveryDate = null;
 
     /**
-     * The purchase date in the customer timezone.
+     * The purchase datetime in the customer timezone.
      *
      * @var \DateTime
      * @ORM\Column(type="datetimetz")
      */
-    public $purchaseAt;
+    protected $createdAt = null;
 
     /**
      * The shipping information.
@@ -61,15 +60,15 @@ class Purchase
      * @var Shipment
      * @ORM\Column(type="object")
      */
-    public $shipping;
+    protected $shipping = null;
 
     /**
      * The customer preferred time of the day for the delivery.
      *
-     * @var \DateTime
-     * @ORM\Column(type="time")
+     * @var \DateTime|null
+     * @ORM\Column(type="time", nullable=true)
      */
-    public $preferredDeliveryHour;
+    protected $deliveryHour = null;
 
     /**
      * The customer billing address.
@@ -77,19 +76,23 @@ class Purchase
      * @var array
      * @ORM\Column(type="json_array")
      */
-    public $billingAddress = array();
+    protected $billingAddress = array();
+
+    /**
+     * The user who made the purchase.
+     *
+     * @var User
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="purchases")
+     */
+    protected $buyer;
 
     /**
      * Items that have been purchased.
      *
-     * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="PurchaseItem")
-     * @ORM\JoinTable(name="purchase_purchase_item",
-     *                  joinColumns={@ORM\JoinColumn(name="purchase_id", referencedColumnName="id")},
-     *                  inverseJoinColumns={@ORM\JoinColumn(name="item_id", referencedColumnName="id", unique=true)}
-     *                  )
+     * @var PurchaseItem[]
+     * @ORM\OneToMany(targetEntity="PurchaseItem", mappedBy="purchase", cascade={"remove"})
      */
-    public $purchasedItems;
+    protected $purchasedItems;
 
     /**
      * Constructor of the Purchase class.
@@ -97,11 +100,11 @@ class Purchase
      */
     public function __construct()
     {
+        $this->id = $this->generateId();
         $this->purchasedItems = new ArrayCollection();
-        $this->purchaseAt = new \DateTime();
-        $this->deliverySelected = new \DateTime('+2 days');
-        $this->preferredDeliveryHour = new \DateTime('14:00');
-        $this->id = $this->generateIncrementId();
+        $this->createdAt = new \DateTime();
+        $this->deliveryDate = new \DateTime('+2 days');
+        $this->deliveryHour = new \DateTime('14:00');
     }
 
     /**
@@ -115,8 +118,6 @@ class Purchase
     }
 
     /**
-     * Get the customer billing address.
-     *
      * @return array
      */
     public function getBillingAddress()
@@ -125,39 +126,39 @@ class Purchase
     }
 
     /**
-     * Set the day of delivery.
-     *
-     * @param \DateTime $deliverySelected
+     * @param User $buyer
      */
-    public function setDeliverySelected($deliverySelected)
+    public function setBuyer($buyer)
     {
-        $this->deliverySelected = $deliverySelected;
+        $this->buyer = $buyer;
     }
 
     /**
-     * Get the day when the customer want to be deliver.
-     *
+     * @return User
+     */
+    public function getBuyer()
+    {
+        return $this->buyer;
+    }
+
+    /**
+     * @param \DateTime $deliveryDate
+     */
+    public function setDeliveryDate($deliveryDate)
+    {
+        $this->deliveryDate = $deliveryDate;
+    }
+
+    /**
      * @return \DateTime
      */
-    public function getDeliverySelected()
+    public function getDeliveryDate()
     {
-        return $this->deliverySelected;
+        return $this->deliveryDate;
     }
 
     /**
-     * Get the purchase id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set all items ordered.
-     *
-     * @param ArrayCollection $purchasedItems
+     * @param PurchaseItem[] $purchasedItems
      */
     public function setPurchasedItems($purchasedItems)
     {
@@ -165,9 +166,7 @@ class Purchase
     }
 
     /**
-     * Get all ordered items.
-     *
-     * @return ArrayCollection
+     * @return PurchaseItem[]
      */
     public function getPurchasedItems()
     {
@@ -175,48 +174,38 @@ class Purchase
     }
 
     /**
-     * Set the delivery hour.
-     *
-     * @param \DateTime $preferredDeliveryHour
+     * @param \DateTime $deliveryHour
      */
-    public function setPreferredDeliveryHour($preferredDeliveryHour)
+    public function setDeliveryHour($deliveryHour)
     {
-        $this->preferredDeliveryHour = $preferredDeliveryHour;
+        $this->deliveryHour = $deliveryHour;
     }
 
     /**
-     * Get the delivery hour.
-     *
+     * @return \DateTime|null
+     */
+    public function getDeliveryHour()
+    {
+        return $this->deliveryHour;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
      * @return \DateTime
      */
-    public function getPreferredDeliveryHour()
+    public function getCreatedAt()
     {
-        return $this->preferredDeliveryHour;
+        return $this->createdAt;
     }
 
     /**
-     * Set the date when the order have been created.
-     *
-     * @param \DateTime $purchaseAt
-     */
-    public function setPurchaseAt($purchaseAt)
-    {
-        $this->purchaseAt = $purchaseAt;
-    }
-
-    /**
-     * Get the date of the order.
-     *
-     * @return \DateTime
-     */
-    public function getPurchaseAt()
-    {
-        return $this->purchaseAt;
-    }
-
-    /**
-     * Set the shipping information.
-     *
      * @param Shipment $shipping
      */
     public function setShipping($shipping)
@@ -225,8 +214,6 @@ class Purchase
     }
 
     /**
-     * Get the shipping information.
-     *
      * @return Shipment
      */
     public function getShipping()
@@ -235,22 +222,69 @@ class Purchase
     }
 
     /**
-     * Generate an increment id base on the store id and teh current date.
-     *
      * @param int $storeId
      *
-     * @return int
+     * @return string
      */
-    public function generateIncrementId($storeId = 1)
+    public function generateId($storeId = 1)
     {
-        $uid = date('YmdHi');
-
-        return (int) sprintf('%d%013d', $storeId, $uid);
+        return preg_replace('/[^0-9]/i', '', sprintf('%d%d%03d%s', $storeId, date('Y'), date('z'), microtime()));
     }
 
     /** {@inheritdoc} */
     public function __toString()
     {
         return 'Purchase #'.$this->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getGuid()
+    {
+        return $this->guid;
+    }
+
+    /**
+     * @param string $guid
+     *
+     * @return Purchase
+     */
+    public function setGuid($guid)
+    {
+        $this->guid = $guid;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return Purchase
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getTotal()
+    {
+        $total = 0.0;
+
+        foreach ($this->getPurchasedItems() as $item) {
+            $total += $item->getTotalPrice();
+        }
+
+        return $total;
     }
 }

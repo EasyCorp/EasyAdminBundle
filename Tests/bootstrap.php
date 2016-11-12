@@ -57,7 +57,7 @@ $input = new ArrayInput(array('command' => 'doctrine:schema:create'));
 $application->run($input, new NullOutput());
 
 // Load fixtures of the AppTestBundle
-$input = new ArrayInput(array('command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => true));
+$input = new ArrayInput(array('command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => false));
 $application->run($input, new NullOutput());
 
 // Make a copy of the original SQLite database to use the same unmodified database in every test

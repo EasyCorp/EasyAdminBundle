@@ -139,14 +139,14 @@ class ConfigManager
      */
     public function isActionEnabled($entityName, $view, $action)
     {
-        if ($view === $action) {
-            return true;
+        $entityConfig = $this->getEntityConfig($entityName);
+        if (in_array($action, $entityConfig['disabled_actions'])) {
+            return false;
         }
 
-        $entityConfig = $this->getEntityConfig($entityName);
-
-        return !in_array($action, $entityConfig['disabled_actions'])
-            && array_key_exists($action, $entityConfig[$view]['actions']);
+        // the '$view === $action' check is needed when checking if an action is
+        // accessible for a related Doctrine association
+        return $view === $action || array_key_exists($action, $entityConfig[$view]['actions']);
     }
 
     /**

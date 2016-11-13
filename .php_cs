@@ -1,6 +1,6 @@
 <?php
 
-$finder = Symfony\CS\Finder\DefaultFinder::create()
+$finder = Symfony\CS\Finder::create()
     ->in(__DIR__)
     ->ignoreDotFiles(true)
     ->ignoreVCS(true)
@@ -9,7 +9,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->name('*.php')
 ;
 
-return Symfony\CS\Config\Config::create()
+return Symfony\CS\Config::create()
     ->setUsingCache(true)
     ->fixers(array('-unalign_double_arrow', '-phpdoc_short_description'))
     ->finder($finder)

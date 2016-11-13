@@ -42,13 +42,13 @@ class AdminController extends BaseAdminController
 ```
 
 **Step 2.** Open the `app/config/routing.yml` file and change the `resource`
-option of the `easy_admin_bundle` route to point to the new controller:
+option of the `easy_admin_bundle` route to point to your new controller:
 
 ```yaml
 # app/config/routing.yml
 easy_admin_bundle:
-    # resource: "@EasyAdminBundle/Controller/"           <-- REMOVE this line
-    resource: "@AppBundle/Controller/AdminController.php" # <-- ADD this line
+    # this is just an example; update the value of 'resource' accordingly
+    resource: "@AppBundle/Controller/AdminController.php"
     type:     annotation
     prefix:   /admin
 ```

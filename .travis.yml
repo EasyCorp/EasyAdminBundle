@@ -34,11 +34,13 @@ matrix:
         - SYMFONY_VERSION="2.7.*"
         - CHECK_PHP_SYNTAX="yes"
     - php: 5.6
-      env: SYMFONY_VERSION="2.8.*"
-      env: ENABLE_CODE_COVERAGE="true"
+      env:
+        - SYMFONY_VERSION="2.8.*"
+        - ENABLE_CODE_COVERAGE="true"
     - php: 5.3
-      env: SYMFONY_VERSION="2.3.*"
-      env: COMPOSER_FLAGS="--prefer-lowest"
+      env:
+        - SYMFONY_VERSION="2.3.*"
+        - COMPOSER_FLAGS="--prefer-lowest"
     - php: hhvm-stable
       env: SYMFONY_VERSION="2.8.*"
       sudo: required
@@ -49,7 +51,9 @@ matrix:
   allow_failures:
     - php: hhvm-stable
     - env: TWIG_VERSION="2.x-dev"
-    - env: ENABLE_CODE_COVERAGE="true"
+    - env:
+        - SYMFONY_VERSION="2.8.*"
+        - ENABLE_CODE_COVERAGE="true"
 
 before_install:
   - stty cols 120

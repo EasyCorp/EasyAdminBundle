@@ -17,6 +17,7 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -580,7 +581,7 @@ class AdminController extends Controller
     {
         $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', array($entity, $view));
 
-        $formType = $this->useLegacyFormComponent() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
+        $formType = LegacyFormHelper::useLegacyFormComponent() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
 
         return $this->get('form.factory')->createNamedBuilder(strtolower($this->entity['name']), $formType, $entity, $formOptions);
     }
@@ -658,7 +659,7 @@ class AdminController extends Controller
             ->setMethod('DELETE')
         ;
 
-        $submitButtonType = $this->useLegacyFormComponent() ? 'submit' : 'Symfony\\Component\\Form\\Extension\\Core\\Type\\SubmitType';
+        $submitButtonType = LegacyFormHelper::useLegacyFormComponent() ? 'submit' : 'Symfony\\Component\\Form\\Extension\\Core\\Type\\SubmitType';
         $formBuilder->add('submit', $submitButtonType, array('label' => 'delete_modal.action', 'translation_domain' => 'EasyAdminBundle'));
 
         return $formBuilder->getForm();
@@ -715,16 +716,6 @@ class AdminController extends Controller
         }
 
         return call_user_func_array(array($this, $methodName), $arguments);
-    }
-
-    /**
-     * Returns true if the legacy Form component is being used by the application.
-     *
-     * @return bool
-     */
-    private function useLegacyFormComponent()
-    {
-        return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
     }
 
     /**

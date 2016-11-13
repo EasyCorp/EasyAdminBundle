@@ -35,9 +35,9 @@ class DisabledActionsTest extends AbstractTestCase
 
     public function testAssociationLinksInShowView()
     {
-        // the 'id' of 'Purchase' entity is generated randomly: to get the
-        // 'show' view of the first 'Purchase', browse the 'list' view and
-        // get its 'id' from the forst row of the listing
+        // 'Purchase' entity 'id' is generated randomly. In order to browse the
+        // 'show' view of the first 'Purchase' entity, browse the 'list' view
+        // and get the 'id' from the first row of the listing
         $crawler = $this->requestListView('Purchase');
         $firstPurchaseId = trim($crawler->filter('td[data-label="ID"]')->first()->text());
         $crawler = $this->requestShowView('Purchase', $firstPurchaseId);

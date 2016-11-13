@@ -139,14 +139,9 @@ class ConfigManager
      */
     public function isActionEnabled($entityName, $view, $action)
     {
-        if ($view === $action) {
-            return true;
-        }
-
         $entityConfig = $this->getEntityConfig($entityName);
 
-        return !in_array($action, $entityConfig['disabled_actions'])
-            && array_key_exists($action, $entityConfig[$view]['actions']);
+        return !in_array($action, $entityConfig['disabled_actions']) && array_key_exists($action, $entityConfig[$view]['actions']);
     }
 
     /**

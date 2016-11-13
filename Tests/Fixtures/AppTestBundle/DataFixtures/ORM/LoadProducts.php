@@ -38,6 +38,11 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
         'Pellentesque et sapien pulvinar, consectetur eros ac, vehicula odio.',
     );
 
+    public function getOrder()
+    {
+        return 100;
+    }
+
     public function load(ObjectManager $manager)
     {
         foreach (range(1, 100) as $i) {
@@ -47,6 +52,7 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
             $product->setPrice($this->getRandomPrice());
             $product->setTags($this->getRandomTags());
             $product->setEan($this->getRandomEan());
+            $product->setCategories($this->getRandomCategories());
             $product->setDescription($this->getRandomDescription());
             $product->setHtmlFeatures($this->getRandomHtmlFeatures());
 
@@ -55,11 +61,6 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
         }
 
         $manager->flush();
-    }
-
-    public function getOrder()
-    {
-        return 100;
     }
 
     public function getRandomTags()
@@ -126,6 +127,19 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
         $cents = array('00', '29', '39', '49', '99');
 
         return (float) mt_rand(2, 79).'.'.$cents[array_rand($cents)];
+    }
+
+    private function getRandomCategories()
+    {
+        $categories = array();
+        $numCategories = rand(1, 4);
+        $allCategoryIds = range(1, 100);
+
+        for ($i = 0; $i < $numCategories; $i++) {
+            $categories[] = $this->getReference('category-'.mt_rand(1, 100));
+        }
+
+        return $categories;
     }
 
     public function getRandomDescription()

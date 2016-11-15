@@ -197,9 +197,9 @@ to create a backend that matches your branding perfectly. Example:
 ```yaml
 easy_admin:
     design:
-        color_scheme: '#3B5998'
+        brand_color: '#3B5998'
         # any valid CSS color syntax can be used
-        # color_scheme: 'rgba(59, 89, 152, 0.5)'
+        # brand_color: 'rgba(59, 89, 152, 0.5)'
     # ...
 ```
 

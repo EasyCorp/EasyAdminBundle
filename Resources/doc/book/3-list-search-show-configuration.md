@@ -831,9 +831,10 @@ These are all the available templates for each property type:
 
   * `field_array.html.twig`
   * `field_association.html.twig`, renders the properties defined as Doctrine
-    associations. This relation is by default displayed as a link to the `show`
-    action of the related entity. If you prefer to not display these links,
-    disable the `show` action for those entities with the `disabled_actions` option.
+    associations. These relations are by default displayed as links pointing to
+    the `show` action of the related entity. If you prefer to not display those
+    links, disable the `show` action for the related entities with the
+    `disabled_actions` option.
   * `field_bigint.html.twig`
   * `field_boolean.html.twig`
   * `field_date.html.twig`

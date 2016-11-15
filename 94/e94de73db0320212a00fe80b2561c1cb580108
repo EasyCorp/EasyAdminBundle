@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------
+
+by CruzyCruz at 2016-11-15T14:41:44Z
+
+@xabbuh
+
+That's exactly what I was about to try but I thought that the right syntax was (as for the rest of the dependencies that are symfony components)
+
+```yml
+"symfony/twig-bridge": "~2.3|~3.0",
+```
+
+If I understand this permits to support Symfony versions  `>=2.3  <3.0.0` OR `>=3.0.0 <4.0.0`.
+
+The `composer.json` of Symfony has the replace key activated for any of its components:
+
+```yml
+"replace": {
+    "symfony/twig-bridge": "self.version",
+},
+```
+So at installation, the component version will stick to the version of Symfony ? (I am not sure of my understanding of the replace key).
+
+Why `2.3.4` ?
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2016-11-15T15:04:50Z
+
+@CruzyCruz It seems that previous versions of the TwigBridge did not work because of the fix in symfony/symfony#8721 that was released with 2.3.4 (see the related discussion in https://github.com/javiereguiluz/EasyAdminBundle/pull/438#issuecomment-138384007).
+
+---------------------------------------------------------------------------
+
+by CruzyCruz at 2016-11-15T15:14:48Z
+
+@xabbuh Thank you for your explanations  :thumbsup:

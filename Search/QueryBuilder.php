@@ -57,7 +57,7 @@ class QueryBuilder
             if (isset($entityConfig['list']['fields'][$sortField]['entitySort'])) {
                 $sortConfig = $entityConfig['list']['fields'][$sortField]['entitySort'];
 
-                $queryBuilder->join(
+                $queryBuilder->leftJoin(
                     $sortConfig['targetEntity'],
                     'entity_joined',
                     'WITH',

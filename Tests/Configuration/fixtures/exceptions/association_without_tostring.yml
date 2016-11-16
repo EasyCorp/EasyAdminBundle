@@ -4,8 +4,7 @@
 # EXCEPTION
 expected_exception:
     class: InvalidArgumentException
-    # the message refers to the 'edit' view because that's the first view processed
-    message_string: 'The "AppTestBundle\Entity\UnitTests\Exceptions\CategoryWithoutToString" class must define a "__toString()" method because it is used in the "parent" field of the "edit" view in the "Category" entity.'
+    message_string: 'The "AppTestBundle\Entity\UnitTests\Exceptions\CategoryWithoutToString" class must define a "__toString()" method because it is used as the "parent" field in the "list" view of the "Category" entity.'
 
 # CONFIGURATION
 easy_admin:

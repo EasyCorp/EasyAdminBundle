@@ -144,8 +144,17 @@ class ViewConfigPass implements ConfigPassInterface
                     throw new \InvalidArgumentException(sprintf('The "%s" field cannot be used in the "sort" option of the "%s" view of the "%s" entity because it\'s a virtual property that is not persisted in the database.', $sortConfig['field'], $view, $entityName));
                 }
 
-                if (!array_key_exists($sortConfig['field'], $entityConfig['properties']) && !isset($entityConfig[$view]['fields'][$sortConfig['field']])) {
-                    throw new \InvalidArgumentException(sprintf('The "%s" field used in the "sort" option of the "%s" view of the "%s" entity does not exist neither as a property of that entity nor as a virtual field of that view.', $sortConfig['field'], $view, $entityName));
+                // sort can be defined using simple properties (sort: author) or association properties (sort: author.name)
+                if (substr_count($sortConfig['field'], '.') > 1) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" value cannot be used as the "sort" option in the "%s" view of the "%s" entity because it defines multiple sorting levels (e.g. "aaa.bbb.ccc") but only up to one level is supported (e.g. "aaa.bbb").', $sortConfig['field'], $view, $entityName));
+                }
+
+                // sort field can be a Doctrine association (sort: author.name) instead of a simple property
+                $sortFieldParts = explode('.', $sortConfig['field']);
+                $sortFieldProperty = $sortFieldParts[0];
+
+                if (!array_key_exists($sortFieldProperty, $entityConfig['properties']) && !isset($entityConfig[$view]['fields'][$sortFieldProperty])) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" field used in the "sort" option of the "%s" view of the "%s" entity does not exist neither as a property of that entity nor as a virtual field of that view.', $sortFieldProperty, $view, $entityName));
                 }
 
                 $backendConfig['entities'][$entityName][$view]['sort'] = $sortConfig;

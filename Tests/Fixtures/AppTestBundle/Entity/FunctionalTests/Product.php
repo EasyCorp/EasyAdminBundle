@@ -403,9 +403,6 @@ class Product
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __toString()
     {
         return $this->getName();

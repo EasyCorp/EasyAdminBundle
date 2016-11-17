@@ -49,12 +49,21 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
+        if (0 !== strpos('.', $sortField)) {
+            $sortFieldParts = explode('.', $sortField);
+            $queryBuilder->join('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
+        }
+
         if (!empty($dqlFilter)) {
             $queryBuilder->andWhere($dqlFilter);
         }
 
         if (null !== $sortField) {
-            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection);
+            if (0 !== strpos('.', $sortField)) {
+                $queryBuilder->orderBy($sortField, $sortDirection);
+            } else {
+                $queryBuilder->orderBy('entity.'.$sortField, $sortDirection);
+            }
         }
 
         return $queryBuilder;

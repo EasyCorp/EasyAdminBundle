@@ -144,9 +144,9 @@ class ViewConfigPass implements ConfigPassInterface
                     throw new \InvalidArgumentException(sprintf('The "%s" field cannot be used in the "sort" option of the "%s" view of the "%s" entity because it\'s a virtual property that is not persisted in the database.', $sortConfig['field'], $view, $entityName));
                 }
 
-                if (!array_key_exists($sortConfig['field'], $entityConfig['properties']) && !isset($entityConfig[$view]['fields'][$sortConfig['field']])) {
-                    throw new \InvalidArgumentException(sprintf('The "%s" field used in the "sort" option of the "%s" view of the "%s" entity does not exist neither as a property of that entity nor as a virtual field of that view.', $sortConfig['field'], $view, $entityName));
-                }
+                // if (!array_key_exists($sortConfig['field'], $entityConfig['properties']) && !isset($entityConfig[$view]['fields'][$sortConfig['field']])) {
+                //     throw new \InvalidArgumentException(sprintf('The "%s" field used in the "sort" option of the "%s" view of the "%s" entity does not exist neither as a property of that entity nor as a virtual field of that view.', $sortConfig['field'], $view, $entityName));
+                // }
 
                 $backendConfig['entities'][$entityName][$view]['sort'] = $sortConfig;
             }

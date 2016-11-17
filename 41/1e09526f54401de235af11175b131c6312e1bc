@@ -1,0 +1,39 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-11-11T11:17:58Z
+
+I'd like to merge this little improvement ... but I wonder if this check is the right thing to do under any circumstances. Does anybody foresee any potential problem with it? Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-11-11T11:31:16Z
+
+I'm not sure it'll be the right thing to do.
+What if the association template used for `list` and `show` views is overridden in order to use another method to render the entity?
+Also, for `form` views,  the `EntityType` allows to set another method to use for rendering the label, by using [`choice_label`](http://symfony.com/doc/current/reference/forms/types/entity.html#choice-label).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-11-13T12:51:22Z
+
+@ogizanagi thanks for reviewing this PR. I agree with your comments ... and I'll close this PR if we don't think it's robust enough.
+
+In 7bbcdf6 I've made some last minute changes to see if they improve the original PR. If they are correct I'll update the tests. Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-11-13T13:04:02Z
+
+We should probably allow to access and tweak the sub `EntityType` field options of the autocomplete field (and thus replace the method used to render the entity). But for now those changes looks good to me. :)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-11-16T21:00:52Z
+
+Hi @ogizanagi:
+
+> We should probably allow to access and tweak the sub EntityType field options of the autocomplete field (and thus replace the method used to render the entity).
+
+Sadly, that would have no effect in `<select>` widget, because the `<option>`s are created dynamically by `select2` plugin given [this response](https://github.com/javiereguiluz/EasyAdminBundle/blob/ba3d9c54c89760c776aa20ac6833ccceb03b8873/Search/Autocomplete.php#L72).
+
+LGTM :+1:  This one avoids Autocomplete ajax errors for requests where the target entity don't have `__toString()` method.

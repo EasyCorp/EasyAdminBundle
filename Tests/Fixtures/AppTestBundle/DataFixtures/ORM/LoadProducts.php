@@ -135,7 +135,7 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
         $numCategories = rand(1, 4);
         $allCategoryIds = range(1, 100);
 
-        for ($i = 0; $i < $numCategories; $i++) {
+        for ($i = 0; $i < $numCategories; ++$i) {
             $categories[] = $this->getReference('category-'.mt_rand(1, 100));
         }
 

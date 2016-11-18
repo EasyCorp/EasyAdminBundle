@@ -40,7 +40,7 @@ class LoadCategories extends AbstractFixture implements OrderedFixtureInterface
             $category->setName('Category #'.$i);
             $category->setParent($this->getReference('category-'.$i));
 
-            $this->addReference('category-'.(100+$i), $category);
+            $this->addReference('category-'.(100 + $i), $category);
             $manager->persist($category);
         }
 

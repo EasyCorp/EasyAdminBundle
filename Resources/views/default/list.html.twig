@@ -102,7 +102,7 @@
             <tr>
                 {% for field, metadata in fields %}
                     {% set isSortingField = metadata.property == app.request.get('sortField')|split('.')|first %}
-                    {% set nextSortDirection = isSortingField ? (app.request.get('sortDirection')  == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
+                    {% set nextSortDirection = isSortingField ? (app.request.get('sortDirection') == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
                     {% set _column_label = (metadata.label ?: field|humanize)|trans(_trans_parameters) %}
                     {% set _column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-caret-up' : 'fa-caret-down') : 'fa-sort' %}
 

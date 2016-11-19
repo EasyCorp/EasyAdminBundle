@@ -146,7 +146,7 @@ class ViewConfigPass implements ConfigPassInterface
 
                 // sort can be defined using simple properties (sort: author) or association properties (sort: author.name)
                 if (substr_count($sortConfig['field'], '.') > 1) {
-                    throw new \InvalidArgumentException(sprintf('The "%s" value cannot be used in the "sort" option of the "%s" view of the "%s" entity because it defines multiple sorting levels (e.g. "aaa.bbb.ccc") but only one level is supported (e.g. "aaa.bbb").', $sortConfig['field'], $view, $entityName));
+                    throw new \InvalidArgumentException(sprintf('The "%s" value cannot be used as the "sort" option in the "%s" view of the "%s" entity because it defines multiple sorting levels (e.g. "aaa.bbb.ccc") but only up to one level is supported (e.g. "aaa.bbb").', $sortConfig['field'], $view, $entityName));
                 }
 
                 $isSortedByDoctrineAssociation = 0 !== strpos('.', $sortConfig['field']);

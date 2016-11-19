@@ -51,7 +51,7 @@
                         {% set _action = easyadmin_get_action_for_list_view('search', _entity_config.name) %}
 
                         {% block search_action %}
-                            <div class="form-action {{ _action.css_class|default('') }}">
+                            <div id="action-search" class="form-action {{ _action.css_class|default('') }}">
                                 <form method="get" action="{{ path('easyadmin') }}">
                                     {% block search_form %}
                                         <input type="hidden" name="action" value="search">
@@ -78,7 +78,7 @@
                     {% if easyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
                         {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
                         {% block new_action %}
-                            <div class="button-action">
+                            <div id="action-new" class="button-action">
                                 <a class="{{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}" target="{{ _action.target }}">
                                     {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                                     {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}

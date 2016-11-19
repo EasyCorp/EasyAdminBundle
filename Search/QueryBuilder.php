@@ -49,7 +49,7 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $isSortedByDoctrineAssociation = false !== strpos('.', $sortField);
+        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
         if ($isSortedByDoctrineAssociation) {
             $sortFieldParts = explode('.', $sortField);
             $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
@@ -88,6 +88,12 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
+        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
+        if ($isSortedByDoctrineAssociation) {
+            $sortFieldParts = explode('.', $sortField);
+            $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
+        }
+
         $queryParameters = array();
         foreach ($entityConfig['search']['fields'] as $name => $metadata) {
             $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));
@@ -117,7 +123,7 @@ class QueryBuilder
         }
 
         if (null !== $sortField) {
-            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection ?: 'DESC');
+            $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField), $sortDirection ?: 'DESC');
         }
 
         return $queryBuilder;

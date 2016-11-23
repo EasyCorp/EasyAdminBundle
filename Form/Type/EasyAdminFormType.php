@@ -54,7 +54,7 @@ class EasyAdminFormType extends AbstractType
         $entity = $options['entity'];
         $view = $options['view'];
         $entityConfig = $this->configManager->getEntityConfig($entity);
-        $entityProperties = $entityConfig[$view]['fields'];
+        $entityProperties = isset($entityConfig[$view]['fields']) ? $entityConfig[$view]['fields'] : array();
         $formGroups = array();
         $currentFormGroup = null;
 

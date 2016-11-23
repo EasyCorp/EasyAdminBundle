@@ -25,10 +25,10 @@ class DisabledActionsTest extends AbstractTestCase
     public function testAssociationLinksInListView()
     {
         $crawler = $this->requestListView('Purchase');
-var_dump($this->client->getResponse()); exit;
+
         $this->assertSame(
             'user11',
-            trim($crawler->filter('td[data-label="Buyer"]')->html()),
+            trim($crawler->filter('td[data-label="Buyer"]')->first()->html()),
             'The "buyer" field in the "list" view of the "Purchase" item does not contain a link because the "show" action is disabled for the "User" entity.'
         );
     }

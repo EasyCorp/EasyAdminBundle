@@ -11,9 +11,11 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
 
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
@@ -332,8 +334,12 @@ class AdminController extends Controller
 
             $this->executeDynamicMethod('preRemove<EntityName>Entity', array($entity));
 
-            $this->em->remove($entity);
-            $this->em->flush();
+            try {
+                $this->em->remove($entity);
+                $this->em->flush();
+            } catch (ForeignKeyConstraintViolationException $e) {
+                throw new EntityRemoveException(array('entity' => $this->entity['name']));
+            }
 
             $this->dispatch(EasyAdminEvents::POST_REMOVE, array('entity' => $entity));
         }

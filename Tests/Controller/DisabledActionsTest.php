@@ -12,6 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
+use Symfony\Component\HttpKernel\Kernel;
 
 class DisabledActionsTest extends AbstractTestCase
 {

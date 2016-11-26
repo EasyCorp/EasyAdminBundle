@@ -36,7 +36,8 @@ class ValidationConfigPass implements ConfigPassInterface
     private function validateToStringMethod(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('list', 'search', 'show') as $view) {
+            $enabledViews = array_diff(array('list', 'search', 'show'), $entityConfig['disabled_actions']);
+            foreach ($enabledViews as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // Doctrine associations that don't define a custom template must define a __toString() method
                     $fieldUsesDefaultTemplate = '@EasyAdmin/default/field_association.html.twig' === $fieldConfig['template'];
@@ -48,7 +49,8 @@ class ValidationConfigPass implements ConfigPassInterface
                 }
             }
 
-            foreach (array('edit', 'new') as $view) {
+            $enabledViews = array_diff(array('edit', 'new'), $entityConfig['disabled_actions']);
+            foreach ($enabledViews as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // fields used in autocomplete form types must define a __toString() method
                     if ('easyadmin_autocomplete' === $fieldConfig['fieldType']) {

@@ -25,7 +25,7 @@ class DisabledActionsTest extends AbstractTestCase
     public function testAssociationLinksInListView()
     {
         $crawler = $this->requestListView('Purchase');
-
+var_dump($this->client->getResponse()); exit;
         $this->assertSame(
             'user1',
             trim($crawler->filter('td[data-label="Buyer"]')->first()->html()),

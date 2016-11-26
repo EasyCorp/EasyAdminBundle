@@ -24,8 +24,12 @@ class DisabledActionsTest extends AbstractTestCase
 
     public function testAssociationLinksInListView()
     {
+        if (2 === Kernel::MAJOR_VERSION && 3 === Kernel::MINOR_VERSION) {
+            $this->markTestSkipped('This test is not compatible with Symfony 2.3.');
+        }
+
         $crawler = $this->requestListView('Purchase');
-var_dump($this->client->getResponse()); exit;
+
         $this->assertSame(
             'user1',
             trim($crawler->filter('td[data-label="Buyer"]')->first()->html()),
@@ -35,6 +39,10 @@ var_dump($this->client->getResponse()); exit;
 
     public function testAssociationLinksInShowView()
     {
+        if (2 === Kernel::MAJOR_VERSION && 3 === Kernel::MINOR_VERSION) {
+            $this->markTestSkipped('This test is not compatible with Symfony 2.3.');
+        }
+
         // 'Purchase' entity 'id' is generated randomly. In order to browse the
         // 'show' view of the first 'Purchase' entity, browse the 'list' view
         // and get the 'id' from the first row of the listing

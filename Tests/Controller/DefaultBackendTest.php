@@ -130,6 +130,7 @@ class DefaultBackendTest extends AbstractTestCase
         );
 
         $this->assertEquals('Search', trim($crawler->filter('.action-search button[type=submit]')->text()));
+        $this->assertContains('action-search', $crawler->filter('.global-actions > div')->first()->attr('class'));
         $this->assertEquals('_self', $crawler->filter('.action-search button')->attr('formtarget'));
 
         $i = 0;
@@ -146,6 +147,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertEquals('Add Category', trim($crawler->filter('.global-actions a.btn')->text()));
+        $this->assertContains('action-new', trim($crawler->filter('.global-actions a.btn')->attr('class')));
         $this->assertEquals('_self', $crawler->filter('.global-actions a.btn')->attr('target'));
         $this->assertCount(0, $crawler->filter('.global-actions a.btn i'), 'The default "new" button shows no icon.');
         $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('.global-actions a.btn')->attr('href'));
@@ -156,6 +158,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertContains('action-edit', trim($crawler->filter('#main .table td.actions a')->eq(0)->attr('class')));
         $this->assertEquals('_self', $crawler->filter('#main .table td.actions a')->eq(0)->attr('target'));
         $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
     }
@@ -261,13 +264,16 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestShowView();
 
         // edit action
+        $this->assertContains('action-edit', trim($crawler->filter('.form-actions a:contains("Edit")')->attr('class')));
         $this->assertContains('fa-edit', trim($crawler->filter('.form-actions a:contains("Edit") i')->attr('class')));
         $this->assertEquals('_self', $crawler->filter('.form-actions a:contains("Edit")')->attr('target'));
 
         // delete action
+        $this->assertContains('action-delete', trim($crawler->filter('.form-actions a:contains("Delete")')->attr('class')));
         $this->assertContains('fa-trash', trim($crawler->filter('.form-actions a:contains("Delete") i')->attr('class')));
 
         // list action
+        $this->assertContains('action-list', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
         $this->assertEquals('btn btn-secondary action-list', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
         $this->assertEquals('_self', $crawler->filter('.form-actions a:contains("Back to listing")')->attr('target'));
     }
@@ -340,9 +346,11 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestEditView();
 
         // save action
+        $this->assertContains('action-save', trim($crawler->filter('#form-actions-row button:contains("Save changes")')->attr('class')));
         $this->assertContains('fa-save', trim($crawler->filter('#form-actions-row button:contains("Save changes") i')->attr('class')));
 
         // delete action
+        $this->assertContains('action-delete', trim($crawler->filter('#form-actions-row a:contains("Delete")')->attr('class')));
         $this->assertContains('fa-trash', trim($crawler->filter('#form-actions-row a:contains("Delete") i')->attr('class')));
 
         // list action
@@ -459,6 +467,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestNewView();
 
         // save action
+        $this->assertContains('action-save', trim($crawler->filter('#form-actions-row button:contains("Save changes")')->attr('class')));
         $this->assertContains('fa-save', trim($crawler->filter('#form-actions-row button:contains("Save changes") i')->attr('class')));
 
         // list action

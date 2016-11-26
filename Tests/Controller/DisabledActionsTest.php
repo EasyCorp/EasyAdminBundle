@@ -27,7 +27,7 @@ class DisabledActionsTest extends AbstractTestCase
         $crawler = $this->requestListView('Purchase');
 
         $this->assertSame(
-            'user11',
+            'user1',
             trim($crawler->filter('td[data-label="Buyer"]')->first()->html()),
             'The "buyer" field in the "list" view of the "Purchase" item does not contain a link because the "show" action is disabled for the "User" entity.'
         );
@@ -43,8 +43,8 @@ class DisabledActionsTest extends AbstractTestCase
         $crawler = $this->requestShowView('Purchase', $firstPurchaseId);
 
         $this->assertSame(
-            'user11',
-            trim($crawler->filter('.field-association:contains("Buyer") .form-control')->html()),
+            'user1',
+            trim($crawler->filter('.field-association:contains("Buyer") .form-control')->first()->html()),
             'The "buyer" field in the "show" view of the "Purchase" item does not contain a link because the "show" action is disabled for the "User" entity.'
         );
     }

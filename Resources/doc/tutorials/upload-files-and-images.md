@@ -350,8 +350,7 @@ option. So you just need to add a new option in the property definition:
 - { property: 'contract', template: 'contract.html.twig' }
 
 # After
-- { property: 'contract', template: 'contract.html.twig',
-    base_path: %app.path.user_contracts% }
+- { property: 'contract', template: 'contract.html.twig', base_path: %app.path.user_contracts% }
 ```
 
 Then, update the custom template to use this new option:

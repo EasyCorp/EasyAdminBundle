@@ -119,7 +119,7 @@ class Product
      * @var File
      */
     private $imageFile;
-    
+
     /**
      * @ORM\Column(type="datetime")
      * @var \DateTime
@@ -326,7 +326,7 @@ easy_admin:
             list:
                 fields:
                     # ...
-                    - { property: 'contract', template: 'contract' }
+                    - { property: 'contract', template: 'contract.html.twig' }
 ```
 
 Now you must create the `app/Resources/views/easy_admin/contract.html.twig`
@@ -347,10 +347,11 @@ option. So you just need to add a new option in the property definition:
 
 ```yaml
 # Before
-- { property: 'contract', template: 'contract' }
+- { property: 'contract', template: 'contract.html.twig' }
 
 # After
-- { property: 'contract', template: 'contract', base_path: %app.path.user_contracts% }
+- { property: 'contract', template: 'contract.html.twig',
+    base_path: %app.path.user_contracts% }
 ```
 
 Then, update the custom template to use this new option:

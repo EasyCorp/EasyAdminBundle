@@ -75,7 +75,7 @@ install:
 script:
   - if [[ "$ENABLE_CODE_COVERAGE" == "true" ]]; then phpunit --coverage-text --coverage-clover build/logs/clover.xml; else phpunit; fi;
   - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then php vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
-  - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then mv ./.php_cs.cache $HOME/.app/cache/.php_cs.cache; fi;
+  - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then mv ./.php_cs.cache $HOME/.app/cache/.php_cs.cache 2> /dev/null; fi;
 
 after_success: |
     if [[ "$ENABLE_CODE_COVERAGE" == "true" ]]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;

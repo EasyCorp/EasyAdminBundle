@@ -11,10 +11,10 @@ $finder = PhpCsFixer\Finder::create()
 
 return PhpCsFixer\Config::create()
     ->setUsingCache(true)
+    ->setRiskyAllowed(true)
     ->setFinder($finder)
     ->setRules(array(
         '@Symfony' => true,
-        '@Symfony:risky' => false,
         'array_syntax' => array('syntax' => 'long'),
         'binary_operator_spaces' => array(
             'align_double_arrow' => false,
@@ -24,7 +24,6 @@ return PhpCsFixer\Config::create()
         'no_useless_return' => true,
         'ordered_imports' => true,
         'php_unit_strict' => true,
-        'phpdoc_short_description' => false,
         'phpdoc_summary' => false,
         'psr4' => true,
         'strict_comparison' => true,

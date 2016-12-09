@@ -10,8 +10,8 @@
 
 namespace AppTestBundle\Entity\FunctionalTests;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use AppTestBundle\Model\Shipment;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

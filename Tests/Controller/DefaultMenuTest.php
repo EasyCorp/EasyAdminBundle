@@ -26,7 +26,7 @@ class DefaultMenuTest extends AbstractTestCase
     {
         $this->client->request('GET', '/admin/');
 
-        $this->assertEquals(
+        $this->assertSame(
             '/admin/?action=list&entity=Category',
             $this->client->getResponse()->headers->get('location')
         );
@@ -55,7 +55,7 @@ class DefaultMenuTest extends AbstractTestCase
         );
 
         foreach ($urls as $i => $url) {
-            $this->assertEquals($url, $crawler->filter('.sidebar-menu li a')->eq($i)->attr('href'));
+            $this->assertSame($url, $crawler->filter('.sidebar-menu li a')->eq($i)->attr('href'));
         }
     }
 }

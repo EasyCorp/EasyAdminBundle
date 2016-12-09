@@ -26,9 +26,9 @@ class MultipleConfigSyntaxTest extends AbstractTestCase
 
         $i = 0;
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            $this->assertEquals($expectedEntityNames[$i], $entityName);
-            $this->assertEquals($expectedEntityNames[$i], $entityConfig['label']);
-            $this->assertEquals('AppTestBundle\Entity\FunctionalTests\Product', $entityConfig['class']);
+            $this->assertSame($expectedEntityNames[$i], $entityName);
+            $this->assertSame($expectedEntityNames[$i], $entityConfig['label']);
+            $this->assertSame('AppTestBundle\Entity\FunctionalTests\Product', $entityConfig['class']);
 
             ++$i;
         }

@@ -27,7 +27,7 @@ class DqlFilterTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertCount(4, $crawler->filter('#main .table tbody tr'));
-        $this->assertEquals(
+        $this->assertSame(
             array('54', '53', '52', '51'),
             $crawler->filter('#main .table tbody tr')->extract('data-id')
         );
@@ -38,7 +38,7 @@ class DqlFilterTest extends AbstractTestCase
         $crawler = $this->requestSearchView();
 
         $this->assertCount(11, $crawler->filter('#main .table tbody tr'));
-        $this->assertEquals(
+        $this->assertSame(
             array('29', '28', '27', '26', '25', '24', '23', '22', '21', '20', '2'),
             $crawler->filter('#main .table tbody tr')->extract('data-id')
         );

@@ -4,7 +4,6 @@ clone_folder: c:\projects\easyadmin-bundle
 
 cache:
     - c:\php -> appveyor.yml
-    - .phpunit -> phpunit
 
 init:
     - SET PATH=c:\php;%PATH%
@@ -31,8 +30,6 @@ install:
     - IF %PHP%==1 echo extension=php_fileinfo.dll >> php.ini
     - IF %PHP%==1 echo extension=php_pdo_sqlite.dll >> php.ini
     - appveyor DownloadFile https://getcomposer.org/composer.phar
-    - appveyor DownloadFile https://phar.phpunit.de/phpunit-old.phar
-    - copy /Y phpunit-old.phar phpunit.phar
     - cd c:\projects\easyadmin-bundle
     - mkdir %APPDATA%\Composer
     - IF %APPVEYOR_REPO_BRANCH%==master (SET COMPOSER_ROOT_VERSION=dev-master) ELSE (SET COMPOSER_ROOT_VERSION=%APPVEYOR_REPO_BRANCH%.x-dev)
@@ -41,5 +38,5 @@ install:
 test_script:
     - cd c:\projects\easyadmin-bundle
     - SET X=0
-    - php c:\php\phpunit.phar
+    - php vendor\bin\phpunit
     - exit %X%

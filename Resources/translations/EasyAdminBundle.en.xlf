@@ -135,6 +135,14 @@
                 <source>action.remove_item</source>
                 <target>Remove the item</target>
             </trans-unit>
+            <trans-unit id="action.remove_item.error.not_allowed">
+                <source>action.remove_item.error.not_allowed</source>
+                <target>You can't delete this "%s" item because other items depend on it in the database.</target>
+            </trans-unit>
+            <trans-unit id="error">
+                <source>error</source>
+                <target>Error</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Error|Errors</target>

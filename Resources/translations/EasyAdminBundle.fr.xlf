@@ -135,6 +135,14 @@
                 <source>action.remove_item</source>
                 <target>Supprimer l'élément</target>
             </trans-unit>
+            <trans-unit id="action.remove_item.error.not_allowed">
+                <source>action.remove_item.error.not_allowed</source>
+                <target>Vous ne pouvez pas supprimer ce contenu de type "%s" car il possède des dépendances à d'autres contenus.</target>
+            </trans-unit>
+            <trans-unit id="error">
+                <source>error</source>
+                <target>Erreur</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Erreur|Erreurs</target>

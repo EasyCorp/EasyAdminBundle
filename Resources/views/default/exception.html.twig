@@ -11,7 +11,7 @@
 {% block content %}
     <section id="main" class="content">
         <div class="error-description">
-            <h1>Error</h1>
+            <h1>{{ 'error'|trans({}, 'EasyAdminBundle') }}</h1>
 
             <div class="error-message">
                 <p>{{ exception.safeMessage }}</p>

@@ -16,9 +16,11 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
  */
 class EntityRemoveException extends BaseException
 {
-    public function __construct(array $parameters = array())
+    public function __construct($errorMessage = null, array $parameters = array())
     {
-        $errorMessage = sprintf('You can\'t delete this "%s" item because other items depend on it in the database.', $parameters['entity']);
+        if ($errorMessage === null) {
+            $errorMessage = sprintf('You can\'t delete this "%s" item because other items depend on it in the database.', $parameters['entity']);
+        }
         $proposedSolution = "Don't delete this item or change the database configuration to allow deleting it.";
 
         parent::__construct($errorMessage, $proposedSolution, 404);

@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Translation\Translator;
 
 /**
  * The controller used to render all the default EasyAdmin actions.
@@ -338,7 +339,10 @@ class AdminController extends Controller
                 $this->em->remove($entity);
                 $this->em->flush();
             } catch (ForeignKeyConstraintViolationException $e) {
-                throw new EntityRemoveException(array('entity' => $this->entity['name']));
+                $translator = $this->get('translator');
+                throw new EntityRemoveException(
+                    $translator->trans('action.remove_item.error.not_allowed', array('%s' => $this->entity['name']), 'EasyAdminBundle')
+                );
             }
 
             $this->dispatch(EasyAdminEvents::POST_REMOVE, array('entity' => $entity));

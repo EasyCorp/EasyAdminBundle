@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-12-09T13:56:57Z
+
+Failure is unrelated. See #1419
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-12-09T14:37:19Z
+
+Require merges https://github.com/javiereguiluz/EasyAdminBundle/pull/1419 then everything will be in green. Why not one PR (ALL IN ONE)? :)
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-12-09T14:38:54Z
+
+Because the 2 issues are well identified. We know the AppVeyor failure is only due to what is fixed in #1419.
+
+This PR is an enhancement, whereas the second one is a fix ^^
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-12-09T17:02:38Z
+
+@ogizanagi thanks for fixing this. I've dared to propose new CS rules. If you can, please tell me what you think about them. Thanks!

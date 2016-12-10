@@ -84,7 +84,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 
     private function isTestCompatible($filePath)
     {
-        if (2 != Kernel::MAJOR_VERSION || 3 != Kernel::MINOR_VERSION) {
+        if (2 !== Kernel::MAJOR_VERSION || 3 !== Kernel::MINOR_VERSION) {
             return true;
         }
 

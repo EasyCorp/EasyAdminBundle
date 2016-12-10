@@ -26,8 +26,8 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('Product Categories', trim($crawler->filter('head title')->text()));
-        $this->assertEquals('Product Categories', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('Product Categories', trim($crawler->filter('head title')->text()));
+        $this->assertSame('Product Categories', trim($crawler->filter('h1.title')->text()));
     }
 
     public function testListViewSearchAction()
@@ -41,13 +41,13 @@ class CustomizedBackendTest extends AbstractTestCase
             'sortDirection' => 'DESC',
         );
 
-        $this->assertEquals('Look for Categories', trim($crawler->filter('.action-search button[type=submit]')->text()));
+        $this->assertSame('Look for Categories', trim($crawler->filter('.action-search button[type=submit]')->text()));
         $this->assertContains('custom_class_search', $crawler->filter('.action-search')->attr('class'));
 
         $i = 0;
         foreach ($hiddenParameters as $name => $value) {
-            $this->assertEquals($name, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('name'));
-            $this->assertEquals($value, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('value'));
+            $this->assertSame($name, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('name'));
+            $this->assertSame($value, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('value'));
 
             ++$i;
         }
@@ -57,9 +57,9 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('New Category', trim($crawler->filter('.global-actions a.action-new')->text()));
-        $this->assertEquals('custom_class_new action-new', $crawler->filter('.global-actions a.action-new')->attr('class'));
-        $this->assertEquals('fa fa-plus-circle', $crawler->filter('.global-actions a.action-new i')->attr('class'));
+        $this->assertSame('New Category', trim($crawler->filter('.global-actions a.action-new')->text()));
+        $this->assertSame('custom_class_new action-new', $crawler->filter('.global-actions a.action-new')->attr('class'));
+        $this->assertSame('fa fa-plus-circle', $crawler->filter('.global-actions a.action-new i')->attr('class'));
         $this->assertStringStartsWith('/admin/?action=new&entity=Category&sortField=id&sortDirection=DESC&page=1', $crawler->filter('.global-actions a.action-new')->attr('href'));
     }
 
@@ -67,16 +67,16 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
-        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
-        $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
+        $this->assertSame('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertSame('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
+        $this->assertSame('Delete', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
     }
 
     public function testListViewTableIdColumn()
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('ID', trim($crawler->filter('table th[data-property-name="id"]')->text()),
+        $this->assertSame('ID', trim($crawler->filter('table th[data-property-name="id"]')->text()),
             'The ID entity property is very special and we uppercase it automatically to improve its readability.'
         );
     }
@@ -87,7 +87,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $columnLabels = array('ID', 'Label', 'Parent category', 'Actions');
 
         foreach ($columnLabels as $i => $label) {
-            $this->assertEquals($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
         }
     }
 
@@ -97,7 +97,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $columnAttributes = array('id', 'name', 'parent');
 
         foreach ($columnAttributes as $i => $attribute) {
-            $this->assertEquals($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
+            $this->assertSame($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
         }
     }
 
@@ -106,8 +106,8 @@ class CustomizedBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
-        $this->assertEquals('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
-        $this->assertEquals('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+        $this->assertSame('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
+        $this->assertSame('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
     public function testListViewTableContents()
@@ -123,7 +123,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $columnAttributes = array('ID', 'Label', 'Parent category');
 
         foreach ($columnAttributes as $i => $attribute) {
-            $this->assertEquals($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
+            $this->assertSame($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
         }
     }
 
@@ -131,8 +131,8 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertEquals('string custom_class_list', trim($crawler->filter('.table thead tr th[data-property-name="name"]')->eq(0)->attr('class')));
-        $this->assertEquals('string custom_class_list', trim($crawler->filter('.table tbody tr td[data-label="Label"]')->eq(0)->attr('class')));
+        $this->assertSame('string custom_class_list', trim($crawler->filter('.table thead tr th[data-property-name="name"]')->eq(0)->attr('class')));
+        $this->assertSame('string custom_class_list', trim($crawler->filter('.table tbody tr td[data-label="Label"]')->eq(0)->attr('class')));
     }
 
     public function testListViewPagination()
@@ -141,8 +141,8 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertContains('1 - 15 of 200', $crawler->filter('.list-pagination')->text());
 
-        $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
-        $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
+        $this->assertSame('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
+        $this->assertSame('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
 
         $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
         $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
@@ -152,8 +152,8 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestShowView();
 
-        $this->assertEquals('Details for Category number 200', trim($crawler->filter('head title')->text()));
-        $this->assertEquals('Details for Category number 200', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('Details for Category number 200', trim($crawler->filter('head title')->text()));
+        $this->assertSame('Details for Category number 200', trim($crawler->filter('h1.title')->text()));
     }
 
     public function testShowViewFieldLabels()
@@ -162,7 +162,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $fieldLabels = array('#', 'Label', 'Parent category');
 
         foreach ($fieldLabels as $i => $label) {
-            $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
         }
     }
 
@@ -212,7 +212,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 
-        $this->assertEquals($parameters, $refererParameters);
+        $this->assertSame($parameters, $refererParameters);
     }
 
     /**
@@ -247,15 +247,15 @@ class CustomizedBackendTest extends AbstractTestCase
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 
-        $this->assertEquals($parameters, $refererParameters);
+        $this->assertSame($parameters, $refererParameters);
     }
 
     public function testEditViewPageTitle()
     {
         $crawler = $this->requestEditView();
 
-        $this->assertEquals('Modify Category (200) details', trim($crawler->filter('head title')->text()));
-        $this->assertEquals('Modify Category (200) details', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('Modify Category (200) details', trim($crawler->filter('head title')->text()));
+        $this->assertSame('Modify Category (200) details', trim($crawler->filter('h1.title')->text()));
     }
 
     public function testEditViewFormAttributes()
@@ -274,7 +274,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $fieldLabels = array('ID', 'Label', 'Parent Category Label');
 
         foreach ($fieldLabels as $i => $label) {
-            $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
         }
     }
 
@@ -329,7 +329,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 
-        $this->assertEquals($parameters, $refererParameters);
+        $this->assertSame($parameters, $refererParameters);
     }
 
     public function testEditViewCheckboxLabel()
@@ -343,8 +343,8 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestNewView();
 
-        $this->assertEquals('Add a new Category', trim($crawler->filter('head title')->text()));
-        $this->assertEquals('Add a new Category', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('Add a new Category', trim($crawler->filter('head title')->text()));
+        $this->assertSame('Add a new Category', trim($crawler->filter('h1.title')->text()));
     }
 
     public function testNewViewFormAttributes()
@@ -363,7 +363,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $fieldLabels = array('ID', 'Label', 'Parent Category Label');
 
         foreach ($fieldLabels as $i => $label) {
-            $this->assertEquals($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
         }
     }
 
@@ -410,7 +410,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 
-        $this->assertEquals($parameters, $refererParameters);
+        $this->assertSame($parameters, $refererParameters);
     }
 
     public function testNewCustomFormOptions()
@@ -452,15 +452,15 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertEquals('200 results found', trim($crawler->filter('head title')->text()));
-        $this->assertEquals('200 results found', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('200 results found', trim($crawler->filter('head title')->text()));
+        $this->assertSame('200 results found', trim($crawler->filter('h1.title')->text()));
     }
 
     public function testSearchViewTableIdColumn()
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertEquals('ID', trim($crawler->filter('table th[data-property-name="id"]')->text()),
+        $this->assertSame('ID', trim($crawler->filter('table th[data-property-name="id"]')->text()),
             'The ID entity property is very special and we uppercase it automatically to improve its readability.'
         );
     }
@@ -471,7 +471,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $columnLabels = array('ID', 'Label', 'Parent category', 'Actions');
 
         foreach ($columnLabels as $i => $label) {
-            $this->assertEquals($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
+            $this->assertSame($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
         }
     }
 
@@ -481,7 +481,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $columnAttributes = array('id', 'name', 'parent');
 
         foreach ($columnAttributes as $i => $attribute) {
-            $this->assertEquals($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
+            $this->assertSame($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
         }
     }
 
@@ -490,8 +490,8 @@ class CustomizedBackendTest extends AbstractTestCase
         $crawler = $this->requestSearchView();
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
-        $this->assertEquals('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
-        $this->assertEquals('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+        $this->assertSame('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
+        $this->assertSame('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
     public function testSearchViewTableContents()
@@ -507,7 +507,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $columnAttributes = array('ID', 'Label', 'Parent category');
 
         foreach ($columnAttributes as $i => $attribute) {
-            $this->assertEquals($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
+            $this->assertSame($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
         }
     }
 
@@ -517,8 +517,8 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertContains('1 - 15 of 200', $crawler->filter('.list-pagination')->text());
 
-        $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
-        $this->assertEquals('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
+        $this->assertSame('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
+        $this->assertSame('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
 
         $this->assertStringStartsWith('/admin/?action=search&entity=Category&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
         $this->assertStringStartsWith('/admin/?action=search&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
@@ -528,9 +528,9 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertEquals('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
-        $this->assertEquals('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
-        $this->assertEquals('Delete', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
+        $this->assertSame('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
+        $this->assertSame('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
+        $this->assertSame('Delete', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
     }
 
     public function testSearchViewShowActionReferer()
@@ -556,7 +556,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 
-        $this->assertEquals($parameters, $refererParameters);
+        $this->assertSame($parameters, $refererParameters);
     }
 
     public function testListViewVirtualFields()
@@ -565,11 +565,11 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertCount(15, $crawler->filter('.table tbody td:contains("Inaccessible")'));
 
-        $this->assertEquals('This field is virtual', $crawler->filter('.table tbody td:contains("Inaccessible")')->first()->attr('data-label'));
+        $this->assertSame('This field is virtual', $crawler->filter('.table tbody td:contains("Inaccessible")')->first()->attr('data-label'));
 
         $firstVirtualField = $crawler->filter('.table tbody td:contains("Inaccessible") span')->first();
-        $this->assertEquals('label label-danger', $firstVirtualField->attr('class'));
-        $this->assertEquals(
+        $this->assertSame('label label-danger', $firstVirtualField->attr('class'));
+        $this->assertSame(
             'Getter method does not exist for this field or the property is not public',
             $firstVirtualField->attr('title')
         );

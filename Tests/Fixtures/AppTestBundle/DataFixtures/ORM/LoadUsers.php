@@ -2,10 +2,10 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\DataFixtures\ORM;
 
+use AppTestBundle\Entity\FunctionalTests\User;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use AppTestBundle\Entity\FunctionalTests\User;
 
 class LoadUsers extends AbstractFixture implements OrderedFixtureInterface
 {

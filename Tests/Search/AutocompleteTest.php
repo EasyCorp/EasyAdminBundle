@@ -54,8 +54,8 @@ class AutocompleteTest extends AbstractTestCase
 
         // the results are the first batch of 10 parent categories
         foreach (range(1, 10) as $i => $n) {
-            $this->assertEquals($n, $autocomplete['results'][$i]['id']);
-            $this->assertEquals('Parent Category #'.$n, $autocomplete['results'][$i]['text']);
+            $this->assertSame($n, $autocomplete['results'][$i]['id']);
+            $this->assertSame('Parent Category #'.$n, $autocomplete['results'][$i]['text']);
         }
     }
 
@@ -81,8 +81,8 @@ class AutocompleteTest extends AbstractTestCase
 
         // the results are the second batch of 10 parent categories
         foreach (range(11, 20) as $i => $n) {
-            $this->assertEquals($n, $autocomplete['results'][$i]['id']);
-            $this->assertEquals('Parent Category #'.$n, $autocomplete['results'][$i]['text']);
+            $this->assertSame($n, $autocomplete['results'][$i]['id']);
+            $this->assertSame('Parent Category #'.$n, $autocomplete['results'][$i]['text']);
         }
     }
 

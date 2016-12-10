@@ -20,12 +20,12 @@ class SplitConfigurationTest extends AbstractTestCase
         $this->initClient(array('environment' => 'split_configuration'));
         $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
-        $this->assertEquals(array('Category', 'Product'), array_keys($backendConfig['entities']));
+        $this->assertSame(array('Category', 'Product'), array_keys($backendConfig['entities']));
 
-        $this->assertEquals('Categories', $backendConfig['entities']['Category']['label']);
+        $this->assertSame('Categories', $backendConfig['entities']['Category']['label']);
 
-        $this->assertEquals('Second Site Name', $backendConfig['site_name']);
-        $this->assertEquals('blue', $backendConfig['design']['brand_color']);
+        $this->assertSame('Second Site Name', $backendConfig['site_name']);
+        $this->assertSame('blue', $backendConfig['design']['brand_color']);
     }
 
     public function testConfigurationErrorsInDifferentFiles()

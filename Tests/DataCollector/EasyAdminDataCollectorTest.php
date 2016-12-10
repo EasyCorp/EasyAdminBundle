@@ -36,7 +36,7 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
         $this->requestListView();
         $collector = $this->client->getProfile()->getCollector('easyadmin');
 
-        $this->assertEquals(5, $collector->getNumEntities());
+        $this->assertSame(5, $collector->getNumEntities());
 
         $parameters = array(
             'action' => 'list',
@@ -45,10 +45,10 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
             'sort_field' => 'id',
             'sort_direction' => 'DESC',
         );
-        $this->assertEquals($parameters, $collector->getRequestParameters());
+        $this->assertSame($parameters, $collector->getRequestParameters());
 
         $currentConfiguration = $collector->getCurrentEntityConfig();
-        $this->assertEquals('Category', $currentConfiguration['name']);
+        $this->assertSame('Category', $currentConfiguration['name']);
 
         $backendConfig = $collector->getBackendConfig();
         $this->assertCount(5, $backendConfig['entities']);
@@ -60,7 +60,7 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
         $this->requestEditView();
         $collector = $this->client->getProfile()->getCollector('easyadmin');
 
-        $this->assertEquals(5, $collector->getNumEntities());
+        $this->assertSame(5, $collector->getNumEntities());
 
         $parameters = array(
             'action' => 'edit',
@@ -69,10 +69,10 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
             'sort_field' => 'id',
             'sort_direction' => 'DESC',
         );
-        $this->assertEquals($parameters, $collector->getRequestParameters());
+        $this->assertSame($parameters, $collector->getRequestParameters());
 
         $currentConfiguration = $collector->getCurrentEntityConfig();
-        $this->assertEquals('Category', $currentConfiguration['name']);
+        $this->assertSame('Category', $currentConfiguration['name']);
 
         $backendConfig = $collector->getBackendConfig();
         $this->assertCount(5, $backendConfig['entities']);

@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-12-10T10:03:49Z
+
+Sorry, I let you so much work in previous PR. My last commit was not aimed to be merged as is, but simply show the impact of risky rules 😅 . Hope you won't loose to much time digging in those tests :/
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-12-10T10:07:29Z
+
+@ogizanagi no worries!!! It was a super easy fix ... and I think it was worth it to fix these minor issues.

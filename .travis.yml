@@ -21,10 +21,12 @@ env:
 matrix:
   fast_finish: true
   include:
-    # jobs are ordered in a specific way to get Travis results faster (first
-    # execute the fastest jobs, then the slowest and finally the jobs that can fail)
-    - php: 7.0
-      env: SYMFONY_VERSION="3.0.*"
+    - php: nightly
+      env: SYMFONY_VERSION="dev-master"
+    - php: 7.1
+      env: SYMFONY_VERSION="3.2.*"
+    - php: 7.1
+      env: SYMFONY_VERSION="3.2.*"
     - php: 7.0
       env: SYMFONY_VERSION="3.1.*"
     - php: 5.6
@@ -49,6 +51,7 @@ matrix:
     - php: 5.6
       env: TWIG_VERSION="2.x-dev"
   allow_failures:
+    - php: nightly
     - php: hhvm-stable
     - env: TWIG_VERSION="2.x-dev"
     - env:

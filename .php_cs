@@ -25,7 +25,6 @@ return PhpCsFixer\Config::create()
         'ordered_imports' => true,
         'php_unit_strict' => true,
         'phpdoc_summary' => false,
-        'psr4' => true,
         'strict_comparison' => true,
     ))
 ;

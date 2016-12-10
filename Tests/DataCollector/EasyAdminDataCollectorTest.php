@@ -65,7 +65,7 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
         $parameters = array(
             'action' => 'edit',
             'entity' => 'Category',
-            'id' => 200,
+            'id' => '200',
             'sort_field' => 'id',
             'sort_direction' => 'DESC',
         );

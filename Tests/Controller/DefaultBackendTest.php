@@ -283,9 +283,9 @@ class DefaultBackendTest extends AbstractTestCase
         $parameters = array(
             'action' => 'list',
             'entity' => 'Category',
-            'page' => '2',
-            'sortDirection' => 'ASC',
             'sortField' => 'name',
+            'sortDirection' => 'ASC',
+            'page' => '2',
         );
 
         // 1. visit a specific 'list' view page
@@ -363,9 +363,9 @@ class DefaultBackendTest extends AbstractTestCase
         $parameters = array(
             'action' => 'list',
             'entity' => 'Category',
-            'page' => '2',
-            'sortDirection' => 'ASC',
             'sortField' => 'name',
+            'sortDirection' => 'ASC',
+            'page' => '2',
         );
 
         // 1. visit a specific 'list' view page
@@ -480,9 +480,9 @@ class DefaultBackendTest extends AbstractTestCase
         $parameters = array(
             'action' => 'list',
             'entity' => 'Category',
-            'page' => '2',
-            'sortDirection' => 'ASC',
             'sortField' => 'name',
+            'sortDirection' => 'ASC',
+            'page' => '2',
         );
 
         // 1. visit a specific 'list' view page
@@ -626,10 +626,10 @@ class DefaultBackendTest extends AbstractTestCase
         $parameters = array(
             'action' => 'search',
             'entity' => 'Category',
+            'sortField' => 'name',
+            'sortDirection' => 'ASC',
             'page' => '2',
             'query' => 'cat',
-            'sortDirection' => 'ASC',
-            'sortField' => 'name',
         );
 
         // 1. visit a specific 'search' view page

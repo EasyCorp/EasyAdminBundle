@@ -84,7 +84,9 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 
     private function isTestCompatible($filePath)
     {
-        if (2 !== Kernel::MAJOR_VERSION || 3 !== Kernel::MINOR_VERSION) {
+        // the (int) casting is needed because older Symfony versions used
+        // strings to store the version numbers (e.g. '2' instead of 2)
+        if (2 !== (int) Kernel::MAJOR_VERSION || 3 !== (int) Kernel::MINOR_VERSION) {
             return true;
         }
 

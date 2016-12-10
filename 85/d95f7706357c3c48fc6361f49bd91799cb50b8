@@ -1,0 +1,46 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-12-10T11:26:45Z
+
+We have a failure when testing PHP 7.1 and Symfony 3.2:
+
+```diff
+There was 1 failure:
+1) JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller\CustomMenuTest::testExternalRoutesDontIncludeIndexParameters
+Failed asserting that two strings are identical.
+--- Expected
++++ Actual
+@@ @@
+-/custom-route?custom_parameter=Lorem+Ipsum
++/custom-route?custom_parameter=Lorem%20Ipsum
+
+/home/travis/build/javiereguiluz/EasyAdminBundle/Tests/Controller/CustomMenuTest.php:199
+```
+
+I didn't find anything in the Symfony changelog. Is this something expected? Is this a Symfony bug? Is this a PHP 7.1 change? Thanks for your help!
+
+---
+
+This code:
+
+```php
+echo http_build_query(['custom_parameter' => 'Lorem Ipsum']);
+```
+
+Returns `custom_parameter=Lorem+Ipsum` from PHP 5.6 to PHP 7.1 as seen in https://3v4l.org/FkeUR
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-12-10T12:20:03Z
+
+It's related to https://github.com/symfony/symfony/pull/19639.
+
+---
+
+http://php.net/manual/en/function.http-build-query.php
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2016-12-10T12:34:30Z
+
+I've opened https://github.com/symfony/symfony/pull/20856 in order to mention this in the `UPGRADE-3.2.md` file.

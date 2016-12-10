@@ -196,7 +196,7 @@ class CustomMenuTest extends AbstractTestCase
         $crawler = $this->getBackendHomepage();
 
         // Starting from Symfony 3.2, routes are generated using the PHP_QUERY_RFC3986 option
-        $queryStringParameter = Kernel::VERSION >= 30200 ? 'Lorem%20Ipsum' : 'Lorem+Ipsum';
+        $queryStringParameter = Kernel::VERSION_ID >= 30200 ? 'Lorem%20Ipsum' : 'Lorem+Ipsum';
         $this->assertSame(
             '/custom-route?custom_parameter='.$queryStringParameter,
             $crawler->filter('.sidebar-menu li:contains("Custom External Route") a')->attr('href')

@@ -191,7 +191,6 @@ class ConfigManager
             new ViewConfigPass(),
             new TemplateConfigPass($this->container->getParameter('kernel.root_dir').'/Resources/views'),
             new DefaultConfigPass(),
-            new ValidationConfigPass(),
         );
 
         foreach ($configPasses as $configPass) {

@@ -20,7 +20,7 @@ class EmptyBackendTest extends AbstractTestCase
         $this->initClient(array('environment' => 'empty_backend'));
         $this->client->request('GET', '/admin/');
 
-        $this->assertEquals(500, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(500, $this->client->getResponse()->getStatusCode());
         $this->assertContains('NoEntitiesConfiguredException', $this->client->getResponse()->getContent());
     }
 }

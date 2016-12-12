@@ -11,10 +11,10 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\DataFixtures\ORM;
 
+use AppTestBundle\Entity\FunctionalTests\Product;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use AppTestBundle\Entity\FunctionalTests\Product;
 
 class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
 {

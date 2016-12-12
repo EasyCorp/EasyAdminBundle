@@ -26,7 +26,7 @@ class OverrideEasyAdminTemplateTest extends AbstractTestCase
     {
         $crawler = $this->client->request('GET', '/override_layout');
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('Layout is overridden.', trim($crawler->filter('#main')->text()));
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSame('Layout is overridden.', trim($crawler->filter('#main')->text()));
     }
 }

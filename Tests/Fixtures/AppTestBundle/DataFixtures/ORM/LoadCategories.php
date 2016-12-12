@@ -11,10 +11,10 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\ORM;
 
+use AppTestBundle\Entity\FunctionalTests\Category;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use AppTestBundle\Entity\FunctionalTests\Category;
 
 class LoadCategories extends AbstractFixture implements OrderedFixtureInterface
 {

@@ -135,6 +135,29 @@
 {% block choice_widget_collapsed -%}
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
     {{- parent() -}}
+    {% if form.parent.vars.allow_delete|default(false) %}
+        {% set remove_item_javascript %}
+            $(function() {
+            if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+            var containerDiv = $('#{{ id }}').parents('.form-group:first');
+            var parentDiv = containerDiv.parents('[data-prototype]:first');
+            containerDiv.remove();
+            parentDiv.trigger('easyadmin.collection.item-deleted');
+
+            if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
+            $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
+            }
+            });
+        {% endset %}
+
+        <div class="text-right field-collection-item-action">
+            <a href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
+                <i class="fa fa-remove"></i>
+                {{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}
+            </a>
+        </div>
+    {% endif %}
 {%- endblock %}
 
 {% block choice_widget_expanded -%}

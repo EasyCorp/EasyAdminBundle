@@ -23,9 +23,7 @@ matrix:
   include:
     # bleeding edge (unreleased dev versions where failures are allowed)
     - php: nightly
-      env:
-        - SYMFONY_VERSION="dev-master"
-        - TWIG_VERSION="dev-master"
+      env: SYMFONY_VERSION="dev-master"
     # stable (most recent stable versions)
     - php: 7.1
       env:

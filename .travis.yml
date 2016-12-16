@@ -26,6 +26,7 @@ matrix:
     - php: 7.1
       env:
         - SYMFONY_VERSION="3.2.*"
+        - TWIG_VERSION="2.x-dev"
         - CHECK_PHP_SYNTAX="yes"
     - php: 7.0
       env: SYMFONY_VERSION="3.1.*"
@@ -46,9 +47,6 @@ matrix:
       sudo: required
       dist: trusty
       group: edge
-    - php: 7.0
-      env: SYMFONY_VERSION="3.2.*"
-      env: TWIG_VERSION="2.x-dev"
   allow_failures:
     - php: nightly
     - php: hhvm-stable

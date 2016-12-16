@@ -92,13 +92,27 @@ class QueryBuilder
                 // adding '0' turns the string into a numeric value
                 $queryParameters['exact_query'] = 0 + $searchQuery;
             } elseif ($isTextField) {
-                $searchQuery = strtolower($searchQuery);
 
-                $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));
-                $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
+                /**
+                 * PostgresSQL uuid field dont have LOWER function
+                 */
+                if ($metadata['dataType'] == 'guid') {
+                    // insert to query if search query value is valid guid
+                    if (preg_match('/^\{?[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}\}?$/', $name)) {
+                        $queryBuilder->orWhere(sprintf('entity.%s IN (:words_query)', $name));
+                        $queryParameters['words_query'] = explode(' ', $searchQuery);
+                    }
+                } else {
 
-                $queryBuilder->orWhere(sprintf('LOWER(entity.%s) IN (:words_query)', $name));
-                $queryParameters['words_query'] = explode(' ', $searchQuery);
+                    // mb_strtolower for cyrillic support
+                    $searchQuery = mb_strtolower($searchQuery);
+
+                    $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));
+                    $queryParameters['fuzzy_query'] = '%' . $searchQuery . '%';
+
+                    $queryBuilder->orWhere(sprintf('LOWER(entity.%s) IN (:words_query)', $name));
+                    $queryParameters['words_query'] = explode(' ', $searchQuery);
+                }
             }
         }
 

@@ -100,7 +100,7 @@ class QueryBuilder
                 $searchQuery = strtolower($searchQuery);
 
                 $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));
-                $queryParameters['fuzzy_query'] = '%' . $searchQuery . '%';
+                $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
 
                 $queryBuilder->orWhere(sprintf('LOWER(entity.%s) IN (:words_query)', $name));
                 $queryParameters['words_query'] = explode(' ', $searchQuery);

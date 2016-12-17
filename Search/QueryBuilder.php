@@ -97,7 +97,7 @@ class QueryBuilder
                 $queryBuilder->orWhere(sprintf('entity.%s IN (:words_query)', $name));
                 $queryParameters['words_query'] = explode(' ', $searchQuery);
             } elseif ($isTextField) {
-                $searchQuery = strtolower($searchQuery);
+                $searchQuery = mb_strtolower($searchQuery);
 
                 $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));
                 $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';

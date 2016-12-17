@@ -287,31 +287,17 @@ class EasyAdminTwigExtension extends \Twig_Extension
             $value = '';
         }
 
-        if (function_exists('mb_get_info')) {
-            if (mb_strlen($value, $env->getCharset()) > $length) {
-                if ($preserve) {
-                    // If breakpoint is on the last word, return the value without separator.
-                    if (false === ($breakpoint = mb_strpos($value, ' ', $length, $env->getCharset()))) {
-                        return $value;
-                    }
-
-                    $length = $breakpoint;
-                }
-
-                return rtrim(mb_substr($value, 0, $length, $env->getCharset())).$separator;
-            }
-
-            return $value;
-        }
-
-        if (strlen($value) > $length) {
+        if (mb_strlen($value, $env->getCharset()) > $length) {
             if ($preserve) {
-                if (false !== ($breakpoint = strpos($value, ' ', $length))) {
-                    $length = $breakpoint;
+                // If breakpoint is on the last word, return the value without separator.
+                if (false === ($breakpoint = mb_strpos($value, ' ', $length, $env->getCharset()))) {
+                    return $value;
                 }
+
+                $length = $breakpoint;
             }
 
-            return rtrim(substr($value, 0, $length)).$separator;
+            return rtrim(mb_substr($value, 0, $length, $env->getCharset())).$separator;
         }
 
         return $value;

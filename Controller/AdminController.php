@@ -186,7 +186,7 @@ class AdminController extends Controller
         $entity = $easyadmin['item'];
 
         if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
-            $newValue = 'true' === strtolower($this->request->query->get('newValue'));
+            $newValue = 'true' === mb_strtolower($this->request->query->get('newValue'));
             $fieldsMetadata = $this->entity['list']['fields'];
 
             if (!isset($fieldsMetadata[$property]) || 'toggle' !== $fieldsMetadata[$property]['dataType']) {
@@ -589,7 +589,7 @@ class AdminController extends Controller
 
         $formType = LegacyFormHelper::useLegacyFormComponent() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
 
-        return $this->get('form.factory')->createNamedBuilder(strtolower($this->entity['name']), $formType, $entity, $formOptions);
+        return $this->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), $formType, $entity, $formOptions);
     }
 
     /**

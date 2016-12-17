@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-12-17T11:13:47Z
+
+@krecu thanks for fixing this PostgreSQL issue. I've refactored your code a bit ... and I've removed the changes related to `mb_strtolower()`. I'll add those changes in a separate PR because using `mb_*()` will require to use the Symfony polyfill. Thanks!

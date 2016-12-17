@@ -86,11 +86,16 @@ class QueryBuilder
         foreach ($entityConfig['search']['fields'] as $name => $metadata) {
             $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));
             $isTextField = in_array($metadata['dataType'], array('string', 'text', 'guid'));
+            $isGuidField = 'guid' === $metadata['dataType'];
 
             if ($isNumericField && is_numeric($searchQuery)) {
                 $queryBuilder->orWhere(sprintf('entity.%s = :exact_query', $name));
                 // adding '0' turns the string into a numeric value
                 $queryParameters['exact_query'] = 0 + $searchQuery;
+            } elseif ($isGuidField) {
+                // some databases don't support LOWER() on UUID fields
+                $queryBuilder->orWhere(sprintf('entity.%s IN (:words_query)', $name));
+                $queryParameters['words_query'] = explode(' ', $searchQuery);
             } elseif ($isTextField) {
                 $searchQuery = strtolower($searchQuery);
 

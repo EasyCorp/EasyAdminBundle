@@ -25,7 +25,7 @@ class DisabledActionsTest extends AbstractTestCase
 
     public function testAssociationLinksInListView()
     {
-        if (2 === Kernel::MAJOR_VERSION) {
+        if (2 === (int) Kernel::MAJOR_VERSION) {
             $this->markTestSkipped('This test is not compatible with Symfony 2.x.');
         }
 
@@ -40,7 +40,7 @@ class DisabledActionsTest extends AbstractTestCase
 
     public function testAssociationLinksInShowView()
     {
-        if (2 === Kernel::MAJOR_VERSION) {
+        if (2 === (int) Kernel::MAJOR_VERSION) {
             $this->markTestSkipped('This test is not compatible with Symfony 2.x.');
         }
 

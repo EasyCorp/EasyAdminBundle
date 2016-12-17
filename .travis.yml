@@ -33,21 +33,23 @@ matrix:
     # common (some popular version combinations)
     - php: 7.0
       env: SYMFONY_VERSION="3.1.*"
-    # common (some popular version combinations)
     - php: 5.6
-      env:
-        - SYMFONY_VERSION="2.8.*"
-        - ENABLE_CODE_COVERAGE="true"
+      env: SYMFONY_VERSION="2.8.*"
     # legacy (oldest supported versions)
     - php: 5.3
       env:
         - SYMFONY_VERSION="2.3.*"
         - COMPOSER_FLAGS="--prefer-lowest"
+    # code coverage (special job to process the code coverage)
+    - php: 7.1
+      env:
+        - SYMFONY_VERSION="3.2.*"
+        - ENABLE_CODE_COVERAGE="true"
   allow_failures:
     - php: nightly
     # code coverage is very slow; allow a failure to get the Travis result early
     - env:
-        - SYMFONY_VERSION="2.8.*"
+        - SYMFONY_VERSION="3.2.*"
         - ENABLE_CODE_COVERAGE="true"
 
 before_install:

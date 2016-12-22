@@ -89,6 +89,16 @@
                 {% endblock global_actions %}
             </div>
         </div>
+
+        {% if _entity_config['list']['help'] %}
+        <div class="col-sm-12">
+            <div class="box box-widget help-entity">
+                <div class="box-body">
+                    {{ _entity_config['list']['help']|raw }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 {% endblock content_header %}
 

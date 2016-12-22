@@ -112,6 +112,15 @@
                 {% block content_header %}
                     <h1 class="title">{% block content_title %}{% endblock %}</h1>
                 {% endblock content_header %}
+                {% block content_help %}
+                    {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
+                        <div class="box box-widget help-entity">
+                            <div class="box-body">
+                                {{ _entity_config[app.request.query.get('action')]['help']|trans|raw }}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endblock content_help %}
                 </section>
 
                 <section id="main" class="content">

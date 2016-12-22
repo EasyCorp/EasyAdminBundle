@@ -30,6 +30,13 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertSame('Product Categories', trim($crawler->filter('h1.title')->text()));
     }
 
+    public function testListViewHelp()
+    {
+        $crawler = $this->requestListView();
+
+        $this->assertSame('Global help message for categories', trim($crawler->filter('.content-header .help-entity')->text()));
+    }
+
     public function testListViewSearchAction()
     {
         $crawler = $this->requestListView();
@@ -156,6 +163,13 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertSame('Details for Category number 200', trim($crawler->filter('h1.title')->text()));
     }
 
+    public function testShowViewHelp()
+    {
+        $crawler = $this->requestShowView();
+
+        $this->assertSame('Help message overridden for the show view of categories', trim($crawler->filter('.content-header .help-entity')->text()));
+    }
+
     public function testShowViewFieldLabels()
     {
         $crawler = $this->requestShowView();
@@ -258,6 +272,13 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertSame('Modify Category (200) details', trim($crawler->filter('h1.title')->text()));
     }
 
+    public function testEditViewHelp()
+    {
+        $crawler = $this->requestEditView();
+
+        $this->assertSame('Help message overridden for the edit view of categories', trim($crawler->filter('.content-header .help-entity')->text()));
+    }
+
     public function testEditViewFormAttributes()
     {
         $crawler = $this->requestEditView();
@@ -345,6 +366,13 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertSame('Add a new Category', trim($crawler->filter('head title')->text()));
         $this->assertSame('Add a new Category', trim($crawler->filter('h1.title')->text()));
+    }
+
+    public function testNewViewHelp()
+    {
+        $crawler = $this->requestNewView();
+
+        $this->assertCount(0, $crawler->filter('.content-header .help-entity'));
     }
 
     public function testNewViewFormAttributes()

@@ -497,8 +497,8 @@
 {% endblock easyadmin_widget %}
 
 {# EasyAdminAutocomplete form type #}
-{% block easyadmin_autocomplete_row %}
-    {{ form_row(form.autocomplete, {
+{% block easyadmin_autocomplete_widget %}
+    {{ form_widget(form.autocomplete, {
         attr: attr|merge({
             'data-easyadmin-autocomplete-max-results': easyadmin_config('show.max_results'),
             'data-easyadmin-autocomplete-url' : path('easyadmin', {
@@ -507,7 +507,7 @@
             })|raw })
         })
     }}
-{% endblock easyadmin_autocomplete_row %}
+{% endblock easyadmin_autocomplete_widget %}
 
 {% block easyadmin_autocomplete_inner_label %}
     {% set name = form.parent.vars.name %}

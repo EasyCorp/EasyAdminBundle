@@ -339,6 +339,13 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertContains('Custom Label', trim($crawler->filter('#product_enabled')->parents()->filter('label')->text()));
     }
 
+    public function testListViewAutocompleteField()
+    {
+        $crawler = $this->requestEditView('Product', '1');
+
+        $this->assertSame('Custom help message', trim($crawler->filter('select#product_categories_autocomplete + .help-block')->text()), 'This fixes issue #1441');
+    }
+
     public function testNewViewPageTitle()
     {
         $crawler = $this->requestNewView();

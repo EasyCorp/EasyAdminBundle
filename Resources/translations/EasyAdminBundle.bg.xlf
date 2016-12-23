@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" target-language="bg" datatype="plaintext" original="EasyAdminBundle.en.xliff">
+    <file source-language="en" target-language="bg" datatype="plaintext" original="EasyAdminBundle.en.xlf">
         <body>
             <!-- page titles -->
             <trans-unit id="new.page_title">
@@ -58,16 +58,58 @@
                 <target><![CDATA[<strong>%start%</strong>–<strong>%end%</strong> от <strong>%results%</strong>]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Да</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>Не</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Празно</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target></target>
+            </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Да се остави празно</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>Обект от PHP</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Недостъпно</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>За това поле не съществува обектов метод за достъп (getter), нито пък съответната обектова променлива е публично достъпна (public).</target>
+            </trans-unit>
+
             <!-- user -->
             <trans-unit id="user.logged_in_as">
                 <source>user.logged_in_as</source>
                 <target>Влезли сте като</target>
             </trans-unit>
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>Безименен потребител</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>Анонимен потребител</target>
+            </trans-unit>
 
             <!-- misc. elements -->
-            <trans-unit id="header.logged_in_as">
-                <source>header.logged_in_as</source>
-                <target>Влезли сте като</target>
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Включване/изключване на навигацията</target>
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
@@ -76,6 +118,34 @@
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
                 <target>Това действие е необратимо.</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>Изтриване</target>
+            </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Добавяне на нов елемент</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Добавяне на още един елемент</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Изтриване на елемента</target>
+            </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>Грешка|Грешки</target>
+            </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Не сте записали направените във формуляра промени.</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} има още един елемент, който не е показан в списъка|]1,Inf] още %count% елемента не са показани в списъка]]></target>
             </trans-unit>
         </body>
     </file>

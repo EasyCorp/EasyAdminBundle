@@ -89,3 +89,4 @@ easy_admin:
                     - { property: 'ean', label: 'EAN', help: 'EAN 13 valid code. Leave empty if unknown.' }
                     - { property: 'enabled', label: 'Custom Label' }
                     - 'description'
+                    - { property: 'categories', type: 'easyadmin_autocomplete', help: 'Custom help message' }

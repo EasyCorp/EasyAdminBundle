@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -86,8 +87,7 @@ class EasyAdminExtension extends Extension
         }
 
         // BC for legacy form component
-        $useLegacyFormComponent = false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
-        if (!$useLegacyFormComponent) {
+        if (!LegacyFormHelper::useLegacyFormComponent()) {
             $container
                 ->getDefinition('easyadmin.form.type')
                 ->clearTag('form.type')

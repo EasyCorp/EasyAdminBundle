@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -83,16 +84,6 @@ class EasyAdminExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return $this->useLegacyFormComponent() ? 'form' : 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType';
-    }
-
-    /**
-     * Returns true if the legacy Form component is being used by the application.
-     *
-     * @return bool
-     */
-    private function useLegacyFormComponent()
-    {
-        return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
+        return LegacyFormHelper::useLegacyFormComponent() ? 'form' : 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType';
     }
 }

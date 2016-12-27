@@ -95,7 +95,6 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function dump($variable)
     {
-        $dumpedData = '';
         if (class_exists('Symfony\Component\VarDumper\Dumper\HtmlDumper')) {
             $cloner = new VarCloner();
             $dumper = new HtmlDumper();

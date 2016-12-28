@@ -74,7 +74,7 @@ class ViewConfigPass implements ConfigPassInterface
                     // special case: if the field is called 'id' and doesn't define a custom
                     // label, use 'ID' as label. This improves the readability of the label
                     // of this important field, which is usually related to the primary key
-                    if ('id' === $fieldConfig['fieldName'] && !isset($fieldConfig['label'])) {
+                    if (isset($fieldConfig['fieldName']) && 'id' === $fieldConfig['fieldName'] && !isset($fieldConfig['label'])) {
                         $fieldConfig['label'] = 'ID';
                     }
 

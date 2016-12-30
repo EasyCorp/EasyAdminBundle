@@ -84,6 +84,6 @@ class EasyAdminExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return LegacyFormHelper::useLegacyFormComponent() ? 'form' : 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType';
+        return LegacyFormHelper::getType('form');
     }
 }

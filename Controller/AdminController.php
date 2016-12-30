@@ -587,9 +587,7 @@ class AdminController extends Controller
     {
         $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', array($entity, $view));
 
-        $formType = LegacyFormHelper::useLegacyFormComponent() ? 'easyadmin' : 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType';
-
-        return $this->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), $formType, $entity, $formOptions);
+        return $this->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), LegacyFormHelper::getType('easyadmin'), $entity, $formOptions);
     }
 
     /**
@@ -664,9 +662,7 @@ class AdminController extends Controller
             ->setAction($this->generateUrl('easyadmin', array('action' => 'delete', 'entity' => $entityName, 'id' => $entityId)))
             ->setMethod('DELETE')
         ;
-
-        $submitButtonType = LegacyFormHelper::useLegacyFormComponent() ? 'submit' : 'Symfony\\Component\\Form\\Extension\\Core\\Type\\SubmitType';
-        $formBuilder->add('submit', $submitButtonType, array('label' => 'delete_modal.action', 'translation_domain' => 'EasyAdminBundle'));
+        $formBuilder->add('submit', LegacyFormHelper::getType('submit'), array('label' => 'delete_modal.action', 'translation_domain' => 'EasyAdminBundle'));
 
         return $formBuilder->getForm();
     }

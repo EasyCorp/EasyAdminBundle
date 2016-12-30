@@ -55,6 +55,7 @@ final class LegacyFormHelper
         'timezone' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimezoneType',
         'url' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\UrlType',
         // EasyAdmin custom types
+        'easyadmin' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType',
         'easyadmin_autocomplete' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminAutocompleteType',
         'easyadmin_divider' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminDividerType',
         'easyadmin_group' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType',

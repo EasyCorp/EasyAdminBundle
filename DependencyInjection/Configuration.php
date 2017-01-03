@@ -242,6 +242,13 @@ class Configuration implements ConfigurationInterface
                             ->treatNullLike('dark')
                         ->end()
 
+                        ->enumNode('rtl')
+                            ->values(array(true, false))
+                            ->info('Enable RTL direction (values: "true" or "false").')
+                            ->defaultValue(false)
+                            ->treatNullLike(false)
+                        ->end()
+
                         ->scalarNode('brand_color')
                             ->info('The color used in the backend design to highlight important elements.')
                             ->defaultValue('#205081')

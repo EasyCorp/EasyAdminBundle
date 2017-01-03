@@ -42,6 +42,12 @@
             <script src="{{ asset('bundles/easyadmin/javascript/easyadmin-all.min.js') }}"></script>
         {% endblock head_javascript %}
 
+        {% if easyadmin_config('design.rtl') %}
+            <!-- Load RTL stylesheet -->
+            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap-rtl.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/adminlte-rtl.min.css') }}">
+        {% endif %}
+
         <!--[if lt IE 9]>
             <script src="{{ asset('bundles/easyadmin/stylesheet/html5shiv.min.css') }}"></script>
             <script src="{{ asset('bundles/easyadmin/stylesheet/respond.min.css') }}"></script>

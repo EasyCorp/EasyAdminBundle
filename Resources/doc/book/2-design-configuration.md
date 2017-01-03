@@ -156,6 +156,20 @@ easy_admin:
     # ...
 ```
 
+Activate RTL direction
+----------------------
+
+Adding support for language written in a Right-To-Left (RTL) direction is easy.
+By default, RTL direction is disabled to activate just turn rtl to true:
+
+```yaml
+easy_admin:
+    design:
+        # 'false' is the default value
+        rtl: true
+    # ...
+```
+
 -------------------------------------------------------------------------------
 
 &larr; [Chapter 1. Basic Configuration](1-basic-configuration.md)  |  [Chapter 3. List, Search and Show Views Configuration](3-list-search-show-configuration.md) &rarr;

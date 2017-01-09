@@ -32,6 +32,7 @@ class ViewConfigPass implements ConfigPassInterface
 
     private function processViewConfig(array $backendConfig)
     {
+        // process the 'help' message that each view can define to display it under the page title
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
                 // isset() cannot be used because the value can be 'null' (used to remove the inherited help message)

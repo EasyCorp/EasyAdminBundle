@@ -93,13 +93,14 @@ easy_admin:
 
 ### Display a Help Message in the Page
 
-Entities can display a help message below the page. This is useful to add
-instructions or warning messages for the end users (e.g. "The upload process can
-take a lot of time (don't close the browser window)").
+Entities can define a global help message that is displayed below the title of
+the page. This is useful to add instructions or warning messages for the end
+users (e.g. "The upload process can take a lot of time (don't close the browser
+window)").
 
-Add the `help` configuration option to define a help message. This can be defined
-globally in the entity (list, show and search will display the same message) or
-locally for each view:
+The help message is defined with the `help` configuration option, which can be
+added to the entity (all views display the same message) and to each of the
+entity views:
 
 ```yaml
 # app/config/config.yml
@@ -108,14 +109,17 @@ easy_admin:
         Customer:
             class: AppBundle\Entity\Customer
             help: 'Global message displayed in all views'
+            # ...
             list:
-                help: 'The list view overrides the global message'
+                help: 'The list view overrides the global help message'
+                # ...
             show:
                 # 'help' is not defined, so the global help message is displayed
                 # ...
             search:
                 # use the null value to not display the inherited global help message
                 help: null
+                # ...
         # ...
 ```
 

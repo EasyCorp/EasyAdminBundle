@@ -57,7 +57,7 @@ This is the configuration needed for this example:
 ```yaml
 # app/config/config.yml
 parameters:
-    app.path.product_images: /uploads/images/product
+    app.path.product_images: /uploads/images/products
 
 # ...
 

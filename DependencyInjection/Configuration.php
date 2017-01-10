@@ -242,10 +242,9 @@ class Configuration implements ConfigurationInterface
                             ->treatNullLike('dark')
                         ->end()
 
-                        ->enumNode('rtl')
-                            ->values(array(true, false))
-                            ->info('Enable RTL direction (values: "true" or "false").')
-                            ->defaultValue(false)
+                        ->booleanNode('rtl')
+                            ->info('If true, the interface uses RTL (right-to-left) writing (needed for Arabic, Hebrew and Persian).')
+                            ->defaultFalse()
                             ->treatNullLike(false)
                         ->end()
 

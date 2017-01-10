@@ -183,7 +183,7 @@ class ConfigManager
     {
         $configPasses = array(
             new NormalizerConfigPass($this->container),
-            new DesignConfigPass($this->container->get('twig'), $this->container->getParameter('kernel.debug')),
+            new DesignConfigPass($this->container->get('twig'), $this->container->getParameter('kernel.debug'), $this->container->getParameter('locale')),
             new MenuConfigPass(),
             new ActionConfigPass(),
             new MetadataConfigPass($this->container->get('doctrine')),

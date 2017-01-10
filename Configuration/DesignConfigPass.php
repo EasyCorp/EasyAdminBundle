@@ -21,16 +21,31 @@ class DesignConfigPass implements ConfigPassInterface
 {
     private $twig;
     private $kernelDebug;
+    private $locale;
 
-    public function __construct(\Twig_Environment $twig, $kernelDebug)
+    public function __construct(\Twig_Environment $twig, $kernelDebug, $locale)
     {
-        $this->kernelDebug = $kernelDebug;
         $this->twig = $twig;
+        $this->kernelDebug = $kernelDebug;
+        $this->locale = $locale;
     }
 
     public function process(array $backendConfig)
     {
+        $backendConfig = $this->processRtlLanguages($backendConfig);
         $backendConfig = $this->processCustomCss($backendConfig);
+
+        return $backendConfig;
+    }
+
+    private function processRtlLanguages(array $backendConfig)
+    {
+        if (!isset($backendConfig['design']['rtl'])) {
+            // ar = Arabic, fa = Persian, he = Hebrew
+            if (in_array(substr($this->locale, 0, 2), array('ar', 'fa', 'he'))) {
+                $backendConfig['design']['rtl'] = true;
+            }
+        }
 
         return $backendConfig;
     }

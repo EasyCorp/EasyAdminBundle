@@ -156,16 +156,17 @@ easy_admin:
     # ...
 ```
 
-Activate RTL direction
-----------------------
+Enabling RTL Support
+--------------------
 
-Adding support for language written in a Right-To-Left (RTL) direction is easy.
-By default, RTL direction is disabled to activate just turn rtl to true:
+The RTL writing support is enabled automatically in the interface when the
+locale of the application is ``ar`` (Arabic), ``fa`` (Persian) or ``he``
+(Hebrew). If you need a more precise control over this setting, configure the
+``rtl`` boolean option:
 
 ```yaml
 easy_admin:
     design:
-        # 'false' is the default value
         rtl: true
     # ...
 ```

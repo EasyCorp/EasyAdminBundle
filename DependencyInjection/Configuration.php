@@ -244,8 +244,6 @@ class Configuration implements ConfigurationInterface
 
                         ->booleanNode('rtl')
                             ->info('If true, the interface uses RTL (right-to-left) writing (needed for Arabic, Hebrew and Persian).')
-                            ->defaultFalse()
-                            ->treatNullLike(false)
                         ->end()
 
                         ->scalarNode('brand_color')

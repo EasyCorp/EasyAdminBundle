@@ -44,6 +44,8 @@ class DesignConfigPass implements ConfigPassInterface
             // ar = Arabic, fa = Persian, he = Hebrew
             if (in_array(substr($this->locale, 0, 2), array('ar', 'fa', 'he'))) {
                 $backendConfig['design']['rtl'] = true;
+            } else {
+                $backendConfig['design']['rtl'] = false;
             }
         }
 

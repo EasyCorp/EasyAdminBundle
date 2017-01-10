@@ -91,6 +91,38 @@ easy_admin:
         title: '%%entity_label%% (#%%entity_id%%)'
 ```
 
+### Display a Help Message in the Page
+
+Entities can define a global help message that is displayed below the title of
+the page. This is useful to add instructions or warning messages for the end
+users (e.g. "The upload process can take a lot of time (don't close the browser
+window)").
+
+The help message is defined with the `help` configuration option, which can be
+added to the entity (all views display the same message) and to each of the
+entity views:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            help: 'Global message displayed in all views'
+            # ...
+            list:
+                help: 'The list view overrides the global help message'
+                # ...
+            show:
+                # 'help' is not defined, so the global help message is displayed
+                # ...
+            search:
+                # use the null value to not display the inherited global help message
+                help: null
+                # ...
+        # ...
+```
+
 ### Customize the Number of Rows Displayed
 
 By default, listings in the `list` and `search` display a maximum of 15 rows.

@@ -13,6 +13,7 @@ easy_admin:
         brand_color:  '#123456'
     entities:
         Category:
+            help:  'Global help message for categories'
             class: AppTestBundle\Entity\FunctionalTests\Category
             label: 'Categories'
             list:
@@ -27,6 +28,7 @@ easy_admin:
                     - { property: 'parent', label: 'Parent category' }
             show:
                 title: 'Details for %%entity_name%% number %%entity_id%%'
+                help:  'Help message overridden for the show view of categories'
                 actions:
                     - { name: 'edit', label: 'Modify %%entity_name%%', icon: 'pencil-square' }
                     - '-delete'
@@ -36,6 +38,8 @@ easy_admin:
                     - { property: 'name', label: 'Label' }
                     - { property: 'parent', label: 'Parent category' }
             form:
+                # prevent inheriting the global help message for form-related views
+                help:  ~
                 title: 'Add a new %%entity_name%%'
                 actions:
                     - { name: 'list', label: 'Return to listing', icon: 'list' }
@@ -44,6 +48,7 @@ easy_admin:
                     - { property: 'name', label: 'Label', css_class: 'custom_class_name' }
                     - { property: 'parent', label: 'Parent Category Label', css_class: 'custom_class_parent' }
             edit:
+                help:  'Help message overridden for the edit view of categories'
                 title: 'Modify %%entity_name%% (%%entity_id%%) details'
                 actions:
                     - { name: 'delete', label: 'Remove', icon: 'minus-circle' }

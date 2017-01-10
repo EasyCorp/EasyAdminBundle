@@ -21,10 +21,28 @@ class ViewConfigPass implements ConfigPassInterface
 {
     public function process(array $backendConfig)
     {
+        $backendConfig = $this->processViewConfig($backendConfig);
         $backendConfig = $this->processDefaultFieldsConfig($backendConfig);
         $backendConfig = $this->processFieldConfig($backendConfig);
         $backendConfig = $this->processPageTitleConfig($backendConfig);
         $backendConfig = $this->processSortingConfig($backendConfig);
+
+        return $backendConfig;
+    }
+
+    private function processViewConfig(array $backendConfig)
+    {
+        // process the 'help' message that each view can define to display it under the page title
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
+                // isset() cannot be used because the value can be 'null' (used to remove the inherited help message)
+                if (array_key_exists('help', $backendConfig['entities'][$entityName][$view])) {
+                    continue;
+                }
+
+                $backendConfig['entities'][$entityName][$view]['help'] = array_key_exists('help', $entityConfig) ? $entityConfig['help'] : null;
+            }
+        }
 
         return $backendConfig;
     }

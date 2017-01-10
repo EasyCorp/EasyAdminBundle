@@ -860,6 +860,17 @@ body.easyadmin h1.title {
     margin-bottom: 10px;
 }
 
+.help-entity {
+{% if 'dark' == color_scheme %}
+    color: {{ colors.gray_dark }};
+{% elseif 'light' == color_scheme %}
+    border: 1px solid #EEE;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+    color: {{ colors.text_muted }};
+{% endif %}
+    margin: 10px 0 5px;
+}
+
 {# -------------------------------------------------------------------------
    LIST PAGE
    ------------------------------------------------------------------------- #}

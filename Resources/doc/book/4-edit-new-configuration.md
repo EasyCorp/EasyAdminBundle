@@ -192,6 +192,38 @@ easy_admin:
         title: 'New %%entity_label%%'
 ```
 
+### Display a Help Message in the Page
+
+Entities can define a global help message that is displayed below the title of
+the page. This is useful to add instructions or warning messages for the end
+users (e.g. "The upload process can take a lot of time (don't close the browser
+window)").
+
+The help message is defined with the `help` configuration option, which can be
+added to the entity (all views display the same message) and to each of the
+entity views:
+
+```yaml
+# app/config/config.yml
+easy_admin:
+    entities:
+        Customer:
+            class: AppBundle\Entity\Customer
+            help: 'Global message displayed in all views'
+            # ...
+            form:
+                help: 'The form view overrides the global help message'
+                # ...
+            edit:
+                # 'help' is not defined, so the global help message is displayed
+                # ...
+            new:
+                # use the null value to not display the inherited global help message
+                help: null
+                # ...
+        # ...
+```
+
 ### Customize the Properties Displayed
 
 By default, the `edit` and `new` views display all the entity properties. Use

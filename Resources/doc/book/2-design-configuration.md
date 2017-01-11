@@ -160,9 +160,9 @@ Enabling RTL Support
 --------------------
 
 The RTL writing support is enabled automatically in the interface when the
-locale of the application is ``ar`` (Arabic), ``fa`` (Persian) or ``he``
-(Hebrew). If you need a more precise control over this setting, configure the
-``rtl`` boolean option:
+locale of the application is `ar` (Arabic), `fa` (Persian) or `he` (Hebrew). If
+you need a more precise control over this setting, configure the `rtl` boolean
+option:
 
 ```yaml
 easy_admin:

@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-01-10T19:17:04Z
+
+After reading the [RTL article on the Wikipedia](https://en.wikipedia.org/wiki/Right-to-left), auto-detecting this option looks safe: `true` for `ar`, `fa` and `he` locales and `false` for the rest of locales. That's why I've tweaked the original PR to implement this behavior.

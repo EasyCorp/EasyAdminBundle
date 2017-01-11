@@ -156,6 +156,21 @@ easy_admin:
     # ...
 ```
 
+Enabling RTL Support
+--------------------
+
+The RTL writing support is enabled automatically in the interface when the
+locale of the application is `ar` (Arabic), `fa` (Persian) or `he` (Hebrew). If
+you need a more precise control over this setting, configure the `rtl` boolean
+option:
+
+```yaml
+easy_admin:
+    design:
+        rtl: true
+    # ...
+```
+
 -------------------------------------------------------------------------------
 
 &larr; [Chapter 1. Basic Configuration](1-basic-configuration.md)  |  [Chapter 3. List, Search and Show Views Configuration](3-list-search-show-configuration.md) &rarr;

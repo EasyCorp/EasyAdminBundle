@@ -42,6 +42,17 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertSame('en', trim($crawler->filter('html')->attr('lang')));
     }
 
+    public function testRtlIsDisabledByDefault()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $this->assertFalse($backendConfig['design']['rtl'], 'RTL is disabled by default.');
+
+        $this->assertNotContains('bootstrap-rtl.min.css', $crawler->filter('head')->text());
+        $this->assertNotContains('adminlte-rtl.min.css', $crawler->filter('head')->text());
+    }
+
     public function testDefaultCssStylesAreLinked()
     {
         $crawler = $this->getBackendHomepage();

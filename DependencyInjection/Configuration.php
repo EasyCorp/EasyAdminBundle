@@ -242,6 +242,10 @@ class Configuration implements ConfigurationInterface
                             ->treatNullLike('dark')
                         ->end()
 
+                        ->booleanNode('rtl')
+                            ->info('If true, the interface uses RTL (right-to-left) writing (needed for Arabic, Hebrew and Persian).')
+                        ->end()
+
                         ->scalarNode('brand_color')
                             ->info('The color used in the backend design to highlight important elements.')
                             ->defaultValue('#205081')

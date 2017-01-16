@@ -16,32 +16,40 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
  */
 class BaseException extends \RuntimeException
 {
-    // the HTTP status code of the Response created for the exception
     protected $message;
-    // this is the error message that can be safely displayed to end users
-    private $safeMessage;
-    // this is the full error message displayed only in 'dev' environment and logs
-    private $statusCode;
+    private $context;
 
     /**
-     * @param string $errorMessage
-     * @param string $proposedSolution
-     * @param int    $statusCode
+     * @param ExceptionContext $context
      */
-    public function __construct($errorMessage, $proposedSolution = '', $statusCode = 500)
+    public function __construct(ExceptionContext $context)
     {
-        $this->safeMessage = $errorMessage;
-        $this->message = sprintf('Error: %s Solution: %s', $errorMessage, $proposedSolution);
-        $this->statusCode = $statusCode;
+        $this->message = $context->getDebugMessage();
+        $this->context = $context;
     }
 
-    public function getSafeMessage()
+    public function getContext()
     {
-        return $this->safeMessage;
+        return $this->context;
+    }
+
+    public function getPublicMessage()
+    {
+        return $this->context->getPublicMessage();
+    }
+
+    public function getDebugMessage()
+    {
+        return $this->context->getDebugMessage();
+    }
+
+    public function getParameters()
+    {
+        return $this->context->getParameters();
     }
 
     public function getStatusCode()
     {
-        return $this->statusCode;
+        return $this->context->getStatusCode();
     }
 }

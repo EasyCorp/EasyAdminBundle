@@ -18,9 +18,13 @@ class EntityNotFoundException extends BaseException
 {
     public function __construct(array $parameters = array())
     {
-        $errorMessage = sprintf('The "%s" entity with "%s = %s" does not exist in the database.', $parameters['entity']['name'], $parameters['entity']['primary_key_field_name'], $parameters['entity_id']);
-        $proposedSolution = sprintf('Check that the mentioned entity hasn\'t been deleted by mistake.');
+        $exceptionContext = new ExceptionContext(
+            'exception.entity_not_found',
+            sprintf('The "%s" entity with "%s = %s" does not exist in the database. The entity may have been deleted by mistake or by a "cascade={"remove"}" operation executed by Doctrine.', $parameters['entity_name'], $parameters['entity_id_name'], $parameters['entity_id_value']),
+            $parameters,
+            404
+        );
 
-        parent::__construct($errorMessage, $proposedSolution, 404);
+        parent::__construct($exceptionContext);
     }
 }

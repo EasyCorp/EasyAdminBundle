@@ -46,11 +46,9 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     public function testCatchBaseExceptions()
     {
         $exception = new EasyEntityNotFoundException(array(
-            'entity' => array(
-                'name' => 'Test',
-                'primary_key_field_name' => 'Test key',
-            ),
-            'entity_id' => 2,
+            'entity_name' => 'Test',
+            'entity_id_name' => 'Test key',
+            'entity_id_value' => 2,
         ));
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
         $templating = $this->getTemplating();

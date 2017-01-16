@@ -1096,13 +1096,15 @@ body.show .form-control.text {
 {# -------------------------------------------------------------------------
    ERROR PAGES
    ------------------------------------------------------------------------- #}
+body.error .content-wrapper {
+    align-items: center;
+    display: flex;
+}
 body.error .error-description {
     background: {{ colors.white }};
     border: 1px solid {{ colors.gray_lighter }};
     box-shadow: 0 0 3px {{ colors.gray_light }};
-    margin: 2em auto 2em;
-    max-width: 90%;
-    min-height: 150px;
+    max-width: 96%;
     padding: 0;
 }
 body.error .error-description h1 {
@@ -1110,13 +1112,14 @@ body.error .error-description h1 {
     color: {{ colors.white }};
     font-size: 18px;
     font-weight: bold;
-    margin-top: 0;
+    margin: 0;
     padding: 10px;
     text-transform: uppercase;
 }
 body.error .error-message {
     font-size: 16px;
-    padding: 15px;
+    padding: 45px 30px;
+    text-align: center;
 }
 
 {# =========================================================================
@@ -1287,7 +1290,7 @@ body.error .error-message {
     }
 
     body.error .error-description {
-        max-width: 70%;
+        max-width: 550px;
     }
 
     .pagination > li > a,

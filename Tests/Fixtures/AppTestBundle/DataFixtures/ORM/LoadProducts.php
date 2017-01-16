@@ -18,7 +18,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
 {
-    private $phrases = array(
+    private $phrases = [
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         'Pellentesque vitae velit ex.',
         'Mauris dapibus, risus quis suscipit vulputate, eros diam egestas libero, eu vulputate eros eros eu risus.',
@@ -36,7 +36,7 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
         'Sed varius a risus eget aliquam.',
         'Nunc viverra elit ac laoreet suscipit.',
         'Pellentesque et sapien pulvinar, consectetur eros ac, vehicula odio.',
-    );
+    ];
 
     public function getOrder()
     {
@@ -65,7 +65,7 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
 
     public function getRandomTags()
     {
-        $tags = array(
+        $tags = [
             'books',
             'electronics',
             'GPS',
@@ -81,7 +81,7 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
             'TV & video',
             'videogames',
             'wearables',
-        );
+        ];
 
         $numTags = mt_rand(2, 4);
         shuffle($tags);
@@ -109,12 +109,12 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
 
     public function getRandomName()
     {
-        $words = array(
+        $words = [
             'Lorem', 'Ipsum', 'Sit', 'Amet', 'Adipiscing', 'Elit',
             'Vitae', 'Velit', 'Mauris', 'Dapibus', 'Suscipit', 'Vulputate',
             'Eros', 'Diam', 'Egestas', 'Libero', 'Platea', 'Dictumst',
             'Tempus', 'Commodo', 'Mattis', 'Donec', 'Posuere', 'Eleifend',
-        );
+        ];
 
         $numWords = 2;
         shuffle($words);
@@ -124,14 +124,14 @@ class LoadProducts extends AbstractFixture implements OrderedFixtureInterface
 
     public function getRandomPrice()
     {
-        $cents = array('00', '29', '39', '49', '99');
+        $cents = ['00', '29', '39', '49', '99'];
 
         return (float) mt_rand(2, 79).'.'.$cents[array_rand($cents)];
     }
 
     private function getRandomCategories()
     {
-        $categories = array();
+        $categories = [];
         $numCategories = rand(1, 4);
         $allCategoryIds = range(1, 100);
 

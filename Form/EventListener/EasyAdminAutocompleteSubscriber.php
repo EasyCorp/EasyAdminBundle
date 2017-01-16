@@ -26,20 +26,20 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FormEvents::PRE_SET_DATA => 'preSetData',
             FormEvents::PRE_SUBMIT => 'preSubmit',
-        );
+        ];
     }
 
     public function preSetData(FormEvent $event)
     {
         $form = $event->getForm();
-        $data = $event->getData() ?: array();
+        $data = $event->getData() ?: [];
 
         $options = $form->getConfig()->getOptions();
         $options['compound'] = false;
-        $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
+        $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : [$data];
 
         $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
     }
@@ -49,14 +49,14 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
         $form = $event->getForm();
 
         if (null === $data = $event->getData()) {
-            $data = array('autocomplete' => array());
+            $data = ['autocomplete' => []];
             $event->setData($data);
         }
 
         $options = $form->get('autocomplete')->getConfig()->getOptions();
-        $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
+        $options['choices'] = $options['em']->getRepository($options['class'])->findBy([
             $options['id_reader']->getIdField() => $data['autocomplete'],
-        ));
+        ]);
 
         if (isset($options['choice_list'])) {
             // clear choice list for SF < 3.0

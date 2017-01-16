@@ -35,24 +35,24 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return array(
-            new \Twig_SimpleFunction('easyadmin_render_field_for_*_view', array($this, 'renderEntityField'), array('is_safe' => array('html'), 'needs_environment' => true)),
-            new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_action_is_enabled', array($this, 'isActionEnabled')),
-            new \Twig_SimpleFunction('easyadmin_action_is_enabled_for_*_view', array($this, 'isActionEnabled')),
-            new \Twig_SimpleFunction('easyadmin_get_action', array($this, 'getActionConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_get_action_for_*_view', array($this, 'getActionConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_get_actions_for_*_item', array($this, 'getActionsForItem')),
-        );
+        return [
+            new \Twig_SimpleFunction('easyadmin_render_field_for_*_view', [$this, 'renderEntityField'], ['is_safe' => ['html'], 'needs_environment' => true]),
+            new \Twig_SimpleFunction('easyadmin_config', [$this, 'getBackendConfiguration']),
+            new \Twig_SimpleFunction('easyadmin_entity', [$this, 'getEntityConfiguration']),
+            new \Twig_SimpleFunction('easyadmin_action_is_enabled', [$this, 'isActionEnabled']),
+            new \Twig_SimpleFunction('easyadmin_action_is_enabled_for_*_view', [$this, 'isActionEnabled']),
+            new \Twig_SimpleFunction('easyadmin_get_action', [$this, 'getActionConfiguration']),
+            new \Twig_SimpleFunction('easyadmin_get_action_for_*_view', [$this, 'getActionConfiguration']),
+            new \Twig_SimpleFunction('easyadmin_get_actions_for_*_item', [$this, 'getActionsForItem']),
+        ];
     }
 
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('easyadmin_truncate', array($this, 'truncateText'), array('needs_environment' => true)),
+        return [
+            new \Twig_SimpleFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new \Twig_SimpleFilter('easyadmin_urldecode', 'urldecode'),
-        );
+        ];
     }
 
     /**
@@ -107,23 +107,23 @@ class EasyAdminTwigExtension extends \Twig_Extension
         try {
             $value = $this->propertyAccessor->getValue($item, $fieldName);
         } catch (\Exception $e) {
-            return $twig->render($entityConfiguration['templates']['label_inaccessible'], array(
+            return $twig->render($entityConfiguration['templates']['label_inaccessible'], [
                 'view' => $view,
                 'backend_config' => $this->getBackendConfiguration(),
                 'entity_config' => $entityConfiguration,
-            ));
+            ]);
         }
 
         try {
             $fieldType = $fieldMetadata['dataType'];
-            $templateParameters = array(
+            $templateParameters = [
                 'field_options' => $fieldMetadata,
                 'item' => $item,
                 'value' => $value,
                 'view' => $view,
                 'backend_config' => $this->getBackendConfiguration(),
                 'entity_config' => $entityConfiguration,
-            );
+            ];
 
             if (null === $value) {
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
@@ -153,7 +153,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 $templateParameters['uuid'] = md5($imageUrl);
             }
 
-            if (in_array($fieldType, array('array', 'simple_array')) && empty($value)) {
+            if (in_array($fieldType, ['array', 'simple_array']) && empty($value)) {
                 return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
             }
 
@@ -188,7 +188,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 // if the associated entity is managed by EasyAdmin, and the "show"
                 // action is enabled for the associated entity, display a link to it
                 if (null !== $targetEntityConfig && null !== $primaryKeyValue && $isShowActionAllowed) {
-                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'id' => $primaryKeyValue);
+                    $templateParameters['link_parameters'] = ['entity' => $targetEntityConfig['name'], 'action' => 'show', 'id' => $primaryKeyValue];
                 }
             }
 
@@ -196,7 +196,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 // if the associated entity is managed by EasyAdmin, and the "show"
                 // action is enabled for the associated entity, display a link to it
                 if (null !== $targetEntityConfig && $isShowActionAllowed) {
-                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'primary_key_name' => $targetEntityConfig['primary_key_field_name']);
+                    $templateParameters['link_parameters'] = ['entity' => $targetEntityConfig['name'], 'action' => 'show', 'primary_key_name' => $targetEntityConfig['primary_key_field_name']];
                 }
             }
 
@@ -206,7 +206,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 throw $e;
             }
 
-            return $twig->render($entityConfiguration['templates']['label_undefined'], array('view' => $view));
+            return $twig->render($entityConfiguration['templates']['label_undefined'], ['view' => $view]);
         }
     }
 
@@ -253,18 +253,18 @@ class EasyAdminTwigExtension extends \Twig_Extension
         try {
             $entityConfig = $this->configManager->getEntityConfig($entityName);
         } catch (\Exception $e) {
-            return array();
+            return [];
         }
 
         $disabledActions = $entityConfig['disabled_actions'];
         $viewActions = $entityConfig[$view]['actions'];
 
-        $actionsExcludedForItems = array(
-            'list' => array('new', 'search'),
-            'edit' => array(),
-            'new' => array(),
-            'show' => array(),
-        );
+        $actionsExcludedForItems = [
+            'list' => ['new', 'search'],
+            'edit' => [],
+            'new' => [],
+            'show' => [],
+        ];
         $excludedActions = $actionsExcludedForItems[$view];
 
         return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {

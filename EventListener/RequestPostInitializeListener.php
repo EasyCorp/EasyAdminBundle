@@ -62,11 +62,11 @@ class RequestPostInitializeListener
             return;
         }
 
-        $this->request->attributes->set('easyadmin', array(
+        $this->request->attributes->set('easyadmin', [
             'entity' => $entity = $event->getArgument('entity'),
             'view' => $this->request->query->get('action', 'list'),
             'item' => ($id = $this->request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
-        ));
+        ]);
     }
 
     /**
@@ -83,7 +83,7 @@ class RequestPostInitializeListener
     {
         $manager = $this->doctrine->getManagerForClass($entityConfig['class']);
         if (null === $entity = $manager->getRepository($entityConfig['class'])->find($itemId)) {
-            throw new EntityNotFoundException(array('entity' => $entityConfig, 'entity_id' => $itemId));
+            throw new EntityNotFoundException(['entity' => $entityConfig, 'entity_id' => $itemId]);
         }
 
         return $entity;

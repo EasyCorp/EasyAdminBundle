@@ -19,8 +19,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class ActionConfigPass implements ConfigPassInterface
 {
-    private $views = array('edit', 'list', 'new', 'show');
-    private $defaultActionConfig = array(
+    private $views = ['edit', 'list', 'new', 'show'];
+    private $defaultActionConfig = [
         // either the name of a controller method or an application route (it depends on the 'type' option)
         'name' => null,
         // 'method' if the action is a controller method; 'route' if it's an application route
@@ -33,7 +33,7 @@ class ActionConfigPass implements ConfigPassInterface
         'icon' => null,
         // the value of the HTML 'target' attribute add to the links of the actions (e.g. '_blank')
         'target' => '_self',
-    );
+    ];
 
     public function process(array $backendConfig)
     {
@@ -50,7 +50,7 @@ class ActionConfigPass implements ConfigPassInterface
     {
         $actionsDisabledByBackend = $backendConfig['disabled_actions'];
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            $actionsDisabledByEntity = isset($entityConfig['disabled_actions']) ? $entityConfig['disabled_actions'] : array();
+            $actionsDisabledByEntity = isset($entityConfig['disabled_actions']) ? $entityConfig['disabled_actions'] : [];
             $disabledActions = array_unique(array_merge($actionsDisabledByBackend, $actionsDisabledByEntity));
 
             $backendConfig['entities'][$entityName]['disabled_actions'] = $disabledActions;
@@ -108,7 +108,7 @@ class ActionConfigPass implements ConfigPassInterface
 
     private function doNormalizeActionsConfig(array $actionsConfig, $errorOrigin = '')
     {
-        $normalizedConfig = array();
+        $normalizedConfig = [];
 
         foreach ($actionsConfig as $i => $actionConfig) {
             if (!is_string($actionConfig) && !is_array($actionConfig)) {
@@ -117,7 +117,7 @@ class ActionConfigPass implements ConfigPassInterface
 
             // config format #1
             if (is_string($actionConfig)) {
-                $actionConfig = array('name' => $actionConfig);
+                $actionConfig = ['name' => $actionConfig];
             }
 
             $actionConfig = array_merge($this->defaultActionConfig, $actionConfig);
@@ -260,14 +260,14 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function getDefaultActionsConfig($view)
     {
-        $actions = $this->doNormalizeActionsConfig(array(
-            'delete' => array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash-o', 'css_class' => 'btn btn-default'),
-            'edit' => array('name' => 'edit', 'label' => 'action.edit', 'icon' => 'edit', 'css_class' => 'btn btn-primary'),
-            'new' => array('name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'),
-            'search' => array('name' => 'search', 'label' => 'action.search'),
-            'show' => array('name' => 'show', 'label' => 'action.show'),
-            'list' => array('name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary'),
-        ));
+        $actions = $this->doNormalizeActionsConfig([
+            'delete' => ['name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash-o', 'css_class' => 'btn btn-default'],
+            'edit' => ['name' => 'edit', 'label' => 'action.edit', 'icon' => 'edit', 'css_class' => 'btn btn-primary'],
+            'new' => ['name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'],
+            'search' => ['name' => 'search', 'label' => 'action.search'],
+            'show' => ['name' => 'show', 'label' => 'action.show'],
+            'list' => ['name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary'],
+        ]);
 
         // minor tweaks for some action + view combinations
         if ('list' === $view) {
@@ -292,16 +292,16 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function getDefaultActions($view)
     {
-        $defaultActions = array();
+        $defaultActions = [];
         $defaultActionsConfig = $this->getDefaultActionsConfig($view);
 
         // actions are displayed in the same order as defined in this array
-        $actionsEnabledByView = array(
-            'edit' => array('delete', 'list'),
-            'list' => array('edit', 'delete', 'new', 'search'),
-            'new' => array('list'),
-            'show' => array('edit', 'delete', 'list'),
-        );
+        $actionsEnabledByView = [
+            'edit' => ['delete', 'list'],
+            'list' => ['edit', 'delete', 'new', 'search'],
+            'new' => ['list'],
+            'show' => ['edit', 'delete', 'list'],
+        ];
 
         foreach ($actionsEnabledByView[$view] as $actionName) {
             $defaultActions[$actionName] = $defaultActionsConfig[$actionName];
@@ -332,12 +332,12 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function humanizeString($content)
     {
-        return ucfirst(trim(mb_strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $content))));
+        return ucfirst(trim(mb_strtolower(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $content))));
     }
 
     private function reorderArrayItems(array $originalArray, array $newKeyOrder)
     {
-        $newArray = array();
+        $newArray = [];
         foreach ($newKeyOrder as $key) {
             if (isset($originalArray[$key])) {
                 $newArray[$key] = $originalArray[$key];

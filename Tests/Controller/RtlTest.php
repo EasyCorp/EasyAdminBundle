@@ -19,7 +19,7 @@ class RtlTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'rtl'));
+        $this->initClient(['environment' => 'rtl']);
     }
 
     public function testRtlAutodetection()

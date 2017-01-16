@@ -76,7 +76,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
         // glob() returns an array of strings and fixtures require an array of arrays
         return array_map(
             function ($filePath) {
-                return array($filePath);
+                return [$filePath];
             },
             glob(__DIR__.'/fixtures/exceptions/*.yml')
         );
@@ -92,7 +92,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 
         // these tests are not compatible with Symfony 2.3 because the YAML
         // component of that version does not ignore duplicate keys
-        $incompatibleTests = array(
+        $incompatibleTests = [
             'configurations/input/admin_007.yml',
             'configurations/input/admin_008.yml',
             'configurations/input/admin_013.yml',
@@ -101,7 +101,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
             'configurations/input/admin_020.yml',
             'configurations/input/admin_021.yml',
             'configurations/input/admin_026.yml',
-        );
+        ];
 
         return !in_array(substr($filePath, -34), $incompatibleTests);
     }

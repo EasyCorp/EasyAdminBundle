@@ -16,7 +16,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
  */
 class EntityNotFoundException extends BaseException
 {
-    public function __construct(array $parameters = array())
+    public function __construct(array $parameters = [])
     {
         $errorMessage = sprintf('The "%s" entity with "%s = %s" does not exist in the database.', $parameters['entity']['name'], $parameters['entity']['primary_key_field_name'], $parameters['entity_id']);
         $proposedSolution = sprintf('Check that the mentioned entity hasn\'t been deleted by mistake.');

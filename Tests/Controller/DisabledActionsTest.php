@@ -20,7 +20,7 @@ class DisabledActionsTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'disabled_actions'));
+        $this->initClient(['environment' => 'disabled_actions']);
     }
 
     public function testAssociationLinksInListView()

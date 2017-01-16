@@ -20,7 +20,7 @@ class AppKernel extends Kernel
 {
     public function registerBundles()
     {
-        return array(
+        return [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
@@ -29,7 +29,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle(),
             new JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\AppTestBundle(),
-        );
+        ];
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)
@@ -38,9 +38,9 @@ class AppKernel extends Kernel
 
         if ($this->isSymfony3()) {
             $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('framework', array(
+                $container->loadFromExtension('framework', [
                     'assets' => null,
-                ));
+                ]);
             });
         }
     }

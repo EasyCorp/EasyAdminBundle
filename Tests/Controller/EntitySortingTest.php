@@ -19,7 +19,7 @@ class EntitySortingTest extends AbstractTestCase
     {
         // parent::setUp();
 
-        $this->initClient(array('environment' => 'entity_sorting'));
+        $this->initClient(['environment' => 'entity_sorting']);
     }
 
     public function testMainMenuSorting()

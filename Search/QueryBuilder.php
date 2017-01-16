@@ -82,10 +82,10 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $queryParameters = array();
+        $queryParameters = [];
         foreach ($entityConfig['search']['fields'] as $name => $metadata) {
-            $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));
-            $isTextField = in_array($metadata['dataType'], array('string', 'text', 'guid'));
+            $isNumericField = in_array($metadata['dataType'], ['integer', 'number', 'smallint', 'bigint', 'decimal', 'float']);
+            $isTextField = in_array($metadata['dataType'], ['string', 'text', 'guid']);
             $isGuidField = 'guid' === $metadata['dataType'];
 
             if ($isNumericField && is_numeric($searchQuery)) {

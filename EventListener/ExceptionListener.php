@@ -77,7 +77,7 @@ class ExceptionListener extends BaseExceptionListener
 
         return $this->templating->renderResponse(
             $exceptionTemplatePath,
-            array('exception' => $exception),
+            ['exception' => $exception],
             Response::create()->setStatusCode($exception->getStatusCode())
         );
     }
@@ -95,9 +95,9 @@ class ExceptionListener extends BaseExceptionListener
 
         if (null !== $this->logger) {
             if ($exception->getStatusCode() >= 500) {
-                $this->logger->critical($message, array('exception' => $exception));
+                $this->logger->critical($message, ['exception' => $exception]);
             } else {
-                $this->logger->error($message, array('exception' => $exception));
+                $this->logger->error($message, ['exception' => $exception]);
             }
         }
     }
@@ -167,11 +167,11 @@ class ExceptionListener extends BaseExceptionListener
      */
     private function legacyDuplicateRequest(Request $request)
     {
-        $attributes = array(
+        $attributes = [
             '_controller' => $this->controller,
             'logger' => $this->logger instanceof DebugLoggerInterface ? $this->logger : null,
             'format' => $request->getRequestFormat(),
-        );
+        ];
         $request = $request->duplicate(null, null, $attributes);
         $request->setMethod('GET');
 

@@ -135,6 +135,10 @@
                 <source>action.remove_item</source>
                 <target>Remove the item</target>
             </trans-unit>
+            <trans-unit id="error">
+                <source>error</source>
+                <target>Error</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Error|Errors</target>
@@ -146,6 +150,12 @@
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} there is another item not displayed in this listing|]1,Inf] %count% other items are not displayed in this listing]]></target>
+            </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>You can't delete this "%entity_name%" item because other items depend on it in the database.</target>
             </trans-unit>
         </body>
     </file>

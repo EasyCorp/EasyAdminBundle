@@ -18,8 +18,8 @@ use Symfony\Component\Debug\Exception\FlattenException as BaseFlattenException;
  */
 class FlattenException extends BaseFlattenException
 {
-    /** @var string */
-    private $safeMessage;
+    /** @var ExceptionContext */
+    private $context;
 
     public static function create(\Exception $exception, $statusCode = null, array $headers = array())
     {
@@ -29,25 +29,28 @@ class FlattenException extends BaseFlattenException
 
         /** @var FlattenException $e */
         $e = parent::create($exception, $statusCode, $headers);
-        $e->setStatusCode($exception->getStatusCode());
-        $e->setSafeMessage($exception->getSafeMessage());
+        $e->context = $exception->getContext();
 
         return $e;
     }
 
-    /**
-     * @return string
-     */
-    public function getSafeMessage()
+    public function getPublicMessage()
     {
-        return $this->safeMessage;
+        return $this->context->getPublicMessage();
     }
 
-    /**
-     * @param string $safeMessage
-     */
-    public function setSafeMessage($safeMessage)
+    public function getDebugMessage()
     {
-        $this->safeMessage = $safeMessage;
+        return $this->context->getDebugMessage();
+    }
+
+    public function getParameters()
+    {
+        return $this->context->getParameters();
+    }
+
+    public function getStatusCode()
+    {
+        return $this->context->getStatusCode();
     }
 }

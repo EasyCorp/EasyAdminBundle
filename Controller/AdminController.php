@@ -338,7 +338,7 @@ class AdminController extends Controller
                 $this->em->remove($entity);
                 $this->em->flush();
             } catch (ForeignKeyConstraintViolationException $e) {
-                throw new EntityRemoveException(array('entity' => $this->entity['name']));
+                throw new EntityRemoveException(array('entity_name' => $this->entity['name']));
             }
 
             $this->dispatch(EasyAdminEvents::POST_REMOVE, array('entity' => $entity));

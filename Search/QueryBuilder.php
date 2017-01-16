@@ -54,7 +54,18 @@ class QueryBuilder
         }
 
         if (null !== $sortField) {
-            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection);
+            if (isset($entityConfig['list']['fields'][$sortField]['entitySort'])) {
+                $sortConfig = $entityConfig['list']['fields'][$sortField]['entitySort'];
+
+                $queryBuilder->leftJoin(
+                    $sortConfig['targetEntity'],
+                    'entity_joined',
+                    'WITH',
+                    'entity_joined = entity.' . $sortField
+                )->orderBy('entity_joined.' . $sortConfig['targetProperty'], $sortDirection);
+            } else {
+                $queryBuilder->orderBy('entity.'.$sortField, $sortDirection);
+            }
         }
 
         return $queryBuilder;

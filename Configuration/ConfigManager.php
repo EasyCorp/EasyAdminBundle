@@ -121,10 +121,10 @@ class ConfigManager
         try {
             $entityConfig = $this->getEntityConfig($entityName);
         } catch (\Exception $e) {
-            $entityConfig = array();
+            $entityConfig = [];
         }
 
-        return isset($entityConfig[$view]['actions'][$action]) ? $entityConfig[$view]['actions'][$action] : array();
+        return isset($entityConfig[$view]['actions'][$action]) ? $entityConfig[$view]['actions'][$action] : [];
     }
 
     /**
@@ -181,7 +181,7 @@ class ConfigManager
      */
     private function doProcessConfig($backendConfig)
     {
-        $configPasses = array(
+        $configPasses = [
             new NormalizerConfigPass($this->container),
             new DesignConfigPass($this->container->get('twig'), $this->container->getParameter('kernel.debug'), $this->container->getParameter('locale')),
             new MenuConfigPass(),
@@ -191,7 +191,7 @@ class ConfigManager
             new ViewConfigPass(),
             new TemplateConfigPass($this->container->getParameter('kernel.root_dir').'/Resources/views'),
             new DefaultConfigPass(),
-        );
+        ];
 
         foreach ($configPasses as $configPass) {
             $backendConfig = $configPass->process($backendConfig);

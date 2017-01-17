@@ -19,7 +19,7 @@ class CustomEntityControllerAsServiceTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'custom_entity_controller_service'));
+        $this->initClient(['environment' => 'custom_entity_controller_service']);
     }
 
     public function testListAction()

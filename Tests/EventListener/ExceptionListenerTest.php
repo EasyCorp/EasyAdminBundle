@@ -45,17 +45,17 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testCatchBaseExceptions()
     {
-        $exception = new EasyEntityNotFoundException(array(
-            'entity' => array(
+        $exception = new EasyEntityNotFoundException([
+            'entity' => [
                 'name' => 'Test',
                 'primary_key_field_name' => 'Test key',
-            ),
+            ],
             'entity_id' => 2,
-        ));
+        ]);
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
         $templating = $this->getTemplating();
 
-        $listener = new ExceptionListener($templating, array(), 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($templating, [], 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 
@@ -77,7 +77,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $event = $this->getEventExceptionThatShouldNotBeCalled($exception);
         $templating = $this->getTemplating();
 
-        $listener = new ExceptionListener($templating, array(), 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($templating, [], 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 }

@@ -22,7 +22,7 @@ class TemplateConfigPass implements ConfigPassInterface
 {
     private $templatesDir;
 
-    private $defaultBackendTemplates = array(
+    private $defaultBackendTemplates = [
         'layout' => '@EasyAdmin/default/layout.html.twig',
         'menu' => '@EasyAdmin/default/menu.html.twig',
         'edit' => '@EasyAdmin/default/edit.html.twig',
@@ -61,7 +61,7 @@ class TemplateConfigPass implements ConfigPassInterface
         'label_inaccessible' => '@EasyAdmin/default/label_inaccessible.html.twig',
         'label_null' => '@EasyAdmin/default/label_null.html.twig',
         'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
-    );
+    ];
 
     public function __construct($templatesDir)
     {
@@ -116,7 +116,7 @@ class TemplateConfigPass implements ConfigPassInterface
 
         // second, walk through all entity fields to determine their specific template
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('list', 'show') as $view) {
+            foreach (['list', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
                     // if the field defines its own template, resolve its location
                     if (isset($fieldMetadata['template'])) {
@@ -197,7 +197,7 @@ class TemplateConfigPass implements ConfigPassInterface
     private function processFieldTemplates(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('list', 'show') as $view) {
+            foreach (['list', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
                     if (null !== $fieldMetadata['template']) {
                         continue;

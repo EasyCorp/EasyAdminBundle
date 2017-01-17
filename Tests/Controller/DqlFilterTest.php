@@ -19,7 +19,7 @@ class DqlFilterTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'dql_filter'));
+        $this->initClient(['environment' => 'dql_filter']);
     }
 
     public function testListDqlFilter()
@@ -28,7 +28,7 @@ class DqlFilterTest extends AbstractTestCase
 
         $this->assertCount(4, $crawler->filter('#main .table tbody tr'));
         $this->assertSame(
-            array('54', '53', '52', '51'),
+            ['54', '53', '52', '51'],
             $crawler->filter('#main .table tbody tr')->extract('data-id')
         );
     }
@@ -39,7 +39,7 @@ class DqlFilterTest extends AbstractTestCase
 
         $this->assertCount(11, $crawler->filter('#main .table tbody tr'));
         $this->assertSame(
-            array('29', '28', '27', '26', '25', '24', '23', '22', '21', '20', '2'),
+            ['29', '28', '27', '26', '25', '24', '23', '22', '21', '20', '2'],
             $crawler->filter('#main .table tbody tr')->extract('data-id')
         );
     }

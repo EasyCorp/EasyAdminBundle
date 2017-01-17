@@ -19,15 +19,15 @@ class BackendErrorsTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'default_backend'));
+        $this->initClient(['environment' => 'default_backend']);
     }
 
     public function testUndefinedEntityError()
     {
-        $crawler = $this->getBackendPage(array(
+        $crawler = $this->getBackendPage([
             'entity' => 'InexistentEntity',
             'view' => 'list',
-        ));
+        ]);
 
         $this->assertSame(500, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Entity "InexistentEntity" is not managed by EasyAdmin.', $crawler->filter('head title')->text());

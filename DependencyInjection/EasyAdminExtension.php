@@ -51,7 +51,7 @@ class EasyAdminExtension extends Extension
 
         // compile commonly used classes on PHP < 7.0
         if (PHP_VERSION_ID < 70000) {
-            $this->addClassesToCompile(array(
+            $this->addClassesToCompile([
                 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Configuration\\ConfigManager',
                 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Event\\EasyAdminEvents',
                 'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\ExceptionListener',
@@ -60,7 +60,7 @@ class EasyAdminExtension extends Extension
                 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Search\\Paginator',
                 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Search\\QueryBuilder',
                 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension',
-            ));
+            ]);
         }
 
         $this->ensureBackwardCompatibility($container);
@@ -77,13 +77,13 @@ class EasyAdminExtension extends Extension
         // BC for Symfony 2.3 and Request Stack
         $isRequestStackAvailable = class_exists('Symfony\\Component\\HttpFoundation\\RequestStack');
         if (!$isRequestStackAvailable) {
-            $needsSetRequestMethodCall = array('easyadmin.listener.request_post_initialize', 'easyadmin.form.type.extension');
+            $needsSetRequestMethodCall = ['easyadmin.listener.request_post_initialize', 'easyadmin.form.type.extension'];
             foreach ($needsSetRequestMethodCall as $serviceId) {
                 $container
                     ->getDefinition($serviceId)
-                    ->addMethodCall('setRequest', array(
+                    ->addMethodCall('setRequest', [
                         new Reference('request', ContainerInterface::NULL_ON_INVALID_REFERENCE, false),
-                    ))
+                    ])
                 ;
             }
         }
@@ -100,11 +100,11 @@ class EasyAdminExtension extends Extension
 
     private function processConfigFiles(array $configs)
     {
-        $existingEntityNames = array();
+        $existingEntityNames = [];
 
         foreach ($configs as $i => $config) {
             if (array_key_exists('entities', $config)) {
-                $processedConfig = array();
+                $processedConfig = [];
 
                 foreach ($config['entities'] as $key => $value) {
                     $entityConfig = $this->normalizeEntityConfig($key, $value);
@@ -159,7 +159,7 @@ class EasyAdminExtension extends Extension
     {
         // normalize config formats #1 and #2 to use the 'class' option as config format #3
         if (!is_array($entityConfig)) {
-            $entityConfig = array('class' => $entityConfig);
+            $entityConfig = ['class' => $entityConfig];
         }
 
         // if config format #3 is used, ensure that it defines the 'class' option

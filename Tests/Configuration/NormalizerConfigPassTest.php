@@ -21,14 +21,14 @@ class NormalizerConfigPassTest extends \PHPUnit_Framework_TestCase
      */
     public function testFieldsMustBeStringsOrArrays()
     {
-        $backendConfig = array('entities' => array(
-            'TestEntity' => array(
+        $backendConfig = ['entities' => [
+            'TestEntity' => [
                 'class' => 'AppBundle\Entity\TestEntity',
-                'edit' => array(
-                    'fields' => array(20),
-                ),
-            ),
-        ));
+                'edit' => [
+                    'fields' => [20],
+                ],
+            ],
+        ]];
 
         $configPass = new NormalizerConfigPass($this->getServiceContainer());
         $configPass->process($backendConfig);
@@ -40,16 +40,16 @@ class NormalizerConfigPassTest extends \PHPUnit_Framework_TestCase
      */
     public function testFieldsMustDefinePropertyOption()
     {
-        $backendConfig = array('entities' => array(
-            'TestEntity' => array(
+        $backendConfig = ['entities' => [
+            'TestEntity' => [
                 'class' => 'AppBundle\Entity\TestEntity',
-                'edit' => array(
-                    'fields' => array(
-                        array('label' => 'Field without "property" option'),
-                    ),
-                ),
-            ),
-        ));
+                'edit' => [
+                    'fields' => [
+                        ['label' => 'Field without "property" option'],
+                    ],
+                ],
+            ],
+        ]];
 
         $configPass = new NormalizerConfigPass($this->getServiceContainer());
         $configPass->process($backendConfig);

@@ -16,7 +16,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
  */
 class NoEntitiesConfiguredException extends BaseException
 {
-    public function __construct(array $parameters = array())
+    public function __construct(array $parameters = [])
     {
         $errorMessage = 'Your backend is empty because you haven\'t configured any Doctrine entity to manage.';
         $proposedSolution = 'Open your "app/config/config.yml" file and configure the backend under the "easy_admin" key.';

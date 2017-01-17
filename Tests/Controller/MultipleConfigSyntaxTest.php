@@ -17,12 +17,12 @@ class MultipleConfigSyntaxTest extends AbstractTestCase
 {
     public function testConfigurationInDifferentFiles()
     {
-        $this->initClient(array('environment' => 'multiple_config_syntax'));
+        $this->initClient(['environment' => 'multiple_config_syntax']);
         $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
-        $expectedEntityNames = array(
+        $expectedEntityNames = [
             'Product', 'Product2', 'Product3', 'Product4', 'Inventory', 'Product22', 'Product5', 'Inventory2',
-        );
+        ];
 
         $i = 0;
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {

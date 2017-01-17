@@ -76,7 +76,7 @@ class Purchase
      * @var array
      * @ORM\Column(type="json_array")
      */
-    protected $billingAddress = array();
+    protected $billingAddress = [];
 
     /**
      * The user who made the purchase.

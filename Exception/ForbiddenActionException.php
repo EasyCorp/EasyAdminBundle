@@ -16,7 +16,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
  */
 class ForbiddenActionException extends BaseException
 {
-    public function __construct(array $parameters = array())
+    public function __construct(array $parameters = [])
     {
         $errorMessage = sprintf('The requested "%s" action is not allowed for the "%s" entity.', $parameters['action'], $parameters['entity']);
         $proposedSolution = sprintf('Remove the "%s" action from the "disabled_actions" option, which can be configured globally for the entire backend or locally for the "%s" entity.', $parameters['action'], $parameters['entity']);

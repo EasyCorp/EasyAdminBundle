@@ -6,7 +6,7 @@
 ] %}
 
 {% block body_class 'error' %}
-{% block page_title %}{{ 'error'|trans({}, 'EasyAdminBundle') }}{% endblock %}
+{% block page_title %}{{ 'errors'|transchoice(1, {}, 'EasyAdminBundle') }}{% endblock %}
 
 {% block content %}
     <section id="main" class="content">
@@ -14,7 +14,7 @@
             <h1>{{ block('page_title') }}</h1>
 
             <div class="error-message">
-                <p>{{ exception.publicMessage|trans(exception.parameters, 'EasyAdminBundle') }}</p>
+                <p>{{ exception.publicMessage|trans(exception.translationParameters, 'EasyAdminBundle') }}</p>
             </div>
         </div>
     </section>

@@ -135,10 +135,6 @@
                 <source>action.remove_item</source>
                 <target>Remove the item</target>
             </trans-unit>
-            <trans-unit id="error">
-                <source>error</source>
-                <target>Error</target>
-            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Error|Errors</target>
@@ -153,9 +149,25 @@
             </trans-unit>
 
             <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>This item is no longer available.</target>
+            </trans-unit>
             <trans-unit id="exception.entity_remove">
                 <source>exception.entity_remove</source>
-                <target>You can't delete this "%entity_name%" item because other items depend on it in the database.</target>
+                <target>This item can't be deleted because other items depend on it.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>The requested action can't be performed on this item.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>The application is not properly configured.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>The application is not properly configured for this kind of items.</target>
             </trans-unit>
         </body>
     </file>

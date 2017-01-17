@@ -69,7 +69,7 @@ class AdminController extends Controller
 
         $action = $request->query->get('action', 'list');
         if (!$this->isActionAllowed($action)) {
-            throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
+            throw new ForbiddenActionException(array('action' => $action, 'entity_name' => $this->entity['name']));
         }
 
         return $this->executeDynamicMethod($action.'<EntityName>Action');

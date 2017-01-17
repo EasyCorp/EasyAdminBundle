@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -84,7 +85,7 @@ class ConfigManager
     {
         $backendConfig = $this->getBackendConfig();
         if (!isset($backendConfig['entities'][$entityName])) {
-            throw new \InvalidArgumentException(sprintf('Entity "%s" is not managed by EasyAdmin.', $entityName));
+            throw new UndefinedEntityException(array('entity_name' => $entityName));
         }
 
         return $backendConfig['entities'][$entityName];

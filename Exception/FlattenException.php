@@ -49,6 +49,11 @@ class FlattenException extends BaseFlattenException
         return $this->context->getParameters();
     }
 
+    public function getTranslationParameters()
+    {
+        return $this->context->getTranslationParameters();
+    }
+
     public function getStatusCode()
     {
         return $this->context->getStatusCode();

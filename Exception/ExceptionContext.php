@@ -24,7 +24,7 @@ class ExceptionContext
     public function __construct($publicMessage, $debugMessage = '', $parameters = array(), $statusCode = 500) {
         $this->publicMessage = $publicMessage;
         $this->debugMessage = $debugMessage;
-        $this->parameters = $this->transformIntoTranslationParameters($parameters);
+        $this->parameters = $parameters;
         $this->statusCode = $statusCode;
     }
 
@@ -43,14 +43,19 @@ class ExceptionContext
         return $this->parameters;
     }
 
+    public function getTranslationParameters()
+    {
+        return $this->transformIntoTranslationPlaceholders($this->parameters);
+    }
+
     public function getStatusCode()
     {
         return $this->statusCode;
     }
 
-    private function transformIntoTranslationParameters(array $parameters)
+    private function transformIntoTranslationPlaceholders(array $parameters)
     {
-        $newParameters = array();
+        $placeholders = array();
         foreach ($parameters as $key => $value) {
             if ('%' !== $key[0]) {
                 $key = '%'.$key;
@@ -59,9 +64,9 @@ class ExceptionContext
                 $key = $key.'%';
             }
 
-            $newParameters[$key] = $value;
+            $placeholders[$key] = $value;
         }
 
-        return $newParameters;
+        return $placeholders;
     }
 }

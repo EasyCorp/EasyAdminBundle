@@ -20,7 +20,7 @@ class BaseException extends \RuntimeException
     private $context;
 
     /**
-     * @param ExceptionContext $exceptionContext
+     * @param ExceptionContext $context
      */
     public function __construct(ExceptionContext $context)
     {

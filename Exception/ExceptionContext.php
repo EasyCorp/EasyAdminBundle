@@ -21,7 +21,8 @@ class ExceptionContext
     private $parameters;
     private $statusCode;
 
-    public function __construct($publicMessage, $debugMessage = '', $parameters = array(), $statusCode = 500) {
+    public function __construct($publicMessage, $debugMessage = '', $parameters = array(), $statusCode = 500)
+    {
         $this->publicMessage = $publicMessage;
         $this->debugMessage = $debugMessage;
         $this->parameters = $parameters;

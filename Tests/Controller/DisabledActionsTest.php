@@ -63,7 +63,7 @@ class DisabledActionsTest extends AbstractTestCase
         $crawler = $this->requestShowView('User', 1);
 
         $this->assertContains(
-            'Error: The requested &quot;show&quot; action is not allowed for the &quot;User&quot; entity.',
+            'The requested &quot;show&quot; action is not allowed for the &quot;User&quot; entity.',
             $this->client->getResponse()->getContent()
         );
     }

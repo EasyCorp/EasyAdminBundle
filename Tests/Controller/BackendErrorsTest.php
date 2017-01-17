@@ -30,6 +30,6 @@ class BackendErrorsTest extends AbstractTestCase
         ));
 
         $this->assertSame(500, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('Entity "InexistentEntity" is not managed by EasyAdmin.', $crawler->filter('head title')->text());
+        $this->assertContains('The "InexistentEntity" entity is not defined in the configuration of your backend.', $crawler->filter('head title')->text());
     }
 }

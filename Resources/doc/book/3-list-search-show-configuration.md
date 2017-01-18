@@ -245,7 +245,12 @@ The fields of the `list` and `search` views define another option:
     by default except virtual properties (explained later in this chapter) and
     those related with Doctrine associations of any type.
 
-The fields of the `show` view define another option:
+The fields of the `list` view can define another option:
+
+  * `align` (optional): the alignment used to display the contents of the
+    property (it can be `left` (the default value), `center` and `right`).
+
+The fields of the `show` view can define another option:
 
   * `help` (optional): the help message displayed below the field contents.
 

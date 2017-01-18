@@ -11,10 +11,10 @@
 {% block content %}
     <section id="main" class="content">
         <div class="error-description">
-            <h1>{{ block('page_title') }}</h1>
+            <h1><i class="fa fa-exclamation-circle"></i> {{ block('page_title') }}</h1>
 
             <div class="error-message">
-                <p>{{ exception.publicMessage|trans(exception.translationParameters, 'EasyAdminBundle') }}</p>
+                {{ exception.publicMessage|trans(exception.translationParameters, 'EasyAdminBundle') }}
             </div>
         </div>
     </section>

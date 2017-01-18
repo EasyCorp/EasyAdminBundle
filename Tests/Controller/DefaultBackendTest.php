@@ -697,4 +697,11 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', $this->client->getResponse()->getContent());
     }
+
+    public function testEntityDeletionForm()
+    {
+        $crawler = $this->requestEditView('Product', '1');
+
+        $this->assertSame('1', $crawler->filter('#delete_form__easyadmin_delete_flag')->attr('value'), 'The delete form contains a special flag to prevent sending empty forms (see issue #1409 for details).');
+    }
 }

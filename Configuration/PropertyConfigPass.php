@@ -20,6 +20,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 class PropertyConfigPass implements ConfigPassInterface
 {
     private $defaultEntityFieldConfig = array(
+        // the alignment applied to the property contents (left, center or right)
+        'align' => 'left',
         // CSS class or classes applied to form field or list/show property
         'css_class' => '',
         // date/time/datetime/number format applied to form field value

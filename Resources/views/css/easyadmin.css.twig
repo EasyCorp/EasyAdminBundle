@@ -936,7 +936,6 @@ body.list table tbody td {
     border-bottom: 1px solid {{ colors.table_row_border }};
     border-top: 0;
     display: block;
-    text-align: right;
     vertical-align: middle;
 }
 body.list table tbody td:last-child {
@@ -951,6 +950,12 @@ table td:after {
     clear: both;
     content: "";
     display: block;
+}
+/* needed because the responsive tables require contents aligned to the right */
+body.list table .text-center,
+body.list table .text-left,
+body.list table .text-right {
+    text-align: right;
 }
 
 body.list table tbody td.image .easyadmin-thumbnail img {
@@ -1262,7 +1267,6 @@ body.error .error-message {
         border-bottom: 0;
         border-top: 1px solid {{ colors.table_row_border }};
         display: table-cell;
-        text-align: left;
     }
     table td:before {
         content: none;
@@ -1279,6 +1283,9 @@ body.error .error-message {
         margin-left: 0;
         margin-right: 10px;
     }
+    body.list table .text-center { text-align: center; }
+    body.list table .text-left   { text-align: left; }
+    body.list table .text-right  { text-align: right; }
 
     .field-date select + select,
     .field-time select + select,

@@ -663,6 +663,8 @@ class AdminController extends Controller
             ->setMethod('DELETE')
         ;
         $formBuilder->add('submit', LegacyFormHelper::getType('submit'), array('label' => 'delete_modal.action', 'translation_domain' => 'EasyAdminBundle'));
+        // needed to avoid submitting empty delete forms (see issue #1409)
+        $formBuilder->add('_easyadmin_delete_flag', LegacyFormHelper::getType('hidden'), array('data' => '1'));
 
         return $formBuilder->getForm();
     }

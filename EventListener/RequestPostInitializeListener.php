@@ -83,7 +83,7 @@ class RequestPostInitializeListener
     {
         $manager = $this->doctrine->getManagerForClass($entityConfig['class']);
         if (null === $entity = $manager->getRepository($entityConfig['class'])->find($itemId)) {
-            throw new EntityNotFoundException(array('entity' => $entityConfig, 'entity_id' => $itemId));
+            throw new EntityNotFoundException(array('entity_name' => $entityConfig['name'], 'entity_id_name' => $entityConfig['primary_key_field_name'], 'entity_id_value' => $itemId));
         }
 
         return $entity;

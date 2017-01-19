@@ -18,9 +18,13 @@ class EntityRemoveException extends BaseException
 {
     public function __construct(array $parameters = array())
     {
-        $errorMessage = sprintf('You can\'t delete this "%s" item because other items depend on it in the database.', $parameters['entity']);
-        $proposedSolution = "Don't delete this item or change the database configuration to allow deleting it.";
+        $exceptionContext = new ExceptionContext(
+            'exception.entity_remove',
+            sprintf('There is a ForeignKeyConstraintViolationException for the Doctrine entity associated with "%s". Solution: disable the "delete" action for this entity or configure the "cascade={"remove"}" attribute for the related property in the Doctrine entity.', $parameters['entity_name']),
+            $parameters,
+            404
+        );
 
-        parent::__construct($errorMessage, $proposedSolution, 404);
+        parent::__construct($exceptionContext);
     }
 }

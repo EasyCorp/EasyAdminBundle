@@ -69,7 +69,7 @@ class AdminController extends Controller
 
         $action = $request->query->get('action', 'list');
         if (!$this->isActionAllowed($action)) {
-            throw new ForbiddenActionException(array('action' => $action, 'entity' => $this->entity['name']));
+            throw new ForbiddenActionException(array('action' => $action, 'entity_name' => $this->entity['name']));
         }
 
         return $this->executeDynamicMethod($action.'<EntityName>Action');
@@ -338,7 +338,7 @@ class AdminController extends Controller
                 $this->em->remove($entity);
                 $this->em->flush();
             } catch (ForeignKeyConstraintViolationException $e) {
-                throw new EntityRemoveException(array('entity' => $this->entity['name']));
+                throw new EntityRemoveException(array('entity_name' => $this->entity['name']));
             }
 
             $this->dispatch(EasyAdminEvents::POST_REMOVE, array('entity' => $entity));

@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-01-18T16:36:16Z
+
+This is now ready for the final review before merge. I've updated the design of the error messages slightly to always display them centered in the page:
+
+![error_message](https://cloud.githubusercontent.com/assets/73419/22073029/7e6538c4-dda4-11e6-9d2a-3ca54f38dcd5.png)

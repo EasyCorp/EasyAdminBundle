@@ -48,6 +48,7 @@ class CacheManager extends FilesystemCache
     /**
      * @param string $key
      * @param mixed  $item
+     * @param int    $lifetime
      *
      * @return bool
      */

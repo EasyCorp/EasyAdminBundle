@@ -20,6 +20,7 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
  */
 class ConfigWarmer implements CacheWarmerInterface
 {
+    /** @var ConfigManager */
     private $configManager;
 
     public function __construct(ConfigManager $configManager)
@@ -27,6 +28,9 @@ class ConfigWarmer implements CacheWarmerInterface
         $this->configManager = $configManager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function warmUp($cacheDir)
     {
         try {
@@ -39,6 +43,9 @@ class ConfigWarmer implements CacheWarmerInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isOptional()
     {
         return false;

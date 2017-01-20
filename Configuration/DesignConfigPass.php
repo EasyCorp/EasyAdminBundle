@@ -19,8 +19,11 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class DesignConfigPass implements ConfigPassInterface
 {
+    /** @var \Twig_Environment */
     private $twig;
+    /** @var bool */
     private $kernelDebug;
+    /** @var string */
     private $locale;
 
     public function __construct(\Twig_Environment $twig, $kernelDebug, $locale)

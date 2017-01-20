@@ -22,8 +22,11 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class EasyAdminTwigExtension extends \Twig_Extension
 {
+    /** @var ConfigManager */
     private $configManager;
+    /** @var PropertyAccessor */
     private $propertyAccessor;
+    /** @var bool */
     private $debug;
 
     public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, $debug = false)
@@ -33,6 +36,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
         $this->debug = $debug;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFunctions()
     {
         return array(
@@ -47,6 +53,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFilters()
     {
         return array(
@@ -278,6 +287,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
      * code: https://github.com/twigphp/Twig-extensions/blob/master/lib/Twig/Extensions/Extension/Text.php
      * author: Henrik Bjornskov <hb@peytz.dk>
      * copyright holder: (c) 2009 Fabien Potencier
+     *
+     * @return string
      */
     public function truncateText(\Twig_Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
     {
@@ -319,6 +330,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
         return $className;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'easyadmin_extension';

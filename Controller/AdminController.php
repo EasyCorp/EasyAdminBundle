@@ -175,7 +175,7 @@ class AdminController extends Controller
     /**
      * The method that is executed when the user performs a 'edit' action on an entity.
      *
-     * @return RedirectResponse|Response
+     * @return Response|RedirectResponse
      */
     protected function editAction()
     {
@@ -261,7 +261,7 @@ class AdminController extends Controller
     /**
      * The method that is executed when the user performs a 'new' action on an entity.
      *
-     * @return RedirectResponse|Response
+     * @return Response|RedirectResponse
      */
     protected function newAction()
     {
@@ -650,10 +650,10 @@ class AdminController extends Controller
      * the deletion of the entity are always performed with the 'DELETE' HTTP method,
      * which requires a form to work in the current browsers.
      *
-     * @param string $entityName
-     * @param int    $entityId
+     * @param string     $entityName
+     * @param int|string $entityId    When reusing the delete form for multiple entities, a pattern string is passed instead of an integer
      *
-     * @return Form
+     * @return Form|FormInterface
      */
     protected function createDeleteForm($entityName, $entityId)
     {

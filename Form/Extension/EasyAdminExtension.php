@@ -73,6 +73,8 @@ class EasyAdminExtension extends AbstractTypeExtension
      * To be replaced by the usage of the request stack when 2.3 support is dropped.
      *
      * @param Request|null $request
+     *
+     * @return null
      */
     public function setRequest(Request $request = null)
     {

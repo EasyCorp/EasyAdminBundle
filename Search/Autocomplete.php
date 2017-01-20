@@ -62,6 +62,12 @@ class Autocomplete
         return array('results' => $this->processResults($paginator->getCurrentPageResults(), $backendConfig['entities'][$entity]));
     }
 
+    /**
+     * @param array $entities
+     * @param array $targetEntityConfig
+     *
+     * @return array
+     */
     private function processResults($entities, $targetEntityConfig)
     {
         $results = array();

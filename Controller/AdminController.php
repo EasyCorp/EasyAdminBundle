@@ -651,7 +651,7 @@ class AdminController extends Controller
      * which requires a form to work in the current browsers.
      *
      * @param string     $entityName
-     * @param int|string $entityId    When reusing the delete form for multiple entities, a pattern string is passed instead of an integer
+     * @param int|string $entityId   When reusing the delete form for multiple entities, a pattern string is passed instead of an integer
      *
      * @return Form|FormInterface
      */

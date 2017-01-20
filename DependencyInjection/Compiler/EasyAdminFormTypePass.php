@@ -29,9 +29,6 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         $this->registerTypeConfigurators($container);
     }
 
-    /**
-     * @param ContainerBuilder $container
-     */
     private function configureTypeGuesserChain(ContainerBuilder $container)
     {
         $definition = $container->getDefinition('easyadmin.form.type_guesser_chain');
@@ -42,9 +39,6 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         $definition->replaceArgument(0, $guessers);
     }
 
-    /**
-     * @param ContainerBuilder $container
-     */
     private function registerTypeConfigurators(ContainerBuilder $container)
     {
         $configurators = new \SplPriorityQueue();

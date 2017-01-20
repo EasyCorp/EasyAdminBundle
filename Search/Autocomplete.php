@@ -63,12 +63,9 @@ class Autocomplete
     }
 
     /**
-     * @param array $entities
-     * @param array $targetEntityConfig
-     *
      * @return array
      */
-    private function processResults($entities, $targetEntityConfig)
+    private function processResults($entities, array $targetEntityConfig)
     {
         $results = array();
 

@@ -37,7 +37,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFunctions()
     {
@@ -54,7 +54,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFilters()
     {
@@ -331,7 +331,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName()
     {

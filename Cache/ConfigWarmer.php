@@ -29,7 +29,7 @@ class ConfigWarmer implements CacheWarmerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function warmUp($cacheDir)
     {
@@ -44,7 +44,7 @@ class ConfigWarmer implements CacheWarmerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isOptional()
     {

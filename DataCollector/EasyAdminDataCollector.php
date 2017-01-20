@@ -55,7 +55,7 @@ class EasyAdminDataCollector extends DataCollector
     /**
      * @param Request $request
      *
-     * @return array|void
+     * @return array|null
      */
     private function getEasyAdminParameters(Request $request)
     {

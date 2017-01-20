@@ -48,6 +48,9 @@ class ExceptionListener extends BaseExceptionListener
         parent::__construct($controller, $logger);
     }
 
+    /**
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
@@ -65,6 +68,11 @@ class ExceptionListener extends BaseExceptionListener
         }
     }
 
+    /**
+     * @param FlattenException $exception
+     *
+     * @return Response
+     */
     public function showExceptionPageAction(FlattenException $exception)
     {
         $entityConfig = isset($this->easyAdminConfig['entities'][$this->currentEntityName])

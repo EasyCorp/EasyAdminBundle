@@ -21,6 +21,13 @@ class FlattenException extends BaseFlattenException
     /** @var ExceptionContext */
     private $context;
 
+    /**
+     * @param \Exception $exception
+     * @param int        $statusCode
+     * @param array      $headers
+     *
+     * @return FlattenException
+     */
     public static function create(\Exception $exception, $statusCode = null, array $headers = array())
     {
         if (!$exception instanceof BaseException) {

@@ -17,6 +17,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 class BaseException extends \RuntimeException
 {
     protected $message;
+    /** @var ExceptionContext */
     private $context;
 
     /**
@@ -28,26 +29,41 @@ class BaseException extends \RuntimeException
         $this->context = $context;
     }
 
+    /**
+     * @return ExceptionContext
+     */
     public function getContext()
     {
         return $this->context;
     }
 
+    /**
+     * @return string The message that can safely be dispalyed to end-users because it doesn't contain sensitive data
+     */
     public function getPublicMessage()
     {
         return $this->context->getPublicMessage();
     }
 
+    /**
+     * @return string The full exception message that is logged and it can contain sensitive data
+     */
     public function getDebugMessage()
     {
         return $this->context->getDebugMessage();
     }
 
+    /**
+     * @return array
+     */
     public function getParameters()
     {
         return $this->context->getParameters();
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         return $this->context->getStatusCode();

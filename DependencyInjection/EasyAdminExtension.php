@@ -98,6 +98,15 @@ class EasyAdminExtension extends Extension
         }
     }
 
+    /**
+     * This method allows to define the entity configuration is several files.
+     * Without this, Symfony doesn't merge correctly the 'entities' config key
+     * defined in different files.
+     *
+     * @param array $configs
+     *
+     * @return array
+     */
     private function processConfigFiles(array $configs)
     {
         $existingEntityNames = array();

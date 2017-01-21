@@ -1,0 +1,41 @@
+---------------------------------------------------------------------------
+
+by maldoinc at 2016-11-18T09:16:01Z
+
+Besides me not getting this to work I think the join should be left to allow for nullable relationships.
+Also this should be on per-column basis as an entity might have multiple relationships to be sorted. All in all I think the configuration at #1387 is fine (but I might be biased) and the issue at hand is whether to have the user type the related entity or use Doctrine Annotation Reader to do the job instead.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-11-19T09:58:51Z
+
+This is now ready for the final review :)
+
+For now, I prefer to make the trade-off of not supporting sorting by multiple fields in exchange of a simpler codebase. However, I've added the "sort by multiple fields" to the list of [Future Features of this bundle](https://github.com/javiereguiluz/EasyAdminBundle/projects/1).
+
+---------------------------------------------------------------------------
+
+by yceruto at 2016-11-21T13:34:23Z
+
+LGTM :+1:
+
+---------------------------------------------------------------------------
+
+by maldoinc at 2016-11-22T14:31:18Z
+
+So I went ahead and tested this and sure enough it worked. However if an entity has multiple relationships how would we sort these?
+
+Say a sale has a customer and a sales agent just for the sake of it. How would we tell easyadmin that when a sort by customer is requested to sort by `customer.name` and when a sort by agent is requested to sort by `agent.name`?
+
+Also I cannot get the header column to sort alphabetically still, after the form is initially opened and correctly sorted from the menu, clicking the header removes the alphabetical sort and reverts it sort by Id.
+
+Am I doing something wrong or is this intended behaviour?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2016-11-26T15:22:06Z
+
+@maldoinc thanks for reviewing this.
+
+* For multiple relations/sorting, for now we'll do nothing. This PR only allows to sort by one association. I'm sorry but to keep this bundle simple we continuously do trade-offs like this.
+* About the sorting issue, I cannot reproduce it with the EasyAdmin Demo App. If I use a custom sort and I click on that column, the sorting is maintained. If I click on other columns or on any menu item, the sorting may change.

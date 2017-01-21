@@ -1,0 +1,50 @@
+---------------------------------------------------------------------------
+
+by mysiar at 2017-01-19T06:52:09Z
+
+Looks great. I guess it is not in the dev-master tree yet,,
+Is there any way to pull it to my existing project ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-01-19T08:29:35Z
+
+@mysiar this will probably be merged soon and released as part of the next version of the bundle ... so maybe you can wait a bit? Otherwise you can download this branch ... or even copy+paste the changes because they are minimal.
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2017-01-19T08:29:42Z
+
+I wonder how far we should go in the configuration options, considering this one is really tied to the current list layout which uses a table for rendering. Despite the implementation is simple, I fear having more options will complicate the maintenance.
+
+The same could be achievable with even more flexibility by adding specific classes to each table cells, and then applying styles in userland.
+
+So are such options legitimate?
+
+---------------------------------------------------------------------------
+
+by mysiar at 2017-01-19T11:16:46Z
+
+@javiereguiluz I will wait for next release, thanks
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-01-21T11:01:57Z
+
+After thinking about this, I agree with @ogizanagi and we don't need this new option because we can already achieve this in other ways. The problem was that our CSS styles were wrong, so if you used  `css_class: text-right` that style wasn't applied because our own CSS styles override it.
+
+---
+
+Maybe you are thinking: but `align: right` is better than `css_class: text-right`  It's true that it's shorter, but it requires you to learn and memorize a new config option and it requires us to maintain a new config option forever. Instead, using the `css_class` is "natural" and you can already use any of the CSS utilities provided by Bootstrap, such as `text-right`, `text-center`, etc.
+
+---------------------------------------------------------------------------
+
+by mysiar at 2017-01-21T11:16:22Z
+
+Does it mean that class text-right now will work on list view and will align listed entity values not the header?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-01-21T11:29:25Z
+
+@mysiar yes, `css_class: text-right` will work exactly as `align: right` was going to work. It aligns both the header and all of the contents of that column.

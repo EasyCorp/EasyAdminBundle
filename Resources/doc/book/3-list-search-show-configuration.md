@@ -227,6 +227,7 @@ These are the options that you can define for each field:
   * `css_class` (optional): the CSS class applied to the parent HTML element that
     encloses the field contents. In the `list` and `search` views, this class
     is also applied to the `<th>` header of the column associated with this field.
+    For example, to align the contents of some column to the right, use `css_class: text-right`
   * `template` (optional): the name of the custom template used to render the
     contents of the field. This option is fully explained later in this chapter.
   * `type` (optional): the type of data stored in the property, which affects
@@ -244,11 +245,6 @@ The fields of the `list` and `search` views define another option:
     property; set it to `false` to disable sorting. All properties are *sortable*
     by default except virtual properties (explained later in this chapter) and
     those related with Doctrine associations of any type.
-
-The fields of the `list` view can define another option:
-
-  * `align` (optional): the alignment used to display the contents of the
-    property (it can be `left` (the default value), `center` and `right`).
 
 The fields of the `show` view can define another option:
 

@@ -952,6 +952,7 @@ table td:after {
     display: block;
 }
 /* needed because the responsive tables require contents aligned to the right */
+body.list table td,
 body.list table .text-center,
 body.list table .text-left,
 body.list table .text-right {
@@ -1283,6 +1284,7 @@ body.error .error-message {
         margin-left: 0;
         margin-right: 10px;
     }
+    body.list table td { text-align: left; }
     body.list table .text-center { text-align: center; }
     body.list table .text-left   { text-align: left; }
     body.list table .text-right  { text-align: right; }

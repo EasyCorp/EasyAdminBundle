@@ -212,14 +212,6 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertSame('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
-    public function testListViewDefaultContentAlignment()
-    {
-        $crawler = $this->requestListView();
-
-        $this->assertContains('text-left', $crawler->filter('#main .table thead th')->eq(0)->attr('class'));
-        $this->assertContains('text-left', $crawler->filter('#main .table tbody td')->eq(0)->attr('class'));
-    }
-
     public function testListViewTableContents()
     {
         $crawler = $this->requestListView();

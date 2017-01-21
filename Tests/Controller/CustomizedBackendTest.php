@@ -117,17 +117,6 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertSame('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
-    public function testListViewDefaultContentAlignment()
-    {
-        $crawler = $this->requestListView();
-
-        foreach (array('#main .table thead th', '#main .table tbody td') as $selector) {
-            foreach (array('text-left', 'text-center', 'text-right') as $columnNumber => $alignment) {
-                $this->assertContains($alignment, $crawler->filter($selector)->eq($columnNumber)->attr('class'));
-            }
-        }
-    }
-
     public function testListViewTableContents()
     {
         $crawler = $this->requestListView();
@@ -149,8 +138,8 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('string text-center custom_class_list', trim($crawler->filter('.table thead tr th[data-property-name="name"]')->eq(0)->attr('class')));
-        $this->assertSame('string text-center custom_class_list', trim($crawler->filter('.table tbody tr td[data-label="Label"]')->eq(0)->attr('class')));
+        $this->assertSame('string custom_class_list', trim($crawler->filter('.table thead tr th[data-property-name="name"]')->eq(0)->attr('class')));
+        $this->assertSame('string custom_class_list', trim($crawler->filter('.table tbody tr td[data-label="Label"]')->eq(0)->attr('class')));
     }
 
     public function testListViewPagination()

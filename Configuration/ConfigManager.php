@@ -23,6 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ConfigManager
 {
+    /** @var array */
     private $backendConfig;
     /** @var ContainerInterface */
     private $container;

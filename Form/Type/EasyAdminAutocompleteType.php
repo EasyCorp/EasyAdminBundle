@@ -28,6 +28,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterface
 {
+    /** @var ConfigManager */
     private $configManager;
 
     public function __construct(ConfigManager $configManager)

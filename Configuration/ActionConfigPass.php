@@ -19,8 +19,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class ActionConfigPass implements ConfigPassInterface
 {
-    private $views = array('edit', 'list', 'new', 'show');
-    private $defaultActionConfig = array(
+    protected $views = array('edit', 'list', 'new', 'show');
+    protected $defaultActionConfig = array(
         // either the name of a controller method or an application route (it depends on the 'type' option)
         'name' => null,
         // 'method' if the action is a controller method; 'route' if it's an application route
@@ -46,7 +46,7 @@ class ActionConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function processDisabledActions(array $backendConfig)
+    protected function processDisabledActions(array $backendConfig)
     {
         $actionsDisabledByBackend = $backendConfig['disabled_actions'];
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
@@ -81,7 +81,7 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function normalizeActionsConfig(array $backendConfig)
+    protected function normalizeActionsConfig(array $backendConfig)
     {
         // first, normalize actions defined globally for the entire backend
         foreach ($this->views as $view) {
@@ -106,7 +106,7 @@ class ActionConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function doNormalizeActionsConfig(array $actionsConfig, $errorOrigin = '')
+    protected function doNormalizeActionsConfig(array $actionsConfig, $errorOrigin = '')
     {
         $normalizedConfig = array();
 
@@ -151,7 +151,7 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function doNormalizeDefaultActionsConfig(array $actionsConfig, $view)
+    protected function doNormalizeDefaultActionsConfig(array $actionsConfig, $view)
     {
         $defaultActionsConfig = $this->getDefaultActionsConfig($view);
 
@@ -168,7 +168,7 @@ class ActionConfigPass implements ConfigPassInterface
         return $actionsConfig;
     }
 
-    private function resolveActionInheritance(array $backendConfig)
+    protected function resolveActionInheritance(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
@@ -200,7 +200,7 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function filterRemovedActions(array $backendConfig)
+    protected function filterRemovedActions(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
@@ -223,7 +223,7 @@ class ActionConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function processActionsConfig(array $backendConfig)
+    protected function processActionsConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
@@ -258,7 +258,7 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function getDefaultActionsConfig($view)
+    protected function getDefaultActionsConfig($view)
     {
         $actions = $this->doNormalizeActionsConfig(array(
             'delete' => array('name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash-o', 'css_class' => 'btn btn-default'),
@@ -290,7 +290,7 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function getDefaultActions($view)
+    protected function getDefaultActions($view)
     {
         $defaultActions = array();
         $defaultActionsConfig = $this->getDefaultActionsConfig($view);
@@ -317,7 +317,7 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return bool
      */
-    private function isValidMethodName($name)
+    protected function isValidMethodName($name)
     {
         return 0 !== preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
     }
@@ -330,12 +330,12 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return string
      */
-    private function humanizeString($content)
+    protected function humanizeString($content)
     {
         return ucfirst(trim(mb_strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $content))));
     }
 
-    private function reorderArrayItems(array $originalArray, array $newKeyOrder)
+    protected function reorderArrayItems(array $originalArray, array $newKeyOrder)
     {
         $newArray = array();
         foreach ($newKeyOrder as $key) {

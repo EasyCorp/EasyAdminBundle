@@ -54,7 +54,7 @@ class MenuConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function normalizeMenuConfig(array $menuConfig, array $backendConfig, $parentItemIndex = -1)
+    protected function normalizeMenuConfig(array $menuConfig, array $backendConfig, $parentItemIndex = -1)
     {
         // if the backend doesn't define the menu configuration: create a default
         // menu configuration to display all its entities
@@ -111,7 +111,7 @@ class MenuConfigPass implements ConfigPassInterface
         return $menuConfig;
     }
 
-    private function processMenuConfig(array $menuConfig, array $backendConfig, $parentItemIndex = -1)
+    protected function processMenuConfig(array $menuConfig, array $backendConfig, $parentItemIndex = -1)
     {
         foreach ($menuConfig as $i => $itemConfig) {
             // these options are needed to find the active menu/submenu item in the template

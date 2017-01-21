@@ -1,12 +1,8 @@
-Please, be as concise as possible in your issue report.
-
 If this is a BUG REPORT:
 
   * Describe what you wanted to do and the wrong result you got.
   * Include EasyAdmin version (it's displayed in the Symfony Debug Toolbar)
-  * (Optional) Include logs (from Symfony, Apache, etc.) if they are useful.
-  * (Optional) Include short code samples if you consider them relevant.
-  * (Optional) Include some screenshots if the error is related to design.
+  * (Optional) If they are useful, include logs, code samples, screenshots, etc.
 
 If this is a FEATURE REQUEST:
 

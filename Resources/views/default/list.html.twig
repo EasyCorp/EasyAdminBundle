@@ -119,7 +119,7 @@
                 {% endfor %}
 
                 {% if _list_item_actions|length > 0 %}
-                    <th class="text-left">
+                    <th>
                         <span>{{ 'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') }}</span>
                     </th>
                 {% endif %}
@@ -143,7 +143,7 @@
 
                     {% if _list_item_actions|length > 0 %}
                         {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') %}
-                        <td data-label="{{ _column_label }}" class="actions text-left">
+                        <td data-label="{{ _column_label }}" class="actions">
                         {% block item_actions %}
                             {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
                                 actions: _list_item_actions,

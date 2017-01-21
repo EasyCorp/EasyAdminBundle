@@ -22,6 +22,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class EasyAdminTwigExtension extends \Twig_Extension
 {
+    /** @var \Twig_Environment */
+    private $twig;
     /** @var ConfigManager */
     private $configManager;
     /** @var PropertyAccessor */
@@ -110,103 +112,44 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
+        $this->twig = $twig;
+
         $entityConfiguration = $this->configManager->getEntityConfig($entityName);
         $fieldName = $fieldMetadata['property'];
+        $fieldType = $fieldMetadata['dataType'];
+        $templateParameters = array(
+            'backend_config' => $this->getBackendConfiguration(),
+            'entity_config' => $entityConfiguration,
+            'field_options' => $fieldMetadata,
+            'item' => $item,
+            'view' => $view,
+        );
 
         try {
-            $value = $this->propertyAccessor->getValue($item, $fieldName);
+            $templateParameters['value'] = $this->propertyAccessor->getValue($item, $fieldName);
         } catch (\Exception $e) {
-            return $twig->render($entityConfiguration['templates']['label_inaccessible'], array(
-                'view' => $view,
-                'backend_config' => $this->getBackendConfiguration(),
-                'entity_config' => $entityConfiguration,
-            ));
+            return $twig->render($entityConfiguration['templates']['label_inaccessible'], $templateParameters);
         }
 
         try {
-            $fieldType = $fieldMetadata['dataType'];
-            $templateParameters = array(
-                'field_options' => $fieldMetadata,
-                'item' => $item,
-                'value' => $value,
-                'view' => $view,
-                'backend_config' => $this->getBackendConfiguration(),
-                'entity_config' => $entityConfiguration,
-            );
-
-            if (null === $value) {
+            if (null === $templateParameters['value']) {
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
             }
 
-            // when a virtual field doesn't define it's type, consider it a string
-            if (true === $fieldMetadata['virtual'] && null === $fieldType) {
-                $templateParameters['value'] = (string) $value;
+            if (true === $fieldMetadata['virtual']) {
+                return $this->renderVirtualField($templateParameters);
             }
 
             if ('image' === $fieldType) {
-                // avoid displaying broken images when the entity defines no image
-                if (empty($value)) {
-                    return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
-                }
-
-                // absolute URLs (http or https) and protocol-relative URLs (//) are rendered unmodified
-                if (1 === preg_match('/^(http[s]?|\/\/)/i', $value)) {
-                    $imageUrl = $value;
-                } else {
-                    $imageUrl = isset($fieldMetadata['base_path'])
-                        ? rtrim($fieldMetadata['base_path'], '/').'/'.ltrim($value, '/')
-                        : '/'.ltrim($value, '/');
-                }
-
-                $templateParameters['value'] = $imageUrl;
-                $templateParameters['uuid'] = md5($imageUrl);
+                return $this->renderImageField($templateParameters);
             }
 
-            if (in_array($fieldType, array('array', 'simple_array')) && empty($value)) {
-                return $twig->render($entityConfiguration['templates']['label_empty'], $templateParameters);
+            if (in_array($fieldType, array('array', 'simple_array'))) {
+                return $this->renderArrayField($templateParameters);
             }
 
             if ('association' === $fieldType) {
-                $targetEntityConfig = $this->configManager->getEntityConfigByClass($fieldMetadata['targetEntity']);
-                if (null === $targetEntityConfig) {
-                    // the associated entity is not managed by EasyAdmin
-                    return $twig->render($fieldMetadata['template'], $templateParameters);
-                }
-
-                $isShowActionAllowed = !in_array('show', $targetEntityConfig['disabled_actions']);
-            }
-
-            if ('association' === $fieldType && ($fieldMetadata['associationType'] & ClassMetadata::TO_ONE)) {
-                // the try..catch block is required because we can't use
-                // $propertyAccessor->isReadable(), which is unavailable in Symfony 2.3
-                try {
-                    $primaryKeyValue = $this->propertyAccessor->getValue($value, $targetEntityConfig['primary_key_field_name']);
-                } catch (\Exception $e) {
-                    $primaryKeyValue = null;
-                }
-
-                // get the string representation of the associated *-to-one entity
-                if (method_exists($value, '__toString')) {
-                    $templateParameters['value'] = (string) $value;
-                } elseif (null !== $primaryKeyValue) {
-                    $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
-                } else {
-                    $templateParameters['value'] = $this->getClassShortName($fieldMetadata['targetEntity']);
-                }
-
-                // if the associated entity is managed by EasyAdmin, and the "show"
-                // action is enabled for the associated entity, display a link to it
-                if (null !== $targetEntityConfig && null !== $primaryKeyValue && $isShowActionAllowed) {
-                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'id' => $primaryKeyValue);
-                }
-            }
-
-            if ('association' === $fieldType && ($fieldMetadata['associationType'] & ClassMetadata::TO_MANY)) {
-                // if the associated entity is managed by EasyAdmin, and the "show"
-                // action is enabled for the associated entity, display a link to it
-                if (null !== $targetEntityConfig && $isShowActionAllowed) {
-                    $templateParameters['link_parameters'] = array('entity' => $targetEntityConfig['name'], 'action' => 'show', 'primary_key_name' => $targetEntityConfig['primary_key_field_name']);
-                }
+                return $this->renderAssociationField($templateParameters);
             }
 
             return $twig->render($fieldMetadata['template'], $templateParameters);
@@ -215,8 +158,100 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 throw $e;
             }
 
-            return $twig->render($entityConfiguration['templates']['label_undefined'], array('view' => $view));
+            return $twig->render($entityConfiguration['templates']['label_undefined'], $templateParameters);
         }
+    }
+
+    private function renderVirtualField(array $templateParameters)
+    {
+        // when a virtual field doesn't define it's type, consider it a string
+        if (null === $templateParameters['field_options']['dataType']) {
+            $templateParameters['value'] = (string) $templateParameters['value'];
+        }
+
+        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+    }
+
+    private function renderImageField(array $templateParameters)
+    {
+        // avoid displaying broken images when the entity defines no image
+        if (empty($templateParameters['value'])) {
+            return $this->twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
+        }
+
+        // add the base path only to images that are not absolute URLs (http or https) or protocol-relative URLs (//)
+        if (0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+            $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
+                ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
+                : '/'.ltrim($templateParameters['value'], '/');
+        }
+
+        $templateParameters['uuid'] = md5($templateParameters['value']);
+
+        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+    }
+
+    private function renderArrayField(array $templateParameters)
+    {
+        if (empty($templateParameters['value'])) {
+            return $this->twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
+        }
+
+        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+    }
+
+    private function renderAssociationField(array $templateParameters)
+    {
+        $targetEntityConfig = $this->configManager->getEntityConfigByClass($templateParameters['field_options']['targetEntity']);
+        // the associated entity is not managed by EasyAdmin
+        if (null === $targetEntityConfig) {
+            return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+        }
+
+        $isShowActionAllowed = !in_array('show', $targetEntityConfig['disabled_actions']);
+
+        if ($templateParameters['field_options']['associationType'] & ClassMetadata::TO_ONE) {
+            // the try..catch block is required because we can't use
+            // $propertyAccessor->isReadable(), which is unavailable in Symfony 2.3
+            try {
+                $primaryKeyValue = $this->propertyAccessor->getValue($templateParameters['value'], $targetEntityConfig['primary_key_field_name']);
+            } catch (\Exception $e) {
+                $primaryKeyValue = null;
+            }
+
+            // get the string representation of the associated *-to-one entity
+            if (method_exists($templateParameters['value'], '__toString')) {
+                $templateParameters['value'] = (string) $templateParameters['value'];
+            } elseif (null !== $primaryKeyValue) {
+                $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
+            } else {
+                $templateParameters['value'] = $this->getClassShortName($templateParameters['field_options']['targetEntity']);
+            }
+
+            // if the associated entity is managed by EasyAdmin, and the "show"
+            // action is enabled for the associated entity, display a link to it
+            if (null !== $targetEntityConfig && null !== $primaryKeyValue && $isShowActionAllowed) {
+                $templateParameters['link_parameters'] = array(
+                    'action' => 'show',
+                    'entity' => $targetEntityConfig['name'],
+                    'id' => $primaryKeyValue,
+                );
+            }
+        }
+
+        if ($templateParameters['field_options']['associationType'] & ClassMetadata::TO_MANY) {
+            // if the associated entity is managed by EasyAdmin, and the "show"
+            // action is enabled for the associated entity, display a link to it
+            if (null !== $targetEntityConfig && $isShowActionAllowed) {
+                $templateParameters['link_parameters'] = array(
+                    'action' => 'show',
+                    'entity' => $targetEntityConfig['name'],
+                    'primary_key_name' => $targetEntityConfig['primary_key_field_name'],
+                );
+            }
+        }
+
+        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
     }
 
     /**

@@ -417,14 +417,23 @@ property using the `sort` configuration option:
 # app/config/config.yml
 easy_admin:
     entities:
-        Product:
+        User:
             # ...
             list:
                 # if the sort order is not specified, 'DESC' is used
-                sort: 'updatedAt'
+                sort: 'createdAt'
             search:
                 # use an array to also define the sorting direction
-                sort: ['updatedAt', 'ASC']
+                sort: ['createdAt', 'ASC']
+
+        Purchase:
+            # ...
+            # the 'sort' option supports Doctrine associations up to one level
+            # (e.g. 'sort: user.name' works but 'sort: user.group.name' won't work)
+            list:
+                sort: 'user.name'
+            search:
+                sort: ['user.name', 'ASC']
 ```
 
 The `sort` option of each entity is only used as the default content sorting. If

@@ -227,6 +227,7 @@ These are the options that you can define for each field:
   * `css_class` (optional): the CSS class applied to the parent HTML element that
     encloses the field contents. In the `list` and `search` views, this class
     is also applied to the `<th>` header of the column associated with this field.
+    For example, to align the contents of some column to the right, use `css_class: text-right`
   * `template` (optional): the name of the custom template used to render the
     contents of the field. This option is fully explained later in this chapter.
   * `type` (optional): the type of data stored in the property, which affects
@@ -245,7 +246,7 @@ The fields of the `list` and `search` views define another option:
     by default except virtual properties (explained later in this chapter) and
     those related with Doctrine associations of any type.
 
-The fields of the `show` view define another option:
+The fields of the `show` view can define another option:
 
   * `help` (optional): the help message displayed below the field contents.
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" target-language="en" datatype="plaintext" original="file.ext">
+    <file source-language="en" target-language="fi" datatype="plaintext" original="file.ext">
         <body>
             <!-- page titles -->
             <trans-unit id="new.page_title">
@@ -146,7 +146,6 @@
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} On olemassa myös toinen rivi joka ei ole näkyvillä listauksessa|]1,Inf] Yhteensä %count%  muuta rivia jotka eivät ole näkyvillä listauksessa]]></target>
-                <target><![CDATA[{1} there is another item not displayed in this listing|]1,Inf] %count% other items are not displayed in this listing]]></target>
             </trans-unit>
         </body>
     </file>

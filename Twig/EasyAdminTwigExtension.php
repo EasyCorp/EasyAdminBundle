@@ -136,10 +136,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
             }
 
-            if (true === $fieldMetadata['virtual']) {
-                return $this->renderVirtualField($templateParameters);
-            }
-
             if ('image' === $fieldType) {
                 return $this->renderImageField($templateParameters);
             }
@@ -150,6 +146,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
             if ('association' === $fieldType) {
                 return $this->renderAssociationField($templateParameters);
+            }
+
+            if (true === $fieldMetadata['virtual']) {
+                return $this->renderVirtualField($templateParameters);
             }
 
             return $twig->render($fieldMetadata['template'], $templateParameters);

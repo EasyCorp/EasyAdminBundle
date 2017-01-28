@@ -84,26 +84,26 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 
     private function isTestCompatible($filePath)
     {
-        // the (int) casting is needed because older Symfony versions used
-        // strings to store the version numbers (e.g. '2' instead of 2)
-        if (2 !== (int) Kernel::MAJOR_VERSION || 3 !== (int) Kernel::MINOR_VERSION) {
-            return true;
-        }
-
-        // these tests are not compatible with Symfony 2.3 because the YAML
-        // component of that version does not ignore duplicate keys
-        $incompatibleTests = array(
-            'configurations/input/admin_007.yml',
-            'configurations/input/admin_008.yml',
-            'configurations/input/admin_013.yml',
-            'configurations/input/admin_014.yml',
-            'configurations/input/admin_015.yml',
-            'configurations/input/admin_020.yml',
-            'configurations/input/admin_021.yml',
-            'configurations/input/admin_026.yml',
+        $testsWithDuplicatedYamlKeys = array(
+            __DIR__.'/fixtures/configurations/input/admin_007.yml',
+            __DIR__.'/fixtures/configurations/input/admin_008.yml',
+            __DIR__.'/fixtures/configurations/input/admin_013.yml',
+            __DIR__.'/fixtures/configurations/input/admin_014.yml',
+            __DIR__.'/fixtures/configurations/input/admin_020.yml',
+            __DIR__.'/fixtures/configurations/input/admin_021.yml',
+            __DIR__.'/fixtures/configurations/input/admin_026.yml',
         );
 
-        return !in_array(substr($filePath, -34), $incompatibleTests);
+        // In Symfony 2.3, the YAML component behaves differently than other versions
+        // when it founds duplicated keys. In Symfony >= 3.2, duplicated keys are deprecated
+        $isSymfony23 = 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
+        $isSymfony32OrNewer = (int) Kernel::VERSION_ID >= 30200;
+
+        if ($isSymfony23 || $isSymfony32OrNewer) {
+            return !in_array($filePath, $testsWithDuplicatedYamlKeys);
+        }
+
+        return true;
     }
 
     /**

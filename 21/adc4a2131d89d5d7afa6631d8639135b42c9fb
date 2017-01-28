@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-01-25T19:26:38Z
+
+Thanks a lot for reporting this issue. Even if your fix is correct ... I think we can fix it even better. I was reviewing 8a7e3e4e25b10c01b308d48e60417e9aa5ada348 and I think I've spotted the error:
+
+![virtual-field-type](https://cloud.githubusercontent.com/assets/73419/22305628/82e13630-e33c-11e6-90ed-5f37cf208c2a.png)
+
+What do you think about changing this PR to revert instead the change introduced in that commit?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2017-01-25T19:38:12Z
+
+To add an argument to my fix, the problem comes from the priority of the different evaluations: IMO, a virtual property should not have more precedence than the property type itself.
+
+The problem in this is that in the present case, the virtual property **is** evaluated as an image one, so the loaded template is the image one, but the template parameters are not the correct ones.
+
+But I can apply both fixes if you like 😄
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-01-25T19:40:04Z
+
+You made me doubt ... so I need to carefully think if we need only your fix or both fixes.
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2017-01-25T19:42:35Z
+
+To remove any doubt, here is a simple question:
+
+Do you think we should render a virtual property **only if it seems virtual and there is no fieldType** ; or **only if the type is not already resolved and the property seems virtual**?
+
+If you can answer this, I think you'll know which fix•es should be implemented 😃
+
+(just as an addition, my fix is more saying _"render virtual property as a fallback for all other property types"_, which seems to be the safest to me, and does not introduce any BC break (it seems) )
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-01-28T12:25:34Z
+
+I've thought about this and I consider this PR as it is as the right solution ... so I'm merging it. Thanks @Pierstoval.

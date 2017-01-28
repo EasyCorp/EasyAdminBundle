@@ -96,7 +96,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 
         // In Symfony 2.3, the YAML component behaves differently than other versions
         // when it founds duplicated keys. In Symfony >= 3.2, duplicated keys are deprecated
-        $isSymfony23 = 2 !== (int) Kernel::MAJOR_VERSION && 3 !== (int) Kernel::MINOR_VERSION;
+        $isSymfony23 = 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
         $isSymfony32OrNewer = (int) Kernel::VERSION_ID >= 30200;
 
         if ($isSymfony23 || $isSymfony32OrNewer) {

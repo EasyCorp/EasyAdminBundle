@@ -104,7 +104,7 @@ class QueryBuilder
                 $queryBuilder->orWhere(sprintf('entity.%s = :exact_query', $name));
                 // adding '0' turns the string into a numeric value
                 $queryParameters['exact_query'] = 0 + $searchQuery;
-            } elseif ($isGuidField) {
+            } elseif ($isGuidField && 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $searchQuery)) {
                 // some databases don't support LOWER() on UUID fields
                 $queryBuilder->orWhere(sprintf('entity.%s IN (:words_query)', $name));
                 $queryParameters['words_query'] = explode(' ', $searchQuery);

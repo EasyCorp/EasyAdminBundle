@@ -130,7 +130,8 @@
         <tbody>
         {% block table_body %}
             {% for item in paginator.currentPageResults %}
-                {% set _item_id = attribute(item, _entity_config.primary_key_field_name) %}
+                {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
+                {% set _item_id = '' ~ attribute(item, _entity_config.primary_key_field_name) %}
                 <tr data-id="{{ _item_id }}">
                     {% for field, metadata in fields %}
                         {% set isSortingField = metadata.property == app.request.get('sortField') %}

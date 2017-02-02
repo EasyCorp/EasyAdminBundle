@@ -1,5 +1,6 @@
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
-{% set _entity_id = attribute(entity, _entity_config.primary_key_field_name) %}
+{# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
+{% set _entity_id = '' ~ attribute(entity, _entity_config.primary_key_field_name) %}
 {% trans_default_domain _entity_config.translation_domain %}
 {% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': _entity_id } %}
 

@@ -12,7 +12,7 @@
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\NullOutput as ConsoleOutput;
 
 /*
  * Code inspired by https://github.com/Orbitale/CmsBundle/blob/master/Tests/bootstrap.php
@@ -50,15 +50,15 @@ $application->setAutoExit(false);
 
 // Create database
 $input = new ArrayInput(array('command' => 'doctrine:database:create'));
-$application->run($input, new NullOutput());
+$application->run($input, new ConsoleOutput());
 
 // Create database schema
 $input = new ArrayInput(array('command' => 'doctrine:schema:create'));
-$application->run($input, new NullOutput());
+$application->run($input, new ConsoleOutput());
 
 // Load fixtures of the AppTestBundle
 $input = new ArrayInput(array('command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => false));
-$application->run($input, new NullOutput());
+$application->run($input, new ConsoleOutput());
 
 // Make a copy of the original SQLite database to use the same unmodified database in every test
 copy($buildDir.'/test.db', $buildDir.'/original_test.db');

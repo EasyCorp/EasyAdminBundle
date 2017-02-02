@@ -231,7 +231,6 @@ class Purchase
         return preg_replace('/[^0-9]/i', '', sprintf('%d%d%03d%s', $storeId, date('Y'), date('z'), microtime()));
     }
 
-    /** {@inheritdoc} */
     public function __toString()
     {
         return 'Purchase #'.$this->getId();

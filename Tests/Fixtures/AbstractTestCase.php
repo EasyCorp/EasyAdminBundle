@@ -49,7 +49,14 @@ abstract class AbstractTestCase extends WebTestCase
     protected function initDatabase()
     {
         $buildDir = __DIR__.'/../../build';
-        copy($buildDir.'/original_test.db', $buildDir.'/test.db');
+        $originalDbPath = $buildDir.'/original_test.db';
+        $targetDbPath = $buildDir.'/test.db';
+
+        if (!file_exists($originalDbPath)) {
+            throw new \RuntimeException(sprintf("The fixtures file used for the tests (%s) doesn't exist. This means that the execution of the bootstrap.php script that generates that file failed. Open %s/bootstrap.php and replace `NullOutput as ConsoleOutput` by `ConsoleOutput` to see the actual errors in the console.", $originalDbPath, realpath(__DIR__.'/..')));
+        }
+
+        copy($originalDbPath, $targetDbPath);
     }
 
     /**

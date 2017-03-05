@@ -147,6 +147,28 @@
                 <source>show.remaining_items</source>
                 <target>Diğer %count% öğe bu listede görüntülenemiyor</target>
             </trans-unit>
+            
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Bu öğe artık mevcut değil.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Diğer öğeler buna bağlı olduğu için bu öğe silinemiyor.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>İstenen eylem bu öğe üzerinde gerçekleştirilemez.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>Uygulama düzgün şekilde yapılandırılmamış.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>Uygulama bu tür öğeler için doğru şekilde yapılandırılmamış.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

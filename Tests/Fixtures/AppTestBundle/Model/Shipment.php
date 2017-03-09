@@ -8,7 +8,7 @@
  * at https://github.com/MacFJA/Doctrine-TestSet
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Model;
+namespace AppTestBundle\Model;
 
 /**
  * Class Shipment.

@@ -130,7 +130,6 @@ class PurchaseItem
         return $this->id;
     }
 
-    /** {@inheritdoc} */
     public function __toString()
     {
         return $this->getProduct()->getName().' [x'.$this->getQuantity().']: '.$this->getTotalPrice();

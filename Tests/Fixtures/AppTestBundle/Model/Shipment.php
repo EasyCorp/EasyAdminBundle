@@ -8,7 +8,7 @@
  * at https://github.com/MacFJA/Doctrine-TestSet
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Model;
+namespace AppTestBundle\Model;
 
 /**
  * Class Shipment.
@@ -82,7 +82,6 @@ class Shipment
         return $this->transporter;
     }
 
-    /** {@inheritdoc} */
     public function __toString()
     {
         return $this->getTransporter().': '.$this->getCost();

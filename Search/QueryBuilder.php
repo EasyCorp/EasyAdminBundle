@@ -110,7 +110,7 @@ class QueryBuilder
                 $validator = Validation::createValidator();
                 $uuidContraint = new UuidConstraint();
                 $errors = $validator->validate($searchQuery, $uuidContraint);
-                if (0 != count($errors)) {
+                if (0 !== count($errors)) {
                     continue;
                 }
                 // some databases don't support LOWER() on UUID fields

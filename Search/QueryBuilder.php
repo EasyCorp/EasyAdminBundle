@@ -111,7 +111,7 @@ class QueryBuilder
                 $uuidContraint = new UuidConstraint();
                 $errors = $validator->validate($searchQuery, $uuidContraint);
                 if (0 != count($errors)) {
-                  continue;
+                    continue;
                 }
                 // some databases don't support LOWER() on UUID fields
                 $queryBuilder->orWhere(sprintf('entity.%s IN (:words_query)', $name));

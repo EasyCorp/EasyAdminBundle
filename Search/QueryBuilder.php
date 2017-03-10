@@ -14,6 +14,8 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
+use Symfony\Component\Validator\Constraints\Uuid as UuidConstraint;
+use Symfony\Component\Validator\Validation;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -105,6 +107,13 @@ class QueryBuilder
                 // adding '0' turns the string into a numeric value
                 $queryParameters['exact_query'] = 0 + $searchQuery;
             } elseif ($isGuidField) {
+                $validator = Validation::createValidator();
+                $uuidContraint = new UuidConstraint();
+                $errors = $validator->validate($searchQuery, $uuidContraint);
+                if (0 != count($errors))
+                {
+                  continue;
+                }
                 // some databases don't support LOWER() on UUID fields
                 $queryBuilder->orWhere(sprintf('entity.%s IN (:words_query)', $name));
                 $queryParameters['words_query'] = explode(' ', $searchQuery);

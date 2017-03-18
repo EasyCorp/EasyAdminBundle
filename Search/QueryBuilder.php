@@ -109,7 +109,7 @@ class QueryBuilder
                 // adding '0' turns the string into a numeric value
                 $queryParameters['numeric_query'] = 0 + $searchQuery;
             } elseif ($isGuidField && $isSearchQueryUuid) {
-                $queryBuilder->orWhere(sprintf('entity.%s IN (:uuid_query)', $name));
+                $queryBuilder->orWhere(sprintf('entity.%s = :uuid_query', $name));
                 $queryParameters['uuid_query'] = $searchQuery;
             } elseif ($isTextField) {
                 $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));

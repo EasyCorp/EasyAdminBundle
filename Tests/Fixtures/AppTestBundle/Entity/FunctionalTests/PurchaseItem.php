@@ -38,7 +38,7 @@ class PurchaseItem
     /**
      * The tax rate to apply on the product.
      *
-     * @var string
+     * @var float
      * @ORM\Column(type="decimal", name="tax_rate")
      */
     protected $taxRate = 0.21;
@@ -107,7 +107,7 @@ class PurchaseItem
     }
 
     /**
-     * @param string $taxRate
+     * @param float $taxRate
      */
     public function setTaxRate($taxRate)
     {
@@ -115,7 +115,7 @@ class PurchaseItem
     }
 
     /**
-     * @return string
+     * @return float
      */
     public function getTaxRate()
     {

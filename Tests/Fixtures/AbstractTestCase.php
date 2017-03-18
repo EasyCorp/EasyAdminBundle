@@ -31,11 +31,6 @@ abstract class AbstractTestCase extends WebTestCase
         $this->initDatabase();
     }
 
-    protected function tearDown()
-    {
-        $this->client = null;
-    }
-
     protected function initClient(array $options = array())
     {
         $this->client = static::createClient($options);

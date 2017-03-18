@@ -37,8 +37,8 @@ class FormViewTest extends AbstractTestCase
 
         $this->assertCount(1, $crawler->filter('form .box-body .field-divider'));
 
-        $this->assertCount(0, $crawler->filter('form .box-body #product_description',
-            'The description field defined in the form view is removed by the new view.')
+        $this->assertCount(0, $crawler->filter('form .box-body #product_description'),
+            'The description field defined in the form view is removed by the new view.'
         );
     }
 
@@ -48,8 +48,8 @@ class FormViewTest extends AbstractTestCase
 
         $this->assertSame('Group Label 1', trim($crawler->filter('form .box .box-title')->eq(0)->text()));
 
-        $this->assertCount(0, $crawler->filter('form .box-body #product_ean',
-            'The EAN field defined in the form view is removed by the edit view.')
+        $this->assertCount(0, $crawler->filter('form .box-body #product_ean'),
+            'The EAN field defined in the form view is removed by the edit view.'
         );
 
         $this->assertSame('Section Label 1', trim($crawler->filter('form .box-body .field-section h2')->eq(0)->text()));

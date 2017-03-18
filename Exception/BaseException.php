@@ -16,7 +16,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
  */
 class BaseException extends \RuntimeException
 {
-    protected $message;
     /** @var ExceptionContext */
     private $context;
 
@@ -25,8 +24,8 @@ class BaseException extends \RuntimeException
      */
     public function __construct(ExceptionContext $context)
     {
-        $this->message = $context->getDebugMessage();
         $this->context = $context;
+        parent::__construct($this->context->getDebugMessage());
     }
 
     /**

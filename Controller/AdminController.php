@@ -615,7 +615,7 @@ class AdminController extends Controller
      * @param array  $entityProperties
      * @param string $view
      *
-     * @return Form
+     * @return FormInterface
      *
      * @throws \Exception
      */

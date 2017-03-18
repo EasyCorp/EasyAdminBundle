@@ -94,28 +94,29 @@ class QueryBuilder
             $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
         }
 
+        $isSearchQueryNumeric = is_numeric($searchQuery);
+        $isSearchQueryUuid = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $searchQuery);
+        $lowerSearchQuery = mb_strtolower($searchQuery);
+
         $queryParameters = array();
         foreach ($entityConfig['search']['fields'] as $name => $metadata) {
             $isNumericField = in_array($metadata['dataType'], array('integer', 'number', 'smallint', 'bigint', 'decimal', 'float'));
-            $isTextField = in_array($metadata['dataType'], array('string', 'text', 'guid'));
+            $isTextField = in_array($metadata['dataType'], array('string', 'text'));
             $isGuidField = 'guid' === $metadata['dataType'];
 
-            if ($isNumericField && is_numeric($searchQuery)) {
-                $queryBuilder->orWhere(sprintf('entity.%s = :exact_query', $name));
+            if ($isNumericField && $isSearchQueryNumeric) {
+                $queryBuilder->orWhere(sprintf('entity.%s = :numeric_query', $name));
                 // adding '0' turns the string into a numeric value
-                $queryParameters['exact_query'] = 0 + $searchQuery;
-            } elseif ($isGuidField) {
-                // some databases don't support LOWER() on UUID fields
-                $queryBuilder->orWhere(sprintf('entity.%s IN (:words_query)', $name));
-                $queryParameters['words_query'] = explode(' ', $searchQuery);
+                $queryParameters['numeric_query'] = 0 + $searchQuery;
+            } elseif ($isGuidField && $isSearchQueryUuid) {
+                $queryBuilder->orWhere(sprintf('entity.%s = :uuid_query', $name));
+                $queryParameters['uuid_query'] = $searchQuery;
             } elseif ($isTextField) {
-                $searchQuery = mb_strtolower($searchQuery);
-
                 $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));
-                $queryParameters['fuzzy_query'] = '%'.$searchQuery.'%';
+                $queryParameters['fuzzy_query'] = '%'.$lowerSearchQuery.'%';
 
                 $queryBuilder->orWhere(sprintf('LOWER(entity.%s) IN (:words_query)', $name));
-                $queryParameters['words_query'] = explode(' ', $searchQuery);
+                $queryParameters['words_query'] = explode(' ', $lowerSearchQuery);
             }
         }
 

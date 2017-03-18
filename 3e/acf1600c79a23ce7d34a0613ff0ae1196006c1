@@ -1,0 +1,18 @@
+---------------------------------------------------------------------------
+
+by ondrejmirtes at 2017-03-18T10:42:59Z
+
+Hello,
+have you considered adding PHPStan as part of your CI build?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-03-18T10:48:26Z
+
+@ondrejmirtes not yet because I've just started testing it and we already use other analyzers (Scrutinizer, SensioLabsInsight and PHP-CS-Fixer). But I'm looking into your project and its evolution to eventually add it. Thanks for contributing PHPStan to the community!
+
+---------------------------------------------------------------------------
+
+by ondrejmirtes at 2017-03-18T10:49:38Z
+
+@javiereguiluz Cool :)

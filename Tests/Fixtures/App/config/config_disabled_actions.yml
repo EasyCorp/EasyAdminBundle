@@ -7,7 +7,7 @@ easy_admin:
             class: AppTestBundle\Entity\FunctionalTests\Purchase
             list:
                 fields: ['id', 'buyer']
-                sort: ['buyer', 'ASC']
+                sort: ['buyer.id', 'ASC']
         User:
             class: AppTestBundle\Entity\FunctionalTests\User
             # the 'show' action is disabled so the 'buyer' field is not linked

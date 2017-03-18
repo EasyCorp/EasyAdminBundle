@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2017-02-09T15:16:10Z
+
+We need to make sure this bug https://github.com/javiereguiluz/EasyAdminBundle/issues/1011 doesn't happen again :/ ?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2017-02-09T15:20:25Z
+
+Although I think that at that time the problem was for the second parameter, which is `true` by default.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-03-18T15:07:45Z
+
+The error in this PR was in fact unrelated to the proposed change (it was a misconfiguration in a test) ... so this change looks OK now. @yceruto you are right about being careful with the second parameter ... but as you said, the default value is now `true`, so we don't have to pass it as `true` explicitly. Thanks!

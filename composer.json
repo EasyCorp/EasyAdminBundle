@@ -38,6 +38,7 @@
         "symfony/translation"           : "~2.3|~3.0",
         "symfony/twig-bridge"           : "^2.3.4|~3.0",
         "symfony/twig-bundle"           : "~2.3|~3.0",
+        "symfony/validator"             : "~2.3|~3.0",
         "twig/extensions"               : "~1.0",
         "twig/twig"                     : "~1.14,>=1.14.2|~2.0"
     },

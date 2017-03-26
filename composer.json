@@ -52,7 +52,6 @@
         "symfony/dom-crawler"               : "~2.3|~3.0",
         "symfony/finder"                    : "~2.3|~3.0",
         "symfony/phpunit-bridge"            : "^2.7",
-        "symfony/validator"                 : "~2.3|~3.0",
         "symfony/var-dumper"                : "~2.3|~3.0",
         "symfony/yaml"                      : "~2.3|~3.0"
     },

@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2017-03-25T06:27:52Z
+
+I'd like to also add `symfony/validator` as a dependency even if this is not strictly needed. WDYT?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-03-25T17:26:21Z
+
+Thanks for fixing the missing dependency!
+
+About adding validator too, in theory it wouldn't be needed (well, we use it once in 1 test) ... but in practice I think it should be required: you can't really create a backend without validating the data.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2017-03-25T20:16:02Z
+
+Validator added as a required dependency.

@@ -97,6 +97,10 @@
                 <source>user.logged_in_as</source>
                 <target>Înregistrat ca</target>
             </trans-unit>
+            <trans-unit id="user.signout">
+                <source>user.signout</source>
+                <target>Deconectați-vă</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">

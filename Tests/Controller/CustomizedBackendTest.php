@@ -34,7 +34,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertContains('admin', $crawler->filter('header .user-menu')->text());
 
         if (Kernel::VERSION_ID >= 20700) {
-            $this->assertContains('Sign Out', $crawler->filter('header .user-menu .dropdown-menu')->text());
+            $this->assertContains('Sign out', $crawler->filter('header .user-menu .dropdown-menu')->text());
         } else {
             $this->assertCount(0, $crawler->filter('header .user-menu .dropdown-menu'));
         }

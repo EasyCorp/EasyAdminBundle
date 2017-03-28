@@ -28,7 +28,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->client->followRedirects();
         $crawler = $this->client->request('GET', '/admin', array(), array(), array(
             'PHP_AUTH_USER' => 'admin',
-            'PHP_AUTH_PW'   => 'pa$$word',
+            'PHP_AUTH_PW' => 'pa$$word',
         ));
 
         $this->assertContains('admin', $crawler->filter('header .user-menu')->text());

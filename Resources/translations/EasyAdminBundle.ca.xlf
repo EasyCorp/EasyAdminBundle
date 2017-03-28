@@ -97,6 +97,10 @@
                 <source>user.logged_in_as</source>
                 <target>Connectat com a</target>
             </trans-unit>
+            <trans-unit id="user.signout">
+                <source>user.signout</source>
+                <target>Tanca la sessió</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">

@@ -102,6 +102,14 @@ class DefaultBackendTest extends AbstractTestCase
         }
     }
 
+    public function testUserMenuForAnonymousUsers()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $this->assertContains('Anonymous', $crawler->filter('header .user-menu')->text());
+        $this->assertCount(0, $crawler->filter('header .user-menu .dropdown-menu'));
+    }
+
     public function testCustomCssFile()
     {
         $this->getBackendHomepage();

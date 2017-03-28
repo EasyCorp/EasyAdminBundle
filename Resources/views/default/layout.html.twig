@@ -75,15 +75,36 @@
 
                     <div class="navbar-custom-menu">
                     {% block header_custom_menu %}
+                        {# logout_path() without arguments only works in Symfony >= 2.7 #}
+                        {% set _is_logout_supported = constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION_ID') >= 20700 %}
                         <ul class="nav navbar-nav">
-                            <li class="user user-menu">
+                            <li class="dropdown user user-menu">
                                 {% block user_menu %}
                                     <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
-                                    <i class="hidden-xs fa fa-user"></i>
-                                    {% if app.user|default %}
+
+                                    {% if app.user|default(false) == false %}
+                                        <i class="hidden-xs fa fa-user-times"></i>
+                                        {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
+                                    {% elseif not _is_logout_supported %}
+                                        <i class="hidden-xs fa fa-user"></i>
                                         {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
                                     {% else %}
-                                        {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
+                                        <div class="btn-group">
+                                            <button type="button" class="btn" data-toggle="dropdown">
+                                                <i class="hidden-xs fa fa-user"></i>
+                                                {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
+                                            </button>
+                                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                {% block user_menu_dropdown %}
+                                                <li>
+                                                    <a href="{{ logout_path() }}"><i class="fa fa-sign-out"></i> {{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
+                                                </li>
+                                                {% endblock user_menu_dropdown %}
+                                            </ul>
+                                        </div>
                                     {% endif %}
                                 {% endblock user_menu %}
                             </li>

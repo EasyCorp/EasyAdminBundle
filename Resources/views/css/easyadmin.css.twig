@@ -698,6 +698,41 @@ button.btn:active {
     width: 100%;
 }
 
+.main-header .navbar .user-menu .btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: transparent;
+    color: #fff;
+}
+.main-header .navbar .user-menu .btn:active {
+    top: 0;
+}
+.main-header .navbar .user-menu .btn.dropdown-toggle {
+    padding: 6px 8px;
+}
+.main-header .navbar .user-menu .btn-group:hover .btn {
+    background: rgba(255, 255, 255, 0.1);
+}
+.main-header .navbar .user-menu .btn-group {
+    height: 35px;
+}
+.main-header .navbar .user-menu .btn-group .btn {
+    border-radius: 0;
+}
+.main-header .navbar .user-menu .dropdown-menu {
+    background: #fff;
+    box-shadow: 1px 1px 3px #ccc;
+    border-radius: 2px;
+    position: absolute;
+    left: auto;
+    right: 0;
+}
+.main-header .navbar .user-menu .dropdown-menu i {
+    margin: 0;
+}
+.main-header .navbar .user-menu .dropdown-menu a {
+    color: #777;
+}
+
 {# Main body
    ------------------------------------------------------------------------- #}
 #content #main {
@@ -1188,6 +1223,13 @@ body.error .error-message {
     }
     .navbar-custom-menu .user-menu i {
         padding-right: 4px;
+    }
+
+    .main-header .navbar .user-menu .btn {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    .main-header .navbar .user-menu .btn-group:hover .btn {
+        background: rgba(255, 255, 255, 0.2);
     }
 
     .main-sidebar {

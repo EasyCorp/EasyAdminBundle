@@ -12,6 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
+use Symfony\Component\HttpKernel\Kernel;
 
 class CustomizedBackendTest extends AbstractTestCase
 {
@@ -20,6 +21,23 @@ class CustomizedBackendTest extends AbstractTestCase
         parent::setUp();
 
         $this->initClient(array('environment' => 'customized_backend'));
+    }
+
+    public function testUserMenuForLoggedUsers()
+    {
+        $this->client->followRedirects();
+        $crawler = $this->client->request('GET', '/admin', array(), array(), array(
+            'PHP_AUTH_USER' => 'admin',
+            'PHP_AUTH_PW' => 'pa$$word',
+        ));
+
+        $this->assertContains('admin', $crawler->filter('header .user-menu')->text());
+
+        if (Kernel::VERSION_ID >= 20700) {
+            $this->assertContains('Sign out', $crawler->filter('header .user-menu .dropdown-menu')->text());
+        } else {
+            $this->assertCount(0, $crawler->filter('header .user-menu .dropdown-menu'));
+        }
     }
 
     public function testListViewPageTitle()

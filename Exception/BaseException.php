@@ -37,7 +37,7 @@ class BaseException extends \RuntimeException
     }
 
     /**
-     * @return string The message that can safely be dispalyed to end-users because it doesn't contain sensitive data
+     * @return string The message that can safely be displayed to end-users because it doesn't contain sensitive data
      */
     public function getPublicMessage()
     {

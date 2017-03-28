@@ -105,6 +105,10 @@
                 <source>user.anonymous</source>
                 <target>Anonim Kullanıcı</target>
             </trans-unit>
+            <trans-unit id="user.signout">
+                <source>user.signout</source>
+                <target>Çıkış</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="toggle_navigation">
@@ -147,7 +151,7 @@
                 <source>show.remaining_items</source>
                 <target>Diğer %count% öğe bu listede görüntülenemiyor</target>
             </trans-unit>
-            
+
             <!-- Exceptions -->
             <trans-unit id="exception.entity_not_found">
                 <source>exception.entity_not_found</source>

@@ -63,6 +63,10 @@
                 <source>user.logged_in_as</source>
                 <target>Inloggad som</target>
             </trans-unit>
+            <trans-unit id="user.signout">
+                <source>user.signout</source>
+                <target>Logga ut</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">

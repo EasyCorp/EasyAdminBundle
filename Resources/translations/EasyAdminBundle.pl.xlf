@@ -105,7 +105,11 @@
                 <source>user.anonymous</source>
                 <target>Anonimowy użytkownik</target>
             </trans-unit>
-            
+            <trans-unit id="user.signout">
+                <source>user.signout</source>
+                <target>Wyloguj</target>
+            </trans-unit>
+
             <!-- misc. elements -->
             <trans-unit id="toggle_navigation">
                 <source>toggle_navigation</source>

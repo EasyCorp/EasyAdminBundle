@@ -96,11 +96,12 @@
                                             </button>
                                             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                 <span class="caret"></span>
-                                                <span class="sr-only">Toggle User Options</span>
                                             </button>
                                             <ul class="dropdown-menu" role="menu">
                                                 {% block user_menu_dropdown %}
-                                                <li><a href="{{ logout_path() }}"><i class="fa fa-sign-out"></i> Sign Out</a></li>
+                                                <li>
+                                                    <a href="{{ logout_path() }}"><i class="fa fa-sign-out"></i> {{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
+                                                </li>
                                                 {% endblock user_menu_dropdown %}
                                             </ul>
                                         </div>

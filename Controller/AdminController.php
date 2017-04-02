@@ -473,6 +473,10 @@ class AdminController extends Controller
      */
     protected function findAll($page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
+        if (func_num_args() > 5) {
+            throw new \RuntimeException('The signature of the AdminController::findAll() method changed in EasyAdmin 1.17.0. Solution: remove the first argument of the findAll() call, which corresponded to the entity class and is no longer needed.');
+        }
+
         if (empty($sortDirection) || !in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
             $sortDirection = 'DESC';
         }
@@ -499,6 +503,10 @@ class AdminController extends Controller
      */
     protected function createListQueryBuilder($sortDirection, $sortField = null, $dqlFilter = null)
     {
+        if (func_num_args() > 3) {
+            throw new \RuntimeException('The signature of the AdminController::createListQueryBuilder() method changed in EasyAdmin 1.17.0. Solution: remove the first argument of the createListQueryBuilder() call, which corresponded to the entity class and is no longer needed.');
+        }
+
         return $this->get('easyadmin.query_builder')->createListQueryBuilder($this->entity, $sortField, $sortDirection, $dqlFilter);
     }
 
@@ -518,6 +526,10 @@ class AdminController extends Controller
      */
     protected function findBy($searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
+        if (func_num_args() > 7) {
+            throw new \RuntimeException('The signature of the AdminController::findBy() method changed in EasyAdmin 1.17.0. Solution: remove the first argument of the findBy() call, which corresponded to the entity class and is no longer needed.');
+        }
+
         $queryBuilder = $this->executeDynamicMethod('create<EntityName>SearchQueryBuilder', array($searchQuery, $searchableFields, $sortField, $sortDirection, $dqlFilter));
 
         $this->dispatch(EasyAdminEvents::POST_SEARCH_QUERY_BUILDER, array(
@@ -542,6 +554,10 @@ class AdminController extends Controller
      */
     protected function createSearchQueryBuilder($searchQuery, array $searchableFields, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
+        if (func_num_args() > 5) {
+            throw new \RuntimeException('The signature of the AdminController::createSearchQueryBuilder() method changed in EasyAdmin 1.17.0. Solution: remove the first argument of the createSearchQueryBuilder() call, which corresponded to the entity class and is no longer needed.');
+        }
+
         return $this->get('easyadmin.query_builder')->createSearchQueryBuilder($this->entity, $searchQuery, $sortField, $sortDirection, $dqlFilter);
     }
 

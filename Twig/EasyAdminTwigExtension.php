@@ -30,12 +30,14 @@ class EasyAdminTwigExtension extends \Twig_Extension
     private $propertyAccessor;
     /** @var bool */
     private $debug;
+    private $logoutUrlGenerator;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, $debug = false)
+    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, $debug = false, $logoutUrlGenerator)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
         $this->debug = $debug;
+        $this->logoutUrlGenerator = $logoutUrlGenerator;
     }
 
     /**
@@ -52,6 +54,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             new \Twig_SimpleFunction('easyadmin_get_action', array($this, 'getActionConfiguration')),
             new \Twig_SimpleFunction('easyadmin_get_action_for_*_view', array($this, 'getActionConfiguration')),
             new \Twig_SimpleFunction('easyadmin_get_actions_for_*_item', array($this, 'getActionsForItem')),
+            new \Twig_SimpleFunction('easyadmin_logout_path', array($this, 'getLogoutPath')),
         );
     }
 
@@ -347,6 +350,20 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         return $value;
+    }
+
+    /**
+     * This reimplementation of Symfony's logout_path() helper is needed because
+     * when no arguments are passed to the getLogoutPath(), it's common to get
+     * exceptions and there is no way to recover from them in a Twig template.
+     */
+    public function getLogoutPath()
+    {
+        try {
+            return $this->logoutUrlGenerator->getLogoutPath();
+        } catch (\Exception $e) {
+            return;
+        }
     }
 
     /**

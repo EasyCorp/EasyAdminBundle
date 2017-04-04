@@ -75,8 +75,7 @@
 
                     <div class="navbar-custom-menu">
                     {% block header_custom_menu %}
-                        {# logout_path() without arguments only works in Symfony >= 2.7 #}
-                        {% set _is_logout_supported = constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION_ID') >= 20700 %}
+                        {% set _logout_path = easyadmin_logout_path() %}
                         <ul class="nav navbar-nav">
                             <li class="dropdown user user-menu">
                                 {% block user_menu %}
@@ -85,7 +84,7 @@
                                     {% if app.user|default(false) == false %}
                                         <i class="hidden-xs fa fa-user-times"></i>
                                         {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
-                                    {% elseif not _is_logout_supported %}
+                                    {% elseif not _logout_path %}
                                         <i class="hidden-xs fa fa-user"></i>
                                         {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
                                     {% else %}
@@ -100,7 +99,7 @@
                                             <ul class="dropdown-menu" role="menu">
                                                 {% block user_menu_dropdown %}
                                                 <li>
-                                                    <a href="{{ logout_path() }}"><i class="fa fa-sign-out"></i> {{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
+                                                    <a href="{{ _logout_path }}"><i class="fa fa-sign-out"></i> {{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
                                                 </li>
                                                 {% endblock user_menu_dropdown %}
                                             </ul>

@@ -359,6 +359,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getLogoutPath()
     {
+        if (null === $this->logoutUrlGenerator) {
+            return;
+        }
+
         try {
             return $this->logoutUrlGenerator->getLogoutPath();
         } catch (\Exception $e) {

@@ -57,7 +57,7 @@ before_install:
   - echo session.gc_probability = 0 >> $INI_FILE
   - echo opcache.enable_cli = 1 >> $INI_FILE
   - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == 3.* ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
-  - if [[ "$ENABLE_CODE_COVERAGE" != "true" ]]; then rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini; fi;
+  - if [[ "$ENABLE_CODE_COVERAGE" != "true" && "$TRAVIS_EVENT_TYPE" != "cron" ]]; then rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini; fi;
   - composer self-update
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
   - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
@@ -65,7 +65,7 @@ before_install:
 install:
   - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then composer require --dev --no-update friendsofphp/php-cs-fixer; fi;
   - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
-  - if [[ "$ENABLE_CODE_COVERAGE" == "true" ]]; then composer require --dev satooshi/php-coveralls; fi
+  - if [[ "$ENABLE_CODE_COVERAGE" == "true" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then composer require --dev satooshi/php-coveralls; fi
 
 script:
   - if [[ "$ENABLE_CODE_COVERAGE" == "true" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml; else vendor/bin/phpunit; fi;

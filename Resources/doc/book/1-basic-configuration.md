@@ -74,7 +74,7 @@ logged in the application. Otherwise it displays *"Anonymous User"*.
 
 -------------------------------------------------------------------------------
 
-[Chapter 2. Design Configuration](2-design-configuration.md) &rarr;
+&larr; [Chapter 0. Installation and Your First Backend](0-installation-and-first-backend.md)  |  [Chapter 2. Design Configuration](2-design-configuration.md) &rarr;
 
 [1]: ./6-menu-configuration.md
 [2]: http://symfony.com/doc/current/book/security.html

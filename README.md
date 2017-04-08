@@ -9,10 +9,9 @@ unprecedented simplicity.
 <img src="https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-promo.png" alt="Symfony Backends created with EasyAdmin" align="right" />
 
 * [Installation](#installation)
-* [Create Your First Backend](#your-first-backend)
+* [Creating Your First Backend](#your-first-backend)
 * [Documentation](#documentation)
 * [Demo application](#demo-application)
-* [License](#license)
 
 **Features**
 

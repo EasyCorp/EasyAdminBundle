@@ -43,7 +43,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testListViewPageTitle()
     {
         $crawler = $this->requestListView();
-
+var_dump($this->client->getResponse());exit;
         $this->assertSame('Product Categories', trim($crawler->filter('head title')->text()));
         $this->assertSame('Product Categories', trim($crawler->filter('h1.title')->text()));
     }

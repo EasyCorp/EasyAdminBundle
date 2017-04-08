@@ -153,3 +153,39 @@ easy_admin:
 
 Check out the original CKEditor documentation to get
 [its full list of configuration options] (http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html).
+
+Integrating CKFinder
+--------------------
+
+[CKFinder][https://cksource.com/ckfinder] is a file manager plugin developed for
+CKEditor. First, follow its documentation to download and install the "CKFinder
+Connector" somewhere in your Symfony application. After that, integrating
+CKFinder with CKEditor is a matter of adding a few lines of JavaScript code.
+
+First, create a JavaScript file (for example in `web/js/setup-ckfinder.js`) and
+add the following code:
+
+```js
+window.onload = function () {
+    if (window.CKEDITOR){
+        // configure 'connectorPath' according to your own application
+        CKFinder.config( { connectorPath: '/app.php/ckfinder/connector' } );
+        for (var ckInstance in CKEDITOR.instances){
+            CKFinder.setupCKEditor(CKEDITOR.instances[ckInstance]);
+        }
+    }
+}
+```
+
+Then, use the `design.assets.js` config option to include that file in every
+page loaded by EasyAdmin:
+
+```yaml
+easy_admin:
+    design:
+        assets:
+            js:
+                - '/bundles/cksourceckfinder/ckfinder/ckfinder.js'
+                - '/js/setup-ckfinder.js'
+                # ...
+```

@@ -4,7 +4,8 @@
 
 {% extends _entity_config.templates.layout %}
 
-{% set _request_parameters = app.request.query|merge({
+{% set _request_parameters = app.request.query %}
+{% set _request_parameters = _request_parameters|merge({
     entity: _entity_config.name,
     menuIndex: app.request.get('menuIndex'),
     submenuIndex: app.request.get('submenuIndex'),

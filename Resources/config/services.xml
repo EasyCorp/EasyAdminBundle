@@ -39,6 +39,7 @@
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="property_accessor" />
             <argument>%kernel.debug%</argument>
+            <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <tag name="twig.extension" />
         </service>
 

@@ -157,7 +157,7 @@ Check out the original CKEditor documentation to get
 Integrating CKFinder
 --------------------
 
-[CKFinder][https://cksource.com/ckfinder] is a file manager plugin developed for
+[CKFinder](https://cksource.com/ckfinder) is a file manager plugin developed for
 CKEditor. First, follow its documentation to download and install the "CKFinder
 Connector" somewhere in your Symfony application. After that, integrating
 CKFinder with CKEditor is a matter of adding a few lines of JavaScript code.

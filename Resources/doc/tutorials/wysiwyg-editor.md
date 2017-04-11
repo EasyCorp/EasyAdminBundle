@@ -166,10 +166,12 @@ First, create a JavaScript file (for example in `web/js/setup-ckfinder.js`) and
 add the following code:
 
 ```js
+// web/js/setup-ckfinder.js
 window.onload = function () {
-    if (window.CKEDITOR){
-        // configure 'connectorPath' according to your own application
-        CKFinder.config( { connectorPath: '/app.php/ckfinder/connector' } );
+    if (window.CKEDITOR) {
+         // configure 'connectorPath' according to your own application
+        var path = '/ckfinder/connector';
+        CKFinder.config({ connectorPath: (window.location.pathname.indexOf("app_dev.php") == -1 ) ? path : '/app_dev.php' + path });
         for (var ckInstance in CKEDITOR.instances){
             CKFinder.setupCKEditor(CKEDITOR.instances[ckInstance]);
         }

@@ -281,9 +281,9 @@ By default, these are the formats applied to date and time properties (read the
 `date configuration options`_ in the PHP manual if you don't understand the
 meaning of these formats):
 
-* ``date`: `Y-m-d``
-* ``time`:  `H:i:s``
-* ``datetime`: `F j, Y H:i``
+* ``date``: ``Y-m-d``
+* ``time``:  ``H:i:s``
+* ``datetime``: ``F j, Y H:i``
 
 These default formats can be overridden in two ways: globally for all entities
 and locally for each entity property. The global ``formats`` option sets the

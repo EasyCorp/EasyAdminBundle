@@ -43,9 +43,9 @@ customize your backends.
     * `templates`_
   * `list`_
 
-      * :ref:`title <reference-list-title>`
-      * :ref:`actions <reference-list-actions>`
-      * :ref:`max_results <reference-list-max-results>`
+    * :ref:`title <reference-list-title>`
+    * :ref:`actions <reference-list-actions>`
+    * :ref:`max_results <reference-list-max-results>`
   * `edit`_
   * `new`_
   * `show`_

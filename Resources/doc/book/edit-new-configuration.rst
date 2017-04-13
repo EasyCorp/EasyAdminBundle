@@ -586,8 +586,8 @@ they were defined and they span the full browser window width. However, forms
 can also include special design elements (dividers, groups, sections) to create
 more advanced layouts.
 
-#Form Dividers
-~~~~~~~~~~~~~~
+Form Dividers
+.............
 
 This is the simplest form design element. It just displays a straight horizontal
 line. It's useful to easily separate fields in long forms:
@@ -644,7 +644,7 @@ as explained below.
    :alt: A form using sections to separate its fields
 
 Form Groups
-~~~~~~~~~~~
+...........
 
 This element groups one or more fields and displays them separately from the
 rest of the form fields. It's useful to create multi-column forms and to create

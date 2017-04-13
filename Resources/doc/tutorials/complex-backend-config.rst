@@ -125,11 +125,11 @@ entity:
 
 .. code-block:: yaml
 
-# src/ProductBundle/Resources/config/product.yml
-easy_admin:
-    entities:
-        Product:
-            # ...
+    # src/ProductBundle/Resources/config/product.yml
+    easy_admin:
+        entities:
+            Product:
+                # ...
 
 Then, import the ``product.yml`` file from the DependencyInjection extension
 defined by the bundle:

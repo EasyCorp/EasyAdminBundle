@@ -20,34 +20,36 @@ Full Backend Configuration
 This section describes the entire list of configuration options available to
 customize your backends.
 
-* [easy_admin](#easy_admin)
-  * [site_name](#site_name)
-  * [formats](#formats)
-    * [date](#date)
-    * [time](#time)
-    * [datetime](#datetime)
-    * [number](#number)
-  * [disabled_actions](#disabled_actions)
-  * [design](#design)
-    * [theme](#theme)
-    * [color_scheme](#color_scheme)
-    * [brand_color](#brand_color)
-    * [form_theme](#form_theme)
-    * [assets](#assets)
-      * [css](#css)
-      * [js](#js)
-    * [templates](#templates)
-  * [list](#list)
-      [actions](#actions)
-      [max_results](#max_results)
-  * [edit](#edit)
-      [actions](#actions)
-  * [new](#new)
-      [actions](#actions)
-  * [show](#show)
-      [actions](#actions)
-      [max_results](#max_results)
-  * [entities](#entities)
+* `easy_admin`_
+
+  * `site_name`_
+  * `formats`_
+
+    * `date`_
+    * `time`_
+    * `datetime`_
+    * `number`_
+  * `disabled_actions`_
+  * `design`_
+
+    * `theme`_
+    * `color_scheme`_
+    * `brand_color`_
+    * `form_theme`_
+    * `assets`_
+
+      * `css`_
+      * `js`_
+    * `templates`_
+  * `list`_
+
+      * :ref:`title <reference-list-title>`
+      * :ref:`actions <reference-list-actions>`
+      * :ref:`max_results <reference-list-max-results>`
+  * `edit`_
+  * `new`_
+  * `show`_
+  * `entities`_
 
 easy_admin
 ~~~~~~~~~~
@@ -423,6 +425,8 @@ list
 
 Defines the options applied globally for the ``list`` view of all entities.
 
+.. _reference-list-title:
+
 title
 .....
 
@@ -436,6 +440,8 @@ entity).
     easy_admin:
         list:
             title: 'list.%%entity_label%%'
+
+.. _reference-list-actions:
 
 actions
 .......
@@ -460,6 +466,8 @@ To remove an action, add it to this list prepending its name with a dash (``-``)
     easy_admin:
         list:
             actions: ['-new', '-show', 'myAction', 'myOtherAction']
+
+.. _reference-list-max-results:
 
 max_results
 ...........

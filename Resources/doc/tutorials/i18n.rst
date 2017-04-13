@@ -1,17 +1,17 @@
 How to Translate the Backend
 ============================
 
-EasyAdmin leverages the Symfony Translation component to provide built-in support
-for translating backends into any language. The translation process is divided
-into two steps:
+EasyAdmin leverages the Symfony Translation component to provide built-in
+support for translating backends into any language. The translation process is
+divided into two steps:
 
 * Translating the elements of the EasyAdmin interface;
 * Translating your own contents (such as the main menu and the property labels).
 
-The elements of the interface are translated using the ``EasyAdminBundle`` domain.
-The rest of the elements are translated by default using the ``messages`` domain,
-but you can use any other domain defined in the ``translation_domain`` option, as
-explained at the end of this article.
+The elements of the interface are translated using the ``EasyAdminBundle``
+domain. The rest of the elements are translated by default using the
+``messages`` domain, but you can use any other domain defined in the
+``translation_domain`` option, as explained at the end of this article.
 
 Before translating your backend, make sure that the ``translator`` service is
 enabled in the application (projects based on the Symfony Standard Edition have
@@ -38,8 +38,7 @@ consider contributing a translation for your own language.
 
     Although it's not recommended to do it, if you want to change any of the
     built-in translations defined under the ``EasyAdminBundle`` domain, use the
-    [translation override mechanism](http://symfony.com/doc/current/cookbook/bundles/override.html#translations)
-    provided by Symfony.
+    `translation override mechanism`_ provided by Symfony.
 
 Translate the Main Menu Labels
 ------------------------------
@@ -104,11 +103,13 @@ The behavior of the property labels is very similar to the one explained in the
 previous section for the main menu. By default, the label of each property is
 the "humanized" version of its name:
 
-| Property value  | Default property label
-| --------------- | ----------------------
-| ``propertyname``  | ``Propertyname``
-| ``propertyName``  | ``Property name``
-| ``property_name`` | ``Property name``
+=================  ======================
+Property value     Default property label
+=================  ======================
+``propertyname``   ``Propertyname``
+``propertyName``   ``Property name``
+``property_name``  ``Property name``
+=================  ======================
 
 Consider the following configuration:
 
@@ -223,3 +224,5 @@ locally by each entity:
 In the above example, the contents of the ``Customers`` entity are translated
 with the ``admin`` domain whereas the contents of the ``Orders`` entity are
 translated with the ``messages`` domain.
+
+.. _`translation override mechanism`: https://symfony.com/doc/current/cookbook/bundles/override.html#translations

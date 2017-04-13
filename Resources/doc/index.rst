@@ -1,8 +1,7 @@
 EasyAdminBundle
 ===============
 
-`EasyAdminBundle`_ creates administration backends for your Symfony applications
-with unprecedented simplicity.
+`EasyAdminBundle`_ creates administration backends for your Symfony applications.
 
 .. toctree::
     :maxdepth: 1
@@ -30,8 +29,8 @@ Tutorials
     tutorials/complex-backend-config
     tutorials/tips-and-tricks
 
-Integrations with other bundles
--------------------------------
+Integration with other bundles
+------------------------------
 
 .. toctree::
     :maxdepth: 1

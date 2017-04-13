@@ -1,5 +1,5 @@
-How to Upload Files and Images
-==============================
+Integrating VichUploaderBundle to Upload Files and Images
+=========================================================
 
 In this article you'll learn how to allow uploading files in your backends, both
 images and regular files, such as PDF files.
@@ -67,8 +67,8 @@ This is the configuration needed for this example:
         # ...
         mappings:
             product_images:
-                uri_prefix:         %app.path.product_images%
-                upload_destination: %kernel.root_dir%/../web/uploads/images/products
+                uri_prefix:         '%app.path.product_images%'
+                upload_destination: '%kernel.root_dir%/../web/uploads/images/products'
 
 The ``product_images`` value is a freely chosen name which holds the configuration
 for a specific mapping. This value will be used later in the entity configuration.
@@ -183,11 +183,11 @@ contents of a property as an image:
                 # ...
                 list:
                     fields:
-                        - { property: 'image', type: 'image', base_path: %app.path.product_images% }
+                        - { property: 'image', type: 'image', base_path: '%app.path.product_images%' }
                 # ...
                 show:
                     fields:
-                        - { property: 'image', type: 'image', base_path: %app.path.product_images% }
+                        - { property: 'image', type: 'image', base_path: '%app.path.product_images%' }
 
 The property used to display the image must be the one that stores the image path
 (``image`` in this case) and not the one that stores the binary contents of the
@@ -263,8 +263,8 @@ Define the "mapping" for the new user contracts:
         # ...
         mappings:
             user_contracts:
-                uri_prefix: %app.path.user_contracts%
-                upload_destination: %kernel.root_dir%/../web/uploads/files/user/contracts
+                uri_prefix: '%app.path.user_contracts%'
+                upload_destination: '%kernel.root_dir%/../web/uploads/files/user/contracts'
 
 Preparing your Entities to Persist Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -358,7 +358,7 @@ option. So you just need to add a new option in the property definition:
     - { property: 'contract', template: 'contract.html.twig' }
 
     # After
-    - { property: 'contract', template: 'contract.html.twig', base_path: %app.path.user_contracts% }
+    - { property: 'contract', template: 'contract.html.twig', base_path: '%app.path.user_contracts%' }
 
 Then, update the custom template to use this new option:
 

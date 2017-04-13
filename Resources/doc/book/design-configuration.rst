@@ -174,10 +174,10 @@ locale of the application is ``ar`` (Arabic), ``fa`` (Persian) or ``he``
 
 .. code-block:: yaml
 
-easy_admin:
-    design:
-        rtl: true
-    # ...
+    easy_admin:
+        design:
+            rtl: true
+        # ...
 
 .. _`AdminLTE template`: https://github.com/almasaeed2010/AdminLTE
 .. _`Bootstrap 3`: https://github.com/twbs/bootstrap

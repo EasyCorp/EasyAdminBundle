@@ -1,5 +1,5 @@
-How To Integrate FOSRestBundle and EasyAdmin
-============================================
+Integrating FOSRestBundle to Create APIs
+========================================
 
 `FOSRestBundle`_ provides various tools to rapidly develop RESTful APIs in
 Symfony applications. EasyAdmin doesn't integrate with FOSRestBundle features in

@@ -1,5 +1,5 @@
-How to Use a WYSIWYG Editor
-===========================
+Integrating IvoryCKEditorBundle to Create a WYSIWYG Editor
+==========================================================
 
 EasyAdmin uses a ``<textarea>`` form field to render long text properties:
 

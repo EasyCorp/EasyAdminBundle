@@ -79,7 +79,7 @@ takes place:
 1. All the fields defined in the ``form`` view are copied in the same order into
    the ``edit`` and ``new`` views.
 2. Any field defined in the ``edit`` or ``new`` view which is not present in the
-  ``form`` view is added after the ``form`` fields.
+   ``form`` view is added after the ``form`` fields.
 3. The ``edit`` and ``new`` views can remove any field defined in the ``form`` view
    just by prefixing the name of the removed field with a dash ``-`` (e.g. add
    a property called ``-name`` to remove the ``name`` property defined in ``form``)
@@ -360,7 +360,8 @@ These are the options that you can define for each field:
   name (e.g. ``Symfony\Component\Form\Extension\Core\Type\EmailType``) even if
   your application runs on Symfony 3 (the needed conversion is done internally
   by the bundle).The allowed values are:
-  * Any of the [Symfony Form types](http://symfony.com/doc/current/reference/forms/types.html).
+
+  * Any of the `Symfony Form types`_.
   * Any of the custom EasyAdmin form types: ``easyadmin_autocomplete`` (they are
     explained later in this chapter).
 * ``type_options`` (optional), a hash with the options passed to the Symfony
@@ -382,8 +383,8 @@ tens of options suited for each form type:
                         - { property: 'interests', type_options: { expanded: true, multiple: true } }
                         - { property: 'updated_at', type_options: { widget: 'single_text' } }
 
-Read the [Symfony Form type reference](http://symfony.com/doc/current/reference/forms/types.html)
-to learn about all the available options, their usage and allowed values.
+Read the `Symfony Form types`_  reference to learn about all the available
+options, their usage and allowed values.
 
 Formatting Dates and Numbers
 ----------------------------
@@ -828,3 +829,4 @@ template right under the ``easy_admin/`` directory:
     └─ web/
 
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
+.. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html

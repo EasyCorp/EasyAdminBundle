@@ -245,6 +245,7 @@ These are the options that you can define for each field:
   contents of the field. This option is fully explained later in this chapter.
 * ``type`` (optional): the type of data stored in the property, which affects
   how the contents are displayed. The allowed values are:
+
   * Any of the Doctrine types: ``array``, ``association``, ``bigint``, ``blob``,
     ``boolean``, ``date``, ``datetime``, ``datetimetz``, ``decimal``, ``float``,
     ``guid``, ``integer``, ``json_array``, ``object``, ``simple_array``,

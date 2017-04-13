@@ -1,5 +1,5 @@
-How To Integrate FOSUserBundle To Manage Users
-==============================================
+Integrating FOSUserBundle to Manage Users
+=========================================
 
 `FOSUserBundle`_ is a popular Symfony bundle which simplifies the management
 of users in Symfony applications. This article explains how to better integrate

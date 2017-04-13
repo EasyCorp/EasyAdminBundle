@@ -117,13 +117,15 @@ The above configuration is equivalent to the following:
             Customer:
                 class: AppBundle\Entity\Customer
                 new:
-                    - { property: 'name', icon: 'user' }
-                    - { property: 'email', css_class: 'input-large', type_options: { required: false } }
+                    fields:
+                        - { property: 'name', icon: 'user' }
+                        - { property: 'email', css_class: 'input-large', type_options: { required: false } }
                 edit:
-                    - id
-                    - { property: 'name', icon: 'customer' }
-                    - { property: 'email', css_class: 'input-large', help: 'Phone number is preferred' }
-                    - phone
+                    fields:
+                        - id
+                        - { property: 'name', icon: 'customer' }
+                        - { property: 'email', css_class: 'input-large', help: 'Phone number is preferred' }
+                        - phone
         # ...
 
 General Configuration

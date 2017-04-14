@@ -1,0 +1,68 @@
+{% trans_default_domain 'EasyAdminBundle' %}
+
+{% set _paginator_request_parameters = _request_parameters|merge({'referer': null}) %}
+
+{% if paginator.haveToPaginate %}
+    <div class="list-pagination">
+        <div class="row">
+            <div class="col-sm-3 hidden-xs" class="list-pagination-counter">
+                {{ 'paginator.counter'|trans({ '%start%': paginator.currentPageOffsetStart, '%end%': paginator.currentPageOffsetEnd, '%results%': paginator.nbResults})|raw }}
+            </div>
+
+            <div class="col-xs-12 col-sm-9">
+                <ul class="pagination list-pagination-paginator {{ 1 == paginator.currentPage ? 'first-page' : '' }} {{ paginator.hasNextPage ? '' : 'last-page' }}">
+                    {% if 1 != paginator.currentPage %}
+                        <li>
+                            <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: 1 }) ) }}">
+                                <i class="fa fa-angle-double-left"></i> 1
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if paginator.currentPage > 3 %}
+                        <li class="disabled">
+                            <span>...</span>
+                        </li>
+                    {% endif %}
+
+                    {% if paginator.hasPreviousPage and paginator.currentPage > 2 %}
+                        <li>
+                            <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.previousPage }) ) }}">
+                                <i class="fa fa-angle-left"></i> {{ paginator.previousPage }}
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="active">
+                        <span>
+                            {{ paginator.currentPage }}
+                        </span>
+                    </li>
+
+
+                    {% if paginator.hasNextPage and paginator.currentPage < paginator.nbPages-1 %}
+                        <li>
+                            <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.nextPage }) ) }}">
+                                {{ paginator.currentPage +1 }} <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if paginator.currentPage < paginator.nbPages-2 %}
+                        <li class="disabled">
+                            <span>...</span>
+                        </li>
+                    {% endif %}
+
+                    {% if paginator.currentPage < paginator.nbPages %}
+                        <li>
+                            <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.nbPages }) ) }}">
+                                {{ paginator.nbPages }}<i class="fa fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}

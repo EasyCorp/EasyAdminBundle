@@ -33,31 +33,31 @@ Documentation
 
 #### The Book
 
-  * [Chapter 0 - Installation and your first backend](Resources/doc/book/0-installation-and-first-backend.md)
-  * [Chapter 1 - Basic configuration](Resources/doc/book/1-basic-configuration.md)
-  * [Chapter 2 - Design configuration](Resources/doc/book/2-design-configuration.md)
-  * [Chapter 3 - `list`, `search` and `show` views configuration](Resources/doc/book/3-list-search-show-configuration.md)
-  * [Chapter 4 - `edit` and `new` views configuration](Resources/doc/book/4-edit-new-configuration.md)
-  * [Chapter 5 - Actions configuration](Resources/doc/book/5-actions-configuration.md)
-  * [Chapter 6 - Menu configuration](Resources/doc/book/6-menu-configuration.md)
-  * [Chapter 7 - Creating complex and dynamic backends](Resources/doc/book/7-complex-dynamic-backends.md)
-  * [Chapter 8 - About this project](Resources/doc/book/8-about.md)
-  * [Appendix - Full configuration reference](Resources/doc/book/configuration-reference.md)
+  * [Chapter 0 - Installation and your first backend](Resources/doc/book/installation.rst)
+  * [Chapter 1 - Basic configuration](Resources/doc/book/basic-configuration.rst)
+  * [Chapter 2 - Design configuration](Resources/doc/book/design-configuration.rst)
+  * [Chapter 3 - `list`, `search` and `show` views configuration](Resources/doc/book/list-search-show-configuration.rst)
+  * [Chapter 4 - `edit` and `new` views configuration](Resources/doc/book/edit-new-configuration.rst)
+  * [Chapter 5 - Actions configuration](Resources/doc/book/actions-configuration.rst)
+  * [Chapter 6 - Menu configuration](Resources/doc/book/menu-configuration.rst)
+  * [Chapter 7 - Creating complex and dynamic backends](Resources/doc/book/complex-dynamic-backends.rst)
+  * [Chapter 8 - About this project](Resources/doc/misc/about.rst)
+  * [Appendix - Full configuration reference](Resources/doc/book/configuration-reference.rst)
 
 #### Tutorials
 
-  * [How to translate the backend](Resources/doc/tutorials/i18n.md)
-  * [How to define custom actions](Resources/doc/tutorials/custom-actions.md)
-  * [How to define custom options for entity properties](Resources/doc/tutorials/custom-property-options.md)
-  * [How to manage configuration for complex backends](Resources/doc/tutorials/complex-backend-config.md)
-  * [Tips and tricks](Resources/doc/tutorials/tips-and-tricks.md)
+  * [How to translate the backend](Resources/doc/tutorials/i18n.rst)
+  * [How to define custom actions](Resources/doc/tutorials/custom-actions.rst)
+  * [How to define custom options for entity properties](Resources/doc/tutorials/custom-property-options.rst)
+  * [How to manage configuration for complex backends](Resources/doc/tutorials/complex-backend-config.rst)
+  * [Tips and tricks](Resources/doc/tutorials/tips-and-tricks.rst)
 
 #### Integrations with third-party bundles/services
 
-  * [How to upload files and images with VichUploaderBundle](Resources/doc/tutorials/upload-files-and-images.md)
-  * [How to integrate FOSUserBundle to manage users](Resources/doc/tutorials/fosuserbundle-integration.md)
-  * [How to use a WYSIWYG editor with IvoryCKEditorBundle](Resources/doc/tutorials/wysiwyg-editor.md)
-  * [How To integrate FOSRestBundle and EasyAdmin](Resources/doc/tutorials/fosrestbundle-integration.md)
+  * [How to upload files and images with VichUploaderBundle](Resources/doc/integration/vichuploaderbundle.rst)
+  * [How to integrate FOSUserBundle to manage users](Resources/doc/integration/fosuserbundle.rst)
+  * [How to use a WYSIWYG editor with IvoryCKEditorBundle](Resources/doc/integration/ivoryckeditorbundle.rst)
+  * [How To integrate FOSRestBundle and EasyAdmin](Resources/doc/integration/fosrestbundle.rst)
 
 > **❮ NOTE ❯** you are reading the documentation of the bundle's **development**
 > version. You can also [read the documentation of the latest stable version ➜](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.16.9/).
@@ -164,3 +164,5 @@ This software is published under the [MIT License](LICENSE.md)
 [6]: https://coveralls.io/r/javiereguiluz/EasyAdminBundle?branch=master
 [7]: https://img.shields.io/badge/Symfony-%202.x%20and%203.x-green.svg
 [8]: https://symfony.com/
+
+

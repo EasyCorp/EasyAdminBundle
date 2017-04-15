@@ -266,4 +266,4 @@ advanced menus with two-level submenus and all kind of items:
                   children:
                     - { label: 'Help', route: 'help_index' }
                     - { label: 'Docs', url: 'http://example.com/external-docs' }
-                    - { label: %app.version% }
+                    - { label: '%app.version%' }

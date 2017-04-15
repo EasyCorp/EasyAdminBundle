@@ -51,8 +51,8 @@ In case you want to unload these files in addition to loading your own assets,
 override the default ``layout.html.twig`` template and empty the
 ``head_stylesheets`` and ``head_javascript`` Twig blocks.
 
-Read the `Advanced Design Customization`_ section to learn how to override
-default templates.
+Read the :ref:`Advanced Design Customization <list-search-show-advanced-design-configuration>`
+section to learn how to override default templates.
 
 Removing Action Labels and Displaying Just Icons
 ------------------------------------------------
@@ -110,8 +110,8 @@ language for the backend?
 
 You just need to get the ``translator`` service and execute the ``setLocale()``
 method befor executing the code of EasyAdmin. The easiest way to do that is to
-create a `custom admin controller`_ and override the ``initialize()`` method
-as follows:
+create a custom admin controller and override the ``initialize()`` method
+(as explained in :doc:`complex-dynamic-backends`):
 
 .. code-block:: php
 
@@ -210,6 +210,4 @@ The solution work as follows:
    parent template (``{{ parent() }}``).
 
 .. _`Doctrine caching drivers`: https://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
-.. _`Advanced Design Customization`: ../book/3-list-search-show-configuration.md#advanced-design-configuration
-.. _`custom admin controller`: ../book/3-list-search-show-configuration.md#customizing-the-behavior-of-list-search-and-show-views
 .. _`Doctrine filters`: http://doctrine-orm.readthedocs.io/projects/doctrine-orm/en/latest/reference/filters.html

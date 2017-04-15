@@ -18,6 +18,8 @@ backend is very complex):
    triggered by EasyAdmin. This is harder to set up but allows you to define
    the customization code anywhere in your application.
 
+.. _overriding-the-default-controller:
+
 Customization Based on Overriding the Default AdminController
 -------------------------------------------------------------
 

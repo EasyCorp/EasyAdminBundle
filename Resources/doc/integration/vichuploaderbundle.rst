@@ -169,8 +169,8 @@ The ``imageFile`` property must define a ``@Vich\UploadableField`` annotation th
 configures both the "mapping" to use (``product_images`` in this case) and the
 entity property that stores the image name (``image`` in this case).
 
-Displaying the Images in the ``list` and `show`` Views
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Displaying the Images in the ``list`` and ``show`` Views
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Use the special ``image`` type in the ``list`` and ``show`` views to display the
 contents of a property as an image:
@@ -198,8 +198,8 @@ Instead of hardcoding the ``base_path`` value, this example uses the
 ``app.path.product_images`` container parameter which also was used in the
 VichUploaderBundle configuration.
 
-Uploading the Images in the ``edit` and `new`` Views
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Uploading the Images in the ``edit`` and ``new`` Views
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The easiest way to enable uploading images in the forms of the ``edit`` and
 ``new`` views is to define the type of the property as ``file``:
@@ -301,8 +301,8 @@ the database:
         // ... getters and setters for these properties
     }
 
-Displaying the Files in the ``list` and `show`` Views
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Displaying the Files in the ``list`` and ``show`` Views
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This is the most tricky part of adding support for file uploads. Contrary to
 images, it's not easy to provide a preview of the contents for any kind of file.
@@ -375,8 +375,8 @@ Then, update the custom template to use this new option:
 
         <a href="{{ asset(value, 'user_contracts') }}">View contract (PDF)</a>
 
-Uploading the Files in the ``edit` and `new`` Views
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Uploading the Files in the ``edit`` and ``new`` Views
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Thanks to the custom ``VichFileType`` provided by the bundle, this is pretty
 straightforward:

@@ -556,7 +556,7 @@ The same form shown previously will now be rendered as follows:
 .. image:: ../images/easyadmin-form-vertical.png
    :alt: Vertical form style
 
-The ``horizontal` and `vertical`` values are just nice shortcuts for the two
+The ``horizontal`` and ``vertical`` values are just nice shortcuts for the two
 built-in form themes. But you can also use your own form themes:
 
 .. code-block:: yaml

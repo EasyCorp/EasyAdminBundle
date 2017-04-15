@@ -1,9 +1,9 @@
 Chapter 5. List, Search and Show Views Configuration
 ====================================================
 
-This chapter explains how to customize the read-only views: ``list`, `search`` and
-``show``. You'll learn all their configuration options and how to override or
-tweak their templates.
+This chapter explains how to customize the read-only views: ``list``, ``search``
+and ``show``. You'll learn all their configuration options and how to override
+or tweak their templates.
 
 List, Search and Show Views
 ---------------------------
@@ -735,6 +735,8 @@ define the ``type`` option with a ``raw`` value:
                         - { property: 'features', type: 'raw' }
                         # ...
         # ...
+
+.. _list-search-show-advanced-design-configuration:
 
 Advanced Design Configuration
 -----------------------------

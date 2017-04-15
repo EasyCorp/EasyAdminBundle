@@ -31,7 +31,7 @@ unprecedented simplicity.
 Documentation
 -------------
 
-[Read EasyAdminBundle documentation at symfony.com][9]
+[Read the EasyAdminBundle documentation at symfony.com][9].
 
 Demo Application
 ----------------

@@ -135,4 +135,4 @@ This software is published under the [MIT License](LICENSE.md)
 [6]: https://coveralls.io/r/javiereguiluz/EasyAdminBundle?branch=master
 [7]: https://img.shields.io/badge/Symfony-%202.x%20and%203.x-green.svg
 [8]: https://symfony.com/
-[9]: https://symfony.com/doc/current/bundles/EasyAdminBundle
+[9]: http://symfony.com/doc/current/bundles/EasyAdminBundle

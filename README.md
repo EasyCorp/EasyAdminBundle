@@ -10,7 +10,7 @@ unprecedented simplicity.
 
 * [Installation](#installation)
 * [Creating Your First Backend](#your-first-backend)
-* [Documentation](#documentation)
+* [Documentation][9]
 * [Demo application](#demo-application)
 
 **Features**
@@ -31,36 +31,7 @@ unprecedented simplicity.
 Documentation
 -------------
 
-#### The Book
-
-  * [Chapter 0 - Installation and your first backend](Resources/doc/book/installation.rst)
-  * [Chapter 1 - Basic configuration](Resources/doc/book/basic-configuration.rst)
-  * [Chapter 2 - Design configuration](Resources/doc/book/design-configuration.rst)
-  * [Chapter 3 - `list`, `search` and `show` views configuration](Resources/doc/book/list-search-show-configuration.rst)
-  * [Chapter 4 - `edit` and `new` views configuration](Resources/doc/book/edit-new-configuration.rst)
-  * [Chapter 5 - Actions configuration](Resources/doc/book/actions-configuration.rst)
-  * [Chapter 6 - Menu configuration](Resources/doc/book/menu-configuration.rst)
-  * [Chapter 7 - Creating complex and dynamic backends](Resources/doc/book/complex-dynamic-backends.rst)
-  * [Chapter 8 - About this project](Resources/doc/misc/about.rst)
-  * [Appendix - Full configuration reference](Resources/doc/book/configuration-reference.rst)
-
-#### Tutorials
-
-  * [How to translate the backend](Resources/doc/tutorials/i18n.rst)
-  * [How to define custom actions](Resources/doc/tutorials/custom-actions.rst)
-  * [How to define custom options for entity properties](Resources/doc/tutorials/custom-property-options.rst)
-  * [How to manage configuration for complex backends](Resources/doc/tutorials/complex-backend-config.rst)
-  * [Tips and tricks](Resources/doc/tutorials/tips-and-tricks.rst)
-
-#### Integrations with third-party bundles/services
-
-  * [How to upload files and images with VichUploaderBundle](Resources/doc/integration/vichuploaderbundle.rst)
-  * [How to integrate FOSUserBundle to manage users](Resources/doc/integration/fosuserbundle.rst)
-  * [How to use a WYSIWYG editor with IvoryCKEditorBundle](Resources/doc/integration/ivoryckeditorbundle.rst)
-  * [How To integrate FOSRestBundle and EasyAdmin](Resources/doc/integration/fosrestbundle.rst)
-
-> **❮ NOTE ❯** you are reading the documentation of the bundle's **development**
-> version. You can also [read the documentation of the latest stable version ➜](https://github.com/javiereguiluz/EasyAdminBundle/tree/v1.16.9/).
+[Read EasyAdminBundle documentation at symfony.com][9]
 
 Demo Application
 ----------------
@@ -149,7 +120,7 @@ the admin backend:
 
 ![Default EasyAdmin Backend interface](https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-default-backend.png)
 
-Keep reading the rest of the documentation to learn how to create complex backends.
+Keep reading [the rest of the documentation][9] to learn how to create complex backends.
 
 License
 -------
@@ -164,5 +135,4 @@ This software is published under the [MIT License](LICENSE.md)
 [6]: https://coveralls.io/r/javiereguiluz/EasyAdminBundle?branch=master
 [7]: https://img.shields.io/badge/Symfony-%202.x%20and%203.x-green.svg
 [8]: https://symfony.com/
-
-
+[9]: https://symfony.com/doc/current/bundles/EasyAdminBundle

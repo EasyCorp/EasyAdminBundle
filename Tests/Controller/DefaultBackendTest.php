@@ -533,6 +533,20 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertContains($categoryName, $crawler->filter('#main table tr')->eq(1)->text(), 'The newly created category is displayed in the first data row of the "list" table.');
     }
 
+    public function testNewViewEntityCreation()
+    {
+        $crawler = $this->requestNewView();
+        $this->client->followRedirects();
+
+        $categoryName = sprintf('The New Category %s', md5(rand()));
+        $form = $crawler->selectButton('Save changes')->form(array(
+            'category[name]' => $categoryName,
+        ));
+        $crawler = $this->client->submit($form);
+
+        $this->assertContains($categoryName, $crawler->filter('#main table tr')->eq(1)->text(), 'The newly created category is displayed in the first data row of the "list" table.');
+    }
+
     public function testSearchViewTitle()
     {
         $crawler = $this->requestSearchView();

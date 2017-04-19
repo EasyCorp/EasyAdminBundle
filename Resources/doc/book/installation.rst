@@ -1,11 +1,25 @@
 Chapter 1. Installation
 =======================
 
-Installing EasyAdmin requires you to edit two files and execute two console
-commands:
+Installation Using Symfony Flex
+-------------------------------
+
+Symfony Flex is the new way to manage dependencies on Symfony applications that
+use Symfony 3.3 or higher. If you already use Symfony Flex, execute this command
+to download, register and configure the bundle automatically:
+
+.. code-block:: terminal
+
+    $ composer require javiereguiluz/easyadmin-bundle
+
+Installation without Symfony Flex
+---------------------------------
+
+Installing EasyAdmin without Symfony Flex requires you to edit two files and
+execute two console commands:
 
 Step 1: Download the Bundle
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
@@ -18,7 +32,7 @@ This command requires you to have Composer installed globally, as explained
 in the `Composer documentation`_.
 
 Step 2: Enable the Bundle
--------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Then, enable the bundle by adding it to the list of registered bundles in the
 ``app/AppKernel.php`` file of your project:
@@ -43,7 +57,7 @@ Then, enable the bundle by adding it to the list of registered bundles in the
     }
 
 Step 3: Load the Routes of the Bundle
--------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Load the routes of the bundle by adding this configuration at the very beginning
 of the ``app/config/routing.yml`` file:
@@ -59,7 +73,7 @@ of the ``app/config/routing.yml`` file:
     # ...
 
 Step 4: Prepare the Web Assets of the Bundle
---------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This bundle uses several CSS, JavaScript and font files to create the backend
 interfaces. Execute the following command to make those assets available in your

@@ -111,7 +111,7 @@ language for the backend?
 You just need to get the ``translator`` service and execute the ``setLocale()``
 method befor executing the code of EasyAdmin. The easiest way to do that is to
 create a custom admin controller and override the ``initialize()`` method
-(as explained in :doc:`complex-dynamic-backends`):
+(as explained in :doc:`../book/complex-dynamic-backends`):
 
 .. code-block:: php
 

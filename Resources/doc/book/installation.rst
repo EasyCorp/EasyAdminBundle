@@ -66,7 +66,7 @@ of the ``app/config/routing.yml`` file:
 
     # app/config/routing.yml
     easy_admin_bundle:
-        resource: "@EasyAdminBundle/Controller/"
+        resource: "@EasyAdminBundle/Controller/AdminController.php"
         type:     annotation
         prefix:   /admin
 

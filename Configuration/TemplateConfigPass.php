@@ -203,8 +203,9 @@ class TemplateConfigPass implements ConfigPassInterface
                         continue;
                     }
 
-                    // this prevents the template from displaying the 'id' primary key formatted as a number
-                    if ('id' === $fieldName) {
+                    // primary key values are displayed unmodified to prevent common issues
+                    // such as formatting its values as numbers (e.g. `1,234` instead of `1234`)
+                    if ($entityConfig['primary_key_field_name'] === $fieldName) {
                         $template = $entityConfig['templates']['field_id'];
                     } elseif (array_key_exists('field_'.$fieldMetadata['dataType'], $entityConfig['templates'])) {
                         $template = $entityConfig['templates']['field_'.$fieldMetadata['dataType']];

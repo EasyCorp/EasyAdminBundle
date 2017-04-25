@@ -64,5 +64,10 @@
     },
     "autoload-dev": {
         "psr-4": { "AppTestBundle\\": "Tests/Fixtures/AppTestBundle/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.16.x-dev"
+        }
     }
 }

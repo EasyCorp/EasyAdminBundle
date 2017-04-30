@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" target-language="zh-cn" datatype="plaintext" original="file.ext">
+        <body>
+            <!-- page titles -->
+            <trans-unit id="new.page_title">
+                <source>new.page_title</source>
+                <target>新增 %entity_name%</target>
+            </trans-unit>
+            <trans-unit id="show.page_title">
+                <source>show.page_title</source>
+                <target>%entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="edit.page_title">
+                <source>edit.page_title</source>
+                <target>编辑 %entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="list.page_title">
+                <source>list.page_title</source>
+                <target>%entity_name%</target>
+            </trans-unit>
+            <trans-unit id="search.page_title">
+                <source>search.page_title</source>
+                <target><![CDATA[{0} 没有找到结果|{1} 找到 <strong>1</strong> 个结果|]1,Inf] 找到 <strong>%count%</strong> 个结果]]></target>
+            </trans-unit>
+
+            <!-- 'search' view -->
+            <trans-unit id="search.no_results">
+                <source>search.no_results</source>
+                <target>没有找到结果.</target>
+            </trans-unit>
+
+            <!-- 'list' view -->
+            <trans-unit id="list.row_actions">
+                <source>list.row_actions</source>
+                <target>操作</target>
+            </trans-unit>
+
+            <!-- paginator -->
+            <trans-unit id="paginator.first">
+                <source>paginator.first</source>
+                <target>首页</target>
+            </trans-unit>
+            <trans-unit id="paginator.previous">
+                <source>paginator.previous</source>
+                <target>上一页</target>
+            </trans-unit>
+            <trans-unit id="paginator.next">
+                <source>paginator.next</source>
+                <target>下一页</target>
+            </trans-unit>
+            <trans-unit id="paginator.last">
+                <source>paginator.last</source>
+                <target>尾页</target>
+            </trans-unit>
+            <trans-unit id="paginator.counter">
+                <source>paginator.counter</source>
+                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>]]></target>
+            </trans-unit>
+
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>可用</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>不可用</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>空</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>未赋值</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>置空</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>PHP对象</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>无法获取</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>该字段的Getter方法缺失或该字段不是公共属性</target>
+            </trans-unit>
+
+            <!-- user -->
+            <trans-unit id="user.logged_in_as">
+                <source>user.logged_in_as</source>
+                <target>当前登录用户</target>
+            </trans-unit>
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>未命名用户</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>匿名用户</target>
+            </trans-unit>
+            <trans-unit id="user.signout">
+                <source>user.signout</source>
+                <target>退出</target>
+            </trans-unit>
+
+            <!-- misc. elements -->
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>导航</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.title">
+                <source>delete_modal.title</source>
+                <target>是否删除</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.content">
+                <source>delete_modal.content</source>
+                <target>是否删除，该操作不可恢复</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>确认删除</target>
+            </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>添加一项</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>再添加一项</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>删除一项</target>
+            </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>错误|错误</target>
+            </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>该表单的更改还未保存</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} 还有一项没有在当前列表显示|]1,Inf] 还有 %count% 项没有在当前列表显示]]></target>
+            </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>当前记录不可用</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>该条记录不可删除，因为有其他记录依赖该条记录。</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>无权执行该操作</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>没有正确设置</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>未定义该类型记录</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

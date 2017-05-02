@@ -4,13 +4,15 @@ Chapter 1. Installation
 Installation Using Symfony Flex
 -------------------------------
 
-Symfony Flex is the new way to manage dependencies on Symfony applications that
-use Symfony 3.3 or higher. If you already use Symfony Flex, execute this command
-to download, register and configure the bundle automatically:
+`Symfony Flex`_ is the new way to manage dependencies on Symfony 3.3 and higher
+applications. If your project already uses Symfony Flex, execute this command to
+download, register and configure the bundle automatically:
 
 .. code-block:: terminal
 
-    $ composer require javiereguiluz/easyadmin-bundle
+    $ composer require admin
+
+That's all! You can skip the rest of this chapter and go to the next chapter.
 
 Installation without Symfony Flex
 ---------------------------------
@@ -89,4 +91,5 @@ Symfony application:
 
 That's it! Now everything is ready to create your first admin backend.
 
+.. _`Symfony Flex`: https://github.com/symfony/flex
 .. _`Composer documentation`: https://getcomposer.org/doc/00-intro.md

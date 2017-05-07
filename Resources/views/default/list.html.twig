@@ -4,7 +4,7 @@
 
 {% extends _entity_config.templates.layout %}
 
-{% set querystringFilters = app.request.get('filters', {}) %}
+{% set requestFilters = app.request.get('filters', {}) %}
 {% set _request_parameters = _request_parameters|default({})|merge({
     action: app.request.get('action'),
     entity: _entity_config.name,
@@ -13,7 +13,7 @@
     sortField: app.request.get('sortField', ''),
     sortDirection: app.request.get('sortDirection', 'DESC'),
     page: app.request.get('page', 1),
-    filters: querystringFilters
+    filters: requestFilters
 }) %}
 
 {% if 'search' == app.request.get('action') %}
@@ -62,7 +62,7 @@
                                         <input type="hidden" name="sortDirection" value="{{ _request_parameters.sortDirection }}">
                                         <input type="hidden" name="menuIndex" value="{{ _request_parameters.menuIndex }}">
                                         <input type="hidden" name="submenuIndex" value="{{ _request_parameters.submenuIndex }}">
-                                        {% for field, value in querystringFilters %}
+                                        {% for field, value in requestFilters %}
                                             {% if value is iterable %}
                                                 {% for val in value %}
                                                     <input type="hidden" name="filters[{{ field }}][]" value="{{ val }}">

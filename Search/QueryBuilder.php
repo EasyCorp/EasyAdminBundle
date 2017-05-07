@@ -151,7 +151,7 @@ class QueryBuilder
      * @param array                $filters
      */
     public function applyFilters(DoctrineQueryBuilder $queryBuilder, array $filters = array())
-    {        
+    {
         foreach ($filters as $field => $value) {
             // Sanitize parameter name
             $parameterName = 'filter_'.str_replace('.', '_', $field);

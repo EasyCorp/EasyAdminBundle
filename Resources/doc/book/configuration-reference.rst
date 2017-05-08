@@ -1,64 +1,41 @@
 Configuration Reference
 =======================
 
-Simplest Backend Configuration
-------------------------------
-
-Useful only for creating backend prototypes in a few seconds:
-
-.. code-block:: yaml
-
-    easy_admin:
-        entities:
-            - AppBundle\Entity\Customer
-            - AppBundle\Entity\Product
-            # ...
-
-Full Backend Configuration
---------------------------
-
 This section describes the entire list of configuration options available to
-customize your backends.
+customize your backends. All options are defined under the root ``easy_admin``
+config key:
 
-* `easy_admin`_
+* `site_name`_
+* `formats`_
 
-  * `site_name`_
-  * `formats`_
+* `date`_
+* `time`_
+* `datetime`_
+* `number`_
+* `disabled_actions`_
+* `design`_
 
-    * `date`_
-    * `time`_
-    * `datetime`_
-    * `number`_
-  * `disabled_actions`_
-  * `design`_
+* `theme`_
+* `color_scheme`_
+* `brand_color`_
+* `form_theme`_
+* `assets`_
 
-    * `theme`_
-    * `color_scheme`_
-    * `brand_color`_
-    * `form_theme`_
-    * `assets`_
+  * `css`_
+  * `js`_
+* `templates`_
+* `list`_
 
-      * `css`_
-      * `js`_
-    * `templates`_
-  * `list`_
-
-    * :ref:`title <reference-list-title>`
-    * :ref:`actions <reference-list-actions>`
-    * :ref:`max_results <reference-list-max-results>`
-  * `edit`_
-  * `new`_
-  * `show`_
-  * `entities`_
-
-easy_admin
-~~~~~~~~~~
-
-This is the root key for the entire backend configuration. All the other options
-are defined under this key.
+  * :ref:`title <reference-list-title>`
+  * :ref:`actions <reference-list-actions>`
+  * :ref:`max_results <reference-list-max-results>`
+* `edit`_
+* `new`_
+* `show`_
+* `entities`_
 
 site_name
-~~~~~~~~~
+---------
 
 (**default value**: ``'Easy Admin'``, **type**: string)
 
@@ -81,13 +58,13 @@ they will be rendered as HTML content. Example:
         # ...
 
 formats
-~~~~~~~~
+-------
 
 This is the parent key of the four options that configure the formats used to
 display dates and numbers.
 
 date
-....
+~~~~
 
 (**default value**: ``'Y-m-d'``, **type**: string)
 
@@ -104,7 +81,7 @@ options defined in http://php.net/date. Example:
         # ...
 
 time
-....
+~~~~
 
 (**default value**: ``'H:i:s'``, **type**: string)
 
@@ -138,7 +115,7 @@ options defined in http://php.net/date. Example:
         # ...
 
 number
-......
+~~~~~~
 
 (**default value**: none, **type**: string)
 
@@ -154,7 +131,7 @@ in http://php.net/sprintf. Example:
         # ...
 
 disabled_actions
-~~~~~~~~~~~~~~~~
+----------------
 
 (**default value**: empty array, **type**: array)
 
@@ -169,13 +146,13 @@ and then re-enable some of them for some entities. Example:
         # ...
 
 design
-~~~~~~
+------
 
 This is the parent key of the options that configure the options related to the
 visual design of the backend.
 
 theme
-.....
+~~~~~
 
 (**default value**: ``'default'``, **type**: string)
 
@@ -184,7 +161,7 @@ called ``default``. This option is in fact a placeholder for future use. You can
 safely ignore it.
 
 color_scheme
-............
+~~~~~~~~~~~~
 
 (**default value**: ``'dark'``, **type**: string, **values**: ``'dark'`` or ``'light'``)
 
@@ -199,7 +176,7 @@ It defines the colors used in the backend design. If you find the default
         # ...
 
 brand_color
-...........
+~~~~~~~~~~~
 
 (**default value**: ``'#E67E22'``, **type**: string, **values**: any valid CSS
 expression to define a color)
@@ -218,7 +195,7 @@ to create a backend that matches your branding perfectly. Example:
         # ...
 
 form_theme
-..........
+~~~~~~~~~~
 
 (**default value**: ``'horizontal'``, **type**: string or array of strings,
 **values**: ``'horizontal'``, ``'vertical'``, any valid form theme template path)
@@ -259,13 +236,13 @@ You can even use several form themes at the same time. Example:
         # ...
 
 assets
-......
+~~~~~~
 
 This is the parent key of the ``css`` and ``js`` keys that allow to include any
 number of CSS and JavaScript assets in the backend layout.
 
 css
-"""
+...
 
 (**default value**: empty array, **type**: array, **values**: any valid link
 to CSS files)
@@ -289,7 +266,7 @@ to remove the default CSS files loaded by EasyAdmin. To do so, you must override
 the ``<head>`` part of the layout template using a custom template.
 
 js
-""
+..
 
 (**default value**: empty array, **type**: array, **values**: any valid link
 to JavaScript files)
@@ -313,7 +290,7 @@ be used to remove the default JavaScript files loaded by EasyAdmin. To do so,
 you must override the ``<head>`` part of the layout template using a custom template.
 
 templates
-.........
+~~~~~~~~~
 
 (**default value**: none, **type**: strings, **values**: any valid Twig template path)
 
@@ -421,14 +398,14 @@ The ``label_*`` and ``field_*`` templates are only applied in the ``list`` and
 the ``new`` and ``edit`` views, use the ``easy_admin.design.form_theme`` option.
 
 list
-~~~~
+----
 
 Defines the options applied globally for the ``list`` view of all entities.
 
 .. _reference-list-title:
 
 title
-.....
+~~~~~
 
 (**type**: string)
 
@@ -444,7 +421,7 @@ entity).
 .. _reference-list-actions:
 
 actions
-.......
+~~~~~~~
 
 (**default value**: empty array, **type**: array)
 
@@ -470,7 +447,7 @@ To remove an action, add it to this list prepending its name with a dash (``-``)
 .. _reference-list-max-results:
 
 max_results
-...........
+~~~~~~~~~~~
 
 (**default value**: 15, **type**: integer)
 
@@ -478,26 +455,26 @@ The maximum number of rows displayed in the ``list`` view and in the search
 result page.
 
 edit
-~~~~
+----
 
 Defines the options applied globally for the ``edit`` view of all entities. The
 available options are ``actions`` and ``title``, which behave in the same way as
 explained above for the ``list`` view.
 
 new
-~~~
+---
 
 Defines the options applied globally for the ``new`` view of all entities. The
 available options are ``actions`` and ``title``, which behave in the same way as
 explained above for the ``list`` view.
 
 show
-~~~~
+----
 
 Defines the options applied globally for the ``show`` view of all entities.
 
 title
-.....
+~~~~~
 
 (**type**: string)
 
@@ -511,14 +488,14 @@ entity).
             title: 'show.%%entity_label%%'
 
 actions
-.......
+~~~~~~~
 
 (**default value**: empty array, **type**: array)
 
 It works as explained above for the ``list`` view.
 
 max_results
-...........
+~~~~~~~~~~~
 
 (**default value**: 10, **type**: integer)
 
@@ -532,7 +509,7 @@ preventing issues when relations contains lots of elements. This option is also
 used as the maximum number of suggestions displayed for autocomplete fields.
 
 entities
-~~~~~~~~
+--------
 
 (**default value**: empty array, **type**: array)
 

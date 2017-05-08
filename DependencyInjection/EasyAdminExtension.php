@@ -49,20 +49,6 @@ class EasyAdminExtension extends Extension
             $container->removeDefinition('easyadmin.listener.exception');
         }
 
-        // compile commonly used classes on PHP < 7.0
-        if (PHP_VERSION_ID < 70000) {
-            $this->addClassesToCompile(array(
-                'JavierEguiluz\\Bundle\\EasyAdminBundle\\Configuration\\ConfigManager',
-                'JavierEguiluz\\Bundle\\EasyAdminBundle\\Event\\EasyAdminEvents',
-                'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\ExceptionListener',
-                'JavierEguiluz\\Bundle\\EasyAdminBundle\\EventListener\\RequestPostInitializeListener',
-                'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Extension\EasyAdminExtension',
-                'JavierEguiluz\\Bundle\\EasyAdminBundle\\Search\\Paginator',
-                'JavierEguiluz\\Bundle\\EasyAdminBundle\\Search\\QueryBuilder',
-                'JavierEguiluz\\Bundle\\EasyAdminBundle\\Twig\\EasyAdminTwigExtension',
-            ));
-        }
-
         $this->ensureBackwardCompatibility($container);
     }
 

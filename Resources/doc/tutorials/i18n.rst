@@ -168,7 +168,7 @@ Translate Custom Templates
 --------------------------
 
 All the built-in templates include the following tag to set ``EasyAdminBundle``
-as the defualt domain used to translate the contents of that template:
+as the default domain used to translate the contents of that template:
 
 .. code-block:: twig
 

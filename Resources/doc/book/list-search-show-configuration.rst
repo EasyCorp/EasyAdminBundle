@@ -716,6 +716,12 @@ value for different properties or different views:
 The base paths defined for a property always have priority over the one defined
 globally for the entity.
 
+In some cases it is needed to add a suffix to the image path.
+Define ``uri_suffix`` option to the image type property. Default is empty string
+Example:
+  uri_suffix = '?timestamp=123123123123'
+  http://abcd.com/image.jpg?timestamp=123123123123
+
 Raw Data Type
 ~~~~~~~~~~~~~
 

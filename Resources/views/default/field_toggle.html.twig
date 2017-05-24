@@ -1,6 +1,6 @@
 {% trans_default_domain 'EasyAdminBundle' %}
 
-{% if view == 'show' %}
+{% if view == 'show' or ('edit' in backend_config.disabled_actions) %}
     {% if value == true %}
         <span class="label label-success">{{ 'label.true'|trans }}</span>
     {% else %}

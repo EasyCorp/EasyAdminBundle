@@ -35,6 +35,7 @@
         "symfony/polyfill-mbstring"     : "^1.0",
         "symfony/property-access"       : "~2.3|~3.0|~4.0",
         "symfony/security-bundle"       : "~2.3|~3.0|~4.0",
+        "symfony/templating"            : "~2.3|~3.0|~4.0",
         "symfony/translation"           : "~2.3|~3.0|~4.0",
         "symfony/twig-bridge"           : "^2.3.4|~3.0|~4.0",
         "symfony/twig-bundle"           : "~2.3|~3.0|~4.0",

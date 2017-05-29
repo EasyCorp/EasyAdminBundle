@@ -151,6 +151,28 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} existe otro elemento que no se muestra en este listado|]1,Inf] existen otros %count% elementos que no se muestran en este listado]]></target>
             </trans-unit>
+            
+            <!-- exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Este elemento ya no está disponible.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Este elemento no se puede eliminar porque otros elementos dependen de él.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>No se puede realizar la acción solicitada en este elemento.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>La aplicación no está configurada correctamente.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>La aplicación no está configurada correctamente para este tipo de elementos.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -50,7 +50,7 @@
         </service>
 
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument>%easyadmin.config%</argument>
             <argument type="string">easyadmin.listener.exception:showExceptionPageAction</argument>
             <argument type="service" id="logger" on-invalid="null" />

@@ -5,7 +5,7 @@
 {% if paginator.haveToPaginate %}
     <div class="list-pagination">
         <div class="row">
-            <div class="col-sm-3 hidden-xs" class="list-pagination-counter">
+            <div class="col-sm-3 hidden-xs list-pagination-counter">
                 {{ 'paginator.counter'|trans({ '%start%': paginator.currentPageOffsetStart, '%end%': paginator.currentPageOffsetEnd, '%results%': paginator.nbResults})|raw }}
             </div>
 

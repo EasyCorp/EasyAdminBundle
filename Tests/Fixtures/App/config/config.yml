@@ -12,7 +12,7 @@ framework:
     router:          { resource: '%kernel.root_dir%/config/routing_base.yml' }
     form:            true
     validation:      { enable_annotations: true }
-    templating:      false
+    templating:      { engines: ['twig'] }
     profiler:
         collect: true
     session:

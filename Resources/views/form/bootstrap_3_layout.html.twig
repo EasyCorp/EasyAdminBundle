@@ -376,7 +376,7 @@
 
 {% block empty_collection %}
     <div class="empty collection-empty">
-        {{ include(easyadmin.entity.templates.label_empty) }}
+        {{ include([easyadmin.entity.templates.label_empty, '@EasyAdmin/default/label_empty.html.twig']) }}
     </div>
 {% endblock empty_collection %}
 

@@ -143,4 +143,29 @@ class QueryBuilder
 
         return $queryBuilder;
     }
+
+    /**
+     * Applies a list of filters on a query builder
+     *
+     * @param DoctrineQueryBuilder $queryBuilder
+     * @param array                $filters
+     */
+    public function applyFilters(DoctrineQueryBuilder $queryBuilder, array $filters = array())
+    {
+        foreach ($filters as $field => $value) {
+            // Sanitize parameter name
+            $parameterName = 'filter_'.str_replace('.', '_', $field);
+
+            $filterDqlPart = $field.' = :'.$parameterName;
+            // For multiple value, use an IN clause
+            if (is_array($value)) {
+                $filterDqlPart = $field.' IN (:'.$parameterName.')';
+            }
+
+            $queryBuilder
+                ->andWhere($filterDqlPart)
+                ->setParameter($parameterName, $value)
+            ;
+        }
+    }
 }

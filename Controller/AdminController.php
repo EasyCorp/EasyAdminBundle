@@ -501,7 +501,11 @@ class AdminController extends Controller
      */
     protected function createListQueryBuilder($entityClass, $sortDirection, $sortField = null, $dqlFilter = null)
     {
-        return $this->get('easyadmin.query_builder')->createListQueryBuilder($this->entity, $sortField, $sortDirection, $dqlFilter);
+        $queryBuilder = $this->get('easyadmin.query_builder')->createListQueryBuilder($this->entity, $sortField, $sortDirection, $dqlFilter);
+
+        $this->applyRequestFilters($queryBuilder);
+
+        return $queryBuilder;
     }
 
     /**
@@ -546,7 +550,25 @@ class AdminController extends Controller
      */
     protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        return $this->get('easyadmin.query_builder')->createSearchQueryBuilder($this->entity, $searchQuery, $sortField, $sortDirection, $dqlFilter);
+        $queryBuilder = $this->get('easyadmin.query_builder')->createSearchQueryBuilder($this->entity, $searchQuery, $sortField, $sortDirection, $dqlFilter);
+
+        $this->applyRequestFilters($queryBuilder);
+
+        return $queryBuilder;
+    }
+
+    /**
+     * Apply request filters on a query builder.
+     *
+     * @param QueryBuilder $queryBuilder
+     */
+    protected function applyRequestFilters(QueryBuilder $queryBuilder)
+    {
+        $requestFilters = $this->request->get('filters', array());
+
+        if (!empty($requestFilters)) {
+            $this->get('easyadmin.query_builder')->applyFilters($queryBuilder, $requestFilters);
+        }
     }
 
     /**

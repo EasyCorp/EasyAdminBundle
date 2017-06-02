@@ -62,6 +62,8 @@ class RequestPostInitializeListener
             return;
         }
 
+        $this->request->setRequestFormat('html');
+
         $this->request->attributes->set('easyadmin', array(
             'entity' => $entity = $event->getArgument('entity'),
             'view' => $this->request->query->get('action', 'list'),

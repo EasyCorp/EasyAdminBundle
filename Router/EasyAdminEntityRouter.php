@@ -23,7 +23,8 @@ final class EasyAdminEntityRouter
     /** @var PropertyAccessorInterface */
     private $propertyAccessor;
 
-    public function __construct(ConfigManager $configManager, RouterInterface $router, RequestStack $requestStack, PropertyAccessorInterface $propertyAccessor) {
+    public function __construct(ConfigManager $configManager, RouterInterface $router, RequestStack $requestStack, PropertyAccessorInterface $propertyAccessor)
+    {
         $this->configManager = $configManager;
         $this->router = $router;
         $this->requestStack = $requestStack;

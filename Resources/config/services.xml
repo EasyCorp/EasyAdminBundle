@@ -42,9 +42,17 @@
         <service id="easyadmin.paginator" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator">
         </service>
 
+        <service id="easyadmin.router" class="JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminEntityRouter">
+          <argument id="easyadmin.config.manager" type="service"/>
+          <argument id="router.default" type="service"/>
+          <argument id="request_stack" type="service"/>
+          <argument id="property_accessor" type="service"/>
+        </service>
+
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="property_accessor" />
+            <argument type="service" id="easyadmin.router" />
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <tag name="twig.extension" />

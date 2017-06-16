@@ -151,6 +151,28 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[Obstaja še %count% element, ki ni prikazan na tem seznamu|Obstajata še %count% elementa, ki nista prikazana na tem seznamu|Obstajajo še %count% elementi, ki niso prikazani na tem seznamu|%count% ostalih elementov ni prikazanih na tem seznamu]]></target>
             </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Ta element ni več na voljo.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Tega elementac ni mogoče izbrisati, ker so ostali elementi odvisni od njega.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>Zahtevanega dejanja ni mogoče izvršiti na tem elementu.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>Aplikacija ni ustrezno nastavljena.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>Aplikacija ni ustrezno nastavljena za take elemente.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -33,37 +33,34 @@ final class EasyAdminEntityRouter
 
     /**
      * @param object|string $entity
+     * @param string        $action
      * @param array         $parameters
      *
      * @throws UndefinedEntityException
      *
      * @return string
      */
-    public function generate($entity, array $parameters = array())
+    public function generate($entity, $action, array $parameters = array())
     {
         if (is_object($entity)) {
             $config = $this->getEntityConfigByClass(get_class($entity));
 
-            $params = array(
-                'id' => $this->propertyAccessor->getValue($entity, 'id'),
-                'action' => 'edit',
-            );
+            $parameters['id'] = $this->propertyAccessor->getValue($entity, 'id');
         } else {
             $config = class_exists($entity)
                 ? $this->getEntityConfigByClass($entity)
                 : $this->configManager->getEntityConfig($entity);
-
-            $params = array(
-                'action' => 'new',
-            );
         }
 
-        $request = $this->requestStack->getMasterRequest();
+        $parameters['entity'] = $config['name'];
+        $parameters['action'] = $action;
 
-        $params['entity'] = $config['name'];
-        $params['referer'] = urlencode($request->getUri());
+        if (!array_key_exists('referer', $parameters)) {
+            $request = $this->requestStack->getMasterRequest();
+            $parameters['referer'] = urlencode($request->getUri());
+        }
 
-        return $this->router->generate('easyadmin', array_merge($params, $parameters));
+        return $this->router->generate('easyadmin', $parameters);
     }
 
     /**

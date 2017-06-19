@@ -104,21 +104,14 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
     /**
      * @param object|string $entity
+     * @param string        $action
      * @param array|string  $parameters
      *
      * @return string
      */
-    public function getEntityPath($entity, $parameters = null)
+    public function getEntityPath($entity, $action, array $parameters = array())
     {
-        if (is_string($parameters)) {
-            $parameters = array('action' => $parameters);
-        }
-
-        if (null === $parameters) {
-            $parameters = array();
-        }
-
-        return $this->entityRouter->generate($entity, $parameters);
+        return $this->entityRouter->generate($entity, $action, $parameters);
     }
 
     /**

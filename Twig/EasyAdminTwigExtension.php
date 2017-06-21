@@ -105,7 +105,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /**
      * @param object|string $entity
      * @param string        $action
-     * @param array|string  $parameters
+     * @param array         $parameters
      *
      * @return string
      */

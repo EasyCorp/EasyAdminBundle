@@ -53,7 +53,9 @@ final class EasyAdminRouterTest extends AbstractTestCase
     {
         $product = new Product();
         $ref = new \ReflectionClass($product);
-        $ref->getProperty('id')->setValue($product, 1);
+        $refPropertyId = $ref->getProperty('id');
+        $refPropertyId->setAccessible(true);
+        $refPropertyId->setValue($product, 1);
 
         return array(
             array('AppTestBundle\Entity\FunctionalTests\Category', 'new', 'Category', array('modal' => 1)),

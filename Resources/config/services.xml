@@ -42,7 +42,7 @@
         <service id="easyadmin.paginator" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator">
         </service>
 
-        <service id="easyadmin.router" class="JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminEntityRouter">
+        <service id="easyadmin.router" class="JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter">
           <argument id="easyadmin.config.manager" type="service" />
           <argument id="router.default" type="service" />
           <argument id="property_accessor" type="service" />

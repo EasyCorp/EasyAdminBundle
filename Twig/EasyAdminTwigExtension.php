@@ -13,7 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminEntityRouter;
+use JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -29,13 +29,13 @@ class EasyAdminTwigExtension extends \Twig_Extension
     private $configManager;
     /** @var PropertyAccessor */
     private $propertyAccessor;
-    /** @var EasyAdminEntityRouter */
+    /** @var EasyAdminRouter */
     private $entityRouter;
     /** @var bool */
     private $debug;
     private $logoutUrlGenerator;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, EasyAdminEntityRouter $entityRouter, $debug = false, $logoutUrlGenerator)
+    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, EasyAdminRouter $entityRouter, $debug = false, $logoutUrlGenerator)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;

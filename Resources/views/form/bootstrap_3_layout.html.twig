@@ -161,23 +161,14 @@
 {%- endblock %}
 
 {% block choice_widget_expanded -%}
-    {% if '-inline' in label_attr.class|default('') -%}
-        <div class="control-group">
-            {%- for child in form %}
-                {{- form_widget(child, {
-                    parent_label_class: label_attr.class|default(''),
-                }) -}}
-            {% endfor -%}
-        </div>
-    {%- else -%}
-        <div {{ block('widget_container_attributes') }}>
-            {%- for child in form %}
-                {{- form_widget(child, {
-                    parent_label_class: label_attr.class|default(''),
-                }) -}}
-            {% endfor -%}
-        </div>
-    {%- endif %}
+    <div {% if '-inline' in label_attr.class|default('') -%}class="control-group"{%- else -%}{{ block('widget_container_attributes') }}{%- endif %}>
+        {%- for child in form %}
+            {{- form_widget(child, {
+                parent_label_class: label_attr.class|default(''),
+                translation_domain: choice_translation_domain ?: translation_domain
+            }) -}}
+        {% endfor -%}
+    </div>
 {%- endblock choice_widget_expanded %}
 
 {% block checkbox_widget -%}
@@ -237,7 +228,7 @@
         {% endif %}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
             {{- widget|raw -}}
-            {{- label is not same as(false) ? label|trans({}, easyadmin.entity.translation_domain) -}}
+            {{- label is not same as(false) ? label|trans({}, translation_domain ?: easyadmin.entity.translation_domain) -}}
         </label>
     {% endif %}
 {% endblock checkbox_radio_label %}

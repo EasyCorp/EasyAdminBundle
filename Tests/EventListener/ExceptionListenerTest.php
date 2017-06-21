@@ -19,13 +19,10 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 {
-    private function getTemplating()
+    private function getTwig()
     {
-        $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $templating = $this->getMockForAbstractClass('Symfony\Bundle\FrameworkBundle\Templating\EngineInterface');
-        $templating->method('renderResponse')->will($this->returnValue($response));
+        $templating = $this->getMockBuilder('\Twig_Environment')->disableOriginalConstructor()->getMock();
+        $templating->method('render')->willReturn('template content');
 
         return $templating;
     }
@@ -51,9 +48,9 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             'entity_id_value' => 2,
         ));
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
-        $templating = $this->getTemplating();
+        $twig = $this->getTwig();
 
-        $listener = new ExceptionListener($templating, array(), 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($twig, array(), 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 
@@ -73,9 +70,9 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new EntityNotFoundException();
         $event = $this->getEventExceptionThatShouldNotBeCalled($exception);
-        $templating = $this->getTemplating();
+        $twig = $this->getTwig();
 
-        $listener = new ExceptionListener($templating, array(), 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($twig, array(), 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 }

@@ -95,8 +95,8 @@ class QueryBuilder
         }
 
         $isSearchQueryNumeric = is_numeric($searchQuery);
-        $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && abs($searchQuery) <= 32767;
-        $isSearchQueryInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && abs($searchQuery) <= PHP_INT_MAX;
+        $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -32768 && $searchQuery <= 32767;
+        $isSearchQueryInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -2147483648 && $searchQuery <= 2147483647;
         $isSearchQueryUuid = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $searchQuery);
         $lowerSearchQuery = mb_strtolower($searchQuery);
 

@@ -11,8 +11,9 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Cache\CacheManager;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Manages the loading and processing of backend configuration and it provides
@@ -25,12 +26,31 @@ class ConfigManager
 {
     /** @var array */
     private $backendConfig;
-    /** @var ContainerInterface */
-    private $container;
+    /** @var CacheManager */
+    private $cacheManager;
+    /** @var PropertyAccessorInterface */
+    private $propertyAccessor;
+    /** @var array */
+    private $originalBackendConfig;
+    /** @var ConfigPassInterface[] */
+    private $configPasses;
+    /** @var bool */
+    private $debug;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(CacheManager $cacheManager, PropertyAccessorInterface $propertyAccessor, array $originalBackendConfig, $debug)
     {
-        $this->container = $container;
+        $this->cacheManager = $cacheManager;
+        $this->propertyAccessor = $propertyAccessor;
+        $this->originalBackendConfig = $originalBackendConfig;
+        $this->debug = $debug;
+    }
+
+    /**
+     * @param ConfigPassInterface $configPass
+     */
+    public function addConfigPass(ConfigPassInterface $configPass)
+    {
+        $this->configPasses[] = $configPass;
     }
 
     /**
@@ -54,7 +74,7 @@ class ConfigManager
         // turns 'design.menu' into '[design][menu]', the format required by PropertyAccess
         $propertyPath = '['.str_replace('.', '][', $propertyPath).']';
 
-        return $this->container->get('property_accessor')->getValue($this->backendConfig, $propertyPath);
+        return $this->propertyAccessor->getValue($this->backendConfig, $propertyPath);
     }
 
     /**
@@ -156,19 +176,16 @@ class ConfigManager
      */
     private function processConfig()
     {
-        $originalBackendConfig = $this->container->getParameter('easyadmin.config');
-
-        if (true === $this->container->getParameter('kernel.debug')) {
-            return $this->doProcessConfig($originalBackendConfig);
+        if (true === $this->debug) {
+            return $this->doProcessConfig($this->originalBackendConfig);
         }
 
-        $cache = $this->container->get('easyadmin.cache.manager');
-        if ($cache->hasItem('processed_config')) {
-            return $cache->getItem('processed_config');
+        if ($this->cacheManager->hasItem('processed_config')) {
+            return $this->cacheManager->getItem('processed_config');
         }
 
-        $backendConfig = $this->doProcessConfig($originalBackendConfig);
-        $cache->save('processed_config', $backendConfig);
+        $backendConfig = $this->doProcessConfig($this->originalBackendConfig);
+        $this->cacheManager->save('processed_config', $backendConfig);
 
         return $backendConfig;
     }
@@ -177,31 +194,13 @@ class ConfigManager
      * It processes the given backend configuration to generate the fully
      * processed configuration used in the application.
      *
-     * @param string $backendConfig
+     * @param array $backendConfig
      *
      * @return array
      */
     private function doProcessConfig($backendConfig)
     {
-        if ($this->container->hasParameter('locale')) {
-            $locale = $this->container->getParameter('locale');
-        } else {
-            $locale = $this->container->getParameter('kernel.default_locale');
-        }
-
-        $configPasses = array(
-            new NormalizerConfigPass($this->container),
-            new DesignConfigPass($this->container->get('twig'), $this->container->getParameter('kernel.debug'), $locale),
-            new MenuConfigPass(),
-            new ActionConfigPass(),
-            new MetadataConfigPass($this->container->get('doctrine')),
-            new PropertyConfigPass(),
-            new ViewConfigPass(),
-            new TemplateConfigPass($this->container->getParameter('kernel.root_dir').'/Resources/views'),
-            new DefaultConfigPass(),
-        );
-
-        foreach ($configPasses as $configPass) {
+        foreach ($this->configPasses as $configPass) {
             $backendConfig = $configPass->process($backendConfig);
         }
 

@@ -18,17 +18,17 @@ final class EasyAdminEntityRouter
     private $configManager;
     /** @var UrlGeneratorInterface */
     private $urlGenerator;
-    /** @var RequestStack */
-    private $requestStack;
     /** @var PropertyAccessorInterface */
     private $propertyAccessor;
+    /** @var RequestStack */
+    private $requestStack;
 
-    public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator, RequestStack $requestStack, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator, PropertyAccessorInterface $propertyAccessor, RequestStack $requestStack = null)
     {
         $this->configManager = $configManager;
         $this->urlGenerator = $urlGenerator;
-        $this->requestStack = $requestStack;
         $this->propertyAccessor = $propertyAccessor;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -55,7 +55,7 @@ final class EasyAdminEntityRouter
         $parameters['entity'] = $config['name'];
         $parameters['action'] = $action;
 
-        if (!array_key_exists('referer', $parameters)) {
+        if ($this->requestStack && !array_key_exists('referer', $parameters)) {
             $request = $this->requestStack->getCurrentRequest();
             $parameters['referer'] = urlencode($request->getUri());
         }

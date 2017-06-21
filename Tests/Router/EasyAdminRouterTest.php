@@ -49,7 +49,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
         return array(
             array('AppTestBundle\Entity\FunctionalTests\Category', 'new', 'Category', array('modal' => 1)),
             array('Product', 'new', 'Product', array('entity' => 'Category'), array('entity' => 'product')),
-            array($product, 'show', 'Product', array(), array('id' => 1))
+            array($product, 'show', 'Product', array(), array('id' => 1)),
         );
     }
 }

@@ -30,16 +30,16 @@ class EasyAdminTwigExtension extends \Twig_Extension
     /** @var PropertyAccessor */
     private $propertyAccessor;
     /** @var EasyAdminRouter */
-    private $entityRouter;
+    private $easyAdminRouter;
     /** @var bool */
     private $debug;
     private $logoutUrlGenerator;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, EasyAdminRouter $entityRouter, $debug = false, $logoutUrlGenerator)
+    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, EasyAdminRouter $easyAdminRouter, $debug = false, $logoutUrlGenerator)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
-        $this->entityRouter = $entityRouter;
+        $this->easyAdminRouter = $easyAdminRouter;
         $this->debug = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
     }
@@ -111,7 +111,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getEntityPath($entity, $action, array $parameters = array())
     {
-        return $this->entityRouter->generate($entity, $action, $parameters);
+        return $this->easyAdminRouter->generate($entity, $action, $parameters);
     }
 
     /**

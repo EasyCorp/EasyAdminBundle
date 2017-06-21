@@ -7,7 +7,7 @@ use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @author Konstantin Grachev <me@grachevko.ru>
@@ -16,17 +16,17 @@ final class EasyAdminEntityRouter
 {
     /** @var ConfigManager */
     private $configManager;
-    /** @var RouterInterface */
-    private $router;
+    /** @var UrlGeneratorInterface */
+    private $urlGenerator;
     /** @var RequestStack */
     private $requestStack;
     /** @var PropertyAccessorInterface */
     private $propertyAccessor;
 
-    public function __construct(ConfigManager $configManager, RouterInterface $router, RequestStack $requestStack, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator, RequestStack $requestStack, PropertyAccessorInterface $propertyAccessor)
     {
         $this->configManager = $configManager;
-        $this->router = $router;
+        $this->urlGenerator = $urlGenerator;
         $this->requestStack = $requestStack;
         $this->propertyAccessor = $propertyAccessor;
     }
@@ -60,7 +60,7 @@ final class EasyAdminEntityRouter
             $parameters['referer'] = urlencode($request->getUri());
         }
 
-        return $this->router->generate('easyadmin', $parameters);
+        return $this->urlGenerator->generate('easyadmin', $parameters);
     }
 
     /**

@@ -12,7 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Router;
 
 use AppTestBundle\Entity\FunctionalTests\Product;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
@@ -53,7 +52,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     /**
      * @dataProvider provideUndefinedEntities
      *
-     * @expectedException UndefinedEntityException
+     * @expectedException \JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException
      */
     public function testUndefinedEntityException($entity, $action)
     {

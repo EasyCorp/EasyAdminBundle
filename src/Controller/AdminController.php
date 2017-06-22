@@ -279,7 +279,7 @@ class AdminController extends Controller
 
             $this->executeDynamicMethod('prePersist<EntityName>Entity', array($entity));
 
-            $this->em->persist($entity);
+            $this->executeDynamicMethod('persist<EntityName>Entity', array($entity));
             $this->em->flush();
 
             $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $entity));
@@ -425,6 +425,17 @@ class AdminController extends Controller
      */
     protected function prePersistEntity($entity)
     {
+    }
+
+    /**
+     * Allows applications to modify the entity associated with the item being
+     * created while persisting it.
+     *
+     * @param object $entity
+     */
+    protected function persistEntity($entity)
+    {
+        $this->em->persist($entity);
     }
 
     /**

@@ -37,7 +37,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     /**
      * @dataProvider provideEntities
      */
-    public function testRouter($entity, $action, $expectEntity, array $parameters, array $expectParameters = array())
+    public function testRouter($entity, $action, $expectEntity, array $parameters = array(), array $expectParameters = array())
     {
         $url = $this->router->generate($entity, $action, $parameters);
 
@@ -58,9 +58,9 @@ final class EasyAdminRouterTest extends AbstractTestCase
         $refPropertyId->setValue($product, 1);
 
         return array(
-            array('AppTestBundle\Entity\FunctionalTests\Category', 'new', 'Category', array('modal' => 1)),
+            array('AppTestBundle\Entity\FunctionalTests\Category', 'new', 'Category'),
             array('Product', 'new', 'Product', array('entity' => 'Category'), array('entity' => 'Product')),
-            array($product, 'show', 'Product', array(), array('id' => 1)),
+            array($product, 'show', 'Product', array('modal' => 1), array('id' => 1)),
         );
     }
 }

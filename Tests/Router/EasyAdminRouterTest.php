@@ -77,7 +77,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     public function provideUndefinedEntities()
     {
         return array(
-            array('SomeNotExistedEntity', 'new')
+            array('SomeNotExistedEntity', 'new'),
         );
     }
 }

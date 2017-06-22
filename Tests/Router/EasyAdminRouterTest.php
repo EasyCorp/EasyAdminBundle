@@ -12,6 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Router;
 
 use AppTestBundle\Entity\FunctionalTests\Product;
+use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
@@ -37,7 +38,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     /**
      * @dataProvider provideEntities
      */
-    public function testRouter($entity, $action, $expectEntity, array $parameters = array(), array $expectParameters = array())
+    public function testUrlGeneration($entity, $action, $expectEntity, array $parameters = array(), array $expectParameters = array())
     {
         $url = $this->router->generate($entity, $action, $parameters);
 
@@ -47,6 +48,16 @@ final class EasyAdminRouterTest extends AbstractTestCase
         foreach (array_merge($parameters, $expectParameters) as $key => $value) {
             self::assertContains($key.'='.$value, $url);
         }
+    }
+
+    /**
+     * @dataProvider provideUndefinedEntities
+     *
+     * @expectedException UndefinedEntityException
+     */
+    public function testUndefinedEntityException($entity, $action)
+    {
+        $this->router->generate($entity, $action);
     }
 
     public function provideEntities()
@@ -61,6 +72,13 @@ final class EasyAdminRouterTest extends AbstractTestCase
             array('AppTestBundle\Entity\FunctionalTests\Category', 'new', 'Category'),
             array('Product', 'new', 'Product', array('entity' => 'Category'), array('entity' => 'Product')),
             array($product, 'show', 'Product', array('modal' => 1), array('id' => 1)),
+        );
+    }
+
+    public function provideUndefinedEntities()
+    {
+        return array(
+            array('SomeNotExistedEntity', 'new')
         );
     }
 }

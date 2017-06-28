@@ -50,6 +50,12 @@ class EasyAdminExtension extends Extension
         }
 
         $this->ensureBackwardCompatibility($container);
+
+        $configPasses = $container->findTaggedServiceIds('easyadmin.config_pass');
+        $definition = $container->getDefinition('easyadmin.config.manager');
+        foreach ($configPasses as $id => $tags) {
+            $definition->addMethodCall('addConfigPass', array(new Reference($id)));
+        }
     }
 
     /**

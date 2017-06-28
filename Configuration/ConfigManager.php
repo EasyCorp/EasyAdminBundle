@@ -27,10 +27,20 @@ class ConfigManager
     private $backendConfig;
     /** @var ContainerInterface */
     private $container;
+    /** @var ConfigPassInterface[] */
+    private $configPasses;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * @param ConfigPassInterface $configPass
+     */
+    public function addConfigPass(ConfigPassInterface $configPass)
+    {
+        $this->configPasses[] = $configPass;
     }
 
     /**
@@ -183,25 +193,7 @@ class ConfigManager
      */
     private function doProcessConfig($backendConfig)
     {
-        if ($this->container->hasParameter('locale')) {
-            $locale = $this->container->getParameter('locale');
-        } else {
-            $locale = $this->container->getParameter('kernel.default_locale');
-        }
-
-        $configPasses = array(
-            new NormalizerConfigPass($this->container),
-            new DesignConfigPass($this->container->get('twig'), $this->container->getParameter('kernel.debug'), $locale),
-            new MenuConfigPass(),
-            new ActionConfigPass(),
-            new MetadataConfigPass($this->container->get('doctrine')),
-            new PropertyConfigPass(),
-            new ViewConfigPass(),
-            new TemplateConfigPass($this->container->getParameter('kernel.root_dir').'/Resources/views'),
-            new DefaultConfigPass(),
-        );
-
-        foreach ($configPasses as $configPass) {
+        foreach ($this->configPasses as $configPass) {
             $backendConfig = $configPass->process($backendConfig);
         }
 

@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Processes the custom CSS styles applied to the backend design based on the
  * value of the design configuration options.
@@ -26,11 +28,13 @@ class DesignConfigPass implements ConfigPassInterface
     /** @var string */
     private $locale;
 
-    public function __construct(\Twig_Environment $twig, $kernelDebug, $locale)
+    public function __construct(ContainerInterface $container)
     {
-        $this->twig = $twig;
-        $this->kernelDebug = $kernelDebug;
-        $this->locale = $locale;
+        $this->twig = $container->get('twig');
+        $this->kernelDebug = $container->getParameter('kernel.debug');
+        $this->locale = $container->hasParameter('locale')
+            ? $container->getParameter('locale')
+            : $container->getParameter('kernel.default_locale');
     }
 
     public function process(array $backendConfig)

@@ -50,6 +50,11 @@ class EasyAdminExtension extends Extension
         }
 
         $this->ensureBackwardCompatibility($container);
+
+        if ($container->hasParameter('locale')) {
+            $container->getDefinition('easyadmin.configuration.design_config_pass')
+                ->replaceArgument(2, $container->getParameter('locale'));
+        }
     }
 
     /**

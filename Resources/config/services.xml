@@ -18,7 +18,10 @@
         </service>
 
         <service id="easyadmin.config.manager" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager">
-            <argument type="service" id="service_container" />
+            <argument type="service" id="easyadmin.cache.manager" />
+            <argument type="service" id="property_accessor" />
+            <argument>%easyadmin.config%</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <service id="easyadmin.query_builder" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder">

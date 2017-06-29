@@ -120,6 +120,8 @@ class AdminController extends Controller
 
         if (isset($postInitializeEvent['config'])) {
             $this->config = $postInitializeEvent['config'];
+        }
+        if (isset($postInitializeEvent['entity'])) {
             $this->entity = $postInitializeEvent['entity'];
         }
     }

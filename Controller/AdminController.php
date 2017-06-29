@@ -116,7 +116,14 @@ class AdminController extends Controller
         $this->em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
         $this->request = $request;
 
-        $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
+        $postInitializeEvent = $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
+
+        if (isset($postInitializeEvent['config'])) {
+            $this->config = $postInitializeEvent['config'];
+        }
+        if (isset($postInitializeEvent['entity'])) {
+            $this->entity = $postInitializeEvent['entity'];
+        }
     }
 
     protected function dispatch($eventName, array $arguments = array())
@@ -132,6 +139,8 @@ class AdminController extends Controller
         $event = new GenericEvent($subject, $arguments);
 
         $this->get('event_dispatcher')->dispatch($eventName, $event);
+
+        return $event;
     }
 
     /**
@@ -245,11 +254,12 @@ class AdminController extends Controller
         $fields = $this->entity['show']['fields'];
         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
 
-        $this->dispatch(EasyAdminEvents::POST_SHOW, array(
+        $postShowEvent = $this->dispatch(EasyAdminEvents::POST_SHOW, array(
             'deleteForm' => $deleteForm,
             'fields' => $fields,
             'entity' => $entity,
         ));
+        $fields = isset($postShowEvent['fields']) ? $postShowEvent['fields'] : $fields;
 
         return $this->render($this->entity['templates']['show'], array(
             'entity' => $entity,
@@ -295,11 +305,12 @@ class AdminController extends Controller
                 : $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->entity['name'])));
         }
 
-        $this->dispatch(EasyAdminEvents::POST_NEW, array(
+        $postNewEvent = $this->dispatch(EasyAdminEvents::POST_NEW, array(
             'entity_fields' => $fields,
             'form' => $newForm,
             'entity' => $entity,
         ));
+        $fields = isset($postNewEvent['entity_fields']) ? $postNewEvent['entity_fields'] : $fields;
 
         return $this->render($this->entity['templates']['new'], array(
             'form' => $newForm->createView(),
@@ -374,10 +385,11 @@ class AdminController extends Controller
         $paginator = $this->findBy($this->entity['class'], $this->request->query->get('query'), $searchableFields, $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'), $this->entity['search']['dql_filter']);
         $fields = $this->entity['list']['fields'];
 
-        $this->dispatch(EasyAdminEvents::POST_SEARCH, array(
+        $postSearchEvent = $this->dispatch(EasyAdminEvents::POST_SEARCH, array(
             'fields' => $fields,
             'paginator' => $paginator,
         ));
+        $fields = isset($postSearchEvent['fields']) ? $postSearchEvent['fields'] : $fields;
 
         return $this->render($this->entity['templates']['list'], array(
             'paginator' => $paginator,
@@ -404,7 +416,10 @@ class AdminController extends Controller
             throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
         }
 
-        $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $value));
+        $preUpdateEvent = $this->dispatch(
+            EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $value)
+        );
+        $value = isset($preUpdateEvent['newValue']) ? $preUpdateEvent['newValue'] : $value;
 
         $this->get('property_accessor')->setValue($entity, $property, $value);
 

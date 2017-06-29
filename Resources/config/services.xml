@@ -72,7 +72,7 @@
         </service>
 
         <service id="easyadmin.data_collector" class="JavierEguiluz\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector" public="false">
-            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="service" id="service_container" />
             <tag name="data_collector" template="@EasyAdmin/data_collector/easyadmin.html.twig" id="easyadmin" />
         </service>
 

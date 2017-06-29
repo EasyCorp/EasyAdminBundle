@@ -55,12 +55,6 @@ class EasyAdminExtension extends Extension
             $container->getDefinition('easyadmin.configuration.design_config_pass')
                 ->replaceArgument(1, $container->getParameter('locale'));
         }
-
-        $configPasses = $container->findTaggedServiceIds('easyadmin.config_pass');
-        $definition = $container->getDefinition('easyadmin.config.manager');
-        foreach ($configPasses as $id => $tags) {
-            $definition->addMethodCall('addConfigPass', array(new Reference($id)));
-        }
     }
 
     /**

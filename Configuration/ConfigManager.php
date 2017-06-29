@@ -28,7 +28,7 @@ class ConfigManager
     private $backendConfig;
     /** @var CacheManager */
     private $cacheManager;
-    /**@var PropertyAccessorInterface */
+    /** @var PropertyAccessorInterface */
     private $propertyAccessor;
     /** @var array */
     private $originalBackendConfig;

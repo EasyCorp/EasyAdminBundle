@@ -26,15 +26,11 @@ class DesignConfigPass implements ConfigPassInterface
     /** @var string */
     private $locale;
 
-    public function __construct($kernelDebug, $locale)
-    {
-        $this->kernelDebug = $kernelDebug;
-        $this->locale = $locale;
-    }
-
-    public function setTwig(\Twig_Environment $twig)
+    public function __construct(\Twig_Environment $twig, $kernelDebug, $locale)
     {
         $this->twig = $twig;
+        $this->kernelDebug = $kernelDebug;
+        $this->locale = $locale;
     }
 
     public function process(array $backendConfig)

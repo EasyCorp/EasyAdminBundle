@@ -82,11 +82,9 @@
         </service>
 
         <service id="easyadmin.configuration.design_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DesignConfigPass" public="false">
+            <argument id="twig" type="service" />
             <argument>%kernel.debug%</argument>
             <argument>%kernel.default_locale%</argument>
-            <call method="setTwig">
-                <argument id="twig" type="service" />
-            </call>
             <tag name="easyadmin.config_pass" />
         </service>
 

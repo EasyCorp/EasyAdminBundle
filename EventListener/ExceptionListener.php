@@ -14,7 +14,6 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
 use JavierEguiluz\Bundle\EasyAdminBundle\Exception\FlattenException;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -32,17 +31,17 @@ use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
  */
 class ExceptionListener extends BaseExceptionListener
 {
-    /** @var EngineInterface */
-    private $templating;
+    /** @var \Twig_Environment */
+    private $twig;
 
     /** @var array */
     private $easyAdminConfig;
 
     private $currentEntityName;
 
-    public function __construct(EngineInterface $templating, array $easyAdminConfig, $controller, LoggerInterface $logger = null)
+    public function __construct(\Twig_Environment $twig, array $easyAdminConfig, $controller, LoggerInterface $logger = null)
     {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->easyAdminConfig = $easyAdminConfig;
 
         parent::__construct($controller, $logger);
@@ -83,11 +82,10 @@ class ExceptionListener extends BaseExceptionListener
                 ? $this->easyAdminConfig['design']['templates']['exception']
                 : '@EasyAdmin/default/exception.html.twig';
 
-        return $this->templating->renderResponse(
+        return Response::create($this->twig->render(
             $exceptionTemplatePath,
-            array('exception' => $exception),
-            Response::create()->setStatusCode($exception->getStatusCode())
-        );
+            array('exception' => $exception)
+        ), $exception->getStatusCode());
     }
 
     /**

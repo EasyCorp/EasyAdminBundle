@@ -25,11 +25,38 @@ final class EasyAdminConfigPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $configPasses = $container->findTaggedServiceIds('easyadmin.config_pass');
+        $configPasses = $this->findAndSortTaggedServices('easyadmin.config_pass', $container);
         $definition = $container->getDefinition('easyadmin.config.manager');
 
-        foreach ($configPasses as $id => $tags) {
-            $definition->addMethodCall('addConfigPass', array(new Reference($id)));
+        foreach ($configPasses as $service) {
+            $definition->addMethodCall('addConfigPass', array($service));
         }
+    }
+
+    /**
+     * BC for PHP 5.3
+     * To be replaced by the usage of the \Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait
+     * when 5.3 support is dropped.
+     *
+     * @param                  $tagName
+     * @param ContainerBuilder $container
+     *
+     * @return array
+     */
+    private function findAndSortTaggedServices($tagName, ContainerBuilder $container)
+    {
+        $services = array();
+
+        foreach ($container->findTaggedServiceIds($tagName, true) as $serviceId => $attributes) {
+            $priority = isset($attributes[0]['priority']) ? $attributes[0]['priority'] : 0;
+            $services[$priority][] = new Reference($serviceId);
+        }
+
+        if ($services) {
+            krsort($services);
+            $services = call_user_func_array('array_merge', $services);
+        }
+
+        return $services;
     }
 }

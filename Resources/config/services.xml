@@ -77,45 +77,45 @@
         </service>
 
         <service id="easyadmin.configuration.normalizer_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass" public="false">
-            <argument id="service_container" type="service"/>
-            <tag name="easyadmin.config_pass" />
+            <argument id="service_container" type="service" />
+            <tag name="easyadmin.config_pass" priority="90" />
         </service>
 
         <service id="easyadmin.configuration.design_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DesignConfigPass" public="false">
             <argument id="twig" type="service" />
             <argument>%kernel.debug%</argument>
             <argument>%kernel.default_locale%</argument>
-            <tag name="easyadmin.config_pass" />
+            <tag name="easyadmin.config_pass" priority="80" />
         </service>
 
         <service id="easyadmin.configuration.menu_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MenuConfigPass" public="false">
-            <tag name="easyadmin.config_pass" />
+            <tag name="easyadmin.config_pass" priority="70" />
         </service>
 
         <service id="easyadmin.configuration.action_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ActionConfigPass" public="false">
-            <tag name="easyadmin.config_pass" />
+            <tag name="easyadmin.config_pass" priority="60" />
         </service>
 
         <service id="easyadmin.configuration.metadata_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass" public="false">
             <argument type="service" id="doctrine" />
-            <tag name="easyadmin.config_pass" />
+            <tag name="easyadmin.config_pass" priority="50" />
         </service>
 
         <service id="easyadmin.configuration.property_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass" public="false">
-            <tag name="easyadmin.config_pass" />
+            <tag name="easyadmin.config_pass" priority="40" />
         </service>
 
         <service id="easyadmin.configuration.view_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ViewConfigPass" public="false">
-            <tag name="easyadmin.config_pass" />
+            <tag name="easyadmin.config_pass" priority="30" />
         </service>
 
         <service id="easyadmin.configuration.template_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass" public="false">
             <argument>%easyadmin.templates_dir%</argument>
-            <tag name="easyadmin.config_pass" />
+            <tag name="easyadmin.config_pass" priority="20" />
         </service>
 
         <service id="easyadmin.configuration.default_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass" public="false">
-            <tag name="easyadmin.config_pass" />
+            <tag name="easyadmin.config_pass" priority="10" />
         </service>
     </services>
 </container>

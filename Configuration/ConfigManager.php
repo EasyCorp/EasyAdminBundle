@@ -195,8 +195,8 @@ class ConfigManager
             new MenuConfigPass(),
             new ActionConfigPass(),
             new MetadataConfigPass($this->container->get('doctrine')),
-            new PropertyConfigPass(),
             new ViewConfigPass(),
+            new PropertyConfigPass(),
             new TemplateConfigPass($this->container->getParameter('kernel.root_dir').'/Resources/views'),
             new DefaultConfigPass(),
         );

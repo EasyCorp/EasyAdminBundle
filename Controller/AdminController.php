@@ -395,7 +395,7 @@ class AdminController extends Controller
      *
      * @throws \RuntimeException
      */
-    private function updateEntityProperty($entity, $property, $value)
+    protected function updateEntityProperty($entity, $property, $value)
     {
         $entityConfig = $this->entity;
 
@@ -711,7 +711,7 @@ class AdminController extends Controller
      *
      * @return mixed
      */
-    private function executeDynamicMethod($methodNamePattern, array $arguments = array())
+    protected function executeDynamicMethod($methodNamePattern, array $arguments = array())
     {
         $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
 
@@ -725,7 +725,7 @@ class AdminController extends Controller
     /**
      * Generates the backend homepage and redirects to it.
      */
-    private function redirectToBackendHomepage()
+    protected function redirectToBackendHomepage()
     {
         $homepageConfig = $this->config['homepage'];
 

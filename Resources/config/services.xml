@@ -43,10 +43,10 @@
         </service>
 
         <service id="easyadmin.router" class="JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter">
-          <argument id="easyadmin.config.manager" type="service" />
-          <argument id="router.default" type="service" />
-          <argument id="property_accessor" type="service" />
-          <argument id="request_stack" type="service" on-invalid="null" />
+            <argument id="easyadmin.config.manager" type="service" />
+            <argument id="router.default" type="service" />
+            <argument id="property_accessor" type="service" />
+            <argument id="request_stack" type="service" on-invalid="null" />
         </service>
 
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">

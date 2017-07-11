@@ -41,11 +41,11 @@ final class EasyAdminRouterTest extends AbstractTestCase
     {
         $url = $this->router->generate($entity, $action, $parameters);
 
-        self::assertContains('entity='.$expectEntity, $url);
-        self::assertContains('action='.$action, $url);
+        $this->assertContains('entity='.$expectEntity, $url);
+        $this->assertContains('action='.$action, $url);
 
         foreach (array_merge($parameters, $expectParameters) as $key => $value) {
-            self::assertContains($key.'='.$value, $url);
+            $this->assertContains($key.'='.$value, $url);
         }
     }
 
@@ -77,7 +77,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     public function provideUndefinedEntities()
     {
         return array(
-            array('SomeNotExistedEntity', 'new'),
+            array('ThisEntityDoesNotExist', 'new'),
         );
     }
 }

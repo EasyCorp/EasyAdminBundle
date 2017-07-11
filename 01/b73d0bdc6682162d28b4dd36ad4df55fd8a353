@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by grachevko at 2017-06-29T09:09:05Z
+
+@yceruto have you idea how to resolve [ServiceCircularReferenceException](https://travis-ci.org/javiereguiluz/EasyAdminBundle/jobs/248280911#L291)?
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-06-29T12:17:00Z
+
+ping @javiereguiluz
+
+---------------------------------------------------------------------------
+
+by alterphp at 2017-06-30T20:45:02Z
+
+:+1:
+
+This bundle definitely needs some "plugs" to be extended !
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-07-10T14:14:03Z
+
+@yceruto what can i do to force accept pr?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2017-07-10T15:02:32Z
+
+@grachevko it's a privileges of @javiereguiluz exclusively as owner of this bundle. From my experience, Javier likes to first discuss the idea, approve it and then, if it is accepted, implement it. But I am sure he will analyze your proposal as soon as possible ;) He has a great plan for this bundle https://github.com/javiereguiluz/EasyAdminBundle/projects/1 may have some priorities.

@@ -29,7 +29,7 @@ class DesignConfigPass implements ConfigPassInterface
     private $locale;
 
     /**
-     * @var ContainerInterface $container to prevent ServiceCircularReferenceException
+     * @var ContainerInterface to prevent ServiceCircularReferenceException
      * @var bool               $kernelDebug
      * @var string             $locale
      */

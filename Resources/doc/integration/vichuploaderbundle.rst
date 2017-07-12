@@ -198,6 +198,28 @@ Instead of hardcoding the ``base_path`` value, this example uses the
 ``app.path.product_images`` container parameter which also was used in the
 VichUploaderBundle configuration.
 
+.. tip::
+
+    If you define `custom namers`_ in VichUploaderBundle, images won't be
+    displayed correctly because their paths will be wrong. The simplest solution
+    is to define a custom template fragment to display the image and use in it
+    the ``vich_uploader_asset()`` Twig function:
+
+    .. code-block:: yaml
+
+        easy_admin:
+            entities:
+                Product:
+                    # ...
+                    list:
+                        fields:
+                            - { property: 'image', template: 'vich_uploader_image.html.twig' }
+
+    .. code-block:: twig
+
+        {# app/Resources/views/easy_admin/vich_uploader_image.html.twig #}
+        <img src="{{ vich_uploader_asset(value, 'image') }}" />
+
 Uploading the Images in the ``edit`` and ``new`` Views
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -420,3 +442,4 @@ Apply the same technique in case you want to use your own form theme instead
 of the one provided by VichUploaderBundle.
 
 .. _`VichUploaderBundle`: https://github.com/dustin10/VichUploaderBundle
+.. _`custom namers`: https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/doc/namers.md

@@ -90,7 +90,7 @@
         </service>
 
         <service id="easyadmin.configuration.design_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DesignConfigPass" public="false">
-            <argument id="twig" type="service" />
+            <argument id="service_container" type="service" />
             <argument>%kernel.debug%</argument>
             <argument>%kernel.default_locale%</argument>
             <tag name="easyadmin.config_pass" priority="80" />

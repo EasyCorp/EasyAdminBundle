@@ -13,6 +13,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -28,14 +29,17 @@ class EasyAdminTwigExtension extends \Twig_Extension
     private $configManager;
     /** @var PropertyAccessor */
     private $propertyAccessor;
+    /** @var EasyAdminRouter */
+    private $easyAdminRouter;
     /** @var bool */
     private $debug;
     private $logoutUrlGenerator;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, $debug = false, $logoutUrlGenerator)
+    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, EasyAdminRouter $easyAdminRouter, $debug = false, $logoutUrlGenerator)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
+        $this->easyAdminRouter = $easyAdminRouter;
         $this->debug = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
     }
@@ -49,6 +53,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             new \Twig_SimpleFunction('easyadmin_render_field_for_*_view', array($this, 'renderEntityField'), array('is_safe' => array('html'), 'needs_environment' => true)),
             new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
             new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
+            new \Twig_SimpleFunction('easyadmin_path', array($this, 'getEntityPath')),
             new \Twig_SimpleFunction('easyadmin_action_is_enabled', array($this, 'isActionEnabled')),
             new \Twig_SimpleFunction('easyadmin_action_is_enabled_for_*_view', array($this, 'isActionEnabled')),
             new \Twig_SimpleFunction('easyadmin_get_action', array($this, 'getActionConfiguration')),
@@ -95,6 +100,18 @@ class EasyAdminTwigExtension extends \Twig_Extension
         return null !== $this->getBackendConfiguration('entities.'.$entityName)
             ? $this->configManager->getEntityConfig($entityName)
             : null;
+    }
+
+    /**
+     * @param object|string $entity
+     * @param string        $action
+     * @param array         $parameters
+     *
+     * @return string
+     */
+    public function getEntityPath($entity, $action, array $parameters = array())
+    {
+        return $this->easyAdminRouter->generate($entity, $action, $parameters);
     }
 
     /**

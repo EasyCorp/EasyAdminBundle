@@ -11,6 +11,8 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Processes the custom CSS styles applied to the backend design based on the
  * value of the design configuration options.
@@ -19,16 +21,21 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class DesignConfigPass implements ConfigPassInterface
 {
-    /** @var \Twig_Environment */
-    private $twig;
+    /** @var ContainerInterface */
+    private $container;
     /** @var bool */
     private $kernelDebug;
     /** @var string */
     private $locale;
 
-    public function __construct(\Twig_Environment $twig, $kernelDebug, $locale)
+    /**
+     * @var ContainerInterface to prevent ServiceCircularReferenceException
+     * @var bool               $kernelDebug
+     * @var string             $locale
+     */
+    public function __construct(ContainerInterface $container, $kernelDebug, $locale)
     {
-        $this->twig = $twig;
+        $this->container = $container;
         $this->kernelDebug = $kernelDebug;
         $this->locale = $locale;
     }
@@ -57,7 +64,7 @@ class DesignConfigPass implements ConfigPassInterface
 
     private function processCustomCss(array $backendConfig)
     {
-        $customCssContent = $this->twig->render('@EasyAdmin/css/easyadmin.css.twig', array(
+        $customCssContent = $this->container->get('twig')->render('@EasyAdmin/css/easyadmin.css.twig', array(
             'brand_color' => $backendConfig['design']['brand_color'],
             'color_scheme' => $backendConfig['design']['color_scheme'],
             'kernel_debug' => $this->kernelDebug,

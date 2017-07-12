@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by grachevko at 2017-06-22T09:06:42Z
+
+If there are no comments I guess PR is ready to merge.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-07-11T18:48:31Z
+
+@grachevko  I'm sorry but somehow I broke the tests for your PR. I thought I was making minor and safe changes in your code ... but now I see three errors like this one:
+
+```
+JavierEguiluz\Bundle\EasyAdminBundle\Tests\Router\EasyAdminRouterTest::testUrlGe
+neration with data set #0 ('AppTestBundle\Entity\Function...tegory', 'new',
+'Category') Symfony\Component\DependencyInjection\Exception\ServiceCircularRefer
+enceException: Circular reference detected for service "easyadmin.router", path:
+"easyadmin.router -> easyadmin.config.manager -> twig".
+```
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-07-12T08:06:45Z
+
+@javiereguiluz i fix that. And i guess this https://github.com/javiereguiluz/EasyAdminBundle/commit/3d83921a2f106d23423437014b6c8349851b760e#diff-e841ec98b20aabb2a540f15a4b7c8a9aR34 can be reverted.

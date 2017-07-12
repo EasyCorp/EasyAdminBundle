@@ -11,7 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\DataCollector;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -27,15 +27,12 @@ use Symfony\Component\Yaml\Yaml;
  */
 class EasyAdminDataCollector extends DataCollector
 {
-    /** @var ContainerInterface */
-    private $container;
+    /** @var ConfigManager */
+    private $configManager;
 
-    /**
-     * @param ContainerInterface $container to prevent ServiceCircularReferenceException
-     */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ConfigManager $configManager)
     {
-        $this->container = $container;
+        $this->configManager = $configManager;
     }
 
     /**
@@ -43,7 +40,7 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $backendConfig = $this->container->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = $this->configManager->getBackendConfig();
         $entityName = $request->query->get('entity', null);
         $currentEntityConfig = array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : array();
 

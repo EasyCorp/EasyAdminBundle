@@ -141,7 +141,7 @@
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
-                <target>Ошибка|Ошибки</target>
+                <target>Ошибка|Ошибки|Ошибок</target>
             </trans-unit>
             <trans-unit id="form.are_you_sure">
                 <source>form.are_you_sure</source>

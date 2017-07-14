@@ -253,7 +253,7 @@ class DefaultBackendTest extends AbstractTestCase
     public function testListViewDefaultFormats()
     {
         $crawler = $this->requestListView('Purchase');
-        $expectedDeliveryDateTime = new \DateTime("+30 days 06:00:00");
+        $expectedDeliveryDateTime = new \DateTime('+30 days 06:00:00');
 
         $this->assertSame($expectedDeliveryDateTime->format('Y-m-d'), trim($crawler->filter('#main table tr')->eq(1)->filter('td.date')->text()));
         $this->assertSame($expectedDeliveryDateTime->format('H:i:s'), trim($crawler->filter('#main table tr')->eq(1)->filter('td.time')->text()));

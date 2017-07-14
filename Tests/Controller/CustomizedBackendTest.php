@@ -175,7 +175,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testListViewCustomFormats()
     {
         $crawler = $this->requestListView('Purchase');
-        $expectedDeliveryDateTime = new \DateTime("+30 days 06:00:00");
+        $expectedDeliveryDateTime = new \DateTime('+30 days 06:00:00');
 
         $this->assertSame($expectedDeliveryDateTime->format('Ymd'), trim($crawler->filter('#main table tr')->eq(1)->filter('td.date')->text()));
         $this->assertSame($expectedDeliveryDateTime->format('H:i'), trim($crawler->filter('#main table tr')->eq(1)->filter('td.time')->text()));
@@ -183,7 +183,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testShowViewDefaultFormats()
     {
-        $expectedDeliveryDateTime = new \DateTime("+30 days 06:00:00");
+        $expectedDeliveryDateTime = new \DateTime('+30 days 06:00:00');
 
         // the ID of purchases is a randome value, so the way to show the first
         // purchase is to get the ID from the first row of the list view

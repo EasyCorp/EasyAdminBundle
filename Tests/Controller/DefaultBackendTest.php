@@ -250,6 +250,15 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 
+    public function testListViewDefaultFormats()
+    {
+        $crawler = $this->requestListView('Purchase');
+        $expectedDeliveryDateTime = new \DateTime('+30 days 06:00:00');
+
+        $this->assertSame($expectedDeliveryDateTime->format('Y-m-d'), trim($crawler->filter('#main table tr')->eq(1)->filter('td.date')->text()));
+        $this->assertSame($expectedDeliveryDateTime->format('H:i:s'), trim($crawler->filter('#main table tr')->eq(1)->filter('td.time')->text()));
+    }
+
     public function testShowViewPageTitle()
     {
         $crawler = $this->requestShowView();

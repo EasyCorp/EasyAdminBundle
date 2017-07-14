@@ -172,6 +172,29 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertStringStartsWith('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
     }
 
+    public function testListViewCustomFormats()
+    {
+        $crawler = $this->requestListView('Purchase');
+        $expectedDeliveryDateTime = new \DateTime("+30 days 06:00:00");
+
+        $this->assertSame($expectedDeliveryDateTime->format('Ymd'), trim($crawler->filter('#main table tr')->eq(1)->filter('td.date')->text()));
+        $this->assertSame($expectedDeliveryDateTime->format('H:i'), trim($crawler->filter('#main table tr')->eq(1)->filter('td.time')->text()));
+    }
+
+    public function testShowViewDefaultFormats()
+    {
+        $expectedDeliveryDateTime = new \DateTime("+30 days 06:00:00");
+
+        // the ID of purchases is a randome value, so the way to show the first
+        // purchase is to get the ID from the first row of the list view
+        $crawler = $this->requestListView('Purchase');
+        $purchaseId = trim($crawler->filter('#main table tr')->eq(1)->filter('td')->eq(0)->text());
+        $crawler = $this->requestShowView('Purchase', $purchaseId);
+
+        $this->assertSame($expectedDeliveryDateTime->format('Y-m-d'), trim($crawler->filter('#main .form-group:contains("Delivery date")')->filter('.form-control')->text()));
+        $this->assertSame($expectedDeliveryDateTime->format('H:i:s'), trim($crawler->filter('#main .form-group:contains("Delivery hour")')->filter('.form-control')->text()));
+    }
+
     public function testShowViewPageTitle()
     {
         $crawler = $this->requestShowView();

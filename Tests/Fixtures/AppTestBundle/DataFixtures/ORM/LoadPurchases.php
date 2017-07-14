@@ -24,7 +24,7 @@ class LoadPurchases extends AbstractFixture implements OrderedFixtureInterface
             $purchase->setDeliveryDate(new \DateTime("+$i days"));
             $purchase->setCreatedAt(new \DateTime("now +$i seconds"));
             $purchase->setShipping(new \StdClass());
-            $purchase->setDeliveryHour($this->getRandomHour());
+            $purchase->setDeliveryHour($this->getHour($i));
             $purchase->setBillingAddress(json_encode(array(
                 'line1' => '1234 Main Street',
                 'line2' => 'Big City, XX 23456',
@@ -61,11 +61,11 @@ class LoadPurchases extends AbstractFixture implements OrderedFixtureInterface
         );
     }
 
-    private function getRandomHour()
+    private function getHour($i)
     {
         $date = new \DateTime();
 
-        return $date->setTime(rand(0, 23), 0);
+        return $date->setTime($i % 24, 0);
     }
 
     private function getRandomProduct()

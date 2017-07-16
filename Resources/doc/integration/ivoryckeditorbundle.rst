@@ -38,7 +38,17 @@ thanks to the `IvoryCKEditorBundle`_:
         }
     }
 
-3) Install the JavaScript/CSS files used by the bundle:
+4) install CKEditor:
+
+.. code-block:: terminal
+
+    # Symfony 2
+    $ php app/console ckeditor:install
+
+    # Symfony 3
+    $ php bin/console ckeditor:install
+
+4) Install the JavaScript/CSS files used by the bundle:
 
 .. code-block:: terminal
 

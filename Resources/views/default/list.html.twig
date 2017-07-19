@@ -18,6 +18,7 @@
     {% set _request_parameters = _request_parameters|merge({ query: app.request.get('query')|default('') }) %}
 {% endif %}
 
+{% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
 {% set _request_parameters = _request_parameters|merge({ referer: path('easyadmin', _request_parameters)|url_encode }) %}
 
 {% block body_id 'easyadmin-list-' ~ _entity_config.name %}
@@ -28,13 +29,14 @@
     {% if 'search' == app.request.get('action') %}
         {{ 'search.page_title'|transchoice(paginator.nbResults, {}, 'EasyAdminBundle')|raw }}
     {% else %}
-        {% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
         {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title }}
     {% endif %}
 {% endspaceless %}
 {% endset %}
 
-{% block page_title %}{{ _content_title|striptags|raw }}{% endblock %}
+{% block content_title %}
+    {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title }}
+{% endblock %}
 
 {% block content_header %}
     <div class="row">

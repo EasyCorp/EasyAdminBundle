@@ -11,7 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Controller;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
+use JavierEguiluz\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 
 class AdminController extends EasyAdminController
 {

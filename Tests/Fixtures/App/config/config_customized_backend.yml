@@ -118,6 +118,11 @@ easy_admin:
         Purchase:
             class: AppTestBundle\Entity\FunctionalTests\Purchase
             label: 'Purchases'
+            list:
+                fields:
+                    - id
+                    - { property: 'deliveryDate', format: 'Ymd' }
+                    - { property: 'deliveryHour', format: 'H:i' }
         PurchaseItem:
             class: AppTestBundle\Entity\FunctionalTests\PurchaseItem
             label: 'Purchase Items'

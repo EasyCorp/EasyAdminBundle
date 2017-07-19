@@ -3,6 +3,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="easyadmin.templates_dir">%kernel.root_dir%/Resources/views</parameter>
+    </parameters>
+
     <services>
         <service id="easyadmin.cache.manager" class="JavierEguiluz\Bundle\EasyAdminBundle\Cache\CacheManager">
             <argument>%easyadmin.cache.dir%</argument>
@@ -14,7 +18,10 @@
         </service>
 
         <service id="easyadmin.config.manager" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager">
-            <argument type="service" id="service_container" />
+            <argument type="service" id="easyadmin.cache.manager" />
+            <argument type="service" id="property_accessor" />
+            <argument>%easyadmin.config%</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <service id="easyadmin.query_builder" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder">
@@ -35,9 +42,17 @@
         <service id="easyadmin.paginator" class="JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator">
         </service>
 
+        <service id="easyadmin.router" class="JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter">
+            <argument id="easyadmin.config.manager" type="service" />
+            <argument id="router.default" type="service" />
+            <argument id="property_accessor" type="service" />
+            <argument id="request_stack" type="service" on-invalid="null" />
+        </service>
+
         <service id="easyadmin.twig.extension" class="JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="property_accessor" />
+            <argument type="service" id="easyadmin.router" />
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <tag name="twig.extension" />
@@ -50,7 +65,7 @@
         </service>
 
         <service id="easyadmin.listener.exception" class="JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument>%easyadmin.config%</argument>
             <argument type="string">easyadmin.listener.exception:showExceptionPageAction</argument>
             <argument type="service" id="logger" on-invalid="null" />
@@ -67,6 +82,48 @@
         <service id="easyadmin.data_collector" class="JavierEguiluz\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector" public="false">
             <argument type="service" id="easyadmin.config.manager" />
             <tag name="data_collector" template="@EasyAdmin/data_collector/easyadmin.html.twig" id="easyadmin" />
+        </service>
+
+        <service id="easyadmin.configuration.normalizer_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass" public="false">
+            <argument id="service_container" type="service" />
+            <tag name="easyadmin.config_pass" priority="90" />
+        </service>
+
+        <service id="easyadmin.configuration.design_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DesignConfigPass" public="false">
+            <argument id="service_container" type="service" />
+            <argument>%kernel.debug%</argument>
+            <argument>%kernel.default_locale%</argument>
+            <tag name="easyadmin.config_pass" priority="80" />
+        </service>
+
+        <service id="easyadmin.configuration.menu_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MenuConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="70" />
+        </service>
+
+        <service id="easyadmin.configuration.action_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ActionConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="60" />
+        </service>
+
+        <service id="easyadmin.configuration.metadata_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass" public="false">
+            <argument type="service" id="doctrine" />
+            <tag name="easyadmin.config_pass" priority="50" />
+        </service>
+
+        <service id="easyadmin.configuration.property_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="40" />
+        </service>
+
+        <service id="easyadmin.configuration.view_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ViewConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="30" />
+        </service>
+
+        <service id="easyadmin.configuration.template_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass" public="false">
+            <argument>%easyadmin.templates_dir%</argument>
+            <tag name="easyadmin.config_pass" priority="20" />
+        </service>
+
+        <service id="easyadmin.configuration.default_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="10" />
         </service>
     </services>
 </container>

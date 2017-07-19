@@ -68,6 +68,12 @@ class ViewConfigPass implements ConfigPassInterface
                         $this->getMaxNumberFields($view)
                     );
 
+                    foreach ($fieldsConfig as $fieldName => $fieldConfig) {
+                        if (null === $fieldsConfig[$fieldName]['format']) {
+                            $fieldsConfig[$fieldName]['format'] = $this->getFieldFormat($fieldConfig['type'], $backendConfig);
+                        }
+                    }
+
                     $backendConfig['entities'][$entityName][$view]['fields'] = $fieldsConfig;
                 }
             }
@@ -180,6 +186,29 @@ class ViewConfigPass implements ConfigPassInterface
         }
 
         return $backendConfig;
+    }
+
+    /**
+     * Returns the date/time/datetime/number format for the given field
+     * according to its type and the default formats defined for the backend.
+     *
+     * @param string $fieldType
+     * @param array  $backendConfig
+     *
+     * @return string The format that should be applied to the field value
+     */
+    private function getFieldFormat($fieldType, array $backendConfig)
+    {
+        if (in_array($fieldType, array('date', 'time', 'datetime', 'datetimetz'))) {
+            // make 'datetimetz' use the same format as 'datetime'
+            $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
+
+            return $backendConfig['formats'][$fieldType];
+        }
+
+        if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {
+            return isset($backendConfig['formats']['number']) ? $backendConfig['formats']['number'] : null;
+        }
     }
 
     /**

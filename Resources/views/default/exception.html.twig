@@ -1,4 +1,4 @@
-{% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
+{% set _entity_config = app.request.query.get('entity') ? easyadmin_entity(app.request.query.get('entity')) %}
 {% extends [
     _entity_config.templates.layout|default(''),
     easyadmin_config('design.templates.layout'),

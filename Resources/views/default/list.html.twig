@@ -18,31 +18,27 @@
     {% set _request_parameters = _request_parameters|merge({ query: app.request.get('query')|default('') }) %}
 {% endif %}
 
-{% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
 {% set _request_parameters = _request_parameters|merge({ referer: path('easyadmin', _request_parameters)|url_encode }) %}
 
 {% block body_id 'easyadmin-list-' ~ _entity_config.name %}
 {% block body_class 'list list-' ~ _entity_config.name|lower %}
 
-{% set _content_title %}
+{% block content_title %}
 {% spaceless %}
     {% if 'search' == app.request.get('action') %}
         {{ 'search.page_title'|transchoice(paginator.nbResults, {}, 'EasyAdminBundle')|raw }}
     {% else %}
+        {% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
         {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title }}
     {% endif %}
 {% endspaceless %}
-{% endset %}
-
-{% block content_title %}
-    {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title }}
 {% endblock %}
 
 {% block content_header %}
     <div class="row">
         <div class="col-sm-5">
             {% block content_title_wrapper %}
-                <h1 class="title">{{ _content_title }}</h1>
+                <h1 class="title">{{ block('content_title') }}</h1>
             {% endblock %}
         </div>
 

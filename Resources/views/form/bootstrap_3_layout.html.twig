@@ -523,7 +523,6 @@
 {% block easyadmin_autocomplete_widget %}
     {{ form_widget(form.autocomplete, {
         attr: attr|merge({
-            'data-easyadmin-autocomplete-max-results': easyadmin_config('show.max_results'),
             'data-easyadmin-autocomplete-url' : path('easyadmin', {
                 action: 'autocomplete',
                 entity: autocomplete_entity_name,

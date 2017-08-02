@@ -212,7 +212,7 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity));
 
-            return $this->redirectToReferer();
+            return $this->redirectToReferrer();
         }
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
@@ -284,7 +284,7 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $entity));
 
-            return $this->redirectToReferer();
+            return $this->redirectToReferrer();
         }
 
         $this->dispatch(EasyAdminEvents::POST_NEW, array(
@@ -338,7 +338,7 @@ class AdminController extends Controller
 
         $this->dispatch(EasyAdminEvents::POST_DELETE);
 
-        return $this->redirectToReferer();
+        return $this->redirectToReferrer();
     }
 
     /**
@@ -738,12 +738,12 @@ class AdminController extends Controller
     /**
      * @return RedirectResponse
      */
-    protected function redirectToReferer()
+    protected function redirectToReferrer()
     {
-        $refererUrl = $this->request->query->get('referer', '');
+        $referrerUrl = $this->request->query->get('referer', '');
 
-        return !empty($refererUrl)
-            ? $this->redirect(urldecode($refererUrl))
+        return !empty($referrerUrl)
+            ? $this->redirect(urldecode($referrerUrl))
             : $this->redirect($this->generateUrl('easyadmin', array(
                 'action' => 'list', 'entity' => $this->entity['name'],
             )));

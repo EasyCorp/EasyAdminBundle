@@ -212,11 +212,7 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity));
 
-            $refererUrl = $this->request->query->get('referer', '');
-
-            return !empty($refererUrl)
-                ? $this->redirect(urldecode($refererUrl))
-                : $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirectToReferer();
         }
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
@@ -288,11 +284,7 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $entity));
 
-            $refererUrl = $this->request->query->get('referer', '');
-
-            return !empty($refererUrl)
-                ? $this->redirect(urldecode($refererUrl))
-                : $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->entity['name'])));
+            return $this->redirectToReferer();
         }
 
         $this->dispatch(EasyAdminEvents::POST_NEW, array(
@@ -344,13 +336,9 @@ class AdminController extends Controller
             $this->dispatch(EasyAdminEvents::POST_REMOVE, array('entity' => $entity));
         }
 
-        $refererUrl = $this->request->query->get('referer', '');
-
         $this->dispatch(EasyAdminEvents::POST_DELETE);
 
-        return !empty($refererUrl)
-            ? $this->redirect(urldecode($refererUrl))
-            : $this->redirect($this->generateUrl('easyadmin', array('action' => 'list', 'entity' => $this->entity['name'])));
+        return $this->redirectToReferer();
     }
 
     /**
@@ -745,5 +733,19 @@ class AdminController extends Controller
      */
     public function renderCssAction()
     {
+    }
+
+    /**
+     * @return RedirectResponse
+     */
+    protected function redirectToReferer()
+    {
+        $refererUrl = $this->request->query->get('referer', '');
+
+        return !empty($refererUrl)
+            ? $this->redirect(urldecode($refererUrl))
+            : $this->redirect($this->generateUrl('easyadmin', array(
+                'action' => 'list', 'entity' => $this->entity['name'],
+            )));
     }
 }

@@ -1,0 +1,8 @@
+---------------------------------------------------------------------------
+
+by ogizanagi at 2017-08-02T10:05:01Z
+
+Appart from the unrelated cs-fixer failure, `deps=low` is failing because the 2.3 [ExceptionListenerPass](https://github.com/symfony/symfony/blob/2.3/src/Symfony/Bundle/TwigBundle/DependencyInjection/Compiler/ExceptionListenerPass.php#L31) does not ensure the parameter is set.
+
+I'll may submit a fix for that in the kernel used in tests as 2.3 is EOM and won't receive bugfixes.
+We should probably consider removing the support for 2.3 in the near future.

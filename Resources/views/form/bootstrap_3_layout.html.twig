@@ -166,6 +166,7 @@
             {%- for child in form %}
                 {{- form_widget(child, {
                     parent_label_class: label_attr.class|default(''),
+                    translation_domain: choice_translation_domain,
                 }) -}}
             {% endfor -%}
         </div>
@@ -174,6 +175,7 @@
             {%- for child in form %}
                 {{- form_widget(child, {
                     parent_label_class: label_attr.class|default(''),
+                    translation_domain: choice_translation_domain,
                 }) -}}
             {% endfor -%}
         </div>
@@ -237,7 +239,7 @@
         {% endif %}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
             {{- widget|raw -}}
-            {{- label is not same as(false) ? label|trans({}, easyadmin.entity.translation_domain) -}}
+            {{- label is not same as(false) ? label|trans({}, translation_domain ?: easyadmin.entity.translation_domain) -}}
         </label>
     {% endif %}
 {% endblock checkbox_radio_label %}
@@ -248,7 +250,7 @@
     {% set _field_type = easyadmin.field.fieldType|default('default') %}
     <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
         {% set _field_label = easyadmin.field['label']|default(null) %}
-        {{- form_label(form, _field_label, { translation_domain: easyadmin.entity.translation_domain }) -}}
+        {{- form_label(form, _field_label, { translation_domain: translation_domain ?: easyadmin.entity.translation_domain }) -}}
         {{- form_widget(form) -}}
 
         {% if _field_type in ['datetime', 'date', 'time', 'birthday'] and easyadmin.field.nullable|default(false) %}

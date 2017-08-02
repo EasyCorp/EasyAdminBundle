@@ -17,7 +17,6 @@ framework:
     router:          { resource: "%kernel.root_dir%/config/routing_override.yml" }
     form:            true
     validation:      { enable_annotations: true }
-    templating:      { engines: ['twig'] }
     profiler:
         collect: true
     session:

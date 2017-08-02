@@ -21,10 +21,10 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 {
     private function getTwig()
     {
-        $templating = $this->getMockBuilder('\Twig_Environment')->disableOriginalConstructor()->getMock();
-        $templating->method('render')->willReturn('template content');
+        $twig = $this->getMockBuilder('\Twig_Environment')->disableOriginalConstructor()->getMock();
+        $twig->method('render')->willReturn('template content');
 
-        return $templating;
+        return $twig;
     }
 
     private function getEventExceptionThatShouldBeCalledOnce($exception)

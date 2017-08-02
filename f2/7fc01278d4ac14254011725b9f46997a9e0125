@@ -1,0 +1,20 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-07-11T18:21:51Z
+
+@grachevko thanks for this contribution ... but I can't review it myself because I don't understand the internals of Symfony Forms. I'll wait for others to review it. Thanks!
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-07-12T09:13:26Z
+
+This is standart behavior of symfony form like [here](https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Resources/views/Form/bootstrap_3_layout.html.twig#L138), [here](https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Resources/views/Form/bootstrap_3_layout.html.twig#L146) and [here](https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Resources/views/Form/bootstrap_3_layout.html.twig#L216).
+
+By default in symfony form `translation_domain` is `null`, so we can check it before setting from `easy_admin.confg`.
+The problem is if i define custom form type for choices, i can't use `translation_domain` or `choice_translation_domain` from its form, this template always set `translation_domain` from `easy_admin.config`.
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-07-19T09:16:40Z
+
+@javiereguiluz i have reverted some refactoring change to make changes more readable for this pr.

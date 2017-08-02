@@ -47,9 +47,9 @@ class AppKernel extends Kernel
         if ($this->isSymfony23()) {
             $loader->load(function (ContainerBuilder $container) {
                 $container->loadFromExtension('framework', array(
-                    'templating' => [
-                        'engines' => ['twig'],
-                    ],
+                    'templating' => array(
+                        'engines' => array('twig'),
+                    ),
                 ));
             });
         }

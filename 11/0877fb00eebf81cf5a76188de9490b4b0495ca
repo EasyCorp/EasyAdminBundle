@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by grachevko at 2017-07-19T16:05:51Z
+
+CI error refers to master.
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-07-20T08:47:43Z
+
+Maybe should add default url?
+
+```
+    protected function redirectToReferer($defaultUrl = '')
+    {
+        $refererUrl = $this->request->query->get('referer', $defaultUrl);
+```

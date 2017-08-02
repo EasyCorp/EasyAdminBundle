@@ -43,6 +43,16 @@ class AppKernel extends Kernel
                 ));
             });
         }
+
+        if ($this->isSymfony23()) {
+            $loader->load(function (ContainerBuilder $container) {
+                $container->loadFromExtension('framework', array(
+                    'templating' => array(
+                        'engines' => array('twig'),
+                    ),
+                ));
+            });
+        }
     }
 
     /**
@@ -64,5 +74,10 @@ class AppKernel extends Kernel
     protected function isSymfony3()
     {
         return 3 === Kernel::MAJOR_VERSION;
+    }
+
+    protected function isSymfony23()
+    {
+        return 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
     }
 }

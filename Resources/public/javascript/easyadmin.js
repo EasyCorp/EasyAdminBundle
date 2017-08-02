@@ -56,8 +56,7 @@ function createAutoCompleteFields() {
 
     autocompleteFields.each(function () {
         var $this = $(this),
-            url = $this.data('easyadmin-autocomplete-url'),
-            max_results = $this.data('easyadmin-autocomplete-max-results');
+            url = $this.data('easyadmin-autocomplete-url');
 
         $this.select2({
             theme: 'bootstrap',
@@ -73,7 +72,7 @@ function createAutoCompleteFields() {
                     return {
                         results: data.results,
                         pagination: {
-                            more: data.results.length === max_results
+                            more: data.has_next_page
                         }
                     };
                 },

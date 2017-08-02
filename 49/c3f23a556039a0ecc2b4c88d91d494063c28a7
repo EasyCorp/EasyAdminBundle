@@ -1,0 +1,15 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2017-08-01T21:50:17Z
+
+Travis failure unrelated.
+
+@javiereguiluz I don't remember how to build the `easyadmin-all.min.js` file... ??
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-08-02T19:28:01Z
+
+The command is in this file: https://github.com/javiereguiluz/EasyAdminBundle/blob/master/.github/RELEASE_CHECKLIST.md
+
+But don't worry, I'll run it myself before releasing the next version. Thanks!

@@ -91,20 +91,20 @@ class TemplateConfigPass implements ConfigPassInterface
         // first, resolve the general template overriding mechanism
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
-                // 1st level priority: easy_admin.entities.<entityName>.templates.<templateName> config option
                 if (isset($entityConfig['templates'][$templateName])) {
+                    // 1st level priority: easy_admin.entities.<entityName>.templates.<templateName> config option
                     $template = $entityConfig['templates'][$templateName];
-                // 2nd level priority: easy_admin.design.templates.<templateName> config option
                 } elseif (isset($backendConfig['design']['templates'][$templateName])) {
+                    // 2nd level priority: easy_admin.design.templates.<templateName> config option
                     $template = $backendConfig['design']['templates'][$templateName];
-                // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
                 } elseif (file_exists($this->templatesDir.'/easy_admin/'.$entityName.'/'.$templateName.'.html.twig')) {
+                    // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
                     $template = 'easy_admin/'.$entityName.'/'.$templateName.'.html.twig';
-                // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
                 } elseif (file_exists($this->templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
+                    // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
                     $template = 'easy_admin/'.$templateName.'.html.twig';
-                // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
                 } else {
+                    // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
                     $template = $defaultTemplatePath;
                 }
 

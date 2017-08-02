@@ -168,14 +168,14 @@ class TemplateConfigPass implements ConfigPassInterface
     private function processDefaultTemplates(array $backendConfig)
     {
         foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
-            // 1st level priority: easy_admin.design.templates.<templateName> config option
             if (isset($backendConfig['design']['templates'][$templateName])) {
+                // 1st level priority: easy_admin.design.templates.<templateName> config option
                 $template = $backendConfig['design']['templates'][$templateName];
-            // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
             } elseif (file_exists($this->templatesDir.'/easy_admin/'.$templateName.'.html.twig')) {
+                // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
                 $template = 'easy_admin/'.$templateName.'.html.twig';
-            // 3rd level priority: @EasyAdmin/default/<templateName>.html.twig
             } else {
+                // 3rd level priority: @EasyAdmin/default/<templateName>.html.twig
                 $template = $defaultTemplatePath;
             }
 

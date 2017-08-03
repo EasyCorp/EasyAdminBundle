@@ -68,7 +68,16 @@ final class EasyAdminRouter
         $parameters['entity'] = $config['name'];
         $parameters['action'] = $action;
 
-        if (!array_key_exists('referer', $parameters) && $request = $this->getRequest()) {
+        $referer = array_key_exists('referer', $parameters) ? $parameters['referer'] : null;
+        $request = $this->getRequest();
+
+        if (false === $referer) {
+            unset($parameters['referer']);
+        } elseif (
+            $request
+            && !is_string($referer)
+            && (true === $referer || in_array($action, array('new', 'edit', 'delete'), true))
+        ) {
             $parameters['referer'] = urlencode($request->getUri());
         }
 

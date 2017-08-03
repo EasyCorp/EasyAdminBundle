@@ -40,7 +40,8 @@ class DynamicConfigLoadingKernel extends AppKernel
     {
         parent::registerContainerConfiguration($loader);
 
-        $backendConfig = $this->backendConfig; // needed for PHP 5.3
+        $backendConfig = (array) $this->backendConfig; // needed for PHP 5.3
+
         $loader->load(function (ContainerBuilder $container) use ($backendConfig) {
             $container->loadFromExtension('easy_admin', $backendConfig);
         });

@@ -74,9 +74,8 @@ final class EasyAdminRouter
         if (false === $referer) {
             unset($parameters['referer']);
         } elseif (
-            !is_string($referer)
-            && false !== $referer
-            && $request
+            $request
+            && !is_string($referer)
             && (true === $referer || in_array($action, array('new', 'edit', 'delete'), true))
         ) {
             $parameters['referer'] = urlencode($request->getUri());

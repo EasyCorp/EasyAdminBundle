@@ -364,6 +364,8 @@
 {% endblock form_errors %}
 
 {%- block form_widget_compound -%}
+    {# the "is iterable" check is needed because if an object implements __toString() and
+       returns an empty string, "is empty" returns true even if it's not a collection #}
     {% if value is iterable and value is empty %}
         {{ block('empty_collection') }}
     {% endif %}

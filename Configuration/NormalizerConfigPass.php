@@ -330,7 +330,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                 $entityConfig['translation_domain'] = $backendConfig['translation_domain'];
             }
 
-            if (empty($entityConfig['translation_domain'])) {
+            if ('' === $entityConfig['translation_domain']) {
                 throw new \InvalidArgumentException(sprintf('The value defined in the "translation_domain" option of the "%s" entity is not a valid translation domain name.', $entityName));
             }
 

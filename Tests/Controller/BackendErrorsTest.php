@@ -12,6 +12,7 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class BackendErrorsTest extends AbstractTestCase
 {
@@ -29,7 +30,7 @@ class BackendErrorsTest extends AbstractTestCase
             'view' => 'list',
         ));
 
-        $this->assertSame(500, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
         $this->assertContains('The "InexistentEntity" entity is not defined in the configuration of your backend.', $crawler->filter('head title')->text());
     }
 }

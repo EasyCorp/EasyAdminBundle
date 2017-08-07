@@ -204,7 +204,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                     // fields that don't define the 'property' name are special form design elements
                     $fieldName = isset($fieldConfig['property']) ? $fieldConfig['property'] : '_easyadmin_form_design_element_'.$x;
                     $fields[$fieldName] = $fieldConfig;
-                    $x++;
+                    ++$x;
                 }
 
                 $backendConfig['entities'][$entityName][$view]['fields'] = $fields;

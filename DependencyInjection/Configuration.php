@@ -210,7 +210,12 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->scalarNode('translation_domain')
-                    ->cannotBeEmpty()
+                    ->validate()
+                        ->ifTrue(function ($v) {
+                            return '' === $v;
+                        })
+                        ->thenInvalid('The translation_domain option cannot be an empty string (use false to disable translations).')
+                    ->end()
                     ->defaultValue('messages')
                     ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
                 ->end()

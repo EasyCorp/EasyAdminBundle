@@ -366,10 +366,12 @@
 {% endblock form_errors %}
 
 {%- block form_widget_compound -%}
-    {% if value is empty %}
+    {# the "is iterable" check is needed because if an object implements __toString() and
+       returns an empty string, "is empty" returns true even if it's not a collection #}
+    {% if value is iterable and value is empty %}
         {{ block('empty_collection') }}
     {% endif %}
-    {% if value is empty or form.vars.prototype is defined %}
+    {% if value is iterable and value is empty or form.vars.prototype is defined %}
         {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
     {% endif %}
 

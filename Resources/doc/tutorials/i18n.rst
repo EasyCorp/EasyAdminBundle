@@ -225,4 +225,9 @@ In the above example, the contents of the ``Customers`` entity are translated
 with the ``admin`` domain whereas the contents of the ``Orders`` entity are
 translated with the ``messages`` domain.
 
+.. tip::
+
+    Use ``false`` as the value of the ``translation_domain`` option to disable
+    the translations of a specific entity or the entire backend.
+
 .. _`translation override mechanism`: https://symfony.com/doc/current/cookbook/bundles/override.html#translations

@@ -381,9 +381,7 @@ First add the virtual property to the entity configuration as any other property
 Now, if you reload the backend, you'll see that the virtual property only
 displays ``Inaccessible`` as its value. The reason is that ``name`` does not
 match any of the entity's properties. To fix this issue, add a new public method
-in your entity called ``getXxx()`` or ``xxx()``, where ``xxx`` is the name of
-the virtual property (in this case the property is called ``name``, so the
-method must be called ``getName()`` or ``name()``):
+in your entity called ``getName()``:
 
 .. code-block:: php
 
@@ -401,9 +399,19 @@ method must be called ``getName()`` or ``name()``):
     }
 
 That's it. Reload your backend and now you'll see the value of this virtual
-property. By default, virtual properties are displayed as text contents. If your
-virtual property is a *boolean* value or a date, use the ``type`` option to set a
-more appropriate data type:
+property.
+
+.. note::
+
+    The values or virtual properties are get using the `PropertyAccess component`_
+    from Symfony, which requires to follow a strict syntax for getter names:
+    ``get`` + camelized version of the property name. Example: ``name`` ->
+    ``getName()``; ``firstName`` -> ``getFirstName()``; ``first_and_last_name`` ->
+    ``getFirstAndLastName()``.
+
+By default, virtual properties are displayed as text contents. If your virtual
+property is a *boolean* value or a date, use the ``type`` option to set a more
+appropriate data type:
 
 .. code-block:: yaml
 
@@ -1022,3 +1030,4 @@ Custom templates receive the same parameters as built-in templates
 
 .. _`date configuration options`: http://php.net/manual/en/function.date.php
 .. _`PHP format specifiers`: http://php.net/manual/en/function.sprintf.php
+.. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html

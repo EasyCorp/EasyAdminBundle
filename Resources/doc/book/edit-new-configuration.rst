@@ -268,6 +268,14 @@ requirement is that they must define a *setter* method for them. For example, if
 your entity contains a ``setName()`` method but not a ``name`` property, the
 ``fields`` option can include the ``name`` *virtual property* to set its value.
 
+.. note::
+
+    The values or virtual properties are set using the `PropertyAccess component`_
+    from Symfony, which requires to follow a strict syntax for setter names:
+    ``set`` + camelized version of the property name. Example: ``name`` ->
+    ``setName()``; ``firstName`` -> ``setFirstName()``; ``first_and_last_name`` ->
+    ``setFirstAndLastName()``.
+
 Defining Custom Form Options
 ----------------------------
 
@@ -832,3 +840,4 @@ template right under the ``easy_admin/`` directory:
 
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
+.. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html

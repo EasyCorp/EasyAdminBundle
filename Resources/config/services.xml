@@ -118,7 +118,7 @@
         </service>
 
         <service id="easyadmin.configuration.template_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass" public="false">
-            <argument>%easyadmin.templates_dir%</argument>
+            <argument type="service" id="twig" />
             <tag name="easyadmin.config_pass" priority="20" />
         </service>
 

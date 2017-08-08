@@ -3,10 +3,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="easyadmin.templates_dir">%kernel.root_dir%/Resources/views</parameter>
-    </parameters>
-
     <services>
         <service id="easyadmin.cache.manager" class="JavierEguiluz\Bundle\EasyAdminBundle\Cache\CacheManager">
             <argument>%easyadmin.cache.dir%</argument>
@@ -118,7 +114,7 @@
         </service>
 
         <service id="easyadmin.configuration.template_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass" public="false">
-            <argument>%easyadmin.templates_dir%</argument>
+            <argument type="service" id="twig.loader.filesystem" />
             <tag name="easyadmin.config_pass" priority="20" />
         </service>
 

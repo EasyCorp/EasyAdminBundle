@@ -51,7 +51,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
     {
         $this->requestEditView();
 
-        $this->assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(403, $this->client->getResponse()->getStatusCode());
         $this->assertContains('The requested &quot;edit&quot; action is not allowed for the &quot;Category&quot; entity. Solution: remove the &quot;edit&quot; action from the &quot;disabled_actions&quot; option, which can be configured globally for the entire backend or locally for the &quot;Category&quot; entity.', $this->client->getResponse()->getContent());
     }
 
@@ -59,7 +59,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
     {
         $this->requestNewView();
 
-        $this->assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(403, $this->client->getResponse()->getStatusCode());
         $this->assertContains('The requested &quot;new&quot; action is not allowed for the &quot;Category&quot; entity. Solution: remove the &quot;new&quot; action from the &quot;disabled_actions&quot; option, which can be configured globally for the entire backend or locally for the &quot;Category&quot; entity.', $this->client->getResponse()->getContent());
     }
 }

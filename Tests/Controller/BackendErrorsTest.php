@@ -29,7 +29,7 @@ class BackendErrorsTest extends AbstractTestCase
             'view' => 'list',
         ));
 
-        $this->assertSame(500, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(404, $this->client->getResponse()->getStatusCode());
         $this->assertContains('The "InexistentEntity" entity is not defined in the configuration of your backend.', $crawler->filter('head title')->text());
     }
 }

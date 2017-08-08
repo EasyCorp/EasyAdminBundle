@@ -11,10 +11,12 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class BaseException extends \RuntimeException
+class BaseException extends HttpException
 {
     /** @var ExceptionContext */
     private $context;
@@ -25,7 +27,7 @@ class BaseException extends \RuntimeException
     public function __construct(ExceptionContext $context)
     {
         $this->context = $context;
-        parent::__construct($this->context->getDebugMessage());
+        parent::__construct($this->context->getStatusCode(), $this->context->getDebugMessage());
     }
 
     /**

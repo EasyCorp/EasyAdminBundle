@@ -12,7 +12,6 @@
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Controller;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
 class ReadOnlyBackendTest extends AbstractTestCase
 {

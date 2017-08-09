@@ -104,7 +104,7 @@ class TemplateConfigPass implements ConfigPassInterface
                 );
                 $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
 
-                if (!$this->twig->getLoader()->exists($templatePath)) {
+                if (null === $templatePath) {
                     throw new \RuntimeException(sprintf('None of the templates defined for the "%s" fragment of the "%s" entity exists (templates defined: %s).', $templateName, $entityName, implode(', ', $candidateTemplates)));
                 }
 
@@ -178,7 +178,7 @@ class TemplateConfigPass implements ConfigPassInterface
             );
             $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
 
-            if (!$this->twig->getLoader()->exists($templatePath)) {
+            if (null === $templatePath) {
                 throw new \RuntimeException(sprintf('None of the templates defined for the global "%s" template of the backend exists (templates defined: %s).', $templateName, implode(', ', $candidateTemplates)));
             }
 
@@ -229,7 +229,7 @@ class TemplateConfigPass implements ConfigPassInterface
     private function findFirstExistingTemplate(array $templatePaths)
     {
         foreach ($templatePaths as $templatePath) {
-            if (!empty($templatePath) && $this->twig->getLoader()->exists($templatePath)) {
+            if ($this->twig->getLoader()->exists($templatePath)) {
                 return $templatePath;
             }
         }

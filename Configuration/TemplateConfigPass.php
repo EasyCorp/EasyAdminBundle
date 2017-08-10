@@ -62,9 +62,9 @@ class TemplateConfigPass implements ConfigPassInterface
         'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
     );
 
-    public function __construct(\Twig_Loader_Filesystem $twigLoader)
+    public function __construct(\Twig_Loader_Filesystem $legacyLoader, \Twig_Loader_Filesystem $loader)
     {
-        $this->twigLoader = $twigLoader;
+        $this->twigLoader = $legacyLoader ?: $loader;
     }
 
     public function process(array $backendConfig)

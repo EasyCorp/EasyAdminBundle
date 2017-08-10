@@ -20,7 +20,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class TemplateConfigPass implements ConfigPassInterface
 {
-    private $twig;
+    private $twigLoader;
     private $defaultBackendTemplates = array(
         'layout' => '@EasyAdmin/default/layout.html.twig',
         'menu' => '@EasyAdmin/default/menu.html.twig',
@@ -62,9 +62,9 @@ class TemplateConfigPass implements ConfigPassInterface
         'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
     );
 
-    public function __construct(\Twig_Environment $twig)
+    public function __construct(\Twig_Loader_Filesystem $twigLoader)
     {
-        $this->twig = $twig;
+        $this->twigLoader = $twigLoader;
     }
 
     public function process(array $backendConfig)
@@ -229,7 +229,7 @@ class TemplateConfigPass implements ConfigPassInterface
     private function findFirstExistingTemplate(array $templatePaths)
     {
         foreach ($templatePaths as $templatePath) {
-            if ($this->twig->getLoader()->exists($templatePath)) {
+            if ($this->twigLoader->exists($templatePath)) {
                 return $templatePath;
             }
         }

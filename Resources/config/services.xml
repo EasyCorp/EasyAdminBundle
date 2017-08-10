@@ -114,8 +114,7 @@
         </service>
 
         <service id="easyadmin.configuration.template_config_pass" class="JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass" public="false">
-            <argument type="service" id="twig.loader" on-invalid="null" /> <!-- Symfony 2.3 and before -->
-            <argument type="service" id="twig.loader.native_filesystem" on-invalid="null" /> <!-- Symfony 2.4 and after -->
+            <argument type="service" id="twig.loader.filesystem" />
             <tag name="easyadmin.config_pass" priority="20" />
         </service>
 

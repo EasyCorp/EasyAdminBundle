@@ -1,0 +1,79 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2017-08-09T03:38:28Z
+
+**What about to use only the standard (native) overriding templates mechanism?**
+
+For example, installing a fresh EasyAdminBundle with the next configuration:
+```yaml
+easy_admin:
+    entities:
+        - AppBundle\Entity\User
+```
+I want to customize the `User` list template just creating the path convention:
+```
+app/Resources/EasyAdminBundle/views/User/list.html.twig
+```
+Later with nothing more the bundle should be able to load`@EasyAdmin/User/list.html.twig` template for User/list action and so on.
+
+To achieve it, the next template paths should be enough to cover all cases:
+ * `@EasyAdmin/<entityName>/<templateName>.html.twig` (set only if exists else use default template)
+ * `@EasyAdmin/default/<templateName>.html.twig`
+
+Also, instead of hardcode the `easy_admin` directory (AFAIR workaround to well known issue https://github.com/symfony/symfony/issues/17557) you can add a second Twig's namespace automatically for `EasyAdminBundle/Resources/views` e.g. '!EasyAdmin' as you're suggested.
+
+**Why?**
+Less paths to do the same => less issues, less options to document & remember, less steps, less code to maintain, bundle-less methods in favor of native methods.
+
+WDYT? Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-08-09T15:59:40Z
+
+@yceruto thanks for your proposal. I've moved it to #1749 so we can discuss more about it. Let's keep this PR to discuss whether this is really a fix of the referenced issue or not. Thanks!
+
+---------------------------------------------------------------------------
+
+by yceruto at 2017-08-10T19:17:40Z
+
+Sorry, try with `twig.loader.filesystem` instead, it's available since `2.3`, `twig.loader.native_filesystem` is a new alias.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-08-10T19:28:15Z
+
+@yceruto in f2a8270 I needed to do something weird because in 2.3 `twig.loader.native_filesystem` doesn't exist and in newer Symfony versions `twig.loader.filesystem` doesn't exist.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2017-08-10T19:38:17Z
+
+I've checked in `3.3.6` and `twig.loader.filesystem` is still available. Try:
+```bash
+ $ bin/console debug:container twig.loader.filesystem
+```
+
+---------------------------------------------------------------------------
+
+by yceruto at 2017-08-10T19:41:54Z
+
+Maybe a typo in https://github.com/javiereguiluz/EasyAdminBundle/commit/f2a8270d7dac703a8a213b31429ec64dd97d57f9 (`id="twig.loader"` => `id="twig.loader.filesystem"`)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-08-10T19:44:55Z
+
+I was looking at here: https://github.com/symfony/symfony/blob/3.3/src/Symfony/Bundle/TwigBundle/Resources/config/twig.xml and I couldn't find the `twig.loader.filesystem` service ... but it's an alias created dynamically here: https://github.com/symfony/symfony/blob/3.3/src/Symfony/Bundle/TwigBundle/DependencyInjection/Compiler/ExtensionPass.php#L88
+
+---------------------------------------------------------------------------
+
+by yceruto at 2017-08-10T19:52:02Z
+
+:crossed_fingers:
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-08-10T20:03:45Z
+
+@yceruto thanks a lot for your help! Merging it 🎉

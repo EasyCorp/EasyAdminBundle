@@ -20,6 +20,7 @@ namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
  */
 class TemplateConfigPass implements ConfigPassInterface
 {
+    /** @var \Twig_Loader_Filesystem */
     private $twigLoader;
     private $defaultBackendTemplates = array(
         'layout' => '@EasyAdmin/default/layout.html.twig',
@@ -62,9 +63,9 @@ class TemplateConfigPass implements ConfigPassInterface
         'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
     );
 
-    public function __construct(\Twig_Loader_Filesystem $legacyLoader, \Twig_Loader_Filesystem $loader)
+    public function __construct($legacyTwigLoader, $twigLoader)
     {
-        $this->twigLoader = $legacyLoader ?: $loader;
+        $this->twigLoader = $legacyTwigLoader ?: $twigLoader;
     }
 
     public function process(array $backendConfig)

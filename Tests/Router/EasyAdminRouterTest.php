@@ -31,7 +31,14 @@ final class EasyAdminRouterTest extends AbstractTestCase
 
         $this->initClient(array('environment' => 'default_backend'));
 
-        $this->router = $this->client->getContainer()->get('easyadmin.router');
+        // don't use $this->client->getContainer()->get('easyadmin.router');
+        // to avoid ServiceCircularReferenceException errors
+        $this->router = new EasyAdminRouter(
+            $this->client->getContainer()->get('easyadmin.config.manager'),
+            $this->client->getContainer()->get('router'),
+            $this->client->getContainer()->get('property_accessor'),
+            $this->client->getContainer()->get('request_stack')
+        );
     }
 
     /**

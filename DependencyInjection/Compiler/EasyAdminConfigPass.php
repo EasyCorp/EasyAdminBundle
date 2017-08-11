@@ -20,6 +20,14 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class EasyAdminConfigPass implements CompilerPassInterface
 {
+    /** @var string */
+    private $bundlePath;
+
+    public function __construct($bundlePath)
+    {
+        $this->bundlePath = $bundlePath;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -31,6 +39,10 @@ final class EasyAdminConfigPass implements CompilerPassInterface
         foreach ($configPasses as $service) {
             $definition->addMethodCall('addConfigPass', array($service));
         }
+
+        // register another Twig's namespace for bundle
+        $twigFilesystemLoaderDefinition = $container->findDefinition('twig.loader.filesystem');
+        $twigFilesystemLoaderDefinition->addMethodCall('addPath', array($this->bundlePath.'/Resources/views', '!EasyAdmin'));
     }
 
     /**

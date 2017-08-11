@@ -69,7 +69,7 @@ and ``domain`` options:
 
 .. code-block:: twig
 
-    {# app/Resources/views/easy_admin/field_string.html.twig #}
+    {# app/Resources/EasyAdminBundle/views/default/field_string.html.twig #}
 
     {% if field_options.trans|default(false) %}
         {# translate fields defined as "translatable" #}
@@ -105,7 +105,7 @@ The custom ``tag_collection.html.twig`` template would look as follows:
 
 .. code-block:: twig
 
-    {# app/Resources/views/easy_admin/tag_collection.html.twig #}
+    {# app/Resources/EasyAdminBundle/views/tag_collection.html.twig #}
 
     {% set colors = field_options.label_colors|default(['primary']) %}
 

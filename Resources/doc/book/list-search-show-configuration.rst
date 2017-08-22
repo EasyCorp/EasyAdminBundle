@@ -522,7 +522,7 @@ put anything that is considered valid as a ``WHERE`` clause in a Doctrine query)
             UrgentIssues:
                 class: AppBundle\Entity\Issue
                 list:
-                    dql_filter: 'entity.label == "CRITICAL" OR entity.priority > 4'
+                    dql_filter: 'entity.label = "CRITICAL" OR entity.priority > 4'
             ImportantIssues:
                 class: AppBundle\Entity\Issue
                 list:

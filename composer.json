@@ -22,7 +22,7 @@
         "doctrine/doctrine-bundle"      : "~1.2",
         "doctrine/orm"                  : "~2.3",
         "pagerfanta/pagerfanta"         : "~1.0,>=1.0.1",
-        "sensio/framework-extra-bundle" : "~2.3|~3.0,>=3.0.2|4.0.x-dev",
+        "sensio/framework-extra-bundle" : "~2.3|~3.0,>=3.0.2|4.0.x",
         "symfony/asset"                 : "~2.3|~3.0|~4.0",
         "symfony/config"                : "~2.3|~3.0|~4.0",
         "symfony/dependency-injection"  : "~2.3|~3.0|~4.0",

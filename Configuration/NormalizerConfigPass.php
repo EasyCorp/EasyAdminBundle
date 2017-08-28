@@ -172,6 +172,7 @@ class NormalizerConfigPass implements ConfigPassInterface
     private function normalizePropertyConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            $designElementIndex = 0;
             foreach (array('form', 'edit', 'list', 'new', 'search', 'show') as $view) {
                 $fields = array();
                 foreach ($entityConfig[$view]['fields'] as $i => $field) {
@@ -201,8 +202,9 @@ class NormalizerConfigPass implements ConfigPassInterface
                     }
 
                     // fields that don't define the 'property' name are special form design elements
-                    $fieldName = isset($fieldConfig['property']) ? $fieldConfig['property'] : '_easyadmin_form_design_element_'.$i;
+                    $fieldName = isset($fieldConfig['property']) ? $fieldConfig['property'] : '_easyadmin_form_design_element_'.$designElementIndex;
                     $fields[$fieldName] = $fieldConfig;
+                    ++$designElementIndex;
                 }
 
                 $backendConfig['entities'][$entityName][$view]['fields'] = $fields;

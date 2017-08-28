@@ -42,11 +42,11 @@
                     {% if item.children|default([]) is not empty %}
                         <ul class="treeview-menu">
                             {% for subitem in item.children %}
-                                {% block menu_sub_item %}
+                                {% block menu_subitem %}
                                     <li class="{{ subitem.type == 'divider' ? 'header' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.parent.loop.index0 and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
                                         {{ helper.render_menu_item(subitem, _entity_config.translation_domain|default('messages')) }}
                                     </li>
-                                {% endblock menu_sub_item %}
+                                {% endblock menu_subitem %}
                             {% endfor %}
                         </ul>
                     {% endif %}

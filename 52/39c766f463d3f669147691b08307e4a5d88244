@@ -1,0 +1,12 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-08-28T17:51:16Z
+
+@grachevko thanks for this! We are always willing to add new template blocks when it makes sense.
+
+By the way, I've renamed `menu_sub_item` to `menu_subitem`, because it looks like `subitem` is preferred over `sub-item`. See:
+
+* https://www.collinsdictionary.com/dictionary/english/subitem
+* https://www.merriam-webster.com/dictionary/subitem
+* https://en.wiktionary.org/wiki/subitem
+* https://english.stackexchange.com/questions/68642/should-i-use-hyphens-with-prefixes-like-sub-and-semi

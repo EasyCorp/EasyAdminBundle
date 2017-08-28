@@ -151,6 +151,27 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} pozostała jedna pozycja nie wyświetlona na tym listingu|{2,3,4} pozostały %count% pozycje nie wyświetlone na tym listingu|[5,21] pozostało %count% pozycji nie wyświetlonych na tym listingu|[22,Inf[ liczba pozycji nie wyświetlonych na tym listingu: %count%]]></target>
             </trans-unit>
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Ten obiekt nie jest już dostępny.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Ten obiekt nie może być usunięty ponieważ istnieją inne, które są z nim powiązane.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>Na tej pozycji nie można wykonać wybranej akcji.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>Aplikacja jest nieprawidłowo skonfigurowana. Nie zdefiniowano żadnych obiektów</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>Aplikacja jest nieprawidłowo skonfigurowana dla tego typu obiektów.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -13,7 +13,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Component\Form\FormConfigInterface;
-use Symfony\Component\Form\FormTypeGuesserInterface;
 
 /**
  * This configurator is applied to any form field of type 'association' and is
@@ -24,29 +23,11 @@ use Symfony\Component\Form\FormTypeGuesserInterface;
  */
 class EntityTypeConfigurator implements TypeConfiguratorInterface
 {
-    /** @var FormTypeGuesserInterface */
-    private $guesser;
-
-    /**
-     * @param FormTypeGuesserInterface $guesser
-     */
-    public function __construct(FormTypeGuesserInterface $guesser)
-    {
-        $this->guesser = $guesser;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
-        if (!isset($options['class'])) {
-            $guessedOptions = $this->guesser->guessType($parentConfig->getDataClass(), $name)->getOptions();
-            $options['class'] = $guessedOptions['class'];
-            $options['multiple'] = $guessedOptions['multiple'];
-            $options['em'] = $guessedOptions['em'];
-        }
-
         if ($metadata['associationType'] & ClassMetadata::TO_MANY) {
             $options['attr']['multiple'] = true;
         }
@@ -70,7 +51,9 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        return 'entity' === $type && 'association' === $metadata['type'];
+        $isEntityType = in_array($type, array('entity', 'Symfony\Bridge\Doctrine\Form\Type\EntityType'), true);
+
+        return $isEntityType && 'association' === $metadata['type'];
     }
 
     /**

@@ -43,7 +43,7 @@ class IvoryCKEditorTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isCkeditorField = in_array($type, array('ckeditor', 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType'));
+        $isCkeditorField = in_array($type, array('ckeditor', 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType'), true);
 
         return $isCkeditorField && !isset($options['config']['toolbar']) && !isset($options['config_name']);
     }

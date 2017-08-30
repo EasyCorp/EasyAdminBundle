@@ -53,21 +53,22 @@
             <tag name="easyadmin.form.type.configurator" priority="10" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.required_option" public="false"
-                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator">
-            <argument type="service" id="easyadmin.form.type_guesser_chain" />
-            <tag name="easyadmin.form.type.configurator" priority="-10" />
-        </service>
-
         <service id="easyadmin.form.type.configurator.entity" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator">
-            <argument type="service" id="easyadmin.form.type_guesser_chain" />
             <tag name="easyadmin.form.type.configurator" priority="-20" />
         </service>
 
         <service id="easyadmin.form.type.configurator.ivory_ckeditor" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator">
             <tag name="easyadmin.form.type.configurator" priority="-130" />
+        </service>
+
+        <!-- Type Configurators -->
+
+        <service id="easyadmin.form.guesser.missing_doctrine_orm_type_guesser" public="true"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Guesser\MissingDoctrineOrmTypeGuesser">
+            <argument type="service" id="doctrine" />
+            <tag name="form.type_guesser" />
         </service>
     </services>
 </container>

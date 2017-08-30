@@ -106,6 +106,7 @@
         </service>
 
         <service id="easyadmin.configuration.property_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass" public="false">
+            <argument type="service" id="form.registry" />
             <tag name="easyadmin.config_pass" priority="40" />
         </service>
 

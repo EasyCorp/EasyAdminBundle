@@ -11,6 +11,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Form\Guess\TypeGuess;
+use Symfony\Component\Form\Guess\ValueGuess;
+
 /**
  * Processes the entity fields to complete their configuration and to treat
  * some fields in a special way.
@@ -60,28 +65,12 @@ class PropertyConfigPass implements ConfigPassInterface
         'virtual' => true,
     );
 
-    private $doctrineTypeToFormTypeMap = array(
-        'array' => 'collection',
-        'association' => 'entity',
-        'bigint' => 'text',
-        'blob' => 'textarea',
-        'boolean' => 'checkbox',
-        'date' => 'date',
-        'datetime' => 'datetime',
-        'datetimetz' => 'datetime',
-        'decimal' => 'number',
-        'float' => 'number',
-        'guid' => 'text',
-        'integer' => 'integer',
-        'json' => 'textarea',
-        'json_array' => 'textarea',
-        'object' => 'textarea',
-        'simple_array' => 'collection',
-        'smallint' => 'integer',
-        'string' => 'text',
-        'text' => 'textarea',
-        'time' => 'time',
-    );
+    private $formRegistry;
+
+    public function __construct(FormRegistryInterface $formRegistry)
+    {
+        $this->formRegistry = $formRegistry;
+    }
 
     public function process(array $backendConfig)
     {
@@ -106,13 +95,29 @@ class PropertyConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             $properties = array();
             foreach ($entityConfig['properties'] as $propertyName => $propertyMetadata) {
+                $typeGuess = $this->getFormTypeGuessOfProperty($entityConfig['class'], $propertyName);
+                $requiredGuess = $this->getFormRequiredGuessOfProperty($entityConfig['class'], $propertyName);
+
+                $guessedType = null !== $typeGuess
+                    ? LegacyFormHelper::getShortType($typeGuess->getType())
+                    : $propertyMetadata['type'];
+
+                $guessedTypeOptions = null !== $typeGuess
+                    ? $typeGuess->getOptions()
+                    : array();
+
+                if (null !== $requiredGuess) {
+                    $guessedTypeOptions['required'] = $requiredGuess->getValue();
+                }
+
                 $properties[$propertyName] = array_replace(
                     $this->defaultEntityFieldConfig,
                     $propertyMetadata,
                     array(
                         'property' => $propertyName,
                         'dataType' => $propertyMetadata['type'],
-                        'fieldType' => $this->getFormTypeFromDoctrineType($propertyMetadata['type']),
+                        'fieldType' => $guessedType,
+                        'type_options' => $guessedTypeOptions,
                     )
                 );
 
@@ -159,7 +164,7 @@ class PropertyConfigPass implements ConfigPassInterface
                         );
                     }
 
-                    $normalizedConfig = array_replace(
+                    $normalizedConfig = array_replace_recursive(
                         $this->defaultEntityFieldConfig,
                         $fieldMetadata,
                         $fieldConfig
@@ -173,12 +178,28 @@ class PropertyConfigPass implements ConfigPassInterface
                     }
 
                     // 'new' and 'edit' views: if the user has defined the 'type' option
-                    // for the field, use it as 'fieldType'. Otherwise, infer the best field
-                    // type using the property data type.
+                    // for the field, use it as 'fieldType'. Otherwise, use the guessed
+                    // form type of the property data type.
                     if (in_array($view, array('edit', 'new'))) {
                         $normalizedConfig['fieldType'] = isset($originalFieldConfig['type'])
                             ? $originalFieldConfig['type']
-                            : $this->getFormTypeFromDoctrineType($normalizedConfig['type']);
+                            : $normalizedConfig['fieldType'];
+
+                        if (null === $normalizedConfig['fieldType']) {
+                            // this is a virtual field which doesn't exist as a property of
+                            // the related entity. Textarea is used as a default form type.
+                            $normalizedConfig['fieldType'] = 'textarea';
+                        }
+
+                        // if the user has defined a 'type' but no 'type_options' the type options
+                        // must be reset so they don't get mixed with the form components guess.
+                        // Only the 'required' option is kept
+                        if (isset($originalFieldConfig['type']) && !isset($originalFieldConfig['type_options'])) {
+                            $normalizedConfig['type_options'] = array_intersect_key(
+                                $normalizedConfig['type_options'],
+                                array('required' => null)
+                            );
+                        }
                     }
 
                     // special case for the 'list' view: 'boolean' properties are displayed
@@ -206,17 +227,29 @@ class PropertyConfigPass implements ConfigPassInterface
     }
 
     /**
-     * Returns the most appropriate Symfony Form type for the given Doctrine type.
+     * Guesses what Form Type a property of a class has.
      *
-     * @param string $doctrineType
+     * @param string $class
+     * @param string $property
      *
-     * @return string
+     * @return TypeGuess|null
      */
-    private function getFormTypeFromDoctrineType($doctrineType)
+    private function getFormTypeGuessOfProperty($class, $property)
     {
-        return isset($this->doctrineTypeToFormTypeMap[$doctrineType])
-            ? $this->doctrineTypeToFormTypeMap[$doctrineType]
-            : $doctrineType;
+        return $this->formRegistry->getTypeGuesser()->guessType($class, $property);
+    }
+
+    /**
+     * Guesses if a property of a class should be a required field in a Form.
+     *
+     * @param string $class
+     * @param string $property
+     *
+     * @return ValueGuess|null
+     */
+    private function getFormRequiredGuessOfProperty($class, $property)
+    {
+        return $this->formRegistry->getTypeGuesser()->guessRequired($class, $property);
     }
 
     /**

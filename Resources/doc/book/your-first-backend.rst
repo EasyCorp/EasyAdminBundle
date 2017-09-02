@@ -23,6 +23,18 @@ the admin backend:
 .. image:: ../images/easyadmin-default-backend.png
    :alt: Default EasyAdmin Backend interface
 
+
+.. note::
+
+    If the interface of your backend displays translation strings instead of
+    the actual contents, make sure that the ``translator`` service is enabled:
+
+    .. code-block:: yaml
+
+        # app/config/config.yml
+        framework:
+            translator: { fallbacks: [ "en" ] }
+
 Expanded Configuration Format
 -----------------------------
 

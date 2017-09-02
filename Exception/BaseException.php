@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
+namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -68,3 +68,5 @@ class BaseException extends \RuntimeException
         return $this->context->getStatusCode();
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException', false);

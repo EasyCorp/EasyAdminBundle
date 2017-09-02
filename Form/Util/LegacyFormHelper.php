@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Util;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Util;
 
 /**
  * Utility class to map Symfony 2.x short form types to Symfony 3.x FQCN form types.
@@ -93,3 +93,5 @@ final class LegacyFormHelper
         return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper', 'EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper', false);

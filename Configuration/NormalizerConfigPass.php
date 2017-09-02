@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -427,3 +427,5 @@ class NormalizerConfigPass implements ConfigPassInterface
         return null;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass', false);

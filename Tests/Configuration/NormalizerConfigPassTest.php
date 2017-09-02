@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass;
 
 class NormalizerConfigPassTest extends \PHPUnit_Framework_TestCase
 {

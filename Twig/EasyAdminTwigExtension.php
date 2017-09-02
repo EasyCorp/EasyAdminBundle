@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Twig;
+namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -411,3 +411,5 @@ class EasyAdminTwigExtension extends \Twig_Extension
         return 'easyadmin_extension';
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension', 'EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension', false);

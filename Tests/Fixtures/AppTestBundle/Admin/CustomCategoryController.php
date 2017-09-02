@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomCategoryController extends EasyAdminController

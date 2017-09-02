@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Router;
+namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use Doctrine\Common\Util\ClassUtils;
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -113,3 +113,5 @@ final class EasyAdminRouter
         return $config;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter', 'EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter', false);

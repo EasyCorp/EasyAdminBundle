@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler;
+namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -70,3 +70,5 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         $container->getDefinition('easyadmin.form.type')->replaceArgument(1, iterator_to_array($configurators));
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass', 'EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass', false);

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Processes the main menu configuration defined in the "design.menu"
@@ -178,3 +178,5 @@ class MenuConfigPass implements ConfigPassInterface
         return $menuConfig;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', false);

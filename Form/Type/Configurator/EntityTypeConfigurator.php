@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Component\Form\FormConfigInterface;
@@ -88,3 +88,5 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
             : 'empty_value';
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator', false);

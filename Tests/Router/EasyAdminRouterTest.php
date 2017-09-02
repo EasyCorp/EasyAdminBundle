@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Router;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Router;
 
 use AppTestBundle\Entity\FunctionalTests\Product;
-use JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 /**
  * @author Konstantin Grachev <me@grachevko.ru>

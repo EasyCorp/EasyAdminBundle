@@ -59,7 +59,10 @@
         "sort-packages": true
     },
     "autoload": {
-        "psr-4": { "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "" },
+        "psr-4": {
+            "EasyCorp\\Bundle\\EasyAdminBundle\\": "",
+            "JavierEguiluz\\Bundle\\EasyAdminBundle\\": ""
+        },
         "exclude-from-classmap": ["/Tests/"]
     },
     "autoload-dev": {

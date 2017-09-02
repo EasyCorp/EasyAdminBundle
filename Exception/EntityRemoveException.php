@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
+namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -28,3 +28,5 @@ class EntityRemoveException extends BaseException
         parent::__construct($exceptionContext);
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityRemoveException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException', false);

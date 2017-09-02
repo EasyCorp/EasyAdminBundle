@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Cache;
+namespace EasyCorp\Bundle\EasyAdminBundle\Cache;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 /**
@@ -51,3 +51,5 @@ class ConfigWarmer implements CacheWarmerInterface
         return false;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Cache\ConfigWarmer', 'EasyCorp\Bundle\EasyAdminBundle\Cache\ConfigWarmer', false);

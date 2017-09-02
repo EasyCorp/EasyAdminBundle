@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
+namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\FlattenException;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -194,3 +194,5 @@ class ExceptionListener extends BaseExceptionListener
         return 2 === Kernel::MAJOR_VERSION && 3 === Kernel::MINOR_VERSION;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener', 'EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener', false);

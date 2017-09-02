@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Cache\CacheManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
@@ -207,3 +207,5 @@ class ConfigManager
         return $backendConfig;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager', false);

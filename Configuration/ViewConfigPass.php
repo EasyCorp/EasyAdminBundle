@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Initializes the configuration for all the views of each entity, which is
@@ -296,3 +296,5 @@ class ViewConfigPass implements ConfigPassInterface
         return $filteredFields;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ViewConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\ViewConfigPass', false);

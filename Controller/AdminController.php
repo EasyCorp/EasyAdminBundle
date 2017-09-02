@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Controller;
+namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
-use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -749,3 +749,5 @@ class AdminController extends Controller
             )));
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController', 'EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController', false);

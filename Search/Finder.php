@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
+namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
 use Pagerfanta\Pagerfanta;
 
@@ -49,3 +49,5 @@ class Finder
         return $this->paginator->createOrmPaginator($queryBuilder, $page, $maxResults);
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Search\Finder', 'EasyCorp\Bundle\EasyAdminBundle\Search\Finder', false);

@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Search;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Search;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class AutocompleteTest extends AbstractTestCase
 {

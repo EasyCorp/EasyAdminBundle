@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Event;
+namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -68,3 +68,5 @@ final class EasyAdminEvents
     /** @Event("Symfony\Component\EventDispatcher\GenericEvent") */
     const POST_SEARCH_QUERY_BUILDER = 'easy_admin.post_search_query_builder';
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents', 'EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents', false);

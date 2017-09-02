@@ -118,7 +118,7 @@ create a custom admin controller and override the ``initialize()`` method
     // src/AppBundle/Controller/AdminController.php
     namespace AppBundle\Controller;
 
-    use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
     class AdminController extends BaseAdminController
     {

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -93,3 +93,5 @@ class MetadataConfigPass implements ConfigPassInterface
         return $entityPropertiesMetadata;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', false);

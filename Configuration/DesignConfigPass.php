@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -76,3 +76,5 @@ class DesignConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DesignConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\DesignConfigPass', false);

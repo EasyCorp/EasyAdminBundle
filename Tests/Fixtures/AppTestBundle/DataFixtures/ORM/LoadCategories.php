@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\ORM;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\ORM;
 
 use AppTestBundle\Entity\FunctionalTests\Category;
 use Doctrine\Common\DataFixtures\AbstractFixture;

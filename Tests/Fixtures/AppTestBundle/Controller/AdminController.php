@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Controller;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Controller;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminController;
 
 class AdminController extends EasyAdminController
 {

@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle;
+namespace EasyCorp\Bundle\EasyAdminBundle;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminConfigPass;
-use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass;
+use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminConfigPass;
+use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -30,3 +30,5 @@ class EasyAdminBundle extends Bundle
         $container->addCompilerPass(new EasyAdminConfigPass());
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle', 'EasyCorp\Bundle\EasyAdminBundle', false);

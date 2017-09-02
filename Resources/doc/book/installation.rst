@@ -51,7 +51,7 @@ Then, enable the bundle by adding it to the list of registered bundles in the
         {
             $bundles = array(
                 // ...
-                new JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle(),
+                new EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle(),
             );
         }
 

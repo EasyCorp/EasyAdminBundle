@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Merges all the actions that can be configured in the backend and normalizes
@@ -352,3 +352,5 @@ class ActionConfigPass implements ConfigPassInterface
         return $newArray;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ActionConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass', false);

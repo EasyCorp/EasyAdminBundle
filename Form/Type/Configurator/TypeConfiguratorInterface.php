@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -46,3 +46,5 @@ interface TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata);
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface', false);

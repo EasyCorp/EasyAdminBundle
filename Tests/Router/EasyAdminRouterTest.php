@@ -52,7 +52,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     /**
      * @dataProvider provideUndefinedEntities
      *
-     * @expectedException \JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException
+     * @expectedException \EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException
      */
     public function testUndefinedEntityException($entity, $action)
     {

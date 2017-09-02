@@ -5,4 +5,4 @@ easy_admin:
     entities:
         Category:
             class: AppTestBundle\Entity\FunctionalTests\Category
-            controller:  JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryController
+            controller:  EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryController

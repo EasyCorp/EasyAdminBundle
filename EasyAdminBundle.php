@@ -31,4 +31,4 @@ class EasyAdminBundle extends Bundle
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle', 'EasyCorp\Bundle\EasyAdminBundle', false);
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle', 'EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle', false);

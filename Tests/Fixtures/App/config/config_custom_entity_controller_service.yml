@@ -9,6 +9,6 @@ easy_admin:
 
 services:
     app.controller:
-        class: JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryControllerAsService
+        class: EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryControllerAsService
         # TODO: when Symfony 2.3 support is dropped, we can inject @reuqest_stack instead of the entire container
         arguments: ['@service_container']

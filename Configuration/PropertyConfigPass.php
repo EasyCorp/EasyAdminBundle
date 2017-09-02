@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Processes the entity fields to complete their configuration and to treat
@@ -241,3 +241,5 @@ class PropertyConfigPass implements ConfigPassInterface
         }
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass', false);

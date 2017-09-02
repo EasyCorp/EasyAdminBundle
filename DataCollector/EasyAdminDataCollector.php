@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\DataCollector;
+namespace EasyCorp\Bundle\EasyAdminBundle\DataCollector;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -139,3 +139,5 @@ class EasyAdminDataCollector extends DataCollector
         return 'easyadmin';
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector', 'EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector', false);

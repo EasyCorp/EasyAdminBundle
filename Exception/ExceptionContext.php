@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
+namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -71,3 +71,5 @@ class ExceptionContext
         return $placeholders;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\ExceptionContext', 'EasyCorp\Bundle\EasyAdminBundle\Exception\ExceptionContext', false);

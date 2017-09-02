@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -45,3 +45,5 @@ class CheckboxTypeConfigurator implements TypeConfiguratorInterface
         return 'checkbox' === $type;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator', false);

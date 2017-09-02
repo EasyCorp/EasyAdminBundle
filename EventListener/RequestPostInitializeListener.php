@@ -1,9 +1,9 @@
 <?php
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
+namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -92,3 +92,5 @@ class RequestPostInitializeListener
         return $entity;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener', 'EasyCorp\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener', false);

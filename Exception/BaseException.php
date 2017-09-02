@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
+namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -70,3 +70,5 @@ class BaseException extends HttpException
         return $this->context->getStatusCode();
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException', false);

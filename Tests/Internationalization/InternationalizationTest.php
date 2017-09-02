@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Internationalization;
+namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Internationalization;
 
 class InternationalizationTest extends \PHPUnit_Framework_TestCase
 {

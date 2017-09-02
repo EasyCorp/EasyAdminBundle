@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
+namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -28,3 +28,5 @@ class NoEntitiesConfiguredException extends BaseException
         parent::__construct($exceptionContext);
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException', false);

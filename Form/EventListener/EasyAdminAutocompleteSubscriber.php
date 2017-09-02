@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\EventListener;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -66,3 +66,5 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
         $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', 'EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', false);

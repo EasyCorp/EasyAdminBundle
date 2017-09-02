@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Cache;
+namespace EasyCorp\Bundle\EasyAdminBundle\Cache;
 
 use Doctrine\Common\Cache\FilesystemCache;
 
@@ -57,3 +57,5 @@ class CacheManager extends FilesystemCache
         return parent::save($key, $item, $lifetime);
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Cache\CacheManager', 'EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager', false);

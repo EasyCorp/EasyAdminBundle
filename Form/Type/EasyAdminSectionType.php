@@ -1,6 +1,6 @@
 <?php
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 
@@ -27,3 +27,5 @@ class EasyAdminSectionType extends AbstractType
         return $this->getBlockPrefix();
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType', false);

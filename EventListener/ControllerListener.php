@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\EventListener;
+namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -89,3 +89,5 @@ class ControllerListener
         $event->setController($newController);
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ControllerListener', 'EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener', false);

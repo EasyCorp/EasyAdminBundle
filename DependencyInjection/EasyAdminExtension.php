@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection;
+namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -223,3 +223,5 @@ class EasyAdminExtension extends Extension
         return 0 !== preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', 'EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', false);

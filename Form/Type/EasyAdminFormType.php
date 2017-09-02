@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -169,3 +169,5 @@ class EasyAdminFormType extends AbstractType
         };
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', false);

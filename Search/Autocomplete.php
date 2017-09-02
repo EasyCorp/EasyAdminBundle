@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
+namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -82,3 +82,5 @@ class Autocomplete
         return $results;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Search\Autocomplete', 'EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete', false);

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormTypeGuesserInterface;
@@ -58,3 +58,5 @@ class RequiredOptionConfigurator implements TypeConfiguratorInterface
         return !isset($options['required']);
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator', false);

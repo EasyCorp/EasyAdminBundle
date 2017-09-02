@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
+namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
 use Doctrine\ORM\Query as DoctrineQuery;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
@@ -41,3 +41,5 @@ class Paginator
         return $paginator;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator', 'EasyCorp\Bundle\EasyAdminBundle\Search\Paginator', false);

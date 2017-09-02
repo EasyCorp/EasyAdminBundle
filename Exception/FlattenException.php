@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Exception;
+namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 use Symfony\Component\Debug\Exception\FlattenException as BaseFlattenException;
 
@@ -66,3 +66,5 @@ class FlattenException extends BaseFlattenException
         return $this->context->getStatusCode();
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\FlattenException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException', false);

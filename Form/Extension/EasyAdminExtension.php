@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Extension;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -87,3 +87,5 @@ class EasyAdminExtension extends AbstractTypeExtension
         return LegacyFormHelper::getType('form');
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', 'EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', false);

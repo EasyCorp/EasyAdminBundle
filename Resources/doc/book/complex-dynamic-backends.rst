@@ -36,7 +36,7 @@ and make it extend from the default ``AdminController`` class:
     // src/AppBundle/Controller/AdminController.php
     namespace AppBundle\Controller;
 
-    use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
     class AdminController extends BaseAdminController
     {
@@ -263,7 +263,7 @@ just before saving the changes made on an existing entity:
     // src/AppBundle/Controller/AdminController.php
     namespace AppBundle\Controller;
 
-    use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
     class AdminController extends BaseAdminController
     {
@@ -285,7 +285,7 @@ creating (``prePersistEntity()``) or editing (``preUpdateEntity()``) them:
     // src/AppBundle/Controller/AdminController.php
     namespace AppBundle\Controller;
 
-    use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
     class AdminController extends BaseAdminController
     {
@@ -347,7 +347,7 @@ Instead of overriding the ``createNewEntity()`` method and check for the
     // src/AppBundle/Controller/AdminController.php
     namespace AppBundle\Controller;
 
-    use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
     class AdminController extends BaseAdminController
     {
@@ -374,7 +374,7 @@ anywhere in your Symfony application and make it extend from the default
     // src/AppBundle/Controller/AdminController.php
     namespace AppBundle\Admin;
 
-    use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
     class ProductController extends BaseAdminController
     {

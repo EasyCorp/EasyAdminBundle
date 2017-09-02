@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Form\Type;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use JavierEguiluz\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -123,3 +123,5 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
         $data = $forms['autocomplete']->getData();
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType', false);

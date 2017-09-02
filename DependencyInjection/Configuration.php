@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection;
+namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -474,3 +474,5 @@ class Configuration implements ConfigurationInterface
         ;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Configuration', 'EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Configuration', false);

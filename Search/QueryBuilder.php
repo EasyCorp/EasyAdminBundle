@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Search;
+namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
@@ -144,3 +144,5 @@ class QueryBuilder
         return $queryBuilder;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder', 'EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder', false);

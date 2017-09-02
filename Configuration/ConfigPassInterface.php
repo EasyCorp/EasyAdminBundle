@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * The interface that must be implemented by all the classes that normalize,
@@ -30,3 +30,5 @@ interface ConfigPassInterface
      */
     public function process(array $backendConfig);
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigPassInterface', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigPassInterface', false);

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Processes the template configuration to decide which template to use to
@@ -235,3 +235,5 @@ class TemplateConfigPass implements ConfigPassInterface
         }
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass', false);

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JavierEguiluz\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 /**
  * Processes default values for some backend configuration options.
@@ -136,3 +136,5 @@ class DefaultConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 }
+
+class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass', false);

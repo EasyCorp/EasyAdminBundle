@@ -60,8 +60,8 @@
     },
     "autoload": {
         "psr-4": {
-            "EasyCorp\\Bundle\\EasyAdminBundle\\": "",
-            "JavierEguiluz\\Bundle\\EasyAdminBundle\\": ""
+            "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "Legacy/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\": ""
         },
         "exclude-from-classmap": ["/Tests/"]
     },

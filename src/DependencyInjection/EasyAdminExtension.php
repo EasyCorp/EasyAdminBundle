@@ -40,7 +40,9 @@ class EasyAdminExtension extends Extension
         $container->setParameter('easyadmin.cache.dir', $container->getParameter('kernel.cache_dir').'/easy_admin');
 
         // load bundle's services
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(
+            __DIR__.'/../Resources/config'
+        ));
         $loader->load('services.xml');
         $loader->load('form.xml');
 

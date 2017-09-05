@@ -16,31 +16,31 @@
         }
     ],
     "require": {
-        "php"                           : ">=5.3.0",
-        "doctrine/cache"                : "~1.5",
-        "doctrine/common"               : "^2.4.0",
-        "doctrine/doctrine-bundle"      : "~1.2",
-        "doctrine/orm"                  : "~2.3",
-        "pagerfanta/pagerfanta"         : "~1.0,>=1.0.1",
-        "sensio/framework-extra-bundle" : "~2.3|~3.0,>=3.0.2",
-        "symfony/asset"                 : "~2.3|~3.0|~4.0",
-        "symfony/config"                : "~2.3|~3.0|~4.0",
-        "symfony/dependency-injection"  : "~2.3|~3.0|~4.0",
-        "symfony/doctrine-bridge"       : "~2.3|~3.0|~4.0",
-        "symfony/event-dispatcher"      : "~2.3|~3.0|~4.0",
-        "symfony/form"                  : "~2.3|~3.0|~4.0",
-        "symfony/framework-bundle"      : "~2.3|~3.0|~4.0",
-        "symfony/http-foundation"       : "~2.3|~3.0|~4.0",
-        "symfony/http-kernel"           : "~2.3|~3.0|~4.0",
-        "symfony/polyfill-mbstring"     : "^1.0",
-        "symfony/property-access"       : "~2.3|~3.0|~4.0",
-        "symfony/security-bundle"       : "~2.3|~3.0|~4.0",
-        "symfony/translation"           : "~2.3|~3.0|~4.0",
-        "symfony/twig-bridge"           : "^2.3.4|~3.0|~4.0",
-        "symfony/twig-bundle"           : "~2.3|~3.0|~4.0",
-        "symfony/validator"             : "~2.3|~3.0|~4.0",
-        "twig/extensions"               : "~1.0",
-        "twig/twig"                     : "~1.14,>=1.14.2|~2.0"
+        "php": ">=5.3.0",
+        "doctrine/cache": "~1.5",
+        "doctrine/common": "^2.4.0",
+        "doctrine/doctrine-bundle": "~1.2",
+        "doctrine/orm": "~2.3",
+        "pagerfanta/pagerfanta": "~1.0,>=1.0.1",
+        "sensio/framework-extra-bundle": "~2.3|~3.0,>=3.0.2|4.0.x",
+        "symfony/asset": "~2.3|~3.0|~4.0",
+        "symfony/config": "~2.3|~3.0|~4.0",
+        "symfony/dependency-injection": "~2.3|~3.0|~4.0",
+        "symfony/doctrine-bridge": "~2.3|~3.0|~4.0",
+        "symfony/event-dispatcher": "~2.3|~3.0|~4.0",
+        "symfony/form": "~2.3|~3.0|~4.0",
+        "symfony/framework-bundle": "~2.3|~3.0|~4.0",
+        "symfony/http-foundation": "~2.3|~3.0|~4.0",
+        "symfony/http-kernel": "~2.3|~3.0|~4.0",
+        "symfony/polyfill-mbstring": "^1.0",
+        "symfony/property-access": "~2.3|~3.0|~4.0",
+        "symfony/security-bundle": "~2.3|~3.0|~4.0",
+        "symfony/translation": "~2.3|~3.0|~4.0",
+        "symfony/twig-bridge": "^2.3.4|~3.0|~4.0",
+        "symfony/twig-bundle": "~2.3|~3.0|~4.0",
+        "symfony/validator": "~2.3|~3.0|~4.0",
+        "twig/extensions": "~1.0",
+        "twig/twig": "~1.14,>=1.14.2|~2.0"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle" : "~2.2",
@@ -60,10 +60,9 @@
     },
     "autoload": {
         "psr-4": {
-            "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "Legacy/",
-            "EasyCorp\\Bundle\\EasyAdminBundle\\": ""
-        },
-        "exclude-from-classmap": ["/Tests/"]
+            "EasyCorp\\Bundle\\EasyAdminBundle\\": "src/",
+            "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "legacy/"
+        }
     },
     "autoload-dev": {
         "psr-4": { "AppTestBundle\\": "Tests/Fixtures/AppTestBundle/" }

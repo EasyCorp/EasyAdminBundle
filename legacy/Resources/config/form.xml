@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="easyadmin.form.type" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType">
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="collection" /> <!-- type configurators -->
+            <tag name="form.type" alias="easyadmin" />
+        </service>
+
+        <service id="easyadmin.form.type.autocomplete" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType">
+            <argument type="service" id="easyadmin.config.manager"/>
+            <tag name="form.type" alias="easyadmin_autocomplete" />
+        </service>
+
+        <service id="easyadmin.form.type.divider" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType">
+            <tag name="form.type" alias="easyadmin_divider" />
+        </service>
+
+        <service id="easyadmin.form.type.section" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType">
+            <tag name="form.type" alias="easyadmin_section" />
+        </service>
+
+        <service id="easyadmin.form.type.group" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType">
+            <tag name="form.type" alias="easyadmin_group" />
+        </service>
+
+        <service id="easyadmin.form.type.extension" class="EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension">
+            <argument type="service" id="request_stack" on-invalid="null" />
+            <tag name="form.type_extension" alias="form" extended-type="Symfony\Component\Form\Extension\Core\Type\FormType" />
+        </service>
+
+        <service id="easyadmin.form.type_guesser_chain" class="Symfony\Component\Form\FormTypeGuesserChain" public="false">
+            <argument type="collection" /> <!-- type guessers -->
+        </service>
+
+        <!-- Type Configurators -->
+
+        <service id="easyadmin.form.type.configurator.autocomplete" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="30" />
+        </service>
+
+        <service id="easyadmin.form.type.configurator.collection" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="20" />
+        </service>
+
+        <service id="easyadmin.form.type.configurator.checkbox" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="10" />
+        </service>
+
+        <service id="easyadmin.form.type.configurator.required_option" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator">
+            <argument type="service" id="easyadmin.form.type_guesser_chain" />
+            <tag name="easyadmin.form.type.configurator" priority="-10" />
+        </service>
+
+        <service id="easyadmin.form.type.configurator.entity" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator">
+            <argument type="service" id="easyadmin.form.type_guesser_chain" />
+            <tag name="easyadmin.form.type.configurator" priority="-20" />
+        </service>
+
+        <service id="easyadmin.form.type.configurator.ivory_ckeditor" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="-130" />
+        </service>
+    </services>
+</container>

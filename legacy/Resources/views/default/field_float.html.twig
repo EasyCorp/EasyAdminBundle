@@ -1,0 +1,5 @@
+{% if field_options.format %}
+    {{ field_options.format|format(value) }}
+{% else %}
+    {{ value|number_format(2) }}
+{% endif %}

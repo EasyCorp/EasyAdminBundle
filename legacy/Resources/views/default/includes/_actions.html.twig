@@ -1,0 +1,16 @@
+{% for action in actions %}
+    {% if 'list' == action.name %}
+        {% set action_href = request_parameters.referer|default('') ? request_parameters.referer|easyadmin_urldecode : path('easyadmin', request_parameters|merge({ action: 'list' })) %}
+    {% elseif 'method' == action.type %}
+        {% set action_href = path('easyadmin', request_parameters|merge({ action: action.name, id: item_id })) %}
+    {% elseif 'route' == action.type %}
+        {% set action_href = path(action.name, request_parameters|merge({ action: action.name, id: item_id })) %}
+    {% endif %}
+
+    <a class="{{ action.css_class|default('') }}" href="{{ action_href }}" target="{{ action.target }}">
+        {%- if action.icon %}<i class="fa fa-{{ action.icon }}"></i> {% endif -%}
+        {%- if action.label is defined and not action.label is empty -%}
+            {{ action.label|trans(arguments = trans_parameters|merge({ '%entity_id%': item_id }), domain = translation_domain) }}
+        {%- endif -%}
+    </a>
+{% endfor %}

@@ -145,4 +145,4 @@ class QueryBuilder
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder', 'EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder', 'JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder', false);

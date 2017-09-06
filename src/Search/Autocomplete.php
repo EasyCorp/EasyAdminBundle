@@ -83,4 +83,4 @@ class Autocomplete
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Search\Autocomplete', 'EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete', 'JavierEguiluz\Bundle\EasyAdminBundle\Search\Autocomplete', false);

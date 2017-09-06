@@ -179,4 +179,4 @@ class MenuConfigPass implements ConfigPassInterface
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', false);

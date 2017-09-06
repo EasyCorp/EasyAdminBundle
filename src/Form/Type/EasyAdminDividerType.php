@@ -28,4 +28,4 @@ class EasyAdminDividerType extends AbstractType
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType', false);

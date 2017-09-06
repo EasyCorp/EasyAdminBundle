@@ -114,4 +114,4 @@ final class EasyAdminRouter
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter', 'EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter', 'JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter', false);

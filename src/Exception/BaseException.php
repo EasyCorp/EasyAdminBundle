@@ -69,4 +69,4 @@ class BaseException extends \RuntimeException
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException', false);

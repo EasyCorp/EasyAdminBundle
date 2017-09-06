@@ -28,4 +28,4 @@ class EasyAdminSectionType extends AbstractType
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType', false);

@@ -28,4 +28,4 @@ class EasyAdminGroupType extends AbstractType
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType', false);

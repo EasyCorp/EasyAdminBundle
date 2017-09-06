@@ -140,4 +140,4 @@ class EasyAdminDataCollector extends DataCollector
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector', 'EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector', 'JavierEguiluz\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector', false);

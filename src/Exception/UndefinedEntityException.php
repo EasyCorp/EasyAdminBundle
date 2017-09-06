@@ -29,4 +29,4 @@ class UndefinedEntityException extends BaseException
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException', false);

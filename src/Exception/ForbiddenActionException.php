@@ -29,4 +29,4 @@ class ForbiddenActionException extends BaseException
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException', false);

@@ -88,4 +88,4 @@ class EasyAdminExtension extends AbstractTypeExtension
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', 'EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', false);

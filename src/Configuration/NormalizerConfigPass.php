@@ -428,4 +428,4 @@ class NormalizerConfigPass implements ConfigPassInterface
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass', false);

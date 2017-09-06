@@ -93,4 +93,4 @@ class RequestPostInitializeListener
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener', 'EasyCorp\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener', 'JavierEguiluz\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener', false);

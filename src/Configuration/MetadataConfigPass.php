@@ -94,4 +94,4 @@ class MetadataConfigPass implements ConfigPassInterface
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', false);

@@ -137,4 +137,4 @@ class DefaultConfigPass implements ConfigPassInterface
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass', false);

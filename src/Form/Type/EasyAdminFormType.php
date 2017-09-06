@@ -170,4 +170,4 @@ class EasyAdminFormType extends AbstractType
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', false);

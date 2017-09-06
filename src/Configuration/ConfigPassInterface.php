@@ -31,4 +31,4 @@ interface ConfigPassInterface
     public function process(array $backendConfig);
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigPassInterface', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigPassInterface', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigPassInterface', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigPassInterface', false);

@@ -42,4 +42,4 @@ class Paginator
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator', 'EasyCorp\Bundle\EasyAdminBundle\Search\Paginator', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Search\Paginator', 'JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator', false);

@@ -59,4 +59,4 @@ class RequiredOptionConfigurator implements TypeConfiguratorInterface
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator', false);

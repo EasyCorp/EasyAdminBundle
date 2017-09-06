@@ -195,4 +195,4 @@ class ExceptionListener extends BaseExceptionListener
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener', 'EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener', 'JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener', false);

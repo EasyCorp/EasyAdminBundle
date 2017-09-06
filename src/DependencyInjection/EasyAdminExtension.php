@@ -226,4 +226,4 @@ class EasyAdminExtension extends Extension
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', 'EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', 'JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', false);

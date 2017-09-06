@@ -750,4 +750,4 @@ class AdminController extends Controller
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController', 'EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController', 'JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController', false);

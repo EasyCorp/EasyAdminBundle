@@ -50,4 +50,4 @@ class Finder
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Search\Finder', 'EasyCorp\Bundle\EasyAdminBundle\Search\Finder', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Search\Finder', 'JavierEguiluz\Bundle\EasyAdminBundle\Search\Finder', false);

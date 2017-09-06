@@ -67,4 +67,4 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', 'EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', false);

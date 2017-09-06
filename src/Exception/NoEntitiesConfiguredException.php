@@ -29,4 +29,4 @@ class NoEntitiesConfiguredException extends BaseException
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException', false);

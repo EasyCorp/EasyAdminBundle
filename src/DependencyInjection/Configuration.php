@@ -475,4 +475,4 @@ class Configuration implements ConfigurationInterface
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Configuration', 'EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Configuration', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Configuration', 'JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Configuration', false);

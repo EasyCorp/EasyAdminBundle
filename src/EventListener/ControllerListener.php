@@ -90,4 +90,4 @@ class ControllerListener
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ControllerListener', 'EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener', 'JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ControllerListener', false);

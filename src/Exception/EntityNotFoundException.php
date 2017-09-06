@@ -29,4 +29,4 @@ class EntityNotFoundException extends BaseException
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException', 'EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException', false);

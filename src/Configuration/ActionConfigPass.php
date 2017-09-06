@@ -353,4 +353,4 @@ class ActionConfigPass implements ConfigPassInterface
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ActionConfigPass', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ActionConfigPass', false);

@@ -94,4 +94,4 @@ final class LegacyFormHelper
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper', 'EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper', false);

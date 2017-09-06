@@ -53,4 +53,4 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator', 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator', false);

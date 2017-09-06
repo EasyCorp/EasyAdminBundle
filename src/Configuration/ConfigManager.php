@@ -208,4 +208,4 @@ class ConfigManager
     }
 }
 
-class_alias('JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager', 'EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager', false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager', false);

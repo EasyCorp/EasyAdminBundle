@@ -1,0 +1,10 @@
+# TEST
+# when using a single custom form theme, the value is properly transformed into
+# an array of form themes
+
+# CONFIGURATION
+easy_admin:
+    design:
+        form_theme: '@App/form/custom_layout.html.twig'
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category

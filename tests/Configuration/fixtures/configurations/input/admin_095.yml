@@ -1,0 +1,9 @@
+# TEST
+# the brand color can be defined using the reserved CSS color keywords
+
+# CONFIGURATION
+easy_admin:
+    design:
+        brand_color: 'red'
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category

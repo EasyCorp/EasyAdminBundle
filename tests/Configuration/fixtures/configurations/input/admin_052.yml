@@ -1,0 +1,14 @@
+# TEST
+# global backend actions remove all default actions for the 'new' view
+# even if the 'list' action is removed from the backend configuration, the
+# resulting view configuration will include it because the 'list' action
+# is mandatory for all views and all entities
+
+# CONFIGURATION
+easy_admin:
+    new:
+        actions:
+            ['-list']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

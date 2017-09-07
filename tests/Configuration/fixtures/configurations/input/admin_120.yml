@@ -1,0 +1,7 @@
+# Favicon configuration: foo/bar (unsupported ext)
+
+# CONFIGURATION
+easy_admin:
+    design:
+        assets:
+            favicon: { path: 'favicon.bar', mime_type: 'foo/bar' }

@@ -1,0 +1,10 @@
+easy_admin_bundle:
+    resource: "@EasyAdminBundle/Controller/"
+    type:     annotation
+    prefix:   /admin/
+
+custom_route:
+    path:   /custom-route
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    'custom_menu/template.html.twig'

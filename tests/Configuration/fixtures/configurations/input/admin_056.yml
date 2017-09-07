@@ -1,0 +1,12 @@
+# TEST
+# global backend actions remove one default action for the 'new' view
+# using the extended action configuration
+
+# CONFIGURATION
+easy_admin:
+    new:
+        actions:
+            - { name: '-list' }
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

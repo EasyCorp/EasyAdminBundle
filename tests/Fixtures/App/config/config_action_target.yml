@@ -1,0 +1,28 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+    list:
+        actions:
+            - { name: 'edit', target: '_blank' }
+            - { name: 'search', target: '_top' }
+            - { name: 'new', target: 'custom_target' }
+            - { name: 'custom_action', target: '_parent' }
+            - { name: 'another_custom_action' }
+    edit:
+        actions:
+            - { name: 'list', target: '_parent' }
+            - { name: 'delete', target: '_blank' }
+            - { name: 'custom_action', target: '_blank' }
+    show:
+        actions:
+            - { name: 'edit', target: '_self' }
+            - { name: 'list' }
+            - { name: 'custom_action', target: 'custom_target' }
+    new:
+        actions:
+            - { name: 'list', target: '_top' }
+            - { name: 'custom_action', target: '_parent' }

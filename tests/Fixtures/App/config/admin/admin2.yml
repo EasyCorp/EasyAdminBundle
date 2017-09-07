@@ -1,0 +1,6 @@
+easy_admin:
+    entities:
+        Product: AppTestBundle\Entity\FunctionalTests\Product
+        Inventory:
+            class: AppTestBundle\Entity\FunctionalTests\Product
+        Product2: AppTestBundle\Entity\FunctionalTests\Product

@@ -1,0 +1,11 @@
+# TEST
+# global backend actions remove one default action for the 'list' view
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions:
+            ['-search']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

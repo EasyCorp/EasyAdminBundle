@@ -1,0 +1,8 @@
+# TEST
+# configuration format #3: entity name matches its class name
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

@@ -1,0 +1,25 @@
+# TEST
+# entity actions add the same custom actions as the global actions
+# (the result should not duplicate those actions)
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions: ['custom_list_action']
+    edit:
+        actions: ['custom_edit_action']
+    show:
+        actions: ['custom_show_action']
+    new:
+        actions: ['custom_new_action']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                actions: ['custom_list_action']
+            edit:
+                actions: ['custom_edit_action']
+            show:
+                actions: ['custom_show_action']
+            new:
+                actions: ['custom_new_action']

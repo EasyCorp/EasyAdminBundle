@@ -1,0 +1,24 @@
+imports:
+    - { resource: config.yml }
+
+framework:
+    # This file overrides the EasyAdmin controller
+    router: { resource: "%kernel.root_dir%/config/routing_override.yml" }
+
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            label: 'Categories'
+            list:
+                actions:
+                    # override a built-in action with a false label
+                    - { name: 'edit', label: false, icon: 'pencil' }
+                    # override a built-in action with an empty label
+                    - { name: 'delete', label: '', icon: 'minus-circle' }
+                    # custom action with an empty label
+                    - { name: 'action1', label: '', icon: 'icon1' }
+                    # custom action with a false label
+                    - { name: 'action2', label: false, icon: 'icon2' }
+                    # if 'false' is used as a string, it should be dispalyed as is
+                    - { name: 'action3', label: 'false', icon: 'icon3' }

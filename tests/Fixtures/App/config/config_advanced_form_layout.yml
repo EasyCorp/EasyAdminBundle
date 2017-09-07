@@ -1,0 +1,26 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Product:
+            class: AppTestBundle\Entity\FunctionalTests\Product
+            form:
+                fields:
+                    - 'name'
+                    - { type: 'group', css_class: 'col-sm-8', label: 'Basic information', icon: 'pencil' }
+                    - 'description'
+                    - { type: 'divider' }
+                    - 'categories'
+                    - { type: 'group', css_class: 'col-sm-4', label: 'Product Details' }
+                    - 'ean'
+                    - 'price'
+                    - { type: 'section', label: 'Advanced Settings', icon: 'warning', help: 'Reserved for administrators use' }
+                    - 'enabled'
+                    - 'createdAt'
+                    - { type: 'group', css_class: 'col-sm-8 new-row' }
+                    - 'features'
+                    - { type: 'group', css_class: 'col-sm-4' }
+                    - 'tags'
+                    - { type: 'group', css_class: 'col-sm-4', label: 'Attachments', icon: 'paperclip', help: 'PNG format is preferred' }
+                    - { property: 'image', type: 'text' }

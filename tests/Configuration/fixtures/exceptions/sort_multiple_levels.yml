@@ -1,0 +1,15 @@
+# TEST
+# the sort field can only contain up to one nesting level (e.g. aaa.bbb)
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The "association1.association2.property" value cannot be used as the "sort" option in the "list" view of the "Category" entity because it defines multiple sorting levels (e.g. "aaa.bbb.ccc") but only up to one level is supported (e.g. "aaa.bbb").'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                sort: 'association1.association2.property'

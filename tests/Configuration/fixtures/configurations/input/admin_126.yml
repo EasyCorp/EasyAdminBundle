@@ -1,0 +1,12 @@
+# TEST
+# when using a built-in action in the entity "actions" configuration, all its
+# default options must be maintained (e.g. the "icon" or "css_class" should
+# not be lost when the user doesn't define them)
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            edit:
+                actions: ['delete']

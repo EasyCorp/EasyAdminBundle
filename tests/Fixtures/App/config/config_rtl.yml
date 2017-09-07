@@ -1,0 +1,12 @@
+imports:
+    - { resource: config.yml }
+
+# use 'ar' (Arabic) as the locale of the app to force the detection of RTL languages
+parameters:
+    locale: ar
+framework:
+    default_locale: ar
+
+easy_admin:
+    entities:
+        Category:     AppTestBundle\Entity\FunctionalTests\Category

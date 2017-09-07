@@ -1,0 +1,12 @@
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                title: 'Global Title for List'
+            show:
+                title: 'Global Title for Show'
+            new:
+                title: 'Global Title for New'
+            edit:
+                title: 'Global Title for Edit'

@@ -1,0 +1,13 @@
+# TEST
+# the configuration of the backend doesn't define any option to override
+# templates, but in the filesystem there are some files that override some
+# default templates but only for the TestEntity entity (the AnotherTestEntity
+# should still use the default templates)
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+        Product:
+            class: AppTestBundle\Entity\UnitTests\Product

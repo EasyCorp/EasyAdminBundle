@@ -1,0 +1,7 @@
+# Favicon configuration: gif
+
+# CONFIGURATION
+easy_admin:
+    design:
+        assets:
+            favicon: { path: 'favicon.gif' }

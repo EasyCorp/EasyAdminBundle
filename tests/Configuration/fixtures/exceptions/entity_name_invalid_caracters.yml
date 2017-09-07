@@ -1,0 +1,13 @@
+# TEST
+# the name of the entity cannot contain invalid characters (anything
+# different than letters, numbers and underscores)
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The name of the "Invalid-Entity~Name!!" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        'Invalid-Entity~Name!!': AppTestBundle\Entity\UnitTests\Category

@@ -1,0 +1,11 @@
+# TEST
+# entity actions remove one default action for the 'edit' view
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            edit:
+                actions:
+                    ['-delete']

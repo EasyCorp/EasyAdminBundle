@@ -1,0 +1,9 @@
+# TEST
+# combining configuration formats #2 and #3 without using the explicit 'label' option
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category: AppTestBundle\Entity\UnitTests\Category
+        AnotherCategory:
+            class: AppTestBundle\Entity\UnitTests\SubNamespace\Category

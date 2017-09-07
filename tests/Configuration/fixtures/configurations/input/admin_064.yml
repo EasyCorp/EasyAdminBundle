@@ -1,0 +1,20 @@
+# TEST
+# it's possible to configure the properties of custom actions defined at global level
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions:
+            - { name: 'custom_action_for_list', icon: 'custom-list-icon', css_class: 'custom-list-class', label: 'custom-list-label', type: 'route' }
+    edit:
+        actions:
+            - { name: 'custom_action_for_edit', icon: 'custom-edit-icon', css_class: 'custom-edit-class', label: 'custom-edit-label', type: 'route' }
+    show:
+        actions:
+            - { name: 'custom_action_for_show', icon: 'custom-show-icon', css_class: 'custom-show-class', label: 'custom-show-label', type: 'route' }
+    new:
+        actions:
+            - { name: 'custom_action_for_new', icon: 'custom-new-icon', css_class: 'custom-new-class', label: 'custom-new-label', type: 'route' }
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

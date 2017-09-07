@@ -1,0 +1,10 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Category:     AppTestBundle\Entity\FunctionalTests\Category
+        Image:        AppTestBundle\Entity\FunctionalTests\Image
+        Purchase:     AppTestBundle\Entity\FunctionalTests\Purchase
+        PurchaseItem: AppTestBundle\Entity\FunctionalTests\PurchaseItem
+        Product:      AppTestBundle\Entity\FunctionalTests\Product

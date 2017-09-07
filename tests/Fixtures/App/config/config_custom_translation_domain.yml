@@ -1,0 +1,9 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    translation_domain: 'this_does_not_exist'
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            translation_domain: 'admin'

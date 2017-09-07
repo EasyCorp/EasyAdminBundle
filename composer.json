@@ -65,7 +65,10 @@
         }
     },
     "autoload-dev": {
-        "psr-4": { "AppTestBundle\\": "Tests/Fixtures/AppTestBundle/" }
+        "psr-4": {
+            "AppTestBundle\\": "tests/Fixtures/AppTestBundle/",
+            "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\": "tests/"
+        }
     },
     "extra": {
         "branch-alias": {

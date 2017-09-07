@@ -14,7 +14,7 @@
 
     <testsuites>
         <testsuite name="EasyAdminBundle test suite">
-            <directory suffix="Test.php">Tests</directory>
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
 
@@ -27,7 +27,7 @@
     -->
 
     <php>
-        <server name="KERNEL_DIR" value="./Tests/Fixtures/App" />
+        <server name="KERNEL_DIR" value="./tests/Fixtures/App" />
         <ini name="error_reporting" value="E_ALL" />
         <ini name="display_errors" value="1" />
         <ini name="display_startup_errors" value="1" />
@@ -37,21 +37,21 @@
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./Configuration</directory>
-            <directory suffix=".php">./Controller</directory>
-            <directory suffix=".php">./DependencyInjection</directory>
-            <directory suffix=".php">./Reflection</directory>
-            <directory suffix=".php">./Resources</directory>
-            <directory suffix=".php">./Twig</directory>
+            <directory suffix=".php">./src/Configuration</directory>
+            <directory suffix=".php">./src/Controller</directory>
+            <directory suffix=".php">./src/DependencyInjection</directory>
+            <directory suffix=".php">./src/Reflection</directory>
+            <directory suffix=".php">./src/Resources</directory>
+            <directory suffix=".php">./src/Twig</directory>
             <exclude>
                 <directory>./build</directory>
-                <directory>./Tests</directory>
+                <directory>./tests</directory>
                 <directory>./vendor</directory>
             </exclude>
         </whitelist>
         <blacklist>
             <directory>./vendor</directory>
-            <directory>./Tests</directory>
+            <directory>./tests</directory>
             <directory>./build</directory>
         </blacklist>
     </filter>

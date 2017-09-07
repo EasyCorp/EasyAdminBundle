@@ -58,4 +58,4 @@ class CacheManager extends FilesystemCache
     }
 }
 
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager', 'JavierEguiluz\Bundle\EasyAdminBundle\Cache\CacheManager',false);
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager', 'JavierEguiluz\Bundle\EasyAdminBundle\Cache\CacheManager', false);

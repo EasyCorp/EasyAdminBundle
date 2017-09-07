@@ -1,7 +1,0 @@
-# Favicon configuration: jpeg
-
-# CONFIGURATION
-easy_admin:
-    design:
-        assets:
-            favicon: { path: 'favicon.jpeg' }

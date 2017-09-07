@@ -1,9 +1,0 @@
-# TEST
-# when using a built-in action in the global "actions" configuration, all its
-# default options must be maintained (e.g. the "icon" or "css_class" should
-# not be lost when the user doesn't define them)
-
-# CONFIGURATION
-easy_admin:
-    edit:
-        actions: ['delete']

@@ -1,9 +1,0 @@
-# TEST
-# the brand color can be defined using the rgba() CSS notation
-
-# CONFIGURATION
-easy_admin:
-    design:
-        brand_color: 'rgba(255, 0, 0, 0.7)'
-    entities:
-        - AppTestBundle\Entity\UnitTests\Category

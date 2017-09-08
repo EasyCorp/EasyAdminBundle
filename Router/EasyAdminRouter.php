@@ -57,7 +57,7 @@ final class EasyAdminRouter
         if (is_object($entity)) {
             $config = $this->getEntityConfigByClass(get_class($entity));
 
-            $parameters['id'] = $this->propertyAccessor->getValue($entity, 'id');
+            $parameters['id'] = (string) $this->propertyAccessor->getValue($entity, 'id');
         } else {
             $config = class_exists($entity)
                 ? $this->getEntityConfigByClass($entity)

@@ -11,6 +11,7 @@
 
 namespace JavierEguiluz\Bundle\EasyAdminBundle\Tests\Router;
 
+use AppTestBundle\Entity\FunctionalTests\EntityWithNonScalarPrimaryKey;
 use AppTestBundle\Entity\FunctionalTests\Product;
 use JavierEguiluz\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use JavierEguiluz\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
@@ -29,7 +30,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'default_backend'));
+        $this->initClient(array('environment' => 'admin_router'));
 
         $this->router = $this->client->getContainer()->get('easyadmin.router');
     }
@@ -67,10 +68,13 @@ final class EasyAdminRouterTest extends AbstractTestCase
         $refPropertyId->setAccessible(true);
         $refPropertyId->setValue($product, 1);
 
+        $entityWithNonScalarPrimaryKey = new EntityWithNonScalarPrimaryKey();
+
         return array(
             array('AppTestBundle\Entity\FunctionalTests\Category', 'new', 'Category'),
             array('Product', 'new', 'Product', array('entity' => 'Category'), array('entity' => 'Product')),
             array($product, 'show', 'Product', array('modal' => 1), array('id' => 1)),
+            array($entityWithNonScalarPrimaryKey, 'show', 'EntityWithNonScalarPrimaryKey', array(), array('id' => 1)),
         );
     }
 

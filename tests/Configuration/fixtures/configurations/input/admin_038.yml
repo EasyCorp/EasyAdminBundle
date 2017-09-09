@@ -1,0 +1,15 @@
+# TEST
+# the 'new' and 'edit' and 'form' options are merged recursively
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            form:
+                fields: ['field1', 'field2']
+                custom_option: 'custom value'
+            new:
+                custom_option: 'new custom value'
+            edit:
+                fields: ['field3', 'field4']

@@ -1,0 +1,13 @@
+# TEST
+# if the entity defines a dql_filter option for 'list', the 'search' view can set
+# this option to null to not use the same dql_filter as 'list'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                dql_filter: "entity.id > 10 AND entity.name LIKE '%%Subcategory%%'"
+            search:
+                dql_filter: ~

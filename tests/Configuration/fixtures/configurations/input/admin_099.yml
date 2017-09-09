@@ -1,0 +1,9 @@
+# TEST
+# although it's the default value, the color scheme can be explicitly set to 'dark'
+
+# CONFIGURATION
+easy_admin:
+    design:
+        color_scheme: 'dark'
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category

@@ -1,0 +1,9 @@
+# TEST
+# disable actions in the entity
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            disabled_actions: ['action1']

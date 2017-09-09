@@ -1,0 +1,15 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Purchase:
+            class: AppTestBundle\Entity\FunctionalTests\Purchase
+            list:
+                fields: ['id', 'buyer']
+                sort: ['buyer.id', 'ASC']
+        User:
+            class: AppTestBundle\Entity\FunctionalTests\User
+            # the 'show' action is disabled so the 'buyer' field is not linked
+            # in the 'list' view of the 'Purchase' entity
+            disabled_actions: ['show']

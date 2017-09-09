@@ -1,0 +1,24 @@
+# TEST
+# entity actions remove one custom action explicitly added by the global actions
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions: ['custom_list_action']
+    edit:
+        actions: ['custom_edit_action']
+    show:
+        actions: ['custom_show_action']
+    new:
+        actions: ['custom_new_action']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                actions: ['-custom_list_action']
+            edit:
+                actions: ['-custom_edit_action']
+            show:
+                actions: ['-custom_show_action']
+            new:
+                actions: ['-custom_new_action']

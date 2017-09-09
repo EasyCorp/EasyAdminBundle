@@ -1,0 +1,20 @@
+# TEST
+# global backend actions remove all default actions for each view
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions:
+            ['-edit', '-list', '-new', '-search', '-show']
+    edit:
+        actions:
+            ['-delete', '-list']
+    show:
+        actions:
+            ['-delete', '-edit', '-list']
+    new:
+        actions:
+            ['-list']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

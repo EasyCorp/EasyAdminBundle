@@ -1,0 +1,10 @@
+# TEST
+# configuration format #3 expanded to define a custom entity label explicitly
+# which contains special YAML characters
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            label: 'Custom #Category ~ Label'

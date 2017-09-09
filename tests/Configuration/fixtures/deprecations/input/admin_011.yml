@@ -1,0 +1,19 @@
+# TEST
+# when defining both the deprecated 'assets -> css' option and the new
+# 'design -> assets -> css' option, the latter should prevail
+
+# CONFIGURATION
+easy_admin:
+    design:
+        assets:
+            css:
+                - 'path/to/asset1.css'
+                - '/path/to/asset2.css'
+                - '//path/to/asset3.css'
+                - 'http://exmaple.com/path/to/asset4.css'
+    assets:
+        css:
+            - 'path/to/deprecated_asset1.css'
+            - '/path/to/deprecated_asset2.css'
+            - '//path/to/deprecated_asset3.css'
+            - 'http://exmaple.com/path/to/deprecated_asset4.css'

@@ -1,0 +1,16 @@
+# TEST
+# it's possible to mix different configuration formats for global actions
+
+# CONFIGURATION
+easy_admin:
+    list:
+        actions: ['-search', { name: 'edit', label: 'custom-edit-label' }, 'custom_action_for_list']
+    edit:
+        actions: ['-delete', { name: 'list', label: 'custom-list-label' }, 'custom_action_for_edit']
+    show:
+        actions: ['-list', { name: 'edit', label: 'custom-edit-label' }, 'custom_action_for_show']
+    new:
+        actions: ['-list', { name: 'custom_action_for_new', label: 'custom-action-label' }]
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

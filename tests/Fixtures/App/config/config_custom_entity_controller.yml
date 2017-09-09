@@ -1,0 +1,8 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            controller:  EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryController

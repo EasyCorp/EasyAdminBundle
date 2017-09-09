@@ -1,0 +1,10 @@
+# TEST
+# when using an array with several custom form themes, the value is not modified
+# (the result should not be a multidimensional array)
+
+# CONFIGURATION
+easy_admin:
+    design:
+        form_theme: ['@App/form/custom_layout.html.twig', 'form_div_layout.html.twig']
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category

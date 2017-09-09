@@ -1,0 +1,10 @@
+# TEST
+# the configuration of the backend doesn't define any option to override
+# templates, but in the filesystem there are some files that override some
+# default templates for the backend
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

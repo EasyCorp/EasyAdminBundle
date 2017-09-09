@@ -1,0 +1,24 @@
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            new:
+                fields:
+                    field1:
+                        property: field1
+                    field2:
+                        property: field2
+                custom_option: 'custom value'
+                form_options: {  }
+            edit:
+                fields:
+                    field1:
+                        property: field1
+                    field2:
+                        property: field2
+                    field3:
+                        property: field3
+                    field4:
+                        property: field4
+                custom_option: 'custom value'
+                form_options: {  }

@@ -1,0 +1,7 @@
+# TEST
+# the deprecated 'list_actions' option should be transformed into the
+# 'actions' option under the 'list' global option
+
+# CONFIGURATION
+easy_admin:
+    list_actions: ['custom_action', '-search', { name: 'edit', label: 'Custom Label' }]

@@ -1,0 +1,11 @@
+# TEST
+# field defines its own image base_path
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    - { property: 'field1', type: 'image', base_path: '/field_img/' }

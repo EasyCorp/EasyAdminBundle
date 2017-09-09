@@ -1,0 +1,12 @@
+# TEST
+# when defining both the deprecated 'list_actions' option and the new
+# 'list' -> 'actions' option, the latter should prevail
+
+# CONFIGURATION
+easy_admin:
+    # this is the deprecated option
+    list_actions: ['custom_deprecated_action', '-search', { name: 'edit', label: 'Custom Deprecated Label' }]
+    # this is the new option
+    list:
+        actions:
+            ['custom_action', '-show', { name: 'edit', label: 'Custom Label' }]

@@ -1,0 +1,11 @@
+# TEST
+# global backend actions remove one default action for the 'show' view
+
+# CONFIGURATION
+easy_admin:
+    show:
+        actions:
+            ['-edit']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

@@ -1,0 +1,25 @@
+# TEST
+# when entities define custom titles and there are global titles defined,
+# the title of the entities should override the global titles
+
+# CONFIGURATION
+easy_admin:
+    list:
+        title: 'Global Title for List'
+    show:
+        title: 'Global Title for Show'
+    new:
+        title: 'Global Title for New'
+    edit:
+        title: 'Global Title for Edit'
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                title: 'Entity Title for List'
+            show:
+                title: 'Entity Title for Show'
+            new:
+                title: 'Entity Title for New'
+            edit:
+                title: 'Entity Title for Edit'

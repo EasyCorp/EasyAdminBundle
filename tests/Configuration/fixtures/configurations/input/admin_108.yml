@@ -1,0 +1,6 @@
+# TEST
+# disable actions globally with no entities configured (it shouldn't fail)
+
+# CONFIGURATION
+easy_admin:
+    disabled_actions: ['action1']

@@ -1,0 +1,10 @@
+# TEST
+# the 'vertical' shortcut of 'form_theme' option is correctly transformed into
+# the full form theme path
+
+# CONFIGURATION
+easy_admin:
+    design:
+        form_theme: 'vertical'
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category

@@ -1,0 +1,11 @@
+# TEST
+# configuration format #3 with two different entities using the same custom name
+# (the first defined entity wins)
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        CustomCategory:
+            class: AppTestBundle\Entity\UnitTests\Category
+        CustomCategory:
+            class: AppTestBundle\Entity\UnitTests\SubNamespace\Category

@@ -1,0 +1,16 @@
+# TEST
+# when 'sort' uses a Doctrine association (sort: author.name) the first part
+# (in this example, 'author') must refer to a valid entity property
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The "this-does-not-exist" field used in the "sort" option of the "list" view of the "Category" entity does not exist neither as a property of that entity nor as a virtual field of that view.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                sort: 'this-does-not-exist.name'

@@ -1,0 +1,9 @@
+# TEST
+# the brand color can be defined using the rgb() CSS notation
+
+# CONFIGURATION
+easy_admin:
+    design:
+        brand_color: 'rgb(255, 0, 0)'
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category

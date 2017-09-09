@@ -1,0 +1,3 @@
+# Useful for tests that require EasyAdmin configuration to be empty
+imports:
+    - { resource: config.yml }

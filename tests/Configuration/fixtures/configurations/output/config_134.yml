@@ -1,0 +1,12 @@
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                title: 'Entity Title for List'
+            show:
+                title: 'Entity Title for Show'
+            new:
+                title: 'Entity Title for New'
+            edit:
+                title: 'Entity Title for Edit'

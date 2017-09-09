@@ -1,0 +1,15 @@
+# TEST
+# the "actions" option must be an array, not a string
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The "actions" configuration for the "list" view of the "TestEntity" entity must be an array (a string was provided).'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            list:
+                actions: 'show'
+            class: AppTestBundle\Entity\UnitTests\Category

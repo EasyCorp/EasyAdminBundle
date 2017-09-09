@@ -1,0 +1,19 @@
+imports:
+    - { resource: config.yml }
+
+framework:
+    # This file overrides the EasyAdmin controller
+    router: { resource: "%kernel.root_dir%/config/routing_override.yml" }
+
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            label: 'Categories'
+            list:
+                fields:
+                    - { property: 'name', template: 'custom_field_template.html.twig', custom_option: 'custom_list_value' }
+
+            show:
+                fields:
+                    - { property: 'name', template: 'custom_field_template.html.twig', custom_option: 'custom_show_value' }

@@ -1,0 +1,13 @@
+# TEST
+# configuration format #3 expanded, with two different entities using the
+# same name and labels (the first defined entity wins)
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            label: Category
+        Category:
+            class: AppTestBundle\Entity\UnitTests\SubNamespace\Category
+            label: Category

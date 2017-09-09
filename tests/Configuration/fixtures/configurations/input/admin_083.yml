@@ -1,0 +1,10 @@
+# TEST
+# if the 'theme' option contains the only valid value ('default') the backend
+# configuration is properly parsed
+
+# CONFIGURATION
+easy_admin:
+    design:
+        theme: 'default'
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category

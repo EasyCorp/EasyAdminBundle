@@ -1,0 +1,20 @@
+imports:
+    - { resource: config.yml }
+
+framework:
+    # This file overrides the EasyAdmin controller
+    router: { resource: "%kernel.root_dir%/config/routing_override.yml" }
+
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            label: 'Categories'
+            new:
+                fields:
+                    - { property: 'name', type_options: { data: 'Lorem Ipsum' } }
+                    - { property: 'parent', type_options: { multiple: false, expanded: true } }
+            edit:
+                fields:
+                    - { property: 'name', type_options: { label_attr: { class: 'col-sm-6' }, attr: { class: 'col-sm-6' } } }
+                    - { property: 'parent', type_options: { label_attr: { class: 'col-sm-4' }, attr: { class: 'col-sm-10' } } }

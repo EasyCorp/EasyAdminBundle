@@ -74,7 +74,7 @@ class EasyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (in_array($formFieldType, array('easyadmin_group', 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType'))) {
+            if (in_array($formFieldType, array('easyadmin_group', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType'))) {
                 $currentFormGroup = $metadata['fieldName'];
                 $formGroups[$currentFormGroup] = $metadata;
 

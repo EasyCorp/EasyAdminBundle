@@ -9,5 +9,3 @@ easy_admin:
     entities:
         Category:
             class: AppTestBundle\Entity\UnitTests\Category
-        Product:
-            class: AppTestBundle\Entity\UnitTests\Product

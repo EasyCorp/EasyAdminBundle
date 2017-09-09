@@ -55,11 +55,11 @@ final class LegacyFormHelper
         'timezone' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimezoneType',
         'url' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\UrlType',
         // EasyAdmin custom types
-        'easyadmin' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType',
-        'easyadmin_autocomplete' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminAutocompleteType',
-        'easyadmin_divider' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminDividerType',
-        'easyadmin_group' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType',
-        'easyadmin_section' => 'JavierEguiluz\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminSectionType',
+        'easyadmin' => 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFormType',
+        'easyadmin_autocomplete' => 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminAutocompleteType',
+        'easyadmin_divider' => 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminDividerType',
+        'easyadmin_group' => 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType',
+        'easyadmin_section' => 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminSectionType',
         // Popular third-party bundles types
         'ckeditor' => 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType',
         'vich_file' => 'Vich\\UploaderBundle\\Form\\Type\\VichFileType',

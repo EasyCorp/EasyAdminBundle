@@ -1,0 +1,233 @@
+How to Translate the Backend
+============================
+
+EasyAdmin leverages the Symfony Translation component to provide built-in
+support for translating backends into any language. The translation process is
+divided into two steps:
+
+* Translating the elements of the EasyAdmin interface;
+* Translating your own contents (such as the main menu and the property labels).
+
+The elements of the interface are translated using the ``EasyAdminBundle``
+domain. The rest of the elements are translated by default using the
+``messages`` domain, but you can use any other domain defined in the
+``translation_domain`` option, as explained at the end of this article.
+
+Before translating your backend, make sure that the ``translator`` service is
+enabled in the application (projects based on the Symfony Standard Edition have
+it disabled by default):
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    framework:
+        translator: { fallbacks: [ "en" ] }
+
+Translate the Backend Interface
+-------------------------------
+
+The backend interface uses the same language as the underlying Symfony
+application. If you want to change it, update the value of the ``locale`` option
+in the ``app/config/parameters.yml`` file.
+
+EasyAdmin is already translated into tens of languages thanks to the generosity
+of its community. We're actively looking for more translations, so please
+consider contributing a translation for your own language.
+
+.. note::
+
+    Although it's not recommended to do it, if you want to change any of the
+    built-in translations defined under the ``EasyAdminBundle`` domain, use the
+    `translation override mechanism`_ provided by Symfony.
+
+Translate the Main Menu Labels
+------------------------------
+
+Menu items use the **entity name** as their label. The entity name is the YAML
+key used to define the configuration of each entity. For example, the following
+configuration would show two menu items called ``Customers`` and ``Orders``:
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    easy_admin:
+        entities:
+            Customers:
+                class: AppBundle\Entity\User
+            Orders:
+                class: AppBundle\Entity\Purchase
+
+The ``messages.xx.yml`` (or ``messages.xx.xlf``) file for the previous example
+would need to use ``Customers`` and ``Orders`` as the keys of the translations.
+Example:
+
+.. code-block:: yaml
+
+    # app/Resources/translations/messages.es.yml
+    Customers: Clientes
+    Orders: Ventas
+
+Main menu labels can be customized thanks to the ``label`` option of each entity.
+You can even use structured translation keys instead of the real contents:
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    easy_admin:
+        entities:
+            Customers:
+                label: app.menu.customers
+                class: AppBundle\Entity\User
+            Orders:
+                label: app.menu.orders
+                class: AppBundle\Entity\Purchase
+
+In this case, the translation file should use the value of the ``label`` option
+as the keys of the translations (and you should also create the file for the
+original language used by the translation keys):
+
+.. code-block:: yaml
+
+    # app/Resources/translations/messages.en.yml
+    app.menu.customers: Customers
+    app.menu.orders: Orders
+
+    # app/Resources/translations/messages.es.yml
+    app.menu.customers: Clientes
+    app.menu.orders: Ventas
+
+Translate Property Labels
+-------------------------
+
+The behavior of the property labels is very similar to the one explained in the
+previous section for the main menu. By default, the label of each property is
+the "humanized" version of its name:
+
+=================  ======================
+Property value     Default property label
+=================  ======================
+``propertyname``   ``Propertyname``
+``propertyName``   ``Property name``
+``property_name``  ``Property name``
+=================  ======================
+
+Consider the following configuration:
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    easy_admin:
+        entities:
+            Customer:
+                class: AppBundle\Entity\Customer
+                list:
+                    fields: ['firstName', 'lastName']
+            # ...
+
+The backend will display ``First name`` and ``Last name`` as the labels of the
+properties, so those are the translation keys that must be used:
+
+.. code-block:: yaml
+
+    # app/Resources/translations/messages.es.yml
+    First name: Nombre
+    Last name: Apellidos
+
+Alternatively, you can use the ``label`` option of each property to define its
+label explicitly. You can even use structured translation keys instead of the
+real contents:
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    easy_admin:
+        entities:
+            Customer:
+                class: AppBundle\Entity\Customer
+                list:
+                    fields:
+                        - { property: 'firstName', label: 'app.users.firstName' }
+                        - { property: 'lastName', label: 'app.users.lastName' }
+            # ...
+
+In this case, the translation file should use the value of the ``label`` option as
+the keys of the translations (and you should also create the file for the
+original language used by the translation keys):
+
+.. code-block:: yaml
+
+    # app/Resources/translations/messages.en.yml
+    app.menu.firstName: First name
+    app.menu.lastName: Last name
+
+    # app/Resources/translations/messages.es.yml
+    app.menu.firstName: Nombre
+    app.menu.lastName: Apellidos
+
+Translate Custom Templates
+--------------------------
+
+All the built-in templates include the following tag to set ``EasyAdminBundle``
+as the default domain used to translate the contents of that template:
+
+.. code-block:: twig
+
+    {% trans_default_domain "EasyAdminBundle" %}
+
+When overriding templates in any of your views or properties, make sure to add
+this tag at the top of each file to not break the backend internationalization.
+If needed, you can also define any other translation domain and skip the default
+one in your templates:
+
+.. code-block:: twig
+
+    {{ 'content_to_translate' | trans({}, 'MyCustomTranslationDomain') }}
+
+The above template uses the translations defined in the
+``app/Resources/translations/MyCustomTranslationDomain.en.xlf`` file (replace
+``en`` by your locale and ``xlf`` by the desired translation format) instead of
+the default EasyAdmin translations.
+
+Using a custom translation domain
+---------------------------------
+
+By default EasyAdmin uses the ``messages`` domain to translate the contents of
+your backend. Define the global ``translation_domain`` option to use your own
+custom domain:
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    easy_admin:
+        translation_domain: 'admin'
+        entities:
+            Customers:
+                # ...
+            Orders:
+                # ...
+
+This translation domain is applied to all entities, but it can be overridden
+locally by each entity:
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    easy_admin:
+        translation_domain: 'admin'
+        entities:
+            Customers:
+                # ...
+            Orders:
+                translation_domain: 'messages'
+                # ...
+
+In the above example, the contents of the ``Customers`` entity are translated
+with the ``admin`` domain whereas the contents of the ``Orders`` entity are
+translated with the ``messages`` domain.
+
+.. tip::
+
+    Use ``false`` as the value of the ``translation_domain`` option to disable
+    the translations of a specific entity or the entire backend.
+
+.. _`translation override mechanism`: https://symfony.com/doc/current/cookbook/bundles/override.html#translations

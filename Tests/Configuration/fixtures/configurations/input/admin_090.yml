@@ -1,9 +1,0 @@
-# TEST
-# when using a custom brand color, the default color is overridden
-
-# CONFIGURATION
-easy_admin:
-    design:
-        brand_color: '#CC0000'
-    entities:
-        - AppTestBundle\Entity\UnitTests\Category

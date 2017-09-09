@@ -1,2 +1,0 @@
-imports:
-    - { resource: config_default_backend.yml }

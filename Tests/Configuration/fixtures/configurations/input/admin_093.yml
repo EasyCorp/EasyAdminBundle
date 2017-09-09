@@ -1,9 +1,0 @@
-# TEST
-# the brand color can be defined using the hsl() CSS notation
-
-# CONFIGURATION
-easy_admin:
-    design:
-        brand_color: 'hsl(0, 100%%, 50%%)'
-    entities:
-        - AppTestBundle\Entity\UnitTests\Category

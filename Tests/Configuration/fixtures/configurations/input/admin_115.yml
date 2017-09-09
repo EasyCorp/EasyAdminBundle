@@ -1,7 +1,0 @@
-# Favicon configuration: ico
-
-# CONFIGURATION
-easy_admin:
-    design:
-        assets:
-            favicon: { path: 'favicon.ico' }

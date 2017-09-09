@@ -1,8 +1,0 @@
-# TEST
-# configuration format #1 with two different entities
-
-# CONFIGURATION
-easy_admin:
-    entities:
-        - AppTestBundle\Entity\UnitTests\Category
-        - AppTestBundle\Entity\UnitTests\Product

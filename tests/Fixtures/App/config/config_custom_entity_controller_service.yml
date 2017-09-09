@@ -1,0 +1,14 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            controller: app.controller
+
+services:
+    app.controller:
+        class: EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryControllerAsService
+        # TODO: when Symfony 2.3 support is dropped, we can inject @reuqest_stack instead of the entire container
+        arguments: ['@service_container']

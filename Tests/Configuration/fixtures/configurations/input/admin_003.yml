@@ -1,9 +1,0 @@
-# TEST
-# configuration format #1 with entities defined in different namespaces but with
-# the same class name
-
-# CONFIGURATION
-easy_admin:
-    entities:
-        - AppTestBundle\Entity\UnitTests\Category
-        - AppTestBundle\Entity\UnitTests\SubNamespace\Category

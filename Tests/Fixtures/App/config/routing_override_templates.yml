@@ -1,9 +1,0 @@
-easy_admin_bundle:
-    resource: "@EasyAdminBundle/Controller/"
-    type:     annotation
-    prefix:   /admin/
-
-override_easyadmin:
-    resource: "@AppTestBundle/Controller/OverridingEasyAdminController.php"
-    type:     annotation
-    prefix:   /

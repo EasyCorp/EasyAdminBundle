@@ -1,0 +1,129 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="easyadmin.templates_dir">%kernel.root_dir%/Resources/views</parameter>
+    </parameters>
+
+    <services>
+        <service id="easyadmin.cache.manager" class="EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager">
+            <argument>%easyadmin.cache.dir%</argument>
+        </service>
+
+        <service id="easyadmin.cache.config_warmer" class="EasyCorp\Bundle\EasyAdminBundle\Cache\ConfigWarmer" public="false">
+            <argument type="service" id="easyadmin.config.manager" />
+            <tag name="kernel.cache_warmer" priority="-2048" />
+        </service>
+
+        <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager">
+            <argument type="service" id="easyadmin.cache.manager" />
+            <argument type="service" id="property_accessor" />
+            <argument>%easyadmin.config%</argument>
+            <argument>%kernel.debug%</argument>
+        </service>
+
+        <service id="easyadmin.query_builder" class="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder">
+            <argument type="service" id="doctrine" />
+        </service>
+
+        <service id="easyadmin.finder" class="EasyCorp\Bundle\EasyAdminBundle\Search\Finder" public="false">
+            <argument type="service" id="easyadmin.query_builder" />
+            <argument type="service" id="easyadmin.paginator" />
+        </service>
+
+        <service id="easyadmin.autocomplete" class="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete">
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="service" id="easyadmin.finder" />
+            <argument type="service" id="property_accessor" />
+        </service>
+
+        <service id="easyadmin.paginator" class="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator">
+        </service>
+
+        <service id="easyadmin.router" class="EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter">
+            <argument id="easyadmin.config.manager" type="service" />
+            <argument id="router.default" type="service" />
+            <argument id="property_accessor" type="service" />
+            <argument id="request_stack" type="service" on-invalid="null" />
+        </service>
+
+        <service id="easyadmin.twig.extension" class="EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="service" id="property_accessor" />
+            <argument type="service" id="easyadmin.router" />
+            <argument>%kernel.debug%</argument>
+            <argument type="service" id="security.logout_url_generator" on-invalid="null" />
+            <tag name="twig.extension" />
+        </service>
+
+        <service id="easyadmin.listener.controller" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener">
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="service" id="controller_resolver" />
+            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
+        </service>
+
+        <service id="easyadmin.listener.exception" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
+            <argument type="service" id="twig" />
+            <argument>%easyadmin.config%</argument>
+            <argument type="string">easyadmin.listener.exception:showExceptionPageAction</argument>
+            <argument type="service" id="logger" on-invalid="null" />
+            <tag name="monolog.logger" channel="request" />
+            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="-64" />
+        </service>
+
+        <service id="easyadmin.listener.request_post_initialize" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="request_stack" on-invalid="null" />
+            <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />
+        </service>
+
+        <service id="easyadmin.data_collector" class="EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector" public="false">
+            <argument type="service" id="easyadmin.config.manager" />
+            <tag name="data_collector" template="@EasyAdmin/data_collector/easyadmin.html.twig" id="easyadmin" />
+        </service>
+
+        <service id="easyadmin.configuration.normalizer_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass" public="false">
+            <argument id="service_container" type="service" />
+            <tag name="easyadmin.config_pass" priority="90" />
+        </service>
+
+        <service id="easyadmin.configuration.design_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\DesignConfigPass" public="false">
+            <argument id="service_container" type="service" />
+            <argument>%kernel.debug%</argument>
+            <argument>%kernel.default_locale%</argument>
+            <tag name="easyadmin.config_pass" priority="80" />
+        </service>
+
+        <service id="easyadmin.configuration.menu_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="70" />
+        </service>
+
+        <service id="easyadmin.configuration.action_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="60" />
+        </service>
+
+        <service id="easyadmin.configuration.metadata_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass" public="false">
+            <argument type="service" id="doctrine" />
+            <tag name="easyadmin.config_pass" priority="50" />
+        </service>
+
+        <service id="easyadmin.configuration.property_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="40" />
+        </service>
+
+        <service id="easyadmin.configuration.view_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ViewConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="30" />
+        </service>
+
+        <service id="easyadmin.configuration.template_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass" public="false">
+            <argument type="service" id="twig.loader.filesystem" />
+            <tag name="easyadmin.config_pass" priority="20" />
+        </service>
+
+        <service id="easyadmin.configuration.default_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass" public="false">
+            <tag name="easyadmin.config_pass" priority="10" />
+        </service>
+    </services>
+</container>

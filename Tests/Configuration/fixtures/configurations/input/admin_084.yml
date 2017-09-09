@@ -1,9 +1,0 @@
-# TEST
-# if the 'form_theme' option is null, the default 'horizontal' form theme is used
-
-# CONFIGURATION
-easy_admin:
-    design:
-        form_theme: ~
-    entities:
-        - AppTestBundle\Entity\UnitTests\Category

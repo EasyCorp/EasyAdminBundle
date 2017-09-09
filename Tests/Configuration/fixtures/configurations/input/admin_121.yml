@@ -1,7 +1,0 @@
-# Favicon configuration: supported ext with custom mime_type
-
-# CONFIGURATION
-easy_admin:
-    design:
-        assets:
-            favicon: { path: 'favicon.ico', mime_type: 'image/vnd.microsoft.icon' }

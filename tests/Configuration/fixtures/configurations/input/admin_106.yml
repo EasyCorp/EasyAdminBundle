@@ -1,0 +1,15 @@
+# TEST
+# custom templates defined in the entities.<entityName>.templates configuration
+# option have more priority than templates defined in the design.templates
+# configuration option
+
+# CONFIGURATION
+easy_admin:
+    design:
+        templates:
+            edit: 'custom_templates/my_template.html.twig'
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            templates:
+                edit: 'custom_templates/my_other_template.html.twig'

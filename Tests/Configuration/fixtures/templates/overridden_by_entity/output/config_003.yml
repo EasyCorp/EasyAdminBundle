@@ -1,9 +1,0 @@
-easy_admin:
-    design:
-        templates:
-            edit: custom_templates/my_template.html.twig
-    entities:
-        Category:
-            class: AppTestBundle\Entity\UnitTests\Category
-            templates:
-                edit: custom_templates/my_template.html.twig

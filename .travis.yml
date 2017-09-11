@@ -26,7 +26,7 @@ matrix:
     # stable (most recent stable versions)
     - php: 7.1
       env:
-        - SYMFONY_VERSION="3.2.*"
+        - SYMFONY_VERSION="3.3.*"
         - TWIG_VERSION="2.x-dev"
         - CHECK_PHP_SYNTAX="yes"
     # common (some popular version combinations)
@@ -55,7 +55,7 @@ before_install:
   - echo memory_limit = -1 >> $INI_FILE
   - echo session.gc_probability = 0 >> $INI_FILE
   - echo opcache.enable_cli = 1 >> $INI_FILE
-  - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == 3.* ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
+  - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == 3.3.* ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
   - if [[ "$ENABLE_CODE_COVERAGE" != "true" && "$TRAVIS_EVENT_TYPE" != "cron" ]]; then rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini; fi;
   - composer self-update
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;

@@ -522,7 +522,7 @@ put anything that is considered valid as a ``WHERE`` clause in a Doctrine query)
             UrgentIssues:
                 class: AppBundle\Entity\Issue
                 list:
-                    dql_filter: 'entity.label = "CRITICAL" OR entity.priority > 4'
+                    dql_filter: "entity.label = 'CRITICAL' OR entity.priority > 4"
             ImportantIssues:
                 class: AppBundle\Entity\Issue
                 list:
@@ -546,7 +546,7 @@ put anything that is considered valid as a ``WHERE`` clause in a Doctrine query)
                         dql_filter: "LOWER(entity.title) LIKE '%%issue%%'"
                     search:
                         # defining a different condition than 'list'
-                        dql_filter: 'entity.status != "DELETED"'
+                        dql_filter: "entity.status != 'DELETED'"
                         # using an empty value to not apply any condition when searching
                         # elements (this prevents inheriting the 'dql_filter' value defined in 'list')
                         dql_filter: ''

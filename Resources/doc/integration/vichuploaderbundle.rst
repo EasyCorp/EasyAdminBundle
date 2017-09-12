@@ -103,6 +103,7 @@ Then, you need to add two new properties (``image`` and ``imageFile``):
 
 .. code-block:: php
 
+    use Symfony\Component\HttpFoundation\File\File;
     use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
     /**

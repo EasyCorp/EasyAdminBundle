@@ -67,7 +67,7 @@
 
                     <div id="header-logo">
                         {% block header_logo %}
-                            <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
+                            <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path(easyadmin_config('site_name_route')) }}">
                                 {{ easyadmin_config('site_name')|raw }}
                             </a>
                         {% endblock header_logo %}

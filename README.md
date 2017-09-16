@@ -6,7 +6,7 @@ EasyAdmin
 EasyAdmin creates administration backends for your Symfony applications with
 unprecedented simplicity.
 
-<img src="https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-promo.png" alt="Symfony Backends created with EasyAdmin" align="right" />
+<img src="https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/doc/images/easyadmin-promo.png" alt="Symfony Backends created with EasyAdmin" align="right" />
 
 * [Installation](#installation)
 * [Creating Your First Backend](#your-first-backend)

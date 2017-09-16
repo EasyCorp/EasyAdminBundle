@@ -744,8 +744,8 @@ overridden it (the first template which exists is used):
 1. ``easy_admin.entities.<EntityName>.templates.<TemplateName>`` configuration
    option.
 2. ``easy_admin.design.templates.<TemplateName>`` configuration option.
-3. ``app/Resources/views/easy_admin/<EntityName>/<TemplateName>.html.twig``
-4. ``app/Resources/views/easy_admin/<TemplateName>.html.twig``
+3. ``@EasyAdmin/<EntityName>/<TemplateName>.html.twig``
+4. ``@EasyAdmin/<TemplateName>.html.twig``
 5. ``@EasyAdmin/default/<TemplateName>.html.twig``
 
 The last one is the path of the built-in templates and they are always available.
@@ -800,7 +800,7 @@ Overriding the Default Templates By Convention
 ..............................................
 
 If you don't mind the location of your custom templates, consider creating them
-in the ``app/Resources/views/easy_admin/`` directory. When the ``templates``
+in the ``app/Resources/EasyAdminBundle/views/`` directory. When the ``templates``
 option is not defined, EasyAdmin looks into this directory before falling back
 to the default templates.
 
@@ -814,8 +814,8 @@ to define the ``templates`` configuration option):
     ├─ app/
     │  ├─ ...
     │  └─ Resources/
-    │     └─ views/
-    │        └─ easy_admin/
+    │     └─ EasyAdminBundle/
+    │        └─ views/
     │           └─ Customer/
     │              └─ edit.html.twig
     ├─ src/
@@ -823,7 +823,7 @@ to define the ``templates`` configuration option):
     └─ web/
 
 In case you want to override the template for all entities, define the new
-template right under the ``easy_admin/`` directory:
+template right under the ``default/`` directory:
 
 ::
 
@@ -831,9 +831,10 @@ template right under the ``easy_admin/`` directory:
     ├─ app/
     │  ├─ ...
     │  └─ Resources/
-    │     └─ views/
-    │        └─ easy_admin/
-    │           └─ edit.html.twig
+    │     └─ EasyAdminBundle/
+    │        └─ views/
+    │           └─ default/
+    │               └─ edit.html.twig
     ├─ src/
     ├─ vendor/
     └─ web/

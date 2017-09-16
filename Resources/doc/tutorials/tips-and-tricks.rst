@@ -180,8 +180,8 @@ been published yet (their ``status`` property is ``PUBLISHED``):
 
 .. code-block:: twig
 
-    {# app/Resources/views/easy_admin/list.html.twig #}
-    {% extends '@EasyAdmin/default/list.html.twig' %}
+    {# app/Resources/EasyAdminBundle/views/default/list.html.twig #}
+    {% extends '@!EasyAdmin/default/list.html.twig' %}
 
     {% block item_actions %}
         {% set filtered_actions = {} %}
@@ -197,6 +197,12 @@ been published yet (their ``status`` property is ``PUBLISHED``):
 
         {{ parent() }}
     {% endblock item_actions %}
+
+.. note::
+
+    When you are overriding a template that also extends from itself, make sure
+    to use the second Twig's namespace for EasyAdminBundle ``!EasyAdmin``, which
+    avoids a circular template reference issue.
 
 The solution work as follows:
 

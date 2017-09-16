@@ -781,8 +781,8 @@ overridden it (the first template which exists is used):
 1. ``easy_admin.entities.<EntityName>.templates.<TemplateName>`` configuration
    option.
 2. ``easy_admin.design.templates.<TemplateName>`` configuration option.
-3. ``app/Resources/views/easy_admin/<EntityName>/<TemplateName>.html.twig``
-4. ``app/Resources/views/easy_admin/<TemplateName>.html.twig``
+3. ``@EasyAdmin/<EntityName>/<TemplateName>.html.twig``
+4. ``@EasyAdmin/<TemplateName>.html.twig``
 5. ``@EasyAdmin/default/<TemplateName>.html.twig``
 
 The last one is the path of the built-in templates and they are always available.
@@ -837,7 +837,7 @@ Overriding the Default Templates By Convention
 ..............................................
 
 If you don't mind the location of your custom templates, consider creating them
-in the ``app/Resources/views/easy_admin/`` directory. When the ``templates``
+in the ``app/Resources/EasyAdminBundle/views/`` directory. When the ``templates``
 option is not defined, EasyAdmin looks into this directory before falling back
 to the default templates.
 
@@ -851,8 +851,8 @@ no need to define the ``templates`` configuration option):
     ├─ app/
     │  ├─ ...
     │  └─ Resources/
-    │     └─ views/
-    │        └─ easy_admin/
+    │     └─ EasyAdminBundle/
+    │        └─ views/
     │           └─ Customer/
     │              └─ paginator.html.twig
     ├─ src/
@@ -860,7 +860,7 @@ no need to define the ``templates`` configuration option):
     └─ web/
 
 In case you want to override the template for all entities, define the new
-template right under the ``easy_admin/`` directory:
+template right under the ``default/`` directory:
 
 ::
 
@@ -868,9 +868,10 @@ template right under the ``easy_admin/`` directory:
     ├─ app/
     │  ├─ ...
     │  └─ Resources/
-    │     └─ views/
-    │        └─ easy_admin/
-    │           └─ paginator.html.twig
+    │     └─ EasyAdminBundle/
+    │        └─ views/
+    │           └─ default/
+    │               └─ paginator.html.twig
     ├─ src/
     ├─ vendor/
     └─ web/
@@ -890,7 +891,7 @@ your template extend from the default ``list.html.twig`` template:
 
 .. code-block:: twig
 
-    {% extends '@EasyAdmin/default/list.html.twig' %}
+    {% extends '@!EasyAdmin/default/list.html.twig' %}
 
     {# ... #}
 
@@ -898,11 +899,17 @@ Lastly, override the ``search_action`` block to just change that template fragme
 
 .. code-block:: twig
 
-    {% extends '@EasyAdmin/default/list.html.twig' %}
+    {% extends '@!EasyAdmin/default/list.html.twig' %}
 
     {% block search_action %}
         {# ... #}
     {% endblock %}
+
+.. note::
+
+    When you are overriding a template that also extends from itself, make sure
+    to use the second Twig's namespace for EasyAdminBundle ``!EasyAdmin``, which
+    avoids a circular template reference issue.
 
 Customizing the Template Used to Render Each Property Type
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -963,7 +970,7 @@ The same template overriding mechanism explained in the previous sections can be
 applied to customize the templates used to render each property. Therefore, you
 can override these templates globally or for each entity and you can do that
 defining the ``template`` configuration option or storing the templates in the
-``app/Resources/views/easy_admin/`` directory.
+``app/Resources/EasyAdminBundle/views/`` directory.
 
 Before customizing these templates, it's recommended to check out the default
 ``field_*.html.twig`` and ``label_*.html.twig`` templates to learn about their
@@ -1007,8 +1014,8 @@ template instead of the default ``field_float.html.twig`` template. As usual,
 EasyAdmin first looks for custom templates in the following locations (the first
 existing template is used):
 
-1. ``app/Resources/views/easy_admin/<EntityName>/<TemplateOptionValue>``
-2. ``app/Resources/views/easy_admin/<TemplateOptionValue>``
+1. ``app/Resources/EasyAdminBundle/views/<EntityName>/<TemplateName>``
+2. ``app/Resources/EasyAdminBundle/views/<TemplateName>``
 
 If none of these templates exist, the value of the ``template`` option is
 considered a Symfony template path, so you can use any of the valid template

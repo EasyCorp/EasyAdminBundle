@@ -71,7 +71,6 @@ class TemplateConfigPass implements ConfigPassInterface
     {
         $backendConfig = $this->processEntityTemplates($backendConfig);
         $backendConfig = $this->processDefaultTemplates($backendConfig);
-        $backendConfig = $this->processFieldTemplates($backendConfig);
 
         return $backendConfig;
     }
@@ -92,20 +91,28 @@ class TemplateConfigPass implements ConfigPassInterface
         // 2nd level priority: easy_admin.design.templates.<templateName> config option
         // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
         // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-        // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
+        // 5th level priority: @EasyAdmin/<entityName>/<templateName>.html.twig
+        // 6th level priority: @EasyAdmin/default/<templateName>.html.twig
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
                 $candidateTemplates = array(
                     isset($entityConfig['templates'][$templateName]) ? $entityConfig['templates'][$templateName] : null,
                     isset($backendConfig['design']['templates'][$templateName]) ? $backendConfig['design']['templates'][$templateName] : null,
+                    // @deprecate "easy_admin/" directory as convention, remove in 2.0
                     'easy_admin/'.$entityName.'/'.$templateName.'.html.twig',
                     'easy_admin/'.$templateName.'.html.twig',
+                    '@EasyAdmin/'.$entityName.'/'.$templateName.'.html.twig',
+                    '@EasyAdmin/default/'.$templateName.'.html.twig',
                     $defaultTemplatePath,
                 );
                 $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
 
                 if (null === $templatePath) {
                     throw new \RuntimeException(sprintf('None of the templates defined for the "%s" fragment of the "%s" entity exists (templates defined: %s).', $templateName, $entityName, implode(', ', $candidateTemplates)));
+                }
+
+                if (0 === mb_strpos($templatePath, 'easy_admin/')) {
+                    @trigger_error('Using "easy_admin/" directory as convention is deprecated since version 1.16.13 and will be removed in 2.0. Use instead one of the Symfony directory convention to override templates from third-party bundle.', E_USER_DEPRECATED);
                 }
 
                 $entityConfig['templates'][$templateName] = $templatePath;
@@ -131,17 +138,32 @@ class TemplateConfigPass implements ConfigPassInterface
 
                         // before considering $templatePath a regular Symfony template
                         // path, check if the given template exists in any of these directories:
-                        // * app/Resources/views/easy_admin/<entityName>/<templatePath>
-                        // * app/Resources/views/easy_admin/<templatePath>
+                        // * @EasyAdmin/<entityName>/<templatePath>
+                        // * @EasyAdmin/<templatePath>
+                        // * @EasyAdmin/default/<templatePath>
                         $templatePath = $this->findFirstExistingTemplate(array(
+                            // @deprecate "easy_admin" directory as convention, remove in 2.0
                             'easy_admin/'.$entityName.'/'.$templatePath,
                             'easy_admin/'.$templatePath,
+                            '@EasyAdmin/'.$entityName.'/'.$templatePath,
+                            '@EasyAdmin/'.$templatePath,
+                            '@EasyAdmin/default/'.$templatePath,
                             $templatePath,
                         ));
+
+                        if (0 === mb_strpos($templatePath, 'easy_admin/')) {
+                            @trigger_error('Using "easy_admin/" directory as convention is deprecated since version 1.16.13 and will be removed in 2.0. Use instead one of the Symfony directory convention to override templates from third-party bundle.', E_USER_DEPRECATED);
+                        }
                     } else {
-                        // At this point, we don't know the exact data type associated with each field.
-                        // The template is initialized to null and it will be resolved at runtime in the Configurator class
-                        $templatePath = null;
+                        // primary key values are displayed unmodified to prevent common issues
+                        // such as formatting its values as numbers (e.g. `1,234` instead of `1234`)
+                        if ($entityConfig['primary_key_field_name'] === $fieldName) {
+                            $templatePath = $entityConfig['templates']['field_id'];
+                        } elseif (array_key_exists('field_'.$fieldMetadata['dataType'], $entityConfig['templates'])) {
+                            $templatePath = $entityConfig['templates']['field_'.$fieldMetadata['dataType']];
+                        } else {
+                            $templatePath = $entityConfig['templates']['label_undefined'];
+                        }
                     }
 
                     $entityConfig[$view]['fields'][$fieldName]['template'] = $templatePath;
@@ -174,6 +196,7 @@ class TemplateConfigPass implements ConfigPassInterface
             $candidateTemplates = array(
                 isset($backendConfig['design']['templates'][$templateName]) ? $backendConfig['design']['templates'][$templateName] : null,
                 'easy_admin/'.$templateName.'.html.twig',
+                '@EasyAdmin/default/'.$templateName.'.html.twig',
                 $defaultTemplatePath,
             );
             $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
@@ -182,45 +205,11 @@ class TemplateConfigPass implements ConfigPassInterface
                 throw new \RuntimeException(sprintf('None of the templates defined for the global "%s" template of the backend exists (templates defined: %s).', $templateName, implode(', ', $candidateTemplates)));
             }
 
-            $backendConfig['design']['templates'][$templateName] = $templatePath;
-        }
-
-        return $backendConfig;
-    }
-
-    /**
-     * Determines the template used to render each backend element. This is not
-     * trivial because templates can depend on the entity displayed and they
-     * define an advanced override mechanism.
-     *
-     * @param array $backendConfig
-     *
-     * @return array
-     */
-    private function processFieldTemplates(array $backendConfig)
-    {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('list', 'show') as $view) {
-                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
-                    if (null !== $fieldMetadata['template']) {
-                        continue;
-                    }
-
-                    // primary key values are displayed unmodified to prevent common issues
-                    // such as formatting its values as numbers (e.g. `1,234` instead of `1234`)
-                    if ($entityConfig['primary_key_field_name'] === $fieldName) {
-                        $template = $entityConfig['templates']['field_id'];
-                    } elseif (array_key_exists('field_'.$fieldMetadata['dataType'], $entityConfig['templates'])) {
-                        $template = $entityConfig['templates']['field_'.$fieldMetadata['dataType']];
-                    } else {
-                        $template = $entityConfig['templates']['label_undefined'];
-                    }
-
-                    $entityConfig[$view]['fields'][$fieldName]['template'] = $template;
-                }
+            if (0 === mb_strpos($templatePath, 'easy_admin/')) {
+                @trigger_error('Using "easy_admin/" directory as convention is deprecated since version 1.16.13 and will be removed in 2.0. Use instead one of the Symfony directory convention to override templates from third-party bundle.', E_USER_DEPRECATED);
             }
 
-            $backendConfig['entities'][$entityName] = $entityConfig;
+            $backendConfig['design']['templates'][$templateName] = $templatePath;
         }
 
         return $backendConfig;

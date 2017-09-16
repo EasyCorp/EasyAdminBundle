@@ -217,7 +217,7 @@ VichUploaderBundle configuration.
 
     .. code-block:: twig
 
-        {# app/Resources/views/easy_admin/vich_uploader_image.html.twig #}
+        {# app/Resources/EasyAdminBundle/views/vich_uploader_image.html.twig #}
         <img src="{{ vich_uploader_asset(value, 'image') }}" />
 
 Uploading the Images in the ``edit`` and ``new`` Views
@@ -358,7 +358,7 @@ the contents of this property:
                         # ...
                         - { property: 'contract', template: 'contract.html.twig' }
 
-Now you must create the ``app/Resources/views/easy_admin/contract.html.twig``
+Now you must create the ``app/Resources/EasyAdminBundle/views/User/contract.html.twig``
 template with this content:
 
 .. code-block:: twig

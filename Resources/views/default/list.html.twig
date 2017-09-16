@@ -23,7 +23,7 @@
 {% block body_id 'easyadmin-list-' ~ _entity_config.name %}
 {% block body_class 'list list-' ~ _entity_config.name|lower %}
 
-{% set _content_title %}
+{% block content_title %}
 {% spaceless %}
     {% if 'search' == app.request.get('action') %}
         {{ 'search.page_title'|transchoice(paginator.nbResults, {}, 'EasyAdminBundle')|raw }}
@@ -32,15 +32,13 @@
         {{ _entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title }}
     {% endif %}
 {% endspaceless %}
-{% endset %}
-
-{% block page_title %}{{ _content_title|striptags|raw }}{% endblock %}
+{% endblock %}
 
 {% block content_header %}
     <div class="row">
         <div class="col-sm-5">
             {% block content_title_wrapper %}
-                <h1 class="title">{{ _content_title }}</h1>
+                <h1 class="title">{{ block('content_title') }}</h1>
             {% endblock %}
         </div>
 

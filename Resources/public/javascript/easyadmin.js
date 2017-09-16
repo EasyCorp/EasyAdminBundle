@@ -51,12 +51,17 @@ function deleteCookie(name)
     document.cookie = encodeURIComponent(name) + "=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 }
 
-function createAutoCompleteFields() {
-    var autocompleteFields = $('[data-easyadmin-autocomplete-url]');
+function createAutoCompleteFields(fields) {
+    var $autocompleteFields = fields ? $(fields) : $('select[data-easyadmin-autocomplete-url]');
 
-    autocompleteFields.each(function () {
+    $autocompleteFields.each(function () {
         var $this = $(this),
             url = $this.data('easyadmin-autocomplete-url');
+
+        if ('SELECT' !== this.tagName || !url) {
+            console.log(this, 'Cannot initialize the autocomplete field! It is not a valid SELECT element or the required [data-easyadmin-autocomplete-url] attribute is missing.');
+            return;
+        }
 
         $this.select2({
             theme: 'bootstrap',

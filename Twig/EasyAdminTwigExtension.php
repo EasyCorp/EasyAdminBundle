@@ -254,7 +254,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 $templateParameters['link_parameters'] = array(
                     'action' => 'show',
                     'entity' => $targetEntityConfig['name'],
-                    'id' => $primaryKeyValue,
+                    // casting to string is needed because entities can use objects as primary keys
+                    'id' => (string) $primaryKeyValue,
                 );
             }
         }

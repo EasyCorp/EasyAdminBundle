@@ -172,6 +172,11 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('EasyAdmin')
                     ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                 ->end()
+                
+                ->scalarNode('site_name_route')
+                    ->defaultValue('easyAdmin')
+                    ->info('The route that site_name points to.')
+                ->end()
 
                 ->arrayNode('formats')
                     ->addDefaultsIfNotSet()

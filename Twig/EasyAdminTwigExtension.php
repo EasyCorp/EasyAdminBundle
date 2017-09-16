@@ -204,6 +204,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
             $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
                 ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
                 : '/'.ltrim($templateParameters['value'], '/');
+
+            $templateParameters['value'] .= isset($templateParameters['field_options']['uri_suffix'])?trim($templateParameters['field_options']['uri_suffix']):'';
         }
 
         $templateParameters['uuid'] = md5($templateParameters['value']);

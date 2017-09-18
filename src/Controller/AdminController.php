@@ -76,6 +76,30 @@ class AdminController extends Controller
     }
 
     /**
+     *
+     * BC for calls like parent::listAction() in user code.
+     *
+     * @param $name
+     * @param $arguments
+     *
+     * @return mixed
+     *
+     * @throws \BadMethodCallException
+     */
+    public function __call($name, $arguments)
+    {
+        if ('Action' === substr($name, -6)) {
+            $method = 'easy'.ucfirst($name);
+
+            if (method_exists($this, $method)) {
+                return call_user_func_array(array($this, $method), $arguments);
+            }
+        }
+
+        throw new \BadMethodCallException(sprintf('Undefined method "%s"', $name));
+    }
+
+    /**
      * Utility method which initializes the configuration of the entity on which
      * the user is performing the action.
      *
@@ -140,7 +164,7 @@ class AdminController extends Controller
      *
      * @return JsonResponse
      */
-    protected function autocompleteAction()
+    protected function easyAutocompleteAction()
     {
         $results = $this->get('easyadmin.autocomplete')->find(
             $this->request->query->get('entity'),
@@ -156,7 +180,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function listAction()
+    protected function easyListAction()
     {
         $this->dispatch(EasyAdminEvents::PRE_LIST);
 
@@ -177,7 +201,7 @@ class AdminController extends Controller
      *
      * @return Response|RedirectResponse
      */
-    protected function editAction()
+    protected function easyEditAction()
     {
         $this->dispatch(EasyAdminEvents::PRE_EDIT);
 
@@ -230,7 +254,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function showAction()
+    protected function easyShowAction()
     {
         $this->dispatch(EasyAdminEvents::PRE_SHOW);
 
@@ -259,7 +283,7 @@ class AdminController extends Controller
      *
      * @return Response|RedirectResponse
      */
-    protected function newAction()
+    protected function easyNewAction()
     {
         $this->dispatch(EasyAdminEvents::PRE_NEW);
 
@@ -306,7 +330,7 @@ class AdminController extends Controller
      *
      * @return RedirectResponse
      */
-    protected function deleteAction()
+    protected function easyDeleteAction()
     {
         $this->dispatch(EasyAdminEvents::PRE_DELETE);
 
@@ -346,7 +370,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function searchAction()
+    protected function easySearchAction()
     {
         $this->dispatch(EasyAdminEvents::PRE_SEARCH);
 
@@ -703,11 +727,16 @@ class AdminController extends Controller
     {
         $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
 
-        if (!is_callable(array($this, $methodName))) {
+        if (!method_exists($this, $methodName)) {
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }
 
-        return call_user_func_array(array($this, $methodName), $arguments);
+        $controller = array($this, $methodName);
+        if (!$arguments && 'Action' === substr($methodName, -6)) {
+            $arguments = $this->get('easyadmin.controller.argument_resolver')->getArguments($this->request, $controller);
+        }
+
+        return call_user_func_array($controller, $arguments);
     }
 
     /**

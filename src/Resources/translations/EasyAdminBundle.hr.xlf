@@ -149,7 +149,7 @@
             </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
-                <target><![CDATA[{1} there is another item not displayed in this listing|]1,Inf] %count% other items are not displayed in this listing]]></target>
+                <target><![CDATA[{1} postoji još jedna stavka koja nije prikazana na ovom popisu|]1,Inf] %count% ostale stavke nisu prikazane na ovom popisu]]></target>
             </trans-unit>
 
             <!-- Exceptions -->

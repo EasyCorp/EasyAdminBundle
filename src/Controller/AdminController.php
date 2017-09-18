@@ -88,9 +88,7 @@ class AdminController extends Controller
      */
     public function __call($name, $arguments)
     {
-        if ('Action' === substr($name, -6)) {
-            $method = 'easy'.ucfirst($name);
-
+        if ($method = $this->getDefaultActionName($name)) {
             if (method_exists($this, $method)) {
                 return call_user_func_array(array($this, $method), $arguments);
             }
@@ -164,7 +162,7 @@ class AdminController extends Controller
      *
      * @return JsonResponse
      */
-    protected function easyAutocompleteAction()
+    protected function autocomplete()
     {
         $results = $this->get('easyadmin.autocomplete')->find(
             $this->request->query->get('entity'),
@@ -180,7 +178,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function easyListAction()
+    protected function index()
     {
         $this->dispatch(EasyAdminEvents::PRE_LIST);
 
@@ -201,7 +199,7 @@ class AdminController extends Controller
      *
      * @return Response|RedirectResponse
      */
-    protected function easyEditAction()
+    protected function edit()
     {
         $this->dispatch(EasyAdminEvents::PRE_EDIT);
 
@@ -254,7 +252,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function easyShowAction()
+    protected function show()
     {
         $this->dispatch(EasyAdminEvents::PRE_SHOW);
 
@@ -283,7 +281,7 @@ class AdminController extends Controller
      *
      * @return Response|RedirectResponse
      */
-    protected function easyNewAction()
+    protected function create()
     {
         $this->dispatch(EasyAdminEvents::PRE_NEW);
 
@@ -330,7 +328,7 @@ class AdminController extends Controller
      *
      * @return RedirectResponse
      */
-    protected function easyDeleteAction()
+    protected function delete()
     {
         $this->dispatch(EasyAdminEvents::PRE_DELETE);
 
@@ -370,7 +368,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function easySearchAction()
+    protected function search()
     {
         $this->dispatch(EasyAdminEvents::PRE_SEARCH);
 
@@ -731,8 +729,13 @@ class AdminController extends Controller
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }
 
+        $isAction = 'Action' === substr($methodName, -6);
+        if ($isAction && !method_exists($this, $methodName)) {
+            $methodName = $this->getDefaultActionName($methodName);
+        }
+
         $controller = array($this, $methodName);
-        if (!$arguments && 'Action' === substr($methodName, -6)) {
+        if (!$arguments && $isAction) {
             $arguments = $this->get('easyadmin.controller.argument_resolver')->getArguments($this->request, $controller);
         }
 
@@ -776,6 +779,22 @@ class AdminController extends Controller
             : $this->redirect($this->generateUrl('easyadmin', array(
                 'action' => 'list', 'entity' => $this->entity['name'],
             )));
+    }
+
+    private function getDefaultActionName($action)
+    {
+        if ('Action' !== substr($action, -6)) {
+            return false;
+        }
+
+        $action = substr($action, 0, strlen($action) - 6);
+
+        $map = array('list' => 'index', 'new' => 'create');
+        if (array_key_exists($action, $map)) {
+            $action = $map[$action];
+        }
+
+        return $action;
     }
 }
 

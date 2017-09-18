@@ -53,6 +53,11 @@
             <tag name="easyadmin.form.type.configurator" priority="10" />
         </service>
 
+        <service id="easyadmin.form.type.configurator.type" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="0" />
+        </service>
+
         <service id="easyadmin.form.type.configurator.required_option" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\RequiredOptionConfigurator">
             <argument type="service" id="easyadmin.form.type_guesser_chain" />

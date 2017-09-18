@@ -249,8 +249,7 @@
 {% block form_row -%}
     {% set _field_type = easyadmin.field.fieldType|default('default') %}
     <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
-        {% set _field_label = easyadmin.field['label']|default(null) %}
-        {{- form_label(form, _field_label, { translation_domain: translation_domain ?: easyadmin.entity.translation_domain }) -}}
+        {{- form_label(form) -}}
         {{- form_widget(form) -}}
 
         {% if _field_type in ['datetime', 'date', 'time', 'birthday'] and easyadmin.field.nullable|default(false) %}

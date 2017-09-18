@@ -55,6 +55,7 @@
 
         <service id="easyadmin.form.type.configurator.type" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfigurator">
+            <argument type="service" id="easyadmin.config.manager" />
             <tag name="easyadmin.form.type.configurator" priority="0" />
         </service>
 

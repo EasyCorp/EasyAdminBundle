@@ -73,6 +73,7 @@ class PropertyConfigPass implements ConfigPassInterface
         'float' => 'number',
         'guid' => 'text',
         'integer' => 'integer',
+        'json' => 'textarea',
         'json_array' => 'textarea',
         'object' => 'textarea',
         'simple_array' => 'collection',

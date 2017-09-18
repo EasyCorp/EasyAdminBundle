@@ -242,9 +242,9 @@ class ViewConfigPass implements ConfigPassInterface
     private function getExcludedFieldTypes($view)
     {
         $excludedFieldTypes = array(
-            'edit' => array('binary', 'blob', 'json_array', 'object'),
-            'list' => array('array', 'binary', 'blob', 'guid', 'json_array', 'object', 'simple_array', 'text'),
-            'new' => array('binary', 'blob', 'json_array', 'object'),
+            'edit' => array('binary', 'blob', 'json_array', 'json', 'object'),
+            'list' => array('array', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'),
+            'new' => array('binary', 'blob', 'json_array', 'json', 'object'),
             'search' => array('association', 'binary', 'boolean', 'blob', 'date', 'datetime', 'datetimetz', 'time', 'object'),
             'show' => array(),
         );

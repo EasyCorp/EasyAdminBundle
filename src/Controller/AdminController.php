@@ -88,10 +88,9 @@ class AdminController extends Controller
      */
     public function __call($name, $arguments)
     {
-        if ($method = $this->getDefaultActionName($name)) {
-            if (method_exists($this, $method)) {
-                return call_user_func_array(array($this, $method), $arguments);
-            }
+        $method = $this->getDefaultActionName($name);
+        if ($method && method_exists($this, $method)) {
+            return call_user_func_array(array($this, $method), $arguments);
         }
 
         throw new \BadMethodCallException(sprintf('Undefined method "%s"', $name));

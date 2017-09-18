@@ -64,7 +64,7 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             // ...
-            new JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle(),
+            new EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle(),
         );
     }
 

@@ -30,7 +30,7 @@ final class TypeConfigurator implements TypeConfiguratorInterface
         }
 
         if (empty($options['translation_domain'])) {
-            $entityConfig = $this->configManager->getEntityConfig($options['entity']);
+            $entityConfig = $this->configManager->getEntityConfig($parentConfig->getOption('entity'));
 
             if (!empty($entityConfig['translation_domain'])) {
                 $options['translation_domain'] = $entityConfig['translation_domain'];

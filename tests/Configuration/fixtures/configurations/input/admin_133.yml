@@ -7,7 +7,7 @@ easy_admin:
     list:
         title: 'Global Title for <strong>List</strong>'
     search:
-        title: 'Global Title for <b>Search</b>'
+        title: 'Global Title for <b>Search</b> in Singular|Global Title for <b>Search</b> in Plural'
     show:
         title: 'Global Title for <em class="special">Show</em>'
     new:

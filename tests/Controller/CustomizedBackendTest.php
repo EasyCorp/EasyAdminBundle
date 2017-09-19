@@ -524,8 +524,8 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertSame('Global Title for Search', trim($crawler->filter('head title')->text()));
-        $this->assertSame('Global Title for Search', trim($crawler->filter('h1.title')->text()));
+        $this->assertSame('Global Title for Search in Plural', trim($crawler->filter('head title')->text()));
+        $this->assertSame('Global Title for Search in Plural', trim($crawler->filter('h1.title')->text()));
     }
 
     public function testSearchViewTableIdColumn()

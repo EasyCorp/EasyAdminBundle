@@ -7,7 +7,7 @@ easy_admin:
     list:
         title: 'Global Title for List'
     search:
-        title: 'Global Title for Search'
+        title: 'Global Title for Search in Singular|Global Title for Search in Plural'
     show:
         title: 'Global Title for Show'
     new:
@@ -20,7 +20,7 @@ easy_admin:
             list:
                 title: 'Entity Title for <strong>List</strong>'
             search:
-                title: 'Entity Title for <b>Search</b>'
+                title: 'Entity Title for <b>Search</b> in Singular|Entity Title for <b>Search</b> in Plural'
             show:
                 title: 'Entity Title for <em class="special">Show</em>'
             new:

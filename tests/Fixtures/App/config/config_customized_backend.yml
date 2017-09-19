@@ -70,7 +70,7 @@ easy_admin:
     list:
         title: 'Global Title for List'
     search:
-        title: 'Global Title for Search'
+        title: 'Global Title for Search in Singular|Global Title for Search in Plural'
     show:
         title: 'Global Title for Show'
     new:

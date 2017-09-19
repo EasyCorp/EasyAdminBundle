@@ -122,7 +122,7 @@ class ViewConfigPass implements ConfigPassInterface
     private function processPageTitleConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'list', 'new', 'show') as $view) {
+            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
                 if (!isset($entityConfig[$view]['title']) && isset($backendConfig[$view]['title'])) {
                     $backendConfig['entities'][$entityName][$view]['title'] = $backendConfig[$view]['title'];
                 }

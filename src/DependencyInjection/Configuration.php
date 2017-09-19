@@ -413,6 +413,15 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
+                ->arrayNode('search')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('title')
+                            ->info('The visible page title displayed in the search view.')
+                        ->end()
+                    ->end()
+                ->end()
+
                 ->arrayNode('edit')
                     ->addDefaultsIfNotSet()
                     ->children()

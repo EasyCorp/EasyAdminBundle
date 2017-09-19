@@ -67,6 +67,16 @@ easy_admin:
         form_theme:   'horizontal'
         color_scheme: 'light'
         brand_color:  '#123456'
+    list:
+        title: 'Global Title for List'
+    search:
+        title: 'Global Title for Search'
+    show:
+        title: 'Global Title for Show'
+    new:
+        title: 'Global Title for New'
+    edit:
+        title: 'Global Title for Edit'
     entities:
         Category:
             help:  'Global help message for categories'

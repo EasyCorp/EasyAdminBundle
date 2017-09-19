@@ -5,13 +5,15 @@
 # CONFIGURATION
 easy_admin:
     list:
-        title: 'Global Title for List'
+        title: 'Global Title for <strong>List</strong>'
+    search:
+        title: 'Global Title for <b>Search</b>'
     show:
-        title: 'Global Title for Show'
+        title: 'Global Title for <em class="special">Show</em>'
     new:
-        title: 'Global Title for New'
+        title: 'Global Title for <span>New <i class="fa fa-new" /></span>'
     edit:
-        title: 'Global Title for Edit'
+        title: 'Global Title for <a href="#">Edit</a>'
     entities:
         Category:
             class: AppTestBundle\Entity\UnitTests\Category

@@ -427,7 +427,7 @@ actions
 
 Defines the actions available in the ``list`` view, which can be built-in
 actions (``edit``, ``list``, ``new``, ``search``, ``show``) or
-[custom actions](../tutorials/custom-actions.md).
+:doc:`custom actions <../tutorials/custom-actions>`.
 
 .. code-block:: yaml
 

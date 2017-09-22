@@ -1,0 +1,56 @@
+---------------------------------------------------------------------------
+
+by grachevko at 2017-08-07T08:13:29Z
+
+Without this change `referer` fills up unnecessary multiple nested urls.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-08-07T08:44:45Z
+
+I need time to think about this. At first sight I think it complicates things. We now deal with false, null, strings, etc. This feature should be simple: if there's a referrer query param, follow it: Otherwise, don't follow it. No need to deal with false or null, only empty or not empty params, right?
+
+Besides, there's a pending bug that we must solve: we can't redirect to the list action when the referrer is empty if the list action is disabled. We must check disabled actions before deciding which URL to go back to.
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-08-07T09:00:52Z
+
+@javiereguiluz This pr is not about follow referer or not, this about setting `referer` while generating url in EasyAdminRouter.
+Now it add `referer` to every generated url. My experience show this behaviour is wrong.
+If set `referer` to show action where again uses router this produce url like `referer=urlencode(referer=urlencode(referer=urlencode($previous_referer)))`
+
+EasyAdmin by default handle referer only on `new`, `edit` and `delete` actions.
+`null` - is default behaviour where we add `referer` only for handled actions.
+`string` - is option for developer to set `referer` url was generated before call `router`
+`bool` - is option to force add `referer`, when generating url to custom action for example.
+
+---------------------------------------------------------------------------
+
+by JulienMarliac at 2017-08-16T15:50:22Z
+
+Hi,
+
+I was wondering too if referer can be disabled. (looks like no) .
+
+The main reason I want to disable it is for security matter : the referer redirect without checking. So users can be vulnerable to some phishing with a malicious redirect set.
+
+So It could be nice to be able to disable the referer or to set some kind of domains whitelist for the referer.
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-08-16T15:53:21Z
+
+@JulienMarliac i guess you need to create issue for that. This PR is not about redirecting, only about build url.
+
+---------------------------------------------------------------------------
+
+by JulienMarliac at 2017-08-16T15:55:03Z
+
+@grachevko  Yeah but I will be ok with your idea " Ability to force enable/disable adding referer by set {referer: true/false} " :)
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-09-16T10:29:26Z
+
+Conflicts merged. Error i guess related to master?

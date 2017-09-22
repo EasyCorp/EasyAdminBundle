@@ -43,7 +43,10 @@ The value of the ``brand_color`` option can be any of the valid CSS color format
         design:
             brand_color: 'red'
             brand_color: 'rgba(26, 188, 156, 0.85)'
-            brand_color: 'hsl(0, 100%, 50%);'
+
+            # in this example, all '%' characters are doubled to escape them and
+            # avoid Symfony considering them special values in the YAML file
+            brand_color: 'hsl(0, 100%%, 50%%);'
         # ...
 
 Changing the Color Scheme

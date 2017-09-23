@@ -1,0 +1,57 @@
+---------------------------------------------------------------------------
+
+by iluuu1994 at 2017-09-04T11:54:40Z
+
+@javiereguiluz Any idea why the build isn't finishing?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-09-04T12:40:09Z
+
+@iluuu1994 I don't know, but this is what I see on Insight website:
+
+![insight-error](https://user-images.githubusercontent.com/73419/30026841-ebd76916-917e-11e7-8f86-b9cdd7e92038.png)
+
+I've relaunched the analysis.
+
+---------------------------------------------------------------------------
+
+by iluuu1994 at 2017-09-04T13:03:40Z
+
+@javiereguiluz That's weird. It's also [not the only one that never finishes](https://github.com/javiereguiluz/EasyAdminBundle/pull/1781#partial-pull-merging).
+
+---------------------------------------------------------------------------
+
+by iluuu1994 at 2017-09-07T17:18:03Z
+
+Finally 😅
+
+---------------------------------------------------------------------------
+
+by iluuu1994 at 2017-09-16T10:06:54Z
+
+@javiereguiluz Are you still interested in this PR? Is so I'll have to rebase it to solve the conflicts.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-09-16T10:09:27Z
+
+Yes!! I'm really sorry but I'm still waiting for other peoples reviews. I needed to merge #1787 as soon as possible because it introduces massive changes and I don't want to break more pending PRs.
+
+---------------------------------------------------------------------------
+
+by iluuu1994 at 2017-09-16T10:10:44Z
+
+Np, I'll wait until #1787 is merged then?
+
+---------------------------------------------------------------------------
+
+by iluuu1994 at 2017-09-16T10:38:04Z
+
+@javiereguiluz I do not need to add new files to the legacy folder, right? Since people referencing it should use the new namespace right away.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-09-16T11:17:42Z
+
+You are right. No need for legacy here.

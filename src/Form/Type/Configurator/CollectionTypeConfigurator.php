@@ -49,7 +49,7 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        return 'collection' === $type;
+        return in_array($type, array('collection', 'Symfony\Component\Form\Extension\Core\Type\CollectionType'), true);
     }
 }
 

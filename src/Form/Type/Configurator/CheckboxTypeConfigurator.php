@@ -42,7 +42,7 @@ class CheckboxTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        return 'checkbox' === $type;
+        return in_array($type, array('checkbox', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType'), true);
     }
 }
 

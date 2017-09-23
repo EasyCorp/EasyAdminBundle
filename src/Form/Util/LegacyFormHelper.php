@@ -84,6 +84,24 @@ final class LegacyFormHelper
     }
 
     /**
+     * It returns the short type name of the given FQCN
+     *
+     * @param string $fqcn
+     *
+     * @return string
+     */
+    public static function getShortType($fqcn)
+    {
+        $flippedTypes = array_flip(self::$supportedTypes);
+
+        if (!isset($flippedTypes[$fqcn])) {
+            return $fqcn;
+        }
+
+        return $flippedTypes[$fqcn];
+    }
+
+    /**
      * Returns true if the legacy Form component is being used by the application.
      *
      * @return bool

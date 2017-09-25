@@ -191,15 +191,9 @@ class PropertyConfigPass implements ConfigPassInterface
                             $normalizedConfig['fieldType'] = 'textarea';
                         }
 
-                        // if the user has defined a 'type' but no 'type_options' the type options
-                        // must be reset so they don't get mixed with the form components guess.
-                        // Only the 'required' option is kept
-                        if (isset($originalFieldConfig['type']) && !isset($originalFieldConfig['type_options'])) {
-                            $normalizedConfig['type_options'] = array_intersect_key(
-                                $normalizedConfig['type_options'],
-                                array('required' => null)
-                            );
-                        }
+                        $normalizedConfig['type_options'] = $this->getFormTypeOptionsOfProperty(
+                            $normalizedConfig, $fieldMetadata, $originalFieldConfig
+                        );
                     }
 
                     // special case for the 'list' view: 'boolean' properties are displayed
@@ -224,6 +218,58 @@ class PropertyConfigPass implements ConfigPassInterface
         }
 
         return $backendConfig;
+    }
+
+    /**
+     * Resolves from type options of field
+     *
+     * @param array $mergedConfig
+     * @param array $guessedConfig
+     * @param array $userDefinedConfig
+     *
+     * @return array
+     */
+    private function getFormTypeOptionsOfProperty(
+        array $mergedConfig, array $guessedConfig, array $userDefinedConfig
+    ) {
+        $resolvedFormOptions = $mergedConfig['type_options'];
+
+        // if the user has defined a 'type' the type options
+        // must be reset so they don't get mixed with the form components guess.
+        // Only the 'required' and user defined option are kept
+        if (
+            isset($userDefinedConfig['type'])
+            && isset($guessedConfig['fieldType'])
+            && $userDefinedConfig['type'] !== $guessedConfig['fieldType']
+        ) {
+            $resolvedFormOptions = array_intersect_key(
+                $mergedConfig['type_options'],
+                array_merge(
+                    array('required' => null),
+                    isset($userDefinedConfig['type_options'])
+                        ? $userDefinedConfig['type_options']
+                        : array()
+                )
+            );
+        }
+        // if the user has defined the "type" or "type_options"
+        // AND the "type" is the same the default one
+        elseif (
+            (
+                isset($userDefinedConfig['type'])
+                && isset($guessedConfig['fieldType'])
+                && $userDefinedConfig['type'] === $guessedConfig['fieldType']
+            ) || (
+                !isset($userDefinedConfig['type']) && isset($userDefinedConfig['type_options'])
+            )
+        ) {
+            $resolvedFormOptions = array_merge(
+                isset($mergedConfig['type_options']) ? $mergedConfig['type_options'] : array(),
+                isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : array()
+            );
+        }
+
+        return $resolvedFormOptions;
     }
 
     /**

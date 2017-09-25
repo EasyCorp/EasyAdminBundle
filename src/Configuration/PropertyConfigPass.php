@@ -191,13 +191,18 @@ class PropertyConfigPass implements ConfigPassInterface
                             $normalizedConfig['fieldType'] = 'textarea';
                         }
 
-                        // if the user has defined a 'type' but no 'type_options' the type options
+                        // if the user has defined a 'type' the type options
                         // must be reset so they don't get mixed with the form components guess.
-                        // Only the 'required' option is kept
-                        if (isset($originalFieldConfig['type']) && !isset($originalFieldConfig['type_options'])) {
+                        // Only the 'required' and user defined option are kept
+                        if (isset($originalFieldConfig['type'])) {
                             $normalizedConfig['type_options'] = array_intersect_key(
                                 $normalizedConfig['type_options'],
-                                array('required' => null)
+                                array_merge(
+                                    array('required' => null),
+                                    isset($originalFieldConfig['type_options'])
+                                        ? $originalFieldConfig['type_options']
+                                        : array()
+                                )
                             );
                         }
                     }

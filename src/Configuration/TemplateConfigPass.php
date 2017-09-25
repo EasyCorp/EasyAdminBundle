@@ -230,7 +230,7 @@ class TemplateConfigPass implements ConfigPassInterface
     private function findFirstExistingTemplate(array $templatePaths)
     {
         foreach ($templatePaths as $templatePath) {
-            if ($this->twigLoader->exists($templatePath)) {
+            if (null !== $templatePath && $this->twigLoader->exists($templatePath)) {
                 return $templatePath;
             }
         }

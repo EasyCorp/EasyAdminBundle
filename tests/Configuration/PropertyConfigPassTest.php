@@ -55,7 +55,7 @@ class PropertyConfigPassTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($relationsFormConfig['type_options']['class']));
         $this->assertFalse(isset($relationsFormConfig['type_options']['multiple']));
         // Assert that option from custom form type is still set.
-        $this->assertEquals(
+        $this->assertSame(
             $relationsFormConfig['type_options']['entry_type'],
             'AppBundle\Form\Type\EntityRelationType'
         );

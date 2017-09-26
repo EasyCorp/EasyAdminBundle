@@ -61,6 +61,97 @@ class PropertyConfigPassTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testSameFormTypeOptionsMustKeepGuessedFormOptions()
+    {
+        $backendConfig = array('entities' => array(
+            'TestEntity' => array(
+                'class' => 'AppBundle\Entity\TestEntity',
+                'properties' => array(
+                    'relations' => array(
+                        'type' => 'association',
+                    ),
+                ),
+                'edit' => array(
+                    'fields' => array(
+                        'relations' => array(
+                            'property' => 'relations',
+                            'type' => 'entity',
+                            'type_options' => array(
+                                'expanded' => true,
+                                'multiple' => false,
+                            ),
+                        ),
+                    ),
+                ),
+                'new' => array('fields' => array()),
+                'list' => array('fields' => array()),
+                'search' => array('fields' => array()),
+                'show' => array('fields' => array()),
+            ),
+        ));
+
+        $configPass = new PropertyConfigPass($this->getFormRegistry());
+        $backendConfig = $configPass->process($backendConfig);
+
+        $relationsFormConfig = $backendConfig['entities']['TestEntity']['edit']['fields']['relations'];
+
+        // Assert that option from custom form type is still set.
+        $this->assertSame(
+            $relationsFormConfig['type_options'],
+            array(
+                'em' => 'default',
+                'class' => 'AppBundle\Form\Type\EntityRelationType',
+                'multiple' => false,
+                'expanded' => true,
+            )
+        );
+    }
+
+    public function testUndefinedFormTypeKeepsDefinedTypeOptions()
+    {
+        $backendConfig = array('entities' => array(
+            'TestEntity' => array(
+                'class' => 'AppBundle\Entity\TestEntity',
+                'properties' => array(
+                    'relations' => array(
+                        'type' => 'association',
+                    ),
+                ),
+                'edit' => array(
+                    'fields' => array(
+                        'relations' => array(
+                            'property' => 'relations',
+                            'type_options' => array(
+                                'expanded' => true,
+                                'multiple' => false,
+                            ),
+                        ),
+                    ),
+                ),
+                'new' => array('fields' => array()),
+                'list' => array('fields' => array()),
+                'search' => array('fields' => array()),
+                'show' => array('fields' => array()),
+            ),
+        ));
+
+        $configPass = new PropertyConfigPass($this->getFormRegistry());
+        $backendConfig = $configPass->process($backendConfig);
+
+        $relationsFormConfig = $backendConfig['entities']['TestEntity']['edit']['fields']['relations'];
+
+        // Assert that option from custom form type is still set.
+        $this->assertSame(
+            $relationsFormConfig['type_options'],
+            array(
+                'em' => 'default',
+                'class' => 'AppBundle\Form\Type\EntityRelationType',
+                'multiple' => false,
+                'expanded' => true,
+            )
+        );
+    }
+
     private function getFormRegistry()
     {
         $doctrineTypeGuesser = $this->getMockBuilder('Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser')

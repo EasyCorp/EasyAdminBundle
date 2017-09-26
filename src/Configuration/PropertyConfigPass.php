@@ -223,9 +223,9 @@ class PropertyConfigPass implements ConfigPassInterface
     /**
      * Resolves from type options of field
      *
-     * @param  array  $mergedConfig
-     * @param  array  $guessedConfig
-     * @param  array  $userDefinedConfig
+     * @param array $mergedConfig
+     * @param array $guessedConfig
+     * @param array $userDefinedConfig
      *
      * @return array
      */
@@ -238,7 +238,9 @@ class PropertyConfigPass implements ConfigPassInterface
         // must be reset so they don't get mixed with the form components guess.
         // Only the 'required' and user defined option are kept
         if (
-            isset($userDefinedConfig['type']) && $userDefinedConfig['type'] !== $guessedConfig['fieldType']
+            isset($userDefinedConfig['type'])
+            && isset($guessedConfig['fieldType'])
+            && $userDefinedConfig['type'] !== $guessedConfig['fieldType']
         ) {
             $resolvedFormOptions = array_intersect_key(
                 $mergedConfig['type_options'],
@@ -253,12 +255,17 @@ class PropertyConfigPass implements ConfigPassInterface
         // if the user has defined the "type" or "type_options"
         // AND the "type" is the same the default one
         elseif (
-            isset($userDefinedConfig['type']) && $userDefinedConfig['type'] === $guessedConfig['fieldType']
-            || !isset($userDefinedConfig['type']) && isset($userDefinedConfig['type_options'])
+            (
+                isset($userDefinedConfig['type'])
+                && isset($guessedConfig['fieldType'])
+                && $userDefinedConfig['type'] === $guessedConfig['fieldType']
+            ) || (
+                !isset($userDefinedConfig['type']) && isset($userDefinedConfig['type_options'])
+            )
         ) {
             $resolvedFormOptions = array_merge(
-                $mergedConfig['type_options'],
-                $userDefinedConfig['type_options']
+                isset($mergedConfig['type_options']) ? $mergedConfig['type_options'] : array(),
+                isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : array()
             );
         }
 

@@ -586,6 +586,54 @@ them will be used when rendering the backend forms:
                 - 'form_div_layout.html.twig'
         # ...
 
+Customizing the Form Fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+`Symfony form fields can be customized individually`_ creating custom form themes
+and that's the same mechanism used to customize individual fields of the new and
+edit forms in EasyAdmin.
+
+Imagine a form field where you want to include a `<a>` element that links to
+additional information. If the field is called ``title`` and belongs to a
+``Product`` entity, the configuration would look like this:
+
+.. code-block:: yaml
+
+    easy_admin:
+        # ...
+        entities:
+            Product:
+                class: App\Entity\Product
+                form:
+                    fields:
+                        - { property: title, type_options: { block_name: 'custom_title' } }
+                        # ...
+
+The next step is to define the template fragment used by that field, which
+requires to know the `form fragment naming rules`_ defined by Symfony:
+
+.. code-block:: twig
+
+    {# easy_admin/form.html.twig #}
+    {% block _product_custom_title_widget %}
+        {# ... #}
+        <a href="...">More information</a>
+    {% endblock %}
+
+Finally, add this custom theme to the list of themes used to render backend forms:
+
+.. code-block:: yaml
+
+    easy_admin:
+        # ...
+        design:
+            form_theme:
+                - 'horizontal'
+                # the following Twig template can be located anywhere in the application.
+                # it can also be added to the twig.form_themes option to use it in the
+                # entire application, not only the backend
+                - 'easy_admin/form.html.twig'
+
 Customizing the Form Layout
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -841,3 +889,5 @@ template right under the ``easy_admin/`` directory:
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
+.. _`Symfony form fields can be customized individually`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
+.. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks

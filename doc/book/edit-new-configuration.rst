@@ -889,5 +889,5 @@ template right under the ``easy_admin/`` directory:
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
-.. _`Symfony form fields can be customized individually: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
+.. _`Symfony form fields can be customized individually`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
 .. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks

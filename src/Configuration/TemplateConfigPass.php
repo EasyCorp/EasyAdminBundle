@@ -101,9 +101,8 @@ class TemplateConfigPass implements ConfigPassInterface
                     isset($backendConfig['design']['templates'][$templateName]) ? $backendConfig['design']['templates'][$templateName] : null,
                     'easy_admin/'.$entityName.'/'.$templateName.'.html.twig',
                     'easy_admin/'.$templateName.'.html.twig',
-                    $defaultTemplatePath,
                 );
-                $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
+                $templatePath = $this->findFirstExistingTemplate($candidateTemplates) ?: $defaultTemplatePath;
 
                 if (null === $templatePath) {
                     throw new \RuntimeException(sprintf('None of the templates defined for the "%s" fragment of the "%s" entity exists (templates defined: %s).', $templateName, $entityName, implode(', ', $candidateTemplates)));
@@ -175,9 +174,8 @@ class TemplateConfigPass implements ConfigPassInterface
             $candidateTemplates = array(
                 isset($backendConfig['design']['templates'][$templateName]) ? $backendConfig['design']['templates'][$templateName] : null,
                 'easy_admin/'.$templateName.'.html.twig',
-                $defaultTemplatePath,
             );
-            $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
+            $templatePath = $this->findFirstExistingTemplate($candidateTemplates) ?: $defaultTemplatePath;
 
             if (null === $templatePath) {
                 throw new \RuntimeException(sprintf('None of the templates defined for the global "%s" template of the backend exists (templates defined: %s).', $templateName, implode(', ', $candidateTemplates)));
@@ -230,7 +228,7 @@ class TemplateConfigPass implements ConfigPassInterface
     private function findFirstExistingTemplate(array $templatePaths)
     {
         foreach ($templatePaths as $templatePath) {
-            if ($this->twigLoader->exists($templatePath)) {
+            if (null !== $templatePath && $this->twigLoader->exists($templatePath)) {
                 return $templatePath;
             }
         }

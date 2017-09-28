@@ -10,7 +10,6 @@
 
         <service id="easyadmin.cache.config_warmer" class="EasyCorp\Bundle\EasyAdminBundle\Cache\ConfigWarmer" public="false">
             <argument type="service" id="easyadmin.config.manager" />
-            <argument>%kernel.debug%</argument>
             <tag name="kernel.cache_warmer" priority="-2048" />
         </service>
 

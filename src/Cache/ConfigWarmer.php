@@ -22,12 +22,10 @@ class ConfigWarmer implements CacheWarmerInterface
 {
     /** @var ConfigManager */
     private $configManager;
-    private $kernelDebug;
 
-    public function __construct(ConfigManager $configManager, $kernelDebug)
+    public function __construct(ConfigManager $configManager)
     {
         $this->configManager = $configManager;
-        $this->kernelDebug = $kernelDebug;
     }
 
     /**
@@ -35,10 +33,6 @@ class ConfigWarmer implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        if (true === $this->kernelDebug) {
-            return;
-        }
-
         try {
             // this forces the full processing of the backend configuration
             $this->configManager->getBackendConfig();

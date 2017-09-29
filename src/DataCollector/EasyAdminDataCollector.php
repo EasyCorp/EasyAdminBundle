@@ -33,6 +33,12 @@ class EasyAdminDataCollector extends DataCollector
     public function __construct(ConfigManager $configManager)
     {
         $this->configManager = $configManager;
+        $this->data = array(
+            'num_entities' => 0,
+            'request_parameters' => null,
+            'current_entity_configuration' => null,
+            'backend_configuration' => null,
+        );
     }
 
     /**
@@ -40,6 +46,11 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
+        // 'admin' is the deprecated route name that will be removed in version 2.0.
+        if (!in_array($request->attributes->get('_route'), array('easyadmin', 'admin'))) {
+            return;
+        }
+
         $backendConfig = $this->configManager->getBackendConfig();
         $entityName = $request->query->get('entity', null);
         $currentEntityConfig = array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : array();
@@ -59,11 +70,6 @@ class EasyAdminDataCollector extends DataCollector
      */
     private function getEasyAdminParameters(Request $request)
     {
-        // 'admin' is the deprecated route name that will be removed in version 2.0.
-        if (!in_array($request->attributes->get('_route'), array('easyadmin', 'admin'))) {
-            return;
-        }
-
         return array(
             'action' => $request->query->get('action'),
             'entity' => $request->query->get('entity'),
@@ -71,6 +77,14 @@ class EasyAdminDataCollector extends DataCollector
             'sort_field' => $request->query->get('sortField'),
             'sort_direction' => $request->query->get('sortDirection'),
         );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEasyAdminAction()
+    {
+        return isset($this->data['num_entities']) && 0 !== $this->data['num_entities'];
     }
 
     /**

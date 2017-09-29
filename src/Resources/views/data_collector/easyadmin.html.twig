@@ -1,31 +1,33 @@
 {% extends '@WebProfiler/Profiler/layout.html.twig' %}
 
 {% block toolbar %}
-    {% set profiler_markup_version = profiler_markup_version|default(1) %}
+    {% if collector.isEasyAdminAction %}
+        {% set profiler_markup_version = profiler_markup_version|default(1) %}
 
-    {% set icon %}
-        {% set icon_fill_color = profiler_markup_version == 1 ? '#222' : '#AAA' %}
-        {% set icon_height = profiler_markup_version == 1 ? '28' : '24' %}
-        <span class="icon">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { fill_color: icon_fill_color, height: icon_height }) }}</span>
-        <span class="sf-toolbar-value sf-toolbar-status">{{ collector.numEntities }}</span>
-    {% endset %}
+        {% set icon %}
+            {% set icon_fill_color = profiler_markup_version == 1 ? '#222' : '#AAA' %}
+            {% set icon_height = profiler_markup_version == 1 ? '28' : '24' %}
+            <span class="icon">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { fill_color: icon_fill_color, height: icon_height }) }}</span>
+            <span class="sf-toolbar-value sf-toolbar-status">{{ collector.numEntities }}</span>
+        {% endset %}
 
-    {% set text %}
-    <div class="sf-toolbar-info-piece">
-        <b>EasyAdmin version</b>
-        <span class="sf-toolbar-status">{{ constant('JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }}</span>
-    </div>
-    <div class="sf-toolbar-info-piece">
-        <b>Managed entities</b>
-        <span class="sf-toolbar-status">{{ collector.numEntities }}</span>
-    </div>
-    {% endset %}
+        {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>EasyAdmin version</b>
+            <span class="sf-toolbar-status">{{ constant('JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Managed entities</b>
+            <span class="sf-toolbar-status">{{ collector.numEntities }}</span>
+        </div>
+        {% endset %}
 
-    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+        {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+    {% endif %}
 {% endblock %}
 
 {% block menu %}
-    <span class="label status-{{ not collector.requestParameters ? 'disabled' }}">
+    <span class="label status-{{ not collector.isEasyAdminAction ? 'disabled' }}">
         <span class="icon">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { height: 32 }) }}</span>
         <strong>EasyAdmin</strong>
     </span>

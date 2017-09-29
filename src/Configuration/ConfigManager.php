@@ -62,7 +62,7 @@ class ConfigManager
      * @return array
      */
     public function getBackendConfig($propertyPath = null)
-    {var_dump('Muereeeeeeee');exit;
+    {
         if (null === $this->backendConfig) {
             $this->backendConfig = $this->processConfig();
         }

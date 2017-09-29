@@ -44,9 +44,11 @@ class EasyAdminExtension extends Extension
         $loader->load('services.xml');
         $loader->load('form.xml');
 
-        // don't register our exception listener if debug is enabled
         if ($container->getParameter('kernel.debug')) {
+            // in 'dev', use the built-in Symfony exception listener
             $container->removeDefinition('easyadmin.listener.exception');
+            // avoid parsing the entire config in 'dev' (even for requests unrelated to the backend)
+            $container->removeDefinition('easyadmin.cache.config_warmer');
         }
 
         $this->ensureBackwardCompatibility($container);

@@ -4,7 +4,7 @@ imports:
 easy_admin:
     design:
         menu:
-            - { label: 'Search', url: 'https://example.com', default: true }
+            - { label: 'Custom homepage', url: 'https://example.com', default: true }
             - Category
             - User
             - Purchase

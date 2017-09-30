@@ -20,7 +20,7 @@ class NoEntitiesConfiguredException extends BaseException
     {
         $exceptionContext = new ExceptionContext(
             'exception.no_entities_configured',
-            'The backend is empty because you haven\'t configured any Doctrine entity to manage. Solution: open your "app/config/config.yml" file and configure the backend under the "easy_admin" key.',
+            'The backend is empty because you haven\'t configured any Doctrine entity to manage. Solution: edit your configuration file (e.g. "app/config/config.yml") and configure the backend under the "easy_admin" key.',
             $parameters,
             500
         );

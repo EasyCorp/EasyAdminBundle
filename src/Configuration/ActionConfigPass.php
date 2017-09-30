@@ -172,7 +172,7 @@ class ActionConfigPass implements ConfigPassInterface
      * the backend and locally in each of the configured entities. Local config always
      * wins over the global config (e.g. if backend removes 'delete' action in the
      * 'list' view but some action explicitly adds 'delete' in its 'list' view,
-     * then that entity shows the 'delete'  aciton and the others don't).
+     * then that entity shows the 'delete' action and the others don't).
      */
     private function resolveActionInheritance(array $backendConfig)
     {

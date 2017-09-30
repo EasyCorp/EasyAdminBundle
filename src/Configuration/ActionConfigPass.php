@@ -40,7 +40,6 @@ class ActionConfigPass implements ConfigPassInterface
         $backendConfig = $this->processDisabledActions($backendConfig);
         $backendConfig = $this->normalizeActionsConfig($backendConfig);
         $backendConfig = $this->resolveActionInheritance($backendConfig);
-        $backendConfig = $this->filterRemovedActions($backendConfig);
         $backendConfig = $this->processActionsConfig($backendConfig);
 
         return $backendConfig;
@@ -168,6 +167,13 @@ class ActionConfigPass implements ConfigPassInterface
         return $actionsConfig;
     }
 
+    /**
+     * Actions can be added/removed globally in the edit/list/new/show views of
+     * the backend and locally in each of the configured entities. Local config always
+     * wins over the global config (e.g. if backend removes 'delete' action in the
+     * 'list' view but some action explicitly adds 'delete' in its 'list' view,
+     * then that entity shows the 'delete'  aciton and the others don't).
+     */
     private function resolveActionInheritance(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
@@ -175,6 +181,33 @@ class ActionConfigPass implements ConfigPassInterface
                 $defaultActions = $this->getDefaultActions($view);
                 $backendActions = $backendConfig[$view]['actions'];
                 $entityActions = $entityConfig[$view]['actions'];
+
+                // filter actions removed in the global view configuration
+                foreach ($backendActions as $backendAction) {
+                    if ('-' === $backendAction['name'][0]) {
+                        $actionName = substr($backendAction['name'], 1);
+
+                        unset($backendActions[$actionName]);
+                        unset($backendActions['-'.$actionName]);
+
+                        // unless the entity explicitly adds this globally removed action, remove it from the
+                        // default actions config to avoid adding it to the entity later when merging everything
+                        if (!isset($entityActions[$actionName])) {
+                            unset($defaultActions[$actionName]);
+                        }
+                    }
+                }
+
+                // filter actions removed in the local entity configuration
+                foreach ($entityActions as $entityAction) {
+                    if ('-' === $entityAction['name'][0]) {
+                        $actionName = substr($entityAction['name'], 1);
+
+                        unset($entityActions[$actionName]);
+                        unset($entityActions['-'.$actionName]);
+                        unset($defaultActions[$actionName]);
+                    }
+                }
 
                 $actionsConfig = array_merge($defaultActions, $backendActions, $entityActions);
 
@@ -187,36 +220,6 @@ class ActionConfigPass implements ConfigPassInterface
                 }
 
                 $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
-            }
-        }
-
-        return $backendConfig;
-    }
-
-    /**
-     * Removes the actions marked as deleted from the given actions configuration.
-     *
-     * @param array $backendConfig
-     *
-     * @return array
-     */
-    private function filterRemovedActions(array $backendConfig)
-    {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach ($this->views as $view) {
-                $actionsConfig = $entityConfig[$view]['actions'];
-                // if the name of the action starts with a dash ('-'), remove it
-                $removedActions = array_filter($actionsConfig, function ($action) {
-                    return '-' === $action['name'][0];
-                });
-
-                $filteredActions = array_filter($actionsConfig, function ($action) use ($removedActions) {
-                    // e.g. '-search' action name removes both '-search' and 'search' (if exists)
-                    return !array_key_exists($action['name'], $removedActions)
-                        && !array_key_exists('-'.$action['name'], $removedActions);
-                });
-
-                $backendConfig['entities'][$entityName][$view]['actions'] = $filteredActions;
             }
         }
 

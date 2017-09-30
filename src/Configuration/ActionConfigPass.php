@@ -187,8 +187,7 @@ class ActionConfigPass implements ConfigPassInterface
                     if ('-' === $backendAction['name'][0]) {
                         $actionName = substr($backendAction['name'], 1);
 
-                        unset($backendActions[$actionName]);
-                        unset($backendActions['-'.$actionName]);
+                        unset($backendActions[$actionName], $backendActions['-'.$actionName]);
 
                         // unless the entity explicitly adds this globally removed action, remove it from the
                         // default actions config to avoid adding it to the entity later when merging everything
@@ -203,9 +202,7 @@ class ActionConfigPass implements ConfigPassInterface
                     if ('-' === $entityAction['name'][0]) {
                         $actionName = substr($entityAction['name'], 1);
 
-                        unset($entityActions[$actionName]);
-                        unset($entityActions['-'.$actionName]);
-                        unset($defaultActions[$actionName]);
+                        unset($entityActions[$actionName], $entityActions['-'.$actionName], $defaultActions[$actionName]);
                     }
                 }
 

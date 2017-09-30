@@ -2,7 +2,17 @@ imports:
     - { resource: config.yml }
 
 easy_admin:
+    design:
+        menu:
+            - { label: 'Search', url: 'https://example.com', default: true }
+            - Category
+            - User
+            - Purchase
+
     entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            disabled_actions: ['list']
         Purchase:
             class: AppTestBundle\Entity\FunctionalTests\Purchase
             list:

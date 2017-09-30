@@ -742,11 +742,17 @@ class AdminController extends Controller
     {
         $referrerUrl = $this->request->query->get('referer', '');
 
-        return !empty($referrerUrl)
-            ? $this->redirect(urldecode($referrerUrl))
-            : $this->redirect($this->generateUrl('easyadmin', array(
+        if (!empty($referrerUrl)) {
+            return $this->redirect(urldecode($referrerUrl));
+        }
+
+        if ($this->isActionAllowed('list')) {
+            return $this->redirect($this->generateUrl('easyadmin', array(
                 'action' => 'list', 'entity' => $this->entity['name'],
             )));
+        }
+
+        return $this->redirectToBackendHomepage();
     }
 }
 

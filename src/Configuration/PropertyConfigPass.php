@@ -229,9 +229,8 @@ class PropertyConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function getFormTypeOptionsOfProperty(
-        array $mergedConfig, array $guessedConfig, array $userDefinedConfig
-    ) {
+    private function getFormTypeOptionsOfProperty(array $mergedConfig, array $guessedConfig, array $userDefinedConfig)
+    {
         $resolvedFormOptions = $mergedConfig['type_options'];
 
         // if the user has defined a 'type' the type options
@@ -246,9 +245,7 @@ class PropertyConfigPass implements ConfigPassInterface
                 $mergedConfig['type_options'],
                 array_merge(
                     array('required' => null),
-                    isset($userDefinedConfig['type_options'])
-                        ? $userDefinedConfig['type_options']
-                        : array()
+                    isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : array()
                 )
             );
         }

@@ -73,7 +73,7 @@
                             </div>
                         {% endblock search_action %}
                     {% endif %}
-                    
+                    {% if _request_parameters.entity == 'Reviews'%}
                     <div class="button-action">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myImport"><i class="fa fa-play"></i> Import</button>
                     </div>
@@ -250,6 +250,35 @@
             $('#main').find('table tbody').highlight($.merge([_search_query], _search_query.split(' ')));
         </script>
     {% endif %}
+    
+       <!-- Modal -->
+    <div id="myImport" class="modal fade" role="dialog">
+        <form enctype="multipart/form-data" id="import_form" action="http://localhost:8000/import-csv" method="post">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Import CSV Reviews</h4>
+                    </div>
+                    <div class="modal-body text-right">
+                        <div class="text-center"><span>Upload a valid CSV reviews file!</span></div>
+                        <br>           
+                        <div id="import_success" class="alert alert-success text-center"></div>
+                        <input type="file" id="importFile" name="importFile">
+                        <input type="hidden" id="import_override" name="import_override" value="0">
+                        <hr>
+                        <button type="button" id="submitForm" class="btn btn-warning"><i class="fa fa-play"></i>&nbsp;Import!</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
     
     <script type="text/javascript">
         $(document).ready(function () {

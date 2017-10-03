@@ -73,17 +73,18 @@
                             </div>
                         {% endblock search_action %}
                     {% endif %}
+                    
                     {% if _request_parameters.entity == 'Reviews'%}
-                    <div class="button-action">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myImport"><i class="fa fa-play"></i> Import</button>
-                    </div>
-                    <div class="button-action">
-                        <a class="btn btn-primary action-new" href="/review-all" onclick="return confirm('If you Run the reviews reload, the old rates will be overwriten. \n\nNo you want to continue?')" >
-                            <i class="fa fa-star"></i>
-                            Run
-                        </a>
-                    </div>
-
+                        <div class="button-action">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myImport"><i class="fa fa-play"></i> Import</button>
+                        </div>
+                        <div class="button-action">
+                            <a class="btn btn-primary action-new" href="/review-all" onclick="return confirm('If you Run the reviews reload, the old rates will be overwriten. \n\nNo you want to continue?')" >
+                                <i class="fa fa-star"></i>Run
+                            </a>
+                        </div>
+                    {% endif %}
+                    
                     {% if easyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
                         {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
                         {% block new_action %}

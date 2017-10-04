@@ -34,7 +34,7 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
         }
 
         // by default, allow to autocomplete multiple values for OneToMany and ManyToMany associations
-        if (!isset($options['multiple']) && $metadata['associationType'] & ClassMetadata::TO_MANY) {
+        if (!isset($options['multiple']) && isset($metadata['associationType']) && $metadata['associationType'] & ClassMetadata::TO_MANY) {
             $options['multiple'] = true;
         }
 

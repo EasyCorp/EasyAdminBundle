@@ -1,6 +1,8 @@
 EasyAdmin
 =========
 
+- An approximation to the addition of certain type of custom buttons to the list template
+
 [![Tests][1]][2] [![Code Quality][3]][4] [![Code Coverage][5]][6] [![Symfony 2.x and 3.x][7]][8]
 
 EasyAdmin creates administration backends for your Symfony applications with

@@ -195,7 +195,7 @@ class AdminController extends Controller
 
             $this->updateEntityProperty($entity, $property, $newValue);
 
-            return new Response((string) $newValue);
+            return new Response((int) $newValue);
         }
 
         $fields = $this->entity['edit']['fields'];

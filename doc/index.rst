@@ -3,6 +3,11 @@ EasyAdminBundle
 
 `EasyAdminBundle`_ creates administration backends for your Symfony applications.
 
+.. seealso::
+
+    Do you prefer video tutorials? Check out the `EasyAdminBundle for an Amazing Admin Interface`_
+    screencast series from KnpUniversity.
+
 .. toctree::
     :maxdepth: 1
 
@@ -49,3 +54,4 @@ About
     misc/about
 
 .. _`EasyAdminBundle`: https://github.com/javiereguiluz/EasyAdminBundle
+.. _`EasyAdminBundle for an Amazing Admin Interface`: https://knpuniversity.com/screencast/easyadminbundle

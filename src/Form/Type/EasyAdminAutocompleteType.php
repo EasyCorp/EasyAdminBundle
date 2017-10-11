@@ -18,6 +18,7 @@ use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -28,7 +29,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterface
 {
-    /** @var ConfigManager */
     private $configManager;
 
     public function __construct(ConfigManager $configManager)
@@ -72,10 +72,15 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        $emptyData = function (Options $options) {
+            return $options['multiple'] ? array() : '';
+        };
+
         $resolver->setDefaults(array(
             'multiple' => false,
             // force display errors on this form field
             'error_bubbling' => false,
+            'empty_data' => $emptyData,
         ));
 
         $resolver->setRequired(array('class'));

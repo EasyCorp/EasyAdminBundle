@@ -46,21 +46,26 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
 
     public function preSubmit(FormEvent $event)
     {
+        $data = $event->getData();
         $form = $event->getForm();
-
-        if (null === $data = $event->getData()) {
-            $data = array('autocomplete' => array());
-            $event->setData($data);
-        }
-
         $options = $form->get('autocomplete')->getConfig()->getOptions();
-        $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
-            $options['id_reader']->getIdField() => $data['autocomplete'],
-        ));
+
+        if (!isset($data['autocomplete']) || '' === $data['autocomplete']) {
+            $options['choices'] = array();
+        } else {
+            $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
+                $options['id_reader']->getIdField() => $data['autocomplete'],
+            ));
+        }
 
         if (isset($options['choice_list'])) {
             // clear choice list for SF < 3.0
             $options['choice_list'] = null;
+        }
+
+        if (!empty($options['choices_as_values'])) {
+            // avoid deprecation notice since SF 3.1 until 4.0
+            $options['choices_as_values'] = null;
         }
 
         $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);

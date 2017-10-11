@@ -18,7 +18,6 @@ use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -72,15 +71,10 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $emptyData = function (Options $options) {
-            return $options['multiple'] ? array() : '';
-        };
-
         $resolver->setDefaults(array(
             'multiple' => false,
             // force display errors on this form field
             'error_bubbling' => false,
-            'empty_data' => $emptyData,
         ));
 
         $resolver->setRequired(array('class'));
@@ -113,9 +107,8 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function mapDataToForms($data, $forms)
     {
-        $forms = iterator_to_array($forms);
-
-        $forms['autocomplete']->setData($data);
+        $form = current(iterator_to_array($forms));
+        $form->setData($data);
     }
 
     /**
@@ -123,9 +116,8 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function mapFormsToData($forms, &$data)
     {
-        $forms = iterator_to_array($forms);
-
-        $data = $forms['autocomplete']->getData();
+        $form = current(iterator_to_array($forms));
+        $data = $form->getData();
     }
 }
 

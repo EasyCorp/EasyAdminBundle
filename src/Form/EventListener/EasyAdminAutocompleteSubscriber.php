@@ -54,21 +54,26 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
             $options['choices'] = array();
         } else {
             $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
-                $options['id_reader']->getIdField() => $data['autocomplete'],
+                $this->getIdField($options) => $data['autocomplete'],
             ));
         }
 
-        if (isset($options['choice_list'])) {
-            // clear choice list for SF < 3.0
-            $options['choice_list'] = null;
-        }
-
-        if (!empty($options['choices_as_values'])) {
-            // avoid deprecation notice since SF 3.1 until 4.0
-            $options['choices_as_values'] = null;
-        }
+        // reset some critical lazy options
+        unset($options['em'], $options['loader'], $options['empty_data'], $options['choice_list'], $options['choices_as_values']);
 
         $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
+    }
+
+    private function getIdField(array $options)
+    {
+        if (isset($options['id_reader'])) {
+            $idField = $options['id_reader']->getIdField();
+        } else {
+            // BC for 2.3
+            $idField = current($options['em']->getClassMetadata($options['class'])->getIdentifierFieldNames());
+        }
+
+        return $idField;
     }
 }
 

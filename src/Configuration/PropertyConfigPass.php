@@ -242,7 +242,7 @@ class PropertyConfigPass implements ConfigPassInterface
             && $userDefinedConfig['type'] !== $guessedConfig['fieldType']
         ) {
             $resolvedFormOptions = array_intersect_key(
-                $mergedConfig['type_options'],
+                $resolvedFormOptions,
                 array_merge(
                     array('required' => null),
                     isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : array()
@@ -261,7 +261,7 @@ class PropertyConfigPass implements ConfigPassInterface
             )
         ) {
             $resolvedFormOptions = array_merge(
-                isset($mergedConfig['type_options']) ? $mergedConfig['type_options'] : array(),
+                $resolvedFormOptions,
                 isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : array()
             );
         }

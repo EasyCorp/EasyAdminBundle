@@ -15,4 +15,9 @@ class Category
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     public $id;
+
+    public function __toString()
+    {
+        return (string) $this->id;
+    }
 }

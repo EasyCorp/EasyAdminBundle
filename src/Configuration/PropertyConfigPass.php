@@ -61,6 +61,9 @@ class PropertyConfigPass implements ConfigPassInterface
         'scale' => 0,
         'sortable' => false,
         'type' => 'text',
+        'type_options' => array(
+            'required' => false,
+        ),
         'unique' => false,
         'virtual' => true,
     );

@@ -236,7 +236,7 @@ class PropertyConfigPass implements ConfigPassInterface
     {
         $resolvedFormOptions = $mergedConfig['type_options'];
 
-        // if the user has defined a 'type' the type options
+        // if the user has defined a 'type', the type options
         // must be reset so they don't get mixed with the form components guess.
         // Only the 'required' and user defined option are kept
         if (
@@ -244,16 +244,13 @@ class PropertyConfigPass implements ConfigPassInterface
             && isset($guessedConfig['fieldType'])
             && $userDefinedConfig['type'] !== $guessedConfig['fieldType']
         ) {
-            $resolvedFormOptions = array_intersect_key(
-                $mergedConfig['type_options'],
-                array_merge(
-                    array('required' => null),
-                    isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : array()
-                )
+            $resolvedFormOptions = array_merge(
+                array_intersect_key($resolvedFormOptions, array('required' => null)),
+                isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : array()
             );
         }
         // if the user has defined the "type" or "type_options"
-        // AND the "type" is the same the default one
+        // AND the "type" is the same as the default one
         elseif (
             (
                 isset($userDefinedConfig['type'])
@@ -264,7 +261,7 @@ class PropertyConfigPass implements ConfigPassInterface
             )
         ) {
             $resolvedFormOptions = array_merge(
-                isset($mergedConfig['type_options']) ? $mergedConfig['type_options'] : array(),
+                $resolvedFormOptions,
                 isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : array()
             );
         }

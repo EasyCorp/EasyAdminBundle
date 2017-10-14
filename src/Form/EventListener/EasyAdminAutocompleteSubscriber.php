@@ -46,24 +46,34 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
 
     public function preSubmit(FormEvent $event)
     {
+        $data = $event->getData();
         $form = $event->getForm();
-
-        if (null === $data = $event->getData()) {
-            $data = array('autocomplete' => array());
-            $event->setData($data);
-        }
-
         $options = $form->get('autocomplete')->getConfig()->getOptions();
-        $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
-            $options['id_reader']->getIdField() => $data['autocomplete'],
-        ));
 
-        if (isset($options['choice_list'])) {
-            // clear choice list for SF < 3.0
-            $options['choice_list'] = null;
+        if (!isset($data['autocomplete']) || '' === $data['autocomplete']) {
+            $options['choices'] = array();
+        } else {
+            $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
+                $this->getIdField($options) => $data['autocomplete'],
+            ));
         }
+
+        // reset some critical lazy options
+        unset($options['em'], $options['loader'], $options['empty_data'], $options['choice_list'], $options['choices_as_values']);
 
         $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
+    }
+
+    private function getIdField(array $options)
+    {
+        if (isset($options['id_reader'])) {
+            $idField = $options['id_reader']->getIdField();
+        } else {
+            // BC for 2.3
+            $idField = current($options['em']->getClassMetadata($options['class'])->getIdentifierFieldNames());
+        }
+
+        return $idField;
     }
 }
 

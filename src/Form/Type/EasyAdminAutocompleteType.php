@@ -28,7 +28,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterface
 {
-    /** @var ConfigManager */
     private $configManager;
 
     public function __construct(ConfigManager $configManager)
@@ -108,9 +107,8 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function mapDataToForms($data, $forms)
     {
-        $forms = iterator_to_array($forms);
-
-        $forms['autocomplete']->setData($data);
+        $form = current(iterator_to_array($forms));
+        $form->setData($data);
     }
 
     /**
@@ -118,9 +116,8 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function mapFormsToData($forms, &$data)
     {
-        $forms = iterator_to_array($forms);
-
-        $data = $forms['autocomplete']->getData();
+        $form = current(iterator_to_array($forms));
+        $data = $form->getData();
     }
 }
 

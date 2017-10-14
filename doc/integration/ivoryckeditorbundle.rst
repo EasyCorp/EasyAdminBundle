@@ -171,28 +171,11 @@ Integrating CKFinder
 --------------------
 
 `CKFinder`_ is a file manager plugin developed for CKEditor. First, follow its
-documentation to download and install the "CKFinder Connector" somewhere in your
-Symfony application. After that, integrating CKFinder with CKEditor is a matter
-of adding a few lines of JavaScript code.
+documentation to download and install the "CKFinder PHP Connector" somewhere in
+your Symfony application. Then, read the `CKEditor integration docs`_ and create
+a JavaScript file to store the needed code (e.g. ``web/js/setup-ckfinder.js``).
 
-First, create a JavaScript file (for example in ``web/js/setup-ckfinder.js``) and
-add the following code:
-
-.. code-block:: js
-
-    // web/js/setup-ckfinder.js
-    window.onload = function () {
-        if (window.CKEDITOR) {
-             // configure 'connectorPath' according to your own application
-            var path = '/ckfinder/connector';
-            CKFinder.config({ connectorPath: (window.location.pathname.indexOf("app_dev.php") == -1 ) ? path : '/app_dev.php' + path });
-            for (var ckInstance in CKEDITOR.instances){
-                CKFinder.setupCKEditor(CKEDITOR.instances[ckInstance]);
-            }
-        }
-    }
-
-Then, use the ``design.assets.js`` config option to include that file in every
+Finally, use the ``design.assets.js`` config option to include that file in every
 page loaded by EasyAdmin:
 
 .. code-block:: yaml
@@ -209,3 +192,4 @@ page loaded by EasyAdmin:
 .. _`IvoryCKEditorBundle`: https://github.com/egeloen/IvoryCKEditorBundle
 .. _`its full list of configuration options`: http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html
 .. _`CKFinder`: https://cksource.com/ckfinder
+.. _`CKEditor integration docs`: https://docs.ckeditor.com/ckeditor4/docs/#!/guide/dev_ckfinder_integration

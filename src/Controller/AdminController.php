@@ -194,8 +194,9 @@ class AdminController extends Controller
             }
 
             $this->updateEntityProperty($entity, $property, $newValue);
-
-            return new Response((string) $newValue);
+    
+            // cast to integer instead of string to avoid sending empty responses for 'false'
+            return new Response((int) $newValue);
         }
 
         $fields = $this->entity['edit']['fields'];

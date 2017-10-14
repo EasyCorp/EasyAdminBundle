@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2017-10-11T12:20:51Z
+
+Travis 7.1 failure is related to CSFixer (`'php_unit_strict' => true`) but `assertSame` doesn't apply to these cases :/
+
+---------------------------------------------------------------------------
+
+by yceruto at 2017-10-11T16:23:51Z
+
+Ready for review. ping @ogizanagi :)

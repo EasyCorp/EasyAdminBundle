@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-10-07T08:57:03Z
+
+Thanks for fixing this bug. Looking at it it's obvious we should have done this since day one ... but at the same time this worked as expected ... so I'm a bit confused.

@@ -201,6 +201,14 @@ class NormalizerConfigPass implements ConfigPassInterface
                         }
                     }
 
+                    // for 'file' type fields, if the entity defines an 'file_base_path'
+                    // option, but the field does not, use the value defined by the entity
+                    if (isset($fieldConfig['type']) && 'file' === $fieldConfig['type']) {
+                        if (!isset($fieldConfig['base_path']) && isset($entityConfig['file_base_path'])) {
+                            $fieldConfig['base_path'] = $entityConfig['file_base_path'];
+                        }
+                    }
+
                     // fields that don't define the 'property' name are special form design elements
                     $fieldName = isset($fieldConfig['property']) ? $fieldConfig['property'] : '_easyadmin_form_design_element_'.$designElementIndex;
                     $fields[$fieldName] = $fieldConfig;

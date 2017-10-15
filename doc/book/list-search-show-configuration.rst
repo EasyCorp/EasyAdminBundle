@@ -250,8 +250,8 @@ These are the options that you can define for each field:
     ``boolean``, ``date``, ``datetime``, ``datetimetz``, ``decimal``, ``float``,
     ``guid``, ``integer``, ``json_array``, ``object``, ``simple_array``,
     ``smallint``, ``string``, ``text``, ``time``.
-  * Any of the custom EasyAdmin types: ``email``, ``image``, ``raw``, ``tel``,
-    ``toggle``, ``url`` (they are explained later in this chapter).
+  * Any of the custom EasyAdmin types: ``email``, ``file``, ``image``, ``raw``,
+    ``tel``, ``toggle``, ``url`` (they are explained later in this chapter).
 
 The fields of the ``list`` and ``search`` views define another option:
 
@@ -723,6 +723,78 @@ value for different properties or different views:
 
 The base paths defined for a property always have priority over the one defined
 globally for the entity.
+
+File Data Type
+~~~~~~~~~~~~~~
+
+If any of your properties stores the URL or path of a file, this type allows you
+to display a link to the actual file. In most cases, you just need to set the
+``type`` property to ``file``:
+
+.. code-block:: yaml
+
+    easy_admin:
+        entities:
+            Product:
+                class: AppBundle\Entity\Product
+                list:
+                    fields:
+                        - { property: 'instructions', type: 'file' }
+                        # ...
+        # ...
+
+In the above example, the ``instructions`` property is displayed as an ``<a>``
+HTML element whose ``href`` attribute is the value stored in the property.
+
+If the property stores relative paths, define the ``base_path`` option to set the
+absolute or relative path to be prefixed to the file path:
+
+.. code-block:: yaml
+
+    easy_admin:
+        entities:
+            Product:
+                class: AppBundle\Entity\Product
+                list:
+                    fields:
+                        - { property: 'instructions', type: 'file', base_path: '/pdf/' }
+                        # ...
+        # ...
+
+The file base path can also be set in the entity, to avoid repeating its
+value for different properties or different views:
+
+.. code-block:: yaml
+
+    easy_admin:
+        entities:
+            Product:
+                class: AppBundle\Entity\Product
+                file_base_path: 'http://static.acme.org/pdf/'
+                list:
+                    fields:
+                        - { property: 'instructions', type: 'file' }
+                        # ...
+        # ...
+
+The base paths defined for a property always have priority over the one defined
+globally for the entity.
+
+The name of the file is displayed by default as the text of the ``<a>`` link.
+If this is undesired, define the ``filename`` property to set the ``<a>`` text
+explicitly:
+
+.. code-block:: yaml
+
+    easy_admin:
+        entities:
+            Product:
+                class: AppBundle\Entity\Product
+                list:
+                    fields:
+                        - { property: 'instructions', type: 'file', filename: 'View instructions (PDF)' }
+                        # ...
+        # ...
 
 Raw Data Type
 ~~~~~~~~~~~~~

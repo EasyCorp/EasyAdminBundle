@@ -40,6 +40,7 @@ class TemplateConfigPass implements ConfigPassInterface
         'field_datetimetz' => '@EasyAdmin/default/field_datetimetz.html.twig',
         'field_decimal' => '@EasyAdmin/default/field_decimal.html.twig',
         'field_email' => '@EasyAdmin/default/field_email.html.twig',
+        'field_file' => '@EasyAdmin/default/field_file.html.twig',
         'field_float' => '@EasyAdmin/default/field_float.html.twig',
         'field_guid' => '@EasyAdmin/default/field_guid.html.twig',
         'field_id' => '@EasyAdmin/default/field_id.html.twig',

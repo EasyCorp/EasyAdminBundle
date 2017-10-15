@@ -1,0 +1,12 @@
+# TEST
+# field desn't define its own file base_path but the parent entity does
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            file_base_path: '/entity_path/'
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    - { property: 'field1', type: 'file' }

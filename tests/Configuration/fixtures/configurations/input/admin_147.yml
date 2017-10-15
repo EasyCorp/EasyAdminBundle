@@ -1,5 +1,5 @@
 # TEST
-# field defines its own image base_path
+# field defines its own file base_path
 
 # CONFIGURATION
 easy_admin:
@@ -8,4 +8,4 @@ easy_admin:
             class: AppTestBundle\Entity\UnitTests\Category
             list:
                 fields:
-                    - { property: 'field1', type: 'image', base_path: '/field_path/' }
+                    - { property: 'field1', type: 'file', base_path: '/field_path/' }

@@ -26,7 +26,7 @@ easy_admin:
                         scale: 0
                         unique: false
                         property: field1
-                        base_path: /field_img/
+                        base_path: /field_path/
                 actions:
                     edit:
                         name: edit

@@ -1,0 +1,12 @@
+# TEST
+# field defines its own file base_path and overrides entity configuration
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            file_base_path: '/entity_path/'
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    - { property: 'field1', type: 'file', base_path: '/field_path/' }

@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    field1:
+                        base_path: /field_path/

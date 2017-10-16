@@ -160,6 +160,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $this->renderImageField($templateParameters);
             }
 
+            if ('file' === $fieldType) {
+                return $this->renderFileField($templateParameters);
+            }
+
             if (in_array($fieldType, array('array', 'simple_array'))) {
                 return $this->renderArrayField($templateParameters);
             }
@@ -207,6 +211,25 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         $templateParameters['uuid'] = md5($templateParameters['value']);
+
+        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+    }
+
+    private function renderFileField(array $templateParameters)
+    {
+        // avoid displaying broken links when the entity defines no file path
+        if (empty($templateParameters['value'])) {
+            return $this->twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
+        }
+
+        // add the base path only to files that are not absolute URLs (http or https) or protocol-relative URLs (//)
+        if (0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+            $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
+                ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
+                : '/'.ltrim($templateParameters['value'], '/');
+        }
+
+        $templateParameters['filename'] = isset($templateParameters['field_options']['filename']) ? $templateParameters['field_options']['filename'] : basename($templateParameters['value']);
 
         return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
     }

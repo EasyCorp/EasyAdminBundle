@@ -226,7 +226,12 @@ Then, define any of the following options to customize the action:
   underscores only).
 * ``label``, is the text displayed in the button or link associated with the
   action. If not defined, the action label is the *humanized* version of its
-  ``name`` option.
+  ``name`` option. Set it to ``null`` or an empty string to hide it and only
+  display the associated icon.
+* ``title``, is the text used in the ``title`` HTML attribute of the ``<a>``
+  element associated with the action. Most of the times you can safely ignore
+  this option, but it's useful to display a helpful message when the action
+  hides its label and only displays its icon.
 * ``css_class``, is the CSS class or classes applied to the link or button used
   to render the action.
 * ``icon``, is the name of the FontAwesome icon displayed next to the link or
@@ -236,3 +241,62 @@ Then, define any of the following options to customize the action:
 * ``target``, is the value of the ``target`` HTML attribute applied to the button
   or link associated with the action (e.g. ``_blank`` to open the action in a
   new browser tab/window).
+
+Removing Action Labels and Displaying Just Icons
+------------------------------------------------
+
+By default, the actions showed in the ``list`` view only display their label
+(``Edit``, ``Show``, etc.):
+
+.. image:: ../images/easyadmin-listing-actions-label-only.png
+   :alt: Action Labels in Entity Listing
+
+Adding an icon for each action is as easy as defining their ``icon`` option:
+
+.. code-block:: yaml
+
+    easy_admin:
+        list:
+            actions:
+                - { name: 'show', icon: 'search' }
+                - { name: 'edit', icon: 'pencil' }
+        # ...
+
+This configuration makes the entity listing looks as follow:
+
+.. image:: ../images/easyadmin-listing-actions-label-and-icon.png
+   :alt: Action Labels and Icons in Entity Listing
+
+When displaying entities with lots of information, it may be useful to remove
+the action label and display just their icons. To do so, define an empty string
+for the ``label`` option or set its value to ``false``:
+
+.. code-block:: yaml
+
+    easy_admin:
+        list:
+            actions:
+                - { name: 'show', icon: 'search', label: '' }
+                - { name: 'edit', icon: 'pencil', label: '' }
+                # if you prefer, set labels to false
+                # - { name: 'show', icon: 'search', label: false }
+                # - { name: 'edit', icon: 'pencil', label: false }
+        # ...
+
+This configuration makes the entity listing looks as follow:
+
+.. image:: ../images/easyadmin-listing-actions-icon-only.png
+   :alt: Action Icons in Entity Listing
+
+Finally, when displaying only the action icon, it's useful to define the
+``title`` attribute to display it when the user moves the cursor over the action
+icon:
+
+.. code-block:: yaml
+
+    easy_admin:
+        list:
+            actions:
+                - { name: 'show', icon: 'search', label: '', title: 'Search' }
+                - { name: 'edit', icon: 'pencil', label: '', title: 'Edit' }
+        # ...

@@ -33,6 +33,14 @@ class EasyAdminDataCollector extends DataCollector
     public function __construct(ConfigManager $configManager)
     {
         $this->configManager = $configManager;
+        $this->reset();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reset()
+    {
         $this->data = array(
             'num_entities' => 0,
             'request_parameters' => null,

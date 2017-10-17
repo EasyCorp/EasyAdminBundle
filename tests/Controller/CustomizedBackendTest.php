@@ -91,9 +91,11 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
-        $this->assertSame('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
-        $this->assertSame('Delete', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a:contains("Show")'));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a:contains("Edit")'));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a:contains("Delete")'));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a[title="Custom Action 1"]'));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a[title="Custom Action 2"]:contains("Action 2")'));
     }
 
     public function testListViewTableIdColumn()
@@ -600,9 +602,11 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertSame('Show', trim($crawler->filter('#main .table td.actions a')->eq(0)->text()));
-        $this->assertSame('Edit', trim($crawler->filter('#main .table td.actions a')->eq(1)->text()));
-        $this->assertSame('Delete', trim($crawler->filter('#main .table td.actions a')->eq(2)->text()));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a:contains("Show")'));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a:contains("Edit")'));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a:contains("Delete")'));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a[title="Custom Action 1"]'));
+        $this->assertCount(15, $crawler->filter('#main .table td.actions a[title="Custom Action 2"]:contains("Action 2")'));
     }
 
     public function testSearchViewShowActionReferer()

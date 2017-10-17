@@ -54,52 +54,6 @@ override the default ``layout.html.twig`` template and empty the
 Read the :ref:`Advanced Design Customization <list-search-show-advanced-design-configuration>`
 section to learn how to override default templates.
 
-Removing Action Labels and Displaying Just Icons
-------------------------------------------------
-
-By default, the actions showed in the ``list`` view table only display their
-label (``Edit``, ``Show``, etc.):
-
-.. image:: ../images/easyadmin-listing-actions-label-only.png
-   :alt: Action Labels in Entity Listing
-
-Adding an icon for each action is as easy as defining their ``icon`` option:
-
-.. code-block:: yaml
-
-    easy_admin:
-        list:
-            actions:
-                - { name: 'show', icon: 'search' }
-                - { name: 'edit', icon: 'pencil' }
-        # ...
-
-This configuration makes the entity listing looks as follow:
-
-.. image:: ../images/easyadmin-listing-actions-label-and-icon.png
-   :alt: Action Labels and Icons in Entity Listing
-
-When displaying entities with lots of information, it may be useful to remove
-the action label and display just their icons. To do so, define an empty string
-for the ``label`` option or set its value to ``false``:
-
-.. code-block:: yaml
-
-    easy_admin:
-        list:
-            actions:
-                - { name: 'show', icon: 'search', label: '' }
-                - { name: 'edit', icon: 'pencil', label: '' }
-                # if you prefer, set labels to false
-                # - { name: 'show', icon: 'search', label: false }
-                # - { name: 'edit', icon: 'pencil', label: false }
-        # ...
-
-This configuration makes the entity listing looks as follow:
-
-.. image:: ../images/easyadmin-listing-actions-icon-only.png
-   :alt: Action Icons in Entity Listing
-
 Making the Backend Use a Different Language Than the Public Website
 -------------------------------------------------------------------
 

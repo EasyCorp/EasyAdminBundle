@@ -88,6 +88,8 @@ easy_admin:
                     - 'show'
                     - { name: 'new', label: 'New %%entity_name%%', icon: 'plus-circle', css_class: 'custom_class_new' }
                     - { name: 'search', label: 'Look for %%entity_label%%', css_class: 'custom_class_search' }
+                    - { name: 'custom_action_1', label: '', title: 'Custom Action 1', icon: 'custom-icon-1' }
+                    - { name: 'custom_action_2', label: 'Action 2', title: 'Custom Action 2', icon: 'custom-icon-2' }
                 fields:
                     - 'id'
                     - { property: 'name', label: 'Label', css_class: 'custom_class_list' }

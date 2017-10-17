@@ -88,17 +88,22 @@
             <div class="tab-content">
 
                 <h4>Basic Configuration</h4>
+                {% if collector.backendConfig is not null %}
                 {{ collector.dump({
                     'site_name': collector.backendConfig['site_name'],
                     'formats': collector.backendConfig['formats']
                 })|raw }}
+                {% endif %}
 
                 <h4>Design Configuration</h4>
+                {% if collector.backendConfig is not null %}
                 {{ collector.dump({
                     'design': collector.backendConfig['design']
                 })|raw }}
+                {% endif %}
 
                 <h4>Actions Configuration</h4>
+                {% if collector.backendConfig is not null %}
                 {{ collector.dump({
                     'disabled_actions': collector.backendConfig['disabled_actions'],
                     'list': collector.backendConfig['list'],
@@ -106,16 +111,21 @@
                     'new': collector.backendConfig['new'],
                     'show': collector.backendConfig['show'],
                 })|raw }}
+                {% endif %}
 
                 <h4>Entities Configuration</h4>
+                {% if collector.backendConfig is not null %}
                 {{ collector.dump({
                     'entities': collector.backendConfig['entities']
                 })|raw }}
+                {% endif %}
 
                 <h4>Full Backend Configuration</h4>
+                {% if collector.backendConfig is not null %}
                 {{ collector.dump({
                     'easy_admin': collector.backendConfig
                 })|raw }}
+                {% endif %}
             </div>
         </div>
     </div>

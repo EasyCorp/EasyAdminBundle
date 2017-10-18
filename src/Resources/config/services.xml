@@ -20,6 +20,10 @@
             <argument>%kernel.debug%</argument>
         </service>
 
+        <service id="easyadmin.controller.argument_resolver" class="EasyCorp\Bundle\EasyAdminBundle\Controller\ArgumentResolver">
+            <argument type="service" id="argument_resolver" />
+        </service>
+
         <service id="easyadmin.query_builder" class="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder">
             <argument type="service" id="doctrine" />
         </service>

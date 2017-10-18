@@ -118,7 +118,7 @@ easy_admin:
 Browse the `/admin` URL in your Symfony application and you'll get access to
 the admin backend:
 
-![Default EasyAdmin Backend interface](https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/Resources/doc/images/easyadmin-default-backend.png)
+![Default EasyAdmin Backend interface](https://raw.githubusercontent.com/javiereguiluz/EasyAdminBundle/master/doc/images/easyadmin-default-backend.png)
 
 Keep reading [the rest of the documentation][9] to learn how to create complex backends.
 

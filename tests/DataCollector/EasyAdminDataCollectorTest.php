@@ -77,4 +77,15 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
         $backendConfig = $collector->getBackendConfig();
         $this->assertCount(5, $backendConfig['entities']);
     }
+
+    public function testCollectorReset()
+    {
+        $this->client->enableProfiler();
+        $this->requestListView();
+        $collector = $this->client->getProfile()->getCollector('easyadmin');
+
+        $this->assertSame(5, $collector->getNumEntities());
+        $collector->reset();
+        $this->assertSame(0, $collector->getNumEntities());
+    }
 }

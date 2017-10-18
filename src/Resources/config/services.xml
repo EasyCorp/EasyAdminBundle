@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="easyadmin.cache.manager" class="EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager">
+        <service id="easyadmin.cache.manager" class="EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager" public="true">
             <argument>%easyadmin.cache.dir%</argument>
         </service>
 
@@ -13,14 +13,14 @@
             <tag name="kernel.cache_warmer" priority="-2048" />
         </service>
 
-        <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager">
+        <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument type="service" id="easyadmin.cache.manager" />
             <argument type="service" id="property_accessor" />
             <argument>%easyadmin.config%</argument>
             <argument>%kernel.debug%</argument>
         </service>
 
-        <service id="easyadmin.query_builder" class="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder">
+        <service id="easyadmin.query_builder" class="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" public="true">
             <argument type="service" id="doctrine" />
         </service>
 
@@ -29,16 +29,16 @@
             <argument type="service" id="easyadmin.paginator" />
         </service>
 
-        <service id="easyadmin.autocomplete" class="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete">
+        <service id="easyadmin.autocomplete" class="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete" public="true">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="easyadmin.finder" />
             <argument type="service" id="property_accessor" />
         </service>
 
-        <service id="easyadmin.paginator" class="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator">
+        <service id="easyadmin.paginator" class="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" public="true">
         </service>
 
-        <service id="easyadmin.router" class="EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter">
+        <service id="easyadmin.router" class="EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter" public="true">
             <argument id="easyadmin.config.manager" type="service" />
             <argument id="router.default" type="service" />
             <argument id="property_accessor" type="service" />
@@ -54,13 +54,13 @@
             <tag name="twig.extension" />
         </service>
 
-        <service id="easyadmin.listener.controller" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener">
+        <service id="easyadmin.listener.controller" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener" public="true">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="controller_resolver" />
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
 
-        <service id="easyadmin.listener.exception" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener">
+        <service id="easyadmin.listener.exception" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener" public="true">
             <argument type="service" id="twig" />
             <argument>%easyadmin.config%</argument>
             <argument type="string">easyadmin.listener.exception:showExceptionPageAction</argument>
@@ -69,7 +69,7 @@
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="-64" />
         </service>
 
-        <service id="easyadmin.listener.request_post_initialize" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener">
+        <service id="easyadmin.listener.request_post_initialize" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener" public="true">
             <argument type="service" id="doctrine" />
             <argument type="service" id="request_stack" on-invalid="null" />
             <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />

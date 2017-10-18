@@ -27,7 +27,7 @@
 {% endblock %}
 
 {% block menu %}
-    <span class="label status-{{ not collector.isEasyAdminAction ? 'disabled' }}">
+    <span class="label {{ not collector.isEasyAdminAction ? 'disabled' }}">
         <span class="icon">{{ include('@EasyAdmin/data_collector/icon.svg.twig', { height: 32 }) }}</span>
         <strong>EasyAdmin</strong>
     </span>
@@ -38,87 +38,97 @@
 
     <h2>EasyAdmin <small>({{ constant('JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }})</small></h2>
 
-    {% if profiler_markup_version == 1 %}
+    {% if not collector.isEasyAdminAction %}
 
-        <h3>Request Parameters</h3>
-        {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.requestParameters }) }}
+        <div class="empty">
+            <p>No information available because this route is not related to EasyAdmin.</p>
+        </div>
 
     {% else %}
 
-        {% if collector.requestParameters %}
-        <div class="metrics">
-            <div class="metric">
-                <span class="value">{{ collector.requestParameters.action|default('-') }}</span>
-                <span class="label">Action</span>
-            </div>
+        {% if profiler_markup_version == 1 %}
 
-            <div class="metric">
-                <span class="value">{{ collector.requestParameters.entity|default('-') }}</span>
-                <span class="label">Entity Name</span>
-            </div>
+            <h3>Request Parameters</h3>
+            {{ include('@WebProfiler/Profiler/table.html.twig', { data: collector.requestParameters }) }}
 
-            {% if collector.requestParameters.id %}
+        {% else %}
+
+            {% if collector.requestParameters %}
+            <div class="metrics">
                 <div class="metric">
-                    <span class="value">{{ collector.requestParameters.id }}</span>
-                    <span class="label">ID</span>
+                    <span class="value">{{ collector.requestParameters.action|default('-') }}</span>
+                    <span class="label">Action</span>
                 </div>
-            {% elseif collector.requestParameters.sort_field %}
+
                 <div class="metric">
-                    <span class="value">{{ collector.requestParameters.sort_field }} <span class="unit">({{ collector.requestParameters.sort_direction }})</span></span>
-                    <span class="label">Sorting</span>
+                    <span class="value">{{ collector.requestParameters.entity|default('-') }}</span>
+                    <span class="label">Entity Name</span>
                 </div>
+
+                {% if collector.requestParameters.id %}
+                    <div class="metric">
+                        <span class="value">{{ collector.requestParameters.id }}</span>
+                        <span class="label">ID</span>
+                    </div>
+                {% elseif collector.requestParameters.sort_field %}
+                    <div class="metric">
+                        <span class="value">{{ collector.requestParameters.sort_field }} <span class="unit">({{ collector.requestParameters.sort_direction }})</span></span>
+                        <span class="label">Sorting</span>
+                    </div>
+                {% endif %}
+            </div>
             {% endif %}
-        </div>
+
         {% endif %}
 
+        <div class="sf-tabs">
+            <div class="tab">
+                <h3 class="tab-title">Current Entity Configuration</h3>
+                <div class="tab-content">
+                    {{ collector.dump(collector.currentEntityConfig)|raw }}
+                </div>
+
+                <br>
+            </div>
+
+            <div class="tab">
+                <h3 class="tab-title">Full Backend Configuration</h3>
+                <div class="tab-content">
+
+                    <h4>Basic Configuration</h4>
+                    {{ collector.dump({
+                        'site_name': collector.backendConfig['site_name'],
+                        'formats': collector.backendConfig['formats']
+                    })|raw }}
+
+                    <h4>Design Configuration</h4>
+                    {{ collector.dump({
+                        'design': collector.backendConfig['design']
+                    })|raw }}
+
+                    <h4>Actions Configuration</h4>
+                    {{ collector.dump({
+                        'disabled_actions': collector.backendConfig['disabled_actions'],
+                        'list': collector.backendConfig['list'],
+                        'edit': collector.backendConfig['edit'],
+                        'new': collector.backendConfig['new'],
+                        'show': collector.backendConfig['show'],
+                    })|raw }}
+
+                    <h4>Entities Configuration</h4>
+                    {{ collector.dump({
+                        'entities': collector.backendConfig['entities']
+                    })|raw }}
+
+                    <h4>Full Backend Configuration</h4>
+                    {{ collector.dump({
+                        'easy_admin': collector.backendConfig
+                    })|raw }}
+                </div>
+            </div>
+        </div>
+
     {% endif %}
-
-    <div class="sf-tabs">
-        <div class="tab">
-            <h3 class="tab-title">Current Entity Configuration</h3>
-            <div class="tab-content">
-                {{ collector.dump(collector.currentEntityConfig)|raw }}
-            </div>
-
-            <br>
-        </div>
-
-        <div class="tab">
-            <h3 class="tab-title">Full Backend Configuration</h3>
-            <div class="tab-content">
-
-                <h4>Basic Configuration</h4>
-                {{ collector.dump({
-                    'site_name': collector.backendConfig['site_name'],
-                    'formats': collector.backendConfig['formats']
-                })|raw }}
-
-                <h4>Design Configuration</h4>
-                {{ collector.dump({
-                    'design': collector.backendConfig['design']
-                })|raw }}
-
-                <h4>Actions Configuration</h4>
-                {{ collector.dump({
-                    'disabled_actions': collector.backendConfig['disabled_actions'],
-                    'list': collector.backendConfig['list'],
-                    'edit': collector.backendConfig['edit'],
-                    'new': collector.backendConfig['new'],
-                    'show': collector.backendConfig['show'],
-                })|raw }}
-
-                <h4>Entities Configuration</h4>
-                {{ collector.dump({
-                    'entities': collector.backendConfig['entities']
-                })|raw }}
-
-                <h4>Full Backend Configuration</h4>
-                {{ collector.dump({
-                    'easy_admin': collector.backendConfig
-                })|raw }}
-            </div>
-        </div>
-    </div>
 
     <h3>Additional Resources</h3>
 

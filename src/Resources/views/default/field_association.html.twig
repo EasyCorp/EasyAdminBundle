@@ -6,7 +6,8 @@
                 {% for item in value|slice(0, easyadmin_config('show.max_results')) %}
                     <li>
                         {% if link_parameters is defined %}
-                            {% set primary_key_value = attribute(item, link_parameters.primary_key_name) %}
+                            {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
+                            {% set primary_key_value = '' ~ attribute(item, link_parameters.primary_key_name) %}
                             <a href="{{ path('easyadmin', link_parameters|merge({ id: primary_key_value, referer: '' })) }}">{{ item }}</a>
                         {% else %}
                             {{ item }}

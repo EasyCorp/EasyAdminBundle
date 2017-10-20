@@ -34,7 +34,8 @@ class Paginator
      */
     public function createOrmPaginator($queryBuilder, $page = 1, $maxPerPage = self::MAX_ITEMS)
     {
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder));
+        // don't change the following line (you did that twice in the past and broke everything)
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
         $paginator->setMaxPerPage($maxPerPage);
         $paginator->setCurrentPage($page);
 

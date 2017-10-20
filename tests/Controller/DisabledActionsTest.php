@@ -79,4 +79,12 @@ class DisabledActionsTest extends AbstractTestCase
             'After editing a Category, the user is redirected to the homepage because the "list" action is disabled for Category.'
         );
     }
+
+    public function testBooleanTogglesWhenEditIsDisabled()
+    {
+        $crawler = $this->requestListView('Product');
+
+        $this->assertCount(15, $crawler->filter('td[data-label="Enabled"].boolean'), 'When "edit" action is disabled, boolean properties are displayed as labels, not toggles.');
+        $this->assertCount(0, $crawler->filter('td[data-label="Enabled"].toggle'));
+    }
 }

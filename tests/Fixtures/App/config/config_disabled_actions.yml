@@ -23,3 +23,8 @@ easy_admin:
             # the 'show' action is disabled so the 'buyer' field is not linked
             # in the 'list' view of the 'Purchase' entity
             disabled_actions: ['show']
+        Product:
+            class: AppTestBundle\Entity\FunctionalTests\Product
+            # the 'edit' action is disabled to test if the 'enabled' property is
+            # displayed as a boolean label instead of a toggle
+            disabled_actions: ['edit']

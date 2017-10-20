@@ -126,7 +126,7 @@ class PropertyConfigPass implements ConfigPassInterface
 
                 // 'boolean' properties are displayed by default as toggleable
                 // flip switches (if the 'edit' action is enabled for the entity)
-                if ('boolean' === $properties[$propertyName]['dataType'] && array_key_exists('edit', $entityConfig['list']['actions'])) {
+                if ('boolean' === $properties[$propertyName]['dataType'] && !in_array('edit', $entityConfig['disabled_actions'])) {
                     $properties[$propertyName]['dataType'] = 'toggle';
                 }
             }
@@ -197,18 +197,6 @@ class PropertyConfigPass implements ConfigPassInterface
                         $normalizedConfig['type_options'] = $this->getFormTypeOptionsOfProperty(
                             $normalizedConfig, $fieldMetadata, $originalFieldConfig
                         );
-                    }
-
-                    // special case for the 'list' view: 'boolean' properties are displayed
-                    // as toggleable flip switches when certain conditions are met
-                    if ('list' === $view && 'boolean' === $normalizedConfig['dataType']) {
-                        // conditions:
-                        //   1) the end-user hasn't configured the field type explicitly
-                        //   2) the 'edit' action is enabled for the 'list' view of this entity
-                        $isEditActionEnabled = array_key_exists('edit', $entityConfig['list']['actions']);
-                        if (!isset($originalFieldConfig['type']) && $isEditActionEnabled) {
-                            $normalizedConfig['dataType'] = 'toggle';
-                        }
                     }
 
                     if (null === $normalizedConfig['format']) {

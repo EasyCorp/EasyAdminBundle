@@ -84,6 +84,7 @@ easy_admin:
             label: 'Categories'
             list:
                 title: 'Product %%entity_label%%'
+                sort: ['id', 'DESC']
                 actions:
                     - 'show'
                     - { name: 'new', label: 'New %%entity_name%%', icon: 'plus-circle', css_class: 'custom_class_new' }
@@ -94,6 +95,8 @@ easy_admin:
                     - 'id'
                     - { property: 'name', label: 'Label', css_class: 'custom_class_list' }
                     - { property: 'parent', label: 'Parent category' }
+            search:
+                sort: ['name', 'ASC']
             show:
                 title: 'Details for %%entity_name%% number %%entity_id%%'
                 help:  'Help message overridden for the show view of categories'

@@ -17,8 +17,8 @@
 {% if 'search' == app.request.get('action') %}
     {% set _request_parameters = _request_parameters|merge({
         query: app.request.get('query')|default(''),
-        sortField: _entity_config.search.sort.field ?? app.request.get('sortField', ''),
-        sortDirection: _entity_config.search.sort.direction ?? app.request.get('sortDirection', 'DESC'),
+        sortField: _entity_config.search.sort.field|default(app.request.get('sortField', '')),
+        sortDirection: _entity_config.search.sort.direction|default(app.request.get('sortDirection', 'DESC')),
     }) %}
 {% endif %}
 
@@ -59,8 +59,8 @@
                                     {% block search_form %}
                                         <input type="hidden" name="action" value="search">
                                         <input type="hidden" name="entity" value="{{ _request_parameters.entity }}">
-                                        <input type="hidden" name="sortField" value="{{ _entity_config.search.sort.field ?? _request_parameters.sortField }}">
-                                        <input type="hidden" name="sortDirection" value="{{ _entity_config.search.sort.direction ?? _request_parameters.sortDirection }}">
+                                        <input type="hidden" name="sortField" value="{{ _entity_config.search.sort.field|default(_request_parameters.sortField) }}">
+                                        <input type="hidden" name="sortDirection" value="{{ _entity_config.search.sort.direction|default(_request_parameters.sortDirection) }}">
                                         <input type="hidden" name="menuIndex" value="{{ _request_parameters.menuIndex }}">
                                         <input type="hidden" name="submenuIndex" value="{{ _request_parameters.submenuIndex }}">
                                         <div class="input-group">

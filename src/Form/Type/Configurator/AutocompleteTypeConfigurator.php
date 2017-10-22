@@ -52,7 +52,7 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
     {
         $supportedTypes = array(
             'easyadmin_autocomplete',
-            'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType',
+            'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType',
         );
 
         return in_array($type, $supportedTypes, true);

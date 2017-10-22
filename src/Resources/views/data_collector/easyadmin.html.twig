@@ -14,7 +14,7 @@
         {% set text %}
         <div class="sf-toolbar-info-piece">
             <b>EasyAdmin version</b>
-            <span class="sf-toolbar-status">{{ constant('JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }}</span>
+            <span class="sf-toolbar-status">{{ constant('EasyCorp\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }}</span>
         </div>
         <div class="sf-toolbar-info-piece">
             <b>Managed entities</b>
@@ -36,7 +36,7 @@
 {% block panel %}
     {% set profiler_markup_version = profiler_markup_version|default(1) %}
 
-    <h2>EasyAdmin <small>({{ constant('JavierEguiluz\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }})</small></h2>
+    <h2>EasyAdmin <small>({{ constant('EasyCorp\\Bundle\\EasyAdminBundle\\EasyAdminBundle::VERSION') }})</small></h2>
 
     {% if not collector.isEasyAdminAction %}
 

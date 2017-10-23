@@ -14,7 +14,13 @@
         }) %}
     {% endif %}
 
+    {% if form.vars.errors|length > 0 %}
+        {{ form_errors(form) }}
+    {% endif %}
+
     {{- parent() -}}
+
+    <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
 {%- endblock form_start %}
 
 {# Widgets #}
@@ -438,17 +444,50 @@
 {% endspaceless %}
 {% endblock %}
 
-{# EasyAdmin form type #}
-{% block easyadmin_widget %}
+{% block form_rest %}
+    {{- parent() -}}
+    <div class="row">
+        <div class="col-xs-12 form-actions">
+            <div class="form-group">
+                <div id="form-actions-row">
+                    {{- block('item_actions') -}}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock form_rest %}
+
+{% block item_actions %}
     {% set _translation_domain = easyadmin.entity.translation_domain %}
     {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
 
-    {% if form.vars.errors|length > 0 %}
-        {{ form_errors(form) }}
-    {% endif %}
+    {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
+    <button type="submit" class="btn btn-primary action-save">
+        <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, _translation_domain) }}
+    </button>
 
-    <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
+    {% set _entity_actions = (easyadmin.view == 'new')
+        ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
+        : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
 
+    {% set _entity_id = (easyadmin.view == 'new')
+        ? null
+        : attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) %}
+
+    {% set _request_parameters = { entity: easyadmin.entity.name, referer: app.request.query.get('referer') } %}
+
+    {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+        actions: _entity_actions,
+        request_parameters: _request_parameters,
+        translation_domain: _translation_domain,
+        trans_parameters: _trans_parameters,
+        item_id: _entity_id
+    }, with_context = false) }}
+{% endblock item_actions %}
+
+{# EasyAdmin form type #}
+{% block easyadmin_widget %}
+    {% set _translation_domain = easyadmin.entity.translation_domain %}
     <div class="row">
         {% for group_name, group_config in easyadmin_form_groups %}
             <div class="field-group col-xs-12 {{ group_config.css_class|default('') }}">
@@ -486,39 +525,6 @@
                 </div>
             {% endfor %}
         {% endfor %}
-    </div>
-
-    <div class="row">
-        <div class="col-xs-12 form-actions">
-            <div class="form-group">
-                <div id="form-actions-row">
-                    {% block item_actions %}
-                        {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
-                        <button type="submit" class="btn btn-primary action-save">
-                            <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, _translation_domain) }}
-                        </button>
-
-                        {% set _entity_actions = (easyadmin.view == 'new')
-                            ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
-                            : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
-
-                        {% set _entity_id = (easyadmin.view == 'new')
-                            ? null
-                            : attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) %}
-
-                        {% set _request_parameters = { entity: easyadmin.entity.name, referer: app.request.query.get('referer') } %}
-
-                        {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
-                            actions: _entity_actions,
-                            request_parameters: _request_parameters,
-                            translation_domain: _translation_domain,
-                            trans_parameters: _trans_parameters,
-                            item_id: _entity_id
-                        }, with_context = false) }}
-                    {% endblock item_actions %}
-                </div>
-            </div>
-        </div>
     </div>
 {% endblock easyadmin_widget %}
 

@@ -1,0 +1,10 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-10-21T09:13:18Z
+
+Does anyone see any problem making this change? Thanks!
+
+```diff
+-        "twig/twig": "~1.14,>=1.14.2|~2.0"
++        "twig/twig": "~1.26|~2.0"
+```

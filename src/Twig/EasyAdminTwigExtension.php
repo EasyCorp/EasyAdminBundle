@@ -426,14 +426,6 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
         return $className;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'easyadmin_extension';
-    }
 }
 
 class_alias('EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension', 'JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension', false);

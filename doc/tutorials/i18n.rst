@@ -8,9 +8,9 @@ divided into two steps:
 * Translating the elements of the EasyAdmin interface;
 * Translating your own contents (such as the main menu and the property labels).
 
-The elements of the interface are translated using the ``EasyAdminBundle``
-domain. The rest of the elements are translated by default using the
-``messages`` domain, but you can use any other domain defined in the
+The elements of the interface are translated under the ``EasyAdminBundle``
+translation domain. The rest of the elements are translated by default using the
+``messages`` domain, but you can use any other domain with the
 ``translation_domain`` option, as explained at the end of this article.
 
 Before translating your backend, make sure that the ``translator`` service is
@@ -66,6 +66,7 @@ Example:
     # app/Resources/translations/messages.es.yml
     Customers: Clientes
     Orders: Ventas
+    # ...
 
 Main menu labels can be customized thanks to the ``label`` option of each entity.
 You can even use structured translation keys instead of the real contents:
@@ -76,10 +77,10 @@ You can even use structured translation keys instead of the real contents:
     easy_admin:
         entities:
             Customers:
-                label: app.menu.customers
+                label: menu.customers
                 class: AppBundle\Entity\User
             Orders:
-                label: app.menu.orders
+                label: menu.orders
                 class: AppBundle\Entity\Purchase
 
 In this case, the translation file should use the value of the ``label`` option
@@ -89,12 +90,14 @@ original language used by the translation keys):
 .. code-block:: yaml
 
     # app/Resources/translations/messages.en.yml
-    app.menu.customers: Customers
-    app.menu.orders: Orders
+    menu.customers: Customers
+    menu.orders: Orders
+    # ...
 
     # app/Resources/translations/messages.es.yml
-    app.menu.customers: Clientes
-    app.menu.orders: Ventas
+    menu.customers: Clientes
+    menu.orders: Ventas
+    # ...
 
 Translate Property Labels
 -------------------------
@@ -132,6 +135,7 @@ properties, so those are the translation keys that must be used:
     # app/Resources/translations/messages.es.yml
     First name: Nombre
     Last name: Apellidos
+    # ...
 
 Alternatively, you can use the ``label`` option of each property to define its
 label explicitly. You can even use structured translation keys instead of the
@@ -146,8 +150,8 @@ real contents:
                 class: AppBundle\Entity\Customer
                 list:
                     fields:
-                        - { property: 'firstName', label: 'app.users.firstName' }
-                        - { property: 'lastName', label: 'app.users.lastName' }
+                        - { property: 'firstName', label: 'users.firstName' }
+                        - { property: 'lastName', label: 'users.lastName' }
             # ...
 
 In this case, the translation file should use the value of the ``label`` option as
@@ -157,12 +161,34 @@ original language used by the translation keys):
 .. code-block:: yaml
 
     # app/Resources/translations/messages.en.yml
-    app.menu.firstName: First name
-    app.menu.lastName: Last name
+    users.firstName: First name
+    users.lastName: Last name
+    # ...
 
     # app/Resources/translations/messages.es.yml
-    app.menu.firstName: Nombre
-    app.menu.lastName: Apellidos
+    users.firstName: Nombre
+    users.lastName: Apellidos
+    # ...
+
+Translate Action Names
+----------------------
+
+The action labels are translated using the ``messages`` domain, even for the
+built-in actions provided by EasyAdmin (Save, Edit, Delete, etc.) This is done
+on purpose so you can override them more easily just by adding them to your main
+translation file:
+
+.. code-block:: yaml
+
+    # app/Resources/translations/messages.en.yml
+    action.save: Save Now
+    action.new: Create
+    # ...
+
+    # app/Resources/translations/messages.es.yml
+    action.save: Guardar Ahora
+    action.new: Crear
+    # ...
 
 Translate Custom Templates
 --------------------------

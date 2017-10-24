@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-10-24T17:31:03Z
+
+I've tested this in a real application and it works ... but a lot of tests are failing because somehow this doesn't work in tests. If I do a `var_dump($this->client->getResponse());` in the first failing test `ActionOverrideTest::testEditViewActions()` I can't see any action in the generated HTML.
+
+**Update**: for some reason, the changes now don't work in the real application either. Not sure why because your changes look right to me 😕
+
+---------------------------------------------------------------------------
+
+by yceruto at 2017-10-24T18:03:12Z
+
+I'll take a look ASAP.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2017-10-24T18:29:12Z
+
+I hope it works now :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-10-24T18:35:12Z
+
+It's working great now. Thanks!

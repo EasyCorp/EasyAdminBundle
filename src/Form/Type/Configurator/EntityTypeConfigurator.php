@@ -28,8 +28,8 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
      */
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
-        if ($metadata['associationType'] & ClassMetadata::TO_MANY) {
-            $options['attr']['multiple'] = true;
+        if (!isset($options['multiple']) && $metadata['associationType'] & ClassMetadata::TO_MANY) {
+            $options['multiple'] = true;
         }
 
         // Supported associations are displayed using advanced JavaScript widgets
@@ -53,7 +53,7 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
     {
         $isEntityType = in_array($type, array('entity', 'Symfony\Bridge\Doctrine\Form\Type\EntityType'), true);
 
-        return $isEntityType && 'association' === $metadata['type'];
+        return $isEntityType && 'association' === $metadata['dataType'];
     }
 
     /**

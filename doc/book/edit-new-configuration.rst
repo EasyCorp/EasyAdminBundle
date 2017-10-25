@@ -747,6 +747,38 @@ very advanced layouts.
     This solves most of the issues, but sometimes you might be forced to also
     reorder the form group positions.
 
+Form Tabs
+...........
+
+Like the form groups tabs are another way to separate form fields to achieve a
+better overview and a cleaner interface.
+
+.. code-block:: yaml
+
+    easy_admin:
+        entities:
+            User:
+                class: AppBundle\Entity\User
+                form:
+                    fields:
+                        - { type: 'tab' , label: 'Account Information', icon: 'user' }
+                        - username
+                        - firstName
+                        - lastName
+                        - { type: 'tab', label: 'Contact Information', icon: 'envelope-o' }
+                        - { type: 'group', label: 'Address', css_class: 'col-sm-6' }
+                        - street
+                        - zip
+                        - city
+                        - { type: 'group', label: 'Media', css_class: 'col-sm-6' }
+                        - email
+                        - phone
+
+As you can see in the example tabs may contain groups but not the other way round.
+
+.. image:: ../images/easyadmin-form-tabs.png
+   :alt: A form using tabs to separate its fields
+
 Design elements can be combined to display dividers and sections inside groups
 and create advanced layouts:
 

@@ -265,7 +265,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                     if ($isFormDesignElement && 'tab' === $fieldConfig['type']) {
                         $previousTabFieldNumber = $fieldNumber;
                         $isTheFirstGroupElement = true;
-                    } else if ($isFormDesignElement && 'group' === $fieldConfig['type']) {
+                    } elseif ($isFormDesignElement && 'group' === $fieldConfig['type']) {
                         if ($isTheFirstGroupElement && $previousTabFieldNumber === -1 && $fieldNumber > 1) {
                             // if no tab is used, we insert the group at the beginning of the array
                             $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
@@ -273,7 +273,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                                 $backendConfig['entities'][$entityName][$view]['fields']
                             );
                             break;
-                        } else if ($isTheFirstGroupElement && $previousTabFieldNumber >= 0 && $fieldNumber > $previousTabFieldNumber + 1) {
+                        } elseif ($isTheFirstGroupElement && $previousTabFieldNumber >= 0 && $fieldNumber > $previousTabFieldNumber + 1) {
                             // if tabs are used, we insert the group after the previous tab field into the array
                             $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
                                 array_slice($backendConfig['entities'][$entityName][$view]['fields'], 0, $previousTabFieldNumber, true),

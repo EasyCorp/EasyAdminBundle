@@ -527,7 +527,7 @@
 
 {% block easyadmin_widget_groups %}
     {% for group_name, group_config in easyadmin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
-        <div class="field-group col-xs-12  {{ group_config.css_class|default('') }}">
+        <div class="field-group col-xs-12 {{ group_config.css_class|default('') }}">
             <div class="box box-default">
                 {% if group_config.label|default(false) or group_config.icon|default(false) %}
                     <div class="box-header with-border">

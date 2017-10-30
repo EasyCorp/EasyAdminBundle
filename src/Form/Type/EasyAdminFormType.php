@@ -11,11 +11,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
+use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
@@ -89,8 +92,14 @@ class EasyAdminFormType extends AbstractType
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
             if (in_array($formFieldType, array('easyadmin_tab', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminTabType'))) {
+                // The first tab should be marked as active by default
+                $metadata['active'] = count($formTabs) === 0;
+                $metadata['errors'] = 0;
                 $currentFormTab = $metadata['fieldName'];
-                $formTabs[$currentFormTab] = $metadata;
+
+                // For a form tab a plain array is not enough, because we need to be able to modify it in the
+                // lifecycle of a form (e.g. add info about form errors). So we'll use an ArrayObject.
+                $formTabs[$currentFormTab] = new ArrayObject($metadata);
 
                 continue;
             }
@@ -111,6 +120,33 @@ class EasyAdminFormType extends AbstractType
 
         $builder->setAttribute('easyadmin_form_tabs', $formTabs);
         $builder->setAttribute('easyadmin_form_groups', $formGroups);
+
+        if (count($formTabs) > 0) {
+            $listenerClosure = function(FormEvent $event) use ($formTabs) {
+                $activeTab = null;
+                foreach ($event->getForm() as $child) {
+                    $errors = $child->getErrors(true);
+
+                    if (count($errors) > 0) {
+                        $formTab = $child->getConfig()->getAttribute('easyadmin_form_tab');
+                        $formTabs[$formTab]['errors'] += count($errors);
+
+                        if (null === $activeTab) {
+                            $activeTab = $formTab;
+                        }
+                    }
+                }
+
+                $firstTab = key($formTabs);
+                if ($firstTab !== $activeTab) {
+                    // We have to deactivate the first tab, so that the first tab with
+                    // eroneous data is shown
+                    $formTabs[$firstTab]['active'] = false;
+                    $formTabs[$activeTab]['active'] = true;
+                }
+            };
+            $builder->addEventListener(FormEvents::POST_SUBMIT, $listenerClosure, -1);
+        }
     }
 
     /**

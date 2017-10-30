@@ -498,19 +498,24 @@
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         {% for tab_name, tab_config in easyadmin_form_tabs %}
-                            <li class="{% if loop.index == 1 %}active{% endif %}">
+                            <li class="{% if tab_config.active %}active{% endif %}">
                                 <a href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
                                     {% if tab_config.icon|default(false) %}
                                         <i class="fa fa-{{ tab_config.icon }}"></i>
                                     {% endif %}
                                     {{ tab_config['label'] }}
+                                    {% if tab_config.errors > 0 %}
+                                        <span class="label label-danger" title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'EasyAdminBundle') }}">
+                                            {{ tab_config.errors }}
+                                        </span>
+                                    {% endif %}
                                 </a>
                             </li>
                         {% endfor %}
                     </ul>
                     <div class="tab-content">
                         {% for tab_name, tab_config in easyadmin_form_tabs %}
-                            <div id="{{ tab_config['id'] }}" class="tab-pane {% if loop.index == 1 %}active{% endif %}">
+                            <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %}">
                                 <div class="row">
                                     {{ block('easyadmin_widget_groups') }}
                                 </div>

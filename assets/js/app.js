@@ -1,4 +1,21 @@
-$(function () {
+import "jquery/dist/jquery.js";
+
+var $ = require('jquery');
+window.$ = $;
+window.jQuery = $;
+
+import "bootstrap-sass/assets/javascripts/bootstrap";
+import "jquery-slimscroll/jquery.slimscroll.js";
+import "admin-lte/dist/js/adminlte.js"
+import "featherlight/src/featherlight.js"
+import "./jquery.are-you-sure.js";
+import "waypoints/src/waypoint.js";
+import "./jquery.easyadmin-sticky.js";
+import "select2/src/js/jquery.select2.js";
+import "bootstrap-toggle/js/bootstrap-toggle.js";
+import "jquery-highlight/jquery.highlight.js";
+
+window.addEventListener('load', function () {
     var body = $('body');
 
     body

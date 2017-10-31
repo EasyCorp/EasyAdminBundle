@@ -35,10 +35,10 @@
         },
         _createPlaceholder: function() {
             this.$placeholder = $('<div>')
-                    .attr('class', $(this.element).attr('class'))
-                    .removeClass(this.settings.stickyClass)
-                    .addClass(this.settings.placeholderClass)
-                    .insertAfter(this.element);
+                .attr('class', $(this.element).attr('class'))
+                .removeClass(this.settings.stickyClass)
+                .addClass(this.settings.placeholderClass)
+                .insertAfter(this.element);
         },
         _initWaypoint: function() {
             var that = this;
@@ -49,13 +49,13 @@
                 },
                 handler: function(direction) {
                     var $element = $(that.element);
-                    
+
                     that.$placeholder.height(0);
-                    
+
                     $element
                         .removeClass(that.settings.stickyClass)
                         .css('width', '100%');
-                    
+
                     if ('up' === direction) {
                         that._createStickyFooter();
                     }
@@ -96,7 +96,7 @@
         _createStickyFooter: function() {
             var $element = $(this.element);
             this.$placeholder.height($element.height());
-                
+
             $element
                 .addClass(this.settings.stickyClass)
                 .width(this.$placeholder.width());

@@ -199,6 +199,17 @@ class PropertyConfigPass implements ConfigPassInterface
                         );
                     }
 
+                    // special case for the 'list' view: 'boolean' properties are displayed
+                    // as toggleable flip switches when certain conditions are met
+                    if ('list' === $view && 'boolean' === $normalizedConfig['dataType']) {
+                        // conditions:
+                        //   1) the end-user hasn't configured the field type explicitly
+                        //   2) the 'edit' action is enabled for the 'list' view of this entity
+                        if (!isset($originalFieldConfig['type']) && !in_array('edit', $entityConfig['disabled_actions'])) {
+                            $normalizedConfig['dataType'] = 'toggle';
+                        }
+                    }
+
                     if (null === $normalizedConfig['format']) {
                         $normalizedConfig['format'] = $this->getFieldFormat($normalizedConfig['type'], $backendConfig);
                     }

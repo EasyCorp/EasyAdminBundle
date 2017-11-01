@@ -258,6 +258,14 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertRegExp('/\d{2}:\d{2}/', trim($crawler->filter('#main table tr')->eq(1)->filter('td.time')->text()));
     }
 
+    public function testListViewBooleanToggles()
+    {
+        $crawler = $this->requestListView('Product');
+
+        $this->assertCount(15, $crawler->filter('td[data-label="Enabled"].toggle'), 'Boolean properties are displayed with a toggle widget unless configured explicitly.');
+        $this->assertCount(0, $crawler->filter('td[data-label="Enabled"].boolean'));
+    }
+
     public function testShowViewPageTitle()
     {
         $crawler = $this->requestShowView();

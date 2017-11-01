@@ -258,6 +258,13 @@ button.btn:active {
     padding: 6px 12px;
     text-align: center;
 }
+.btn-xs,
+.btn-xs:hover,
+.btn-xs:active,
+.btn-xs:focus,
+.btn-xs:active:hover {
+    padding: 1px 5px;
+}
 
 .btn-primary,
 .btn-primary:hover,
@@ -265,6 +272,15 @@ button.btn:active {
 .btn-primary:focus,
 .btn-primary:active:hover {
     background-color: {{ brand_color }};
+    border-color: transparent;
+    color: {{ colors.white }};
+}
+.btn-info,
+.btn-info:hover,
+.btn-info:active,
+.btn-info:focus,
+.btn-info:active:hover {
+    background-color: #39a0ed;
     border-color: transparent;
     color: {{ colors.white }};
 }
@@ -312,7 +328,8 @@ button.btn:active {
 
 .btn-primary,
 .btn-danger,
-.btn-success {
+.btn-success,
+.btn-info {
     font-weight: bold;
 }
 

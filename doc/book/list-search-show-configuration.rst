@@ -615,7 +615,7 @@ that some browsers don't support these links:
                         # ...
         # ...
 
-Toogle and Boolean Data Types
+Toggle and Boolean Data Types
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If an entity is editable, the ``list`` view applies the ``type: 'toggle'``

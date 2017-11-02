@@ -93,7 +93,7 @@ class EasyAdminFormType extends AbstractType
             // in a property to get them in form template
             if (in_array($formFieldType, array('easyadmin_tab', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminTabType'))) {
                 // The first tab should be marked as active by default
-                $metadata['active'] = count($formTabs) === 0;
+                $metadata['active'] = 0 === count($formTabs);
                 $metadata['errors'] = 0;
                 $currentFormTab = $metadata['fieldName'];
 
@@ -122,7 +122,7 @@ class EasyAdminFormType extends AbstractType
         $builder->setAttribute('easyadmin_form_groups', $formGroups);
 
         if (count($formTabs) > 0) {
-            $listenerClosure = function(FormEvent $event) use ($formTabs) {
+            $listenerClosure = function (FormEvent $event) use ($formTabs) {
                 $activeTab = null;
                 foreach ($event->getForm() as $child) {
                     $errors = $child->getErrors(true);

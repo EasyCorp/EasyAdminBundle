@@ -220,6 +220,21 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertSame('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
+    public function testListViewColumnSortingResetsPaginator()
+    {
+        $crawler = $this->requestListView();
+
+        // Click on the 'Next' link in the paginator
+        $crawler = $this->client->click($crawler->selectLink('Next')->link());
+        $this->assertSame('id', $this->client->getRequest()->query->get('sortField'));
+        $this->assertSame(2, $this->client->getRequest()->query->getInt('page'));
+
+        // 2. Click on the 'Name' table column to reorder the listing
+        $crawler = $this->client->click($crawler->filter('thead')->selectLink('Name')->link());
+        $this->assertSame('name', $this->client->getRequest()->query->get('sortField'));
+        $this->assertSame(1, $this->client->getRequest()->query->getInt('page'), 'When the listing contents are reordered, the pagination is reset to the first page.');
+    }
+
     public function testListViewTableContents()
     {
         $crawler = $this->requestListView();
@@ -615,6 +630,21 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
         $this->assertSame('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
         $this->assertSame('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+    }
+
+    public function testSearchViewColumnSortingResetsPaginator()
+    {
+        $crawler = $this->requestSearchView();
+
+        // Click on the 'Next' link in the paginator
+        $crawler = $this->client->click($crawler->selectLink('Next')->link());
+        $this->assertSame('id', $this->client->getRequest()->query->get('sortField'));
+        $this->assertSame(2, $this->client->getRequest()->query->getInt('page'));
+
+        // 2. Click on the 'Name' table column to reorder the search results
+        $crawler = $this->client->click($crawler->filter('thead')->selectLink('Name')->link());
+        $this->assertSame('name', $this->client->getRequest()->query->get('sortField'));
+        $this->assertSame(1, $this->client->getRequest()->query->getInt('page'), 'When the search results are reordered, the pagination is reset to the first page.');
     }
 
     public function testSearchViewTableContents()

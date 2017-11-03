@@ -405,6 +405,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $value));
 
         $this->get('property_accessor')->setValue($entity, $property, $value);
+        $this->executeDynamicMethod('preUpdate<EntityName>Entity', array($entity));
 
         $this->em->persist($entity);
         $this->em->flush();

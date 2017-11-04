@@ -1330,6 +1330,10 @@ body.error .error-message {
         border-top: 1px solid {{ colors.table_row_border }};
         display: table-cell;
     }
+    body.list table tbody td:last-child {
+        white-space: nowrap;
+        width: 1%;
+    }
     table td:before {
         content: none;
         float: none;

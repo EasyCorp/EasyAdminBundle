@@ -3,6 +3,8 @@ EasyAdmin
 
 [![Tests][1]][2] [![Code Quality][3]][4] [![Code Coverage][5]][6] [![Symfony 2.x and 3.x][7]][8]
 
+[![Throughput Graph](https://graphs.waffle.io/javiereguiluz/EasyAdminBundle/throughput.svg)](https://waffle.io/javiereguiluz/EasyAdminBundle/metrics/throughput)
+
 EasyAdmin creates administration backends for your Symfony applications with
 unprecedented simplicity.
 

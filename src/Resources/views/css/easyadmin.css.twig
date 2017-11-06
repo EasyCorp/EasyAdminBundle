@@ -158,6 +158,11 @@ div.flash-error strong {
 
 {# Switches / toggles
    ------------------------------------------------------------------------- #}
+{# needed to neutralize the default .toggle styles applied by Bootstrap Toggle
+   which collide with the .toggle class applied to <th> too #}
+.toggle { position: initial; }
+.toggle:not(th) { position: relative; }
+
 .toggle.btn-xs {
  width: 44px;
 }

@@ -102,6 +102,13 @@ class QueryBuilder
 
         $queryParameters = array();
         foreach ($entityConfig['search']['fields'] as $name => $metadata) {
+            $fieldPrefix = 'entity';
+
+            if(strpos($name, '.') !== false) {
+                [$fieldPrefix, $name] = explode('.', $name);
+                $queryBuilder->join('entity.'.$fieldPrefix, $fieldPrefix);
+            }
+            
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];
             $isIntegerField = 'integer' === $metadata['dataType'];
             $isNumericField = in_array($metadata['dataType'], array('number', 'bigint', 'decimal', 'float'));
@@ -114,17 +121,17 @@ class QueryBuilder
                 $isIntegerField && $isSearchQueryInteger ||
                 $isNumericField && $isSearchQueryNumeric
             ) {
-                $queryBuilder->orWhere(sprintf('entity.%s = :numeric_query', $name));
+                $queryBuilder->orWhere(sprintf('%s.%s = :numeric_query', $fieldPrefix, $name));
                 // adding '0' turns the string into a numeric value
                 $queryParameters['numeric_query'] = 0 + $searchQuery;
             } elseif ($isGuidField && $isSearchQueryUuid) {
-                $queryBuilder->orWhere(sprintf('entity.%s = :uuid_query', $name));
+                $queryBuilder->orWhere(sprintf('%s.%s = :uuid_query', $fieldPrefix, $name));
                 $queryParameters['uuid_query'] = $searchQuery;
             } elseif ($isTextField) {
-                $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));
+                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :fuzzy_query', $fieldPrefix, $name));
                 $queryParameters['fuzzy_query'] = '%'.$lowerSearchQuery.'%';
 
-                $queryBuilder->orWhere(sprintf('LOWER(entity.%s) IN (:words_query)', $name));
+                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:words_query)', $fieldPrefix, $name));
                 $queryParameters['words_query'] = explode(' ', $lowerSearchQuery);
             }
         }

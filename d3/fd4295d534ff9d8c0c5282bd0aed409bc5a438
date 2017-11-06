@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-11-04T15:59:24Z
+
+Much better indeed! Let me check it in different browsers to see if it always work as expected. Thanks!
+
+---------------------------------------------------------------------------
+
+by iluuu1994 at 2017-11-04T16:12:28Z
+
+It works fine in Safari, Firefox and Chrome. I have not tested IE and Edge though.
+
+---------------------------------------------------------------------------
+
+by iluuu1994 at 2017-11-06T19:30:27Z
+
+@javiereguiluz Good catch! Should be fixed now.

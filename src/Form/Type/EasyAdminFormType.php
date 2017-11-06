@@ -18,8 +18,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInter
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;

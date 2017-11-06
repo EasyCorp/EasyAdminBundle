@@ -13,6 +13,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
@@ -122,30 +123,7 @@ class EasyAdminFormType extends AbstractType
         $builder->setAttribute('easyadmin_form_groups', $formGroups);
 
         if (count($formTabs) > 0) {
-            $listenerClosure = function (FormEvent $event) use ($formTabs) {
-                $activeTab = null;
-                foreach ($event->getForm() as $child) {
-                    $errors = $child->getErrors(true);
-
-                    if (count($errors) > 0) {
-                        $formTab = $child->getConfig()->getAttribute('easyadmin_form_tab');
-                        $formTabs[$formTab]['errors'] += count($errors);
-
-                        if (null === $activeTab) {
-                            $activeTab = $formTab;
-                        }
-                    }
-                }
-
-                $firstTab = key($formTabs);
-                if ($firstTab !== $activeTab) {
-                    // We have to deactivate the first tab, so that the first tab with
-                    // eroneous data is shown
-                    $formTabs[$firstTab]['active'] = false;
-                    $formTabs[$activeTab]['active'] = true;
-                }
-            };
-            $builder->addEventListener(FormEvents::POST_SUBMIT, $listenerClosure, -1);
+            $builder->addEventSubscriber(new EasyAdminTabSubscriber());
         }
     }
 

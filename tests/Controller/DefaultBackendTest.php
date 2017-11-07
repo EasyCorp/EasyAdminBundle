@@ -574,24 +574,16 @@ class DefaultBackendTest extends AbstractTestCase
 
     public function testSearchViewEmptyQuery()
     {
-        // empty queries redirect to "list" action
-        $this->getBackendPage(array(
-            'action' => 'search',
-            'entity' => 'Category',
-            'query' => '',
-        ));
+        foreach (array('', '    ') as $emptyQuery) {
+            $this->getBackendPage(array(
+                'action' => 'search',
+                'entity' => 'Category',
+                'query' => $emptyQuery,
+            ));
 
-        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertSame('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC', $this->client->getResponse()->headers->get('location'));
-
-        // pseudo-empty queries (e.g. strings which only contain white spaces) don't redirect to "list" action
-        $crawler = $this->getBackendPage(array(
-            'action' => 'search',
-            'entity' => 'Category',
-            'query' => '    ',
-        ));
-
-        $this->assertSame('No results found', $crawler->filter('h1.title')->text());
+            $this->assertSame(302, $this->client->getResponse()->getStatusCode());
+            $this->assertSame('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC', $this->client->getResponse()->headers->get('location'), 'Empty queries redirect back to the list view.');
+        }
     }
 
     public function testSearchViewTableIdColumn()

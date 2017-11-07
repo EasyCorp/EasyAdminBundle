@@ -351,8 +351,9 @@ class AdminController extends Controller
     {
         $this->dispatch(EasyAdminEvents::PRE_SEARCH);
 
+        $query = trim($this->request->query->get('query'));
         // if the search query is empty, redirect to the 'list' action
-        if ('' === $this->request->query->get('query')) {
+        if ('' === $query) {
             $queryParameters = array_replace($this->request->query->all(), array('action' => 'list', 'query' => null));
             $queryParameters = array_filter($queryParameters);
 
@@ -362,7 +363,7 @@ class AdminController extends Controller
         $searchableFields = $this->entity['search']['fields'];
         $paginator = $this->findBy(
             $this->entity['class'],
-            $this->request->query->get('query'),
+            $query,
             $searchableFields,
             $this->request->query->get('page', 1),
             $this->config['list']['max_results'],

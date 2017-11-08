@@ -446,8 +446,8 @@
 {% endspaceless %}
 {% endblock %}
 
-{% block form_rest %}
-    {{- parent() -}}
+{% block easyadmin_rest %}
+    {{- form_rest(form) -}}
     {% if form.parent is empty %}
         <div class="row">
             <div class="col-xs-12 form-actions">
@@ -459,7 +459,7 @@
             </div>
         </div>
     {% endif %}
-{% endblock form_rest %}
+{% endblock easyadmin_rest %}
 
 {% block item_actions %}
     {% set _translation_domain = easyadmin.entity.translation_domain %}

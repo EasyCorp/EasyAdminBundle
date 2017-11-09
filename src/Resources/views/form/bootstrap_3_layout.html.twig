@@ -20,9 +20,7 @@
 
     {{- parent() -}}
 
-    {% if form.parent is empty %}
-        <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
-    {% endif %}
+    <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
 {%- endblock form_start %}
 
 {# Widgets #}
@@ -448,17 +446,15 @@
 
 {% block easyadmin_rest %}
     {{- form_rest(form) -}}
-    {% if form.parent is empty %}
-        <div class="row">
-            <div class="col-xs-12 form-actions">
-                <div class="form-group">
-                    <div id="form-actions-row">
-                        {{- block('item_actions') -}}
-                    </div>
+    <div class="row">
+        <div class="col-xs-12 form-actions">
+            <div class="form-group">
+                <div id="form-actions-row">
+                    {{- block('item_actions') -}}
                 </div>
             </div>
         </div>
-    {% endif %}
+    </div>
 {% endblock easyadmin_rest %}
 
 {% block item_actions %}

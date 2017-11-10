@@ -137,7 +137,7 @@
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
-                <target>خطأ | أخطاء</target>
+                <target><![CDATA[{1} خطأ|]1,Inf] أخطاء ]]></target>
             </trans-unit>
             <trans-unit id="form.are_you_sure">
                 <source>form.are_you_sure</source>

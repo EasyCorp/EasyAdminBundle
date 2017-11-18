@@ -51,6 +51,7 @@ security:
                 users:
                     admin:
                         password: 'pa$$word'
+                        roles: [ROLE_USER]
     firewalls:
         main:
             pattern:   ^/

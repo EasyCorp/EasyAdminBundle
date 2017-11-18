@@ -5,6 +5,7 @@ parameters:
     database_path: '%kernel.root_dir%/../../../build/test.db'
 
 framework:
+    assets:          ~
     secret:          secret
     translator:      ~
     default_locale:  '%locale%'

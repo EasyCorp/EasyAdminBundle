@@ -27,6 +27,8 @@ class ActionConfigPass implements ConfigPassInterface
         'type' => 'method',
         // action label (displayed as link or button) (if 'null', autogenerate it)
         'label' => null,
+        // the HTML title attribute of the action link (useful when action only displays its icon)
+        'title' => null,
         // the CSS class applied to the button/link displayed by the action
         'css_class' => null,
         // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)

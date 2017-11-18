@@ -399,13 +399,13 @@ class AdminController extends Controller
         $entityConfig = $this->entity;
 
         // the method_exists() check is needed because Symfony 2.3 doesn't have isWritable() method
-        if (method_exists($this->get('property_accessor'), 'isWritable') && !$this->get('property_accessor')->isWritable($entity, $property)) {
+        if (method_exists($this->get('easy_admin.property_accessor'), 'isWritable') && !$this->get('easy_admin.property_accessor')->isWritable($entity, $property)) {
             throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
         }
 
         $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $value));
 
-        $this->get('property_accessor')->setValue($entity, $property, $value);
+        $this->get('easy_admin.property_accessor')->setValue($entity, $property, $value);
         $this->executeDynamicMethod('preUpdate<EntityName>Entity', array($entity));
 
         $this->em->persist($entity);

@@ -122,5 +122,7 @@
         <service id="easyadmin.configuration.default_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass" public="false">
             <tag name="easyadmin.config_pass" priority="10" />
         </service>
+
+        <service id="easy_admin.property_accessor" alias="property_accessor" public="true" />
     </services>
 </container>

@@ -67,7 +67,8 @@
         "psr-4": {
             "AppTestBundle\\": "tests/Fixtures/AppTestBundle/",
             "EasyCorp\\Bundle\\EasyAdminBundle\\Tests\\": "tests/"
-        }
+        },
+        "classmap": ["tests/Fixtures/App/DynamicConfigLoadingKernel.php"]
     },
     "extra": {
         "branch-alias": {

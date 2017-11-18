@@ -25,6 +25,12 @@ matrix:
       env:
         - SYMFONY_VERSION="dev-master"
         - TWIG_VERSION="dev-master"
+    # preparing for Symfony 4 release
+    - php: 7.1
+      env:
+        - SYMFONY_VERSION="4.0"
+        - TWIG_VERSION="^2.4"
+        - INSTALL_BETA_VERSIONS="yes"
     # stable (most recent stable versions)
     - php: 7.1
       env:
@@ -57,6 +63,7 @@ before_install:
   - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == 3.3.* ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
   - if [[ "$ENABLE_CODE_COVERAGE" != "true" && "$TRAVIS_EVENT_TYPE" != "cron" ]]; then rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini; fi;
   - composer self-update
+  - if [ "$INSTALL_BETA_VERSIONS" = "yes" ]; then composer config minimum-stability beta; fi;
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
   - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
 

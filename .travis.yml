@@ -23,8 +23,7 @@ matrix:
     # bleeding edge (unreleased dev versions where failures are allowed)
     - php: nightly
       env:
-        - SYMFONY_VERSION="dev-master"
-        - TWIG_VERSION="dev-master"
+        - STABILITY=dev
     # stable (most recent stable versions)
     - php: 7.1
       env:
@@ -59,6 +58,7 @@ before_install:
   - composer self-update
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
   - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
+  - if [[ "$STABILITY" != "" ]]; then composer config minimum-stability dev; fi
 
 install:
   - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then composer require --dev --no-update friendsofphp/php-cs-fixer; fi;

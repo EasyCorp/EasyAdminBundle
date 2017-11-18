@@ -15,7 +15,8 @@ env:
     - SYMFONY_VERSION=""
     - CHECK_PHP_SYNTAX="no"
     - SYMFONY_DEPRECATIONS_HELPER="weak"
-    - ENABLE_CODE_COVERAGE="false"
+    - ENABLE_CODE_COVERAGE="no"
+    - INSTALL_BETA_VERSIONS="no"
 
 matrix:
   fast_finish: true
@@ -41,7 +42,7 @@ matrix:
     - php: 5.6
       env:
         - SYMFONY_VERSION="2.8.*"
-        - ENABLE_CODE_COVERAGE="true"
+        - ENABLE_CODE_COVERAGE="yes"
     # legacy (oldest supported versions)
     - php: 5.3
       env:
@@ -52,7 +53,7 @@ matrix:
     # code coverage is very slow; allow a failure to get the Travis result early
     - env:
         - SYMFONY_VERSION="2.8.*"
-        - ENABLE_CODE_COVERAGE="true"
+        - ENABLE_CODE_COVERAGE="yes"
 
 before_install:
   - stty cols 120
@@ -61,7 +62,7 @@ before_install:
   - echo session.gc_probability = 0 >> $INI_FILE
   - echo opcache.enable_cli = 1 >> $INI_FILE
   - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == 3.3.* ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
-  - if [[ "$ENABLE_CODE_COVERAGE" != "true" && "$TRAVIS_EVENT_TYPE" != "cron" ]]; then rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini; fi;
+  - if [[ "$ENABLE_CODE_COVERAGE" != "yes" && "$TRAVIS_EVENT_TYPE" != "cron" ]]; then rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini; fi;
   - composer self-update
   - if [ "$INSTALL_BETA_VERSIONS" = "yes" ]; then composer config minimum-stability beta; fi;
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
@@ -70,12 +71,12 @@ before_install:
 install:
   - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then composer require --dev --no-update friendsofphp/php-cs-fixer; fi;
   - composer update --prefer-dist --no-interaction --no-suggest --no-progress --ansi $COMPOSER_FLAGS
-  - if [[ "$ENABLE_CODE_COVERAGE" == "true" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then composer require --dev satooshi/php-coveralls; fi
+  - if [[ "$ENABLE_CODE_COVERAGE" == "yes" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then composer require --dev satooshi/php-coveralls; fi
 
 script:
-  - if [[ "$ENABLE_CODE_COVERAGE" == "true" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml; else vendor/bin/phpunit; fi;
+  - if [[ "$ENABLE_CODE_COVERAGE" == "yes" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml; else vendor/bin/phpunit; fi;
   - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then php vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
   - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then mv ./.php_cs.cache $HOME/.app/cache/.php_cs.cache 2> /dev/null; fi;
 
 after_success: |
-    if [[ "$ENABLE_CODE_COVERAGE" == "true" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;
+    if [[ "$ENABLE_CODE_COVERAGE" == "yes" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;

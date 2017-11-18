@@ -27,6 +27,7 @@
     -->
 
     <php>
+        <server name="KERNEL_DIR" value="./tests/Fixtures/App" />
         <server name="KERNEL_CLASS" value="DynamicConfigLoadingKernel" />
         <ini name="error_reporting" value="E_ALL" />
         <ini name="display_errors" value="1" />

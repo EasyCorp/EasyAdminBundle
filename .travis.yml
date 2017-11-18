@@ -36,6 +36,12 @@ matrix:
       env:
         - SYMFONY_VERSION="2.8.*"
         - ENABLE_CODE_COVERAGE="true"
+    # Symfony 3 LTS
+    - php: 7.1
+      env:
+        - SYMFONY_VERSION="3.4.*"
+        - STABILITY=beta
+        - SYMFONY_DEPRECATIONS_HELPER="strict"
     # legacy (oldest supported versions)
     - php: 5.3
       env:
@@ -59,6 +65,7 @@ before_install:
   - composer self-update
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
   - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
+  - if [[ "$STABILITY" != "" ]]; then composer config minimum-stability $STABILITY; fi
 
 install:
   - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then composer require --dev --no-update friendsofphp/php-cs-fixer; fi;

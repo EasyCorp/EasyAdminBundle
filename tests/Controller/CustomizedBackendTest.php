@@ -29,7 +29,7 @@ class CustomizedBackendTest extends AbstractTestCase
             'PHP_AUTH_USER' => 'admin',
             'PHP_AUTH_PW' => 'pa$$word',
         ));
-var_dump($this->client->getResponse());exit;
+
         $this->assertContains('admin', $crawler->filter('header .user-menu')->text());
 
         if (class_exists('Symfony\\Component\\Security\\Http\\Logout\\LogoutUrlGenerator')) {

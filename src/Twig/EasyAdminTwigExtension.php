@@ -152,6 +152,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
 
         try {
+            if (isset($fieldMetadata['template'])) {
+                return $twig->render($fieldMetadata['template'], $templateParameters);
+            }
+
             if (null === $templateParameters['value']) {
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
             }
@@ -176,7 +180,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $this->renderVirtualField($templateParameters);
             }
 
-            return $twig->render($fieldMetadata['template'], $templateParameters);
+            throw new \RuntimeException(sprintf('No template found for property %s', $fieldName));
         } catch (\Exception $e) {
             if ($this->debug) {
                 throw $e;

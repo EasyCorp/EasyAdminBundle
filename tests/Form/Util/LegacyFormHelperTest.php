@@ -13,6 +13,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Util\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 
+/**
+ * @group legacy
+ */
 class LegacyFormHelperTest extends \PHPUnit_Framework_TestCase
 {
     public function shortTypesToFqcnProvider()

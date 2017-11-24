@@ -36,7 +36,7 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
 
-        if ($this->isSymfony3()) {
+        if ($this->requiresAssetsConfig()) {
             $loader->load(function (ContainerBuilder $container) {
                 $container->loadFromExtension('framework', array(
                     'assets' => null,
@@ -44,7 +44,7 @@ class AppKernel extends Kernel
             });
         }
 
-        if ($this->isSymfony23()) {
+        if ($this->requiresTemplatingConfig()) {
             $loader->load(function (ContainerBuilder $container) {
                 $container->loadFromExtension('framework', array(
                     'templating' => array(
@@ -71,12 +71,12 @@ class AppKernel extends Kernel
         return __DIR__.'/../../../build/kernel_logs/'.$this->getEnvironment();
     }
 
-    protected function isSymfony3()
+    protected function requiresAssetsConfig()
     {
-        return 3 === Kernel::MAJOR_VERSION;
+        return (int) Kernel::MAJOR_VERSION >= 3;
     }
 
-    protected function isSymfony23()
+    protected function requiresTemplatingConfig()
     {
         return 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
     }

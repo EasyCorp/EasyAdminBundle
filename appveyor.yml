@@ -38,5 +38,5 @@ install:
 test_script:
     - cd c:\projects\easyadmin-bundle
     - SET X=0
-    - php vendor\bin\phpunit
+    - php vendor\bin\simple-phpunit
     - exit %X%

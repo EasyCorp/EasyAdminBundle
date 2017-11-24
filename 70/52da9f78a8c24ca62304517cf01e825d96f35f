@@ -1,0 +1,40 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-11-18T14:43:49Z
+
+@xabbuh could you please help me here? I have some questions:
+
+1) Is this config line still correct? https://github.com/javiereguiluz/EasyAdminBundle/blob/829467919e624382f577c76d64d862d858b9adb6/.travis.yml#L65  We no longer use `symfony/symfony` but individual components.
+
+2) I can't reproduce the errors for Symfony 4 beta dependencies. Locally it works, but on Travis I see this: https://travis-ci.org/javiereguiluz/EasyAdminBundle/builds/303982341
+
+Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-11-18T15:33:23Z
+
+I'm getting a very strange error in Symfony 4 tests:
+
+```
+Twig_Error_Syntax:
+Unknown "asset" function.
+  at /home/travis/build/javiereguiluz/EasyAdminBundle/src/Resources/views/default/layout.html.twig:13
+  at Twig_ExpressionParser->getFunctionNodeClass('asset', 13)
+     (/home/travis/build/javiereguiluz/EasyAdminBundle/vendor/twig/twig/lib/Twig/ExpressionParser.php:364)
+  at Twig_ExpressionParser->getFunctionNode('asset', 13)
+     (/home/travis/build/javiereguiluz/EasyAdminBundle/vendor/twig/twig/lib/Twig/ExpressionParser.php:152)
+  at Twig_ExpressionParser->parsePrimaryExpression()
+     (/home/travis/build/javiereguiluz/EasyAdminBundle/vendor/twig/twig/lib/Twig/ExpressionParser.php:92)
+  at Twig_ExpressionParser->getPrimary()
+     (/home/travis/build/javiereguiluz/EasyAdminBundle/vendor/twig/twig/lib/Twig/ExpressionParser.php:45)
+  at [...]
+```
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-11-23T19:49:09Z
+
+And we are green from Symfony 2.3 to 4.0 and from PHP 5.3 to 7.1 🎉
+
+Thanks @xabbuh for your help!

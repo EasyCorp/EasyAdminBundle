@@ -39,6 +39,11 @@ class MissingDoctrineOrmTypeGuesser extends DoctrineOrmTypeGuesser
                     return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\TextareaType', array(), Guess::MEDIUM_CONFIDENCE);
                 case Type::GUID:
                     return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\TextType', array(), Guess::MEDIUM_CONFIDENCE);
+                case Type::DATETIME_IMMUTABLE:
+                case Type::DATETIMETZ_IMMUTABLE:
+                    return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\DateTimeType', array(), Guess::HIGH_CONFIDENCE);
+                case Type::DATE_IMMUTABLE:
+                    return new TypeGuess('Symfony\Component\Form\Extension\Core\Type\DateType', array(), Guess::HIGH_CONFIDENCE);
             }
         }
 

@@ -199,9 +199,15 @@ class ViewConfigPass implements ConfigPassInterface
      */
     private function getFieldFormat($fieldType, array $backendConfig)
     {
-        if (in_array($fieldType, array('date', 'time', 'datetime', 'datetimetz'))) {
+        if (in_array($fieldType, array('date', 'date_immutable', 'time', 'datetime', 'datetime_immutable', 'datetimetz', 'datetimetz_immutable'))) {
             // make 'datetimetz' use the same format as 'datetime'
-            $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
+            if (in_array($fieldType, array('datetime_immutable', 'datetimetz', 'datetimetz_immutable'), true)) {
+                $fieldType = 'datetime';
+            }
+
+            if ('date_immutable' === $fieldType) {
+                $fieldType = 'date';
+            }
 
             return $backendConfig['formats'][$fieldType];
         }
@@ -245,7 +251,7 @@ class ViewConfigPass implements ConfigPassInterface
             'edit' => array('binary', 'blob', 'json_array', 'json', 'object'),
             'list' => array('array', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'),
             'new' => array('binary', 'blob', 'json_array', 'json', 'object'),
-            'search' => array('association', 'binary', 'boolean', 'blob', 'date', 'datetime', 'datetimetz', 'time', 'object'),
+            'search' => array('association', 'binary', 'boolean', 'blob', 'date', 'date_immutable', 'datetime', 'datetime_immutable', 'datetimetz', 'datetimetz_immutable', 'time', 'object'),
             'show' => array(),
         );
 

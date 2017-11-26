@@ -38,6 +38,13 @@ class User
      */
     private $purchases;
 
+    /**
+     * @var \DateTimeImmutable
+     *
+     * @ORM\Column(type="datetime_immutable", name="created_at")
+     */
+    private $createdAt;
+
     public function __toString()
     {
         return $this->username;
@@ -46,6 +53,7 @@ class User
     public function __construct()
     {
         $this->purchases = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId()
@@ -99,5 +107,13 @@ class User
     public function getPurchases()
     {
         return $this->purchases;
+    }
+
+    /**
+     * @return \DateTimeImmutable
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

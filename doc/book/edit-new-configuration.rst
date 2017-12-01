@@ -748,7 +748,7 @@ very advanced layouts.
     reorder the form group positions.
 
 Form Tabs
-...........
+.........
 
 Like the form groups tabs are another way to separate form fields to achieve a
 better overview and a cleaner interface.

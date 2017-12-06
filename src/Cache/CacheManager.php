@@ -11,18 +11,20 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Cache;
 
-use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\Common\Cache\CacheProvider;
 
 /**
  * It provides a file system based cache exposing methods with the same names
  * as in the PSR-6 Cache standard. This will simplify the eventual replacement
  * of Doctrine Cache by Symfony Cache.
  */
-class CacheManager extends FilesystemCache
+class CacheManager
 {
-    public function __construct($cacheDir)
+    private $cache;
+
+    public function __construct(CacheProvider $cache)
     {
-        parent::__construct($cacheDir);
+        $this->cache = $cache;
     }
 
     /**
@@ -32,7 +34,7 @@ class CacheManager extends FilesystemCache
      */
     public function getItem($key)
     {
-        return parent::fetch($key);
+        return $this->cache->fetch($key);
     }
 
     /**
@@ -42,7 +44,7 @@ class CacheManager extends FilesystemCache
      */
     public function hasItem($key)
     {
-        return parent::contains($key);
+        return $this->cache->contains($key);
     }
 
     /**
@@ -54,7 +56,7 @@ class CacheManager extends FilesystemCache
      */
     public function save($key, $item, $lifetime = 0)
     {
-        return parent::save($key, $item, $lifetime);
+        return $this->cache->save($key, $item, $lifetime);
     }
 }
 

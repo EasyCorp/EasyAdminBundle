@@ -4,8 +4,14 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="easyadmin.cache.manager" class="EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager" public="true">
+        <service id="easyadmin.cache.provider.filesystem" class="Doctrine\Common\Cache\FilesystemCache" public="false">
             <argument>%easyadmin.cache.dir%</argument>
+        </service>
+
+        <service id="easyadmin.cache.provider.array" class="Doctrine\Common\Cache\ArrayCache" public="false" />
+
+        <service id="easyadmin.cache.manager" class="EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager" public="true">
+            <argument /> <!-- the Doctrine Cache provider -->
         </service>
 
         <service id="easyadmin.cache.config_warmer" class="EasyCorp\Bundle\EasyAdminBundle\Cache\ConfigWarmer" public="false">

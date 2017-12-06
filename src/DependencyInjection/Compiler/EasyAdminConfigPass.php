@@ -25,6 +25,13 @@ final class EasyAdminConfigPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        // FilesystemCache doesn't work on Read Only File Systems (like Google App Engine)
+        if (!is_writable(dirname($container->getParameter('easyadmin.cache.dir')))) {
+            $container->getDefinition('easyadmin.cache.manager')->replaceArgument(0, new Reference('easyadmin.cache.provider.filesystem'));
+        } else {
+            $container->getDefinition('easyadmin.cache.manager')->replaceArgument(0, new Reference('easyadmin.cache.provider.array'));
+        }
+
         $configPasses = $this->findAndSortTaggedServices('easyadmin.config_pass', $container);
         $definition = $container->getDefinition('easyadmin.config.manager');
 

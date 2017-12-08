@@ -143,6 +143,36 @@
                 <source>errors</source>
                 <target>Errore|Errori</target>
             </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Non hai salvato le modifiche apportate su questo modulo.</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} è presente un altro elemento non mostrato in questo elenco|]1,Inf] %count% sono presenti altri elementi non mostrati in questo elenco]]></target>
+            </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Questo elemento non è più disponibile.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>L'elemento selezionato non può essere cancellato perché altri elementi dipendono da questo.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>L'azione richiesta non può essere eseguita su questo elemento.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>L'applicazione non è configurata correttamente.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>L'applicazione non è configurata correttamente per questo tipo di elementi.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

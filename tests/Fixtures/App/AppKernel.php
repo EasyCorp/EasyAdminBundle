@@ -55,13 +55,15 @@ class AppKernel extends Kernel
         }
 
         if ($this->requiresLogoutOnUserChange()) {
-            $container->loadFromExtension('security', array(
-                'firewalls' => array(
-                    'main' => array(
-                        'logout_on_user_change' => true,
+            $loader->load(function (ContainerBuilder $container) {
+                $container->loadFromExtension('security', array(
+                    'firewalls' => array(
+                        'main' => array(
+                            'logout_on_user_change' => true,
+                        ),
                     ),
-                ),
-            ));
+                ));
+            });
         }
     }
 

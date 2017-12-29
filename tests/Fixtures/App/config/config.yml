@@ -43,8 +43,9 @@ doctrine:
 security:
     firewalls:
         secured_area:
-            pattern:    ^/
-            anonymous:  true
+            pattern: ^/
+            anonymous: true
+            logout_on_user_change: true
     providers:
         in_memory:
              memory: ~

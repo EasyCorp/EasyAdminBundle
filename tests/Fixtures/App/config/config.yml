@@ -42,9 +42,9 @@ doctrine:
 
 security:
     firewalls:
-        secured_area:
-            pattern:    ^/
-            anonymous:  true
+        main:
+            pattern: ^/
+            anonymous: true
     providers:
         in_memory:
              memory: ~

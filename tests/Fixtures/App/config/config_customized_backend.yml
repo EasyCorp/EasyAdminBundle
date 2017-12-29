@@ -54,9 +54,9 @@ security:
                         roles: [ROLE_USER]
     firewalls:
         main:
-            pattern:   ^/
-            logout:    true
+            pattern: ^/
             anonymous: true
+            logout: true
             http_basic:
                 provider: in_memory
     access_control:

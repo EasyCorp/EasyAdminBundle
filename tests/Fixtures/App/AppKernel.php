@@ -53,6 +53,16 @@ class AppKernel extends Kernel
                 ));
             });
         }
+
+        if ($this->requiresLogoutOnUserChange()) {
+            $container->loadFromExtension('security', array(
+                'firewalls' => array(
+                    'main' => array(
+                        'logout_on_user_change' => true,
+                    ),
+                ),
+            ));
+        }
     }
 
     /**
@@ -79,5 +89,10 @@ class AppKernel extends Kernel
     protected function requiresTemplatingConfig()
     {
         return 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
+    }
+
+    protected function requiresLogoutOnUserChange()
+    {
+        return (int) Kernel::VERSION_ID >= 30400;
     }
 }

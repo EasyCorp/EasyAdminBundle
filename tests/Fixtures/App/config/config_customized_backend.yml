@@ -57,7 +57,6 @@ security:
             pattern: ^/
             anonymous: true
             logout: true
-            logout_on_user_change: true
             http_basic:
                 provider: in_memory
     access_control:

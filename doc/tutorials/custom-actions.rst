@@ -60,7 +60,7 @@ Now you can define the ``restockAction()`` method in your own controller:
 
         public function restockAction()
         {
-            // controllers extending the base AdminController can access to the
+            // controllers extending the base AdminController get access to the
             // following variables:
             //   $this->request, stores the current request
             //   $this->em, stores the Entity Manager for this Doctrine entity
@@ -106,7 +106,7 @@ The inheritance of actions is also applied to custom actions:
 
     easy_admin:
         list:
-            # show the 'restock' action for all entities except those who remove it
+            # show the 'restock' action for all entities except those which remove it
             actions:
                 - { name: 'restock', icon: 'plus-square' }
 

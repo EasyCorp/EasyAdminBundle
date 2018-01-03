@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+
+by grachevko at 2017-09-23T09:08:08Z
+
+So, i extracted all methods: `persistEntity`, `updateEntity` and `removeEntity`.
+In my opinion we need to deprecate methods: `prePersistEntity`, `preUpdateEntity` and `preRemoveEntity`.
+New way to handle entities will look like:
+```php
+    protected function persistEntity($entity)
+    {
+        // do prePersistEntity
+        parent::persistEntity($entity);
+        // do postPersistEntity
+    }
+
+    protected function updateEntity($entity)
+    {
+        // do preUpdateEntity
+        parent::updateEntity($entity);
+        // do postUpdateEntity
+    }
+
+    protected function removeEntity($entity)
+    {
+        // do preRemoveEntity
+        parent::removeEntity($entity);
+        // do postRemoveEntity
+    }
+```
+
+I think this is more flexible and also add ability to post handle in controller without dispatcher.
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-09-23T09:11:59Z
+
+@javiereguiluz if you agree i will add deprecation notice.
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-10-21T17:05:11Z
+
+PR ready to merge, but maybe need to correct phpdoc of new methods.

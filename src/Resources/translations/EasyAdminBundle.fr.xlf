@@ -111,7 +111,7 @@
             </trans-unit>
             <trans-unit id="user.exit_impersonation">
                 <source>user.exit_impersonation</source>
-                <target>Arrêter l'impersonation</target>
+                <target>Arrêter l'impersonnalisation</target>
             </trans-unit>
 
             <!-- misc. elements -->
@@ -155,7 +155,7 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} il y a un autre élément qui n'est pas affiché dans cette liste|]1,Inf] %count% autres éléments ne sont pas affichés dans cette liste]]></target>
             </trans-unit>
-            
+
             <!-- Exceptions -->
             <trans-unit id="exception.entity_not_found">
                 <source>exception.entity_not_found</source>

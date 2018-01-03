@@ -188,10 +188,14 @@ The rest of the available methods are specific for each action:
         // items are deleted using the 'DELETE' HTTP method)
         protected function createDeleteForm($entityName, $entityId);
 
-        // It's executed just before removing the item with Doctrine and it allows
-        // to modify the item being deleted before removing it
-        protected function preRemoveEntity($entity);
+        // It deletes the given Doctrine entity. You can override this method to prevent
+        // entity removal when certain conditions met (e.g. don't delete user if username == 'admin').
+        protected function removeEntity($entity);
     }
+
+.. versionadded:: 1.17.8
+    The ``removeEntity()`` method was added in EasyAdmin 1.17.8. Previously it
+    was called ``preRemoveEntity()``.
 
 **Edit** action:
 
@@ -202,10 +206,14 @@ The rest of the available methods are specific for each action:
         // Creates the form used to edit an entity item
         protected function createEditForm($entity, array $entityProperties);
 
-        // It's executed just before saving the changes of a modified entity. It
-        // allows you to modify the entity even further before it's saved
-        protected function preUpdateEntity($entity)
+        // It flushes the given Doctrine entity to save its changes. It allows to modify
+        // the entity before it's saved in the database.
+        protected function updateEntity($entity)
     }
+
+.. versionadded:: 1.17.8
+    The ``updateEntity()`` method was added in EasyAdmin 1.17.8. Previously it
+    was called ``preUpdateEntity()``.
 
 **New** action:
 
@@ -221,10 +229,14 @@ The rest of the available methods are specific for each action:
         // Creates the form used to create a new entity item
         protected function createNewForm($entity, array $entityProperties)
 
-        // It's executed just before saving the item for the first time. It allows
-        // you to modify the entity before it's saved
-        protected function prePersistEntity($entity)
+        // It persists and flushes the given Doctrine entity. It allows to modify the entity
+        // before/after being saved in the database (e.g. to transform a DTO into a Doctrine entity)
+        protected function persistEntity($entity)
     }
+
+.. versionadded:: 1.17.8
+    The ``persistEntity()`` method was added in EasyAdmin 1.17.8. Previously it
+    was called ``prePersistEntity()``.
 
 **Edit** and **New** actions:
 
@@ -255,8 +267,8 @@ Update Some Properties for All Entities
 
 Imagine that some or all of your entities define a property called ``updatedAt``.
 Instead of editing this value using the backend interface or relying on Doctrine
-extensions, you can make use of the ``preUpdateEntity()`` method, which is called
-just before saving the changes made on an existing entity:
+extensions, you can make use of the ``updateEntity()`` method, which is called
+to save the changes made on an existing entity:
 
 .. code-block:: php
 
@@ -269,16 +281,18 @@ just before saving the changes made on an existing entity:
     {
         // ...
 
-        public function preUpdateEntity($entity)
+        public function updateEntity($entity)
         {
             if (method_exists($entity, 'setUpdatedAt')) {
                 $entity->setUpdatedAt(new \DateTime());
             }
+
+            parent::updateEntity($entity);
         }
     }
 
 This other example shows how to automatically set the slug of the entities when
-creating (``prePersistEntity()``) or editing (``preUpdateEntity()``) them:
+creating (``persistEntity()``) or editing (``updateEntity()``) them:
 
 .. code-block:: php
 
@@ -291,14 +305,16 @@ creating (``prePersistEntity()``) or editing (``preUpdateEntity()``) them:
     {
         // ...
 
-        public function prePersistEntity($entity)
+        public function persistEntity($entity)
         {
             $this->updateSlug($entity);
+            parent::persistEntity($entity);
         }
 
-        public function preUpdateEntity($entity)
+        public function updateEntity($entity)
         {
             $this->updateSlug($entity);
+            parent::updateEntity($entity);
         }
 
         private function updateSlug($entity)
@@ -325,8 +341,8 @@ methods, but they include the entity name as part of their names:
     // ...
     protected function createNew<EntityName>Entity();
     // ...
-    protected function prePersist<EntityName>Entity();
-    protected function preUpdate<EntityName>Entity();
+    protected function persist<EntityName>Entity();
+    protected function update<EntityName>Entity();
     // ...
 
 .. tip::

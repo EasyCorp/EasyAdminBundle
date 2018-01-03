@@ -109,6 +109,10 @@
                 <source>user.signout</source>
                 <target>Sign out</target>
             </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Exit impersonation</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="toggle_navigation">

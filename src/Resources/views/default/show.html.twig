@@ -21,7 +21,7 @@
         {% block show-fields %}
             {% for field, metadata in fields %}
                 {% block show-field %}
-                    <div class="form-group field-{{ metadata.type|default('default')|lower }} field_name-{{ field }} {{ metadata.css_class|default('') }}">
+                    <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
                         <label class="col-sm-2 control-label">
                             {{ (metadata.label ?: field|humanize)|trans(_trans_parameters)|raw }}
                         </label>

@@ -88,10 +88,12 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
+        $joined = array();
         $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
         if ($isSortedByDoctrineAssociation) {
             $sortFieldParts = explode('.', $sortField);
             $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
+            $joined[] = $sortFieldParts[0];
         }
 
         $isSearchQueryNumeric = is_numeric($searchQuery);
@@ -106,9 +108,13 @@ class QueryBuilder
 
             if(strpos($name, '.') !== false) {
                 [$fieldPrefix, $name] = explode('.', $name);
-                $queryBuilder->join('entity.'.$fieldPrefix, $fieldPrefix);
+
+                if (!in_array($fieldPrefix, $joined)) {
+                    $queryBuilder->join('entity.'.$fieldPrefix, $fieldPrefix);
+                    $joined[] = $fieldPrefix;
+                }
             }
-            
+
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];
             $isIntegerField = 'integer' === $metadata['dataType'];
             $isNumericField = in_array($metadata['dataType'], array('number', 'bigint', 'decimal', 'float'));

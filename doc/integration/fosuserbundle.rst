@@ -17,7 +17,7 @@ where the users are stored and it's a good practice to use it.
 
 Before using this manager, read :doc:`../tutorials/custom-actions` if you
 haven't done it already so you can modify the behavior of the new action. Then,
-override the ``createNewUserEntity()`` and ``prePersistUserEntity()`` methods to
+override the ``createNewUserEntity()`` and ``persistUserEntity()`` methods to
 override the way users are created and persisted:
 
 .. code-block:: php
@@ -34,9 +34,10 @@ override the way users are created and persisted:
             return $this->get('fos_user.user_manager')->createUser();
         }
 
-        public function prePersistUserEntity($user)
+        public function persistUserEntity($user)
         {
             $this->get('fos_user.user_manager')->updateUser($user, false);
+            parent::persistUserEntity($user);
         }
     }
 
@@ -49,7 +50,7 @@ moment and to let Doctrine take care of saving those changes when needed.
     If your user entity is not called ``User``, you need to change the above
     method names. For example, if the entity is called ``Customers``, the
     methods to define are ``createNewCustomersEntity()`` and
-    ``prePersistCustomersEntity()``.
+    ``persistCustomersEntity()``.
 
 Editing User Information
 ------------------------
@@ -83,9 +84,10 @@ Therefore, open your AdminController and add the following method:
     {
         // ...
 
-        public function preUpdateUserEntity($user)
+        public function updateUserEntity($user)
         {
             $this->get('fos_user.user_manager')->updateUser($user, false);
+            parent::updateUserEntity($user);
         }
     }
 
@@ -93,7 +95,7 @@ Therefore, open your AdminController and add the following method:
 
     If your user entity is not called ``User``, you need to change the above
     method name. For example, if the entity is called ``Customers``, the method
-    to define is ``preUpdateCustomersEntity()``.
+    to define is ``updateCustomersEntity()``.
 
 Using Different Validation when Creating or Editing the User
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

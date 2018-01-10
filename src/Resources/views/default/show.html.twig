@@ -18,22 +18,26 @@
 
 {% block main %}
     <div class="form-horizontal">
-        {% for field, metadata in fields %}
-            <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
-                <label class="col-sm-2 control-label">
-                    {{ (metadata.label ?: field|humanize)|trans(_trans_parameters)|raw }}
-                </label>
-                <div class="col-sm-10">
-                    <div class="form-control">
-                        {{ easyadmin_render_field_for_show_view(_entity_config.name, entity, metadata) }}
-                    </div>
+        {% block show_fields %}
+            {% for field, metadata in fields %}
+                {% block show_field %}
+                    <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
+                        <label class="col-sm-2 control-label">
+                            {{ (metadata.label ?: field|humanize)|trans(_trans_parameters)|raw }}
+                        </label>
+                        <div class="col-sm-10">
+                            <div class="form-control">
+                                {{ easyadmin_render_field_for_show_view(_entity_config.name, entity, metadata) }}
+                            </div>
 
-                    {% if metadata.help|default('') != '' %}
-                        <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help|trans|raw }}</span>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
+                            {% if metadata.help|default('') != '' %}
+                                <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help|trans|raw }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endblock %}
+            {% endfor %}
+        {% endblock %}
 
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">

@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-12-15T18:57:05Z
+
+I agree with the new Twig blocks because we always add them when needed ... but about this new CSS class `field_name-{{ field }}` I'm not sure. We already allow each field to define its own CSS class, which is a less fragile solution that also allows to reuse styles for fields with different names.
+
+---------------------------------------------------------------------------
+
+by ktrzos at 2018-01-05T10:41:36Z
+
+All right then :). Removed that extra CSS class. Forgot about possibility to define own CSS classes inside configuration.

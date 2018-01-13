@@ -132,48 +132,28 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
-        $this->twig = $twig;
-
         $entityConfiguration = $this->configManager->getEntityConfig($entityName);
-        $fieldName = $fieldMetadata['property'];
-        $fieldType = $fieldMetadata['dataType'];
-        $templateParameters = array(
-            'backend_config' => $this->getBackendConfiguration(),
-            'entity_config' => $entityConfiguration,
-            'field_options' => $fieldMetadata,
-            'item' => $item,
-            'view' => $view,
-        );
+        $hasCustomTemplate = 0 !== strpos($fieldMetadata['template'], '@EasyAdmin');
+        $templateParameters = array();
 
         try {
-            $templateParameters['value'] = $this->propertyAccessor->getValue($item, $fieldName);
-        } catch (\Exception $e) {
-            return $twig->render($entityConfiguration['templates']['label_inaccessible'], $templateParameters);
-        }
+            $templateParameters = $this->getTemplateParameters($entityName, $view, $fieldMetadata, $item);
 
-        try {
+            // if the field defines a custom template, render it (no matter if the value is null or inaccessible)
+            if ($hasCustomTemplate) {
+                return $twig->render($fieldMetadata['template'], $templateParameters);
+            }
+
+            if (false === $templateParameters['is_accessible']) {
+                return $twig->render($entityConfiguration['templates']['label_inaccessible'], $templateParameters);
+            }
+
             if (null === $templateParameters['value']) {
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
             }
 
-            if ('image' === $fieldType) {
-                return $this->renderImageField($templateParameters);
-            }
-
-            if ('file' === $fieldType) {
-                return $this->renderFileField($templateParameters);
-            }
-
-            if (in_array($fieldType, array('array', 'simple_array'))) {
-                return $this->renderArrayField($templateParameters);
-            }
-
-            if ('association' === $fieldType) {
-                return $this->renderAssociationField($templateParameters);
-            }
-
-            if (true === $fieldMetadata['virtual']) {
-                return $this->renderVirtualField($templateParameters);
+            if (empty($templateParameters['value']) && in_array($fieldMetadata['dataType'], array('image', 'file', 'array', 'simple_array'))) {
+                return $this->twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
             }
 
             return $twig->render($fieldMetadata['template'], $templateParameters);
@@ -186,25 +166,55 @@ class EasyAdminTwigExtension extends \Twig_Extension
         }
     }
 
-    private function renderVirtualField(array $templateParameters)
+    private function getTemplateParameters($entityName, $view, array $fieldMetadata, $item)
     {
-        // when a virtual field doesn't define it's type, consider it a string
-        if (null === $templateParameters['field_options']['dataType']) {
-            $templateParameters['value'] = (string) $templateParameters['value'];
+        $fieldName = $fieldMetadata['property'];
+        $fieldType = $fieldMetadata['dataType'];
+
+        $parameters = array(
+            'backend_config' => $this->getBackendConfiguration(),
+            'entity_config' => $this->configManager->getEntityConfig($entityName),
+            'field_options' => $fieldMetadata,
+            'item' => $item,
+            'view' => $view,
+        );
+
+        // the try..catch block is required because we can't use
+        // $propertyAccessor->isReadable(), which is unavailable in Symfony 2.3
+        try {
+            $parameters['value'] = $this->propertyAccessor->getValue($item, $fieldName);
+            $parameters['is_accessible'] = true;
+        } catch (\Exception $e) {
+            $parameters['value'] = null;
+            $parameters['is_accessible'] = false;
         }
 
-        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+        if ('image' === $fieldType) {
+            $parameters = $this->addImageFieldParameters($parameters);
+        }
+
+        if ('file' === $fieldType) {
+            $parameters = $this->addFileFieldParameters($parameters);
+        }
+
+        if ('association' === $fieldType) {
+            $parameters = $this->addAssociationFieldParameters($parameters);
+        }
+
+        if (true === $fieldMetadata['virtual']) {
+            // when a virtual field doesn't define it's type, consider it a string
+            if (null === $parameters['field_options']['dataType']) {
+                $parameters['value'] = (string) $parameters['value'];
+            }
+        }
+
+        return $parameters;
     }
 
-    private function renderImageField(array $templateParameters)
+    private function addImageFieldParameters(array $templateParameters)
     {
-        // avoid displaying broken images when the entity defines no image
-        if (empty($templateParameters['value'])) {
-            return $this->twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
-        }
-
         // add the base path only to images that are not absolute URLs (http or https) or protocol-relative URLs (//)
-        if (0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+        if (null !== $templateParameters['value'] && 0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
             $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
                 ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
                 : '/'.ltrim($templateParameters['value'], '/');
@@ -212,18 +222,13 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
         $templateParameters['uuid'] = md5($templateParameters['value']);
 
-        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+        return $templateParameters;
     }
 
-    private function renderFileField(array $templateParameters)
+    private function addFileFieldParameters(array $templateParameters)
     {
-        // avoid displaying broken links when the entity defines no file path
-        if (empty($templateParameters['value'])) {
-            return $this->twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
-        }
-
         // add the base path only to files that are not absolute URLs (http or https) or protocol-relative URLs (//)
-        if (0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+        if (null !== $templateParameters['value'] && 0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
             $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
                 ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
                 : '/'.ltrim($templateParameters['value'], '/');
@@ -231,24 +236,15 @@ class EasyAdminTwigExtension extends \Twig_Extension
 
         $templateParameters['filename'] = isset($templateParameters['field_options']['filename']) ? $templateParameters['field_options']['filename'] : basename($templateParameters['value']);
 
-        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+        return $templateParameters;
     }
 
-    private function renderArrayField(array $templateParameters)
-    {
-        if (empty($templateParameters['value'])) {
-            return $this->twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
-        }
-
-        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
-    }
-
-    private function renderAssociationField(array $templateParameters)
+    private function addAssociationFieldParameters(array $templateParameters)
     {
         $targetEntityConfig = $this->configManager->getEntityConfigByClass($templateParameters['field_options']['targetEntity']);
         // the associated entity is not managed by EasyAdmin
         if (null === $targetEntityConfig) {
-            return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+            return $templateParameters;
         }
 
         $isShowActionAllowed = !in_array('show', $targetEntityConfig['disabled_actions']);
@@ -295,7 +291,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
         }
 
-        return $this->twig->render($templateParameters['field_options']['template'], $templateParameters);
+        return $templateParameters;
     }
 
     /**

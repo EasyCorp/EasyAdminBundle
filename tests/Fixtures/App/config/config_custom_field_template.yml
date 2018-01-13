@@ -13,7 +13,11 @@ easy_admin:
             list:
                 fields:
                     - { property: 'name', template: 'custom_field_template.html.twig', custom_option: 'custom_list_value' }
+                    # the custom template must be used even in case of errors (value is null, property is undefined, etc.)
+                    - { property: 'this_property_does_no_exist', template: 'custom_field_template.html.twig', custom_option: 'custom_list_value' }
 
             show:
                 fields:
                     - { property: 'name', template: 'custom_field_template.html.twig', custom_option: 'custom_show_value' }
+                    # the custom template must be used even in case of errors (value is null, property is undefined, etc.)
+                    - { property: 'this_property_does_no_exist', template: 'custom_field_template.html.twig', custom_option: 'custom_list_value' }

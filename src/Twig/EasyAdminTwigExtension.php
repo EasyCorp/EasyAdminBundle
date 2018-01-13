@@ -133,7 +133,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
         $entityConfiguration = $this->configManager->getEntityConfig($entityName);
-        $hasCustomTemplate = 0 !== strpos($fieldMetadata['template'], '@EasyAdmin');
+        $hasCustomTemplate = 0 !== strpos($fieldMetadata['template'], '@EasyAdmin/');
         $templateParameters = array();
 
         try {

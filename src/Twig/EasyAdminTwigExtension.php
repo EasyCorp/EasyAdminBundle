@@ -23,8 +23,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class EasyAdminTwigExtension extends \Twig_Extension
 {
-    /** @var \Twig_Environment */
-    private $twig;
     /** @var ConfigManager */
     private $configManager;
     /** @var PropertyAccessor */
@@ -153,7 +151,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             }
 
             if (empty($templateParameters['value']) && in_array($fieldMetadata['dataType'], array('image', 'file', 'array', 'simple_array'))) {
-                return $this->twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
+                return $twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
             }
 
             return $twig->render($fieldMetadata['template'], $templateParameters);

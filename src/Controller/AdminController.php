@@ -445,7 +445,7 @@ class AdminController extends Controller
     protected function persistEntity($entity)
     {
         $this->em->persist($entity);
-        $this->em->flush($entity);
+        $this->em->flush();
     }
 
     /**
@@ -466,7 +466,7 @@ class AdminController extends Controller
      */
     protected function updateEntity($entity)
     {
-        $this->em->flush($entity);
+        $this->em->flush();
     }
 
     /**
@@ -488,7 +488,7 @@ class AdminController extends Controller
     protected function removeEntity($entity)
     {
         $this->em->remove($entity);
-        $this->em->flush($entity);
+        $this->em->flush();
     }
 
     /**

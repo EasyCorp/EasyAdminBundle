@@ -1,6 +1,6 @@
 {{
     form(delete_form, {
-        action: delete_form.vars.action ~ '&referer=' ~ referer,
+        action: delete_form.vars.action ~ ('?' in delete_form.vars.action ? '&' : '?') ~ 'referer=' ~ referer,
         method: 'DELETE',
         attr: { id: 'delete-form', style: 'display: none' }
     })

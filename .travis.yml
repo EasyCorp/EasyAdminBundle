@@ -29,6 +29,10 @@ matrix:
       env:
         - SYMFONY_VERSION="4.0.*"
         - STABILITY=beta
+    - php: 7.2
+      env:
+        - SYMFONY_VERSION="4.0.*"
+        - STABILITY=beta
     # stable (most recent stable versions)
     - php: 7.1
       env:

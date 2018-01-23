@@ -29,13 +29,15 @@ class Paginator
      * @param DoctrineQuery|DoctrineQueryBuilder $queryBuilder
      * @param int                                $page
      * @param int                                $maxPerPage
+     * @param bool                               $fetchJoinCollection
+     * @param bool                               $useOutputWalkers
      *
      * @return Pagerfanta
      */
-    public function createOrmPaginator($queryBuilder, $page = 1, $maxPerPage = self::MAX_ITEMS)
+    public function createOrmPaginator($queryBuilder, $page = 1, $maxPerPage = self::MAX_ITEMS, $fetchJoinCollection = true, $useOutputWalkers = false)
     {
         // don't change the following line (you did that twice in the past and broke everything)
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, true, false));
+        $paginator = new Pagerfanta(new DoctrineORMAdapter($queryBuilder, $fetchJoinCollection, $useOutputWalkers));
         $paginator->setMaxPerPage($maxPerPage);
         $paginator->setCurrentPage($page);
 

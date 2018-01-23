@@ -15,7 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\Form\Guess\TypeGuess;
 
-class PropertyConfigPassTest extends \PHPUnit_Framework_TestCase
+class PropertyConfigPassTest extends \PHPUnit\Framework\TestCase
 {
     public function testUnknownGuessedFormTypeOptionsAreRemoved()
     {

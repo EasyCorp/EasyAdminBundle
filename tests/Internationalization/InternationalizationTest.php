@@ -11,7 +11,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Internationalization;
 
-class InternationalizationTest extends \PHPUnit_Framework_TestCase
+class InternationalizationTest extends \PHPUnit\Framework\TestCase
 {
     public function testXliffFiles()
     {

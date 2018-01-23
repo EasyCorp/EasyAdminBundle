@@ -262,7 +262,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
             } elseif (null !== $primaryKeyValue) {
                 $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
             } else {
-                $templateParameters['value'] = $this->getClassShortName($templateParameters['field_options']['targetEntity']);
+                $templateParameters['value'] = null;
             }
 
             // if the associated entity is managed by EasyAdmin, and the "show"

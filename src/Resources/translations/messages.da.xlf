@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" target-language="da" datatype="plaintext" original="file.ext">
+        <body>
+            <!-- generic actions displayed on buttons and links -->
+            <trans-unit id="action.new">
+                <source>action.new</source>
+                <target>Tilføj %entity_name%</target>
+            </trans-unit>
+            <trans-unit id="action.show">
+                <source>action.show</source>
+                <target>Vis</target>
+            </trans-unit>
+            <trans-unit id="action.edit">
+                <source>action.edit</source>
+                <target>Ret</target>
+            </trans-unit>
+            <trans-unit id="action.search">
+                <source>action.search</source>
+                <target>Søg</target>
+            </trans-unit>
+            <trans-unit id="action.delete">
+                <source>action.delete</source>
+                <target>Slet</target>
+            </trans-unit>
+            <trans-unit id="action.save">
+                <source>action.save</source>
+                <target>Gem ændringer</target>
+            </trans-unit>
+            <trans-unit id="action.cancel">
+                <source>action.cancel</source>
+                <target>Afbryd</target>
+            </trans-unit>
+            <trans-unit id="action.list">
+                <source>action.list</source>
+                <target>Tilbage til listen</target>
+            </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Ingen</target>
+            </trans-unit>
+
+            <!-- forms -->
+            <trans-unit id="form.label.collections">
+                <!-- don't change this "translation" -->
+                <source>__name__label__</source>
+                <target>__name__label__</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

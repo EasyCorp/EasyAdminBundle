@@ -81,7 +81,7 @@
             </trans-unit>
             <trans-unit id="label.object">
                 <source>label.object</source>
-                <target>PHP Объект</target>
+                <target>PHP-объект</target>
             </trans-unit>
             <trans-unit id="label.inaccessible">
                 <source>label.inaccessible</source>
@@ -89,7 +89,7 @@
             </trans-unit>
             <trans-unit id="label.inaccessible.explanation">
                 <source>label.inaccessible.explanation</source>
-                <target>Нет геттера для этого поля или свойство не публично</target>
+                <target>Нет геттера для этого поля или свойство не общедоступно</target>
             </trans-unit>
 
             <!-- user -->
@@ -121,7 +121,7 @@
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>Эту операцию нельзя будет отменить.</target>
+                <target>Эту операцию нельзя отменить.</target>
             </trans-unit>
             <trans-unit id="delete_modal.action">
                 <source>delete_modal.action</source>

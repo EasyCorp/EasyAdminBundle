@@ -37,7 +37,7 @@ override the way users are created and persisted:
         public function persistUserEntity($user)
         {
             $this->get('fos_user.user_manager')->updateUser($user, false);
-            parent::persistUserEntity($user);
+            parent::persistEntity($user);
         }
     }
 
@@ -87,7 +87,7 @@ Therefore, open your AdminController and add the following method:
         public function updateUserEntity($user)
         {
             $this->get('fos_user.user_manager')->updateUser($user, false);
-            parent::updateUserEntity($user);
+            parent::updateEntity($user);
         }
     }
 

@@ -13,7 +13,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass;
 
-class ActionConfigPassTest extends \PHPUnit_Framework_TestCase
+class ActionConfigPassTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider getWrongActionConfigs

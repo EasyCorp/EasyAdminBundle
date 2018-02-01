@@ -16,7 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 /**
  * @group legacy
  */
-class LegacyFormHelperTest extends \PHPUnit_Framework_TestCase
+class LegacyFormHelperTest extends \PHPUnit\Framework\TestCase
 {
     public function shortTypesToFqcnProvider()
     {

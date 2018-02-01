@@ -13,7 +13,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass;
 
-class NormalizerConfigPassTest extends \PHPUnit_Framework_TestCase
+class NormalizerConfigPassTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @expectedException \RuntimeException

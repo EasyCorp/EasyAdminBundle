@@ -33,7 +33,8 @@ and make it extend from the default ``AdminController`` class:
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/AdminController.php
+    // In Symfony 2 and 3: src/AppBundle/Controller/AdminController.php
+    // In Symfony 4: src/Controller/AdminController.php
     namespace AppBundle\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
@@ -43,15 +44,23 @@ and make it extend from the default ``AdminController`` class:
         // ...
     }
 
-**Step 2.** Open the ``app/config/routing.yml`` file and change the ``resource``
-option of the ``easy_admin_bundle`` route to point to your new controller:
+**Step 2.** Open the routing file where the ``easy_admin_bundle`` route is
+defined and change the ``resource`` option to point to your new controller:
 
 .. code-block:: yaml
 
-    # app/config/routing.yml
+    # In Symfony 2 and 3: app/config/routing.yml
     easy_admin_bundle:
         # this is just an example; update the value of 'resource' accordingly
         resource: "@AppBundle/Controller/AdminController.php"
+        type:     annotation
+        prefix:   /admin
+
+
+    # In Symfony 4: config/routes/easy_admin.yaml
+    easy_admin_bundle:
+        # this is just an example; update the value of 'resource' accordingly
+        resource: "App\Controller\AdminController"
         type:     annotation
         prefix:   /admin
 

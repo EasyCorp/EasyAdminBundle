@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-02-01T19:30:50Z
+
+Can you please share a screenshot of how does it look now the default style? Thanks!
+
+---------------------------------------------------------------------------
+
+by alterphp at 2018-02-01T21:56:56Z
+
+The default toggle looks the same, it's just driven by bootstrap color theme (succes for green, danger for red), as folowing :
+
+![default toggle](https://user-images.githubusercontent.com/738765/35705399-98ca23e0-07a2-11e8-8ec6-3090ed4150af.png)
+
+But for a specific `field_censored` toggle, I needed to invert colors, as TRUE value should be marked as red (this is a moderation feature in my admin) :
+
+```twig
+<input type="checkbox" {{ value == true ? 'checked' : '' }}
+      class="toggle-censored"
+      data-toggle="toggle" data-size="mini"
+      data-onstyle="danger" data-offstyle="success"
+      data-on="{{ 'label.true'|trans }}" data-off="{{ 'label.false'|trans }}">
+```
+This `field_consored` now takes cares of the `data-onstyle` and `data-offstyle` html attributes. It did not before, because on enforced css.
+
+![inverted toggle style](https://user-images.githubusercontent.com/738765/35705554-1053f756-07a3-11e8-9977-0a703e68b3fc.png)
+`

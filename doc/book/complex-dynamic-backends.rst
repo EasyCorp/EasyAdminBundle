@@ -52,7 +52,7 @@ defined and change the ``resource`` option to point to your new controller:
     # In Symfony 2 and 3: app/config/routing.yml
     easy_admin_bundle:
         # this is just an example; update the value of 'resource' accordingly
-        resource: "@AppBundle/Controller/AdminController.php"
+        resource: '@AppBundle/Controller/AdminController.php'
         type:     annotation
         prefix:   /admin
 
@@ -60,7 +60,7 @@ defined and change the ``resource`` option to point to your new controller:
     # In Symfony 4: config/routes/easy_admin.yaml
     easy_admin_bundle:
         # this is just an example; update the value of 'resource' accordingly
-        resource: "App\Controller\AdminController"
+        resource: 'App\Controller\AdminController'
         type:     annotation
         prefix:   /admin
 

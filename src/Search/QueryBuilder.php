@@ -88,12 +88,12 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $joined = array();
+        $entitiesAlreadyJoined = array();
         $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
         if ($isSortedByDoctrineAssociation) {
-            $sortFieldParts = explode('.', $sortField);
-            $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
-            $joined[] = $sortFieldParts[0];
+            list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
+            $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedFieldName);
+            $entitiesAlreadyJoined[] = $associatedEntityName;
         }
 
         $isSearchQueryNumeric = is_numeric($searchQuery);
@@ -103,16 +103,17 @@ class QueryBuilder
         $lowerSearchQuery = mb_strtolower($searchQuery);
 
         $queryParameters = array();
-        foreach ($entityConfig['search']['fields'] as $name => $metadata) {
-            $fieldPrefix = 'entity';
-
-            if(strpos($name, '.') !== false) {
-                [$fieldPrefix, $name] = explode('.', $name);
-
-                if (!in_array($fieldPrefix, $joined)) {
-                    $queryBuilder->join('entity.'.$fieldPrefix, $fieldPrefix);
-                    $joined[] = $fieldPrefix;
+        foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
+            $entityName = 'entity';
+            if (false !== strpos($fieldName, '.')) {
+                list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
+                if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+                    $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
+                    $entitiesAlreadyJoined[] = $associatedEntityName;
                 }
+
+                $entityName = $associatedEntityName;
+                $fieldName = $associatedFieldName;
             }
 
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];
@@ -127,17 +128,17 @@ class QueryBuilder
                 $isIntegerField && $isSearchQueryInteger ||
                 $isNumericField && $isSearchQueryNumeric
             ) {
-                $queryBuilder->orWhere(sprintf('%s.%s = :numeric_query', $fieldPrefix, $name));
+                $queryBuilder->orWhere(sprintf('%s.%s = :numeric_query', $entityName, $fieldName));
                 // adding '0' turns the string into a numeric value
                 $queryParameters['numeric_query'] = 0 + $searchQuery;
             } elseif ($isGuidField && $isSearchQueryUuid) {
-                $queryBuilder->orWhere(sprintf('%s.%s = :uuid_query', $fieldPrefix, $name));
+                $queryBuilder->orWhere(sprintf('%s.%s = :uuid_query', $entityName, $fieldName));
                 $queryParameters['uuid_query'] = $searchQuery;
             } elseif ($isTextField) {
-                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :fuzzy_query', $fieldPrefix, $name));
+                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :fuzzy_query', $entityName, $fieldName));
                 $queryParameters['fuzzy_query'] = '%'.$lowerSearchQuery.'%';
 
-                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:words_query)', $fieldPrefix, $name));
+                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:words_query)', $entityName, $fieldName));
                 $queryParameters['words_query'] = explode(' ', $lowerSearchQuery);
             }
         }

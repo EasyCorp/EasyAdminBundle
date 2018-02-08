@@ -164,7 +164,8 @@ class ViewConfigPass implements ConfigPassInterface
                     throw new \InvalidArgumentException(sprintf('If defined, the second value of the "sort" option of the "%s" view of the "%s" entity can only be "ASC" or "DESC".', $view, $entityName));
                 }
 
-                if (isset($entityConfig[$view]['fields'][$sortConfig['field']]) && true === $entityConfig[$view]['fields'][$sortConfig['field']]['virtual']) {
+                $isSortedByDoctrineAssociation = false !== strpos($sortConfig['field'], '.');
+                if (!$isSortedByDoctrineAssociation && (isset($entityConfig[$view]['fields'][$sortConfig['field']]) && true === $entityConfig[$view]['fields'][$sortConfig['field']]['virtual'])) {
                     throw new \InvalidArgumentException(sprintf('The "%s" field cannot be used in the "sort" option of the "%s" view of the "%s" entity because it\'s a virtual property that is not persisted in the database.', $sortConfig['field'], $view, $entityName));
                 }
 

@@ -88,14 +88,6 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $entitiesAlreadyJoined = array();
-        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
-        if ($isSortedByDoctrineAssociation) {
-            list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
-            $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedFieldName);
-            $entitiesAlreadyJoined[] = $associatedEntityName;
-        }
-
         $isSearchQueryNumeric = is_numeric($searchQuery);
         $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -32768 && $searchQuery <= 32767;
         $isSearchQueryInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -2147483648 && $searchQuery <= 2147483647;
@@ -103,10 +95,11 @@ class QueryBuilder
         $lowerSearchQuery = mb_strtolower($searchQuery);
 
         $queryParameters = array();
+        $entitiesAlreadyJoined = array();
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
             if (false !== strpos($fieldName, '.')) {
-                list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
+               list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
                 if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
                     $entitiesAlreadyJoined[] = $associatedEntityName;
@@ -149,6 +142,15 @@ class QueryBuilder
 
         if (!empty($dqlFilter)) {
             $queryBuilder->andWhere($dqlFilter);
+        }
+
+        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
+        if ($isSortedByDoctrineAssociation) {
+            list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
+            if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+                $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedFieldName);
+                $entitiesAlreadyJoined[] = $associatedEntityName;
+            }
         }
 
         if (null !== $sortField) {

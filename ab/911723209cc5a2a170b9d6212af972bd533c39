@@ -1,0 +1,56 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-02-01T19:29:01Z
+
+@jenyak it's true that those methods don't exist ... but we use a trick to define "dynamically named methods" (they are explained here: https://symfony.com/doc/current/bundles/EasyAdminBundle/book/complex-dynamic-backends.html#override-the-admincontroller-methods-per-entity).
+
+Of course if your entity is not called exactly `User`, those methods don't exist, so that's why we added this note in that article:
+
+```rst
+ .. note::
+
+     If your user entity is not called ``User``, you need to change the above
+     method name. For example, if the entity is called ``Customers``, the method
+     to define is ``updateCustomersEntity()``.
+```
+
+So we can close this as "won't fix" ... but thanks anyway for double checking the docs. Cheers!
+
+---------------------------------------------------------------------------
+
+by jenyak at 2018-02-02T02:23:17Z
+
+@javiereguiluz I have a class like this
+
+```
+// src/AppBundle/Controller/AdminController.php
+namespace AppBundle\Controller;
+
+use AppBundle\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+
+class AdminController extends BaseAdminController
+{
+    public function persistUserEntity($user)
+    {
+        //...
+        parent::persistUserEntity($user);
+    }
+    //...
+}
+```
+when I tried create new user I got an error
+`Attempted to call an undefined method named "persistUserEntity" of class "EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController".`
+So "dynamically named methods" work for my class but not work for parent class
+
+---------------------------------------------------------------------------
+
+by jenyak at 2018-02-09T14:10:37Z
+
+@javiereguiluz Please check again this PR. It seems to me that this PR is correct and you misunderstood it.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-02-09T14:14:28Z
+
+@jenyak you are totally right and I was wrong! I apologize for having closed it and I'm merging it right away. Thank you!

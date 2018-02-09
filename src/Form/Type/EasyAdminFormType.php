@@ -11,7 +11,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
+use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
@@ -55,6 +57,8 @@ class EasyAdminFormType extends AbstractType
         $view = $options['view'];
         $entityConfig = $this->configManager->getEntityConfig($entity);
         $entityProperties = isset($entityConfig[$view]['fields']) ? $entityConfig[$view]['fields'] : array();
+        $formTabs = array();
+        $currentFormTab = null;
         $formGroups = array();
         $currentFormGroup = null;
 
@@ -75,8 +79,26 @@ class EasyAdminFormType extends AbstractType
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
             if (in_array($formFieldType, array('easyadmin_group', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType'))) {
+                $metadata['form_tab'] = $currentFormTab ?: null;
                 $currentFormGroup = $metadata['fieldName'];
                 $formGroups[$currentFormGroup] = $metadata;
+
+                continue;
+            }
+
+            // if the form field is a special 'tab' design element, don't add it
+            // to the form. Instead, consider it the current form group (this is
+            // applied to the form fields defined after it) and store its details
+            // in a property to get them in form template
+            if (in_array($formFieldType, array('easyadmin_tab', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminTabType'))) {
+                // The first tab should be marked as active by default
+                $metadata['active'] = 0 === count($formTabs);
+                $metadata['errors'] = 0;
+                $currentFormTab = $metadata['fieldName'];
+
+                // For a form tab a plain array is not enough, because we need to be able to modify it in the
+                // lifecycle of a form (e.g. add info about form errors). So we'll use an ArrayObject.
+                $formTabs[$currentFormTab] = new ArrayObject($metadata);
 
                 continue;
             }
@@ -89,12 +111,18 @@ class EasyAdminFormType extends AbstractType
             }
 
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
+            $formField->setAttribute('easyadmin_form_tab', $currentFormTab);
             $formField->setAttribute('easyadmin_form_group', $currentFormGroup);
 
             $builder->add($formField);
         }
 
+        $builder->setAttribute('easyadmin_form_tabs', $formTabs);
         $builder->setAttribute('easyadmin_form_groups', $formGroups);
+
+        if (count($formTabs) > 0) {
+            $builder->addEventSubscriber(new EasyAdminTabSubscriber());
+        }
     }
 
     /**
@@ -102,6 +130,7 @@ class EasyAdminFormType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
+        $view->vars['easyadmin_form_tabs'] = $form->getConfig()->getAttribute('easyadmin_form_tabs');
         $view->vars['easyadmin_form_groups'] = $form->getConfig()->getAttribute('easyadmin_form_groups');
     }
 

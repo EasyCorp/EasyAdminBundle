@@ -489,44 +489,83 @@
 {% block easyadmin_widget %}
     {% set _translation_domain = easyadmin.entity.translation_domain %}
     <div class="row">
-        {% for group_name, group_config in easyadmin_form_groups %}
-            <div class="field-group col-xs-12 {{ group_config.css_class|default('') }}">
-                <div class="box box-default">
-                    {% if group_config.label|default(false) or group_config.icon|default(false) %}
-                        <div class="box-header with-border">
-                            <h3 class="box-title">
-                                {% if group_config.icon|default(false) %}
-                                    <i class="fa fa-{{ group_config.icon }}"></i>
-                                {% endif %}
-                                {{ group_config.label|trans(domain = _translation_domain)|raw }}
-                            </h3>
-                        </div>
-                    {% endif %}
-
-                    <div class="box-body">
-                        {% if group_config.help|default(false) %}
-                            <p class="help-block">{{ group_config.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
-                        {% endif %}
-
-                        <div class="row">
-                            {% for field in form.children if 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name %}
-                                <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
-                                    {{ form_row(field) }}
+        {% if easyadmin_form_tabs | length > 0 %}
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        {% for tab_name, tab_config in easyadmin_form_tabs %}
+                            <li class="{% if tab_config.active %}active{% endif %}">
+                                <a href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
+                                    {% if tab_config.icon|default(false) %}
+                                        <i class="fa fa-{{ tab_config.icon }}"></i>
+                                    {% endif %}
+                                    {{ tab_config['label'] }}
+                                    {% if tab_config.errors > 0 %}
+                                        <span class="label label-danger" title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'EasyAdminBundle') }}">
+                                            {{ tab_config.errors }}
+                                        </span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="tab-content">
+                        {% for tab_name, tab_config in easyadmin_form_tabs %}
+                            <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %}">
+                                <div class="row">
+                                    {{ block('easyadmin_widget_groups') }}
                                 </div>
-                            {% endfor %}
-                        </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         {% else %}
-            {% for field in form.children if 'hidden' not in field.vars.block_prefixes %}
-                <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
-                    {{ form_row(field) }}
-                </div>
-            {% endfor %}
-        {% endfor %}
+            {{ block('easyadmin_widget_groups') }}
+        {% endif %}
     </div>
 {% endblock easyadmin_widget %}
+
+{% block easyadmin_widget_groups %}
+    {% for group_name, group_config in easyadmin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
+        <div class="field-group col-xs-12 {{ group_config.css_class|default('') }}">
+            <div class="box box-default">
+                {% if group_config.label|default(false) or group_config.icon|default(false) %}
+                    <div class="box-header with-border">
+                        <h3 class="box-title">
+                            {% if group_config.icon|default(false) %}
+                                <i class="fa fa-{{ group_config.icon }}"></i>
+                            {% endif %}
+                            {{ group_config.label|trans(domain = _translation_domain)|raw }}
+                        </h3>
+                    </div>
+                {% endif %}
+
+                <div class="box-body">
+                    {% if group_config.help|default(false) %}
+                        <p class="help-block">{{ group_config.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
+                    {% endif %}
+
+                    <div class="row">
+                        {% for field in form.children if 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name %}
+                            {% if not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name %}
+                                <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                                    {{ form_row(field) }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% for field in form.children if 'hidden' not in field.vars.block_prefixes and (not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name) %}
+            <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                {{ form_row(field) }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endblock easyadmin_widget_groups %}
 
 {# EasyAdminAutocomplete form type #}
 {% block easyadmin_autocomplete_widget %}

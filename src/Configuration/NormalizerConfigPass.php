@@ -238,18 +238,48 @@ class NormalizerConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (array('form', 'edit', 'new') as $view) {
                 $fieldNumber = 0;
+
+                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
+                    ++$fieldNumber;
+                    $isFormDesignElement = !isset($fieldConfig['property']) && isset($fieldConfig['type']);
+
+                    if ($isFormDesignElement && 'tab' === $fieldConfig['type']) {
+                        if ($fieldNumber > 1) {
+                            $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
+                                array('_easyadmin_form_design_element_forced_first_tab' => array('type' => 'tab')),
+                                $backendConfig['entities'][$entityName][$view]['fields']
+                            );
+                        }
+                        break;
+                    }
+                }
+
+                $fieldNumber = 0;
+                $previousTabFieldNumber = -1;
                 $isTheFirstGroupElement = true;
 
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     ++$fieldNumber;
-                    if (!isset($fieldConfig['property']) && isset($fieldConfig['type']) && 'group' === $fieldConfig['type']) {
-                        if ($isTheFirstGroupElement && $fieldNumber > 1) {
+                    $isFormDesignElement = !isset($fieldConfig['property']) && isset($fieldConfig['type']);
+
+                    if ($isFormDesignElement && 'tab' === $fieldConfig['type']) {
+                        $previousTabFieldNumber = $fieldNumber;
+                        $isTheFirstGroupElement = true;
+                    } elseif ($isFormDesignElement && 'group' === $fieldConfig['type']) {
+                        if ($isTheFirstGroupElement && $previousTabFieldNumber === -1 && $fieldNumber > 1) {
+                            // if no tab is used, we insert the group at the beginning of the array
                             $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
                                 array('_easyadmin_form_design_element_forced_first_group' => array('type' => 'group')),
                                 $backendConfig['entities'][$entityName][$view]['fields']
                             );
-
                             break;
+                        } elseif ($isTheFirstGroupElement && $previousTabFieldNumber >= 0 && $fieldNumber > $previousTabFieldNumber + 1) {
+                            // if tabs are used, we insert the group after the previous tab field into the array
+                            $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
+                                array_slice($backendConfig['entities'][$entityName][$view]['fields'], 0, $previousTabFieldNumber, true),
+                                array('_easyadmin_form_design_element_forced_group_'.$fieldNumber => array('type' => 'group')),
+                                array_slice($backendConfig['entities'][$entityName][$view]['fields'], $previousTabFieldNumber, null, true)
+                            );
                         }
 
                         $isTheFirstGroupElement = false;
@@ -263,9 +293,13 @@ class NormalizerConfigPass implements ConfigPassInterface
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // this is a form design element instead of a regular property
                     $isFormDesignElement = !isset($fieldConfig['property']) && isset($fieldConfig['type']);
-                    if ($isFormDesignElement && in_array($fieldConfig['type'], array('divider', 'group', 'section'))) {
+                    if ($isFormDesignElement && in_array($fieldConfig['type'], array('divider', 'group', 'section', 'tab'))) {
                         // assign them a property name to add them later as unmapped form fields
                         $fieldConfig['property'] = $fieldName;
+
+                        if ('tab' === $fieldConfig['type'] && empty($fieldConfig['id'])) {
+                            $fieldConfig['id'] = $this->sanitizeTabId($fieldConfig['label']);
+                        }
 
                         // transform the form type shortcuts into the real form type short names
                         $fieldConfig['type'] = 'easyadmin_'.$fieldConfig['type'];
@@ -435,6 +469,15 @@ class NormalizerConfigPass implements ConfigPassInterface
         }
 
         return null;
+    }
+
+    private function sanitizeTabId($tabId)
+    {
+        if (function_exists('iconv') && false !== ($tmpTabId = iconv('UTF-8', 'ASCII//TRANSLIT', $tabId))) {
+            $tabId = $tmpTabId;
+        }
+
+        return preg_replace(array('/\s/', '/[^a-z_\-]/'), array('-', ''), strtolower($tabId));
     }
 }
 

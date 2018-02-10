@@ -1,0 +1,51 @@
+---------------------------------------------------------------------------
+
+by aminebenhariz at 2018-02-07T14:00:38Z
+
+@javiereguiluz can you restart the travis-ci build ?
+
+I run the same PR in a fork, and it builds correctly. I think the failure cause was a temporary packagist glitch that prevented the php-cs-fixer/diff package from loading.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-02-07T19:16:20Z
+
+I honestly don't understand this ... so I'll need more review from people who understand Symfony Forms. Thanks!
+
+---------------------------------------------------------------------------
+
+by hason at 2018-02-07T21:14:10Z
+
+@javiereguiluz The problem is with workflow of `twig_get_attribute` function. We have a form view, which is represented by class [FormView](https://api.symfony.com/3.2/Symfony/Component/Form/FormView.html). This class implements the [ArrayAccess](http://php.net/ArrayAccess) and [IteratorAggregate](http://php.net/IteratorAggregate) inteface. This class has the public property `FormView::$children`. If I add in a builder form field with the same name:
+
+```php
+$builder->add('children', ...);
+```
+
+generated form view has structure:
+
+```php
+object(FormView) implements ArrayAccess {
+    public $children = [
+        'children' => object(FormView),
+        // ...
+    ];
+}
+```
+
+Twig expression `` {% for field in form.children %}`` is compiled to
+
+```php
+foreach ($form['children'] as $field) {}
+```
+In this case is executed method `FormView::offsetGet('children')` (`$form->children['children']`).
+
+But we want to execute `FormView->getIterator()` (`$form->children`):
+
+```php
+foreach ($form as $field) {}
+```
+---
+The correct lines in the same template:
+- [172](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/src/Resources/views/form/bootstrap_3_layout.html.twig#L172)
+- [181](https://github.com/javiereguiluz/EasyAdminBundle/blob/master/src/Resources/views/form/bootstrap_3_layout.html.twig#L181)

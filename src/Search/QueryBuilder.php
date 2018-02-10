@@ -99,7 +99,7 @@ class QueryBuilder
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
             if (false !== strpos($fieldName, '.')) {
-               list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
+                list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
                 if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
                     $entitiesAlreadyJoined[] = $associatedEntityName;

@@ -635,6 +635,21 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertSame($parameters, $refererParameters);
     }
 
+    public function testSearchUsingAssociations()
+    {
+        $parameters = array(
+            'action' => 'search',
+            'entity' => 'Purchase',
+            'page' => '1',
+            'query' => 'user9@example',
+        );
+
+        $crawler = $this->getBackendPage($parameters);
+
+        $this->assertSame('user9', trim($crawler->filter('.table tbody tr td[data-label="Buyer"]')->eq(0)->text()));
+        $this->assertContains('sorted', $crawler->filter('.table th[data-property-name="buyer"]')->eq(0)->attr('class'));
+    }
+
     public function testListViewVirtualFields()
     {
         $crawler = $this->requestListView('Product');

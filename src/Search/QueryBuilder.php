@@ -88,12 +88,6 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
-        if ($isSortedByDoctrineAssociation) {
-            $sortFieldParts = explode('.', $sortField);
-            $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
-        }
-
         $isSearchQueryNumeric = is_numeric($searchQuery);
         $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -32768 && $searchQuery <= 32767;
         $isSearchQueryInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -2147483648 && $searchQuery <= 2147483647;
@@ -101,7 +95,20 @@ class QueryBuilder
         $lowerSearchQuery = mb_strtolower($searchQuery);
 
         $queryParameters = array();
-        foreach ($entityConfig['search']['fields'] as $name => $metadata) {
+        $entitiesAlreadyJoined = array();
+        foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
+            $entityName = 'entity';
+            if (false !== strpos($fieldName, '.')) {
+                list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
+                if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+                    $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
+                    $entitiesAlreadyJoined[] = $associatedEntityName;
+                }
+
+                $entityName = $associatedEntityName;
+                $fieldName = $associatedFieldName;
+            }
+
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];
             $isIntegerField = 'integer' === $metadata['dataType'];
             $isNumericField = in_array($metadata['dataType'], array('number', 'bigint', 'decimal', 'float'));
@@ -114,17 +121,17 @@ class QueryBuilder
                 $isIntegerField && $isSearchQueryInteger ||
                 $isNumericField && $isSearchQueryNumeric
             ) {
-                $queryBuilder->orWhere(sprintf('entity.%s = :numeric_query', $name));
+                $queryBuilder->orWhere(sprintf('%s.%s = :numeric_query', $entityName, $fieldName));
                 // adding '0' turns the string into a numeric value
                 $queryParameters['numeric_query'] = 0 + $searchQuery;
             } elseif ($isGuidField && $isSearchQueryUuid) {
-                $queryBuilder->orWhere(sprintf('entity.%s = :uuid_query', $name));
+                $queryBuilder->orWhere(sprintf('%s.%s = :uuid_query', $entityName, $fieldName));
                 $queryParameters['uuid_query'] = $searchQuery;
             } elseif ($isTextField) {
-                $queryBuilder->orWhere(sprintf('LOWER(entity.%s) LIKE :fuzzy_query', $name));
+                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :fuzzy_query', $entityName, $fieldName));
                 $queryParameters['fuzzy_query'] = '%'.$lowerSearchQuery.'%';
 
-                $queryBuilder->orWhere(sprintf('LOWER(entity.%s) IN (:words_query)', $name));
+                $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:words_query)', $entityName, $fieldName));
                 $queryParameters['words_query'] = explode(' ', $lowerSearchQuery);
             }
         }
@@ -135,6 +142,15 @@ class QueryBuilder
 
         if (!empty($dqlFilter)) {
             $queryBuilder->andWhere($dqlFilter);
+        }
+
+        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
+        if ($isSortedByDoctrineAssociation) {
+            list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
+            if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+                $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
+                $entitiesAlreadyJoined[] = $associatedEntityName;
+            }
         }
 
         if (null !== $sortField) {

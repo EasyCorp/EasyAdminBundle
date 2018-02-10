@@ -136,8 +136,13 @@ easy_admin:
             list:
                 fields:
                     - id
+                    - buyer
+                    - billingAddress
                     - { property: 'deliveryDate', format: 'Ymd' }
                     - { property: 'deliveryHour', format: 'H:i' }
+            search:
+                fields: ['guid', 'billingAddress', 'buyer.email']
+                sort: ['buyer.email', ASC]
         PurchaseItem:
             class: AppTestBundle\Entity\FunctionalTests\PurchaseItem
             label: 'Purchase Items'

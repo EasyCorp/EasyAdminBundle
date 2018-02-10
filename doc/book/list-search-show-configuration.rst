@@ -175,6 +175,17 @@ Use the ``fields`` option to explicitly set the properties to display:
                 class: AppBundle\Entity\Customer
                 list:
                     fields: ['id', 'firstName', 'lastName', 'phone', 'email']
+
+                # if the field name contains a dot, it's the property of a Doctrine association
+                list:
+                    # this config displays the 'email' and 'phone' properties of the
+                    # Doctrine entity associated via the 'user' property of 'Customer'
+                    fields: ['id', 'name', 'age', 'user.email', 'user.phone']
+
+                # Doctrine associations are also supported in the 'search' view. This config looks
+                # for data in the 'email' and 'phone' properties of the associated 'user' entity
+                search:
+                    fields: ['name', 'user.email', 'user.phone']
         # ...
 
 This option is also useful to reorder the properties, because by default they

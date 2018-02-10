@@ -148,7 +148,7 @@ class QueryBuilder
         if ($isSortedByDoctrineAssociation) {
             list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
             if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
-                $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedFieldName);
+                $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
                 $entitiesAlreadyJoined[] = $associatedEntityName;
             }
         }

@@ -38,6 +38,11 @@ class User
      */
     private $purchases;
 
+    /**
+     * @var \DateTimeImmutable
+     */
+    private $createdAt;
+
     public function __toString()
     {
         return $this->username;
@@ -46,6 +51,7 @@ class User
     public function __construct()
     {
         $this->purchases = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId()

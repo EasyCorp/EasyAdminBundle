@@ -6,9 +6,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Legacy User class used in PHP < 5.5 versions where DateTimeImmutable doesn't exist.
+ *
  * @ORM\Entity
  */
-class User
+class LegacyUser
 {
     /**
      * @ORM\Id
@@ -41,21 +43,21 @@ class User
     /**
      * @var \DateTimeInterface
      *
-     * @ORM\Column(name="createdAtDateTimeImmutable", type="datetime_immutable")
+     * @ORM\Column(name="createdAtDateTimeImmutable", type="datetime")
      */
     private $createdAtDateTimeImmutable;
 
     /**
      * @var \DateTimeInterface
      *
-     * @ORM\Column(name="createdAtDateImmutable", type="date_immutable")
+     * @ORM\Column(name="createdAtDateImmutable", type="date")
      */
     private $createdAtDateImmutable;
 
     /**
      * @var \DateTimeInterface
      *
-     * @ORM\Column(name="createdAtTimeImmutable", type="time_immutable")
+     * @ORM\Column(name="createdAtTimeImmutable", type="time")
      */
     private $createdAtTimeImmutable;
 

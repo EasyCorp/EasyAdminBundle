@@ -177,3 +177,10 @@ easy_admin:
                     - { property: 'enabled', label: 'Custom Label' }
                     - 'description'
                     - { property: 'categories', type: 'easyadmin_autocomplete', help: 'Custom help message' }
+        User:
+            class: AppTestBundle\Entity\FunctionalTests\User
+            list:
+                fields:
+                    - { property: 'createdAtDateTimeImmutable', type: 'datetime_immutable' }
+                    - { property: 'createdAtDateImmutable', type: 'date_immutable' }
+                    - { property: 'createdAtTimeImmutable', type: 'time_immutable' }

@@ -668,7 +668,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testListViewImmutableDates()
     {
-        if (!class_exists('\DateTimeImmutable'))
+        if (!class_exists('\DateTimeImmutable')) {
              $this->markTestSkipped('DateTimeImmutable class does not exist in this PHP version.');
         }
 

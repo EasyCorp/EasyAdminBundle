@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\DataFixtures\ORM;
 
-use AppTestBundle\Entity\FunctionalTests\User;
 use AppTestBundle\Entity\FunctionalTests\LegacyUser;
+use AppTestBundle\Entity\FunctionalTests\User;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;

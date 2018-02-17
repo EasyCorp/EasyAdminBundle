@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\DataFixtures\ORM;
 
 use AppTestBundle\Entity\FunctionalTests\User;
+use AppTestBundle\Entity\FunctionalTests\LegacyUser;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -17,7 +18,8 @@ class LoadUsers extends AbstractFixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         foreach (range(1, 20) as $i) {
-            $user = new User();
+            // TODO: remove this check when PHP 5.3 is no longer supported
+            $user = class_exists('\DateTimeImmutable') ? new User() : new LegacyUser();
             $user->setUsername('user'.$i);
             $user->setEmail('user'.$i.'@example.com');
 

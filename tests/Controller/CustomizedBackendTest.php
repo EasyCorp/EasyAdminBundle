@@ -665,4 +665,17 @@ class CustomizedBackendTest extends AbstractTestCase
             $firstVirtualField->attr('title')
         );
     }
+
+    public function testListViewImmutableDates()
+    {
+        if (!class_exists('\DateTimeImmutable'))
+             $this->markTestSkipped('DateTimeImmutable class does not exist in this PHP version.');
+        }
+
+        $crawler = $this->requestListView('User');
+
+        $this->assertSame('October 18, 2005 16:27', trim($crawler->filter('#main table tr')->eq(1)->filter('td.datetime_immutable')->text()));
+        $this->assertSame('2005-10-18', trim($crawler->filter('#main table tr')->eq(1)->filter('td.date_immutable')->text()));
+        $this->assertSame('16:27:36', trim($crawler->filter('#main table tr')->eq(1)->filter('td.time_immutable')->text()));
+    }
 }

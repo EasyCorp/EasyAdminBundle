@@ -53,6 +53,7 @@ matrix:
         - COMPOSER_FLAGS="--prefer-lowest"
   allow_failures:
     - php: nightly
+    - php: 5.3
     # code coverage is very slow; allow a failure to get the Travis result early
     - env:
         - SYMFONY_VERSION="2.8.*"

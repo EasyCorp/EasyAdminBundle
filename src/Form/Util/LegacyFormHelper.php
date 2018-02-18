@@ -30,7 +30,9 @@ final class LegacyFormHelper
         'country' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CountryType',
         'currency' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\CurrencyType',
         'datetime' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType',
+        'datetime_immutable' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType',
         'date' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateType',
+        'date_immutable' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateType',
         'email' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\EmailType',
         'entity' => 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType',
         'file' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FileType',
@@ -52,6 +54,7 @@ final class LegacyFormHelper
         'textarea' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TextareaType',
         'text' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TextType',
         'time' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimeType',
+        'time_immutable' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimeType',
         'timezone' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TimezoneType',
         'url' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\UrlType',
         // EasyAdmin custom types

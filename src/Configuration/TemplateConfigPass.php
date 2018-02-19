@@ -206,12 +206,20 @@ class TemplateConfigPass implements ConfigPassInterface
                         continue;
                     }
 
+                    // needed to add support for immutable datetime/date/time fields
+                    // (which are rendered using the same templates as their non immutable counterparts)
+                    if ('_immutable' === substr($fieldMetadata['dataType'], -10)) {
+                        $fieldTemplateName = 'field_'.substr($fieldMetadata['dataType'], 0, -10);
+                    } else {
+                        $fieldTemplateName = 'field_'.$fieldMetadata['dataType'];
+                    }
+
                     // primary key values are displayed unmodified to prevent common issues
                     // such as formatting its values as numbers (e.g. `1,234` instead of `1234`)
                     if ($entityConfig['primary_key_field_name'] === $fieldName) {
                         $template = $entityConfig['templates']['field_id'];
-                    } elseif (array_key_exists('field_'.$fieldMetadata['dataType'], $entityConfig['templates'])) {
-                        $template = $entityConfig['templates']['field_'.$fieldMetadata['dataType']];
+                    } elseif (array_key_exists($fieldTemplateName, $entityConfig['templates'])) {
+                        $template = $entityConfig['templates'][$fieldTemplateName];
                     } else {
                         $template = $entityConfig['templates']['label_undefined'];
                     }

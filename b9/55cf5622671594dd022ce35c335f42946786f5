@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-02-17T16:27:13Z
+
+I don't care much about PHP 5.3 because soon this bundle will only support PHP 7.1 and Symfony 4 ... but it'd be great if someone could look into why tests are now failing in Travis CI with PHP 5.3. Thanks!
+
+---------------------------------------------------------------------------
+
+by grachevko at 2018-02-17T16:54:03Z
+
+Maybe?
+![image](https://user-images.githubusercontent.com/8628465/36343360-3e494668-141c-11e8-803a-24d3832db192.png)
+http://php.net/manual/en/class.datetimeimmutable.php
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-02-17T18:20:11Z
+
+But I added class_exists checks everywhere to not use that class in PHP 5.3. Maybe I did something wrong. Can you please help me? Thanks!

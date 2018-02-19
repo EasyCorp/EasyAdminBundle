@@ -161,7 +161,8 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_LIST);
 
         $fields = $this->entity['list']['fields'];
-        $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'), $this->entity['list']['dql_filter']);
+        $maxResult = isset($this->entity['list']['max_results']) ? $this->entity['list']['max_results'] : $this->config['list']['max_results'];
+        $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $maxResult, $this->request->query->get('sortField'), $this->request->query->get('sortDirection'), $this->entity['list']['dql_filter']);
 
         $this->dispatch(EasyAdminEvents::POST_LIST, array('paginator' => $paginator));
 
@@ -357,13 +358,14 @@ class AdminController extends Controller
             return $this->redirect($this->get('router')->generate('easyadmin', $queryParameters));
         }
 
+        $maxResult = isset($this->entity['list']['max_results']) ? $this->entity['list']['max_results'] : $this->config['list']['max_results'];
         $searchableFields = $this->entity['search']['fields'];
         $paginator = $this->findBy(
             $this->entity['class'],
             $query,
             $searchableFields,
             $this->request->query->get('page', 1),
-            $this->config['list']['max_results'],
+            $maxResult,
             isset($this->entity['search']['sort']['field']) ? $this->entity['search']['sort']['field'] : $this->request->query->get('sortField'),
             isset($this->entity['search']['sort']['direction']) ? $this->entity['search']['sort']['direction'] : $this->request->query->get('sortDirection'),
             $this->entity['search']['dql_filter']

@@ -3,7 +3,7 @@
     {% if 'show' == view %}
         {% if value|length > 0 %}
             <ul class="{{ value|length < 2 ? 'inline' }}">
-                {% for item in value|slice(0, easyadmin_config('show.max_results')) %}
+                {% for item in value|slice(0, entity_config.show.max_results) %}
                     <li>
                         {% if link_parameters is defined %}
                             {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
@@ -15,7 +15,7 @@
                     </li>
                 {% endfor %}
 
-                {% set _remaining_items = value|length - easyadmin_config('show.max_results') %}
+                {% set _remaining_items = value|length - entity_config.show.max_results %}
                 {% if _remaining_items > 0 %}
                     <li class="remaining-items">({{ 'show.remaining_items'|transchoice(_remaining_items, {}, 'EasyAdminBundle') }})</li>
                 {% endif %}

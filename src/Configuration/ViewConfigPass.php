@@ -25,6 +25,7 @@ class ViewConfigPass implements ConfigPassInterface
         $backendConfig = $this->processDefaultFieldsConfig($backendConfig);
         $backendConfig = $this->processFieldConfig($backendConfig);
         $backendConfig = $this->processPageTitleConfig($backendConfig);
+        $backendConfig = $this->processMaxResultsConfig($backendConfig);
         $backendConfig = $this->processSortingConfig($backendConfig);
 
         return $backendConfig;
@@ -125,6 +126,28 @@ class ViewConfigPass implements ConfigPassInterface
             foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
                 if (!isset($entityConfig[$view]['title']) && isset($backendConfig[$view]['title'])) {
                     $backendConfig['entities'][$entityName][$view]['title'] = $backendConfig[$view]['title'];
+                }
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * This method resolves the 'max_results' inheritance when some global view
+     * (list, show, etc.) defines a global value for all entities that can be
+     * overridden individually by each entity.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function processMaxResultsConfig(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (array('list', 'search', 'show') as $view) {
+                if (!isset($entityConfig[$view]['max_results']) && isset($backendConfig[$view]['max_results'])) {
+                    $backendConfig['entities'][$entityName][$view]['max_results'] = $backendConfig[$view]['max_results'];
                 }
             }
         }

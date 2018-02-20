@@ -517,7 +517,7 @@ autocomplete form fields.
 
 If the number of autocomplete suggestions is large, they are paginated to
 display a maximum of ``10`` results. Define the ``show.max_results`` option to
-change this value:
+change this value (globally or per entity):
 
 .. code-block:: yaml
 
@@ -525,6 +525,10 @@ change this value:
     easy_admin:
         show:
             max_results: 20
+        entities:
+            Category:
+                show:
+                    max_results: 5
         # ...
 
 Advanced Form Design

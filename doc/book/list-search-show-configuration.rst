@@ -132,8 +132,8 @@ Customize the Number of Rows Displayed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, listings in the ``list`` and ``search`` display a maximum of 15
-rows. Define the ``max_results`` option under the global ``list`` key to change
-this value:
+rows. To change this value, define the ``max_results`` option under the global
+``list`` key or the local ``list`` key of any entity:
 
 .. code-block:: yaml
 
@@ -141,13 +141,17 @@ this value:
     easy_admin:
         list:
             max_results: 30
+        entities:
+            Category:
+                list:
+                    max_results: 10
         # ...
 
 In addition, the ``show`` view displays a maximum of 10 items for fields related
 with other entities (e.g. if ``Category`` and ``Product`` entities are related,
 it displays a maximum of 10 products when browsing the details of some
-category). Define the ``max_results`` option under the global ``show`` key to
-change this value:
+category). To change this value, define the ``max_results`` option under the
+global ``show`` key or the local ``show`` key of any entity:
 
 .. code-block:: yaml
 
@@ -155,6 +159,10 @@ change this value:
     easy_admin:
         show:
             max_results: 20
+        entities:
+            Category:
+                show:
+                    max_results: 5
         # ...
 
 Customize the Properties Displayed

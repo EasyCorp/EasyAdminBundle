@@ -161,7 +161,7 @@ class CustomMenuTest extends AbstractTestCase
         );
 
         $this->assertSame(
-            '/admin/?entity=Purchase&action=list&menuIndex=2&submenuIndex=-1&sortField=deliveryDate',
+            '/admin/?entity=Purchase&action=list&menuIndex=2&submenuIndex=-1&sortField=deliveryDate&customParameter=customValue',
             $crawler->filter('.sidebar-menu li:contains("Purchases") a')->attr('href'),
             'First level menu, customized link'
         );
@@ -206,5 +206,24 @@ class CustomMenuTest extends AbstractTestCase
             '/admin/?menuIndex=9&submenuIndex=-1',
             $crawler->filter('.sidebar-menu li:contains("Custom Internal Route") a')->attr('href')
         );
+    }
+
+    public function testCustomQueryParametersAreMaintained()
+    {
+        // 1. visit the homepage and click on the menu entry with custom parameters
+        $crawler = $this->getBackendHomepage();
+        $link = $crawler->filter('.sidebar-menu li:contains("Purchases") a')->eq(0)->link();
+        $crawler = $this->client->click($link);
+
+        // 2. click on the 'Edit' link of the first item
+        $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
+        $crawler = $this->client->click($link);
+
+        // 3. the 'referer' parameter should contain the custom query string param
+        $refererUrl = $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('href');
+        $queryString = parse_url($refererUrl, PHP_URL_QUERY);
+        parse_str($queryString, $refererParameters);
+
+        $this->assertSame('customValue', $refererParameters['customParameter']);
     }
 }

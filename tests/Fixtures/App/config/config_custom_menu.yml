@@ -16,7 +16,7 @@ easy_admin:
                   - { entity: 'Category', label: 'Categories', default: true, icon: '' }
                   - { label: 'Absolute URL', url: 'https://github.com/javiereguiluz/EasyAdminBundle' }
             - { label: 'Images', entity: 'Image' }
-            - { label: 'Purchases', entity: 'Purchase', icon: '', params: { sortField: 'deliveryDate' } }
+            - { label: 'Purchases', entity: 'Purchase', icon: '', params: { sortField: 'deliveryDate', customParameter: 'customValue' } }
             - { label: 'About EasyAdmin' }
             - { label: 'Project Home', url: 'https://github.com/javiereguiluz/EasyAdminBundle', icon: 'home', target: '_blank' }
             - { label: 'Documentation', url: 'https://github.com/javiereguiluz/EasyAdminBundle#getting-started-guide', icon: 'book', target: '_self' }

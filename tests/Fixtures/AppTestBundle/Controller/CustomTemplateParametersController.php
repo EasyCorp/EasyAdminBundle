@@ -15,48 +15,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminContr
 
 class CustomTemplateParametersController extends EasyAdminController
 {
-    public function listAction()
+    protected function renderTemplate($actionName, $templatePath, array $parameters = array())
     {
-        $this->templateParameters = array(
-            'custom_parameter' => 'list',
-        );
+        $parameters['custom_parameter'] = $actionName;
 
-        return parent::listAction();
-    }
-
-    public function showAction()
-    {
-        $this->templateParameters = array(
-            'custom_parameter' => 'show',
-        );
-
-        return parent::showAction();
-    }
-
-    public function searchAction()
-    {
-        $this->templateParameters = array(
-            'custom_parameter' => 'search',
-        );
-
-        return parent::searchAction();
-    }
-
-    public function editAction()
-    {
-        $this->templateParameters = array(
-            'custom_parameter' => 'edit',
-        );
-
-        return parent::editAction();
-    }
-
-    public function newAction()
-    {
-        $this->templateParameters = array(
-            'custom_parameter' => 'new',
-        );
-
-        return parent::newAction();
+        return parent::renderTemplate($actionName, $templatePath, $parameters);
     }
 }

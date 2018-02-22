@@ -150,6 +150,8 @@ methods are complex because they need to perform lots of checks:
         protected function deleteAction();
         // special Ajax-based action used to get the results for the autocomplete form field
         protected function autocompleteAction();
+        // useful to add/modify/remove the parameters passed to the Twig template
+        protected function renderTemplate();
     }
 
 The rest of the available methods are specific for each action:
@@ -347,6 +349,8 @@ methods, but they include the entity name as part of their names:
     protected function list<EntityName>Action();
     protected function search<EntityName>Action();
     protected function show<EntityName>Action();
+    // ...
+    protected function render<EntityName>Template();
     // ...
     protected function createNew<EntityName>Entity();
     // ...

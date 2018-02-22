@@ -814,9 +814,10 @@ class AdminController extends Controller
      * Instead of defining a render method per action (list, show, search, etc.) use
      * the $actionName argument to discriminate between actions.
      *
-     * @param  string $actionName   The name of the current action (list, show, new, etc.)
-     * @param  string $templatePath The path of the Twig template to render
-     * @param  array  $parameters   The parameters passed to the template
+     * @param string $actionName   The name of the current action (list, show, new, etc.)
+     * @param string $templatePath The path of the Twig template to render
+     * @param array  $parameters   The parameters passed to the template
+     *
      * @return Response
      */
     protected function renderTemplate($actionName, $templatePath, array $parameters = array())

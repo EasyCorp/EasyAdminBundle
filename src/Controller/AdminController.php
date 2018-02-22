@@ -48,6 +48,8 @@ class AdminController extends Controller
     protected $request;
     /** @var EntityManager The Doctrine entity manager for the current entity */
     protected $em;
+    /** @var array The parameters passed to the Twig template */
+    protected $templateParameters = array();
 
     /**
      * @Route("/", name="easyadmin")
@@ -165,11 +167,11 @@ class AdminController extends Controller
 
         $this->dispatch(EasyAdminEvents::POST_LIST, array('paginator' => $paginator));
 
-        return $this->render($this->entity['templates']['list'], array(
+        return $this->render($this->entity['templates']['list'], array_merge(array(
             'paginator' => $paginator,
             'fields' => $fields,
             'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
-        ));
+        ), $this->templateParameters));
     }
 
     /**
@@ -218,12 +220,12 @@ class AdminController extends Controller
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
 
-        return $this->render($this->entity['templates']['edit'], array(
+        return $this->render($this->entity['templates']['edit'], array_merge(array(
             'form' => $editForm->createView(),
             'entity_fields' => $fields,
             'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
-        ));
+        ), $this->templateParameters));
     }
 
     /**
@@ -248,11 +250,11 @@ class AdminController extends Controller
             'entity' => $entity,
         ));
 
-        return $this->render($this->entity['templates']['show'], array(
+        return $this->render($this->entity['templates']['show'], array_merge(array(
             'entity' => $entity,
             'fields' => $fields,
             'delete_form' => $deleteForm->createView(),
-        ));
+        ), $this->templateParameters));
     }
 
     /**
@@ -292,11 +294,11 @@ class AdminController extends Controller
             'entity' => $entity,
         ));
 
-        return $this->render($this->entity['templates']['new'], array(
+        return $this->render($this->entity['templates']['new'], array_merge(array(
             'form' => $newForm->createView(),
             'entity_fields' => $fields,
             'entity' => $entity,
-        ));
+        ), $this->templateParameters));
     }
 
     /**
@@ -375,11 +377,11 @@ class AdminController extends Controller
             'paginator' => $paginator,
         ));
 
-        return $this->render($this->entity['templates']['list'], array(
+        return $this->render($this->entity['templates']['list'], array_merge(array(
             'paginator' => $paginator,
             'fields' => $fields,
             'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
-        ));
+        ), $this->templateParameters));
     }
 
     /**

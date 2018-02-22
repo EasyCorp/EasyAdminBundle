@@ -8,10 +8,7 @@ framework:
 easy_admin:
     design:
         templates:
-            list: 'custom_template_parameters/list.html.twig'
-            show: 'custom_template_parameters/show.html.twig'
-            edit: 'custom_template_parameters/edit.html.twig'
-            new: 'custom_template_parameters/new.html.twig'
+            layout: 'custom_template_parameters/layout.html.twig'
     entities:
         Category:
             class: AppTestBundle\Entity\FunctionalTests\Category

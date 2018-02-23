@@ -1,0 +1,14 @@
+imports:
+    - { resource: config.yml }
+
+framework:
+    # This file overrides the EasyAdmin controller
+    router: { resource: "%kernel.root_dir%/config/routing_custom_template_parameters.yml" }
+
+easy_admin:
+    design:
+        templates:
+            layout: 'custom_template_parameters/layout.html.twig'
+    entities:
+        Category:
+            class: AppTestBundle\Entity\FunctionalTests\Category

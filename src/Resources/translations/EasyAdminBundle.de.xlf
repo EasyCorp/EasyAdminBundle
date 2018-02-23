@@ -147,6 +147,10 @@
                 <source>form.are_you_sure</source>
                 <target>Vorgenommene Änderungen wurden noch nicht gespeichert.</target>
             </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>Eine ungültige Eingabe|%count% ungültige Eingaben</target>
+            </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} Ein Element ist in der Liste nicht angezeigt. |]1,Inf] %count% Elemente sind in der Liste nicht angezeigt]]></target>

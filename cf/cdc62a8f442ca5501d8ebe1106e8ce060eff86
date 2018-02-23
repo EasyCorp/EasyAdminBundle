@@ -1,0 +1,6 @@
+---------------------------------------------------------------------------
+
+by grachevko at 2018-02-22T17:13:03Z
+
+In my opinion `array_merge` bad operation.
+Besides i think it will be good to avoid using controller to save any state like request and config for current entity.

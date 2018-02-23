@@ -267,7 +267,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                         $isTheFirstGroupElement = true;
                     } elseif ($isFormDesignElement && 'group' === $fieldConfig['type']) {
                         if ($isTheFirstGroupElement && $previousTabFieldNumber === -1 && $fieldNumber > 1) {
-                            // if no tab is used, we insert the group at the beginning of the array
+                            // if no tab is used, insert the group at the beginning of the array
                             $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
                                 array('_easyadmin_form_design_element_forced_first_group' => array('type' => 'group')),
                                 $backendConfig['entities'][$entityName][$view]['fields']
@@ -298,7 +298,8 @@ class NormalizerConfigPass implements ConfigPassInterface
                         $fieldConfig['property'] = $fieldName;
 
                         if ('tab' === $fieldConfig['type'] && empty($fieldConfig['id'])) {
-                            $fieldConfig['id'] = $this->sanitizeTabId($fieldConfig['label']);
+                            // ensures unique IDs like '_easyadmin_form_design_element_0'
+                            $fieldConfig['id'] = $fieldConfig['property'];
                         }
 
                         // transform the form type shortcuts into the real form type short names
@@ -469,15 +470,6 @@ class NormalizerConfigPass implements ConfigPassInterface
         }
 
         return null;
-    }
-
-    private function sanitizeTabId($tabId)
-    {
-        if (function_exists('iconv') && false !== ($tmpTabId = iconv('UTF-8', 'ASCII//TRANSLIT', $tabId))) {
-            $tabId = $tmpTabId;
-        }
-
-        return preg_replace(array('/\s/', '/[^a-z_\-]/'), array('-', ''), strtolower($tabId));
     }
 }
 

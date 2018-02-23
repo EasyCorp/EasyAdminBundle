@@ -42,7 +42,7 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
     {
         $formTabs = $event->getForm()->getConfig()->getAttribute('easyadmin_form_tabs');
 
-        $activeTab = null;
+        $firstTabWithErrors = null;
         foreach ($event->getForm() as $child) {
             $errors = $child->getErrors(true);
 
@@ -50,18 +50,17 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
                 $formTab = $child->getConfig()->getAttribute('easyadmin_form_tab');
                 $formTabs[$formTab]['errors'] += count($errors);
 
-                if (null === $activeTab) {
-                    $activeTab = $formTab;
+                if (null === $firstTabWithErrors) {
+                    $firstTabWithErrors = $formTab;
                 }
             }
         }
 
+        // ensure that the first tab with errors is displayed
         $firstTab = key($formTabs);
-        if ($firstTab !== $activeTab) {
-            // We have to deactivate the first tab, so that the first tab with
-            // eroneous data is shown
+        if ($firstTab !== $firstTabWithErrors) {
             $formTabs[$firstTab]['active'] = false;
-            $formTabs[$activeTab]['active'] = true;
+            $formTabs[$firstTabWithErrors]['active'] = true;
         }
     }
 }

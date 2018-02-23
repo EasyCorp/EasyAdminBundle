@@ -396,8 +396,8 @@ anywhere in your Symfony application and make it extend from the default
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/AdminController.php
-    namespace AppBundle\Admin;
+    // src/AppBundle/Controller/ProductController.php
+    namespace AppBundle\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
@@ -415,7 +415,7 @@ will use that controller and set the fully qualified class name as its value:
         entities:
             # ...
             Product:
-                controller: AppBundle\Admin\ProductController
+                controller: AppBundle\Controller\ProductController
                 # ...
 
 **Step 3.** You can now override any of the default ``AdminController`` methods

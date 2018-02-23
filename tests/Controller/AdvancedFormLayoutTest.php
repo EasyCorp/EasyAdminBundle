@@ -38,6 +38,22 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             $crawler = $this->getBackendPage($queryParams);
 
             $this->assertSame(
+                'Basic information',
+                trim($crawler->filter('ul.nav-tabs li')->eq(0)->text()),
+                'The first tab of the form is displayed correctly.'
+            );
+            $this->assertContains(
+                'fa fa-pencil',
+                $crawler->filter('ul.nav-tabs li')->eq(0)->filter('i')->attr('class'),
+                'The first tab displays the configured icon.'
+            );
+            $this->assertSame(
+                'Extra information',
+                trim($crawler->filter('ul.nav-tabs li')->eq(1)->text()),
+                'The second tab of the form is displayed correctly.'
+            );
+
+            $this->assertSame(
                 'product_name',
                 $crawler->filter('form .field-group')->eq(0)->filter('.box .box-body input')->attr('id'),
                 'The "name" field is displayed in a "group" created automatically to not have ungrouped form fields.'

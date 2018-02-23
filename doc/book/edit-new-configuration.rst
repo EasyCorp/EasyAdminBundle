@@ -754,8 +754,9 @@ very advanced layouts.
 Form Tabs
 .........
 
-Like the form groups tabs are another way to separate form fields to achieve a
-better overview and a cleaner interface.
+This element groups one or more fields and displays them in a separate tab. You
+can combine it with the other elements (tabs can contain groups, but no the other
+way around) to create clean interfaces when forms contains lots of fields.
 
 .. code-block:: yaml
 
@@ -777,8 +778,6 @@ better overview and a cleaner interface.
                         - { type: 'group', label: 'Media', css_class: 'col-sm-6' }
                         - email
                         - phone
-
-As you can see in the example tabs may contain groups but not the other way round.
 
 .. image:: ../images/easyadmin-form-tabs.png
    :alt: A form using tabs to separate its fields

@@ -7,6 +7,7 @@ easy_admin:
             class: AppTestBundle\Entity\FunctionalTests\Product
             form:
                 fields:
+                    - { type: 'tab', label: 'Basic information', icon: 'pencil' }
                     - 'name'
                     - { type: 'group', css_class: 'col-sm-8', label: 'Basic information', icon: 'pencil' }
                     - 'description'
@@ -18,6 +19,7 @@ easy_admin:
                     - { type: 'section', label: 'Advanced Settings', icon: 'warning', help: 'Reserved for administrators use' }
                     - 'enabled'
                     - 'createdAt'
+                    - { type: 'tab', label: 'Extra information' }
                     - { type: 'group', css_class: 'col-sm-8 new-row' }
                     - 'features'
                     - { type: 'group', css_class: 'col-sm-4' }

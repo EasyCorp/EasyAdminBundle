@@ -165,11 +165,14 @@ class AdminController extends Controller
 
         $this->dispatch(EasyAdminEvents::POST_LIST, array('paginator' => $paginator));
 
-        return $this->render($this->entity['templates']['list'], array(
+        $templateParameters = array(
             'paginator' => $paginator,
             'fields' => $fields,
             'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
-        ));
+        );
+        $this->executeDynamicPreRender('<EntityName>List', $templateParameters);
+
+        return $this->render($this->entity['templates']['list'], $templateParameters);
     }
 
     /**
@@ -218,12 +221,15 @@ class AdminController extends Controller
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
 
-        return $this->render($this->entity['templates']['edit'], array(
+        $templateParameters = array(
             'form' => $editForm->createView(),
             'entity_fields' => $fields,
             'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
-        ));
+        );
+        $this->executeDynamicPreRender('<EntityName>Edit', $templateParameters);
+
+        return $this->render($this->entity['templates']['edit'], $templateParameters);
     }
 
     /**
@@ -248,11 +254,14 @@ class AdminController extends Controller
             'entity' => $entity,
         ));
 
-        return $this->render($this->entity['templates']['show'], array(
+        $templateParameters = array(
             'entity' => $entity,
             'fields' => $fields,
             'delete_form' => $deleteForm->createView(),
-        ));
+        );
+        $this->executeDynamicPreRender('<EntityName>Show', $templateParameters);
+
+        return $this->render($this->entity['templates']['show'], $templateParameters);
     }
 
     /**
@@ -292,11 +301,14 @@ class AdminController extends Controller
             'entity' => $entity,
         ));
 
-        return $this->render($this->entity['templates']['new'], array(
+        $templateParameters = array(
             'form' => $newForm->createView(),
             'entity_fields' => $fields,
             'entity' => $entity,
-        ));
+        );
+        $this->executeDynamicPreRender('<EntityName>New', $templateParameters);
+
+        return $this->render($this->entity['templates']['new'], $templateParameters);
     }
 
     /**
@@ -375,11 +387,14 @@ class AdminController extends Controller
             'paginator' => $paginator,
         ));
 
-        return $this->render($this->entity['templates']['list'], array(
+        $templateParameters = array(
             'paginator' => $paginator,
             'fields' => $fields,
             'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
-        ));
+        );
+        $this->executeDynamicPreRender('<EntityName>Search', $templateParameters);
+
+        return $this->render($this->entity['templates']['list'], $templateParameters);
     }
 
     /**
@@ -489,6 +504,51 @@ class AdminController extends Controller
     {
         $this->em->remove($entity);
         $this->em->flush();
+    }
+
+    /**
+     * Allows applications to override the template parameters before rendering the edit view.
+     *
+     * @param array $templateParameters
+     */
+    protected function preRenderEdit(array &$templateParameters)
+    {
+    }
+
+    /**
+     * Allows applications to override the template parameters before rendering the list view.
+     *
+     * @param array $templateParameters
+     */
+    protected function preRenderList(array &$templateParameters)
+    {
+    }
+
+    /**
+     * Allows applications to override the template parameters before rendering the new view.
+     *
+     * @param array $templateParameters
+     */
+    protected function preRenderNew(array &$templateParameters)
+    {
+    }
+
+    /**
+     * Allows applications to override the template parameters before rendering the search view.
+     *
+     * @param array $templateParameters
+     */
+    protected function preRenderSearch(array &$templateParameters)
+    {
+    }
+
+    /**
+     * Allows applications to override the template parameters before rendering the show view.
+     *
+     * @param array $templateParameters
+     */
+    protected function preRenderShow(array &$templateParameters)
+    {
     }
 
     /**
@@ -752,6 +812,26 @@ class AdminController extends Controller
         }
 
         return call_user_func_array(array($this, $methodName), $arguments);
+    }
+
+    /**
+     * Given a pre render name pattern, it looks for the customized version of that
+     * pre render (based on the entity name) and executes it. If the custom pre render
+     * does not exist, it executes the regular pre render.
+     *
+     * @param $methodNamePattern
+     * @param array $templateParameters
+     * @return mixed
+     */
+    protected function executeDynamicPreRender($methodNamePattern, array &$templateParameters)
+    {
+        $methodName = str_replace('<EntityName>', 'preRender' . $this->entity['name'], $methodNamePattern);
+
+        if (!is_callable(array($this, $methodName))) {
+            $methodName = str_replace('<EntityName>', 'preRender', $methodNamePattern);
+        }
+
+        return $this->{$methodName}($templateParameters);
     }
 
     /**

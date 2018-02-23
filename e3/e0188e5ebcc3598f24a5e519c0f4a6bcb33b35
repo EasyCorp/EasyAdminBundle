@@ -1,0 +1,76 @@
+---------------------------------------------------------------------------
+
+by laurent-bientz at 2017-10-26T09:52:59Z
+
+👍 It'll be awesome, especially for translation stuff !
+
+---------------------------------------------------------------------------
+
+by grachevko at 2017-10-26T10:17:06Z
+
+In my opinion this is useless in current realisation.
+How validation will work? What if violations will be inside both tabs?
+User will see only one, then submit form and then will see another?
+How tabs well render on mobile devices?
+
+In our project we use tabs for better navigation, but every tabs is a separated pages with it's own configuration in `easy_admin.yaml`.
+
+---------------------------------------------------------------------------
+
+by naitsirch at 2017-10-26T18:37:37Z
+
+I thought about the validation issue. One could add a special icon to a tab, which contains violations or a label to signalize violations.
+
+---------------------------------------------------------------------------
+
+by iluuu1994 at 2017-10-26T18:57:39Z
+
+@naitsirch That and you should always jump to the first tab that containing a validation error. This way you'll never see a tab containing no error, looking like the submission was successful.
+
+---------------------------------------------------------------------------
+
+by naitsirch at 2017-10-30T12:49:45Z
+
+I have extended the tab functionality to address the notes made by @grachevko and @iluuu1994.
+
+Here's a screenshot:
+![screenshot_20171030_133814](https://user-images.githubusercontent.com/1118790/32171614-044d2c3a-bd79-11e7-8fa4-e776a8c43dcf.png)
+
+If there's a tab with form violations, this tab is activated.
+
+Any other objections?
+
+---------------------------------------------------------------------------
+
+by naitsirch at 2017-11-02T20:58:31Z
+
+Sorry for adding another *coding style fixing* commit, but I couldn't get phpunit and php-cs working for this project. Executing `vendor/bin/phpunit -c phpunit.xml.dist` locally gave me
+
+> FAILURES!
+> Tests: 409, Assertions: 248, Errors: 196, Skipped: 7.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2017-11-02T21:05:05Z
+
+@naitsirch don't worry! I'll take a look at tests when I review this proposal. Thanks!
+
+---------------------------------------------------------------------------
+
+by naitsirch at 2017-12-01T22:06:18Z
+
+@fabpot Thanks for the catch. I've removed the superfluous trailing dots.
+
+---------------------------------------------------------------------------
+
+by victorbstan at 2018-01-08T23:47:11Z
+
+I would like to use form tabs, can I merge this pull request into my own EasyAdmin branch? Or will this be merged sometime soon in the main EasyAdmin repo?
+
+---------------------------------------------------------------------------
+
+by naitsirch at 2018-01-09T19:07:46Z
+
+@victorbstan Yes, of course you can ;-)
+
+@javiereguiluz Would be nice if you could review this one soon.

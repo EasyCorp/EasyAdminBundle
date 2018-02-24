@@ -53,5 +53,5 @@ About
 
     misc/about
 
-.. _`EasyAdminBundle`: https://github.com/javiereguiluz/EasyAdminBundle
+.. _`EasyAdminBundle`: https://github.com/EasyCorp/EasyAdminBundle
 .. _`EasyAdminBundle for an Amazing Admin Interface`: https://knpuniversity.com/screencast/easyadminbundle

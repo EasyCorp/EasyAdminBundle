@@ -1,18 +1,14 @@
 {
-    "name": "javiereguiluz/easyadmin-bundle",
+    "name": "easycorp/easyadmin-bundle",
     "type": "symfony-bundle",
     "description": "Admin generator for Symfony applications",
     "keywords": ["backend", "admin", "generator"],
-    "homepage": "https://github.com/javiereguiluz/EasyAdminBundle",
+    "homepage": "https://github.com/EasyCorp/EasyAdminBundle",
     "license": "MIT",
     "authors": [
         {
-            "name": "Javier Eguiluz",
-            "email": "javiereguiluz@gmail.com"
-        },
-        {
             "name": "Project Contributors",
-            "homepage": "http://github.com/javiereguiluz/easyadmin/blob/master/CONTRIBUTORS.md"
+            "homepage": "http://github.com/EasyCorp/easyadmin/blob/master/CONTRIBUTORS.md"
         }
     ],
     "require": {

@@ -25,13 +25,6 @@ matrix:
         - php: 7.2
           env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-text"
 
-          # Test LTS versions. This makes sure we do not use Symfony packages with version greater
-          # than 2 or 3 respectively. Read more at https://github.com/symfony/lts
-        - php: 7.2
-          env: DEPENDENCIES="symfony/lts:^2"
-        - php: 7.2
-          env: DEPENDENCIES="symfony/lts:^3"
-
           # Latest commit to master
         - php: 7.2
           env: STABILITY="dev"

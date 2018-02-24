@@ -28,7 +28,7 @@ following command to download the latest stable version of this bundle:
 
 .. code-block:: terminal
 
-    $ composer require javiereguiluz/easyadmin-bundle
+    $ composer require easycorp/easyadmin-bundle
 
 This command requires you to have Composer installed globally, as explained
 in the `Composer documentation`_.

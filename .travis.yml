@@ -1,85 +1,66 @@
 language: php
-dist: precise
 sudo: false
-git:
-    depth: 1
-
 cache:
-  directories:
-    - $HOME/.composer/cache
-    - $HOME/.app/cache
+    directories:
+        - $HOME/.composer/cache/files
+        - $HOME/symfony-bridge/.phpunit
 
 env:
-  global:
-    - deps="no"
-    - SYMFONY_VERSION=""
-    - CHECK_PHP_SYNTAX="no"
-    - SYMFONY_DEPRECATIONS_HELPER="weak"
-    - ENABLE_CODE_COVERAGE="false"
+    global:
+        - PHPUNIT_FLAGS="-v"
+        - SYMFONY_PHPUNIT_DIR="$HOME/symfony-bridge/.phpunit"
+        - ENABLE_CODE_COVERAGE="false"
+        - CHECK_PHP_SYNTAX="no"
 
 matrix:
-  fast_finish: true
-  include:
-    # bleeding edge (unreleased dev versions where failures are allowed)
-    - php: nightly
-      env:
-        - STABILITY=dev
-    # testing Symfony 4 release
-    - php: 7.1
-      env:
-        - SYMFONY_VERSION="4.0.*"
-        - STABILITY=beta
-    # stable (most recent stable versions)
-    - php: 7.1
-      env:
-        - SYMFONY_VERSION="3.3.*"
-        - TWIG_VERSION="^2.4"
-        - CHECK_PHP_SYNTAX="yes"
-    # Symfony 2 LTS
-    - php: 5.6
-      env:
-        - SYMFONY_VERSION="2.8.*"
-        - ENABLE_CODE_COVERAGE="true"
-    # Symfony 3 LTS
-    - php: 7.1
-      env:
-        - SYMFONY_VERSION="3.4.*"
-        - STABILITY=beta
-        - SYMFONY_DEPRECATIONS_HELPER="strict"
-    # legacy (oldest supported versions)
-    - php: 5.3
-      env:
-        - SYMFONY_VERSION="2.3.*"
-        - COMPOSER_FLAGS="--prefer-lowest"
-  allow_failures:
-    - php: nightly
-    - php: 5.3
-    # code coverage is very slow; allow a failure to get the Travis result early
-    - env:
-        - SYMFONY_VERSION="2.8.*"
-        - ENABLE_CODE_COVERAGE="true"
+    fast_finish: true
+    include:
+          # Minimum supported dependencies with the latest and oldest PHP version
+        - php: 7.2
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak_vendors"
+        - php: 7.0
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak_vendors"
+
+          # Test the latest stable release
+        - php: 7.0
+        - php: 7.1
+        - php: 7.2
+          env: ENABLE_CODE_COVERAGE=true PHPUNIT_FLAGS="-v --coverage-text --coverage-clover build/logs/clover.xml"
+
+          # Test LTS versions. This makes sure we do not use Symfony packages with version greater
+          # than 2 or 3 respectively. Read more at https://github.com/symfony/lts
+        - php: 7.2
+          env: DEPENDENCIES="symfony/lts:^2"
+        - php: 7.2
+          env: DEPENDENCIES="symfony/lts:^3"
+
+          # Latest commit to master
+        - php: 7.2
+          env: STABILITY="dev"
+
+    allow_failures:
+          # Dev-master is allowed to fail.
+        - env: STABILITY="dev"
 
 before_install:
-  - stty cols 120
-  - INI_FILE=~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - echo memory_limit = -1 >> $INI_FILE
-  - echo session.gc_probability = 0 >> $INI_FILE
-  - echo opcache.enable_cli = 1 >> $INI_FILE
-  - if [[ "SYMFONY_VERSION" == "2.8.*" || "SYMFONY_VERSION" == 3.3.* ]]; then export SYMFONY_DEPRECATIONS_HELPER="strict"; fi;
-  - if [[ "$ENABLE_CODE_COVERAGE" != "true" && "$TRAVIS_EVENT_TYPE" != "cron" ]]; then rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini; fi;
-  - composer self-update
-  - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
-  - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
-  - if [[ "$STABILITY" != "" ]]; then composer config minimum-stability $STABILITY; fi
+    - if [[ $ENABLE_CODE_COVERAGE != true && "$TRAVIS_EVENT_TYPE" != "cron" ]]; then phpenv config-rm xdebug.ini || true; fi
+    - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
+    - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
 install:
-  - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then composer require --dev --no-update friendsofphp/php-cs-fixer; fi;
-  - composer update --prefer-dist --no-interaction --no-suggest --no-progress --ansi $COMPOSER_FLAGS
-  - if [[ "$ENABLE_CODE_COVERAGE" == "true" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then composer require --dev satooshi/php-coveralls; fi
+    - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then composer require --dev --no-update friendsofphp/php-cs-fixer; fi;
+    - if [[ "$ENABLE_CODE_COVERAGE" == "true" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then composer require --dev satooshi/php-coveralls; fi
+    # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
+    - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
+    - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
+    - ./vendor/bin/simple-phpunit install
 
 script:
-  - if [[ "$ENABLE_CODE_COVERAGE" == "true" && "$TRAVIS_EVENT_TYPE" == "cron" ]]; then vendor/bin/simple-phpunit --coverage-text --coverage-clover build/logs/clover.xml; else vendor/bin/simple-phpunit; fi;
-  - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then php vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
+    - composer validate --strict --no-check-lock
+    # simple-phpunit is the PHPUnit wrapper provided by the PHPUnit Bridge component and
+    # it helps with testing legacy code and deprecations (composer require symfony/phpunit-bridge)
+    - ./vendor/bin/simple-phpunit $PHPUNIT_FLAGS
+    - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then php vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
   - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then mv ./.php_cs.cache $HOME/.app/cache/.php_cs.cache 2> /dev/null; fi;
 
 after_success: |

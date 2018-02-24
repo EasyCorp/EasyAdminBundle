@@ -12,11 +12,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Util\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group legacy
  */
-class LegacyFormHelperTest extends \PHPUnit_Framework_TestCase
+class LegacyFormHelperTest extends TestCase
 {
     public function shortTypesToFqcnProvider()
     {

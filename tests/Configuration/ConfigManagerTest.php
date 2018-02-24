@@ -46,10 +46,11 @@ class ConfigManagerTest extends TestCase
     {
         $backendConfig = Yaml::parse(file_get_contents($backendConfigFilePath));
         if (isset($backendConfig['expected_exception']['class'])) {
+            $this->expectException($backendConfig['expected_exception']['class']);
             if (isset($backendConfig['expected_exception']['message_string'])) {
-                $this->setExpectedException($backendConfig['expected_exception']['class'], $backendConfig['expected_exception']['message_string']);
+                $this->expectExceptionMessage($backendConfig['expected_exception']['message_string']);
             } elseif (isset($backendConfig['expected_exception']['message_regexp'])) {
-                $this->setExpectedExceptionRegExp($backendConfig['expected_exception']['class'], $backendConfig['expected_exception']['message_regexp']);
+                $this->expectExceptionMessageRegExp($backendConfig['expected_exception']['message_regexp']);
             }
         }
 

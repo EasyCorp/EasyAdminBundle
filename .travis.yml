@@ -50,4 +50,3 @@ script:
     - composer validate --strict --no-check-lock
     - ./vendor/bin/simple-phpunit $PHPUNIT_FLAGS
     - if [[ "$CHECK_PHP_SYNTAX" == "true" ]]; then php vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
-    - if [[ "$CHECK_PHP_SYNTAX" == "true" ]]; then mv ./.php_cs.cache $HOME/.app/cache/.php_cs.cache 2> /dev/null; fi;

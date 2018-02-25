@@ -7,6 +7,7 @@ cache:
 
 env:
     global:
+        - CHECK_PHP_SYNTAX="false"
         - COVERAGE="false"
         - PHPUNIT_FLAGS="-v"
         - SYMFONY_PHPUNIT_DIR="$HOME/symfony-bridge/.phpunit"
@@ -23,6 +24,7 @@ matrix:
           # Test the latest stable release
         - php: 7.1
         - php: 7.2
+          env: CHECK_PHP_SYNTAX="true"
 
           # Latest commit to master
         - php: 7.2
@@ -38,6 +40,7 @@ before_install:
     - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
 install:
+    - if [[ "$CHECK_PHP_SYNTAX" == "true" ]]; then composer require --dev --no-update friendsofphp/php-cs-fixer; fi;
     # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
     - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
     - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
@@ -46,3 +49,5 @@ install:
 script:
     - composer validate --strict --no-check-lock
     - ./vendor/bin/simple-phpunit $PHPUNIT_FLAGS
+    - if [[ "$CHECK_PHP_SYNTAX" == "true" ]]; then php vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
+    - if [[ "$CHECK_PHP_SYNTAX" == "true" ]]; then mv ./.php_cs.cache $HOME/.app/cache/.php_cs.cache 2> /dev/null; fi;

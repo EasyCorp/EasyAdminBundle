@@ -445,7 +445,7 @@ During the execution of the backend actions, lots of events are triggered. Using
 Symfony's event listeners or event subscribers you can hook to these events and
 modify the behavior of your backend.
 
-EasyAdmin events are defined in the ``EasyAdmin\Event\EasyAdminEvents`` class.
+EasyAdmin events are defined in the ``EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents`` class.
 They are triggered before and after important operations and their names follow
 the ``PRE_*`` and ``POST_*`` pattern:
 

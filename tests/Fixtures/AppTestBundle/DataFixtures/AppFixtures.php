@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\DataFixtures;
 
-use AppTestBundle\Entity\FunctionalTests\User;
 use AppTestBundle\Entity\FunctionalTests\Category;
 use AppTestBundle\Entity\FunctionalTests\Product;
 use AppTestBundle\Entity\FunctionalTests\Purchase;
 use AppTestBundle\Entity\FunctionalTests\PurchaseItem;
+use AppTestBundle\Entity\FunctionalTests\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -64,7 +64,7 @@ class AppFixtures extends Fixture
 
     private function createUsers(): array
     {
-        $users = [];
+        $users = array();
 
         foreach (range(1, 20) as $i) {
             $user = new User();
@@ -89,8 +89,8 @@ class AppFixtures extends Fixture
 
     private function createCategories(): array
     {
-        $parentCategories = [];
-        $subCategories = [];
+        $parentCategories = array();
+        $subCategories = array();
 
         foreach (range(1, 100) as $i) {
             $category = new Category();
@@ -102,7 +102,7 @@ class AppFixtures extends Fixture
         foreach (range(1, 100) as $i) {
             $category = new Category();
             $category->setName('Category #'.$i);
-            $category->setParent($parentCategories[$i-1]);
+            $category->setParent($parentCategories[$i - 1]);
 
             $subCategories[] = $category;
         }
@@ -112,7 +112,7 @@ class AppFixtures extends Fixture
 
     private function createProducts(array $categories): array
     {
-        $products = [];
+        $products = array();
 
         foreach (range(1, 100) as $i) {
             $product = new Product();
@@ -133,7 +133,7 @@ class AppFixtures extends Fixture
 
     private function createPurchases(array $users): array
     {
-        $purchases = [];
+        $purchases = array();
 
         foreach (range(1, 30) as $i) {
             $purchase = new Purchase();
@@ -160,7 +160,7 @@ class AppFixtures extends Fixture
 
     private function createPurchaseItems(array $products, array $purchases): array
     {
-        $purchaseItems = [];
+        $purchaseItems = array();
 
         foreach (range(1, 30) as $i) {
             $numItemsPurchased = rand(1, 5);
@@ -169,7 +169,7 @@ class AppFixtures extends Fixture
                 $item->setQuantity(rand(1, 3));
                 $item->setProduct($products[array_rand($products)]);
                 $item->setTaxRate(0.21);
-                $item->setPurchase($purchases[$i-1]);
+                $item->setPurchase($purchases[$i - 1]);
 
                 $purchaseItems[] = $item;
             }

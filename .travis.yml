@@ -7,6 +7,7 @@ cache:
 
 env:
     global:
+        - COVERAGE="false"
         - PHPUNIT_FLAGS="-v"
         - SYMFONY_PHPUNIT_DIR="$HOME/symfony-bridge/.phpunit"
 
@@ -22,7 +23,6 @@ matrix:
           # Test the latest stable release
         - php: 7.1
         - php: 7.2
-          env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-text"
 
           # Latest commit to master
         - php: 7.2
@@ -45,6 +45,4 @@ install:
 
 script:
     - composer validate --strict --no-check-lock
-    # simple-phpunit is the PHPUnit wrapper provided by the PHPUnit Bridge component and
-    # it helps with testing legacy code and deprecations (composer require symfony/phpunit-bridge)
     - ./vendor/bin/simple-phpunit $PHPUNIT_FLAGS

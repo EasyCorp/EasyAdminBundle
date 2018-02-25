@@ -150,7 +150,7 @@ class AppFixtures extends Fixture
                     )
                 )
             );
-            $purchase->setBuyer($users[array_rand($users)]);
+            $purchase->setBuyer($users[$i % count($users)]);
 
             $purchases[] = $purchase;
         }

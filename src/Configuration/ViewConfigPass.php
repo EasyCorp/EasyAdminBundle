@@ -321,5 +321,3 @@ class ViewConfigPass implements ConfigPassInterface
         return $filteredFields;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\ViewConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ViewConfigPass', false);

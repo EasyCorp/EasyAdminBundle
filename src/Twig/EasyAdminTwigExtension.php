@@ -421,5 +421,3 @@ class EasyAdminTwigExtension extends \Twig_Extension
         return $className;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension', 'JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension', false);

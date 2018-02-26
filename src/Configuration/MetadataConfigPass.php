@@ -93,5 +93,3 @@ class MetadataConfigPass implements ConfigPassInterface
         return $entityPropertiesMetadata;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', false);

@@ -66,5 +66,3 @@ class FlattenException extends BaseFlattenException
         return $this->context->getStatusCode();
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\FlattenException', false);

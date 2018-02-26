@@ -71,5 +71,3 @@ class ExceptionContext
         return $placeholders;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\ExceptionContext', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\ExceptionContext', false);

@@ -45,5 +45,3 @@ class CheckboxTypeConfigurator implements TypeConfiguratorInterface
         return in_array($type, array('checkbox', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType'), true);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator', false);

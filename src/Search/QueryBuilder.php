@@ -160,5 +160,3 @@ class QueryBuilder
         return $queryBuilder;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder', 'JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder', false);

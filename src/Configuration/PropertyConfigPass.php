@@ -318,5 +318,3 @@ class PropertyConfigPass implements ConfigPassInterface
         }
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass', false);

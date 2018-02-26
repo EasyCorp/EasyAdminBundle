@@ -57,5 +57,3 @@ class CacheManager extends FilesystemCache
         return parent::save($key, $item, $lifetime);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Cache\CacheManager', 'JavierEguiluz\Bundle\EasyAdminBundle\Cache\CacheManager', false);

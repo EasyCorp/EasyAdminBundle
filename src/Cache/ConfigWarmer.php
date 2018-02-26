@@ -51,5 +51,3 @@ class ConfigWarmer implements CacheWarmerInterface
         return false;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Cache\ConfigWarmer', 'JavierEguiluz\Bundle\EasyAdminBundle\Cache\ConfigWarmer', false);

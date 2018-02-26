@@ -28,5 +28,3 @@ class UndefinedEntityException extends BaseException
         parent::__construct($exceptionContext);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\UndefinedEntityException', false);

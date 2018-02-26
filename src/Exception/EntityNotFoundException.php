@@ -28,5 +28,3 @@ class EntityNotFoundException extends BaseException
         parent::__construct($exceptionContext);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityNotFoundException', false);

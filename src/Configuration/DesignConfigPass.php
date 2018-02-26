@@ -76,5 +76,3 @@ class DesignConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\DesignConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\DesignConfigPass', false);

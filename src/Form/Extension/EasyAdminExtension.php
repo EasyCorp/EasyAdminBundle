@@ -88,5 +88,3 @@ class EasyAdminExtension extends AbstractTypeExtension
         return LegacyFormHelper::getType('form');
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', false);

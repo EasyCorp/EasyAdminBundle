@@ -243,5 +243,3 @@ class TemplateConfigPass implements ConfigPassInterface
         }
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\TemplateConfigPass', false);

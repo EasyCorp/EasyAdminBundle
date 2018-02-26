@@ -483,5 +483,3 @@ class Configuration implements ConfigurationInterface
         ;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Configuration', 'JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Configuration', false);

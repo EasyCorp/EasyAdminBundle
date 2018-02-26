@@ -71,5 +71,3 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
             : 'empty_value';
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator', false);

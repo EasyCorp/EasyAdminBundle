@@ -28,5 +28,3 @@ class EntityRemoveException extends BaseException
         parent::__construct($exceptionContext);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityRemoveException', false);

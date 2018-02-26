@@ -28,5 +28,3 @@ class NoEntitiesConfiguredException extends BaseException
         parent::__construct($exceptionContext);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException', false);

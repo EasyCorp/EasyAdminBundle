@@ -825,5 +825,3 @@ class AdminController extends Controller
         return $this->render($templatePath, $parameters);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController', 'JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController', false);

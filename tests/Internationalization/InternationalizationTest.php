@@ -24,7 +24,7 @@ class InternationalizationTest extends TestCase
         $application = new Application(new AppKernel('default_backend', true));
         $application->setAutoExit(false);
 
-        $input = new ArrayInput(['command' => 'lint:xliff', 'filename' => 'src/Resources/translations']);
+        $input = new ArrayInput(array('command' => 'lint:xliff', 'filename' => 'src/Resources/translations'));
         $output = new BufferedOutput();
 
         $returnCode = $application->run($input, $output);

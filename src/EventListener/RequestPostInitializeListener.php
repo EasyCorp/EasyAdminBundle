@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -16,9 +15,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class RequestPostInitializeListener
 {
-    /** @var Request|null */
-    private $request;
-
     /** @var RequestStack|null */
     private $requestStack;
 
@@ -36,17 +32,6 @@ class RequestPostInitializeListener
     }
 
     /**
-     * BC for SF < 2.4.
-     * To be replaced by the usage of the request stack when 2.3 support is dropped.
-     *
-     * @param Request|null $request
-     */
-    public function setRequest(Request $request = null)
-    {
-        $this->request = $request;
-    }
-
-    /**
      * Adds to the request some attributes with useful information, such as the
      * current entity and the selected item, if any.
      *
@@ -54,18 +39,19 @@ class RequestPostInitializeListener
      */
     public function initializeRequest(GenericEvent $event)
     {
+        $request = null;
         if (null !== $this->requestStack) {
-            $this->request = $this->requestStack->getCurrentRequest();
+            $request = $this->requestStack->getCurrentRequest();
         }
 
-        if (null === $this->request) {
+        if (null === $request) {
             return;
         }
 
-        $this->request->attributes->set('easyadmin', array(
+        $request->attributes->set('easyadmin', array(
             'entity' => $entity = $event->getArgument('entity'),
-            'view' => $this->request->query->get('action', 'list'),
-            'item' => ($id = $this->request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
+            'view' => $request->query->get('action', 'list'),
+            'item' => ($id = $request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
         ));
     }
 

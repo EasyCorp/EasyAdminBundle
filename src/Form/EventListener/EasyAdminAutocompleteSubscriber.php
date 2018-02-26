@@ -54,7 +54,7 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
             $options['choices'] = array();
         } else {
             $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
-                $this->getIdField($options) => $data['autocomplete'],
+                $options['id_reader']->getIdField() => $data['autocomplete'],
             ));
         }
 
@@ -62,18 +62,6 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
         unset($options['em'], $options['loader'], $options['empty_data'], $options['choice_list'], $options['choices_as_values']);
 
         $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
-    }
-
-    private function getIdField(array $options)
-    {
-        if (isset($options['id_reader'])) {
-            $idField = $options['id_reader']->getIdField();
-        } else {
-            // BC for 2.3
-            $idField = current($options['em']->getClassMetadata($options['class'])->getIdentifierFieldNames());
-        }
-
-        return $idField;
     }
 }
 

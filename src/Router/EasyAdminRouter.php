@@ -14,7 +14,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 use Doctrine\Common\Util\ClassUtils;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -32,8 +31,6 @@ final class EasyAdminRouter
     private $propertyAccessor;
     /** @var RequestStack */
     private $requestStack;
-    /** @var Request */
-    private $request;
 
     public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator, PropertyAccessorInterface $propertyAccessor, RequestStack $requestStack = null)
     {
@@ -69,7 +66,11 @@ final class EasyAdminRouter
         $parameters['action'] = $action;
 
         $referer = array_key_exists('referer', $parameters) ? $parameters['referer'] : null;
-        $request = $this->getRequest();
+
+        $request = null;
+        if (null !== $this->requestStack) {
+            $request = $this->requestStack->getCurrentRequest();
+        }
 
         if (false === $referer) {
             unset($parameters['referer']);
@@ -82,29 +83,6 @@ final class EasyAdminRouter
         }
 
         return $this->urlGenerator->generate('easyadmin', $parameters);
-    }
-
-    /**
-     * BC for SF < 2.4.
-     * To be replaced by the usage of the request stack when 2.3 support is dropped.
-     *
-     * @param Request|null $request
-     */
-    public function setRequest(Request $request = null)
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * @return Request|null
-     */
-    private function getRequest()
-    {
-        if ($this->requestStack && $request = $this->requestStack->getCurrentRequest()) {
-            return $request;
-        }
-
-        return $this->request;
     }
 
     /**

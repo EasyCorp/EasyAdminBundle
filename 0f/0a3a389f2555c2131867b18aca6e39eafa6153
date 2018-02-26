@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by aminebenhariz at 2018-02-26T12:16:14Z
+
+@javiereguiluz why is the short array syntax is not allowed ?
+Since we're aiming for PHP 7.1, is this rule still relevant ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-02-26T12:17:27Z
+
+@aminebenhariz the code syntax will be updated after all the legacy stuff has been removed. That's why we need to finish these small issues first and then we'll refactor all code to use all PHP 7.1 features.
+
+---------------------------------------------------------------------------
+
+by aminebenhariz at 2018-02-26T12:18:11Z
+
+@javiereguiluz I couldn't use the "bin/console" command directly in travis script section since the binary is missing. So I called the command from the PHPUnit test #2083.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-02-26T12:20:41Z
+
+That's sad. In the Symfony Demo app we use it: https://github.com/symfony/demo/blob/master/.travis.yml#L40
+
+---------------------------------------------------------------------------
+
+by aminebenhariz at 2018-02-26T12:24:45Z
+
+Yes, I saw that. But that's a complete Symfony project, not just a bundle.
+I will check some other bundles to see if they managed to use the console command in Travis-ci.

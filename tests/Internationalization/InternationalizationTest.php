@@ -11,20 +11,23 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Internationalization;
 
+use AppKernel;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class InternationalizationTest extends TestCase
 {
     public function testXliffFiles()
     {
-        $xlfFiles = glob(__DIR__.'/../../Resources/translations/*.*.xlf');
-        foreach ($xlfFiles as $xlfFilePath) {
-            $document = new \DOMDocument();
-            $document->load($xlfFilePath);
-            $this->assertTrue(
-                $document->schemaValidate(__DIR__.'/xliff-core-1.2-strict.xsd'),
-                sprintf('The %s file is valid according to XLIFF XSD.', basename($xlfFilePath))
-            );
-        }
+        $application = new Application(new AppKernel('default_backend', true));
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput(['command' => 'lint:xliff', 'filename' => 'src/Resources/translations']);
+        $output = new BufferedOutput();
+
+        $returnCode = $application->run($input, $output);
+        $this->assertSame(0, $returnCode, $output->fetch());
     }
 }

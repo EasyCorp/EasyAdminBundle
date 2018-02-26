@@ -8,7 +8,7 @@
     "authors": [
         {
             "name": "Project Contributors",
-            "homepage": "http://github.com/EasyCorp/easyadmin/blob/master/CONTRIBUTORS.md"
+            "homepage": "https://github.com/EasyCorp/EasyAdminBundle/blob/master/CONTRIBUTORS.md"
         }
     ],
     "require": {

@@ -12,7 +12,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
-use Symfony\Component\HttpKernel\Kernel;
 
 class DisabledActionsTest extends AbstractTestCase
 {
@@ -25,10 +24,6 @@ class DisabledActionsTest extends AbstractTestCase
 
     public function testAssociationLinksInListView()
     {
-        if (2 === (int) Kernel::MAJOR_VERSION) {
-            $this->markTestSkipped('This test is not compatible with Symfony 2.x.');
-        }
-
         $crawler = $this->requestListView('Purchase');
 
         $this->assertSame(
@@ -40,10 +35,6 @@ class DisabledActionsTest extends AbstractTestCase
 
     public function testAssociationLinksInShowView()
     {
-        if (2 === (int) Kernel::MAJOR_VERSION) {
-            $this->markTestSkipped('This test is not compatible with Symfony 2.x.');
-        }
-
         // 'Purchase' entity 'id' is generated randomly. In order to browse the
         // 'show' view of the first 'Purchase' entity, browse the 'list' view
         // and get the 'id' from the first row of the listing

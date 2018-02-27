@@ -30,5 +30,3 @@ class EasyAdminBundle extends Bundle
         $container->addCompilerPass(new EasyAdminConfigPass());
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle', 'JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle', false);

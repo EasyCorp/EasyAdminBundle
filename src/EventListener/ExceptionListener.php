@@ -194,5 +194,3 @@ class ExceptionListener extends BaseExceptionListener
         return 2 === Kernel::MAJOR_VERSION && 3 === Kernel::MINOR_VERSION;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener', 'JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ExceptionListener', false);

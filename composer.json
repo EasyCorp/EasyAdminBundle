@@ -57,8 +57,7 @@
     },
     "autoload": {
         "psr-4": {
-            "EasyCorp\\Bundle\\EasyAdminBundle\\": "src/",
-            "JavierEguiluz\\Bundle\\EasyAdminBundle\\": "legacy/"
+            "EasyCorp\\Bundle\\EasyAdminBundle\\": "src/"
         }
     },
     "autoload-dev": {

@@ -70,5 +70,3 @@ class BaseException extends HttpException
         return $this->context->getStatusCode();
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\BaseException', false);

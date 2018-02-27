@@ -225,5 +225,3 @@ class EasyAdminExtension extends Extension
         return 0 !== preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', 'JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', false);

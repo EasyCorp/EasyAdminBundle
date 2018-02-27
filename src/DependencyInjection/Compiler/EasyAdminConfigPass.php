@@ -60,5 +60,3 @@ final class EasyAdminConfigPass implements CompilerPassInterface
         return $services;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminConfigPass', false);

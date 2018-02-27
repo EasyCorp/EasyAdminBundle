@@ -89,5 +89,3 @@ class ControllerListener
         $event->setController($newController);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener', 'JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ControllerListener', false);

@@ -28,5 +28,3 @@ class ForbiddenActionException extends BaseException
         parent::__construct($exceptionContext);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException', false);

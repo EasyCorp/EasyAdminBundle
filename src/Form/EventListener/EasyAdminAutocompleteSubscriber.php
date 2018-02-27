@@ -76,5 +76,3 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
         return $idField;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', false);

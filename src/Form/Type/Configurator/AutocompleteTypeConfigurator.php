@@ -58,5 +58,3 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
         return in_array($type, $supportedTypes, true);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator', false);

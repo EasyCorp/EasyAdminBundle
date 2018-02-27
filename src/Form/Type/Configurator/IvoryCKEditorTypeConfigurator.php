@@ -48,5 +48,3 @@ class IvoryCKEditorTypeConfigurator implements TypeConfiguratorInterface
         return $isCkeditorField && !isset($options['config']['toolbar']) && !isset($options['config_name']);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator', false);

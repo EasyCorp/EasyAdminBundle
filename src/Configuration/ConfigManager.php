@@ -207,5 +207,3 @@ class ConfigManager
         return $backendConfig;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager', false);

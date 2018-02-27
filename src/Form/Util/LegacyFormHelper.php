@@ -114,5 +114,3 @@ final class LegacyFormHelper
         return false === class_exists('Symfony\\Component\\Form\\Util\\StringUtil');
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper', false);

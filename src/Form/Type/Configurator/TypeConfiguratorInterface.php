@@ -46,5 +46,3 @@ interface TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata);
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface', false);

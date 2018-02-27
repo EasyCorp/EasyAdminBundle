@@ -120,5 +120,3 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
         $data = $form->getData();
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType', false);

@@ -51,5 +51,3 @@ class MissingDoctrineOrmTypeGuesser extends DoctrineOrmTypeGuesser
         return parent::guessType($class, $property);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Guesser\MissingDoctrineOrmTypeGuesser', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Guesser\MissingDoctrineOrmTypeGuesser', false);

@@ -70,5 +70,3 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         $container->getDefinition('easyadmin.form.type')->replaceArgument(1, iterator_to_array($configurators));
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass', 'JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass', false);

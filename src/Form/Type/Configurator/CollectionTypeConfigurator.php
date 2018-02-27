@@ -58,5 +58,3 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
         return in_array($type, array('collection', 'Symfony\Component\Form\Extension\Core\Type\CollectionType'), true);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator', false);

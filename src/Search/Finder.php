@@ -49,5 +49,3 @@ class Finder
         return $this->paginator->createOrmPaginator($queryBuilder, $page, $maxResults);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Search\Finder', 'JavierEguiluz\Bundle\EasyAdminBundle\Search\Finder', false);

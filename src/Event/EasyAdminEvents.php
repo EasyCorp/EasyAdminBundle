@@ -68,5 +68,3 @@ final class EasyAdminEvents
     /** @Event("Symfony\Component\EventDispatcher\GenericEvent") */
     const POST_SEARCH_QUERY_BUILDER = 'easy_admin.post_search_query_builder';
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents', 'JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents', false);

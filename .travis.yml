@@ -50,4 +50,7 @@ script:
     - composer validate --strict --no-check-lock
     - ./vendor/bin/simple-phpunit $PHPUNIT_FLAGS
     - if [[ "$CHECK_PHP_SYNTAX" == "true" ]]; then php vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix; fi;
+    # this checks that the Twig template files contain no syntax errors
+    - ./tests/bin/console lint:twig "src" "tests"
+    # this checks that the XLIFF translations contain no syntax errors
     - ./tests/bin/console lint:xliff "src/Resources/translations"

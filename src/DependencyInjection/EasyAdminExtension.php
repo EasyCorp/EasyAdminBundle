@@ -11,12 +11,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -51,43 +48,9 @@ class EasyAdminExtension extends Extension
             $container->removeDefinition('easyadmin.cache.config_warmer');
         }
 
-        $this->ensureBackwardCompatibility($container);
-
         if ($container->hasParameter('locale')) {
             $container->getDefinition('easyadmin.configuration.design_config_pass')
                 ->replaceArgument(2, $container->getParameter('locale'));
-        }
-    }
-
-    /**
-     * Makes some tweaks in order to ensure backward compatibilities
-     * with supported versions of Symfony components.
-     *
-     * @param ContainerBuilder $container
-     */
-    private function ensureBackwardCompatibility(ContainerBuilder $container)
-    {
-        // BC for Symfony 2.3 and Request Stack
-        $isRequestStackAvailable = class_exists('Symfony\\Component\\HttpFoundation\\RequestStack');
-        if (!$isRequestStackAvailable) {
-            $needsSetRequestMethodCall = array('easyadmin.listener.request_post_initialize', 'easyadmin.form.type.extension');
-            foreach ($needsSetRequestMethodCall as $serviceId) {
-                $container
-                    ->getDefinition($serviceId)
-                    ->addMethodCall('setRequest', array(
-                        new Reference('request', ContainerInterface::NULL_ON_INVALID_REFERENCE, false),
-                    ))
-                ;
-            }
-        }
-
-        // BC for legacy form component
-        if (!LegacyFormHelper::useLegacyFormComponent()) {
-            $container
-                ->getDefinition('easyadmin.form.type')
-                ->clearTag('form.type')
-                ->addTag('form.type')
-            ;
         }
     }
 

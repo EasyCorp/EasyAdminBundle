@@ -37,10 +37,10 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
 
         // Configure "placeholder" option for entity fields
         if (($metadata['associationType'] & ClassMetadata::TO_ONE)
-            && !isset($options[$placeHolderOptionName = $this->getPlaceholderOptionName()])
+            && !isset($options['placeholder'])
             && isset($options['required']) && false === $options['required']
         ) {
-            $options[$placeHolderOptionName] = 'label.form.empty_value';
+            $options['placeholder'] = 'label.form.empty_value';
         }
 
         return $options;
@@ -54,20 +54,5 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
         $isEntityType = in_array($type, array('entity', 'Symfony\Bridge\Doctrine\Form\Type\EntityType'), true);
 
         return $isEntityType && 'association' === $metadata['dataType'];
-    }
-
-    /**
-     * BC for Sf < 2.6
-     *
-     * The "empty_value" option in the types "choice", "date", "datetime" and "time"
-     * was deprecated in 2.6 and replaced by a new option "placeholder".
-     *
-     * @return string
-     */
-    private function getPlaceholderOptionName()
-    {
-        return defined('Symfony\\Component\\Form\\Extension\\Validator\\Constraints\\Form::NOT_SYNCHRONIZED_ERROR')
-            ? 'placeholder'
-            : 'empty_value';
     }
 }

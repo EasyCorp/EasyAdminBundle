@@ -177,12 +177,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
             'view' => $view,
         );
 
-        // the try..catch block is required because we can't use
-        // $propertyAccessor->isReadable(), which is unavailable in Symfony 2.3
-        try {
+        if ($this->propertyAccessor->isReadable($item, $fieldName)) {
             $parameters['value'] = $this->propertyAccessor->getValue($item, $fieldName);
             $parameters['is_accessible'] = true;
-        } catch (\Exception $e) {
+        } else {
             $parameters['value'] = null;
             $parameters['is_accessible'] = false;
         }
@@ -248,11 +246,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
         $isShowActionAllowed = !in_array('show', $targetEntityConfig['disabled_actions']);
 
         if ($templateParameters['field_options']['associationType'] & ClassMetadata::TO_ONE) {
-            // the try..catch block is required because we can't use
-            // $propertyAccessor->isReadable(), which is unavailable in Symfony 2.3
-            try {
+            if ($this->propertyAccessor->isReadable($templateParameters['value'], $targetEntityConfig['primary_key_field_name'])) {
                 $primaryKeyValue = $this->propertyAccessor->getValue($templateParameters['value'], $targetEntityConfig['primary_key_field_name']);
-            } catch (\Exception $e) {
+            } else {
                 $primaryKeyValue = null;
             }
 

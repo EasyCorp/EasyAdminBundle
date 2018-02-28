@@ -12,7 +12,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
-use Symfony\Component\HttpKernel\Kernel;
 
 class CustomMenuTest extends AbstractTestCase
 {
@@ -195,10 +194,8 @@ class CustomMenuTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        // Starting from Symfony 3.2, routes are generated using the PHP_QUERY_RFC3986 option
-        $queryStringParameter = Kernel::VERSION_ID >= 30200 ? 'Lorem%20Ipsum' : 'Lorem+Ipsum';
         $this->assertSame(
-            '/custom-route?custom_parameter='.$queryStringParameter,
+            '/custom-route?custom_parameter=Lorem%20Ipsum',
             $crawler->filter('.sidebar-menu li:contains("Custom External Route") a')->attr('href')
         );
 

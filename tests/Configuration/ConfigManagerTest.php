@@ -12,7 +12,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Configuration;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
 
 class ConfigManagerTest extends TestCase
@@ -29,10 +28,6 @@ class ConfigManagerTest extends TestCase
      */
     public function testLoadConfig($backendConfigFilePath, $expectedConfigFilePath)
     {
-        if (!$this->isTestCompatible($backendConfigFilePath)) {
-            $this->markTestSkipped('This test is not compatible with this Symfony Version.');
-        }
-
         $backendConfig = $this->loadConfig($backendConfigFilePath);
         $expectedConfig = Yaml::parse(file_get_contents($expectedConfigFilePath));
 
@@ -82,30 +77,6 @@ class ConfigManagerTest extends TestCase
             },
             glob(__DIR__.'/fixtures/exceptions/*.yml')
         );
-    }
-
-    private function isTestCompatible($filePath)
-    {
-        $testsWithDuplicatedYamlKeys = array(
-            __DIR__.'/fixtures/configurations/input/admin_007.yml',
-            __DIR__.'/fixtures/configurations/input/admin_008.yml',
-            __DIR__.'/fixtures/configurations/input/admin_013.yml',
-            __DIR__.'/fixtures/configurations/input/admin_014.yml',
-            __DIR__.'/fixtures/configurations/input/admin_020.yml',
-            __DIR__.'/fixtures/configurations/input/admin_021.yml',
-            __DIR__.'/fixtures/configurations/input/admin_026.yml',
-        );
-
-        // In Symfony 2.3, the YAML component behaves differently than other versions
-        // when it founds duplicated keys. In Symfony >= 3.2, duplicated keys are deprecated
-        $isSymfony23 = 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
-        $isSymfony32OrNewer = (int) Kernel::VERSION_ID >= 30200;
-
-        if ($isSymfony23 || $isSymfony32OrNewer) {
-            return !in_array($filePath, $testsWithDuplicatedYamlKeys);
-        }
-
-        return true;
     }
 
     /**

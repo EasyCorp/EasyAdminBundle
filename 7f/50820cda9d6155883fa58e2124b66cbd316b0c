@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by aminebenhariz at 2018-02-27T15:41:22Z
+
+@grachevko I don't understand why you restored the tests, and removed the duplications.
+Do those tests still have purpose ?
+
+---------------------------------------------------------------------------
+
+by grachevko at 2018-02-27T15:49:45Z
+
+@aminebenhariz i don't know. I saw that the tests check large enough configs and just eliminated the duplication error.
+
+---------------------------------------------------------------------------
+
+by aminebenhariz at 2018-02-27T18:11:28Z
+
+@grachevko I don't think that we need to keep them.
+Once the duplication removed they become redundant, identical to other existing files.
+
+Here is the equivalent file for each one of them :
+
+- [admin_007.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_007.yml) ==> [admin_004.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_004.yml)
+- [admin_008.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_008.yml) ==> [admin_005.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_005.yml)
+- [admin_013.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_013.yml) ==> [admin_009.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_009.yml)
+- [admin_014.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_014.yml) ==> [admin_010.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_010.yml)
+- [admin_020.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_020.yml) ==> [admin_017.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_017.yml)
+- [admin_021.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_021.yml) ==> [admin_017.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_017.yml)
+- [admin_026.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_026.yml) ==> [admin_004.yml](https://github.com/grachevko/EasyAdminBundle/blob/b54daf810517a89f1749195c4571496539ecfc60/tests/Configuration/fixtures/configurations/input/admin_004.yml)
+
+---------------------------------------------------------------------------
+
+by grachevko at 2018-02-27T22:19:36Z
+
+@aminebenhariz ok, removed.

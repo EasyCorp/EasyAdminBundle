@@ -504,15 +504,9 @@ class CustomizedBackendTest extends AbstractTestCase
 
         // test validation groups
         $profile = $this->client->getProfile();
-        try {
-            $formData = $profile->getCollector('form')->getData();
-            $categoryFields = $formData['forms']['form']['children'];
-            $this->assertSame($categoryFields['name']['errors'][0]['message'], 'This value should not be null.');
-        } catch (\Exception $e) {
-            // TODO: remove this condition when support for Symfony 2.3 is dropped
-            // In Symfony 2.3 FormDataCollector does not exist. Search in response content.
-            $this->assertContains('This value should not be null.', $crawler->filter('.error-block')->first()->text());
-        }
+        $formData = $profile->getCollector('form')->getData();
+        $categoryFields = $formData['forms']['category']['children'];
+        $this->assertSame($categoryFields['name']['errors'][0]['message'], 'This value should not be null.');
     }
 
     public function testNewViewCheckboxLabel()

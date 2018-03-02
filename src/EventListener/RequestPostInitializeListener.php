@@ -64,7 +64,6 @@ class RequestPostInitializeListener
      * @return object The entity
      *
      * @throws EntityNotFoundException
-     *
      * @throws \RuntimeException
      */
     private function findCurrentItem(array $entityConfig, $itemId)

@@ -417,7 +417,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         // add back the fields that are defined in child config but not in parent config
         foreach ($childFields as $childFieldName => $childFieldConfig) {
             $isFormDesignElement = !isset($childFieldConfig['property']);
-            $isNotRemovedField = isset($childFieldConfig['property']) && '-' !== substr($childFieldConfig['property'], 0, 1);
+            $isNotRemovedField = isset($childFieldConfig['property']) && 0 !== strpos($childFieldConfig['property'], '-');
             $isNotAlreadyIncluded = isset($childFieldConfig['property']) && !in_array($childFieldConfig['property'], array_keys($mergedFields));
 
             if ($isFormDesignElement || ($isNotRemovedField && $isNotAlreadyIncluded)) {
@@ -444,7 +444,7 @@ class NormalizerConfigPass implements ConfigPassInterface
     {
         $removedFieldNames = array();
         foreach ($fieldsConfig as $fieldConfig) {
-            if (isset($fieldConfig['property']) && '-' === substr($fieldConfig['property'], 0, 1)) {
+            if (isset($fieldConfig['property']) && 0 === strpos($fieldConfig['property'], '-')) {
                 $removedFieldNames[] = substr($fieldConfig['property'], 1);
             }
         }

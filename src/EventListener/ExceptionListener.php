@@ -41,7 +41,7 @@ class ExceptionListener extends BaseExceptionListener
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
-        $this->currentEntityName = $event->getRequest()->query->get('entity', null);
+        $this->currentEntityName = $event->getRequest()->query->get('entity');
 
         if (!$exception instanceof BaseException) {
             return;

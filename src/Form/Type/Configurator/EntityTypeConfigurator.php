@@ -3,8 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\FormConfigInterface;
 
 /**
  * This configurator is applied to any form field of type 'association' and is

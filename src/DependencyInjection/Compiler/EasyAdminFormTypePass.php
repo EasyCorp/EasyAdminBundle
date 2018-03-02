@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler;
 
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>

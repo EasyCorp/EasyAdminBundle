@@ -3,8 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Symfony\Component\Form\FormConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
+use Symfony\Component\Form\FormConfigInterface;
 
 /**
  * This configurator is applied to any form field of type 'easyadmin_autocomplete'

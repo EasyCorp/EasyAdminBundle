@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormConfigInterface;
 
 /**
  * This configurator is applied to any form field of type 'checkbox' and is used

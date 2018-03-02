@@ -45,7 +45,7 @@ class ControllerListener
         if (!$event->isMasterRequest()) {
             return;
         }
-        
+
         $request = $event->getRequest();
         if ('easyadmin' !== $request->attributes->get('_route')) {
             return;

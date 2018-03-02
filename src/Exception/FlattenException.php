@@ -18,6 +18,8 @@ class FlattenException extends BaseFlattenException
      * @param array      $headers
      *
      * @return FlattenException
+     *
+     * @throws \RuntimeException
      */
     public static function create(\Exception $exception, $statusCode = null, array $headers = array())
     {

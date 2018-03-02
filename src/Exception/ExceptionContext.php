@@ -53,7 +53,7 @@ class ExceptionContext
                 $key = '%'.$key;
             }
             if ('%' !== substr($key, -1)) {
-                $key = $key.'%';
+                $key .= '%';
             }
 
             $placeholders[$key] = $value;

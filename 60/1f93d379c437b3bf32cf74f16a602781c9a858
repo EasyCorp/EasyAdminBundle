@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-03-02T07:30:57Z
+
+I like this. @Arthur-min in order to merge this, we need to fix the minor syntax issue included in the code. In this line, there are a lot of white spaces, but new lines should contain nothing:
+
+![white-space](https://user-images.githubusercontent.com/73419/36888021-fc7e3bbc-1df3-11e8-906c-0753fd369043.png)
+
+I know it's a very minor thing, but we cannot merge without fixing this. Thanks!
+
+---------------------------------------------------------------------------
+
+by Arthur-min at 2018-03-02T08:18:04Z
+
+Hello Javier,
+
+I used the GitHub editor to make this, didn't pay attention to the spaces sorry!
+
+Fixed :)

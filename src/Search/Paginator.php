@@ -12,7 +12,7 @@ use Pagerfanta\Pagerfanta;
  */
 class Paginator
 {
-    const MAX_ITEMS = 15;
+    private const MAX_ITEMS = 15;
 
     /**
      * Creates a Doctrine ORM paginator for the given query builder.

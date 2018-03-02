@@ -9,7 +9,7 @@ use Pagerfanta\Pagerfanta;
  */
 class Finder
 {
-    const MAX_RESULTS = 15;
+    private const MAX_RESULTS = 15;
 
     /** @var QueryBuilder */
     private $queryBuilder;

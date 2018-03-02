@@ -116,7 +116,7 @@ class EasyAdminExtension extends Extension
     private function normalizeEntityConfig($entityName, $entityConfig)
     {
         // normalize config formats #1 and #2 to use the 'class' option as config format #3
-        if (!is_array($entityConfig)) {
+        if (!\is_array($entityConfig)) {
             $entityConfig = array('class' => $entityConfig);
         }
 
@@ -154,7 +154,7 @@ class EasyAdminExtension extends Extension
 
         $i = 2;
         $uniqueName = $entityName;
-        while (in_array($uniqueName, $existingEntityNames)) {
+        while (\in_array($uniqueName, $existingEntityNames)) {
             $uniqueName = $entityName.($i++);
         }
 

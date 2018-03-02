@@ -80,9 +80,9 @@ class EasyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (in_array($formFieldType, array('easyadmin_tab', EasyAdminTabType::class))) {
+            if (\in_array($formFieldType, array('easyadmin_tab', EasyAdminTabType::class))) {
                 // The first tab should be marked as active by default
-                $metadata['active'] = 0 === count($formTabs);
+                $metadata['active'] = 0 === \count($formTabs);
                 $metadata['errors'] = 0;
                 $currentFormTab = $metadata['fieldName'];
 
@@ -110,7 +110,7 @@ class EasyAdminFormType extends AbstractType
         $builder->setAttribute('easyadmin_form_tabs', $formTabs);
         $builder->setAttribute('easyadmin_form_groups', $formGroups);
 
-        if (count($formTabs) > 0) {
+        if (\count($formTabs) > 0) {
             $builder->addEventSubscriber(new EasyAdminTabSubscriber());
         }
     }

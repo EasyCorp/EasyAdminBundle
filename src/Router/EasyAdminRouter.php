@@ -42,8 +42,8 @@ final class EasyAdminRouter
      */
     public function generate($entity, $action, array $parameters = array())
     {
-        if (is_object($entity)) {
-            $config = $this->getEntityConfigByClass(get_class($entity));
+        if (\is_object($entity)) {
+            $config = $this->getEntityConfigByClass(\get_class($entity));
 
             // casting to string is needed because entities can use objects as primary keys
             $parameters['id'] = (string) $this->propertyAccessor->getValue($entity, 'id');
@@ -67,8 +67,8 @@ final class EasyAdminRouter
             unset($parameters['referer']);
         } elseif (
             $request
-            && !is_string($referer)
-            && (true === $referer || in_array($action, array('new', 'edit', 'delete'), true))
+            && !\is_string($referer)
+            && (true === $referer || \in_array($action, array('new', 'edit', 'delete'), true))
         ) {
             $parameters['referer'] = urlencode($request->getUri());
         }

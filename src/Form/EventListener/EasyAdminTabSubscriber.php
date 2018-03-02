@@ -37,9 +37,9 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
         foreach ($event->getForm() as $child) {
             $errors = $child->getErrors(true);
 
-            if (count($errors) > 0) {
+            if (\count($errors) > 0) {
                 $formTab = $child->getConfig()->getAttribute('easyadmin_form_tab');
-                $formTabs[$formTab]['errors'] += count($errors);
+                $formTabs[$formTab]['errors'] += \count($errors);
 
                 if (null === $firstTabWithErrors) {
                     $firstTabWithErrors = $formTab;

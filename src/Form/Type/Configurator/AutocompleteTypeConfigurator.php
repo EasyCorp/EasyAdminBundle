@@ -47,6 +47,6 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
             EasyAdminAutocompleteType::class,
         );
 
-        return in_array($type, $supportedTypes, true);
+        return \in_array($type, $supportedTypes, true);
     }
 }

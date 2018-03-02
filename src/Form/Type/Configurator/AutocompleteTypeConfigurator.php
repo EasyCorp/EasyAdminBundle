@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Component\Form\FormConfigInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 
 /**
  * This configurator is applied to any form field of type 'easyadmin_autocomplete'
@@ -43,7 +44,7 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
     {
         $supportedTypes = array(
             'easyadmin_autocomplete',
-            'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType',
+            EasyAdminAutocompleteType::class,
         );
 
         return in_array($type, $supportedTypes, true);

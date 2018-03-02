@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
@@ -35,7 +36,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         $configurators = new \SplPriorityQueue();
         foreach ($container->findTaggedServiceIds('easyadmin.form.type.configurator') as $id => $tags) {
             $configuratorClass = new \ReflectionClass($container->getDefinition($id)->getClass());
-            $typeConfiguratorInterface = 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface';
+            $typeConfiguratorInterface = TypeConfiguratorInterface::class;
             if (!$configuratorClass->implementsInterface($typeConfiguratorInterface)) {
                 throw new \InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $id, $typeConfiguratorInterface));
             }

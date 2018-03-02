@@ -129,13 +129,13 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function dump($variable)
     {
-        if (class_exists('Symfony\Component\VarDumper\Dumper\HtmlDumper')) {
+        if (class_exists(HtmlDumper::class)) {
             $cloner = new VarCloner();
             $dumper = new HtmlDumper();
 
             $dumper->dump($cloner->cloneVar($variable), $output = fopen('php://memory', 'r+b'));
             $dumpedData = stream_get_contents($output, -1, 0);
-        } elseif (class_exists('Symfony\Component\Yaml\Yaml')) {
+        } elseif (class_exists(Yaml::class)) {
             $dumpedData = sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
         } else {
             $dumpedData = sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Symfony\Component\Form\FormConfigInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 /**
  * This configurator is applied to any form field of type 'checkbox' and is used
@@ -33,6 +34,6 @@ class CheckboxTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        return in_array($type, array('checkbox', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType'), true);
+        return in_array($type, array('checkbox', CheckboxType::class), true);
     }
 }

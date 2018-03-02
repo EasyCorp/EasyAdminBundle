@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Component\Form\FormConfigInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 /**
  * This configurator is applied to any form field of type 'association' and is
@@ -42,7 +43,7 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isEntityType = in_array($type, array('entity', 'Symfony\Bridge\Doctrine\Form\Type\EntityType'), true);
+        $isEntityType = in_array($type, array('entity', EntityType::class), true);
 
         return $isEntityType && 'association' === $metadata['dataType'];
     }

@@ -515,7 +515,7 @@ class AdminController extends Controller
      */
     protected function findAll($entityClass, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        if (empty($sortDirection) || !\in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
+        if (null === $sortDirection || !\in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
             $sortDirection = 'DESC';
         }
 

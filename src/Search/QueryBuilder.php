@@ -46,7 +46,7 @@ class QueryBuilder
             $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
         }
 
-        if (!empty($dqlFilter)) {
+        if (null !== $dqlFilter) {
             $queryBuilder->andWhere($dqlFilter);
         }
 
@@ -131,7 +131,7 @@ class QueryBuilder
             $queryBuilder->setParameters($queryParameters);
         }
 
-        if (!empty($dqlFilter)) {
+        if (null !== $dqlFilter) {
             $queryBuilder->andWhere($dqlFilter);
         }
 

@@ -159,6 +159,8 @@ class NormalizerConfigPass implements ConfigPassInterface
      * @param array $backendConfig
      *
      * @return array
+     *
+     * @throws \RuntimeException
      */
     private function normalizePropertyConfig(array $backendConfig)
     {
@@ -341,6 +343,8 @@ class NormalizerConfigPass implements ConfigPassInterface
      * @param array $backendConfig
      *
      * @return array
+     *
+     * @throws \InvalidArgumentException
      */
     private function normalizeControllerConfig(array $backendConfig)
     {

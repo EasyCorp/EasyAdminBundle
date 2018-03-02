@@ -77,6 +77,8 @@ class TemplateConfigPass implements ConfigPassInterface
      * @param array $backendConfig
      *
      * @return array
+     *
+     * @throws \RuntimeException
      */
     private function processEntityTemplates(array $backendConfig)
     {

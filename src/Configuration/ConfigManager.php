@@ -91,7 +91,7 @@ class ConfigManager
      *
      * @return array The full entity configuration
      *
-     * @throws \InvalidArgumentException
+     * @throws UndefinedEntityException
      */
     public function getEntityConfig($entityName)
     {

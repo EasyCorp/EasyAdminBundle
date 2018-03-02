@@ -422,7 +422,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         foreach ($childFields as $childFieldName => $childFieldConfig) {
             $isFormDesignElement = !isset($childFieldConfig['property']);
             $isNotRemovedField = isset($childFieldConfig['property']) && 0 !== strpos($childFieldConfig['property'], '-');
-            $isNotAlreadyIncluded = isset($childFieldConfig['property']) && !\in_array($childFieldConfig['property'], array_keys($mergedFields));
+            $isNotAlreadyIncluded = isset($childFieldConfig['property']) && !array_key_exists($childFieldConfig['property'], $mergedFields);
 
             if ($isFormDesignElement || ($isNotRemovedField && $isNotAlreadyIncluded)) {
                 $mergedFields[$childFieldName] = $childFieldConfig;

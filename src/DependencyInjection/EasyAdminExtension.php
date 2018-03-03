@@ -110,6 +110,8 @@ class EasyAdminExtension extends Extension
      * @param mixed $entityConfig
      *
      * @return array
+     *
+     * @throws \RuntimeException
      */
     private function normalizeEntityConfig($entityName, $entityConfig)
     {

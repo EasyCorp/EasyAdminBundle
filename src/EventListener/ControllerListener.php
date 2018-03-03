@@ -30,6 +30,8 @@ class ControllerListener
      * Exchange default admin controller by custom entity admin controller.
      *
      * @param FilterControllerEvent $event
+     *
+     * @throws NotFoundHttpException
      */
     public function onKernelController(FilterControllerEvent $event)
     {

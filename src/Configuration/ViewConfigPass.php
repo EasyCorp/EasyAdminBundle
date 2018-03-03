@@ -154,6 +154,8 @@ class ViewConfigPass implements ConfigPassInterface
      * @param array $backendConfig
      *
      * @return array
+     *
+     * @throws \InvalidArgumentException
      */
     private function processSortingConfig(array $backendConfig)
     {

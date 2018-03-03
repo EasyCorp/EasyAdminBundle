@@ -36,6 +36,8 @@ class Autocomplete
      * @param int    $page
      *
      * @return array
+     *
+     * @throws \InvalidArgumentException
      */
     public function find($entity, $query, $page = 1)
     {

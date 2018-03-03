@@ -49,6 +49,8 @@ class AdminController extends Controller
      * @param Request $request
      *
      * @return RedirectResponse|Response
+     *
+     * @throws ForbiddenActionException
      */
     public function indexAction(Request $request)
     {
@@ -71,6 +73,9 @@ class AdminController extends Controller
      * the user is performing the action.
      *
      * @param Request $request
+     *
+     * @throws NoEntitiesConfiguredException
+     * @throws UndefinedEntityException
      */
     protected function initialize(Request $request)
     {
@@ -169,6 +174,8 @@ class AdminController extends Controller
      * The method that is executed when the user performs a 'edit' action on an entity.
      *
      * @return Response|RedirectResponse
+     *
+     * @throws \RuntimeException
      */
     protected function editAction()
     {
@@ -303,6 +310,8 @@ class AdminController extends Controller
      * remove any entity.
      *
      * @return RedirectResponse
+     *
+     * @throws EntityRemoveException
      */
     protected function deleteAction()
     {

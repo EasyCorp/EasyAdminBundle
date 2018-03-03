@@ -391,20 +391,4 @@ class EasyAdminTwigExtension extends \Twig_Extension
             return;
         }
     }
-
-    /**
-     * It returns the last part of the fully qualified class name
-     * (e.g. 'AppBundle\Entity\User' -> 'User').
-     *
-     * @param string $fqcn
-     *
-     * @return string
-     */
-    private function getClassShortName($fqcn)
-    {
-        $classParts = explode('\\', $fqcn);
-        $className = end($classParts);
-
-        return $className;
-    }
 }

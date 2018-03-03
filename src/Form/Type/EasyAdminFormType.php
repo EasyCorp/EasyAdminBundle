@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
@@ -22,17 +22,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class EasyAdminFormType extends AbstractType
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
 
     /** @var TypeConfiguratorInterface[] */
     private $configurators;
 
     /**
-     * @param ConfigManager               $configManager
+     * @param ConfigManagerInterface      $configManager
      * @param TypeConfiguratorInterface[] $configurators
      */
-    public function __construct(ConfigManager $configManager, array $configurators = [])
+    public function __construct(ConfigManagerInterface $configManager, array $configurators = [])
     {
         $this->configManager = $configManager;
         $this->configurators = $configurators;

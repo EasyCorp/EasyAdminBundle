@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Cache;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 /**
@@ -11,10 +11,10 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
  */
 class ConfigWarmer implements CacheWarmerInterface
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
 
-    public function __construct(ConfigManager $configManager)
+    public function __construct(ConfigManagerInterface $configManager)
     {
         $this->configManager = $configManager;
     }

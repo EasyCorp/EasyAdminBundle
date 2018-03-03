@@ -97,7 +97,7 @@ class AdminController extends Controller
             throw new UndefinedEntityException(['entity_name' => $entityName]);
         }
 
-        $this->entity = $this->get('easyadmin.config.manager')->getEntityConfiguration($entityName);
+        $this->entity = $this->get('easyadmin.config.manager')->getEntityConfig($entityName);
 
         $action = $request->query->get('action', 'list');
         if (!$request->query->has('sortField')) {

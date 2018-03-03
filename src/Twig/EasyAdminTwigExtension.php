@@ -224,7 +224,7 @@ class EasyAdminTwigExtension extends AbstractExtension
                 : '/'.ltrim($templateParameters['value'], '/');
         }
 
-        $templateParameters['filename'] = isset($templateParameters['field_options']['filename']) ? $templateParameters['field_options']['filename'] : basename($templateParameters['value']);
+        $templateParameters['filename'] = $templateParameters['field_options']['filename'] ?? basename($templateParameters['value']);
 
         return $templateParameters;
     }

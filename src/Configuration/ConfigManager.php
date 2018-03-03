@@ -137,7 +137,7 @@ class ConfigManager
             $entityConfig = array();
         }
 
-        return isset($entityConfig[$view]['actions'][$action]) ? $entityConfig[$view]['actions'][$action] : array();
+        return $entityConfig[$view]['actions'][$action] ?? array();
     }
 
     /**

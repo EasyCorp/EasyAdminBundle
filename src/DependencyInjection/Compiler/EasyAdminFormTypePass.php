@@ -54,7 +54,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
             }
 
             foreach ($tags as $tag) {
-                $priority = isset($tag['priority']) ? $tag['priority'] : 0;
+                $priority = $tag['priority'] ?? 0;
                 $configurators->insert(new Reference($id), $priority);
             }
         }

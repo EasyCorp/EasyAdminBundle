@@ -56,7 +56,7 @@ final class EasyAdminRouter
         $parameters['entity'] = $config['name'];
         $parameters['action'] = $action;
 
-        $referer = array_key_exists('referer', $parameters) ? $parameters['referer'] : null;
+        $referer = $parameters['referer'] ?? null;
 
         $request = null;
         if (null !== $this->requestStack) {

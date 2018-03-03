@@ -101,11 +101,11 @@ class AdminController extends Controller
 
         $action = $request->query->get('action', 'list');
         if (!$request->query->has('sortField')) {
-            $sortField = isset($this->entity[$action]['sort']['field']) ? $this->entity[$action]['sort']['field'] : $this->entity['primary_key_field_name'];
+            $sortField = $this->entity[$action]['sort']['field'] ?? $this->entity['primary_key_field_name'];
             $request->query->set('sortField', $sortField);
         }
         if (!$request->query->has('sortDirection')) {
-            $sortDirection = isset($this->entity[$action]['sort']['direction']) ? $this->entity[$action]['sort']['direction'] : 'DESC';
+            $sortDirection = $this->entity[$action]['sort']['direction'] ?? 'DESC';
             $request->query->set('sortDirection', $sortDirection);
         }
 
@@ -124,7 +124,7 @@ class AdminController extends Controller
             'request' => $this->request,
         ), $arguments);
 
-        $subject = isset($arguments['paginator']) ? $arguments['paginator'] : $arguments['entity'];
+        $subject = $arguments['paginator'] ?? $arguments['entity'];
         $event = new GenericEvent($subject, $arguments);
 
         $this->get('event_dispatcher')->dispatch($eventName, $event);
@@ -372,8 +372,8 @@ class AdminController extends Controller
             $searchableFields,
             $this->request->query->get('page', 1),
             $this->entity['list']['max_results'],
-            isset($this->entity['search']['sort']['field']) ? $this->entity['search']['sort']['field'] : $this->request->query->get('sortField'),
-            isset($this->entity['search']['sort']['direction']) ? $this->entity['search']['sort']['direction'] : $this->request->query->get('sortDirection'),
+            $this->entity['search']['sort']['field'] ?? $this->request->query->get('sortField'),
+            $this->entity['search']['sort']['direction'] ?? $this->request->query->get('sortDirection'),
             $this->entity['search']['dql_filter']
         );
         $fields = $this->entity['list']['fields'];
@@ -770,9 +770,7 @@ class AdminController extends Controller
     {
         $homepageConfig = $this->config['homepage'];
 
-        $url = isset($homepageConfig['url'])
-            ? $homepageConfig['url']
-            : $this->get('router')->generate($homepageConfig['route'], $homepageConfig['params']);
+        $url = $homepageConfig['url'] ?? $this->get('router')->generate($homepageConfig['route'], $homepageConfig['params']);
 
         return $this->redirect($url);
     }

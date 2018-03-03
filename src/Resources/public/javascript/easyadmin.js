@@ -8,6 +8,7 @@ $(function () {
 
     createNullableControls();
     createAutoCompleteFields();
+    $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);
 });
 
 function createNullableControls() {

@@ -97,7 +97,7 @@ class ConfigManager
     {
         $backendConfig = $this->getBackendConfig();
         if (!isset($backendConfig['entities'][$entityName])) {
-            throw new UndefinedEntityException(array('entity_name' => $entityName));
+            throw new UndefinedEntityException(['entity_name' => $entityName]);
         }
 
         return $backendConfig['entities'][$entityName];
@@ -134,10 +134,10 @@ class ConfigManager
         try {
             $entityConfig = $this->getEntityConfig($entityName);
         } catch (\Exception $e) {
-            $entityConfig = array();
+            $entityConfig = [];
         }
 
-        return $entityConfig[$view]['actions'][$action] ?? array();
+        return $entityConfig[$view]['actions'][$action] ?? [];
     }
 
     /**

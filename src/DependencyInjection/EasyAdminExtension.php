@@ -56,11 +56,11 @@ class EasyAdminExtension extends Extension
      */
     private function processConfigFiles(array $configs)
     {
-        $existingEntityNames = array();
+        $existingEntityNames = [];
 
         foreach ($configs as $i => $config) {
             if (array_key_exists('entities', $config)) {
-                $processedConfig = array();
+                $processedConfig = [];
 
                 foreach ($config['entities'] as $key => $value) {
                     $entityConfig = $this->normalizeEntityConfig($key, $value);
@@ -117,7 +117,7 @@ class EasyAdminExtension extends Extension
     {
         // normalize config formats #1 and #2 to use the 'class' option as config format #3
         if (!\is_array($entityConfig)) {
-            $entityConfig = array('class' => $entityConfig);
+            $entityConfig = ['class' => $entityConfig];
         }
 
         // if config format #3 is used, ensure that it defines the 'class' option

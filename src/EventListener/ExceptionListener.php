@@ -64,7 +64,7 @@ class ExceptionListener extends BaseExceptionListener
 
         return Response::create($this->twig->render(
             $exceptionTemplatePath,
-            array('exception' => $exception)
+            ['exception' => $exception]
         ), $exception->getStatusCode());
     }
 
@@ -81,9 +81,9 @@ class ExceptionListener extends BaseExceptionListener
 
         if (null !== $this->logger) {
             if ($exception->getStatusCode() >= 500) {
-                $this->logger->critical($message, array('exception' => $exception));
+                $this->logger->critical($message, ['exception' => $exception]);
             } else {
-                $this->logger->error($message, array('exception' => $exception));
+                $this->logger->error($message, ['exception' => $exception]);
             }
         }
     }

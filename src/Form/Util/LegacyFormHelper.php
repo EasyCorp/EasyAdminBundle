@@ -50,7 +50,7 @@ use Symfony\Component\Form\Util\StringUtil;
 
 final class LegacyFormHelper
 {
-    private static $supportedTypes = array(
+    private static $supportedTypes = [
         // Symfony's built-in types
         'birthday' => BirthdayType::class,
         'button' => ButtonType::class,
@@ -97,7 +97,7 @@ final class LegacyFormHelper
         'ckeditor' => 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType',
         'vich_file' => 'Vich\\UploaderBundle\\Form\\Type\\VichFileType',
         'vich_image' => 'Vich\\UploaderBundle\\Form\\Type\\VichImageType',
-    );
+    ];
 
     /**
      * It returns the FQCN of the given short type name if not use legacy form

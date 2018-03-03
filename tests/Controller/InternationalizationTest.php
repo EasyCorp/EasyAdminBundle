@@ -10,7 +10,7 @@ class InternationalizationTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'internationalization'));
+        $this->initClient(['environment' => 'internationalization']);
     }
 
     public function testLanguageDefinedByLayout()

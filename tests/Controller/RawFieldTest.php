@@ -10,7 +10,7 @@ class RawFieldTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'raw_field'));
+        $this->initClient(['environment' => 'raw_field']);
     }
 
     public function testListViewRawField()

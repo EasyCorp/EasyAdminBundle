@@ -59,7 +59,7 @@ class MetadataConfigPass implements ConfigPassInterface
      */
     private function processEntityPropertiesMetadata(ClassMetadata $entityMetadata)
     {
-        $entityPropertiesMetadata = array();
+        $entityPropertiesMetadata = [];
 
         if ($entityMetadata->isIdentifierComposite) {
             throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it contains a composite primary key.", $entityMetadata->name));
@@ -72,10 +72,10 @@ class MetadataConfigPass implements ConfigPassInterface
 
         // introspect fields for entity associations
         foreach ($entityMetadata->associationMappings as $fieldName => $associationMetadata) {
-            $entityPropertiesMetadata[$fieldName] = array_merge($associationMetadata, array(
+            $entityPropertiesMetadata[$fieldName] = array_merge($associationMetadata, [
                 'type' => 'association',
                 'associationType' => $associationMetadata['type'],
-            ));
+            ]);
 
             // associations different from *-to-one cannot be sorted
             if ($associationMetadata['type'] & ClassMetadata::TO_MANY) {

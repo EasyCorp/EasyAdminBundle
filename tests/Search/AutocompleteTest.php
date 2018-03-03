@@ -10,7 +10,7 @@ class AutocompleteTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'autocomplete'));
+        $this->initClient(['environment' => 'autocomplete']);
     }
 
     /**
@@ -21,7 +21,7 @@ class AutocompleteTest extends AbstractTestCase
         $this->getBackendHomepage();
 
         $this->assertSame(
-            array('results' => array()),
+            ['results' => []],
             $this->client->getContainer()->get('easyadmin.autocomplete')->find($entity, $query),
             'Some of the parameters required for autocomplete are missing.'
         );
@@ -56,10 +56,10 @@ class AutocompleteTest extends AbstractTestCase
         $autocomplete = $this->client->getContainer()->get('easyadmin.autocomplete')->find('Category', 21);
 
         $this->assertSame(
-            array(
-                array('id' => 21, 'text' => 'Parent Category #21'),
-                array('id' => 121, 'text' => 'Category #21'),
-            ),
+            [
+                ['id' => 21, 'text' => 'Parent Category #21'],
+                ['id' => 121, 'text' => 'Category #21'],
+            ],
             $autocomplete['results']
         );
     }
@@ -79,11 +79,11 @@ class AutocompleteTest extends AbstractTestCase
 
     public function provideMissingParameters()
     {
-        return array(
-            array('', 'Categ'),
-            array(null, 'Categ'),
-            array('Category', ''),
-            array('Category', null),
-        );
+        return [
+            ['', 'Categ'],
+            [null, 'Categ'],
+            ['Category', ''],
+            ['Category', null],
+        ];
     }
 }

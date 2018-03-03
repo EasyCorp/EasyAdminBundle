@@ -64,7 +64,7 @@ class ConfigManagerTest extends TestCase
         // glob() returns an array of strings and fixtures require an array of arrays
         return array_map(
             function ($filePath) {
-                return array($filePath);
+                return [$filePath];
             },
             glob(__DIR__.'/fixtures/exceptions/*.yml')
         );

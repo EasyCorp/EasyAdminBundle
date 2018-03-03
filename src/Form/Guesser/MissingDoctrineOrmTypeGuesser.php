@@ -27,21 +27,21 @@ class MissingDoctrineOrmTypeGuesser extends DoctrineOrmTypeGuesser
 
             switch ($metadata->getTypeOfField($property)) {
                 case 'datetime_immutable': // available since Doctrine 2.6
-                    return new TypeGuess(DateTimeType::class, array(), Guess::HIGH_CONFIDENCE);
+                    return new TypeGuess(DateTimeType::class, [], Guess::HIGH_CONFIDENCE);
                 case 'date_immutable': // available since Doctrine 2.6
-                    return new TypeGuess(DateType::class, array(), Guess::HIGH_CONFIDENCE);
+                    return new TypeGuess(DateType::class, [], Guess::HIGH_CONFIDENCE);
                 case 'time_immutable': // available since Doctrine 2.6
-                    return new TypeGuess(TimeType::class, array(), Guess::HIGH_CONFIDENCE);
+                    return new TypeGuess(TimeType::class, [], Guess::HIGH_CONFIDENCE);
                 case Type::SIMPLE_ARRAY:
                 case Type::JSON_ARRAY:
-                    return new TypeGuess(CollectionType::class, array(), Guess::MEDIUM_CONFIDENCE);
+                    return new TypeGuess(CollectionType::class, [], Guess::MEDIUM_CONFIDENCE);
                 case 'json': // available since Doctrine 2.6.2
-                    return new TypeGuess(TextareaType::class, array(), Guess::MEDIUM_CONFIDENCE);
+                    return new TypeGuess(TextareaType::class, [], Guess::MEDIUM_CONFIDENCE);
                 case Type::OBJECT:
                 case Type::BLOB:
-                    return new TypeGuess(TextareaType::class, array(), Guess::MEDIUM_CONFIDENCE);
+                    return new TypeGuess(TextareaType::class, [], Guess::MEDIUM_CONFIDENCE);
                 case Type::GUID:
-                    return new TypeGuess(TextType::class, array(), Guess::MEDIUM_CONFIDENCE);
+                    return new TypeGuess(TextType::class, [], Guess::MEDIUM_CONFIDENCE);
             }
         }
 

@@ -61,13 +61,13 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'multiple' => false,
             // force display errors on this form field
             'error_bubbling' => false,
-        ));
+        ]);
 
-        $resolver->setRequired(array('class'));
+        $resolver->setRequired(['class']);
     }
 
     /**

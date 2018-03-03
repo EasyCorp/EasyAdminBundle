@@ -34,15 +34,15 @@ class ExceptionListenerTest extends TestCase
 
     public function testCatchBaseExceptions()
     {
-        $exception = new EasyEntityNotFoundException(array(
+        $exception = new EasyEntityNotFoundException([
             'entity_name' => 'Test',
             'entity_id_name' => 'Test key',
             'entity_id_value' => 2,
-        ));
+        ]);
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
         $twig = $this->getTwig();
 
-        $listener = new ExceptionListener($twig, array(), 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($twig, [], 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 
@@ -64,7 +64,7 @@ class ExceptionListenerTest extends TestCase
         $event = $this->getEventExceptionThatShouldNotBeCalled($exception);
         $twig = $this->getTwig();
 
-        $listener = new ExceptionListener($twig, array(), 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($twig, [], 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 }

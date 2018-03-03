@@ -21,7 +21,7 @@ class FlattenException extends BaseFlattenException
      *
      * @throws \RuntimeException
      */
-    public static function create(\Exception $exception, $statusCode = null, array $headers = array())
+    public static function create(\Exception $exception, $statusCode = null, array $headers = [])
     {
         if (!$exception instanceof BaseException) {
             throw new \RuntimeException(sprintf('You should only try to create an instance of "%s" with a "EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException" instance, or subclass. "%s" given.', __CLASS__, \get_class($exception)));

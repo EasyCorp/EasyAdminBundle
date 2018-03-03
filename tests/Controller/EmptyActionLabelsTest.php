@@ -10,7 +10,7 @@ class EmptyActionLabelsTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'empty_action_labels'));
+        $this->initClient(['environment' => 'empty_action_labels']);
     }
 
     public function testBuiltInActionLabels()

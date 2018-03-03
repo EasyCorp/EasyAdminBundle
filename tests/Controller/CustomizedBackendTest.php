@@ -10,16 +10,16 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'customized_backend'));
+        $this->initClient(['environment' => 'customized_backend']);
     }
 
     public function testUserMenuForLoggedUsers()
     {
         $this->client->followRedirects();
-        $crawler = $this->client->request('GET', '/admin', array(), array(), array(
+        $crawler = $this->client->request('GET', '/admin', [], [], [
             'PHP_AUTH_USER' => 'admin',
             'PHP_AUTH_PW' => 'pa$$word',
-        ));
+        ]);
 
         $this->assertContains('admin', $crawler->filter('header .user-menu')->text());
 
@@ -49,12 +49,12 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $hiddenParameters = array(
+        $hiddenParameters = [
             'action' => 'search',
             'entity' => 'Category',
             'sortField' => 'name',
             'sortDirection' => 'ASC',
-        );
+        ];
 
         $this->assertSame('Look for Categories', trim($crawler->filter('.action-search button[type=submit]')->text()));
         $this->assertContains('custom_class_search', $crawler->filter('.action-search')->attr('class'));
@@ -101,7 +101,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testListViewTableColumnLabels()
     {
         $crawler = $this->requestListView();
-        $columnLabels = array('ID', 'Label', 'Parent category', 'Actions');
+        $columnLabels = ['ID', 'Label', 'Parent category', 'Actions'];
 
         foreach ($columnLabels as $i => $label) {
             $this->assertSame($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
@@ -111,7 +111,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testListViewTableColumnAttributes()
     {
         $crawler = $this->requestListView();
-        $columnAttributes = array('id', 'name', 'parent');
+        $columnAttributes = ['id', 'name', 'parent'];
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertSame($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
@@ -137,7 +137,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testListViewTableRowAttributes()
     {
         $crawler = $this->requestListView();
-        $columnAttributes = array('ID', 'Label', 'Parent category');
+        $columnAttributes = ['ID', 'Label', 'Parent category'];
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertSame($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
@@ -203,7 +203,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testShowViewFieldLabels()
     {
         $crawler = $this->requestShowView();
-        $fieldLabels = array('#', 'Label', 'Parent category');
+        $fieldLabels = ['#', 'Label', 'Parent category'];
 
         foreach ($fieldLabels as $i => $label) {
             $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
@@ -213,7 +213,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testShowViewFieldClasses()
     {
         $crawler = $this->requestShowView();
-        $fieldClasses = array('integer', 'string', 'association');
+        $fieldClasses = ['integer', 'string', 'association'];
 
         foreach ($fieldClasses as $i => $cssClass) {
             $this->assertContains('field-'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
@@ -236,13 +236,13 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testShowViewListActionReferer()
     {
-        $parameters = array(
+        $parameters = [
             'action' => 'list',
             'entity' => 'Category',
             'sortField' => 'name',
             'sortDirection' => 'ASC',
             'page' => '2',
-        );
+        ];
 
         // 1. visit a specific 'list' view page
         $crawler = $this->getBackendPage($parameters);
@@ -267,13 +267,13 @@ class CustomizedBackendTest extends AbstractTestCase
      */
     public function testChainedReferer()
     {
-        $parameters = array(
+        $parameters = [
             'action' => 'list',
             'entity' => 'Category',
             'sortField' => 'name',
             'sortDirection' => 'ASC',
             'page' => '2',
-        );
+        ];
 
         // 1. visit a specific 'list' view page
         $crawler = $this->getBackendPage($parameters);
@@ -322,7 +322,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testEditViewFieldLabels()
     {
         $crawler = $this->requestEditView();
-        $fieldLabels = array('ID', 'Label', 'Parent Category Label');
+        $fieldLabels = ['ID', 'Label', 'Parent Category Label'];
 
         foreach ($fieldLabels as $i => $label) {
             $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
@@ -332,8 +332,8 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testEditViewFieldClasses()
     {
         $crawler = $this->requestEditView();
-        $fieldDefaultClasses = array('integer', 'text', 'entity');
-        $fieldCustomClasses = array('integer', 'text', 'entity');
+        $fieldDefaultClasses = ['integer', 'text', 'entity'];
+        $fieldCustomClasses = ['integer', 'text', 'entity'];
 
         foreach ($fieldDefaultClasses as $i => $cssClass) {
             $this->assertContains('field-'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
@@ -360,13 +360,13 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testEditViewListActionReferer()
     {
-        $parameters = array(
+        $parameters = [
             'action' => 'list',
             'entity' => 'Category',
             'sortField' => 'name',
             'sortDirection' => 'ASC',
             'page' => '2',
-        );
+        ];
 
         // 1. visit a specific 'list' view page
         $crawler = $this->getBackendPage($parameters);
@@ -425,7 +425,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testNewViewFieldLabels()
     {
         $crawler = $this->requestNewView();
-        $fieldLabels = array('ID', 'Label', 'Parent Category Label');
+        $fieldLabels = ['ID', 'Label', 'Parent Category Label'];
 
         foreach ($fieldLabels as $i => $label) {
             $this->assertSame($label, trim($crawler->filter('#main .form-group label')->eq($i)->text()));
@@ -435,7 +435,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testNewViewFieldClasses()
     {
         $crawler = $this->requestNewView();
-        $fieldClasses = array('integer', 'text', 'entity');
+        $fieldClasses = ['integer', 'text', 'entity'];
 
         foreach ($fieldClasses as $i => $cssClass) {
             $this->assertContains('field-'.$cssClass, trim($crawler->filter('#main .form-group')->eq($i)->attr('class')));
@@ -455,13 +455,13 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testNewViewListActionReferer()
     {
-        $parameters = array(
+        $parameters = [
             'action' => 'list',
             'entity' => 'Category',
             'sortField' => 'name',
             'sortDirection' => 'ASC',
             'page' => '2',
-        );
+        ];
 
         // 1. visit a specific 'list' view page
         $crawler = $this->getBackendPage($parameters);
@@ -527,7 +527,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testSearchViewTableColumnLabels()
     {
         $crawler = $this->requestSearchView();
-        $columnLabels = array('ID', 'Label', 'Parent category', 'Actions');
+        $columnLabels = ['ID', 'Label', 'Parent category', 'Actions'];
 
         foreach ($columnLabels as $i => $label) {
             $this->assertSame($label, trim($crawler->filter('.table thead th')->eq($i)->text()));
@@ -537,7 +537,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testSearchViewTableColumnAttributes()
     {
         $crawler = $this->requestSearchView();
-        $columnAttributes = array('id', 'name', 'parent');
+        $columnAttributes = ['id', 'name', 'parent'];
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertSame($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
@@ -563,7 +563,7 @@ class CustomizedBackendTest extends AbstractTestCase
     public function testSearchViewTableRowAttributes()
     {
         $crawler = $this->requestSearchView();
-        $columnAttributes = array('ID', 'Label', 'Parent category');
+        $columnAttributes = ['ID', 'Label', 'Parent category'];
 
         foreach ($columnAttributes as $i => $attribute) {
             $this->assertSame($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
@@ -596,14 +596,14 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testSearchViewShowActionReferer()
     {
-        $parameters = array(
+        $parameters = [
             'action' => 'search',
             'entity' => 'Category',
             'sortField' => 'name',
             'sortDirection' => 'ASC',
             'page' => '2',
             'query' => 'cat',
-        );
+        ];
 
         // 1. visit a specific 'search' view page
         $crawler = $this->getBackendPage($parameters);
@@ -622,12 +622,12 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testSearchUsingAssociations()
     {
-        $parameters = array(
+        $parameters = [
             'action' => 'search',
             'entity' => 'Purchase',
             'page' => '1',
             'query' => 'user9@example',
-        );
+        ];
 
         $crawler = $this->getBackendPage($parameters);
 

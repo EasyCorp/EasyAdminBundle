@@ -10,7 +10,7 @@ class OverrideEasyAdminTemplateTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'override_templates'));
+        $this->initClient(['environment' => 'override_templates']);
     }
 
     public function testLayoutIsOverridden()

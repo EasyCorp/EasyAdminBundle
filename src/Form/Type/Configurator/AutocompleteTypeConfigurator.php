@@ -42,10 +42,10 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $supportedTypes = array(
+        $supportedTypes = [
             'easyadmin_autocomplete',
             EasyAdminAutocompleteType::class,
-        );
+        ];
 
         return \in_array($type, $supportedTypes, true);
     }

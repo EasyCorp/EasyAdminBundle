@@ -21,7 +21,7 @@ class CustomCategoryControllerAsService
     public function indexAction()
     {
         $actionName = $this->requestStack->getMasterRequest()->query->get('action', 'list');
-        $actionMethod = is_callable(array($this, $actionName.'CategoryAction')) ? $actionName.'CategoryAction' : $actionName.'Action';
+        $actionMethod = is_callable([$this, $actionName.'CategoryAction']) ? $actionName.'CategoryAction' : $actionName.'Action';
 
         return $this->{$actionMethod}();
     }

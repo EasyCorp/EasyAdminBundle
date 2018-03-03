@@ -44,6 +44,6 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        return \in_array($type, array('collection', CollectionType::class), true);
+        return \in_array($type, ['collection', CollectionType::class], true);
     }
 }

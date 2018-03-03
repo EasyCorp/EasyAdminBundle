@@ -12,7 +12,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-    private $phrases = array(
+    private $phrases = [
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         'Pellentesque vitae velit ex.',
         'Mauris dapibus, risus quis suscipit vulputate, eros diam egestas libero, eu vulputate eros eros eu risus.',
@@ -30,7 +30,7 @@ class AppFixtures extends Fixture
         'Sed varius a risus eget aliquam.',
         'Nunc viverra elit ac laoreet suscipit.',
         'Pellentesque et sapien pulvinar, consectetur eros ac, vehicula odio.',
-    );
+    ];
 
     public function load(ObjectManager $manager)
     {
@@ -64,7 +64,7 @@ class AppFixtures extends Fixture
 
     private function createUsers(): array
     {
-        $users = array();
+        $users = [];
 
         foreach (range(1, 20) as $i) {
             $user = new User();
@@ -89,8 +89,8 @@ class AppFixtures extends Fixture
 
     private function createCategories(): array
     {
-        $parentCategories = array();
-        $subCategories = array();
+        $parentCategories = [];
+        $subCategories = [];
 
         foreach (range(1, 100) as $i) {
             $category = new Category();
@@ -112,7 +112,7 @@ class AppFixtures extends Fixture
 
     private function createProducts(array $categories): array
     {
-        $products = array();
+        $products = [];
 
         foreach (range(1, 100) as $i) {
             $product = new Product();
@@ -133,7 +133,7 @@ class AppFixtures extends Fixture
 
     private function createPurchases(array $users): array
     {
-        $purchases = array();
+        $purchases = [];
 
         foreach (range(1, 30) as $i) {
             $purchase = new Purchase();
@@ -144,10 +144,10 @@ class AppFixtures extends Fixture
             $purchase->setDeliveryHour($this->getHour($i));
             $purchase->setBillingAddress(
                 json_encode(
-                    array(
+                    [
                         'line1' => '1234 Main Street',
                         'line2' => 'Big City, XX 23456',
-                    )
+                    ]
                 )
             );
             $purchase->setBuyer($users[$i % count($users)]);
@@ -160,7 +160,7 @@ class AppFixtures extends Fixture
 
     private function createPurchaseItems(array $products, array $purchases): array
     {
-        $purchaseItems = array();
+        $purchaseItems = [];
 
         foreach (range(1, 30) as $i) {
             $numItemsPurchased = rand(1, 5);
@@ -180,7 +180,7 @@ class AppFixtures extends Fixture
 
     public function getRandomTags()
     {
-        $tags = array(
+        $tags = [
             'books',
             'electronics',
             'GPS',
@@ -196,7 +196,7 @@ class AppFixtures extends Fixture
             'TV & video',
             'videogames',
             'wearables',
-        );
+        ];
 
         $numTags = mt_rand(2, 4);
         shuffle($tags);
@@ -224,12 +224,12 @@ class AppFixtures extends Fixture
 
     public function getRandomName()
     {
-        $words = array(
+        $words = [
             'Lorem', 'Ipsum', 'Sit', 'Amet', 'Adipiscing', 'Elit',
             'Vitae', 'Velit', 'Mauris', 'Dapibus', 'Suscipit', 'Vulputate',
             'Eros', 'Diam', 'Egestas', 'Libero', 'Platea', 'Dictumst',
             'Tempus', 'Commodo', 'Mattis', 'Donec', 'Posuere', 'Eleifend',
-        );
+        ];
 
         $numWords = 2;
         shuffle($words);
@@ -239,14 +239,14 @@ class AppFixtures extends Fixture
 
     public function getRandomPrice()
     {
-        $cents = array('00', '29', '39', '49', '99');
+        $cents = ['00', '29', '39', '49', '99'];
 
         return (float) mt_rand(2, 79).'.'.$cents[array_rand($cents)];
     }
 
     private function getRandomCategories(array $allCategories)
     {
-        $categories = array();
+        $categories = [];
         $numCategories = rand(1, 4);
 
         for ($i = 0; $i < $numCategories; ++$i) {

@@ -85,8 +85,8 @@ class QueryBuilder
         $isSearchQueryUuid = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $searchQuery);
         $lowerSearchQuery = mb_strtolower($searchQuery);
 
-        $queryParameters = array();
-        $entitiesAlreadyJoined = array();
+        $queryParameters = [];
+        $entitiesAlreadyJoined = [];
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
             if (false !== strpos($fieldName, '.')) {
@@ -102,8 +102,8 @@ class QueryBuilder
 
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];
             $isIntegerField = 'integer' === $metadata['dataType'];
-            $isNumericField = \in_array($metadata['dataType'], array('number', 'bigint', 'decimal', 'float'));
-            $isTextField = \in_array($metadata['dataType'], array('string', 'text'));
+            $isNumericField = \in_array($metadata['dataType'], ['number', 'bigint', 'decimal', 'float']);
+            $isTextField = \in_array($metadata['dataType'], ['string', 'text']);
             $isGuidField = 'guid' === $metadata['dataType'];
 
             // this complex condition is needed to avoid issues on PostgreSQL databases

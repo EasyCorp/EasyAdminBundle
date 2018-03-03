@@ -10,7 +10,7 @@ class EntitySortingByAssociationTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'entity_sorting_by_association'));
+        $this->initClient(['environment' => 'entity_sorting_by_association']);
     }
 
     public function testListViewSorting()

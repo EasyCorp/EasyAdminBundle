@@ -22,7 +22,7 @@ final class EasyAdminConfigPass implements CompilerPassInterface
         $definition = $container->getDefinition('easyadmin.config.manager');
 
         foreach ($configPasses as $service) {
-            $definition->addMethodCall('addConfigPass', array($service));
+            $definition->addMethodCall('addConfigPass', [$service]);
         }
     }
 }

@@ -10,7 +10,7 @@ class CustomFieldTemplateTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'custom_field_template'));
+        $this->initClient(['environment' => 'custom_field_template']);
     }
 
     public function testListViewCustomFieldTemplate()

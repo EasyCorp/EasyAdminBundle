@@ -10,7 +10,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'advanced_form_layout'));
+        $this->initClient(['environment' => 'advanced_form_layout']);
     }
 
     /**
@@ -21,10 +21,10 @@ class AdvancedFormLayoutTest extends AbstractTestCase
     public function testFormLayout()
     {
         // a dataProvider can't be used because it can't create the Crawlers
-        foreach (array('edit', 'new') as $view) {
+        foreach (['edit', 'new'] as $view) {
             $queryParams = array_merge(
-                array('action' => $view, 'entity' => 'Product'),
-                'edit' === $view ? array('id' => 1) : array()
+                ['action' => $view, 'entity' => 'Product'],
+                'edit' === $view ? ['id' => 1] : []
             );
             $crawler = $this->getBackendPage($queryParams);
 

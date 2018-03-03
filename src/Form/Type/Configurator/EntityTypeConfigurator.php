@@ -43,7 +43,7 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isEntityType = \in_array($type, array('entity', EntityType::class), true);
+        $isEntityType = \in_array($type, ['entity', EntityType::class], true);
 
         return $isEntityType && 'association' === $metadata['dataType'];
     }

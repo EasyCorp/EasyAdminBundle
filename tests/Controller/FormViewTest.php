@@ -10,7 +10,7 @@ class FormViewTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'form_view'));
+        $this->initClient(['environment' => 'form_view']);
     }
 
     public function testNewView()

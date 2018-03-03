@@ -10,7 +10,7 @@ class ReadOnlyBackendTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'read_only_backend'));
+        $this->initClient(['environment' => 'read_only_backend']);
     }
 
     public function testListViewContainsNoDisabledActions()

@@ -191,11 +191,9 @@ class EasyAdminTwigExtension extends AbstractExtension
             $parameters = $this->addAssociationFieldParameters($parameters);
         }
 
-        if (true === $fieldMetadata['virtual']) {
-            // when a virtual field doesn't define it's type, consider it a string
-            if (null === $parameters['field_options']['dataType']) {
-                $parameters['value'] = (string) $parameters['value'];
-            }
+        // when a virtual field doesn't define it's type, consider it a string
+        if (true === $fieldMetadata['virtual'] && null === $parameters['field_options']['dataType']) {
+            $parameters['value'] = (string) $parameters['value'];
         }
 
         return $parameters;

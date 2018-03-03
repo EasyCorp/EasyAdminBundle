@@ -596,7 +596,7 @@ class AdminController extends Controller
      * @param object $entity
      * @param array  $entityProperties
      *
-     * @return Form
+     * @return Form|FormInterface
      */
     protected function createEditForm($entity, array $entityProperties)
     {
@@ -609,7 +609,7 @@ class AdminController extends Controller
      * @param object $entity
      * @param array  $entityProperties
      *
-     * @return Form
+     * @return Form|FormInterface
      */
     protected function createNewForm($entity, array $entityProperties)
     {

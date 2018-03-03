@@ -33,10 +33,10 @@ class ActionConfigPassTest extends TestCase
 
     public function getWrongActionConfigs()
     {
-        return array(
-            array(array(7)),
-            array(array(true)),
-            array(array(null)),
-        );
+        return [
+            [[7]],
+            [[true]],
+            [[null]],
+        ];
     }
 }

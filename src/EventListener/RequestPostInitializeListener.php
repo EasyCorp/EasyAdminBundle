@@ -62,11 +62,11 @@ class RequestPostInitializeListener
             return;
         }
 
-        $this->request->attributes->set('easyadmin', array(
+        $this->request->attributes->set('easyadmin', [
             'entity' => $entity = $event->getArgument('entity'),
             'view' => $this->request->query->get('action', 'list'),
             'item' => ($id = $this->request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
-        ));
+        ]);
     }
 
     /**
@@ -86,7 +86,7 @@ class RequestPostInitializeListener
         }
 
         if (null === $entity = $manager->getRepository($entityConfig['class'])->find($itemId)) {
-            throw new EntityNotFoundException(array('entity_name' => $entityConfig['name'], 'entity_id_name' => $entityConfig['primary_key_field_name'], 'entity_id_value' => $itemId));
+            throw new EntityNotFoundException(['entity_name' => $entityConfig['name'], 'entity_id_name' => $entityConfig['primary_key_field_name'], 'entity_id_value' => $itemId]);
         }
 
         return $entity;

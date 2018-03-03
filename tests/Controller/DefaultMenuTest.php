@@ -19,7 +19,7 @@ class DefaultMenuTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'default_menu'));
+        $this->initClient(['environment' => 'default_menu']);
     }
 
     public function testCustomBackendHomepage()
@@ -46,13 +46,13 @@ class DefaultMenuTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        $urls = array(
+        $urls = [
             '/admin/?entity=Category&action=list&menuIndex=0&submenuIndex=-1',
             '/admin/?entity=Image&action=list&menuIndex=1&submenuIndex=-1',
             '/admin/?entity=Purchase&action=list&menuIndex=2&submenuIndex=-1',
             '/admin/?entity=PurchaseItem&action=list&menuIndex=3&submenuIndex=-1',
             '/admin/?entity=Product&action=list&menuIndex=4&submenuIndex=-1',
-        );
+        ];
 
         foreach ($urls as $i => $url) {
             $this->assertSame($url, $crawler->filter('.sidebar-menu li a')->eq($i)->attr('href'));

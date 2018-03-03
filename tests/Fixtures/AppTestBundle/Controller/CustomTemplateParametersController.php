@@ -15,7 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as EasyAdminContr
 
 class CustomTemplateParametersController extends EasyAdminController
 {
-    protected function renderTemplate($actionName, $templatePath, array $parameters = array())
+    protected function renderTemplate($actionName, $templatePath, array $parameters = [])
     {
         $parameters['custom_parameter'] = $actionName;
 

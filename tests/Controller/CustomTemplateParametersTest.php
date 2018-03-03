@@ -19,7 +19,7 @@ class CustomTemplateParametersTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'custom_template_parameters'));
+        $this->initClient(['environment' => 'custom_template_parameters']);
     }
 
     public function testListViewCustomParameters()

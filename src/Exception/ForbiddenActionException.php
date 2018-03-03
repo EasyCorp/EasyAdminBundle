@@ -16,7 +16,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
  */
 class ForbiddenActionException extends BaseException
 {
-    public function __construct(array $parameters = array())
+    public function __construct(array $parameters = [])
     {
         $exceptionContext = new ExceptionContext(
             'exception.forbidden_action',

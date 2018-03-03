@@ -57,15 +57,15 @@ class EasyAdminExtension extends AbstractTypeExtension
             $easyadmin = $this->request->attributes->get('easyadmin');
             $entity = $easyadmin['entity'];
             $action = $easyadmin['view'];
-            $fields = isset($entity[$action]['fields']) ? $entity[$action]['fields'] : array();
-            $view->vars['easyadmin'] = array(
+            $fields = isset($entity[$action]['fields']) ? $entity[$action]['fields'] : [];
+            $view->vars['easyadmin'] = [
                 'entity' => $entity,
                 'view' => $action,
                 'item' => $easyadmin['item'],
                 'field' => isset($fields[$view->vars['name']]) ? $fields[$view->vars['name']] : null,
                 'form_group' => $form->getConfig()->getAttribute('easyadmin_form_group'),
                 'form_tab' => $form->getConfig()->getAttribute('easyadmin_form_tab'),
-            );
+            ];
         }
     }
 

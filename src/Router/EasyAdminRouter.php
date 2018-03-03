@@ -52,7 +52,7 @@ final class EasyAdminRouter
      *
      * @return string
      */
-    public function generate($entity, $action, array $parameters = array())
+    public function generate($entity, $action, array $parameters = [])
     {
         if (is_object($entity)) {
             $config = $this->getEntityConfigByClass(get_class($entity));
@@ -76,7 +76,7 @@ final class EasyAdminRouter
         } elseif (
             $request
             && !is_string($referer)
-            && (true === $referer || in_array($action, array('new', 'edit', 'delete'), true))
+            && (true === $referer || in_array($action, ['new', 'edit', 'delete'], true))
         ) {
             $parameters['referer'] = urlencode($request->getUri());
         }
@@ -117,7 +117,7 @@ final class EasyAdminRouter
     private function getEntityConfigByClass($class)
     {
         if (!$config = $this->configManager->getEntityConfigByClass(ClassUtils::getRealClass($class))) {
-            throw new UndefinedEntityException(array('entity_name' => $class));
+            throw new UndefinedEntityException(['entity_name' => $class]);
         }
 
         return $config;

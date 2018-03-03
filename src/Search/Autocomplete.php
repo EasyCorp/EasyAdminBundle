@@ -49,7 +49,7 @@ class Autocomplete
     public function find($entity, $query, $page = 1)
     {
         if (empty($entity) || empty($query)) {
-            return array('results' => array());
+            return ['results' => []];
         }
 
         $backendConfig = $this->configManager->getBackendConfig();
@@ -59,10 +59,10 @@ class Autocomplete
 
         $paginator = $this->finder->findByAllProperties($backendConfig['entities'][$entity], $query, $page, $backendConfig['show']['max_results']);
 
-        return array(
+        return [
             'results' => $this->processResults($paginator->getCurrentPageResults(), $backendConfig['entities'][$entity]),
             'has_next_page' => $paginator->hasNextPage(),
-        );
+        ];
     }
 
     /**
@@ -70,13 +70,13 @@ class Autocomplete
      */
     private function processResults($entities, array $targetEntityConfig)
     {
-        $results = array();
+        $results = [];
 
         foreach ($entities as $entity) {
-            $results[] = array(
+            $results[] = [
                 'id' => $this->propertyAccessor->getValue($entity, $targetEntityConfig['primary_key_field_name']),
                 'text' => (string) $entity,
-            );
+            ];
         }
 
         return $results;

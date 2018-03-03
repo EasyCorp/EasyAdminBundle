@@ -19,7 +19,7 @@ class ActionTargetTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'action_target'));
+        $this->initClient(['environment' => 'action_target']);
     }
 
     public function testListViewActions()

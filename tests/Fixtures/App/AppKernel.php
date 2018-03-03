@@ -20,7 +20,7 @@ class AppKernel extends Kernel
 {
     public function registerBundles()
     {
-        return array(
+        return [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
@@ -29,7 +29,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle(),
             new EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\AppTestBundle(),
-        );
+        ];
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)
@@ -38,31 +38,31 @@ class AppKernel extends Kernel
 
         if ($this->requiresAssetsConfig()) {
             $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('framework', array(
+                $container->loadFromExtension('framework', [
                     'assets' => null,
-                ));
+                ]);
             });
         }
 
         if ($this->requiresTemplatingConfig()) {
             $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('framework', array(
-                    'templating' => array(
-                        'engines' => array('twig'),
-                    ),
-                ));
+                $container->loadFromExtension('framework', [
+                    'templating' => [
+                        'engines' => ['twig'],
+                    ],
+                ]);
             });
         }
 
         if ($this->requiresLogoutOnUserChange()) {
             $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('security', array(
-                    'firewalls' => array(
-                        'main' => array(
+                $container->loadFromExtension('security', [
+                    'firewalls' => [
+                        'main' => [
                             'logout_on_user_change' => true,
-                        ),
-                    ),
-                ));
+                        ],
+                    ],
+                ]);
             });
         }
     }

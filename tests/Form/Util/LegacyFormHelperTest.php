@@ -21,13 +21,13 @@ class LegacyFormHelperTest extends TestCase
 {
     public function shortTypesToFqcnProvider()
     {
-        return array(
-            'Symfony Type (regular name)' => array('integer', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\IntegerType'),
-            'Symfony Type (irregular name)' => array('datetime', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType'),
-            'Doctrine Bridge Type' => array('entity', 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType'),
-            'Custom Type (short name)' => array('foo', 'foo'),
-            'Custom Type (FQCN)' => array('Foo\Bar', 'Foo\Bar'),
-        );
+        return [
+            'Symfony Type (regular name)' => ['integer', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\IntegerType'],
+            'Symfony Type (irregular name)' => ['datetime', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType'],
+            'Doctrine Bridge Type' => ['entity', 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType'],
+            'Custom Type (short name)' => ['foo', 'foo'],
+            'Custom Type (FQCN)' => ['Foo\Bar', 'Foo\Bar'],
+        ];
     }
 
     /**

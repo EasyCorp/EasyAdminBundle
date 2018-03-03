@@ -47,7 +47,7 @@ class Configuration implements ConfigurationInterface
                 })
                 ->then(function ($v) {
                     if (!isset($v['list'])) {
-                        $v['list'] = array();
+                        $v['list'] = [];
                     }
 
                     // if the new option is defined, don't override it with the legacy option
@@ -85,7 +85,7 @@ class Configuration implements ConfigurationInterface
                 ->always()
                 ->then(function ($v) {
                     if (!isset($v['design'])) {
-                        $v['design'] = array('assets' => array());
+                        $v['design'] = ['assets' => []];
                     }
 
                     return $v;
@@ -200,7 +200,7 @@ class Configuration implements ConfigurationInterface
 
                 ->variableNode('disabled_actions')
                     ->info('The names of the actions disabled for all backend entities.')
-                    ->defaultValue(array())
+                    ->defaultValue([])
                     ->validate()
                         ->ifTrue(function ($v) {
                             return false === is_array($v);
@@ -235,13 +235,13 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue('default')
                             ->info('The theme used to render the backend pages. For now this value can only be "default".')
                             ->validate()
-                                ->ifNotInArray(array('default'))
+                                ->ifNotInArray(['default'])
                                 ->thenInvalid('The theme name can only be "default".')
                             ->end()
                         ->end()
 
                         ->enumNode('color_scheme')
-                            ->values(array('dark', 'light'))
+                            ->values(['dark', 'light'])
                             ->info('The color scheme applied to the backend design (values: "dark" or "light").')
                             ->defaultValue('dark')
                             ->treatNullLike('dark')
@@ -267,12 +267,12 @@ class Configuration implements ConfigurationInterface
                         ->end()
 
                         ->variableNode('form_theme')
-                            ->defaultValue(array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'))
-                            ->treatNullLike(array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'))
+                            ->defaultValue(['@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
+                            ->treatNullLike(['@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
                             ->info('The form theme applied to backend forms. Allowed values: "horizontal", "vertical", any valid form theme path or an array of theme paths.')
                             ->validate()
                                 ->ifString()->then(function ($v) {
-                                    return array($v);
+                                    return [$v];
                                 })
                             ->end()
                             ->validate()
@@ -311,15 +311,15 @@ class Configuration implements ConfigurationInterface
                                     ->beforeNormalization()
                                         ->always(function ($v) {
                                             if (is_string($v)) {
-                                                $v = array('path' => $v);
+                                                $v = ['path' => $v];
                                             }
-                                            $mimeTypes = array(
+                                            $mimeTypes = [
                                                 'ico' => 'image/x-icon',
                                                 'png' => 'image/png',
                                                 'gif' => 'image/gif',
                                                 'jpg' => 'image/jpeg',
                                                 'jpeg' => 'image/jpeg',
-                                            );
+                                            ];
                                             if (!isset($v['mime_type']) && isset($mimeTypes[$ext = pathinfo($v['path'], PATHINFO_EXTENSION)])) {
                                                 $v['mime_type'] = $mimeTypes[$ext];
                                             } elseif (!isset($v['mime_type'])) {
@@ -382,7 +382,7 @@ class Configuration implements ConfigurationInterface
 
                         ->arrayNode('menu')
                             ->normalizeKeys(false)
-                            ->defaultValue(array())
+                            ->defaultValue([])
                             ->info('The items to display in the main menu.')
                             ->prototype('variable')
                         ->end()
@@ -475,7 +475,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('entities')
                     ->normalizeKeys(false)
                     ->useAttributeAsKey('name', false)
-                    ->defaultValue(array())
+                    ->defaultValue([])
                     ->info('The list of entities to manage in the administration zone.')
                     ->prototype('variable')
                 ->end()

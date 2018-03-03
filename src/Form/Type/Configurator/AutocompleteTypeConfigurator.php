@@ -50,10 +50,10 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $supportedTypes = array(
+        $supportedTypes = [
             'easyadmin_autocomplete',
             'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType',
-        );
+        ];
 
         return in_array($type, $supportedTypes, true);
     }

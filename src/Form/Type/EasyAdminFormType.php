@@ -42,7 +42,7 @@ class EasyAdminFormType extends AbstractType
      * @param ConfigManager               $configManager
      * @param TypeConfiguratorInterface[] $configurators
      */
-    public function __construct(ConfigManager $configManager, array $configurators = array())
+    public function __construct(ConfigManager $configManager, array $configurators = [])
     {
         $this->configManager = $configManager;
         $this->configurators = $configurators;
@@ -56,10 +56,10 @@ class EasyAdminFormType extends AbstractType
         $entity = $options['entity'];
         $view = $options['view'];
         $entityConfig = $this->configManager->getEntityConfig($entity);
-        $entityProperties = isset($entityConfig[$view]['fields']) ? $entityConfig[$view]['fields'] : array();
-        $formTabs = array();
+        $entityProperties = isset($entityConfig[$view]['fields']) ? $entityConfig[$view]['fields'] : [];
+        $formTabs = [];
         $currentFormTab = null;
-        $formGroups = array();
+        $formGroups = [];
         $currentFormGroup = null;
 
         foreach ($entityProperties as $name => $metadata) {
@@ -78,7 +78,7 @@ class EasyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (in_array($formFieldType, array('easyadmin_group', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType'))) {
+            if (in_array($formFieldType, ['easyadmin_group', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType'])) {
                 $metadata['form_tab'] = $currentFormTab ?: null;
                 $currentFormGroup = $metadata['fieldName'];
                 $formGroups[$currentFormGroup] = $metadata;
@@ -90,7 +90,7 @@ class EasyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (in_array($formFieldType, array('easyadmin_tab', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminTabType'))) {
+            if (in_array($formFieldType, ['easyadmin_tab', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminTabType'])) {
                 // The first tab should be marked as active by default
                 $metadata['active'] = 0 === count($formTabs);
                 $metadata['errors'] = 0;
@@ -142,7 +142,7 @@ class EasyAdminFormType extends AbstractType
         $configManager = $this->configManager;
 
         $resolver
-            ->setDefaults(array(
+            ->setDefaults([
                 'allow_extra_fields' => true,
                 'data_class' => function (Options $options) use ($configManager) {
                     $entity = $options['entity'];
@@ -150,15 +150,15 @@ class EasyAdminFormType extends AbstractType
 
                     return $entityConfig['class'];
                 },
-            ))
-            ->setRequired(array('entity', 'view'));
+            ])
+            ->setRequired(['entity', 'view']);
 
         // setNormalizer() is available since Symfony 2.6
         if (method_exists($resolver, 'setNormalizer')) {
             $resolver->setNormalizer('attr', $this->getAttributesNormalizer());
         } else {
             // BC for Symfony < 2.6
-            $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer()));
+            $resolver->setNormalizers(['attr' => $this->getAttributesNormalizer()]);
         }
     }
 
@@ -192,9 +192,9 @@ class EasyAdminFormType extends AbstractType
     private function getAttributesNormalizer()
     {
         return function (Options $options, $value) {
-            return array_replace(array(
+            return array_replace([
                 'id' => sprintf('%s-%s-form', $options['view'], mb_strtolower($options['entity'])),
-            ), $value);
+            ], $value);
         };
     }
 }

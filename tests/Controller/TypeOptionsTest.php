@@ -19,7 +19,7 @@ class TypeOptionsTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'type_options'));
+        $this->initClient(['environment' => 'type_options']);
     }
 
     public function testNewViewTypeOptions()

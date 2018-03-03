@@ -78,7 +78,7 @@ class ConfigManagerTest extends TestCase
         // glob() returns an array of strings and fixtures require an array of arrays
         return array_map(
             function ($filePath) {
-                return array($filePath);
+                return [$filePath];
             },
             glob(__DIR__.'/fixtures/exceptions/*.yml')
         );
@@ -86,7 +86,7 @@ class ConfigManagerTest extends TestCase
 
     private function isTestCompatible($filePath)
     {
-        $testsWithDuplicatedYamlKeys = array(
+        $testsWithDuplicatedYamlKeys = [
             __DIR__.'/fixtures/configurations/input/admin_007.yml',
             __DIR__.'/fixtures/configurations/input/admin_008.yml',
             __DIR__.'/fixtures/configurations/input/admin_013.yml',
@@ -94,7 +94,7 @@ class ConfigManagerTest extends TestCase
             __DIR__.'/fixtures/configurations/input/admin_020.yml',
             __DIR__.'/fixtures/configurations/input/admin_021.yml',
             __DIR__.'/fixtures/configurations/input/admin_026.yml',
-        );
+        ];
 
         // In Symfony 2.3, the YAML component behaves differently than other versions
         // when it founds duplicated keys. In Symfony >= 3.2, duplicated keys are deprecated

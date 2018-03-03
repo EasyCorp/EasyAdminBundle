@@ -16,7 +16,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
  */
 class NoEntitiesConfiguredException extends BaseException
 {
-    public function __construct(array $parameters = array())
+    public function __construct(array $parameters = [])
     {
         $exceptionContext = new ExceptionContext(
             'exception.no_entities_configured',

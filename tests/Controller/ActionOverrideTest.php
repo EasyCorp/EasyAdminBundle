@@ -19,7 +19,7 @@ class ActionOverrideTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'action_override'));
+        $this->initClient(['environment' => 'action_override']);
     }
 
     public function testListViewActions()

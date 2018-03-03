@@ -21,7 +21,7 @@ class ExceptionContext
     private $parameters;
     private $statusCode;
 
-    public function __construct($publicMessage, $debugMessage = '', $parameters = array(), $statusCode = 500)
+    public function __construct($publicMessage, $debugMessage = '', $parameters = [], $statusCode = 500)
     {
         $this->publicMessage = $publicMessage;
         $this->debugMessage = $debugMessage;
@@ -56,7 +56,7 @@ class ExceptionContext
 
     private function transformIntoTranslationPlaceholders(array $parameters)
     {
-        $placeholders = array();
+        $placeholders = [];
         foreach ($parameters as $key => $value) {
             if ('%' !== $key[0]) {
                 $key = '%'.$key;

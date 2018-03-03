@@ -29,7 +29,7 @@ final class EasyAdminConfigPass implements CompilerPassInterface
         $definition = $container->getDefinition('easyadmin.config.manager');
 
         foreach ($configPasses as $service) {
-            $definition->addMethodCall('addConfigPass', array($service));
+            $definition->addMethodCall('addConfigPass', [$service]);
         }
     }
 
@@ -45,7 +45,7 @@ final class EasyAdminConfigPass implements CompilerPassInterface
      */
     private function findAndSortTaggedServices($tagName, ContainerBuilder $container)
     {
-        $services = array();
+        $services = [];
 
         foreach ($container->findTaggedServiceIds($tagName, true) as $serviceId => $attributes) {
             $priority = isset($attributes[0]['priority']) ? $attributes[0]['priority'] : 0;

@@ -49,15 +49,15 @@ $application = new Application(new AppKernel('default_backend', true));
 $application->setAutoExit(false);
 
 // Create database
-$input = new ArrayInput(array('command' => 'doctrine:database:create'));
+$input = new ArrayInput(['command' => 'doctrine:database:create']);
 $application->run($input, new ConsoleOutput());
 
 // Create database schema
-$input = new ArrayInput(array('command' => 'doctrine:schema:create'));
+$input = new ArrayInput(['command' => 'doctrine:schema:create']);
 $application->run($input, new ConsoleOutput());
 
 // Load fixtures of the AppTestBundle
-$input = new ArrayInput(array('command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => false));
+$input = new ArrayInput(['command' => 'doctrine:fixtures:load', '--no-interaction' => true, '--append' => false]);
 $application->run($input, new ConsoleOutput());
 
 // Make a copy of the original SQLite database to use the same unmodified database in every test

@@ -17,10 +17,10 @@ class SplitConfigurationTest extends AbstractTestCase
 {
     public function testConfigurationInDifferentFiles()
     {
-        $this->initClient(array('environment' => 'split_configuration'));
+        $this->initClient(['environment' => 'split_configuration']);
         $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
-        $this->assertSame(array('Category', 'Product'), array_keys($backendConfig['entities']));
+        $this->assertSame(['Category', 'Product'], array_keys($backendConfig['entities']));
 
         $this->assertSame('Categories', $backendConfig['entities']['Category']['label']);
 
@@ -35,6 +35,6 @@ class SplitConfigurationTest extends AbstractTestCase
             'The value "wrong_value" is not allowed for path "easy_admin.design.color_scheme". Permissible values: "dark", "light"'
         );
 
-        $this->initClient(array('environment' => 'split_configuration_error'));
+        $this->initClient(['environment' => 'split_configuration_error']);
     }
 }

@@ -60,7 +60,7 @@ class MenuConfigPass implements ConfigPassInterface
         // menu configuration to display all its entities
         if (empty($menuConfig)) {
             foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-                $menuConfig[] = array('entity' => $entityName, 'label' => $entityConfig['label']);
+                $menuConfig[] = ['entity' => $entityName, 'label' => $entityConfig['label']];
             }
         }
 
@@ -70,7 +70,7 @@ class MenuConfigPass implements ConfigPassInterface
         //   design.menu: [{ entity: 'Product' }, { entity: 'User' }]
         foreach ($menuConfig as $i => $itemConfig) {
             if (is_string($itemConfig)) {
-                $itemConfig = array('entity' => $itemConfig);
+                $itemConfig = ['entity' => $itemConfig];
             }
 
             $menuConfig[$i] = $itemConfig;
@@ -88,7 +88,7 @@ class MenuConfigPass implements ConfigPassInterface
 
             // normalize submenu configuration (only for main menu items)
             if (!isset($itemConfig['children']) && $parentItemIndex === -1) {
-                $itemConfig['children'] = array();
+                $itemConfig['children'] = [];
             }
 
             // normalize 'default' option, which sets the menu item used as the backend index
@@ -132,7 +132,7 @@ class MenuConfigPass implements ConfigPassInterface
                 }
 
                 if (!isset($itemConfig['params'])) {
-                    $itemConfig['params'] = array();
+                    $itemConfig['params'] = [];
                 }
             }
 
@@ -154,7 +154,7 @@ class MenuConfigPass implements ConfigPassInterface
                 }
 
                 if (!isset($itemConfig['params'])) {
-                    $itemConfig['params'] = array();
+                    $itemConfig['params'] = [];
                 }
             }
 

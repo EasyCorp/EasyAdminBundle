@@ -178,7 +178,7 @@ class ActionConfigPass implements ConfigPassInterface
                 // filter actions removed in the global view configuration
                 foreach ($backendActions as $backendAction) {
                     if ('-' === $backendAction['name'][0]) {
-                        $actionName = substr($backendAction['name'], 1);
+                        $actionName = mb_substr($backendAction['name'], 1);
 
                         unset($backendActions[$actionName], $backendActions['-'.$actionName]);
 
@@ -193,7 +193,7 @@ class ActionConfigPass implements ConfigPassInterface
                 // filter actions removed in the local entity configuration
                 foreach ($entityActions as $entityAction) {
                     if ('-' === $entityAction['name'][0]) {
-                        $actionName = substr($entityAction['name'], 1);
+                        $actionName = mb_substr($entityAction['name'], 1);
 
                         unset($entityActions[$actionName], $entityActions['-'.$actionName], $defaultActions[$actionName]);
                     }

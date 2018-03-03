@@ -449,7 +449,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         $removedFieldNames = [];
         foreach ($fieldsConfig as $fieldConfig) {
             if (isset($fieldConfig['property']) && 0 === strpos($fieldConfig['property'], '-')) {
-                $removedFieldNames[] = substr($fieldConfig['property'], 1);
+                $removedFieldNames[] = mb_substr($fieldConfig['property'], 1);
             }
         }
 

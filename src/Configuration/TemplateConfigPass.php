@@ -118,7 +118,7 @@ class TemplateConfigPass implements ConfigPassInterface
 
                         // template path should contain the .html.twig extension
                         // however, for usability reasons, we silently fix this issue if needed
-                        if ('.html.twig' !== substr($templatePath, -10)) {
+                        if ('.html.twig' !== mb_substr($templatePath, -10)) {
                             $templatePath .= '.html.twig';
                             @trigger_error(sprintf('Passing a template path without the ".html.twig" extension is deprecated since version 1.11.7 and will be removed in 2.0. Use "%s" as the value of the "template" option for the "%s" field in the "%s" view of the "%s" entity.', $templatePath, $fieldName, $view, $entityName), E_USER_DEPRECATED);
                         }
@@ -201,8 +201,8 @@ class TemplateConfigPass implements ConfigPassInterface
 
                     // needed to add support for immutable datetime/date/time fields
                     // (which are rendered using the same templates as their non immutable counterparts)
-                    if ('_immutable' === substr($fieldMetadata['dataType'], -10)) {
-                        $fieldTemplateName = 'field_'.substr($fieldMetadata['dataType'], 0, -10);
+                    if ('_immutable' === mb_substr($fieldMetadata['dataType'], -10)) {
+                        $fieldTemplateName = 'field_'.mb_substr($fieldMetadata['dataType'], 0, -10);
                     } else {
                         $fieldTemplateName = 'field_'.$fieldMetadata['dataType'];
                     }

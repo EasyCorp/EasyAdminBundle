@@ -52,7 +52,7 @@ class ExceptionContext
             if ('%' !== $key[0]) {
                 $key = '%'.$key;
             }
-            if ('%' !== substr($key, -1)) {
+            if ('%' !== $key[-1]) {
                 $key .= '%';
             }
 

@@ -90,7 +90,7 @@ class QueryBuilder
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
             if (false !== strpos($fieldName, '.')) {
-                list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
+                [$associatedEntityName, $associatedFieldName] = explode('.', $fieldName);
                 if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
                     $entitiesAlreadyJoined[] = $associatedEntityName;
@@ -137,7 +137,7 @@ class QueryBuilder
 
         $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
         if ($isSortedByDoctrineAssociation) {
-            list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
+            $associatedEntityName = explode('.', $sortField)[0];
             if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                 $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
                 $entitiesAlreadyJoined[] = $associatedEntityName;

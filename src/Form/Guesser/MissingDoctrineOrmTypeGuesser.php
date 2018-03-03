@@ -23,7 +23,7 @@ class MissingDoctrineOrmTypeGuesser extends DoctrineOrmTypeGuesser
     {
         if (null !== $metadataAndName = $this->getMetadata($class)) {
             /** @var ClassMetadataInfo $metadata */
-            list($metadata) = $metadataAndName;
+            $metadata = $metadataAndName[0];
 
             switch ($metadata->getTypeOfField($property)) {
                 case 'datetime_immutable': // available since Doctrine 2.6

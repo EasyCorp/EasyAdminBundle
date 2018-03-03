@@ -230,8 +230,7 @@ class PropertyConfigPass implements ConfigPassInterface
         // must be reset so they don't get mixed with the form components guess.
         // Only the 'required' and user defined option are kept
         if (
-            isset($userDefinedConfig['type'])
-            && isset($guessedConfig['fieldType'])
+            isset($userDefinedConfig['type'], $guessedConfig['fieldType'])
             && $userDefinedConfig['type'] !== $guessedConfig['fieldType']
         ) {
             $resolvedFormOptions = array_merge(

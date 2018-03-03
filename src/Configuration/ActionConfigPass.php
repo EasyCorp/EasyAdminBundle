@@ -325,7 +325,7 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function humanizeString($content)
     {
-        return ucfirst(trim(mb_strtolower(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $content))));
+        return ucfirst(mb_strtolower(trim(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $content))));
     }
 
     private function reorderArrayItems(array $originalArray, array $newKeyOrder)

@@ -108,9 +108,9 @@ class QueryBuilder
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
             if (
-                $isSmallIntegerField && $isSearchQuerySmallInteger ||
-                $isIntegerField && $isSearchQueryInteger ||
-                $isNumericField && $isSearchQueryNumeric
+                ($isSmallIntegerField && $isSearchQuerySmallInteger) ||
+                ($isIntegerField && $isSearchQueryInteger) ||
+                ($isNumericField && $isSearchQueryNumeric)
             ) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :numeric_query', $entityName, $fieldName));
                 // adding '0' turns the string into a numeric value

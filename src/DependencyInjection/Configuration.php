@@ -249,10 +249,10 @@ class Configuration implements ConfigurationInterface
                             ->validate()
                                 // if present, remove the trailing ';' to avoid CSS issues
                                 ->ifTrue(function ($v) {
-                                    return ';' === substr(trim($v), -1);
+                                    return ';' === trim($v)[-1];
                                 })
                                 ->then(function ($v) {
-                                    return trim(substr(trim($v), 0, -1));
+                                    return trim(mb_substr(trim($v), 0, -1));
                                 })
                             ->end()
                         ->end()

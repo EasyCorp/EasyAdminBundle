@@ -120,13 +120,13 @@ class NormalizerConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             // if the original 'search' config doesn't define its own DQL filter, use the one form 'list'
             if (!isset($entityConfig['search']) || !array_key_exists('dql_filter', $entityConfig['search'])) {
-                $entityConfig['search']['dql_filter'] = isset($entityConfig['list']['dql_filter']) ? $entityConfig['list']['dql_filter'] : null;
+                $entityConfig['search']['dql_filter'] = $entityConfig['list']['dql_filter'] ?? null;
             }
 
             foreach (array('edit', 'form', 'list', 'new', 'search', 'show') as $view) {
                 $entityConfig[$view] = array_replace_recursive(
                     $this->defaultViewConfig[$view],
-                    isset($entityConfig[$view]) ? $entityConfig[$view] : array()
+                    $entityConfig[$view] ?? array()
                 );
             }
 
@@ -203,7 +203,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                     }
 
                     // fields that don't define the 'property' name are special form design elements
-                    $fieldName = isset($fieldConfig['property']) ? $fieldConfig['property'] : '_easyadmin_form_design_element_'.$designElementIndex;
+                    $fieldName = $fieldConfig['property'] ?? '_easyadmin_form_design_element_'.$designElementIndex;
                     $fields[$fieldName] = $fieldConfig;
                     ++$designElementIndex;
                 }
@@ -394,8 +394,8 @@ class NormalizerConfigPass implements ConfigPassInterface
     private function mergeFormConfig(array $parentConfig, array $childConfig)
     {
         // save the fields config for later processing
-        $parentFields = isset($parentConfig['fields']) ? $parentConfig['fields'] : array();
-        $childFields = isset($childConfig['fields']) ? $childConfig['fields'] : array();
+        $parentFields = $parentConfig['fields'] ?? array();
+        $childFields = $childConfig['fields'] ?? array();
         $removedFieldNames = $this->getRemovedFieldNames($childFields);
 
         // first, perform a recursive replace to merge both configs

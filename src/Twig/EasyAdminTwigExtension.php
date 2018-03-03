@@ -6,13 +6,16 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 /**
  * Defines the filters and functions used to render the bundle's templates.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EasyAdminTwigExtension extends \Twig_Extension
+class EasyAdminTwigExtension extends AbstractExtension
 {
     /** @var ConfigManager */
     private $configManager;
@@ -39,16 +42,16 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('easyadmin_render_field_for_*_view', array($this, 'renderEntityField'), array('is_safe' => array('html'), 'needs_environment' => true)),
-            new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_path', array($this, 'getEntityPath')),
-            new \Twig_SimpleFunction('easyadmin_action_is_enabled', array($this, 'isActionEnabled')),
-            new \Twig_SimpleFunction('easyadmin_action_is_enabled_for_*_view', array($this, 'isActionEnabled')),
-            new \Twig_SimpleFunction('easyadmin_get_action', array($this, 'getActionConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_get_action_for_*_view', array($this, 'getActionConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_get_actions_for_*_item', array($this, 'getActionsForItem')),
-            new \Twig_SimpleFunction('easyadmin_logout_path', array($this, 'getLogoutPath')),
+            new TwigFunction('easyadmin_render_field_for_*_view', array($this, 'renderEntityField'), array('is_safe' => array('html'), 'needs_environment' => true)),
+            new TwigFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
+            new TwigFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
+            new TwigFunction('easyadmin_path', array($this, 'getEntityPath')),
+            new TwigFunction('easyadmin_action_is_enabled', array($this, 'isActionEnabled')),
+            new TwigFunction('easyadmin_action_is_enabled_for_*_view', array($this, 'isActionEnabled')),
+            new TwigFunction('easyadmin_get_action', array($this, 'getActionConfiguration')),
+            new TwigFunction('easyadmin_get_action_for_*_view', array($this, 'getActionConfiguration')),
+            new TwigFunction('easyadmin_get_actions_for_*_item', array($this, 'getActionsForItem')),
+            new TwigFunction('easyadmin_logout_path', array($this, 'getLogoutPath')),
         );
     }
 
@@ -58,8 +61,8 @@ class EasyAdminTwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('easyadmin_truncate', array($this, 'truncateText'), array('needs_environment' => true)),
-            new \Twig_SimpleFilter('easyadmin_urldecode', 'urldecode'),
+            new TwigFilter('easyadmin_truncate', array($this, 'truncateText'), array('needs_environment' => true)),
+            new TwigFilter('easyadmin_urldecode', 'urldecode'),
         );
     }
 

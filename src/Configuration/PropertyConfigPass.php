@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\Guess\TypeGuess;
 use Symfony\Component\Form\Guess\ValueGuess;
@@ -93,7 +93,7 @@ class PropertyConfigPass implements ConfigPassInterface
                 $requiredGuess = $this->getFormRequiredGuessOfProperty($entityConfig['class'], $propertyName);
 
                 $guessedType = null !== $typeGuess
-                    ? LegacyFormHelper::getShortType($typeGuess->getType())
+                    ? FormTypeHelper::getTypeName($typeGuess->getType())
                     : $propertyMetadata['type'];
 
                 $guessedTypeOptions = null !== $typeGuess

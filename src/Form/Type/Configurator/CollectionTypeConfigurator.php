@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -33,7 +33,7 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
 
         // allow using short form types as the 'entry_type' of the collection
         if (isset($options['entry_type'])) {
-            $options['entry_type'] = LegacyFormHelper::getType($options['entry_type']);
+            $options['entry_type'] = FormTypeHelper::getTypeClass($options['entry_type']);
         }
 
         return $options;

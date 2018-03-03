@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -628,7 +628,7 @@ class AdminController extends Controller
     {
         $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', [$entity, $view]);
 
-        return $this->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), LegacyFormHelper::getType('easyadmin'), $entity, $formOptions);
+        return $this->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), FormTypeHelper::getTypeClass('easyadmin'), $entity, $formOptions);
     }
 
     /**
@@ -703,9 +703,9 @@ class AdminController extends Controller
             ->setAction($this->generateUrl('easyadmin', ['action' => 'delete', 'entity' => $entityName, 'id' => $entityId]))
             ->setMethod('DELETE')
         ;
-        $formBuilder->add('submit', LegacyFormHelper::getType('submit'), ['label' => 'delete_modal.action', 'translation_domain' => 'EasyAdminBundle']);
+        $formBuilder->add('submit', FormTypeHelper::getTypeClass('submit'), ['label' => 'delete_modal.action', 'translation_domain' => 'EasyAdminBundle']);
         // needed to avoid submitting empty delete forms (see issue #1409)
-        $formBuilder->add('_easyadmin_delete_flag', LegacyFormHelper::getType('hidden'), ['data' => '1']);
+        $formBuilder->add('_easyadmin_delete_flag', FormTypeHelper::getTypeClass('hidden'), ['data' => '1']);
 
         return $formBuilder->getForm();
     }

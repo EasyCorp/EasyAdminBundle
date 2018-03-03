@@ -51,7 +51,7 @@ class EasyAdminDataCollector extends DataCollector
         }
 
         $backendConfig = $this->configManager->getBackendConfig();
-        $entityName = $request->query->get('entity', null);
+        $entityName = $request->query->get('entity');
         $currentEntityConfig = array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : array();
 
         $this->data = array(

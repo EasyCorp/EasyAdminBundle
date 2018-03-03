@@ -2,15 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Util\Type;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group legacy
- */
-class LegacyFormHelperTest extends TestCase
+class FormTypeHelperTest extends TestCase
 {
-    public function shortTypesToFqcnProvider()
+    public function formTypeNameAndFqcnProvider()
     {
         return [
             'Symfony Type (regular name)' => ['integer', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\IntegerType'],
@@ -22,14 +19,18 @@ class LegacyFormHelperTest extends TestCase
     }
 
     /**
-     * @dataProvider shortTypesToFqcnProvider
+     * @dataProvider formTypeNameAndFqcnProvider
      */
-    public function testGetType($shortType, $expected)
+    public function testGetTypeClass($typeName, $expectedTypeClass)
     {
-        if (LegacyFormHelper::useLegacyFormComponent()) {
-            $expected = $shortType;
-        }
+        $this->assertSame($expectedTypeClass, FormTypeHelper::getTypeClass($typeName));
+    }
 
-        $this->assertSame($expected, LegacyFormHelper::getType($shortType));
+    /**
+     * @dataProvider formTypeNameAndFqcnProvider
+     */
+    public function testGetTypeName($expectedTypeName, $typeClass)
+    {
+        $this->assertSame($expectedTypeName, FormTypeHelper::getTypeName($typeClass));
     }
 }

@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Type;
 use AppTestBundle\Entity\UnitTests\Category;
 use Doctrine\Common\Collections\ArrayCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -107,7 +107,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             ->with($category)
             ->willReturn(['id' => $category->id]);
 
-        $form = $this->factory->create(LegacyFormHelper::getType('easyadmin_autocomplete'), null, [
+        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
             'class' => self::ENTITY_CLASS,
         ]);
         $formData = ['autocomplete' => '1'];
@@ -154,7 +154,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             ->with($category1)
             ->willReturn(['id' => $category1->id]);
 
-        $form = $this->factory->create(LegacyFormHelper::getType('easyadmin_autocomplete'), null, [
+        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
             'class' => self::ENTITY_CLASS,
             'multiple' => true,
         ]);
@@ -166,7 +166,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
 
     public function testSubmitEmptySingleData()
     {
-        $form = $this->factory->create(LegacyFormHelper::getType('easyadmin_autocomplete'), null, [
+        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
             'class' => self::ENTITY_CLASS,
         ]);
         $form->submit(['autocomplete' => '']);
@@ -177,7 +177,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
 
     public function testSubmitEmptyMultipleData()
     {
-        $form = $this->factory->create(LegacyFormHelper::getType('easyadmin_autocomplete'), null, [
+        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
             'class' => self::ENTITY_CLASS,
             'multiple' => true,
         ]);

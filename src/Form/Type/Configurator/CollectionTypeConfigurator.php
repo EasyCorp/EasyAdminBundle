@@ -26,11 +26,8 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
             $options['allow_delete'] = true;
         }
 
-        // The "delete_empty" option exists as of Sf >= 2.5
-        if (class_exists('Symfony\\Component\\Form\\FormErrorIterator')) {
-            if (!isset($options['delete_empty'])) {
-                $options['delete_empty'] = true;
-            }
+        if (!isset($options['delete_empty'])) {
+            $options['delete_empty'] = true;
         }
 
         // allow using short form types as the 'entry_type' of the collection

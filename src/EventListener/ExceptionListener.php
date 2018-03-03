@@ -77,7 +77,7 @@ class ExceptionListener extends BaseExceptionListener
     protected function logException(\Exception $exception, $message, $original = true)
     {
         if (!$exception instanceof BaseException) {
-            parent::logException($exception, $message, $original);
+            parent::logException($exception, $message);
 
             return;
         }

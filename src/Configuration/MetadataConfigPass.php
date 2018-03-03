@@ -54,6 +54,8 @@ class MetadataConfigPass implements ConfigPassInterface
      * @param ClassMetadata $entityMetadata The entity metadata introspected via Doctrine
      *
      * @return array The entity properties metadata provided by Doctrine
+     *
+     * @throws \RuntimeException
      */
     private function processEntityPropertiesMetadata(ClassMetadata $entityMetadata)
     {

@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\DataCollector;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -18,10 +18,10 @@ use Symfony\Component\Yaml\Yaml;
  */
 class EasyAdminDataCollector extends DataCollector
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
 
-    public function __construct(ConfigManager $configManager)
+    public function __construct(ConfigManagerInterface $configManager)
     {
         $this->configManager = $configManager;
         $this->reset();

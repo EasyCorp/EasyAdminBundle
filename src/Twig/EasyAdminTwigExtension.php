@@ -144,7 +144,7 @@ class EasyAdminTwigExtension extends AbstractExtension
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
             }
 
-            if (empty($templateParameters['value']) && in_array($fieldMetadata['dataType'], array('image', 'file', 'array', 'simple_array'))) {
+            if (empty($templateParameters['value']) && \in_array($fieldMetadata['dataType'], array('image', 'file', 'array', 'simple_array'))) {
                 return $twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
             }
 
@@ -237,7 +237,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             return $templateParameters;
         }
 
-        $isShowActionAllowed = !in_array('show', $targetEntityConfig['disabled_actions']);
+        $isShowActionAllowed = !\in_array('show', $targetEntityConfig['disabled_actions']);
 
         if ($templateParameters['field_options']['associationType'] & ClassMetadata::TO_ONE) {
             if ($this->propertyAccessor->isReadable($templateParameters['value'], $targetEntityConfig['primary_key_field_name'])) {
@@ -340,7 +340,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $excludedActions = $actionsExcludedForItems[$view];
 
         return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
-            return !in_array($action['name'], $excludedActions) && !in_array($action['name'], $disabledActions);
+            return !\in_array($action['name'], $excludedActions) && !\in_array($action['name'], $disabledActions);
         });
     }
 

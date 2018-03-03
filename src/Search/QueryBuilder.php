@@ -80,8 +80,8 @@ class QueryBuilder
         ;
 
         $isSearchQueryNumeric = is_numeric($searchQuery);
-        $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -32768 && $searchQuery <= 32767;
-        $isSearchQueryInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -2147483648 && $searchQuery <= 2147483647;
+        $isSearchQuerySmallInteger = (\is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -32768 && $searchQuery <= 32767;
+        $isSearchQueryInteger = (\is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -2147483648 && $searchQuery <= 2147483647;
         $isSearchQueryUuid = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $searchQuery);
         $lowerSearchQuery = mb_strtolower($searchQuery);
 
@@ -91,7 +91,7 @@ class QueryBuilder
             $entityName = 'entity';
             if (false !== strpos($fieldName, '.')) {
                 list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
-                if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+                if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
                     $entitiesAlreadyJoined[] = $associatedEntityName;
                 }
@@ -102,8 +102,8 @@ class QueryBuilder
 
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];
             $isIntegerField = 'integer' === $metadata['dataType'];
-            $isNumericField = in_array($metadata['dataType'], array('number', 'bigint', 'decimal', 'float'));
-            $isTextField = in_array($metadata['dataType'], array('string', 'text'));
+            $isNumericField = \in_array($metadata['dataType'], array('number', 'bigint', 'decimal', 'float'));
+            $isTextField = \in_array($metadata['dataType'], array('string', 'text'));
             $isGuidField = 'guid' === $metadata['dataType'];
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
@@ -127,7 +127,7 @@ class QueryBuilder
             }
         }
 
-        if (0 !== count($queryParameters)) {
+        if (0 !== \count($queryParameters)) {
             $queryBuilder->setParameters($queryParameters);
         }
 
@@ -138,7 +138,7 @@ class QueryBuilder
         $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
         if ($isSortedByDoctrineAssociation) {
             list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
-            if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+            if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                 $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
                 $entitiesAlreadyJoined[] = $associatedEntityName;
             }

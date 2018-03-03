@@ -83,7 +83,7 @@ class AdminController extends Controller
 
         $this->config = $this->get('easyadmin.config.manager')->getBackendConfig();
 
-        if (0 === count($this->config['entities'])) {
+        if (0 === \count($this->config['entities'])) {
             throw new NoEntitiesConfiguredException();
         }
 
@@ -515,7 +515,7 @@ class AdminController extends Controller
      */
     protected function findAll($entityClass, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        if (empty($sortDirection) || !in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
+        if (empty($sortDirection) || !\in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
             $sortDirection = 'DESC';
         }
 
@@ -667,7 +667,7 @@ class AdminController extends Controller
             if (!$form instanceof FormInterface) {
                 throw new \UnexpectedValueException(sprintf(
                     'The "%s" method must return a FormInterface, "%s" given.',
-                    $customMethodName, is_object($form) ? get_class($form) : gettype($form)
+                    $customMethodName, \is_object($form) ? \get_class($form) : \gettype($form)
                 ));
             }
 
@@ -679,7 +679,7 @@ class AdminController extends Controller
         if (!$formBuilder instanceof FormBuilderInterface) {
             throw new \UnexpectedValueException(sprintf(
                 'The "%s" method must return a FormBuilderInterface, "%s" given.',
-                'createEntityForm', is_object($formBuilder) ? get_class($formBuilder) : gettype($formBuilder)
+                'createEntityForm', \is_object($formBuilder) ? \get_class($formBuilder) : \gettype($formBuilder)
             ));
         }
 
@@ -720,7 +720,7 @@ class AdminController extends Controller
      */
     protected function isActionAllowed($actionName)
     {
-        return false === in_array($actionName, $this->entity['disabled_actions'], true);
+        return false === \in_array($actionName, $this->entity['disabled_actions'], true);
     }
 
     /**
@@ -756,11 +756,11 @@ class AdminController extends Controller
     {
         $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
 
-        if (!is_callable(array($this, $methodName))) {
+        if (!\is_callable(array($this, $methodName))) {
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }
 
-        return call_user_func_array(array($this, $methodName), $arguments);
+        return \call_user_func_array(array($this, $methodName), $arguments);
     }
 
     /**

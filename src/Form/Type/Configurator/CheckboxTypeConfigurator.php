@@ -34,6 +34,6 @@ class CheckboxTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        return in_array($type, array('checkbox', CheckboxType::class), true);
+        return \in_array($type, array('checkbox', CheckboxType::class), true);
     }
 }

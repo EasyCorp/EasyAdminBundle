@@ -47,7 +47,7 @@ class ControllerListener
         $currentController = $event->getController();
         // if the controller is defined in a class, $currentController is an array
         // otherwise do nothing because it's a Closure (rare but possible in Symfony)
-        if (!is_array($currentController)) {
+        if (!\is_array($currentController)) {
             return;
         }
 

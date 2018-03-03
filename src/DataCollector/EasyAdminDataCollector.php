@@ -46,7 +46,7 @@ class EasyAdminDataCollector extends DataCollector
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         // 'admin' is the deprecated route name that will be removed in version 2.0.
-        if (!in_array($request->attributes->get('_route'), array('easyadmin', 'admin'))) {
+        if (!\in_array($request->attributes->get('_route'), array('easyadmin', 'admin'))) {
             return;
         }
 
@@ -55,7 +55,7 @@ class EasyAdminDataCollector extends DataCollector
         $currentEntityConfig = array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : array();
 
         $this->data = array(
-            'num_entities' => count($backendConfig['entities']),
+            'num_entities' => \count($backendConfig['entities']),
             'request_parameters' => $this->getEasyAdminParameters($request),
             'current_entity_configuration' => $currentEntityConfig,
             'backend_configuration' => $backendConfig,

@@ -194,7 +194,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(array())
                     ->validate()
                         ->ifTrue(function ($v) {
-                            return false === is_array($v);
+                            return false === \is_array($v);
                         })
                         ->thenInvalid('The disabled_actions option must be an array of action names.')
                     ->end()
@@ -301,7 +301,7 @@ class Configuration implements ConfigurationInterface
                                     ->end()
                                     ->beforeNormalization()
                                         ->always(function ($v) {
-                                            if (is_string($v)) {
+                                            if (\is_string($v)) {
                                                 $v = array('path' => $v);
                                             }
                                             $mimeTypes = array(

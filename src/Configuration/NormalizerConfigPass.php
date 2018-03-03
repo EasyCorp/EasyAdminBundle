@@ -169,11 +169,11 @@ class NormalizerConfigPass implements ConfigPassInterface
             foreach (array('form', 'edit', 'list', 'new', 'search', 'show') as $view) {
                 $fields = array();
                 foreach ($entityConfig[$view]['fields'] as $i => $field) {
-                    if (!is_string($field) && !is_array($field)) {
+                    if (!\is_string($field) && !\is_array($field)) {
                         throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" view of the "%s" entity can only be strings or arrays.', $view, $entityConfig['class']));
                     }
 
-                    if (is_string($field)) {
+                    if (\is_string($field)) {
                         // Config format #1: field is just a string representing the entity property
                         $fieldConfig = array('property' => $field);
                     } else {
@@ -269,9 +269,9 @@ class NormalizerConfigPass implements ConfigPassInterface
                         } elseif ($isTheFirstGroupElement && $previousTabFieldNumber >= 0 && $fieldNumber > $previousTabFieldNumber + 1) {
                             // if tabs are used, we insert the group after the previous tab field into the array
                             $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
-                                array_slice($backendConfig['entities'][$entityName][$view]['fields'], 0, $previousTabFieldNumber, true),
+                                \array_slice($backendConfig['entities'][$entityName][$view]['fields'], 0, $previousTabFieldNumber, true),
                                 array('_easyadmin_form_design_element_forced_group_'.$fieldNumber => array('type' => 'group')),
-                                array_slice($backendConfig['entities'][$entityName][$view]['fields'], $previousTabFieldNumber, null, true)
+                                \array_slice($backendConfig['entities'][$entityName][$view]['fields'], $previousTabFieldNumber, null, true)
                             );
                         }
 
@@ -286,7 +286,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // this is a form design element instead of a regular property
                     $isFormDesignElement = !isset($fieldConfig['property']) && isset($fieldConfig['type']);
-                    if ($isFormDesignElement && in_array($fieldConfig['type'], array('divider', 'group', 'section', 'tab'))) {
+                    if ($isFormDesignElement && \in_array($fieldConfig['type'], array('divider', 'group', 'section', 'tab'))) {
                         // assign them a property name to add them later as unmapped form fields
                         $fieldConfig['property'] = $fieldName;
 
@@ -326,7 +326,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                     $backendConfig['entities'][$entityName][$view]['actions'] = array();
                 }
 
-                if (!is_array($backendConfig['entities'][$entityName][$view]['actions'])) {
+                if (!\is_array($backendConfig['entities'][$entityName][$view]['actions'])) {
                     throw new \InvalidArgumentException(sprintf('The "actions" configuration for the "%s" view of the "%s" entity must be an array (a string was provided).', $view, $entityName));
                 }
             }
@@ -404,7 +404,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         // merge the config of each field individually
         $mergedFields = array();
         foreach ($parentFields as $parentFieldName => $parentFieldConfig) {
-            if (isset($parentFieldConfig['property']) && in_array($parentFieldConfig['property'], $removedFieldNames)) {
+            if (isset($parentFieldConfig['property']) && \in_array($parentFieldConfig['property'], $removedFieldNames)) {
                 continue;
             }
 
@@ -422,7 +422,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         foreach ($childFields as $childFieldName => $childFieldConfig) {
             $isFormDesignElement = !isset($childFieldConfig['property']);
             $isNotRemovedField = isset($childFieldConfig['property']) && 0 !== strpos($childFieldConfig['property'], '-');
-            $isNotAlreadyIncluded = isset($childFieldConfig['property']) && !in_array($childFieldConfig['property'], array_keys($mergedFields));
+            $isNotAlreadyIncluded = isset($childFieldConfig['property']) && !\in_array($childFieldConfig['property'], array_keys($mergedFields));
 
             if ($isFormDesignElement || ($isNotRemovedField && $isNotAlreadyIncluded)) {
                 $mergedFields[$childFieldName] = $childFieldConfig;

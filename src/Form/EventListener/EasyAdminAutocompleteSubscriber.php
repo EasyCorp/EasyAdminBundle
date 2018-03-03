@@ -30,7 +30,7 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
 
         $options = $form->getConfig()->getOptions();
         $options['compound'] = false;
-        $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
+        $options['choices'] = \is_array($data) || $data instanceof \Traversable ? $data : array($data);
 
         $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
     }

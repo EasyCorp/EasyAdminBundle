@@ -6,7 +6,7 @@ use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -62,7 +62,7 @@ class EasyAdminFormType extends AbstractType
                 }
             }
 
-            $formFieldType = LegacyFormHelper::getType($metadata['fieldType']);
+            $formFieldType = FormTypeHelper::getTypeClass($metadata['fieldType']);
 
             // if the form field is a special 'group' design element, don't add it
             // to the form. Instead, consider it the current form group (this is

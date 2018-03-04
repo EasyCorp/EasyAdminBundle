@@ -96,6 +96,13 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['target'] = (string) $itemConfig['target'];
             }
 
+            // normalize 'rel' option, which adds html5 rel attribute (https://www.w3schools.com/TAGS/att_a_rel.asp)
+            if (!array_key_exists('rel', $itemConfig)) {
+                $itemConfig['rel'] = false;
+            } else {
+                $itemConfig['rel'] = (string) $itemConfig['rel'];
+            }
+
             $menuConfig[$i] = $itemConfig;
         }
 

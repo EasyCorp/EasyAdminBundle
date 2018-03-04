@@ -68,6 +68,10 @@ class DisabledActionsTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use %s instead
+     */
     public function testRedirectingToDisabledActions()
     {
         $crawler = $this->requestEditView();

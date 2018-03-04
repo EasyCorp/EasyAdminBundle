@@ -187,7 +187,7 @@ class CustomMenuTest extends AbstractTestCase
 
         $this->assertSame(
             'index dns-prefetch bookmark',
-            $crawler->filter('.sidebar-menu li:contains("Add Product") a')->attr('href'),
+            $crawler->filter('.sidebar-menu li:contains("Custom Internal Route") a')->attr('rel'),
             'Items can define multiple values in the "rel" attribute'
         );
     }

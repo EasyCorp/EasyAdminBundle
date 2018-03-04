@@ -11,7 +11,7 @@ easy_admin:
               icon: 'shopping-basket'
               children:
                   - { entity: 'Product', icon: 'th-list', label: 'List Products', params: { sortField: 'createdAt' } }
-                  - { entity: 'Product', label: 'Add Product', params: { action: 'new' } }
+                  - { entity: 'Product', label: 'Add Product', params: { action: 'new' }, rel: 'index dns-prefetch bookmark' }
                   - { label: 'Additional Items' }
                   - { entity: 'Category', label: 'Categories', default: true, icon: '' }
                   - { label: 'Absolute URL', url: 'https://github.com/javiereguiluz/EasyAdminBundle' }
@@ -19,7 +19,7 @@ easy_admin:
             - { label: 'Purchases', entity: 'Purchase', icon: '', params: { sortField: 'deliveryDate', customParameter: 'customValue' } }
             - { label: 'About EasyAdmin' }
             - { label: 'Project Home', url: 'https://github.com/javiereguiluz/EasyAdminBundle', icon: 'home', target: '_blank' }
-            - { label: 'Documentation', url: 'https://github.com/javiereguiluz/EasyAdminBundle#getting-started-guide', icon: 'book', target: '_self' }
+            - { label: 'Documentation', url: 'https://github.com/javiereguiluz/EasyAdminBundle#getting-started-guide', icon: 'book', target: '_self', rel: 'preconnect' }
             - { label: 'Report Issues', url: 'https://github.com/javiereguiluz/EasyAdminBundle/issues', icon: 'github', target: 'arbitrary_value' }
             - { label: 'Misc.' }
             - { route: 'custom_route', label: 'Custom External Route', params: { custom_parameter: 'Lorem Ipsum' } }

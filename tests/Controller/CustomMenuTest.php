@@ -163,6 +163,35 @@ class CustomMenuTest extends AbstractTestCase
         );
     }
 
+    public function testLinkTypes()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $this->assertSame(
+            null,
+            $crawler->filter('.sidebar-menu li:contains("Categories") a')->attr('rel'),
+            'The "rel" attribute is not added by default to menu items.'
+        );
+
+        $this->assertSame(
+            'noreferrer',
+            $crawler->filter('.sidebar-menu li:contains("Project Home") a')->attr('rel'),
+            'External URLs define a "rel=noreferrer" attribute by default'
+        );
+
+        $this->assertSame(
+            'preconnect',
+            $crawler->filter('.sidebar-menu li:contains("Documentation") a')->attr('rel'),
+            'If a URL defines a custom "rel" attribute, then "noreferrer" is not added by default.'
+        );
+
+        $this->assertSame(
+            'index dns-prefetch bookmark',
+            $crawler->filter('.sidebar-menu li:contains("Add Product") a')->attr('href'),
+            'Items can define multiple values in the "rel" attribute'
+        );
+    }
+
     public function testMenuItemTypes()
     {
         $expectedTypesMainMenu = ['empty', 'entity', 'entity', 'divider', 'link', 'link', 'link', 'divider', 'route', 'route'];

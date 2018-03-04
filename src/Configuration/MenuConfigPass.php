@@ -78,7 +78,7 @@ class MenuConfigPass implements ConfigPassInterface
             }
 
             // normalize submenu configuration (only for main menu items)
-            if (!isset($itemConfig['children']) && $parentItemIndex === -1) {
+            if (-1 === $parentItemIndex && !isset($itemConfig['children'])) {
                 $itemConfig['children'] = [];
             }
 

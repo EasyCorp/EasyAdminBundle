@@ -444,7 +444,7 @@ class AdminController extends Controller
      */
     protected function prePersistEntity($entity)
     {
-        trigger_error(sprintf('The %s is deprecated since EasyAdmin 1.x and will be removed in 2.0 veresion. Use persistEntity instead', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The %s is deprecated since EasyAdmin 1.x and will be removed in 2.0 veresion. Use persistEntity instead', __METHOD__), E_USER_DEPRECATED);
     }
 
     /**
@@ -467,7 +467,7 @@ class AdminController extends Controller
      */
     protected function preUpdateEntity($entity)
     {
-        trigger_error(sprintf('The %s is deprecated since EasyAdmin 1.x and will be removed in 2.0 veresion. Use updateEntity instead', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The %s is deprecated since EasyAdmin 1.x and will be removed in 2.0 veresion. Use updateEntity instead', __METHOD__), E_USER_DEPRECATED);
     }
 
     /**
@@ -489,7 +489,7 @@ class AdminController extends Controller
      */
     protected function preRemoveEntity($entity)
     {
-        trigger_error(sprintf('The %s is deprecated since EasyAdmin 1.x and will be removed in 2.0 veresion. Use removeEntity instead', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The %s is deprecated since EasyAdmin 1.x and will be removed in 2.0 veresion. Use removeEntity instead', __METHOD__), E_USER_DEPRECATED);
     }
 
     /**

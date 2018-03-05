@@ -444,7 +444,7 @@ class AdminController extends Controller
      */
     protected function prePersistEntity($entity)
     {
-        @trigger_error(sprintf('The %s is deprecated since EasyAdmin 1.x and will be removed in 2.0 veresion. Use persistEntity instead', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use persistEntity instead', __METHOD__), E_USER_DEPRECATED);
     }
 
     /**
@@ -467,7 +467,7 @@ class AdminController extends Controller
      */
     protected function preUpdateEntity($entity)
     {
-        @trigger_error(sprintf('The %s is deprecated since EasyAdmin 1.x and will be removed in 2.0 veresion. Use updateEntity instead', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use updateEntity instead', __METHOD__), E_USER_DEPRECATED);
     }
 
     /**
@@ -489,7 +489,7 @@ class AdminController extends Controller
      */
     protected function preRemoveEntity($entity)
     {
-        @trigger_error(sprintf('The %s is deprecated since EasyAdmin 1.x and will be removed in 2.0 veresion. Use removeEntity instead', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use removeEntity instead', __METHOD__), E_USER_DEPRECATED);
     }
 
     /**
@@ -762,6 +762,11 @@ class AdminController extends Controller
 
         if (!is_callable(array($this, $methodName))) {
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
+
+            if (false !== strpos($methodName, 'pre')) {
+                $newMethod = strtolower(substr($methodName, 3));
+                @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use %s instead', $methodName, $newMethod), E_USER_DEPRECATED);
+            }
         }
 
         return call_user_func_array(array($this, $methodName), $arguments);

@@ -816,7 +816,7 @@ class AdminController extends Controller
         // else from new|edit action, redirect on edit if possible
         elseif (in_array($refererAction, array('new', 'edit')) && $this->isActionAllowed('edit')) {
 
-            $this->addFlash('success', ($refererAction == 'new')
+            $this->addFlash('success', ('new' === $refererAction)
                 ? $this->get('translator')->trans('flash.new.success', array(), 'EasyAdminBundle')
                 : $this->get('translator')->trans('flash.edit.success', array(), 'EasyAdminBundle')
             );
@@ -826,14 +826,14 @@ class AdminController extends Controller
                 'entity' => $this->entity['name'],
                 'menuIndex' => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
-                'id' => ($refererAction == 'new')
+                'id' => ('new' === $refererAction)
                     ? PropertyAccess::createPropertyAccessor()->getValue($this->request->attributes->get('easyadmin')['item'], $this->entity['primary_key_field_name'])
                     : $this->request->query->get('id')
             )));
         }
 
         // elseif from new action, redirect on new if possible
-        elseif ($refererAction == 'new' && $this->isActionAllowed('new')) {
+        elseif ('new' === $refererAction && $this->isActionAllowed('new')) {
 
             $this->addFlash('success', $this->get('translator')->trans('flash.new.success', array(), 'EasyAdminBundle'));
 

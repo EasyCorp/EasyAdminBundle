@@ -803,19 +803,16 @@ class AdminController extends Controller
 
         // redirect on list if possible
         if ($this->isActionAllowed('list')) {
-
             return $this->redirect($this->generateUrl('easyadmin', array(
                 'action' => 'list',
                 'entity' => $this->entity['name'],
                 'menuIndex' => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
             )));
-
         }
 
         // else from new|edit action, redirect on edit if possible
         elseif (in_array($refererAction, array('new', 'edit')) && $this->isActionAllowed('edit')) {
-
             $this->addFlash('success', ('new' === $refererAction)
                 ? $this->get('translator')->trans('flash.new.success', array(), 'EasyAdminBundle')
                 : $this->get('translator')->trans('flash.edit.success', array(), 'EasyAdminBundle')
@@ -834,7 +831,6 @@ class AdminController extends Controller
 
         // elseif from new action, redirect on new if possible
         elseif ('new' === $refererAction && $this->isActionAllowed('new')) {
-
             $this->addFlash('success', $this->get('translator')->trans('flash.new.success', array(), 'EasyAdminBundle'));
 
             return $this->redirect($this->generateUrl('easyadmin', array(
@@ -843,7 +839,6 @@ class AdminController extends Controller
                 'menuIndex' => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
             )));
-
         }
 
         if (!empty($refererUrl)) {

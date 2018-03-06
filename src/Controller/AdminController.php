@@ -828,7 +828,7 @@ class AdminController extends Controller
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
                 'id' => ('new' === $refererAction)
                     ? PropertyAccess::createPropertyAccessor()->getValue($this->request->attributes->get('easyadmin')['item'], $this->entity['primary_key_field_name'])
-                    : $this->request->query->get('id')
+                    : $this->request->query->get('id'),
             )));
         }
 

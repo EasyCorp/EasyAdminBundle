@@ -433,10 +433,6 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertSame($parameters, $refererParameters);
     }
 
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use %s instead
-     */
     public function testEditViewEntityModification()
     {
         $crawler = $this->requestEditView();
@@ -455,10 +451,6 @@ class DefaultBackendTest extends AbstractTestCase
         );
     }
 
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use %s instead
-     */
     public function testEntityModificationViaAjax()
     {
         /* @var EntityManager */
@@ -558,10 +550,6 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertSame($parameters, $refererParameters);
     }
 
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use %s instead
-     */
     public function testNewViewEntityCreation()
     {
         $crawler = $this->requestNewView();
@@ -716,10 +704,6 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertSame($parameters, $refererParameters);
     }
 
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use %s instead
-     */
     public function testEntityDeletion()
     {
         if (PHP_VERSION_ID < 50400) {

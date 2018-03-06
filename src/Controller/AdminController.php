@@ -42,9 +42,6 @@ class AdminController extends Controller
 
     /**
      * @Route("/", name="easyadmin")
-     * @Route("/", name="admin")
-     *
-     * The 'admin' route is deprecated since version 1.8.0 and it will be removed in 2.0.
      *
      * @param Request $request
      *

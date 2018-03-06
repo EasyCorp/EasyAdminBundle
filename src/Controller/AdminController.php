@@ -51,10 +51,6 @@ class AdminController extends Controller
      */
     public function indexAction(Request $request)
     {
-        if ('admin' === $request->attributes->get('_route')) {
-            trigger_error(sprintf('The "admin" route is deprecated since version 1.8.0 and it will be removed in 2.0. Use the "easyadmin" route instead.'), E_USER_DEPRECATED);
-        }
-
         $this->initialize($request);
 
         if (null === $request->query->get('entity')) {

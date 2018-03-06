@@ -448,7 +448,7 @@ class AdminController extends Controller
      */
     protected function prePersistEntity($entity)
     {
-        if (__CLASS__ !== get_class()) {
+        if (__CLASS__ !== get_class($this)) {
             @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use persistEntity() instead', __METHOD__), E_USER_DEPRECATED);
         }
     }
@@ -473,7 +473,7 @@ class AdminController extends Controller
      */
     protected function preUpdateEntity($entity)
     {
-        if (__CLASS__ !== get_class()) {
+        if (__CLASS__ !== get_class($this)) {
             @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use updateEntity() instead', __METHOD__), E_USER_DEPRECATED);
         }
     }
@@ -497,7 +497,7 @@ class AdminController extends Controller
      */
     protected function preRemoveEntity($entity)
     {
-        if (__CLASS__ !== get_class()) {
+        if (__CLASS__ !== get_class($this)) {
             @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use removeEntity() instead', __METHOD__), E_USER_DEPRECATED);
         }
     }
@@ -774,7 +774,7 @@ class AdminController extends Controller
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
 
             $isDeprecatedMethod = 0 === strpos($methodName, 'prePersist') || 0 === strpos($methodName, 'preUpdate') || 0 === strpos($methodName, 'preRemove');
-            if (__CLASS__ !== get_class() && $isDeprecatedMethod) {
+            if (__CLASS__ !== get_class($this) && $isDeprecatedMethod) {
                 $newMethodName = strtolower(substr($methodName, 3));
                 @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s() instead', $methodName, $newMethodName), E_USER_DEPRECATED);
             }

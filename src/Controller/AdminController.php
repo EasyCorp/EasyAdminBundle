@@ -448,7 +448,9 @@ class AdminController extends Controller
      */
     protected function prePersistEntity($entity)
     {
-        @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use persistEntity instead', __METHOD__), E_USER_DEPRECATED);
+        if (__CLASS__ !== get_class()) {
+            @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use persistEntity() instead', __METHOD__), E_USER_DEPRECATED);
+        }
     }
 
     /**
@@ -471,7 +473,9 @@ class AdminController extends Controller
      */
     protected function preUpdateEntity($entity)
     {
-        @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use updateEntity instead', __METHOD__), E_USER_DEPRECATED);
+        if (__CLASS__ !== get_class()) {
+            @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use updateEntity() instead', __METHOD__), E_USER_DEPRECATED);
+        }
     }
 
     /**
@@ -493,7 +497,9 @@ class AdminController extends Controller
      */
     protected function preRemoveEntity($entity)
     {
-        @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use removeEntity instead', __METHOD__), E_USER_DEPRECATED);
+        if (__CLASS__ !== get_class()) {
+            @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use removeEntity() instead', __METHOD__), E_USER_DEPRECATED);
+        }
     }
 
     /**
@@ -767,9 +773,10 @@ class AdminController extends Controller
         if (!is_callable(array($this, $methodName))) {
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
 
-            if (false !== strpos($methodName, 'pre')) {
-                $newMethod = strtolower(substr($methodName, 3));
-                @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0 version. Use %s instead', $methodName, $newMethod), E_USER_DEPRECATED);
+            $isDeprecatedMethod = 0 === strpos($methodName, 'prePersist') || 0 === strpos($methodName, 'preUpdate') || 0 === strpos($methodName, 'preRemove');
+            if (__CLASS__ !== get_class() && $isDeprecatedMethod) {
+                $newMethodName = strtolower(substr($methodName, 3));
+                @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s() instead', $methodName, $newMethodName), E_USER_DEPRECATED);
             }
         }
 
@@ -799,6 +806,7 @@ class AdminController extends Controller
      */
     public function renderCssAction()
     {
+        @trigger_error('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Processed styles are available in the "easyadmin.config._internal.custom_css" container parameter.', E_USER_DEPRECATED);
     }
 
     /**

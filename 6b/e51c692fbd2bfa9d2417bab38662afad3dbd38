@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+
+by lex111 at 2018-03-04T21:33:19Z
+
+I do not understand why Travis falls, because looks I did everything correct :(
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-03-05T07:08:54Z
+
+@lex111 the fail is because the cod enow triggers deprecations and one of the Travis CI builds checks that there are no deprecations. The solution is to follow this explanation -> https://symfony.com/doc/current/components/phpunit_bridge.html#write-assertions-about-deprecations and do this:
+
+1) Duplicate all the tests that use preXXX() methods (or at least 1 test for each different preXXX() method) and add the `@expectedDeprecation` annotation on them.
+2) Fix the existing tests that use preXXX() methods to just use xxx() methods.
+
+---------------------------------------------------------------------------
+
+by lex111 at 2018-03-05T18:08:50Z
+
+@javiereguiluz sorry, I am pretty confused, thanks for the explanations, I fixed the tests,  Travis build was completed without errors.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-03-06T18:53:28Z
+
+This is more complex than I thought because we should only trigger the deprecation when the user is using this method, not when we are suing this method (and we use it to keep BC) ... but I'm going to merge your PR and then I'll continue making some changes in another PR. Thanks for helping us!

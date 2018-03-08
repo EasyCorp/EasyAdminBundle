@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Extension\AbstractExtension;
@@ -17,7 +17,7 @@ use Twig\TwigFunction;
  */
 class EasyAdminTwigExtension extends AbstractExtension
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
     /** @var PropertyAccessor */
     private $propertyAccessor;
@@ -27,7 +27,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     private $debug;
     private $logoutUrlGenerator;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, EasyAdminRouter $easyAdminRouter, $debug = false, $logoutUrlGenerator)
+    public function __construct(ConfigManagerInterface $configManager, PropertyAccessor $propertyAccessor, EasyAdminRouter $easyAdminRouter, $debug = false, $logoutUrlGenerator)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;

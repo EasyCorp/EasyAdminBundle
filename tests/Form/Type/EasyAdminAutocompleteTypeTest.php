@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Type;
 
 use AppTestBundle\Entity\UnitTests\Category;
 use Doctrine\Common\Collections\ArrayCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -61,7 +62,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             ->with(self::ENTITY_CLASS)
             ->willReturn($this->entityManager);
 
-        $this->configManager = $this->getMockBuilder('EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager')
+        $this->configManager = $this->getMockBuilder(ConfigManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->configManager

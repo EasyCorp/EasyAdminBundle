@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -14,14 +14,14 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class Autocomplete
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
     /** @var Finder */
     private $finder;
     /** @var PropertyAccessor */
     private $propertyAccessor;
 
-    public function __construct(ConfigManager $configManager, Finder $finder, PropertyAccessor $propertyAccessor)
+    public function __construct(ConfigManagerInterface $configManager, Finder $finder, PropertyAccessor $propertyAccessor)
     {
         $this->configManager = $configManager;
         $this->finder = $finder;

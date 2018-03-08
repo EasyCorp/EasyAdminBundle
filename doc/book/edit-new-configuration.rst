@@ -926,3 +926,7 @@ template right under the ``easy_admin/`` directory:
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`Symfony form fields can be customized individually`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
 .. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks
+
+-----
+
+Next chapter: :doc:`actions-configuration`

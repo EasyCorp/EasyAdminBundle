@@ -267,3 +267,7 @@ advanced menus with two-level submenus and all kind of items:
                     - { label: 'Help', route: 'help_index' }
                     - { label: 'Docs', url: 'http://example.com/external-docs' }
                     - { label: '%app.version%' }
+
+-----
+
+Next chapter: :doc:`complex-dynamic-backends`

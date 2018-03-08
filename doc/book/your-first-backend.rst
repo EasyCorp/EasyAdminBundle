@@ -65,4 +65,4 @@ backend.
 
 -----
 
-Next chapter: :doc:`./basic-configuration`
+Next chapter: :doc:`basic-configuration`

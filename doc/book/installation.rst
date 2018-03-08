@@ -96,4 +96,4 @@ That's it! Now everything is ready to create your first admin backend.
 
 -----
 
-Next chapter: :doc:`./your-first-backend`
+Next chapter: :doc:`your-first-backend`

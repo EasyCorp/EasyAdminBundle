@@ -62,3 +62,7 @@ and it's recommended to use the CamelCase syntax (e.g. ``BlogPost`` and not
 The only required option in this configuration format is called ``class`` and
 defines the fully qualified class name of the Doctrine entity managed by the
 backend.
+
+-----
+
+Next chapter: :doc:`./basic-configuration`

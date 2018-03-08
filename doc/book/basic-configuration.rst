@@ -72,3 +72,7 @@ When accessing a protected backend, EasyAdmin displays the name of user who is
 logged in the application. Otherwise it displays *"Anonymous User"*.
 
 .. _`Symfony Security documentation`: https://symfony.com/doc/current/book/security.html
+
+-----
+
+Next chapter: :doc:`design-configuration`

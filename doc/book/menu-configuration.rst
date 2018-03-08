@@ -291,3 +291,7 @@ advanced menus with two-level submenus and all kind of items:
                     - { label: '%app.version%' }
 
 .. _`valid link types`: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
+
+-----
+
+Next chapter: :doc:`complex-dynamic-backends`

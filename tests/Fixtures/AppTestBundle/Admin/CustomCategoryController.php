@@ -21,4 +21,22 @@ class CustomCategoryController extends EasyAdminController
     {
         return new Response('Overridden show action.');
     }
+
+    /** Empty method defined to trigger a deprecation message */
+    public function prePersistEntity($entity)
+    {
+        parent::prePersistEntity($entity);
+    }
+
+    /** Empty method defined to trigger a deprecation message */
+    public function preUpdateEntity($entity)
+    {
+        parent::preUpdateEntity($entity);
+    }
+
+    /** Empty method defined to trigger a deprecation message */
+    public function preRemoveEntity($entity)
+    {
+        parent::preUpdateEntity($entity);
+    }
 }

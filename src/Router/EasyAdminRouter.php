@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use Doctrine\Common\Util\ClassUtils;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 final class EasyAdminRouter
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
     /** @var UrlGeneratorInterface */
     private $urlGenerator;
@@ -23,7 +23,7 @@ final class EasyAdminRouter
     /** @var RequestStack */
     private $requestStack;
 
-    public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator, PropertyAccessorInterface $propertyAccessor, RequestStack $requestStack = null)
+    public function __construct(ConfigManagerInterface $configManager, UrlGeneratorInterface $urlGenerator, PropertyAccessorInterface $propertyAccessor, RequestStack $requestStack = null)
     {
         $this->configManager = $configManager;
         $this->urlGenerator = $urlGenerator;

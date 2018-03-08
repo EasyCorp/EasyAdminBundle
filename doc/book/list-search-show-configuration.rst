@@ -1122,3 +1122,7 @@ Custom templates receive the same parameters as built-in templates
 .. _`date configuration options`: http://php.net/manual/en/function.date.php
 .. _`PHP format specifiers`: http://php.net/manual/en/function.sprintf.php
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
+
+-----
+
+Next chapter: :doc:`edit-new-configuration`

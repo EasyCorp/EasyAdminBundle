@@ -6,7 +6,3 @@ easy_admin:
         Category:
             class: AppTestBundle\Entity\FunctionalTests\Category
             controller:  EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryController
-
-        Category2:
-            class: AppTestBundle\Entity\FunctionalTests\Category
-            controller:  EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomController

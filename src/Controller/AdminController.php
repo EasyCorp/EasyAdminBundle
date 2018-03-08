@@ -204,10 +204,7 @@ class AdminController extends Controller
         $editForm->handleRequest($this->request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity]);
-
-            $this->executeDynamicMethod('preUpdate<EntityName>Entity', [$entity, true]);
             $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);
-
             $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity]);
 
             return $this->redirectToReferrer();
@@ -278,10 +275,7 @@ class AdminController extends Controller
         $newForm->handleRequest($this->request);
         if ($newForm->isSubmitted() && $newForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, ['entity' => $entity]);
-
-            $this->executeDynamicMethod('prePersist<EntityName>Entity', [$entity, true]);
             $this->executeDynamicMethod('persist<EntityName>Entity', [$entity]);
-
             $this->dispatch(EasyAdminEvents::POST_PERSIST, ['entity' => $entity]);
 
             return $this->redirectToReferrer();
@@ -327,8 +321,6 @@ class AdminController extends Controller
             $entity = $easyadmin['item'];
 
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, ['entity' => $entity]);
-
-            $this->executeDynamicMethod('preRemove<EntityName>Entity', [$entity, true]);
 
             try {
                 $this->executeDynamicMethod('remove<EntityName>Entity', [$entity]);
@@ -408,10 +400,7 @@ class AdminController extends Controller
         $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity, 'newValue' => $value]);
 
         $this->get('easy_admin.property_accessor')->setValue($entity, $property, $value);
-        $this->executeDynamicMethod('preUpdate<EntityName>Entity', [$entity, true]);
-
-        $this->em->persist($entity);
-        $this->em->flush();
+        $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);
         $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity, 'newValue' => $value]);
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
@@ -433,21 +422,6 @@ class AdminController extends Controller
 
     /**
      * Allows applications to modify the entity associated with the item being
-     * created before persisting it.
-     *
-     * @param object $entity
-     */
-    protected function prePersistEntity($entity /*, bool $ignoreDeprecations = false */)
-    {
-        if (func_num_args() > 1 && true === func_get_arg(1)) {
-            return;
-        }
-
-        @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use persistEntity() instead', __METHOD__), E_USER_DEPRECATED);
-    }
-
-    /**
-     * Allows applications to modify the entity associated with the item being
      * created while persisting it.
      *
      * @param object $entity
@@ -460,21 +434,6 @@ class AdminController extends Controller
 
     /**
      * Allows applications to modify the entity associated with the item being
-     * edited before persisting it.
-     *
-     * @param object $entity
-     */
-    protected function preUpdateEntity($entity /*, bool $ignoreDeprecations = false */)
-    {
-        if (func_num_args() > 1 && true === func_get_arg(1)) {
-            return;
-        }
-
-        @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use updateEntity() instead', __METHOD__), E_USER_DEPRECATED);
-    }
-
-    /**
-     * Allows applications to modify the entity associated with the item being
      * edited before updating it.
      *
      * @param object $entity
@@ -482,21 +441,6 @@ class AdminController extends Controller
     protected function updateEntity($entity)
     {
         $this->em->flush();
-    }
-
-    /**
-     * Allows applications to modify the entity associated with the item being
-     * deleted before removing it.
-     *
-     * @param object $entity
-     */
-    protected function preRemoveEntity($entity /*, bool $ignoreDeprecations = false */)
-    {
-        if (func_num_args() > 1 && true === func_get_arg(1)) {
-            return;
-        }
-
-        @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use removeEntity() instead', __METHOD__), E_USER_DEPRECATED);
     }
 
     /**
@@ -771,12 +715,6 @@ class AdminController extends Controller
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }
 
-        $isDeprecatedMethod = 0 === strpos($methodName, 'prePersist') || 0 === strpos($methodName, 'preUpdate') || 0 === strpos($methodName, 'preRemove');
-        if ($isDeprecatedMethod && isset($arguments[1]) && true !== $arguments[1]) {
-            $newMethodName = strtolower(substr($methodName, 3));
-            @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s() instead', $methodName, $newMethodName), E_USER_DEPRECATED);
-        }
-
         return \call_user_func_array([$this, $methodName], $arguments);
     }
 
@@ -790,18 +728,6 @@ class AdminController extends Controller
         $url = $homepageConfig['url'] ?? $this->get('router')->generate($homepageConfig['route'], $homepageConfig['params']);
 
         return $this->redirect($url);
-    }
-
-    /**
-     * It renders the main CSS applied to the backend design. This controller
-     * allows to generate dynamic CSS files that use variables without the need
-     * to set up a CSS preprocessing toolchain.
-     *
-     * @deprecated The CSS styles are no longer rendered at runtime but preprocessed during container compilation. Use the $container['easyadmin.config']['_internal']['custom_css'] variable instead
-     */
-    public function renderCssAction()
-    {
-        @trigger_error('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Processed styles are available in the "easyadmin.config._internal.custom_css" container parameter.', E_USER_DEPRECATED);
     }
 
     /**

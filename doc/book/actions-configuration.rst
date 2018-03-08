@@ -300,3 +300,7 @@ icon:
                 - { name: 'show', icon: 'search', label: '', title: 'Search' }
                 - { name: 'edit', icon: 'pencil', label: '', title: 'Edit' }
         # ...
+
+-----
+
+Next chapter: :doc:`menu-configuration`

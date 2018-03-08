@@ -93,3 +93,7 @@ That's it! Now everything is ready to create your first admin backend.
 
 .. _`Symfony Flex`: https://github.com/symfony/flex
 .. _`Composer documentation`: https://getcomposer.org/doc/00-intro.md
+
+-----
+
+Next chapter: :doc:`./your-first-backend`

@@ -186,3 +186,7 @@ locale of the application is ``ar`` (Arabic), ``fa`` (Persian) or ``he``
 .. _`Bootstrap 3`: https://github.com/twbs/bootstrap
 .. _`jQuery`: https://github.com/jquery/jquery
 .. _`Font Awesome icons`: https://github.com/FortAwesome/Font-Awesome
+
+-----
+
+Next chapter: :doc:`list-search-show-configuration`

@@ -177,6 +177,16 @@
                 <source>exception.undefined_entity</source>
                 <target>L'application n'est pas correctement configurée pour ce type d'élément.</target>
             </trans-unit>
+
+            <!-- Flash messages -->
+            <trans-unit id="flash.new.success">
+                <source>flash.new.success</source>
+                <target>Votre élément a été crée.</target>
+            </trans-unit>
+            <trans-unit id="flash.edit.success">
+                <source>flash.edit.success</source>
+                <target>Votre élément a été modifié.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

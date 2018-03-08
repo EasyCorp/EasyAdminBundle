@@ -820,16 +820,51 @@ class AdminController extends Controller
      */
     protected function redirectToReferrer()
     {
-        $referrerUrl = $this->request->query->get('referer', '');
+        $refererUrl = $this->request->query->get('referer', '');
+        $refererAction = $this->request->query->get('action');
 
-        if (!empty($referrerUrl)) {
-            return $this->redirect(urldecode($referrerUrl));
-        }
-
+        // redirect on list if possible
         if ($this->isActionAllowed('list')) {
             return $this->redirect($this->generateUrl('easyadmin', array(
-                'action' => 'list', 'entity' => $this->entity['name'],
+                'action' => 'list',
+                'entity' => $this->entity['name'],
+                'menuIndex' => $this->request->query->get('menuIndex'),
+                'submenuIndex' => $this->request->query->get('submenuIndex'),
             )));
+        }
+
+        // else from new|edit action, redirect on edit if possible
+        elseif (in_array($refererAction, array('new', 'edit')) && $this->isActionAllowed('edit')) {
+            $this->addFlash('success', ('new' === $refererAction)
+                ? $this->get('translator')->trans('flash.new.success', array(), 'EasyAdminBundle')
+                : $this->get('translator')->trans('flash.edit.success', array(), 'EasyAdminBundle')
+            );
+
+            return $this->redirect($this->generateUrl('easyadmin', array(
+                'action' => 'edit',
+                'entity' => $this->entity['name'],
+                'menuIndex' => $this->request->query->get('menuIndex'),
+                'submenuIndex' => $this->request->query->get('submenuIndex'),
+                'id' => ('new' === $refererAction)
+                    ? PropertyAccess::createPropertyAccessor()->getValue($this->request->attributes->get('easyadmin')['item'], $this->entity['primary_key_field_name'])
+                    : $this->request->query->get('id'),
+            )));
+        }
+
+        // elseif from new action, redirect on new if possible
+        elseif ('new' === $refererAction && $this->isActionAllowed('new')) {
+            $this->addFlash('success', $this->get('translator')->trans('flash.new.success', array(), 'EasyAdminBundle'));
+
+            return $this->redirect($this->generateUrl('easyadmin', array(
+                'action' => 'new',
+                'entity' => $this->entity['name'],
+                'menuIndex' => $this->request->query->get('menuIndex'),
+                'submenuIndex' => $this->request->query->get('submenuIndex'),
+            )));
+        }
+
+        if (!empty($refererUrl)) {
+            return $this->redirect(urldecode($refererUrl));
         }
 
         return $this->redirectToBackendHomepage();

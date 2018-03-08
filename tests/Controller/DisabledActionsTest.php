@@ -74,9 +74,9 @@ class DisabledActionsTest extends AbstractTestCase
         $form = $crawler->selectButton('Save changes')->form();
         $this->client->submit($form);
 
-        $this->assertTrue(
-            $this->client->getResponse()->isRedirect('https://example.com'),
-            'After editing a Category, the user is redirected to the homepage because the "list" action is disabled for Category.'
+        $this->assertContains(
+            '/admin/?action=edit&entity=Category&id=200',
+            $this->client->getResponse()->headers->get('location')
         );
     }
 

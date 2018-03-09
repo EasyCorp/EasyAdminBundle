@@ -41,7 +41,38 @@ class DefaultConfigPass implements ConfigPassInterface
         $firstEntityName = isset($entityNames[0]) ? $entityNames[0] : null;
         $backendConfig['default_entity_name'] = $firstEntityName;
 
+        if ($firstEntityName) {
+            $defaultEntityConfig = $this->processDefaultEntityParams($backendConfig['design']['menu'], $firstEntityName);
+            $backendConfig = array_merge($backendConfig, $defaultEntityConfig);
+        }
+
         return $backendConfig;
+    }
+
+    /**
+     * Find the params defined at the default entity level
+     *
+     * @param array $items
+     * @param $firstEntityName
+     *
+     * @return array
+     */
+    private function processDefaultEntityParams(array $items, $firstEntityName)
+    {
+        foreach ($items as $item) {
+            if ('entity' === $item['type'] && $firstEntityName === $item['entity']) {
+                if (array_key_exists('params', $item) && array_key_exists('action', $item['params'])) {
+                    $defaultEntityConfig['default_entity_action'] = $item['params']['action'];
+                    $defaultEntityConfig['default_entity_id'] = (array_key_exists('id', $item['params'])) ? $item['params']['id'] : null;
+                    return $defaultEntityConfig;
+                }
+            }
+            elseif (array_key_exists('children', $item) && !empty($item['children'])) {
+                return $this->processDefaultEntityParams($item['children'], $firstEntityName);
+            }
+        }
+
+        return array('default_entity_action' => 'list', 'default_entity_id' => null);
     }
 
     /**
@@ -102,16 +133,20 @@ class DefaultConfigPass implements ConfigPassInterface
     {
         $backendHomepage = array();
 
-        // if no menu item has been set as "default", use the "list"
-        // action of the first configured entity as the backend homepage
+        // if no menu item has been set as "default", use the default_entity_action
+        // action and optionally the default_entity_id of the first configured
+        // entity as the backend homepage
         if (null === $menuItemConfig = $backendConfig['default_menu_item']) {
             $defaultEntityName = $backendConfig['default_entity_name'];
             $backendHomepage['route'] = 'easyadmin';
-            $backendHomepage['params'] = array('action' => 'list', 'entity' => $defaultEntityName);
+            $backendHomepage['params'] = array('action' => $backendConfig['default_entity_action'], 'entity' => $defaultEntityName);
+            if ($backendConfig['default_entity_id']) {
+                $backendHomepage['params']['id'] = $backendConfig['default_entity_id'];
+            }
 
-            // if the default entity defines a custom sorting, use it
+            // if the default entity is binded on list action and defines a custom sorting, use it
             $defaultEntityConfig = isset($backendConfig['entities'][$defaultEntityName]) ? $backendConfig['entities'][$defaultEntityName] : array();
-            if (isset($defaultEntityConfig['list']['sort'])) {
+            if ('list' === $backendConfig['default_entity_action'] && isset($defaultEntityConfig['list']['sort'])) {
                 $backendHomepage['params'] = array_merge($backendHomepage['params'], array(
                     'sortField' => $defaultEntityConfig['list']['sort']['field'],
                     'sortDirection' => $defaultEntityConfig['list']['sort']['direction'],

@@ -66,8 +66,7 @@ class DefaultConfigPass implements ConfigPassInterface
                     $defaultEntityConfig['default_entity_id'] = (array_key_exists('id', $item['params'])) ? $item['params']['id'] : null;
                     return $defaultEntityConfig;
                 }
-            }
-            elseif (array_key_exists('children', $item) && !empty($item['children'])) {
+            } elseif (array_key_exists('children', $item) && !empty($item['children'])) {
                 return $this->processDefaultEntityParams($item['children'], $firstEntityName);
             }
         }

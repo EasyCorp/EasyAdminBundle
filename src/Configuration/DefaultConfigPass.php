@@ -45,6 +45,10 @@ class DefaultConfigPass implements ConfigPassInterface
             $defaultEntityConfig = $this->processDefaultEntityParams($backendConfig['design']['menu'], $firstEntityName);
             $backendConfig = array_merge($backendConfig, $defaultEntityConfig);
         }
+        else {
+            $backendConfig['default_entity_action'] = 'list';
+            $backendConfig['default_entity_id'] = null;
+        }
 
         return $backendConfig;
     }
@@ -64,6 +68,7 @@ class DefaultConfigPass implements ConfigPassInterface
                 if (array_key_exists('params', $item) && array_key_exists('action', $item['params'])) {
                     $defaultEntityConfig['default_entity_action'] = $item['params']['action'];
                     $defaultEntityConfig['default_entity_id'] = (array_key_exists('id', $item['params'])) ? $item['params']['id'] : null;
+
                     return $defaultEntityConfig;
                 }
             } elseif (array_key_exists('children', $item) && !empty($item['children'])) {

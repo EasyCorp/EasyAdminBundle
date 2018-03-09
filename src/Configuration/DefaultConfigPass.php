@@ -44,8 +44,7 @@ class DefaultConfigPass implements ConfigPassInterface
         if ($firstEntityName) {
             $defaultEntityConfig = $this->processDefaultEntityParams($backendConfig['design']['menu'], $firstEntityName);
             $backendConfig = array_merge($backendConfig, $defaultEntityConfig);
-        }
-        else {
+        } else {
             $backendConfig['default_entity_action'] = 'list';
             $backendConfig['default_entity_id'] = null;
         }

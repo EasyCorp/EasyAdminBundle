@@ -181,16 +181,6 @@
                 <source>exception.undefined_entity</source>
                 <target>The application is not properly configured for this kind of items.</target>
             </trans-unit>
-
-            <!-- Flash messages -->
-            <trans-unit id="flash.new.success">
-                <source>flash.new.success</source>
-                <target>Your element has been created.</target>
-            </trans-unit>
-            <trans-unit id="flash.edit.success">
-                <source>flash.edit.success</source>
-                <target>Your element has been updated.</target>
-            </trans-unit>
         </body>
     </file>
 </xliff>

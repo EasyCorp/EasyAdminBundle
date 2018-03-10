@@ -825,6 +825,10 @@ class AdminController extends Controller
 
         // redirect on list if possible
         if ($this->isActionAllowed('list')) {
+            if (!empty($refererUrl)) {
+                return $this->redirect(urldecode($refererUrl));
+            }
+
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'list',
                 'entity' => $this->entity['name'],
@@ -854,10 +858,6 @@ class AdminController extends Controller
                 'menuIndex' => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
             ));
-        }
-
-        if (!empty($refererUrl)) {
-            return $this->redirect(urldecode($refererUrl));
         }
 
         return $this->redirectToBackendHomepage();

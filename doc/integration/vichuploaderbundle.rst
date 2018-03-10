@@ -219,7 +219,7 @@ VichUploaderBundle configuration.
     .. code-block:: twig
 
         {# app/Resources/views/easy_admin/vich_uploader_image.html.twig #}
-        <img src="{{ vich_uploader_asset(value, 'image') }}" />
+        <img src="{{ vich_uploader_asset(item, 'image') }}" />
 
 Uploading the Images in the ``edit`` and ``new`` Views
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

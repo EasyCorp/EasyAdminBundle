@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------
+
+by laurent-bientz at 2018-03-10T14:25:38Z
+
+@javiereguiluz
+- I added a redirect to referrer if not empty before trying to regenerate list route
+- I updated to use the redirectToRoute shortcut instead of redirect
+- For me, it can't be possible to have a referer param if list is disabled cause we're coming directly from menu, if I'm wrong, plz explain to me how it can be possible?
+- I remove flash msgs and translations  :sweat:

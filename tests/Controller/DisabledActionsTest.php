@@ -64,9 +64,9 @@ class DisabledActionsTest extends AbstractTestCase
     public function testRedirectToDisabledActions($view, $entityName, $expectedRedirectionLocation)
     {
         $crawler = 'edit' === $view ? $this->requestEditView($entityName) : $this->requestNewView($entityName);
-        $form = $crawler->selectButton('Save changes')->form(array(
+        $form = $crawler->selectButton('Save changes')->form([
             strtolower($entityName).'[name]' => 'New Category Name',
-        ));
+        ]);
         $this->client->submit($form);
 
         $this->assertContains($expectedRedirectionLocation, $this->client->getResponse()->headers->get('location'));
@@ -74,12 +74,12 @@ class DisabledActionsTest extends AbstractTestCase
 
     public function provideRedirections()
     {
-        return array(
-            'Edit action: List is enabled, redirect to list' => array('edit', 'Category', '/admin/?action=list&entity=Category'),
-            'Edit action: List is disabled, redirect to edit' => array('edit', 'Category2', '/admin/?action=edit&entity=Category2&id=200'),
-            'New action: List is enabled, redirect to list' => array('new', 'Category', '/admin/?action=list&entity=Category'),
-            'New action: List is disabled, redirect to edit' => array('new', 'Category2', '/admin/?action=edit&entity=Category2&id=201'),
-            'New action: List and edit is disabled, redirect to new' => array('new', 'Category3', '/admin/?action=new&entity=Category3'),
-        );
+        return [
+            'Edit action: List is enabled, redirect to list' => ['edit', 'Category', '/admin/?action=list&entity=Category'],
+            'Edit action: List is disabled, redirect to edit' => ['edit', 'Category2', '/admin/?action=edit&entity=Category2&id=200'],
+            'New action: List is enabled, redirect to list' => ['new', 'Category', '/admin/?action=list&entity=Category'],
+            'New action: List is disabled, redirect to edit' => ['new', 'Category2', '/admin/?action=edit&entity=Category2&id=201'],
+            'New action: List and edit is disabled, redirect to new' => ['new', 'Category3', '/admin/?action=new&entity=Category3'],
+        ];
     }
 }

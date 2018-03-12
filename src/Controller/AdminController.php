@@ -745,17 +745,17 @@ class AdminController extends Controller
                 return $this->redirect(urldecode($refererUrl));
             }
 
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'list',
                 'entity' => $this->entity['name'],
                 'menuIndex' => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
-            ));
+            ]);
         }
 
         // 2. from new|edit action, redirect to edit if possible
-        if (\in_array($refererAction, array('new', 'edit')) && $this->isActionAllowed('edit')) {
-            return $this->redirectToRoute('easyadmin', array(
+        if (\in_array($refererAction, ['new', 'edit']) && $this->isActionAllowed('edit')) {
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'edit',
                 'entity' => $this->entity['name'],
                 'menuIndex' => $this->request->query->get('menuIndex'),
@@ -763,17 +763,17 @@ class AdminController extends Controller
                 'id' => ('new' === $refererAction)
                     ? PropertyAccess::createPropertyAccessor()->getValue($this->request->attributes->get('easyadmin')['item'], $this->entity['primary_key_field_name'])
                     : $this->request->query->get('id'),
-            ));
+            ]);
         }
 
         // 3. from new action, redirect to new if possible
         if ('new' === $refererAction && $this->isActionAllowed('new')) {
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'new',
                 'entity' => $this->entity['name'],
                 'menuIndex' => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
-            ));
+            ]);
         }
 
         return $this->redirectToBackendHomepage();

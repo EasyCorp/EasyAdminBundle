@@ -38,6 +38,13 @@
             containerDiv.remove();
             parentDiv.trigger('easyadmin.collection.item-deleted');
 
+            var hasCountAttr = parentDiv.data('count');
+
+            if(hasCountAttr === undefined){
+                var numItems = parentDiv.children('div.form-group').length;
+                parentDiv.data('count', ++numItems)
+            }
+
             if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
                 $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
             }

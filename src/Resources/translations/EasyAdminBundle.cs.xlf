@@ -121,7 +121,7 @@
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>Není možné se vrátit zpět.</target>
+                <target>Tuto akci není možné vrátit zpět.</target>
             </trans-unit>
             <trans-unit id="delete_modal.action">
                 <source>delete_modal.action</source>

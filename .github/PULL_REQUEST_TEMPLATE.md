@@ -1,11 +1,10 @@
-➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
+<!--
 
-⚠️⚠️⚠️  **THIS BUNDLE HAS ENTERED INTO ITS FEATURE FREEZE PERIOD**  ⚠️⚠️⚠️
+BUGS must go to '1.x' branch.
+NEW FEATURES must go to 'master' branch.
 
-  * Pull Requests with New Features will no longer be merged.
-  * If you want to propose some new feature, please create an Issue.
-  * Pull Requests that fix bugs are still accepted and greatly appreciated.
+If the NEW FEATURE is complex, open an issue first so we can discuss about it.
 
-➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
+Note: all your contributions adhere implicitly to the MIT license
 
-<!-- Note: all your contributions adhere implicitly to the MIT license -->
+-->

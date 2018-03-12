@@ -7,4 +7,4 @@ If this is a BUG REPORT:
 If this is a FEATURE REQUEST:
 
   * Describe the new feature briefly.
-  * Please, DON'T submit a Pull Request (features must be first approved/rejected).
+  * Please, DON'T submit a Pull Request yet (first we need to discuss about it).

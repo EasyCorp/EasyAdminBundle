@@ -68,23 +68,36 @@ class DisabledActionsTest extends AbstractTestCase
         );
     }
 
-    public function testRedirectingToDisabledActions()
-    {
-        $crawler = $this->requestEditView();
-        $form = $crawler->selectButton('Save changes')->form();
-        $this->client->submit($form);
-
-        $this->assertContains(
-            '/admin/?action=edit&entity=Category&id=200',
-            $this->client->getResponse()->headers->get('location')
-        );
-    }
-
     public function testBooleanTogglesWhenEditIsDisabled()
     {
         $crawler = $this->requestListView('Product');
 
         $this->assertCount(15, $crawler->filter('td[data-label="Enabled"].boolean'), 'When "edit" action is disabled, boolean properties are displayed as labels, not toggles.');
         $this->assertCount(0, $crawler->filter('td[data-label="Enabled"].toggle'));
+    }
+
+    /**
+     * @dataProvider provideRedirections
+     */
+    public function testRedirectToDisabledActions($view, $entityName, $expectedRedirectionLocation)
+    {
+        $crawler = 'edit' === $view ? $this->requestEditView($entityName) : $this->requestNewView($entityName);
+        $form = $crawler->selectButton('Save changes')->form(array(
+            strtolower($entityName).'[name]' => 'New Category Name',
+        ));
+        $this->client->submit($form);
+
+        $this->assertContains($expectedRedirectionLocation, $this->client->getResponse()->headers->get('location'));
+    }
+
+    public function provideRedirections()
+    {
+        return array(
+            'Edit action: List is enabled, redirect to list' => array('edit', 'Category', '/admin/?action=list&entity=Category'),
+            'Edit action: List is disabled, redirect to edit' => array('edit', 'Category2', '/admin/?action=edit&entity=Category2&id=200'),
+            'New action: List is enabled, redirect to list' => array('new', 'Category', '/admin/?action=list&entity=Category'),
+            'New action: List is disabled, redirect to edit' => array('new', 'Category2', '/admin/?action=edit&entity=Category2&id=201'),
+            'New action: List and edit is disabled, redirect to new' => array('new', 'Category3', '/admin/?action=new&entity=Category3'),
+        );
     }
 }

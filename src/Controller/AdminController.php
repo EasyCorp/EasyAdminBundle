@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * The controller used to render all the default EasyAdmin actions.
@@ -823,7 +824,7 @@ class AdminController extends Controller
         $refererUrl = $this->request->query->get('referer', '');
         $refererAction = $this->request->query->get('action');
 
-        // redirect on list if possible
+        // 1. redirect to list if possible
         if ($this->isActionAllowed('list')) {
             if (!empty($refererUrl)) {
                 return $this->redirect(urldecode($refererUrl));
@@ -837,8 +838,8 @@ class AdminController extends Controller
             ));
         }
 
-        // else from new|edit action, redirect on edit if possible
-        elseif (in_array($refererAction, array('new', 'edit')) && $this->isActionAllowed('edit')) {
+        // 2. from new|edit action, redirect to edit if possible
+        if (in_array($refererAction, array('new', 'edit')) && $this->isActionAllowed('edit')) {
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'edit',
                 'entity' => $this->entity['name'],
@@ -850,8 +851,8 @@ class AdminController extends Controller
             ));
         }
 
-        // elseif from new action, redirect on new if possible
-        elseif ('new' === $refererAction && $this->isActionAllowed('new')) {
+        // 3. from new action, redirect to new if possible
+        if ('new' === $refererAction && $this->isActionAllowed('new')) {
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'new',
                 'entity' => $this->entity['name'],

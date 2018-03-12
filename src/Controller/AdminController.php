@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * The controller used to render all the default EasyAdmin actions.
@@ -735,16 +736,44 @@ class AdminController extends Controller
      */
     protected function redirectToReferrer()
     {
-        $referrerUrl = $this->request->query->get('referer', '');
+        $refererUrl = $this->request->query->get('referer', '');
+        $refererAction = $this->request->query->get('action');
 
-        if (!empty($referrerUrl)) {
-            return $this->redirect(urldecode($referrerUrl));
+        // 1. redirect to list if possible
+        if ($this->isActionAllowed('list')) {
+            if (!empty($refererUrl)) {
+                return $this->redirect(urldecode($refererUrl));
+            }
+
+            return $this->redirectToRoute('easyadmin', array(
+                'action' => 'list',
+                'entity' => $this->entity['name'],
+                'menuIndex' => $this->request->query->get('menuIndex'),
+                'submenuIndex' => $this->request->query->get('submenuIndex'),
+            ));
         }
 
-        if ($this->isActionAllowed('list')) {
-            return $this->redirect($this->generateUrl('easyadmin', [
-                'action' => 'list', 'entity' => $this->entity['name'],
-            ]));
+        // 2. from new|edit action, redirect to edit if possible
+        if (\in_array($refererAction, array('new', 'edit')) && $this->isActionAllowed('edit')) {
+            return $this->redirectToRoute('easyadmin', array(
+                'action' => 'edit',
+                'entity' => $this->entity['name'],
+                'menuIndex' => $this->request->query->get('menuIndex'),
+                'submenuIndex' => $this->request->query->get('submenuIndex'),
+                'id' => ('new' === $refererAction)
+                    ? PropertyAccess::createPropertyAccessor()->getValue($this->request->attributes->get('easyadmin')['item'], $this->entity['primary_key_field_name'])
+                    : $this->request->query->get('id'),
+            ));
+        }
+
+        // 3. from new action, redirect to new if possible
+        if ('new' === $refererAction && $this->isActionAllowed('new')) {
+            return $this->redirectToRoute('easyadmin', array(
+                'action' => 'new',
+                'entity' => $this->entity['name'],
+                'menuIndex' => $this->request->query->get('menuIndex'),
+                'submenuIndex' => $this->request->query->get('submenuIndex'),
+            ));
         }
 
         return $this->redirectToBackendHomepage();

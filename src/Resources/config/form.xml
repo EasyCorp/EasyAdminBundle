@@ -32,6 +32,11 @@
             <tag name="form.type_extension" alias="form" extended-type="Symfony\Component\Form\Extension\Core\Type\FormType" />
         </service>
 
+        <service id="easyadmin.form.entity_type.extension" class="EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EasyAdminEntityTypeExtension">
+            <argument type="service" id="easyadmin.config.manager"/>
+            <tag name="form.type_extension" alias="form" extended-type="Symfony\Bridge\Doctrine\Form\Type\EntityType" />
+        </service>
+
         <service id="easyadmin.form.type_guesser_chain" class="Symfony\Component\Form\FormTypeGuesserChain" public="false">
             <argument type="collection" /> <!-- type guessers -->
         </service>

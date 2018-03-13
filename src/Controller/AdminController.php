@@ -208,6 +208,10 @@ class AdminController extends Controller
             $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);
             $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity]);
 
+            if ($this->request->get('_popup')) {
+                return $this->renderPopupResponse($entity, 'edit');
+            }
+
             return $this->redirectToReferrer();
         }
 
@@ -278,6 +282,10 @@ class AdminController extends Controller
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, ['entity' => $entity]);
             $this->executeDynamicMethod('persist<EntityName>Entity', [$entity]);
             $this->dispatch(EasyAdminEvents::POST_PERSIST, ['entity' => $entity]);
+
+            if ($this->request->get('_popup')) {
+                return $this->renderPopupResponse($entity, 'new');
+            }
 
             return $this->redirectToReferrer();
         }
@@ -379,6 +387,19 @@ class AdminController extends Controller
         ];
 
         return $this->executeDynamicMethod('render<EntityName>Template', ['search', $this->entity['templates']['list'], $parameters]);
+    }
+
+    protected function renderPopupResponse($entity, string $action): Response
+    {
+        $id = $this->get('easy_admin.property_accessor')->getValue($entity, $this->entity['primary_key_field_name']);
+
+        return $this->render('@EasyAdmin/default/popup_response.html.twig', [
+            'popup_response_data' => json_encode([
+                'action' => $action,
+                'value' => (string) $id,
+                'label' => (string) $entity,
+            ]),
+        ]);
     }
 
     /**

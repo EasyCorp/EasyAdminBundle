@@ -9,6 +9,27 @@ $(function () {
     createNullableControls();
     createAutoCompleteFields();
     $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);
+
+    // Entity Type
+    $(document).on('click', '.easyadmin-entity-new-btn, .easyadmin-entity-edit-btn', function (e) {
+        e.preventDefault();
+        showAdminPopup(this);
+    });
+    $(document).on('change', 'select.easyadmin-entity-actions', function (e) {
+        var $this = $(this);
+        var $edit_btn = $this.closest('.input-group').find('.easyadmin-entity-edit-btn');
+        var edit_url = $this.attr('data-easyadmin-edit-url');
+        if (!edit_url) {
+            return;
+        }
+        // Update edit url on change value
+        $this.attr('data-easyadmin-edit-url', edit_url.replace(/(\?\w+=)\d+(&)/g, '$1' + (this.value || '0') + '$2'));
+        if (this.value) {
+            $edit_btn.removeClass('hide');
+        } else {
+            $edit_btn.addClass('hide');
+        }
+    });
 });
 
 function createNullableControls() {
@@ -85,3 +106,43 @@ function createAutoCompleteFields() {
         });
     });
 }
+
+function showAdminPopup(btn) {
+    var id = $(btn).data('target');
+    var action = $(btn).data('action');
+    var url = $('.easyadmin-entity-actions[data-uniqueid=' + id + ']').attr('data-easyadmin-' + action + '-url');
+    var win = window.open(url, id, 'width=800,height=600,resizable=yes,scrollbars=yes');
+    win.focus();
+
+    return false;
+}
+
+function dismissAdminPopup(win, action, value, label) {
+    var id = win.name;
+    var $elem = $('.easyadmin-entity-actions[data-uniqueid="' + id + '"]');
+    if ($elem.length && $elem[0].tagName === 'SELECT') {
+        switch (action) {
+            case 'new':
+                $elem[0].options[$elem[0].options.length] = new Option(label, value, true, true);
+                $elem.trigger('change');
+                break;
+            case 'edit':
+                $elem.find('option').each(function() {
+                    if (this.value == value) {
+                        this.textContent = label;
+                    }
+                });
+                $elem.next().find('.select2-selection__rendered').each(function() {
+                    // The element can have a clear button as a child.
+                    // Use the lastChild to modify only the displayed value.
+                    this.lastChild.textContent = label;
+                    this.title = label;
+                });
+                break;
+        }
+    }
+    win.close();
+}
+
+window.showAdminPopup = showAdminPopup;
+window.dismissAdminPopup = dismissAdminPopup;

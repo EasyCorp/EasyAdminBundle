@@ -20,6 +20,9 @@
 
     {{- parent() -}}
 
+    {% if app.request.get('_popup') %}
+        <input type="hidden" name="_popup" value="1"/>
+    {% endif %}
     <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
 {%- endblock form_start %}
 
@@ -473,23 +476,25 @@
         <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, _translation_domain) }}
     </button>
 
-    {% set _entity_actions = (easyadmin.view == 'new')
-        ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
-        : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
+    {% if not app.request.get('_popup') %}
+        {% set _entity_actions = (easyadmin.view == 'new')
+            ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
+            : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
 
-    {% set _entity_id = (easyadmin.view == 'new')
-        ? null
-        : attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) %}
+        {% set _entity_id = (easyadmin.view == 'new')
+            ? null
+            : attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) %}
 
-    {% set _request_parameters = { entity: easyadmin.entity.name, referer: app.request.query.get('referer') } %}
+        {% set _request_parameters = { entity: easyadmin.entity.name, referer: app.request.query.get('referer') } %}
 
-    {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
-        actions: _entity_actions,
-        request_parameters: _request_parameters,
-        translation_domain: _translation_domain,
-        trans_parameters: _trans_parameters,
-        item_id: _entity_id
-    }, with_context = false) }}
+        {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+            actions: _entity_actions,
+            request_parameters: _request_parameters,
+            translation_domain: _translation_domain,
+            trans_parameters: _trans_parameters,
+            item_id: _entity_id
+        }, with_context = false) }}
+    {% endif %}
 {% endblock item_actions %}
 
 {# EasyAdmin form type #}
@@ -620,3 +625,36 @@
         {% endif %}
     </div>
 {% endblock easyadmin_section_row %}
+
+{% block entity_widget %}
+    {% if _easyadmin_entity.allow_new or _easyadmin_entity.allow_edit %}
+        <div class="input-group">
+            {% set attr = attr|merge({'class': attr.class|default() ~ ' easyadmin-entity-actions ', 'data-uniqueid': _easyadmin_entity.uniqueid}) %}
+            {% if _easyadmin_entity.allow_edit %}
+                {% set attr = attr|merge({'data-easyadmin-edit-url': easyadmin_path(_easyadmin_entity.name, 'edit', {'id': data ? attribute(data, _easyadmin_entity.primary_key_field_name) : 0, '_popup': 1, 'referer': false})}) %}
+            {% endif %}
+            {% if _easyadmin_entity.allow_new %}
+                {% set attr = attr|merge({'data-easyadmin-new-url': easyadmin_path(_easyadmin_entity.name, 'new', {'_popup': 1, 'referer': false})}) %}
+            {% endif %}
+            {{ form_widget(form, {'attr': attr}) }}
+            <span class="input-group-btn">
+                {% if _easyadmin_entity.allow_edit %}
+                    <button type="button"
+                            class="btn easyadmin-entity-edit-btn {{ data is empty ? 'hide' }}"
+                            data-target="{{ _easyadmin_entity.uniqueid }}"
+                            data-action="edit"
+                    >🖉</button>
+                {% endif %}
+                {% if _easyadmin_entity.allow_new %}
+                    <button type="button"
+                            class="btn easyadmin-entity-new-btn"
+                            data-target="{{ _easyadmin_entity.uniqueid }}"
+                            data-action="new"
+                    >➕</button>
+                {% endif %}
+            </span>
+        </div>
+    {% else %}
+        {{ form_widget(form) }}
+    {% endif %}
+{% endblock %}

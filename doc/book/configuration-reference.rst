@@ -175,6 +175,11 @@ It defines the colors used in the backend design. If you find the default
             color_scheme: 'light'
         # ...
 
+.. caution::
+
+    The ``light`` color scheme is deprecated since 1.x version and it will be
+    removed in EasyAdmin 2.0. Always use ``dark`` as the value of this option.
+
 brand_color
 ~~~~~~~~~~~
 

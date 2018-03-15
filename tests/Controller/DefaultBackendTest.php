@@ -281,6 +281,13 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertCount(0, $crawler->filter('td[data-label="Enabled"].boolean'));
     }
 
+    public function testListViewStripsHtmlTags()
+    {
+        $crawler = $this->requestListView('Product');
+
+        $this->assertNotContains('&lt;ul&gt;', trim($crawler->filter('#main table td[data-label="Html features"]')->first()->text()), 'HTML tags are removed by default in the "list" view.');
+    }
+
     public function testShowViewPageTitle()
     {
         $crawler = $this->requestShowView();
@@ -351,6 +358,13 @@ class DefaultBackendTest extends AbstractTestCase
         parse_str($queryString, $refererParameters);
 
         $this->assertSame($parameters, $refererParameters);
+    }
+
+    public function testShowViewMaintainsHtmlTags()
+    {
+        $crawler = $this->requestShowView('Product', 1);
+
+        $this->assertContains('<ul>', trim($crawler->filter('.form-group:contains("Html features")')->first()->text()), 'HTML tags are maintained by default in the "show" view.');
     }
 
     public function testEditViewTitle()

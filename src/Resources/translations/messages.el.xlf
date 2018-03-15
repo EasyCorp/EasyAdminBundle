@@ -2,7 +2,7 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
     <file source-language="en" target-language="el" datatype="plaintext" original="file.ext">
         <body>
-            <!-- γενικές ενέργειες που εμφανίζονται σε κουμπιά κλπ -->
+            <!-- generic actions displayed on buttons and links -->
             <trans-unit id="action.new">
                 <source>action.new</source>
                 <target>Δημιουργία %entity_name%</target>

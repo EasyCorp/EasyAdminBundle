@@ -2,7 +2,7 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
     <file source-language="en" target-language="el" datatype="plaintext" original="file.ext">
         <body>
-            <!-- τίτλοι σελίδων -->
+            <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
                 <target>Δημιουργία %entity_name%</target>
@@ -92,7 +92,7 @@
                 <target>Δεν υπάρχει μέθοδος ανάγνωσης (getter) για αυτό το πεδίο ή η ιδιότητα αυτή δεν είναι προσβάσιμη</target>
             </trans-unit>
 
-            <!-- χρήστης -->
+            <!-- user -->
             <trans-unit id="user.logged_in_as">
                 <source>user.logged_in_as</source>
                 <target>Συνδεδεμένος ως</target>
@@ -114,7 +114,7 @@
                 <target>Διακοπή προσωποποίησης</target>
             </trans-unit>
 
-            <!-- διάφορα αντικείμενα -->
+            <!-- misc. elements -->
             <trans-unit id="toggle_navigation">
                 <source>toggle_navigation</source>
                 <target>Άνοιγμα/Κλείσιμο πλοήγησης</target>

@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+
+by grachevko at 2018-03-14T19:44:14Z
+
+This produce many missing translations in profiler.
+Maybe add some BC for 1.x?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-03-15T18:03:34Z
+
+You are right but I'm not sure if it's such a big deal. This "missing translation" in practice is not a missing translation and only developers in `dev` mode will notice that. There are no downsides for end-users and a big improvement for them (they'll see the actual flash messages instead of some key or strange message).
+
+---------------------------------------------------------------------------
+
+by grachevko at 2018-03-15T19:07:00Z
+
+Yes, I just asked.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-03-16T07:27:13Z
+
+@grachevko sorry! I'm glad you asked and please keep reviewing the issues and PRs :)  I agree with you that these missing translation messages are annoying ... but luckily the end users won't know about them, so maybe we can make an exception here and merge this. Cheers!

@@ -1,5 +1,5 @@
 {% if view == 'show' %}
     {{ value|nl2br }}
 {% else %}
-    {{ value|easyadmin_truncate }}
+    {{ value|striptags|easyadmin_truncate }}
 {% endif %}

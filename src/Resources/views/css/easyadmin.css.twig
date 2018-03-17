@@ -20,24 +20,6 @@
         table_header: '#EEE',
         table_border: '#CCC',
         table_row_border: '#DDD',
-    },
-    'light': {
-        danger: '#D42124',
-        success: '#006B2E',
-        text: '#444444',
-        text_muted: '#737373',
-        link: '#205081',
-        black: '#333333',
-        white: '#FFFFFF',
-        gray_darker: '#444',
-        gray_dark: '#AAA',
-        gray: '#CCC',
-        gray_light: '#F5F5F5',
-        gray_lighter: '#FAFAFA',
-        page_background: '#FFFFFF',
-        table_header: '#FAFAFA',
-        table_border: '#FFFFFF',
-        table_row_border: '#E5E5E5',
     }
 } %}
 
@@ -246,11 +228,7 @@ button.btn:active {
 .btn:active,
 .btn:focus,
 .btn:active:hover  {
-{% if 'dark' == color_scheme %}
     background: {{ colors.gray_light }};
-{% elseif 'light' == color_scheme %}
-    background: {{ colors.gray }};
-{% endif %}
     border: 1px solid transparent;
     border-radius: 4px;
     box-shadow: none;
@@ -359,20 +337,14 @@ button.btn:active {
 .form-inline .form-control {
     border: 1px solid {{ colors.gray }};
     border-radius: 0;
-{% if 'dark' == color_scheme %}
     box-shadow: 0 0 3px rgba(0, 0, 0, .15);
-{% endif %}
     color: {{ colors.text }};
     -webkit-transition: none;
     transition: none;
 }
 .form-control:focus {
-{% if 'dark' == color_scheme %}
     border-color: {{ colors.gray_dark }};
     box-shadow: 0 0 3px rgba(0, 0, 0, .15);
-{% elseif 'light' == color_scheme %}
-    border-color: {{ colors.gray_darker }};
-{% endif %}
 }
 
 .has-error .error-block {
@@ -402,13 +374,8 @@ button.btn:active {
 .form-actions.stuck {
     bottom: 0;
     position: fixed;
-{% if 'dark' == color_scheme %}
     background-color: {{ colors.gray_lighter }};
     box-shadow: 0 -1px 4px {{ colors.gray_light }};
-{% elseif 'light' == color_scheme %}
-    background-color: {{ colors.gray_light }};
-    box-shadow: 0 -1px 4px {{ colors.gray }};
-{% endif %}
     height: 52px;
     padding-top: 10px;
 {% if kernel_debug|default(false) %}
@@ -431,40 +398,23 @@ button.btn:active {
     margin-bottom: 26px;
     border: 0;
     border-top: 1px solid;
-{% if 'dark' == color_scheme %}
     border-top-color: #DDD;
-{% elseif 'light' == color_scheme %}
-    border-top-color: {{ colors.gray_lighter }};
-{% endif %}
 }
 .field-group .field-divider hr {
-{% if 'dark' == color_scheme %}
     border-top-color: #DDD;
-{% elseif 'light' == color_scheme %}
-    border-top-color: #EEE;
-{% endif %}
 }
 
 .field-section {
     margin: 16px 0 15px;
 }
 .field-section h2 {
-{% if 'dark' == color_scheme %}
     border-bottom: 1px solid {{ colors.gray_light }};
     color: {{ colors.gray_dark }};
-{% elseif 'light' == color_scheme %}
-    border-bottom: 1px solid #EEE;
-    color: {{ colors.gray_darker }};
-{% endif %}
     font-size: 16px;
     padding-bottom: 6px;
 }
 .field-section h2 i {
-{% if 'dark' == color_scheme %}
     color: #555;
-{% elseif 'light' == color_scheme %}
-    color: #777;
-{% endif %}
     margin-right: 2px;
 }
 .field-section p.help-block {
@@ -472,37 +422,19 @@ button.btn:active {
 }
 
 .field-group .box {
-{% if 'dark' == color_scheme %}
     border: 1px solid #DDD;
-{% elseif 'light' == color_scheme %}
-    border: 1px solid #EEE;
-{% endif %}
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 .field-group .box-header i {
-{% if 'dark' == color_scheme %}
     color: #555;
-{% elseif 'light' == color_scheme %}
-    color: #777;
-{% endif %}
     margin-right: 2px;
 }
 .field-group .box-header.with-border {
-{% if 'dark' == color_scheme %}
     background: #F0F0F0;
     border-bottom-color: #DDD;
-{% elseif 'light' == color_scheme %}
-    background: {{ colors.gray_light }};
-    border-bottom-color: #EEE;
-    color: {{ colors.gray_darker }};
-{% endif %}
     padding: 11px 10px 9px;
 }
-{% if 'light' == color_scheme %}
-.field-group .box-header .box-title {
-    color: #777;
-}
-{% endif %}
+
 .field-group .box-body {
     padding: 15px 15px 5px;
 }
@@ -774,32 +706,20 @@ button.btn:active {
    ------------------------------------------------------------------------- #}
 .main-sidebar,
 .wrapper {
-{% if 'dark' == color_scheme %}
     background-color: #333;
-{% elseif 'light' == color_scheme %}
-    background-color: {{ colors.gray_light }};
-{% endif %}
 }
 .main-sidebar {
     padding-top: 80px;
 }
 
 .sidebar-menu li.header {
-{% if 'dark' == color_scheme %}
     color: #777;
-{% elseif 'light' == color_scheme %}
-    color: {{ colors.gray_dark }};
-{% endif %}
     font-size: 12px;
     font-weight: bold;
     text-transform: uppercase;
 }
 .treeview-menu > li.header {
-{% if 'dark' == color_scheme %}
     background: #404040;
-{% elseif 'light' == color_scheme %}
-    background-color: {{ colors.gray_lighter }};
-{% endif %}
     padding-left: 28px;
 }
 
@@ -817,23 +737,15 @@ button.btn:active {
 
 .sidebar-menu > li > a,
 .sidebar-menu .treeview-menu > li > a {
-{% if 'dark' == color_scheme %}
     background: #333;
     color: #CCC;
-{% elseif 'light' == color_scheme %}
-    color: {{ colors.gray_darker }};
-{% endif %}
     border-left: 3px solid transparent;
     display: block;
     font-weight: bold;
     opacity: 1;
 }
 .sidebar-menu .treeview-menu > li > a {
-{% if 'dark' == color_scheme %}
     background: #404040;
-{% elseif 'light' == color_scheme %}
-    background-color: {{ colors.gray_lighter }};
-{% endif %}
     font-size: 13px;
     padding: 8px 5px 8px 25px;
 }
@@ -843,14 +755,9 @@ button.btn:active {
 .sidebar-menu .treeview-menu > li.active > a,
 .sidebar-collapse .sidebar-menu > li.active.submenu-active > a,
 .sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li.active > a {
-{% if 'dark' == color_scheme %}
     color: {{ colors.white }};
     background: #4D4D4D;
     border-left-color: #BBB;
-{% elseif 'light' == color_scheme %}
-    background: #DCDCDC;
-    border-left-color: #808080;
-{% endif %}
 }
 .sidebar-menu > li > a > .fa {
     width: 22px;
@@ -877,20 +784,12 @@ button.btn:active {
 .sidebar-menu > li.active.submenu-active > a,
 .sidebar-collapse .sidebar-menu > li.active.submenu-active:hover > a {
     border-left-color: transparent;
-{% if 'dark' == color_scheme %}
     background: #333;
-{% elseif 'light' == color_scheme %}
-    background: {{ colors.gray_light }};
-{% endif %}
 }
 
 {# when collapsed, menu dividers are displayed as a straight line #}
 .sidebar-mini.sidebar-collapse .sidebar-menu li.header {
-{% if 'dark' == color_scheme %}
     border-bottom: 1px solid #777;
-{% elseif 'light' == color_scheme %}
-    border-bottom: 1px solid #BBB;
-{% endif %}
     display: block !important;
     font-size: 0;
     height: 1px;
@@ -906,13 +805,7 @@ body.easyadmin h1.title {
 }
 
 .help-entity {
-{% if 'dark' == color_scheme %}
     color: {{ colors.gray_dark }};
-{% elseif 'light' == color_scheme %}
-    border: 1px solid #EEE;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
-    color: {{ colors.text_muted }};
-{% endif %}
     margin: 10px 0 5px;
 }
 
@@ -969,11 +862,7 @@ body.list .table tbody {
 }
 body.list table tbody tr {
     background: {{ colors.white }};
-{% if 'dark' == color_scheme %}
     border: 1px solid {{ colors.gray_light }};
-{% elseif 'light' == color_scheme %}
-    border: 1px solid {{ colors.gray }};
-{% endif %}
     display: block;
     margin-bottom: 1em;
 }
@@ -1039,11 +928,7 @@ body.list .pagination {
 body.list .pagination > .disabled > span {
     background: transparent;
     border: 1px solid transparent;
-{% if 'dark' == color_scheme %}
     color: {{ colors.text_muted }};
-{% elseif 'light' == color_scheme %}
-    color: {{ colors.gray }};
-{% endif %}
 }
 body.list .pagination > li > a {
     background: {{ colors.white }};
@@ -1127,11 +1012,7 @@ body.edit .form-horizontal #form-actions-row {
    SHOW PAGE
    ------------------------------------------------------------------------- #}
 body.show .form-control {
-{% if 'dark' == color_scheme %}
     background: {{ colors.white }};
-{% elseif 'light' == color_scheme %}
-    background: {{ colors.gray_lighter }};
-{% endif %}
     border: 0;
     border-radius: 0;
     box-shadow: none;
@@ -1278,18 +1159,12 @@ body.error .error-message {
     }
     body.list table thead th.sorted,
     body.list table thead th.sorted a {
-{% if 'dark' == color_scheme %}
         background: {{ brand_color }};
         color: {{ colors.white }};
-{% endif %}
     }
     body.list table thead th.sorted a:hover i,
     body.list table thead th.sorted i {
-{% if 'dark' == color_scheme %}
         color: {{ colors.white }};
-{% elseif 'light' == color_scheme %}
-        color: {{ brand_color }};
-{% endif %}
     }
     body.list th.boolean, body.list td.boolean,
     body.list th.toggle, body.list td.toggle,
@@ -1305,10 +1180,8 @@ body.error .error-message {
     }
     {# these styles are needed to fix some visual glitches when the sort field is the first column #}
     body.list .table thead tr th:first-child.sorted {
-{% if 'dark' == color_scheme %}
         border-left: 1px solid {{ brand_color }};
         border-top: 1px solid {{ brand_color }};
-{% endif %}
     }
     body.list .table tbody {
         border-bottom: 2px double {{ colors.gray_light }};

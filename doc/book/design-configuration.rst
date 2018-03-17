@@ -49,30 +49,6 @@ The value of the ``brand_color`` option can be any of the valid CSS color format
             brand_color: 'hsl(0, 100%%, 50%%);'
         # ...
 
-Changing the Color Scheme
--------------------------
-
-By default, backend interface uses a dark color scheme, which is the most common
-choice for admin applications. If you prefer a lighter alternative, add the
-``color_scheme`` option with the ``light`` value:
-
-.. code-block:: yaml
-
-    easy_admin:
-        design:
-            # 'dark' is the default value
-            color_scheme: 'light'
-        # ...
-
-.. image:: ../images/easyadmin-design-color-scheme-light.png
-   :alt: The default backend homepage using the light color scheme
-
-.. caution::
-
-    The ``light`` color scheme is deprecated since 1.x version and it will be
-    removed in EasyAdmin 2.0. Always use ``dark`` as the value of the
-    ``color_scheme`` option.
-
 Adding Custom Web Assets
 ------------------------
 

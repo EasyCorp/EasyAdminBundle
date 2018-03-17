@@ -66,7 +66,7 @@ easy_admin:
     site_name: 'ACME Backend'
     design:
         form_theme:   'horizontal'
-        color_scheme: 'light'
+        color_scheme: 'dark'
         brand_color:  '#123456'
     list:
         title: 'Global Title for List'

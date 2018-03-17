@@ -163,22 +163,18 @@ safely ignore it.
 color_scheme
 ~~~~~~~~~~~~
 
-(**default value**: ``'dark'``, **type**: string, **values**: ``'dark'`` or ``'light'``)
+(**default value**: ``'dark'``, **type**: string, **values**: ``'dark'``)
 
-It defines the colors used in the backend design. If you find the default
-``dark`` color scheme too dark, try the ``light`` color scheme. Example:
+It defines the colors used in the backend design. The only available color
+scheme is ``dark`` (the ``light`` color scheme was deprecated in the previous
+EasyAdmin version):
 
 .. code-block:: yaml
 
     easy_admin:
         design:
-            color_scheme: 'light'
+            color_scheme: 'dark'
         # ...
-
-.. caution::
-
-    The ``light`` color scheme is deprecated since 1.x version and it will be
-    removed in EasyAdmin 2.0. Always use ``dark`` as the value of this option.
 
 brand_color
 ~~~~~~~~~~~

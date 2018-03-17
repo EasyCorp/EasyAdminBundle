@@ -219,7 +219,15 @@ VichUploaderBundle configuration.
     .. code-block:: twig
 
         {# app/Resources/views/easy_admin/vich_uploader_image.html.twig #}
-        <img src="{{ vich_uploader_asset(item, 'image') }}" />
+        <a href="#" class="easyadmin-thumbnail" data-featherlight="#easyadmin-lightbox-{{ item.id }}" data-featherlight-close-on-click="anywhere">
+            {# the second parameter is the name of the property with the UploadableField annotation #}
+            <img src="{{ vich_uploader_asset(item, 'imageFile') }}">
+        </a>
+
+        <div id="easyadmin-lightbox-{{ item.id }}" class="easyadmin-lightbox">
+            {# the second parameter is the name of the property with the UploadableField annotation #}
+            <img src="{{ vich_uploader_asset(item, 'imageFile') }}">
+        </div>
 
 Uploading the Images in the ``edit`` and ``new`` Views
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

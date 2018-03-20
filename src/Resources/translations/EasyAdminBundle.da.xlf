@@ -65,7 +65,7 @@
             </trans-unit>
             <trans-unit id="label.false">
                 <source>label.false</source>
-                <target>Nes</target>
+                <target>Nej</target>
             </trans-unit>
             <trans-unit id="label.empty">
                 <source>label.empty</source>

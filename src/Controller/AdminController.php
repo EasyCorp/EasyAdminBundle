@@ -792,7 +792,7 @@ class AdminController extends Controller
      */
     protected function renderTemplate($actionName, $templatePath, array $parameters = [])
     {
-        $customRenderMethod = 'render' . ucfirst($actionName) . 'Template';
+        $customRenderMethod = 'render'.ucfirst($actionName).'Template';
 
         if (method_exists($this, $customRenderMethod)) {
             return $this->$customRenderMethod($actionName, $templatePath, $parameters);

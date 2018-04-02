@@ -781,17 +781,24 @@ class AdminController extends Controller
 
     /**
      * Used to add/modify/remove parameters before passing them to the Twig template.
-     * Instead of defining a render method per action (list, show, search, etc.) use
-     * the $actionName argument to discriminate between actions.
+     * If the controller implements an action specific method (e.g. renderEditTemplate)
+     * it will be used
      *
-     * @param string $actionName   The name of the current action (list, show, new, etc.)
+     * @param string $actionName The name of the current action (list, show, new, etc.)
      * @param string $templatePath The path of the Twig template to render
-     * @param array  $parameters   The parameters passed to the template
+     * @param array $parameters The parameters passed to the template
      *
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function renderTemplate($actionName, $templatePath, array $parameters = [])
     {
+        $customRenderMethod = 'render' . ucfirst($actionName) . 'Template';
+
+        if (method_exists($this, $customRenderMethod)) {
+            return $this->$customRenderMethod($actionName, $templatePath, $parameters);
+        }
+
         return $this->render($templatePath, $parameters);
     }
+
 }

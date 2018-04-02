@@ -751,6 +751,17 @@ very advanced layouts.
     This solves most of the issues, but sometimes you might be forced to also
     reorder the form group positions.
 
+.. tip::
+
+    Taking advantage of Bootstrap capabilities, you can make form groups **collapsible**:
+
+    .. code-block:: yaml
+
+        # ...
+        - { type: 'group', collapsible: true, expanded: false }
+
+    An icon button in the title bar toggles the content. **expanded** option defines the state at load (default: *true*).
+
 Form Tabs
 .........
 

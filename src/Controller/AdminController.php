@@ -784,11 +784,11 @@ class AdminController extends Controller
      * If the controller implements an action specific method (e.g. renderEditTemplate)
      * it will be used
      *
-     * @param string $actionName The name of the current action (list, show, new, etc.)
+     * @param string $actionName   The name of the current action (list, show, new, etc.)
      * @param string $templatePath The path of the Twig template to render
-     * @param array $parameters The parameters passed to the template
+     * @param array  $parameters   The parameters passed to the template
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     protected function renderTemplate($actionName, $templatePath, array $parameters = [])
     {
@@ -800,5 +800,4 @@ class AdminController extends Controller
 
         return $this->render($templatePath, $parameters);
     }
-
 }

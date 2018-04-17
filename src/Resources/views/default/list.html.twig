@@ -11,7 +11,8 @@
     submenuIndex: app.request.get('submenuIndex'),
     sortField: app.request.get('sortField', ''),
     sortDirection: app.request.get('sortDirection', 'DESC'),
-    page: app.request.get('page', 1)
+    page: app.request.get('page', 1),
+    referer: null
 }) %}
 
 {% if 'search' == app.request.get('action') %}

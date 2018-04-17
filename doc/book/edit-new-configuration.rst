@@ -753,14 +753,18 @@ very advanced layouts.
 
 .. tip::
 
-    Taking advantage of Bootstrap capabilities, you can make form groups **collapsible**:
+    Form groups can define the ``collapsible`` option (``false`` by default) to
+    show/hide their contents dynamically thanks to a toggle icon displayed at
+    their header. The ``expanded`` option (``true`` by default) defines the
+    initial state of the contents:
 
     .. code-block:: yaml
 
         # ...
+        # allow to show/hide contents and show them by default
+        - { type: 'group', collapsible: true }
+        # allow to show/hide contents and hide them by default
         - { type: 'group', collapsible: true, expanded: false }
-
-    An icon button in the title bar toggles the content. **expanded** option defines the state at load (default: *true*).
 
 Form Tabs
 .........

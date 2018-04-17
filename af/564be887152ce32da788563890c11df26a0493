@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-04-03T18:31:43Z
+
+We'd need more info about this feature. Where does this `collapsible` option comes from? Is it a standard feature of the theme? Does it require some JavaScript plugin? Thanks!
+
+---------------------------------------------------------------------------
+
+by ogizanagi at 2018-04-03T18:35:25Z
+
+@javiereguiluz : This is a Bootstrap feature: https://getbootstrap.com/docs/3.3/javascript/#collapse
+(However the introduced `collapsible` and `expanded` options of `group_config` should probably be explained & documented.)
+
+---------------------------------------------------------------------------
+
+by alterphp at 2018-04-04T07:46:26Z
+
+@javiereguiluz collapse is a basic Bootstrap component (CSS framework theme is build on), using Javascript that is already loaded by the theme. It's also compatible with next Bootstrap version (Bootstrap 4), in case theme will evolve.
+
+Collapsed state as example for a col-12 group :
+![collapsed](https://user-images.githubusercontent.com/738765/38294914-bd78c4a6-37ec-11e8-98d9-b37ff9ba734a.png)
+
+Just click on the right icon and it's expanded :
+![expanded](https://user-images.githubusercontent.com/738765/38294957-d68d237e-37ec-11e8-9d96-a9239de33782.png)
+
+`collapsible` option enables the feature on the group (by adding icon link in the title bar and class on the content). `expanded` set the state at load.

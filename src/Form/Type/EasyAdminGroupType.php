@@ -27,5 +27,3 @@ class EasyAdminGroupType extends AbstractType
         return $this->getBlockPrefix();
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType', false);

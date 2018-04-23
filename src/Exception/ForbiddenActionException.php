@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 /**
@@ -16,7 +7,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
  */
 class ForbiddenActionException extends BaseException
 {
-    public function __construct(array $parameters = array())
+    public function __construct(array $parameters = [])
     {
         $exceptionContext = new ExceptionContext(
             'exception.forbidden_action',
@@ -28,5 +19,3 @@ class ForbiddenActionException extends BaseException
         parent::__construct($exceptionContext);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\ForbiddenActionException', false);

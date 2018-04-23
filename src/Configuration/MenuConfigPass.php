@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 /**
@@ -60,7 +51,7 @@ class MenuConfigPass implements ConfigPassInterface
         // menu configuration to display all its entities
         if (empty($menuConfig)) {
             foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-                $menuConfig[] = array('entity' => $entityName, 'label' => $entityConfig['label']);
+                $menuConfig[] = ['entity' => $entityName, 'label' => $entityConfig['label']];
             }
         }
 
@@ -70,7 +61,7 @@ class MenuConfigPass implements ConfigPassInterface
         //   design.menu: [{ entity: 'Product' }, { entity: 'User' }]
         foreach ($menuConfig as $i => $itemConfig) {
             if (is_string($itemConfig)) {
-                $itemConfig = array('entity' => $itemConfig);
+                $itemConfig = ['entity' => $itemConfig];
             }
 
             $menuConfig[$i] = $itemConfig;
@@ -87,8 +78,8 @@ class MenuConfigPass implements ConfigPassInterface
             }
 
             // normalize submenu configuration (only for main menu items)
-            if (!isset($itemConfig['children']) && $parentItemIndex === -1) {
-                $itemConfig['children'] = array();
+            if (-1 === $parentItemIndex && !isset($itemConfig['children'])) {
+                $itemConfig['children'] = [];
             }
 
             // normalize 'default' option, which sets the menu item used as the backend index
@@ -103,6 +94,13 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['target'] = false;
             } else {
                 $itemConfig['target'] = (string) $itemConfig['target'];
+            }
+
+            // normalize 'rel' option, which adds html5 rel attribute (https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types)
+            if (!array_key_exists('rel', $itemConfig)) {
+                $itemConfig['rel'] = array_key_exists('url', $itemConfig) ? 'noreferrer' : false;
+            } else {
+                $itemConfig['rel'] = (string) $itemConfig['rel'];
             }
 
             $menuConfig[$i] = $itemConfig;
@@ -132,7 +130,7 @@ class MenuConfigPass implements ConfigPassInterface
                 }
 
                 if (!isset($itemConfig['params'])) {
-                    $itemConfig['params'] = array();
+                    $itemConfig['params'] = [];
                 }
             }
 
@@ -154,7 +152,7 @@ class MenuConfigPass implements ConfigPassInterface
                 }
 
                 if (!isset($itemConfig['params'])) {
-                    $itemConfig['params'] = array();
+                    $itemConfig['params'] = [];
                 }
             }
 
@@ -178,5 +176,3 @@ class MenuConfigPass implements ConfigPassInterface
         return $menuConfig;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', false);

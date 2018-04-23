@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -27,9 +18,9 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            FormEvents::POST_SUBMIT => array('handleViolations', -1),
-        );
+        return [
+            FormEvents::POST_SUBMIT => ['handleViolations', -1],
+        ];
     }
 
     /**
@@ -46,9 +37,9 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
         foreach ($event->getForm() as $child) {
             $errors = $child->getErrors(true);
 
-            if (count($errors) > 0) {
+            if (\count($errors) > 0) {
                 $formTab = $child->getConfig()->getAttribute('easyadmin_form_tab');
-                $formTabs[$formTab]['errors'] += count($errors);
+                $formTabs[$formTab]['errors'] += \count($errors);
 
                 if (null === $firstTabWithErrors) {
                     $firstTabWithErrors = $formTab;

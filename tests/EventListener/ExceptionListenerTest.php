@@ -1,23 +1,15 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException as EasyEntityNotFoundException;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
+class ExceptionListenerTest extends TestCase
 {
     private function getTwig()
     {
@@ -42,15 +34,15 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testCatchBaseExceptions()
     {
-        $exception = new EasyEntityNotFoundException(array(
+        $exception = new EasyEntityNotFoundException([
             'entity_name' => 'Test',
             'entity_id_name' => 'Test key',
             'entity_id_value' => 2,
-        ));
+        ]);
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
         $twig = $this->getTwig();
 
-        $listener = new ExceptionListener($twig, array(), 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($twig, [], 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 
@@ -72,7 +64,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $event = $this->getEventExceptionThatShouldNotBeCalled($exception);
         $twig = $this->getTwig();
 
-        $listener = new ExceptionListener($twig, array(), 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($twig, [], 'easyadmin.listener.exception:showExceptionPageAction');
         $listener->onKernelException($event);
     }
 }

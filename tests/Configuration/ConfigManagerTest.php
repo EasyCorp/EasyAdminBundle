@@ -1,20 +1,11 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Configuration;
 
-use Symfony\Component\HttpKernel\Kernel;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
-class ConfigManagerTest extends \PHPUnit_Framework_TestCase
+class ConfigManagerTest extends TestCase
 {
     public static function tearDownAfterClass()
     {
@@ -28,10 +19,6 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadConfig($backendConfigFilePath, $expectedConfigFilePath)
     {
-        if (!$this->isTestCompatible($backendConfigFilePath)) {
-            $this->markTestSkipped('This test is not compatible with this Symfony Version.');
-        }
-
         $backendConfig = $this->loadConfig($backendConfigFilePath);
         $expectedConfig = Yaml::parse(file_get_contents($expectedConfigFilePath));
 
@@ -45,10 +32,11 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
     {
         $backendConfig = Yaml::parse(file_get_contents($backendConfigFilePath));
         if (isset($backendConfig['expected_exception']['class'])) {
+            $this->expectException($backendConfig['expected_exception']['class']);
             if (isset($backendConfig['expected_exception']['message_string'])) {
-                $this->setExpectedException($backendConfig['expected_exception']['class'], $backendConfig['expected_exception']['message_string']);
+                $this->expectExceptionMessage($backendConfig['expected_exception']['message_string']);
             } elseif (isset($backendConfig['expected_exception']['message_regexp'])) {
-                $this->setExpectedExceptionRegExp($backendConfig['expected_exception']['class'], $backendConfig['expected_exception']['message_regexp']);
+                $this->expectExceptionMessageRegExp($backendConfig['expected_exception']['message_regexp']);
             }
         }
 
@@ -76,34 +64,10 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
         // glob() returns an array of strings and fixtures require an array of arrays
         return array_map(
             function ($filePath) {
-                return array($filePath);
+                return [$filePath];
             },
             glob(__DIR__.'/fixtures/exceptions/*.yml')
         );
-    }
-
-    private function isTestCompatible($filePath)
-    {
-        $testsWithDuplicatedYamlKeys = array(
-            __DIR__.'/fixtures/configurations/input/admin_007.yml',
-            __DIR__.'/fixtures/configurations/input/admin_008.yml',
-            __DIR__.'/fixtures/configurations/input/admin_013.yml',
-            __DIR__.'/fixtures/configurations/input/admin_014.yml',
-            __DIR__.'/fixtures/configurations/input/admin_020.yml',
-            __DIR__.'/fixtures/configurations/input/admin_021.yml',
-            __DIR__.'/fixtures/configurations/input/admin_026.yml',
-        );
-
-        // In Symfony 2.3, the YAML component behaves differently than other versions
-        // when it founds duplicated keys. In Symfony >= 3.2, duplicated keys are deprecated
-        $isSymfony23 = 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
-        $isSymfony32OrNewer = (int) Kernel::VERSION_ID >= 30200;
-
-        if ($isSymfony23 || $isSymfony32OrNewer) {
-            return !in_array($filePath, $testsWithDuplicatedYamlKeys);
-        }
-
-        return true;
     }
 
     /**

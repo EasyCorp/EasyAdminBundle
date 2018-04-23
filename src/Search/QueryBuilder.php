@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -41,15 +32,16 @@ class QueryBuilder
      */
     public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        /* @var EntityManager */
+        /* @var EntityManager $em */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
-        /* @var DoctrineQueryBuilder */
+        /* @var DoctrineQueryBuilder $queryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
+        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($sortField, $entityConfig['class'], $em);
+
         if ($isSortedByDoctrineAssociation) {
             $sortFieldParts = explode('.', $sortField);
             $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
@@ -80,27 +72,27 @@ class QueryBuilder
      */
     public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        /* @var EntityManager */
+        /* @var EntityManager $em */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
-        /* @var DoctrineQueryBuilder */
+        /* @var DoctrineQueryBuilder $queryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
             ->from($entityConfig['class'], 'entity')
         ;
 
         $isSearchQueryNumeric = is_numeric($searchQuery);
-        $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -32768 && $searchQuery <= 32767;
-        $isSearchQueryInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -2147483648 && $searchQuery <= 2147483647;
+        $isSearchQuerySmallInteger = (\is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -32768 && $searchQuery <= 32767;
+        $isSearchQueryInteger = (\is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -2147483648 && $searchQuery <= 2147483647;
         $isSearchQueryUuid = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $searchQuery);
         $lowerSearchQuery = mb_strtolower($searchQuery);
 
-        $queryParameters = array();
-        $entitiesAlreadyJoined = array();
+        $queryParameters = [];
+        $entitiesAlreadyJoined = [];
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
-            if (false !== strpos($fieldName, '.')) {
-                list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
-                if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+            if ($this->isDoctrineAssociation($fieldName, $entityConfig['class'], $em)) {
+                [$associatedEntityName, $associatedFieldName] = explode('.', $fieldName);
+                if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
                     $entitiesAlreadyJoined[] = $associatedEntityName;
                 }
@@ -111,15 +103,15 @@ class QueryBuilder
 
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];
             $isIntegerField = 'integer' === $metadata['dataType'];
-            $isNumericField = in_array($metadata['dataType'], array('number', 'bigint', 'decimal', 'float'));
-            $isTextField = in_array($metadata['dataType'], array('string', 'text'));
+            $isNumericField = \in_array($metadata['dataType'], ['number', 'bigint', 'decimal', 'float']);
+            $isTextField = \in_array($metadata['dataType'], ['string', 'text']);
             $isGuidField = 'guid' === $metadata['dataType'];
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
             if (
-                $isSmallIntegerField && $isSearchQuerySmallInteger ||
-                $isIntegerField && $isSearchQueryInteger ||
-                $isNumericField && $isSearchQueryNumeric
+                ($isSmallIntegerField && $isSearchQuerySmallInteger) ||
+                ($isIntegerField && $isSearchQueryInteger) ||
+                ($isNumericField && $isSearchQueryNumeric)
             ) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :numeric_query', $entityName, $fieldName));
                 // adding '0' turns the string into a numeric value
@@ -136,7 +128,7 @@ class QueryBuilder
             }
         }
 
-        if (0 !== count($queryParameters)) {
+        if (0 !== \count($queryParameters)) {
             $queryBuilder->setParameters($queryParameters);
         }
 
@@ -146,8 +138,8 @@ class QueryBuilder
 
         $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
         if ($isSortedByDoctrineAssociation) {
-            list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
-            if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+            $associatedEntityName = explode('.', $sortField)[0];
+            if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                 $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
                 $entitiesAlreadyJoined[] = $associatedEntityName;
             }
@@ -159,6 +151,25 @@ class QueryBuilder
 
         return $queryBuilder;
     }
-}
 
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder', 'JavierEguiluz\Bundle\EasyAdminBundle\Search\QueryBuilder', false);
+    /**
+     * Even if field parts contains a '.', it might be an embedded class and not an association.
+     * Therefore we also must check the embeddedClasses when considering if the field must be considered as an association
+     *
+     * @param string $field
+     * @param string $className
+     * @param EntityManager $em
+     * @return bool
+     */
+    protected function isDoctrineAssociation(?string $field, string $className, EntityManager $em): bool
+    {
+        if ($field === null) {
+            // field shouldn't be null in this case, but if it was, it's clear that it is not a doctrine association
+            return false;
+        }
+        $fieldParts = explode('.', $field);
+        $metaData = $em->getClassMetadata($className);
+
+        return (false !== strpos($field, '.') && !array_key_exists($fieldParts[0], $metaData->embeddedClasses));
+    }
+}

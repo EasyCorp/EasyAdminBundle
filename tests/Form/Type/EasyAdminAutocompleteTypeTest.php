@@ -1,20 +1,12 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Type;
 
 use AppTestBundle\Entity\UnitTests\Category;
 use Doctrine\Common\Collections\ArrayCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -41,7 +33,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
         $this->classMetadata
             ->expects($this->any())
             ->method('getIdentifierFieldNames')
-            ->willReturn(array('id'));
+            ->willReturn(['id']);
         $this->classMetadata
             ->expects($this->any())
             ->method('getTypeOfField')
@@ -70,28 +62,28 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             ->with(self::ENTITY_CLASS)
             ->willReturn($this->entityManager);
 
-        $this->configManager = $this->getMockBuilder('EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager')
+        $this->configManager = $this->getMockBuilder(ConfigManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->configManager
             ->expects($this->any())
             ->method('getEntityConfigByClass')
             ->with(self::ENTITY_CLASS)
-            ->willReturn(array('name' => 'Category'));
+            ->willReturn(['name' => 'Category']);
 
         parent::setUp();
     }
 
     protected function getExtensions()
     {
-        $types = array(
+        $types = [
             'entity' => new EntityType($this->doctrine),
             'easyadmin_autocomplete' => new EasyAdminAutocompleteType($this->configManager),
-        );
+        ];
 
-        return array(
-            new PreloadedExtension($types, array()),
-        );
+        return [
+            new PreloadedExtension($types, []),
+        ];
     }
 
     public function testSubmitValidSingleData()
@@ -108,18 +100,18 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
         $this->repository
             ->expects($this->any())
             ->method('findBy')
-            ->willReturn(array($category));
+            ->willReturn([$category]);
 
         $this->classMetadata
             ->expects($this->any())
             ->method('getIdentifierValues')
             ->with($category)
-            ->willReturn(array('id' => $category->id));
+            ->willReturn(['id' => $category->id]);
 
-        $form = $this->factory->create(LegacyFormHelper::getType('easyadmin_autocomplete'), null, array(
+        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
             'class' => self::ENTITY_CLASS,
-        ));
-        $formData = array('autocomplete' => '1');
+        ]);
+        $formData = ['autocomplete' => '1'];
         $form->submit($formData);
 
         $this->assertTrue($form->isSynchronized());
@@ -137,7 +129,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             $choiceView = new \Symfony\Component\Form\Extension\Core\View\ChoiceView($category, 1, '1');
         }
 
-        $this->assertEquals(array('1' => $choiceView), $children['autocomplete']->vars['choices']);
+        $this->assertEquals(['1' => $choiceView], $children['autocomplete']->vars['choices']);
     }
 
     public function testSubmitValidMultipleData()
@@ -155,30 +147,30 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             ->expects($this->any())
             ->method('findBy')
             ->withAnyParameters()
-            ->willReturn(array($category1));
+            ->willReturn([$category1]);
 
         $this->classMetadata
             ->expects($this->any())
             ->method('getIdentifierValues')
             ->with($category1)
-            ->willReturn(array('id' => $category1->id));
+            ->willReturn(['id' => $category1->id]);
 
-        $form = $this->factory->create(LegacyFormHelper::getType('easyadmin_autocomplete'), null, array(
+        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
             'class' => self::ENTITY_CLASS,
             'multiple' => true,
-        ));
-        $form->submit(array('autocomplete' => array('1')));
+        ]);
+        $form->submit(['autocomplete' => ['1']]);
 
         $this->assertTrue($form->isSynchronized());
-        $this->assertEquals(new ArrayCollection(array($category1)), $form->getData());
+        $this->assertEquals(new ArrayCollection([$category1]), $form->getData());
     }
 
     public function testSubmitEmptySingleData()
     {
-        $form = $this->factory->create(LegacyFormHelper::getType('easyadmin_autocomplete'), null, array(
+        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
             'class' => self::ENTITY_CLASS,
-        ));
-        $form->submit(array('autocomplete' => ''));
+        ]);
+        $form->submit(['autocomplete' => '']);
 
         $this->assertTrue($form->isSynchronized());
         $this->assertNull($form->getData());
@@ -186,10 +178,10 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
 
     public function testSubmitEmptyMultipleData()
     {
-        $form = $this->factory->create(LegacyFormHelper::getType('easyadmin_autocomplete'), null, array(
+        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
             'class' => self::ENTITY_CLASS,
             'multiple' => true,
-        ));
+        ]);
         $form->submit(null);
 
         $this->assertTrue($form->isSynchronized());

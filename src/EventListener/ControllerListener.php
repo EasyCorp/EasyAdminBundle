@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,12 +15,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ControllerListener
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
     /** @var ControllerResolverInterface */
     private $resolver;
 
-    public function __construct(ConfigManager $configManager, ControllerResolverInterface $resolver)
+    public function __construct(ConfigManagerInterface $configManager, ControllerResolverInterface $resolver)
     {
         $this->configManager = $configManager;
         $this->resolver = $resolver;
@@ -39,9 +30,15 @@ class ControllerListener
      * Exchange default admin controller by custom entity admin controller.
      *
      * @param FilterControllerEvent $event
+     *
+     * @throws NotFoundHttpException
      */
     public function onKernelController(FilterControllerEvent $event)
     {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
         $request = $event->getRequest();
         if ('easyadmin' !== $request->attributes->get('_route')) {
             return;
@@ -50,7 +47,7 @@ class ControllerListener
         $currentController = $event->getController();
         // if the controller is defined in a class, $currentController is an array
         // otherwise do nothing because it's a Closure (rare but possible in Symfony)
-        if (!is_array($currentController)) {
+        if (!\is_array($currentController)) {
             return;
         }
 
@@ -89,5 +86,3 @@ class ControllerListener
         $event->setController($newController);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener', 'JavierEguiluz\Bundle\EasyAdminBundle\EventListener\ControllerListener', false);

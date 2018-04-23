@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\DataCollector;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -27,10 +18,10 @@ use Symfony\Component\Yaml\Yaml;
  */
 class EasyAdminDataCollector extends DataCollector
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
 
-    public function __construct(ConfigManager $configManager)
+    public function __construct(ConfigManagerInterface $configManager)
     {
         $this->configManager = $configManager;
         $this->reset();
@@ -41,12 +32,12 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function reset()
     {
-        $this->data = array(
+        $this->data = [
             'num_entities' => 0,
             'request_parameters' => null,
             'current_entity_configuration' => null,
             'backend_configuration' => null,
-        );
+        ];
     }
 
     /**
@@ -55,20 +46,20 @@ class EasyAdminDataCollector extends DataCollector
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         // 'admin' is the deprecated route name that will be removed in version 2.0.
-        if (!in_array($request->attributes->get('_route'), array('easyadmin', 'admin'))) {
+        if (!\in_array($request->attributes->get('_route'), ['easyadmin', 'admin'])) {
             return;
         }
 
         $backendConfig = $this->configManager->getBackendConfig();
-        $entityName = $request->query->get('entity', null);
-        $currentEntityConfig = array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : array();
+        $entityName = $request->query->get('entity');
+        $currentEntityConfig = array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : [];
 
-        $this->data = array(
-            'num_entities' => count($backendConfig['entities']),
+        $this->data = [
+            'num_entities' => \count($backendConfig['entities']),
             'request_parameters' => $this->getEasyAdminParameters($request),
             'current_entity_configuration' => $currentEntityConfig,
             'backend_configuration' => $backendConfig,
-        );
+        ];
     }
 
     /**
@@ -78,13 +69,13 @@ class EasyAdminDataCollector extends DataCollector
      */
     private function getEasyAdminParameters(Request $request)
     {
-        return array(
+        return [
             'action' => $request->query->get('action'),
             'entity' => $request->query->get('entity'),
             'id' => $request->query->get('id'),
             'sort_field' => $request->query->get('sortField'),
             'sort_direction' => $request->query->get('sortDirection'),
-        );
+        ];
     }
 
     /**
@@ -138,13 +129,13 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function dump($variable)
     {
-        if (class_exists('Symfony\Component\VarDumper\Dumper\HtmlDumper')) {
+        if (class_exists(HtmlDumper::class)) {
             $cloner = new VarCloner();
             $dumper = new HtmlDumper();
 
             $dumper->dump($cloner->cloneVar($variable), $output = fopen('php://memory', 'r+b'));
             $dumpedData = stream_get_contents($output, -1, 0);
-        } elseif (class_exists('Symfony\Component\Yaml\Yaml')) {
+        } elseif (class_exists(Yaml::class)) {
             $dumpedData = sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
         } else {
             $dumpedData = sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));
@@ -161,5 +152,3 @@ class EasyAdminDataCollector extends DataCollector
         return 'easyadmin';
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector', 'JavierEguiluz\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector', false);

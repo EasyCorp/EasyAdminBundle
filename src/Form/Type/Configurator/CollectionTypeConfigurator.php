@@ -1,17 +1,9 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -35,16 +27,13 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
             $options['allow_delete'] = true;
         }
 
-        // The "delete_empty" option exists as of Sf >= 2.5
-        if (class_exists('Symfony\\Component\\Form\\FormErrorIterator')) {
-            if (!isset($options['delete_empty'])) {
-                $options['delete_empty'] = true;
-            }
+        if (!isset($options['delete_empty'])) {
+            $options['delete_empty'] = true;
         }
 
         // allow using short form types as the 'entry_type' of the collection
         if (isset($options['entry_type'])) {
-            $options['entry_type'] = LegacyFormHelper::getType($options['entry_type']);
+            $options['entry_type'] = FormTypeHelper::getTypeClass($options['entry_type']);
         }
 
         return $options;
@@ -55,8 +44,6 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        return in_array($type, array('collection', 'Symfony\Component\Form\Extension\Core\Type\CollectionType'), true);
+        return \in_array($type, ['collection', CollectionType::class], true);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator', false);

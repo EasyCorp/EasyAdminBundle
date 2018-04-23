@@ -1,29 +1,23 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 /**
  * Defines the filters and functions used to render the bundle's templates.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EasyAdminTwigExtension extends \Twig_Extension
+class EasyAdminTwigExtension extends AbstractExtension
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
     /** @var PropertyAccessor */
     private $propertyAccessor;
@@ -33,7 +27,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     private $debug;
     private $logoutUrlGenerator;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, EasyAdminRouter $easyAdminRouter, $debug = false, $logoutUrlGenerator)
+    public function __construct(ConfigManagerInterface $configManager, PropertyAccessor $propertyAccessor, EasyAdminRouter $easyAdminRouter, $debug = false, $logoutUrlGenerator)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
@@ -47,18 +41,18 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            new \Twig_SimpleFunction('easyadmin_render_field_for_*_view', array($this, 'renderEntityField'), array('is_safe' => array('html'), 'needs_environment' => true)),
-            new \Twig_SimpleFunction('easyadmin_config', array($this, 'getBackendConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_entity', array($this, 'getEntityConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_path', array($this, 'getEntityPath')),
-            new \Twig_SimpleFunction('easyadmin_action_is_enabled', array($this, 'isActionEnabled')),
-            new \Twig_SimpleFunction('easyadmin_action_is_enabled_for_*_view', array($this, 'isActionEnabled')),
-            new \Twig_SimpleFunction('easyadmin_get_action', array($this, 'getActionConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_get_action_for_*_view', array($this, 'getActionConfiguration')),
-            new \Twig_SimpleFunction('easyadmin_get_actions_for_*_item', array($this, 'getActionsForItem')),
-            new \Twig_SimpleFunction('easyadmin_logout_path', array($this, 'getLogoutPath')),
-        );
+        return [
+            new TwigFunction('easyadmin_render_field_for_*_view', [$this, 'renderEntityField'], ['is_safe' => ['html'], 'needs_environment' => true]),
+            new TwigFunction('easyadmin_config', [$this, 'getBackendConfiguration']),
+            new TwigFunction('easyadmin_entity', [$this, 'getEntityConfiguration']),
+            new TwigFunction('easyadmin_path', [$this, 'getEntityPath']),
+            new TwigFunction('easyadmin_action_is_enabled', [$this, 'isActionEnabled']),
+            new TwigFunction('easyadmin_action_is_enabled_for_*_view', [$this, 'isActionEnabled']),
+            new TwigFunction('easyadmin_get_action', [$this, 'getActionConfiguration']),
+            new TwigFunction('easyadmin_get_action_for_*_view', [$this, 'getActionConfiguration']),
+            new TwigFunction('easyadmin_get_actions_for_*_item', [$this, 'getActionsForItem']),
+            new TwigFunction('easyadmin_logout_path', [$this, 'getLogoutPath']),
+        ];
     }
 
     /**
@@ -66,10 +60,10 @@ class EasyAdminTwigExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('easyadmin_truncate', array($this, 'truncateText'), array('needs_environment' => true)),
-            new \Twig_SimpleFilter('easyadmin_urldecode', 'urldecode'),
-        );
+        return [
+            new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
+            new TwigFilter('easyadmin_urldecode', 'urldecode'),
+        ];
     }
 
     /**
@@ -107,7 +101,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function getEntityPath($entity, $action, array $parameters = array())
+    public function getEntityPath($entity, $action, array $parameters = [])
     {
         return $this->easyAdminRouter->generate($entity, $action, $parameters);
     }
@@ -132,7 +126,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
     {
         $entityConfiguration = $this->configManager->getEntityConfig($entityName);
         $hasCustomTemplate = 0 !== strpos($fieldMetadata['template'], '@EasyAdmin/');
-        $templateParameters = array();
+        $templateParameters = [];
 
         try {
             $templateParameters = $this->getTemplateParameters($entityName, $view, $fieldMetadata, $item);
@@ -150,7 +144,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
             }
 
-            if (empty($templateParameters['value']) && in_array($fieldMetadata['dataType'], array('image', 'file', 'array', 'simple_array'))) {
+            if (empty($templateParameters['value']) && \in_array($fieldMetadata['dataType'], ['image', 'file', 'array', 'simple_array'])) {
                 return $twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
             }
 
@@ -169,20 +163,18 @@ class EasyAdminTwigExtension extends \Twig_Extension
         $fieldName = $fieldMetadata['property'];
         $fieldType = $fieldMetadata['dataType'];
 
-        $parameters = array(
+        $parameters = [
             'backend_config' => $this->getBackendConfiguration(),
             'entity_config' => $this->configManager->getEntityConfig($entityName),
             'field_options' => $fieldMetadata,
             'item' => $item,
             'view' => $view,
-        );
+        ];
 
-        // the try..catch block is required because we can't use
-        // $propertyAccessor->isReadable(), which is unavailable in Symfony 2.3
-        try {
+        if ($this->propertyAccessor->isReadable($item, $fieldName)) {
             $parameters['value'] = $this->propertyAccessor->getValue($item, $fieldName);
             $parameters['is_accessible'] = true;
-        } catch (\Exception $e) {
+        } else {
             $parameters['value'] = null;
             $parameters['is_accessible'] = false;
         }
@@ -199,11 +191,9 @@ class EasyAdminTwigExtension extends \Twig_Extension
             $parameters = $this->addAssociationFieldParameters($parameters);
         }
 
-        if (true === $fieldMetadata['virtual']) {
-            // when a virtual field doesn't define it's type, consider it a string
-            if (null === $parameters['field_options']['dataType']) {
-                $parameters['value'] = (string) $parameters['value'];
-            }
+        // when a virtual field doesn't define it's type, consider it a string
+        if (true === $fieldMetadata['virtual'] && null === $parameters['field_options']['dataType']) {
+            $parameters['value'] = (string) $parameters['value'];
         }
 
         return $parameters;
@@ -232,7 +222,7 @@ class EasyAdminTwigExtension extends \Twig_Extension
                 : '/'.ltrim($templateParameters['value'], '/');
         }
 
-        $templateParameters['filename'] = isset($templateParameters['field_options']['filename']) ? $templateParameters['field_options']['filename'] : basename($templateParameters['value']);
+        $templateParameters['filename'] = $templateParameters['field_options']['filename'] ?? basename($templateParameters['value']);
 
         return $templateParameters;
     }
@@ -245,14 +235,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
             return $templateParameters;
         }
 
-        $isShowActionAllowed = !in_array('show', $targetEntityConfig['disabled_actions']);
+        $isShowActionAllowed = !\in_array('show', $targetEntityConfig['disabled_actions']);
 
         if ($templateParameters['field_options']['associationType'] & ClassMetadata::TO_ONE) {
-            // the try..catch block is required because we can't use
-            // $propertyAccessor->isReadable(), which is unavailable in Symfony 2.3
-            try {
+            if ($this->propertyAccessor->isReadable($templateParameters['value'], $targetEntityConfig['primary_key_field_name'])) {
                 $primaryKeyValue = $this->propertyAccessor->getValue($templateParameters['value'], $targetEntityConfig['primary_key_field_name']);
-            } catch (\Exception $e) {
+            } else {
                 $primaryKeyValue = null;
             }
 
@@ -268,12 +256,12 @@ class EasyAdminTwigExtension extends \Twig_Extension
             // if the associated entity is managed by EasyAdmin, and the "show"
             // action is enabled for the associated entity, display a link to it
             if (null !== $targetEntityConfig && null !== $primaryKeyValue && $isShowActionAllowed) {
-                $templateParameters['link_parameters'] = array(
+                $templateParameters['link_parameters'] = [
                     'action' => 'show',
                     'entity' => $targetEntityConfig['name'],
                     // casting to string is needed because entities can use objects as primary keys
                     'id' => (string) $primaryKeyValue,
-                );
+                ];
             }
         }
 
@@ -281,11 +269,11 @@ class EasyAdminTwigExtension extends \Twig_Extension
             // if the associated entity is managed by EasyAdmin, and the "show"
             // action is enabled for the associated entity, display a link to it
             if (null !== $targetEntityConfig && $isShowActionAllowed) {
-                $templateParameters['link_parameters'] = array(
+                $templateParameters['link_parameters'] = [
                     'action' => 'show',
                     'entity' => $targetEntityConfig['name'],
                     'primary_key_name' => $targetEntityConfig['primary_key_field_name'],
-                );
+                ];
             }
         }
 
@@ -335,22 +323,22 @@ class EasyAdminTwigExtension extends \Twig_Extension
         try {
             $entityConfig = $this->configManager->getEntityConfig($entityName);
         } catch (\Exception $e) {
-            return array();
+            return [];
         }
 
         $disabledActions = $entityConfig['disabled_actions'];
         $viewActions = $entityConfig[$view]['actions'];
 
-        $actionsExcludedForItems = array(
-            'list' => array('new', 'search'),
-            'edit' => array(),
-            'new' => array(),
-            'show' => array(),
-        );
+        $actionsExcludedForItems = [
+            'list' => ['new', 'search'],
+            'edit' => [],
+            'new' => [],
+            'show' => [],
+        ];
         $excludedActions = $actionsExcludedForItems[$view];
 
         return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
-            return !in_array($action['name'], $excludedActions) && !in_array($action['name'], $disabledActions);
+            return !\in_array($action['name'], $excludedActions) && !\in_array($action['name'], $disabledActions);
         });
     }
 
@@ -404,22 +392,4 @@ class EasyAdminTwigExtension extends \Twig_Extension
             return;
         }
     }
-
-    /**
-     * It returns the last part of the fully qualified class name
-     * (e.g. 'AppBundle\Entity\User' -> 'User').
-     *
-     * @param string $fqcn
-     *
-     * @return string
-     */
-    private function getClassShortName($fqcn)
-    {
-        $classParts = explode('\\', $fqcn);
-        $className = end($classParts);
-
-        return $className;
-    }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension', 'JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension', false);

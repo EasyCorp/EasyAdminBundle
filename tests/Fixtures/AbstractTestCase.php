@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures;
 
 use Symfony\Bundle\FrameworkBundle\Client;
@@ -31,7 +22,7 @@ abstract class AbstractTestCase extends WebTestCase
         $this->initDatabase();
     }
 
-    protected function initClient(array $options = array())
+    protected function initClient(array $options = [])
     {
         $this->client = static::createClient($options);
     }
@@ -69,7 +60,7 @@ abstract class AbstractTestCase extends WebTestCase
      */
     protected function getBackendHomepage()
     {
-        return $this->getBackendPage(array('entity' => 'Category', 'view' => 'list'));
+        return $this->getBackendPage(['entity' => 'Category', 'view' => 'list']);
     }
 
     /**
@@ -77,11 +68,11 @@ abstract class AbstractTestCase extends WebTestCase
      */
     protected function requestListView($entityName = 'Category')
     {
-        return $this->getBackendPage(array(
+        return $this->getBackendPage([
             'action' => 'list',
             'entity' => $entityName,
             'view' => 'list',
-        ));
+        ]);
     }
 
     /**
@@ -89,11 +80,11 @@ abstract class AbstractTestCase extends WebTestCase
      */
     protected function requestShowView($entityName = 'Category', $entityId = 200)
     {
-        return $this->getBackendPage(array(
+        return $this->getBackendPage([
             'action' => 'show',
             'entity' => $entityName,
             'id' => $entityId,
-        ));
+        ]);
     }
 
     /**
@@ -101,11 +92,11 @@ abstract class AbstractTestCase extends WebTestCase
      */
     protected function requestSearchView($searchQuery = 'cat', $entityName = 'Category')
     {
-        return $this->getBackendPage(array(
+        return $this->getBackendPage([
             'action' => 'search',
             'entity' => $entityName,
             'query' => $searchQuery,
-        ));
+        ]);
     }
 
     /**
@@ -113,10 +104,10 @@ abstract class AbstractTestCase extends WebTestCase
      */
     protected function requestNewView($entityName = 'Category')
     {
-        return $this->getBackendPage(array(
+        return $this->getBackendPage([
             'action' => 'new',
             'entity' => $entityName,
-        ));
+        ]);
     }
 
     /**
@@ -124,10 +115,10 @@ abstract class AbstractTestCase extends WebTestCase
      */
     protected function requestEditView($entityName = 'Category', $entityId = '200')
     {
-        return $this->getBackendPage(array(
+        return $this->getBackendPage([
             'action' => 'edit',
             'entity' => $entityName,
             'id' => $entityId,
-        ));
+        ]);
     }
 }

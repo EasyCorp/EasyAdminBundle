@@ -1,21 +1,11 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Extension;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -26,9 +16,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class EasyAdminExtension extends AbstractTypeExtension
 {
-    /** @var Request|null */
-    private $request;
-
     /** @var RequestStack|null */
     private $requestStack;
 
@@ -45,39 +32,29 @@ class EasyAdminExtension extends AbstractTypeExtension
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
+        $request = null;
         if (null !== $this->requestStack) {
-            $this->request = $this->requestStack->getCurrentRequest();
+            $request = $this->requestStack->getCurrentRequest();
         }
 
-        if (null === $this->request) {
+        if (null === $request) {
             return;
         }
 
-        if ($this->request->attributes->has('easyadmin')) {
-            $easyadmin = $this->request->attributes->get('easyadmin');
+        if ($request->attributes->has('easyadmin')) {
+            $easyadmin = $request->attributes->get('easyadmin');
             $entity = $easyadmin['entity'];
             $action = $easyadmin['view'];
-            $fields = isset($entity[$action]['fields']) ? $entity[$action]['fields'] : array();
-            $view->vars['easyadmin'] = array(
+            $fields = $entity[$action]['fields'] ?? [];
+            $view->vars['easyadmin'] = [
                 'entity' => $entity,
                 'view' => $action,
                 'item' => $easyadmin['item'],
-                'field' => isset($fields[$view->vars['name']]) ? $fields[$view->vars['name']] : null,
+                'field' => $fields[$view->vars['name']] ?? null,
                 'form_group' => $form->getConfig()->getAttribute('easyadmin_form_group'),
                 'form_tab' => $form->getConfig()->getAttribute('easyadmin_form_tab'),
-            );
+            ];
         }
-    }
-
-    /**
-     * BC for SF < 2.4.
-     * To be replaced by the usage of the request stack when 2.3 support is dropped.
-     *
-     * @param Request|null $request
-     */
-    public function setRequest(Request $request = null)
-    {
-        $this->request = $request;
     }
 
     /**
@@ -85,8 +62,6 @@ class EasyAdminExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return LegacyFormHelper::getType('form');
+        return FormTypeHelper::getTypeClass('form');
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Extension\EasyAdminExtension', false);

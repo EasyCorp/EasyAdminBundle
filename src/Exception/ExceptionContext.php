@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 /**
@@ -21,7 +12,7 @@ class ExceptionContext
     private $parameters;
     private $statusCode;
 
-    public function __construct($publicMessage, $debugMessage = '', $parameters = array(), $statusCode = 500)
+    public function __construct($publicMessage, $debugMessage = '', $parameters = [], $statusCode = 500)
     {
         $this->publicMessage = $publicMessage;
         $this->debugMessage = $debugMessage;
@@ -56,13 +47,13 @@ class ExceptionContext
 
     private function transformIntoTranslationPlaceholders(array $parameters)
     {
-        $placeholders = array();
+        $placeholders = [];
         foreach ($parameters as $key => $value) {
             if ('%' !== $key[0]) {
                 $key = '%'.$key;
             }
-            if ('%' !== substr($key, -1)) {
-                $key = $key.'%';
+            if ('%' !== $key[-1]) {
+                $key .= '%';
             }
 
             $placeholders[$key] = $value;
@@ -71,5 +62,3 @@ class ExceptionContext
         return $placeholders;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\ExceptionContext', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\ExceptionContext', false);

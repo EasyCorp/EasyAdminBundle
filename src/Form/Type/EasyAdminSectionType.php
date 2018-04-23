@@ -27,5 +27,3 @@ class EasyAdminSectionType extends AbstractType
         return $this->getBlockPrefix();
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType', false);

@@ -1,28 +1,18 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Custom form type that deals with some of the logic used to render the
@@ -32,17 +22,17 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class EasyAdminFormType extends AbstractType
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
 
     /** @var TypeConfiguratorInterface[] */
     private $configurators;
 
     /**
-     * @param ConfigManager               $configManager
+     * @param ConfigManagerInterface      $configManager
      * @param TypeConfiguratorInterface[] $configurators
      */
-    public function __construct(ConfigManager $configManager, array $configurators = array())
+    public function __construct(ConfigManagerInterface $configManager, array $configurators = [])
     {
         $this->configManager = $configManager;
         $this->configurators = $configurators;
@@ -56,10 +46,10 @@ class EasyAdminFormType extends AbstractType
         $entity = $options['entity'];
         $view = $options['view'];
         $entityConfig = $this->configManager->getEntityConfig($entity);
-        $entityProperties = isset($entityConfig[$view]['fields']) ? $entityConfig[$view]['fields'] : array();
-        $formTabs = array();
+        $entityProperties = $entityConfig[$view]['fields'] ?? [];
+        $formTabs = [];
         $currentFormTab = null;
-        $formGroups = array();
+        $formGroups = [];
         $currentFormGroup = null;
 
         foreach ($entityProperties as $name => $metadata) {
@@ -72,13 +62,13 @@ class EasyAdminFormType extends AbstractType
                 }
             }
 
-            $formFieldType = LegacyFormHelper::getType($metadata['fieldType']);
+            $formFieldType = FormTypeHelper::getTypeClass($metadata['fieldType']);
 
             // if the form field is a special 'group' design element, don't add it
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (in_array($formFieldType, array('easyadmin_group', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminGroupType'))) {
+            if (in_array($formFieldType, ['easyadmin_group', EasyAdminGroupType::class])) {
                 $metadata['form_tab'] = $currentFormTab ?: null;
                 $currentFormGroup = $metadata['fieldName'];
                 $formGroups[$currentFormGroup] = $metadata;
@@ -90,9 +80,9 @@ class EasyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (in_array($formFieldType, array('easyadmin_tab', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminTabType'))) {
+            if (\in_array($formFieldType, ['easyadmin_tab', EasyAdminTabType::class])) {
                 // The first tab should be marked as active by default
-                $metadata['active'] = 0 === count($formTabs);
+                $metadata['active'] = 0 === \count($formTabs);
                 $metadata['errors'] = 0;
                 $currentFormTab = $metadata['fieldName'];
 
@@ -120,7 +110,7 @@ class EasyAdminFormType extends AbstractType
         $builder->setAttribute('easyadmin_form_tabs', $formTabs);
         $builder->setAttribute('easyadmin_form_groups', $formGroups);
 
-        if (count($formTabs) > 0) {
+        if (\count($formTabs) > 0) {
             $builder->addEventSubscriber(new EasyAdminTabSubscriber());
         }
     }
@@ -142,7 +132,7 @@ class EasyAdminFormType extends AbstractType
         $configManager = $this->configManager;
 
         $resolver
-            ->setDefaults(array(
+            ->setDefaults([
                 'allow_extra_fields' => true,
                 'data_class' => function (Options $options) use ($configManager) {
                     $entity = $options['entity'];
@@ -150,22 +140,9 @@ class EasyAdminFormType extends AbstractType
 
                     return $entityConfig['class'];
                 },
-            ))
-            ->setRequired(array('entity', 'view'));
-
-        // setNormalizer() is available since Symfony 2.6
-        if (method_exists($resolver, 'setNormalizer')) {
-            $resolver->setNormalizer('attr', $this->getAttributesNormalizer());
-        } else {
-            // BC for Symfony < 2.6
-            $resolver->setNormalizers(array('attr' => $this->getAttributesNormalizer()));
-        }
-    }
-
-    // BC for SF < 2.7
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
+            ])
+            ->setRequired(['entity', 'view'])
+            ->setNormalizer('attr', $this->getAttributesNormalizer());
     }
 
     /**
@@ -192,11 +169,9 @@ class EasyAdminFormType extends AbstractType
     private function getAttributesNormalizer()
     {
         return function (Options $options, $value) {
-            return array_replace(array(
+            return array_replace([
                 'id' => sprintf('%s-%s-form', $options['view'], mb_strtolower($options['entity'])),
-            ), $value);
+            ], $value);
         };
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType', false);

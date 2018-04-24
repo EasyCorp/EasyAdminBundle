@@ -165,21 +165,21 @@ class QueryBuilder
      * Even if field parts contains a '.', it might be an embedded class and not an association.
      * Therefore we also must check the embeddedClasses when considering if the field must be considered as an association
      *
-     * @param string $field
-     * @param string $className
+     * @param string|null   $field
+     * @param string        $className
      * @param EntityManager $em
      * @return bool
      */
     protected function isDoctrineAssociation($field, $className, EntityManager $em)
     {
-        if ($field === null) {
+        if (null === $field) {
             // field shouldn't be null in this case, but if it was, it's clear that it is not a doctrine association
             return false;
         }
         $fieldParts = explode('.', $field);
         $metaData = $em->getClassMetadata($className);
 
-        return (false !== strpos($field, '.') && !array_key_exists($fieldParts[0], $metaData->embeddedClasses));
+        return false !== strpos($field, '.') && !array_key_exists($fieldParts[0], $metaData->embeddedClasses));
     }
 }
 

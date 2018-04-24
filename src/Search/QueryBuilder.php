@@ -49,7 +49,7 @@ class QueryBuilder
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
+        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($sortField, $entityConfig['class'], $em);
         if ($isSortedByDoctrineAssociation) {
             $sortFieldParts = explode('.', $sortField);
             $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
@@ -98,7 +98,7 @@ class QueryBuilder
         $entitiesAlreadyJoined = array();
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
-            if (false !== strpos($fieldName, '.')) {
+            if ($this->isDoctrineAssociation($fieldName, $entityConfig['class'], $em)) {
                 list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
                 if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
@@ -144,7 +144,7 @@ class QueryBuilder
             $queryBuilder->andWhere($dqlFilter);
         }
 
-        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
+        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($sortField, $entityConfig['class'], $em);
         if ($isSortedByDoctrineAssociation) {
             list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
             if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
@@ -158,6 +158,28 @@ class QueryBuilder
         }
 
         return $queryBuilder;
+    }
+
+
+    /**
+     * Even if field parts contains a '.', it might be an embedded class and not an association.
+     * Therefore we also must check the embeddedClasses when considering if the field must be considered as an association
+     *
+     * @param string|null   $field
+     * @param string        $className
+     * @param EntityManager $em
+     * @return bool
+     */
+    protected function isDoctrineAssociation($field, $className, EntityManager $em)
+    {
+        if (null === $field) {
+            // field shouldn't be null in this case, but if it was, it's clear that it is not a doctrine association
+            return false;
+        }
+        $fieldParts = explode('.', $field);
+        $metaData = $em->getClassMetadata($className);
+
+        return false !== strpos($field, '.') && !array_key_exists($fieldParts[0], $metaData->embeddedClasses));
     }
 }
 

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 /**
  * Processes the main menu configuration defined in the "design.menu"
  * option or creates the default config for the menu if none is defined.
@@ -10,12 +11,20 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
  */
 class MenuConfigPass implements ConfigPassInterface
 {
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
     public function process(array $backendConfig)
     {
         // process 1st level menu items
         $menuConfig = $backendConfig['design']['menu'];
         $menuConfig = $this->normalizeMenuConfig($menuConfig, $backendConfig);
         $menuConfig = $this->processMenuConfig($menuConfig, $backendConfig);
+        $menuConfig = $this->processMenuSecurityConfig($menuConfig);
 
         $backendConfig['design']['menu'] = $menuConfig;
 
@@ -173,6 +182,32 @@ class MenuConfigPass implements ConfigPassInterface
             $menuConfig[$i] = $itemConfig;
         }
 
+        return $menuConfig;
+    }
+
+    /**
+     * Checks if the entity should be displayed in the menu section
+     *
+     * @author luxferoo <imamharir@gmail.com>
+     * @param array $menuConfig
+     * @return array
+     */
+    private
+    function processMenuSecurityConfig(array $menuConfig){
+        $userRoles = [];
+        if (!is_string($this->tokenStorage->getToken()->getUser()))
+            $userRoles = $this->tokenStorage->getToken()->getUser()->getRoles();
+
+        foreach ($menuConfig as $i => &$itemConfig) {
+            $rolesForItem = isset($itemConfig['roles']) ? $itemConfig['roles'] : [];
+            if (!array_intersect($rolesForItem, $userRoles) && $rolesForItem)
+                unset($menuConfig[$i]);
+            foreach ($itemConfig['children'] as $index => $subItem){
+                $rolesForSubItem = isset($subItem['roles']) ? $subItem['roles'] : [];
+                if (!array_intersect($rolesForSubItem, $userRoles) && $rolesForSubItem)
+                    unset($itemConfig['children'][$index]);
+            }
+        }
         return $menuConfig;
     }
 }

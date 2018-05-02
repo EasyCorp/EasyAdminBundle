@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 /**
  * Merges all the actions that can be configured in the backend and normalizes
  * them to get the final action configuration for each entity view.
@@ -10,6 +11,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
  */
 class ActionConfigPass implements ConfigPassInterface
 {
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
     private $views = ['edit', 'list', 'new', 'show'];
     private $defaultActionConfig = [
         // either the name of a controller method or an application route (it depends on the 'type' option)
@@ -34,6 +42,7 @@ class ActionConfigPass implements ConfigPassInterface
         $backendConfig = $this->normalizeActionsConfig($backendConfig);
         $backendConfig = $this->resolveActionInheritance($backendConfig);
         $backendConfig = $this->processActionsConfig($backendConfig);
+        $backendConfig = $this->processEntitiesSecurityConfig($backendConfig);
 
         return $backendConfig;
     }
@@ -343,5 +352,27 @@ class ActionConfigPass implements ConfigPassInterface
         }
 
         return $newArray;
+    }
+    /**
+     * Checks if user has the right to use the entity
+     *
+     * @author luxferoo <imamharir@gmail.com>
+     * @param array $backendConfig
+     * @return array
+     */
+    private
+    function processEntitiesSecurityConfig(array $backendConfig)
+    {
+        $userRoles = [];
+        if (!is_string($this->tokenStorage->getToken()->getUser()))
+            $userRoles = $this->tokenStorage->getToken()->getUser()->getRoles();
+
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            $rolesForEntity = isset($entityConfig['roles']) ? $entityConfig['roles'] : [];
+            if (!array_intersect($rolesForEntity, $userRoles) && $rolesForEntity)
+                unset($backendConfig['entities'][$entityName]);
+        }
+
+        return $backendConfig;
     }
 }

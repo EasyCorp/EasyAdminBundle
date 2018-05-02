@@ -89,6 +89,7 @@
         </service>
 
         <service id="easyadmin.configuration.menu_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuConfigPass" public="false">
+            <argument type="service" id="security.token_storage" />
             <tag name="easyadmin.config_pass" priority="70" />
         </service>
 

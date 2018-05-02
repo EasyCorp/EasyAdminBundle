@@ -1,6 +1,17 @@
 <?php
 
+/*
+ * This file is part of the EasyAdminBundle.
+ *
+ * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
+
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Processes the main menu configuration defined in the "design.menu"
@@ -10,12 +21,21 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
  */
 class MenuConfigPass implements ConfigPassInterface
 {
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
     public function process(array $backendConfig)
     {
         // process 1st level menu items
         $menuConfig = $backendConfig['design']['menu'];
         $menuConfig = $this->normalizeMenuConfig($menuConfig, $backendConfig);
         $menuConfig = $this->processMenuConfig($menuConfig, $backendConfig);
+        $menuConfig = $this->processMenuSecurityConfig($menuConfig);
+
 
         $backendConfig['design']['menu'] = $menuConfig;
 
@@ -51,7 +71,7 @@ class MenuConfigPass implements ConfigPassInterface
         // menu configuration to display all its entities
         if (empty($menuConfig)) {
             foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-                $menuConfig[] = ['entity' => $entityName, 'label' => $entityConfig['label']];
+                $menuConfig[] = array('entity' => $entityName, 'label' => $entityConfig['label']);
             }
         }
 
@@ -61,7 +81,7 @@ class MenuConfigPass implements ConfigPassInterface
         //   design.menu: [{ entity: 'Product' }, { entity: 'User' }]
         foreach ($menuConfig as $i => $itemConfig) {
             if (is_string($itemConfig)) {
-                $itemConfig = ['entity' => $itemConfig];
+                $itemConfig = array('entity' => $itemConfig);
             }
 
             $menuConfig[$i] = $itemConfig;
@@ -78,8 +98,8 @@ class MenuConfigPass implements ConfigPassInterface
             }
 
             // normalize submenu configuration (only for main menu items)
-            if (-1 === $parentItemIndex && !isset($itemConfig['children'])) {
-                $itemConfig['children'] = [];
+            if (!isset($itemConfig['children']) && $parentItemIndex === -1) {
+                $itemConfig['children'] = array();
             }
 
             // normalize 'default' option, which sets the menu item used as the backend index
@@ -94,13 +114,6 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['target'] = false;
             } else {
                 $itemConfig['target'] = (string) $itemConfig['target'];
-            }
-
-            // normalize 'rel' option, which adds html5 rel attribute (https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types)
-            if (!array_key_exists('rel', $itemConfig)) {
-                $itemConfig['rel'] = array_key_exists('url', $itemConfig) ? 'noreferrer' : false;
-            } else {
-                $itemConfig['rel'] = (string) $itemConfig['rel'];
             }
 
             $menuConfig[$i] = $itemConfig;
@@ -130,7 +143,7 @@ class MenuConfigPass implements ConfigPassInterface
                 }
 
                 if (!isset($itemConfig['params'])) {
-                    $itemConfig['params'] = [];
+                    $itemConfig['params'] = array();
                 }
             }
 
@@ -152,7 +165,7 @@ class MenuConfigPass implements ConfigPassInterface
                 }
 
                 if (!isset($itemConfig['params'])) {
-                    $itemConfig['params'] = [];
+                    $itemConfig['params'] = array();
                 }
             }
 
@@ -175,4 +188,32 @@ class MenuConfigPass implements ConfigPassInterface
 
         return $menuConfig;
     }
+
+    /**
+     * Checks if the entity can be displayed in the menu section
+     * depending on user's roles
+     *
+     * @param array $menuConfig
+     * @return array
+     */
+    private
+    function processMenuSecurityConfig(array $menuConfig){
+        $userRoles = [];
+        if (!is_string($this->tokenStorage->getToken()->getUser()))
+            $userRoles = $this->tokenStorage->getToken()->getUser()->getRoles();
+
+        foreach ($menuConfig as $i => &$itemConfig) {
+            $rolesForItem = isset($itemConfig['roles']) ? $itemConfig['roles'] : [];
+            if (!array_intersect($rolesForItem, $userRoles) && $rolesForItem)
+                unset($menuConfig[$i]);
+            foreach ($itemConfig['children'] as $index => $subItem){
+                $rolesForSubItem = isset($subItem['roles']) ? $subItem['roles'] : [];
+                if (!array_intersect($rolesForSubItem, $userRoles) && $rolesForSubItem)
+                    unset($itemConfig['children'][$index]);
+            }
+        }
+        return $menuConfig;
+    }
 }
+
+class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MenuConfigPass', false);

@@ -93,6 +93,7 @@
         </service>
 
         <service id="easyadmin.configuration.action_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass" public="false">
+            <argument type="service" id="security.token_storage" />
             <tag name="easyadmin.config_pass" priority="60" />
         </service>
 

@@ -367,7 +367,7 @@ class ActionConfigPass implements ConfigPassInterface
     private function processEntitiesSecurityConfig(array $backendConfig)
     {
         $userRoles = [];
-        if (!is_string($this->tokenStorage->getToken()->getUser())) {
+        if ($this->tokenStorage->getToken() && !is_string($this->tokenStorage->getToken()->getUser())) {
             $userRoles = $this->tokenStorage->getToken()->getUser()->getRoles();
         }
 

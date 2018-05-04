@@ -198,7 +198,7 @@ class MenuConfigPass implements ConfigPassInterface
     private function processMenuSecurityConfig(array $menuConfig)
     {
         $userRoles = [];
-        if (!is_string($this->tokenStorage->getToken()->getUser())) {
+        if ($this->tokenStorage->getToken() && !is_string($this->tokenStorage->getToken()->getUser())) {
             $userRoles = $this->tokenStorage->getToken()->getUser()->getRoles();
         }
 

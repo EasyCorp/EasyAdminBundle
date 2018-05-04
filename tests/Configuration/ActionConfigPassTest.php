@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class ActionConfigPassTest extends TestCase
 {
@@ -15,7 +16,7 @@ class ActionConfigPassTest extends TestCase
      */
     public function testActionconfigFormat($actionsConfig)
     {
-        $configPass = new ActionConfigPass();
+        $configPass = new ActionConfigPass(new TokenStorage());
         $method = new \ReflectionMethod($configPass, 'doNormalizeActionsConfig');
         $method->setAccessible(true);
 

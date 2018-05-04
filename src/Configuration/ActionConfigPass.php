@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 /**
  * Merges all the actions that can be configured in the backend and normalizes
  * them to get the final action configuration for each entity view.
@@ -87,7 +88,10 @@ class ActionConfigPass implements ConfigPassInterface
         // first, normalize actions defined globally for the entire backend
         foreach ($this->views as $view) {
             $actionsConfig = $backendConfig[$view]['actions'];
-            $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig, sprintf('the global "%s" view defined under "easy_admin" option', $view));
+            $actionsConfig = $this->doNormalizeActionsConfig(
+                $actionsConfig,
+                sprintf('the global "%s" view defined under "easy_admin" option', $view)
+            );
             $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
 
             $backendConfig[$view]['actions'] = $actionsConfig;
@@ -97,7 +101,10 @@ class ActionConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
                 $actionsConfig = $entityConfig[$view]['actions'];
-                $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig, sprintf('the "%s" view of the "%s" entity', $view, $entityName));
+                $actionsConfig = $this->doNormalizeActionsConfig(
+                    $actionsConfig,
+                    sprintf('the "%s" view of the "%s" entity', $view, $entityName)
+                );
                 $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
 
                 $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
@@ -113,7 +120,12 @@ class ActionConfigPass implements ConfigPassInterface
 
         foreach ($actionsConfig as $i => $actionConfig) {
             if (!is_string($actionConfig) && !is_array($actionConfig)) {
-                throw new \RuntimeException(sprintf('One of the actions defined by %s contains an invalid value (action config can only be a YAML string or hash).', $errorOrigin));
+                throw new \RuntimeException(
+                    sprintf(
+                        'One of the actions defined by %s contains an invalid value (action config can only be a YAML string or hash).',
+                        $errorOrigin
+                    )
+                );
             }
 
             // config format #1
@@ -126,7 +138,12 @@ class ActionConfigPass implements ConfigPassInterface
             // 'name' is the only mandatory option for actions (it might
             // be missing when using the config format #2)
             if (!isset($actionConfig['name'])) {
-                throw new \RuntimeException(sprintf('One of the actions defined by %s does not define its name, which is the only mandatory option for actions.', $errorOrigin));
+                throw new \RuntimeException(
+                    sprintf(
+                        'One of the actions defined by %s does not define its name, which is the only mandatory option for actions.',
+                        $errorOrigin
+                    )
+                );
             }
 
             $actionName = $actionConfig['name'];
@@ -147,7 +164,7 @@ class ActionConfigPass implements ConfigPassInterface
      * default value for any option that you don't explicitly set (e.g. the icon
      * or the CSS class).
      *
-     * @param array  $actionsConfig
+     * @param array $actionsConfig
      * @param string $view
      *
      * @return array
@@ -159,9 +176,12 @@ class ActionConfigPass implements ConfigPassInterface
         foreach ($actionsConfig as $actionName => $actionConfig) {
             if (array_key_exists($actionName, $defaultActionsConfig)) {
                 // remove null config options but maintain empty options (this allows to set an empty label for the action)
-                $actionConfig = array_filter($actionConfig, function ($element) {
-                    return null !== $element;
-                });
+                $actionConfig = array_filter(
+                    $actionConfig,
+                    function ($element) {
+                        return null !== $element;
+                    }
+                );
                 $actionsConfig[$actionName] = array_merge($defaultActionsConfig[$actionName], $actionConfig);
             }
         }
@@ -233,7 +253,14 @@ class ActionConfigPass implements ConfigPassInterface
                     // 'name' value is used as the class method name or the Symfony route name
                     // check that its value complies with the PHP method name rules
                     if (!$this->isValidMethodName($actionName)) {
-                        throw new \InvalidArgumentException(sprintf('The name of the "%s" action defined in the "%s" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $actionName, $view, $entityName));
+                        throw new \InvalidArgumentException(
+                            sprintf(
+                                'The name of the "%s" action defined in the "%s" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).',
+                                $actionName,
+                                $view,
+                                $entityName
+                            )
+                        );
                     }
 
                     if (null === $actionConfig['label']) {
@@ -262,14 +289,26 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function getDefaultActionsConfig($view)
     {
-        $actions = $this->doNormalizeActionsConfig([
-            'delete' => ['name' => 'delete', 'label' => 'action.delete', 'icon' => 'trash-o', 'css_class' => 'btn btn-default'],
-            'edit' => ['name' => 'edit', 'label' => 'action.edit', 'icon' => 'edit', 'css_class' => 'btn btn-primary'],
-            'new' => ['name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'],
-            'search' => ['name' => 'search', 'label' => 'action.search'],
-            'show' => ['name' => 'show', 'label' => 'action.show'],
-            'list' => ['name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary'],
-        ]);
+        $actions = $this->doNormalizeActionsConfig(
+            [
+                'delete' => [
+                    'name' => 'delete',
+                    'label' => 'action.delete',
+                    'icon' => 'trash-o',
+                    'css_class' => 'btn btn-default',
+                ],
+                'edit' => [
+                    'name' => 'edit',
+                    'label' => 'action.edit',
+                    'icon' => 'edit',
+                    'css_class' => 'btn btn-primary',
+                ],
+                'new' => ['name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'],
+                'search' => ['name' => 'search', 'label' => 'action.search'],
+                'show' => ['name' => 'show', 'label' => 'action.show'],
+                'list' => ['name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary'],
+            ]
+        );
 
         // minor tweaks for some action + view combinations
         if ('list' === $view) {
@@ -353,24 +392,28 @@ class ActionConfigPass implements ConfigPassInterface
 
         return $newArray;
     }
+
     /**
      * Checks if user has the right to use the entity
      *
      * @author luxferoo <imamharir@gmail.com>
+     *
      * @param array $backendConfig
+     *
      * @return array
      */
-    private
-    function processEntitiesSecurityConfig(array $backendConfig)
+    private function processEntitiesSecurityConfig(array $backendConfig)
     {
         $userRoles = [];
-        if (!is_string($this->tokenStorage->getToken()->getUser()))
+        if (!is_string($this->tokenStorage->getToken()->getUser())) {
             $userRoles = $this->tokenStorage->getToken()->getUser()->getRoles();
+        }
 
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             $rolesForEntity = isset($entityConfig['roles']) ? $entityConfig['roles'] : [];
-            if (!array_intersect($rolesForEntity, $userRoles) && $rolesForEntity)
+            if (!array_intersect($rolesForEntity, $userRoles) && $rolesForEntity) {
                 unset($backendConfig['entities'][$entityName]);
+            }
         }
 
         return $backendConfig;

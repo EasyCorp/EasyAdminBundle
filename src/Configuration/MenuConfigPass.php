@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 /**
  * Processes the main menu configuration defined in the "design.menu"
  * option or creates the default config for the menu if none is defined.
@@ -50,7 +51,7 @@ class MenuConfigPass implements ConfigPassInterface
      *
      * @param array $menuConfig
      * @param array $backendConfig
-     * @param int   $parentItemIndex The index of the parent item for this menu item (allows to treat submenus differently)
+     * @param int $parentItemIndex The index of the parent item for this menu item (allows to treat submenus differently)
      *
      * @return array
      */
@@ -95,21 +96,21 @@ class MenuConfigPass implements ConfigPassInterface
             if (!array_key_exists('default', $itemConfig)) {
                 $itemConfig['default'] = false;
             } else {
-                $itemConfig['default'] = (bool) $itemConfig['default'];
+                $itemConfig['default'] = (bool)$itemConfig['default'];
             }
 
             // normalize 'target' option, which allows to open menu items in different windows or tabs
             if (!array_key_exists('target', $itemConfig)) {
                 $itemConfig['target'] = false;
             } else {
-                $itemConfig['target'] = (string) $itemConfig['target'];
+                $itemConfig['target'] = (string)$itemConfig['target'];
             }
 
             // normalize 'rel' option, which adds html5 rel attribute (https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types)
             if (!array_key_exists('rel', $itemConfig)) {
                 $itemConfig['rel'] = array_key_exists('url', $itemConfig) ? 'noreferrer' : false;
             } else {
-                $itemConfig['rel'] = (string) $itemConfig['rel'];
+                $itemConfig['rel'] = (string)$itemConfig['rel'];
             }
 
             $menuConfig[$i] = $itemConfig;
@@ -131,7 +132,13 @@ class MenuConfigPass implements ConfigPassInterface
                 $entityName = $itemConfig['entity'];
 
                 if (!array_key_exists($entityName, $backendConfig['entities'])) {
-                    throw new \RuntimeException(sprintf('The "%s" entity included in the "menu" option is not managed by EasyAdmin. The menu can only include any of these entities: %s. NOTE: If your menu worked before, this error may be caused by a change introduced by EasyAdmin 1.12.0 version. Check out https://github.com/javiereguiluz/EasyAdminBundle/releases/tag/v1.12.0 for more details.', $entityName, implode(', ', array_keys($backendConfig['entities']))));
+                    throw new \RuntimeException(
+                        sprintf(
+                            'The "%s" entity included in the "menu" option is not managed by EasyAdmin. The menu can only include any of these entities: %s. NOTE: If your menu worked before, this error may be caused by a change introduced by EasyAdmin 1.12.0 version. Check out https://github.com/javiereguiluz/EasyAdminBundle/releases/tag/v1.12.0 for more details.',
+                            $entityName,
+                            implode(', ', array_keys($backendConfig['entities']))
+                        )
+                    );
                 }
 
                 if (!isset($itemConfig['label'])) {
@@ -141,23 +148,29 @@ class MenuConfigPass implements ConfigPassInterface
                 if (!isset($itemConfig['params'])) {
                     $itemConfig['params'] = [];
                 }
-            }
-
-            // 2nd level priority: if 'url' is defined, link to the given absolute/relative URL
+            } // 2nd level priority: if 'url' is defined, link to the given absolute/relative URL
             elseif (isset($itemConfig['url'])) {
                 $itemConfig['type'] = 'link';
 
                 if (!isset($itemConfig['label'])) {
-                    throw new \RuntimeException(sprintf('The configuration of the menu item with "url = %s" must define the "label" option.', $itemConfig['url']));
+                    throw new \RuntimeException(
+                        sprintf(
+                            'The configuration of the menu item with "url = %s" must define the "label" option.',
+                            $itemConfig['url']
+                        )
+                    );
                 }
-            }
-
-            // 3rd level priority: if 'route' is defined, link to the path generated with the given route
+            } // 3rd level priority: if 'route' is defined, link to the path generated with the given route
             elseif (isset($itemConfig['route'])) {
                 $itemConfig['type'] = 'route';
 
                 if (!isset($itemConfig['label'])) {
-                    throw new \RuntimeException(sprintf('The configuration of the menu item with "route = %s" must define the "label" option.', $itemConfig['route']));
+                    throw new \RuntimeException(
+                        sprintf(
+                            'The configuration of the menu item with "route = %s" must define the "label" option.',
+                            $itemConfig['route']
+                        )
+                    );
                 }
 
                 if (!isset($itemConfig['params'])) {
@@ -176,7 +189,12 @@ class MenuConfigPass implements ConfigPassInterface
                     $itemConfig['type'] = 'empty';
                 }
             } else {
-                throw new \RuntimeException(sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.', $i));
+                throw new \RuntimeException(
+                    sprintf(
+                        'The configuration of the menu item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.',
+                        $i
+                    )
+                );
             }
 
             $menuConfig[$i] = $itemConfig;
@@ -189,25 +207,31 @@ class MenuConfigPass implements ConfigPassInterface
      * Checks if the entity should be displayed in the menu section
      *
      * @author luxferoo <imamharir@gmail.com>
+     *
      * @param array $menuConfig
+     *
      * @return array
      */
-    private
-    function processMenuSecurityConfig(array $menuConfig){
+    private function processMenuSecurityConfig(array $menuConfig)
+    {
         $userRoles = [];
-        if (!is_string($this->tokenStorage->getToken()->getUser()))
+        if (!is_string($this->tokenStorage->getToken()->getUser())) {
             $userRoles = $this->tokenStorage->getToken()->getUser()->getRoles();
+        }
 
         foreach ($menuConfig as $i => &$itemConfig) {
             $rolesForItem = isset($itemConfig['roles']) ? $itemConfig['roles'] : [];
-            if (!array_intersect($rolesForItem, $userRoles) && $rolesForItem)
+            if (!array_intersect($rolesForItem, $userRoles) && $rolesForItem) {
                 unset($menuConfig[$i]);
-            foreach ($itemConfig['children'] as $index => $subItem){
+            }
+            foreach ($itemConfig['children'] as $index => $subItem) {
                 $rolesForSubItem = isset($subItem['roles']) ? $subItem['roles'] : [];
-                if (!array_intersect($rolesForSubItem, $userRoles) && $rolesForSubItem)
+                if (!array_intersect($rolesForSubItem, $userRoles) && $rolesForSubItem) {
                     unset($itemConfig['children'][$index]);
+                }
             }
         }
+
         return $menuConfig;
     }
 }

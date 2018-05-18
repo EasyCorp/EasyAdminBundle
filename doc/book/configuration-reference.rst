@@ -206,10 +206,10 @@ form_theme
 **values**: ``'horizontal'``, ``'vertical'``, any valid form theme template path)
 
 The form theme used to render the form fields in the ``edit`` and ``new`` views.
-The default ``'horizontal'`` value is a shortcut of ``@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig``
+The default ``'horizontal'`` value is a shortcut of ``@EasyAdmin/form/horizontal_layout.html.twig``
 which displays the form fields using the default horizontal Bootstrap 3 design.
 
-The ``'vertical'`` value is a shortcut of ``@EasyAdmin/form/bootstrap_3_layout.html.twig``
+The ``'vertical'`` value is a shortcut of ``@EasyAdmin/form/layout.html.twig``
 which displays the form fields using the more common vertical Bootstrap 3 design.
 This style is better than ``'horizontal'`` when you want to increase the space
 available to edit the property values. Example:

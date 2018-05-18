@@ -10,7 +10,7 @@ easy_admin:
         color_scheme: dark
         brand_color: '#205081'
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+            - '@EasyAdmin/form/horizontal_layout.html.twig'
         menu: {  }
         templates:
             layout: '@EasyAdmin/default/layout.html.twig'

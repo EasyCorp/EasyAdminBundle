@@ -1,8 +1,8 @@
 easy_admin:
     design:
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
-            - '@EasyAdmin/form/bootstrap_3_layout.html.twig'
+            - '@EasyAdmin/form/horizontal_layout.html.twig'
+            - '@EasyAdmin/form/layout.html.twig'
         theme: default
         color_scheme: dark
         brand_color: '#205081'

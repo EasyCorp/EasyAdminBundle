@@ -4,7 +4,7 @@ easy_admin:
         theme: default
         color_scheme: dark
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+            - '@EasyAdmin/form/horizontal_layout.html.twig'
         assets:
             css: {  }
             js: {  }

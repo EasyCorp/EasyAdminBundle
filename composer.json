@@ -24,6 +24,7 @@
         "symfony/dependency-injection": "~2.3|~3.0|^4.0",
         "symfony/doctrine-bridge": "~2.3|~3.0|^4.0",
         "symfony/event-dispatcher": "~2.3|~3.0|^4.0",
+        "symfony/finder": "~2.3|~3.0|^4.0",
         "symfony/form": "~2.3|~3.0|^4.0",
         "symfony/framework-bundle": "~2.3|~3.0|^4.0",
         "symfony/http-foundation": "~2.3|~3.0|^4.0",
@@ -45,7 +46,6 @@
         "symfony/console": "~2.3|~3.0|^4.0",
         "symfony/css-selector": "~2.3|~3.0|^4.0",
         "symfony/dom-crawler": "~2.3|~3.0|^4.0",
-        "symfony/finder": "~2.3|~3.0|^4.0",
         "symfony/phpunit-bridge": "^3.2|^4.0",
         "symfony/var-dumper": "~2.3|~3.0|^4.0",
         "symfony/yaml": "~2.3|~3.0|^4.0"

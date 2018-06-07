@@ -11,10 +11,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Configuration;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
 
-class ConfigManagerTest extends \PHPUnit_Framework_TestCase
+class ConfigManagerTest extends TestCase
 {
     public static function tearDownAfterClass()
     {

@@ -15,7 +15,7 @@ Upgrade to 2.0.0 (XX/XXX/201X)
    In order to upgrade, you just need to replace `admin` by `easyadmin` in all
    `path()`, `generateUrl()` and `redirectToRoute()` calls.
 
-Upgrade to 1.16.4 (XX/January/2017)
+Upgrade to 1.16.4 (22/January/2017)
 -----------------------------------
 
 * The `BaseException` class has changed the signature of its constructor. It now

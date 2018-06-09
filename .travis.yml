@@ -53,6 +53,7 @@ script:
     # this checks that the Twig template files contain no syntax errors
     - ./tests/bin/console lint:twig "src" "tests"
     # this checks that the XLIFF translations contain no syntax errors
-    - ./tests/bin/console lint:xliff "src/Resources/translations"
+    # disabled because of this issue: https://github.com/symfony/symfony/issues/27564
+    # - ./tests/bin/console lint:xliff "src/Resources/translations"
     # this checks that the YAML config files contain no syntax errors
     - ./tests/bin/console lint:yaml "tests"

@@ -232,20 +232,10 @@ class Configuration implements ConfigurationInterface
                         ->end()
 
                         ->enumNode('color_scheme')
-                            ->values(['dark', 'light'])
-                            ->info('The color scheme applied to the backend design (values: "dark" or "light").')
+                            ->values(['dark'])
+                            ->info('The color scheme applied to the backend design (the only possible value is: "dark").')
                             ->defaultValue('dark')
                             ->treatNullLike('dark')
-                            ->validate()
-                                ->ifTrue(function ($v) {
-                                    return 'light' === $v;
-                                })
-                                ->then(function ($v) {
-                                    @trigger_error('The "light" color scheme is deprecated since EasyAdmin 1.x version and it will be removed in 2.0. Use "dark" as the value of the "color_scheme" option.');
-
-                                    return $v;
-                                })
-                            ->end()
                         ->end()
 
                         ->booleanNode('rtl')

@@ -113,8 +113,8 @@ class MenuConfigPass implements ConfigPassInterface
     {
         foreach ($menuConfig as $i => $itemConfig) {
             // these options are needed to find the active menu/submenu item in the template
-            $itemConfig['menu_index'] = ($parentItemIndex === -1) ? $i : $parentItemIndex;
-            $itemConfig['submenu_index'] = ($parentItemIndex === -1) ? -1 : $i;
+            $itemConfig['menu_index'] = (-1 === $parentItemIndex) ? $i : $parentItemIndex;
+            $itemConfig['submenu_index'] = (-1 === $parentItemIndex) ? -1 : $i;
 
             // 1st level priority: if 'entity' is defined, link to the given entity
             if (isset($itemConfig['entity'])) {

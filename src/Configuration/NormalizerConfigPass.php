@@ -266,7 +266,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                         $previousTabFieldNumber = $fieldNumber;
                         $isTheFirstGroupElement = true;
                     } elseif ($isFormDesignElement && 'group' === $fieldConfig['type']) {
-                        if ($isTheFirstGroupElement && $previousTabFieldNumber === -1 && $fieldNumber > 1) {
+                        if ($isTheFirstGroupElement && -1 === $previousTabFieldNumber && $fieldNumber > 1) {
                             // if no tab is used, insert the group at the beginning of the array
                             $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
                                 array('_easyadmin_form_design_element_forced_first_group' => array('type' => 'group')),

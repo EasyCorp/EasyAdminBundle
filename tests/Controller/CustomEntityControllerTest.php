@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
@@ -19,7 +10,7 @@ class CustomEntityControllerTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'custom_entity_controller'));
+        $this->initClient(['environment' => 'custom_entity_controller']);
     }
 
     public function testListAction()
@@ -32,91 +23,5 @@ class CustomEntityControllerTest extends AbstractTestCase
     {
         $this->requestShowView();
         $this->assertContains('Overridden show action.', $this->client->getResponse()->getContent());
-    }
-
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s instead
-     */
-    public function testDeprecatedPrePersistEntityMethod()
-    {
-        $crawler = $this->requestNewView();
-        $this->client->followRedirects();
-
-        $categoryName = sprintf('The New Category %s', md5(mt_rand()));
-        $form = $crawler->selectButton('Save changes')->form(array(
-            'category[name]' => $categoryName,
-        ));
-        $this->client->submit($form);
-    }
-
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s instead
-     */
-    public function testDeprecatedPreUpdateEntityMethod()
-    {
-        $crawler = $this->requestEditView();
-        $this->client->followRedirects();
-
-        $categoryName = sprintf('Modified Category %s', md5(mt_rand()));
-        $form = $crawler->selectButton('Save changes')->form(array(
-            'category[name]' => $categoryName,
-        ));
-        $this->client->submit($form);
-    }
-
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s instead
-     */
-    public function testDeprecatedPreRemoveEntityMethod()
-    {
-        $crawler = $this->requestEditView();
-        $form = $crawler->filter('#delete_form_submit')->form();
-        $this->client->submit($form);
-    }
-
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s instead
-     */
-    public function testDeprecatedPrePersistCategory2EntityMethod()
-    {
-        $crawler = $this->requestNewView('Category2');
-        $this->client->followRedirects();
-
-        $categoryName = sprintf('The New Category %s', md5(mt_rand()));
-        $form = $crawler->selectButton('Save changes')->form(array(
-            'category2[name]' => $categoryName,
-        ));
-        $this->client->submit($form);
-    }
-
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s instead
-     */
-    public function testDeprecatedPreUpdateCategory2EntityMethod()
-    {
-        $crawler = $this->requestEditView('Category2');
-        $this->client->followRedirects();
-
-        $categoryName = sprintf('Modified Category %s', md5(mt_rand()));
-        $form = $crawler->selectButton('Save changes')->form(array(
-            'category2[name]' => $categoryName,
-        ));
-        $this->client->submit($form);
-    }
-
-    /**
-     * @group legacy
-     * @expectedDeprecation The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s instead
-     */
-    public function testDeprecatedPreRemoveCategory2EntityMethod()
-    {
-        $crawler = $this->requestEditView('Category2');
-        $form = $crawler->filter('#delete_form_submit')->form();
-        $this->client->submit($form);
     }
 }

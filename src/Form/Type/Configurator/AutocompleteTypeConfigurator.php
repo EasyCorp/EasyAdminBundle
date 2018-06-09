@@ -1,17 +1,9 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -50,13 +42,11 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $supportedTypes = array(
+        $supportedTypes = [
             'easyadmin_autocomplete',
-            'EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType',
-        );
+            EasyAdminAutocompleteType::class,
+        ];
 
-        return in_array($type, $supportedTypes, true);
+        return \in_array($type, $supportedTypes, true);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator', false);

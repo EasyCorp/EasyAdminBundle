@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -20,11 +11,11 @@ use Symfony\Component\Form\FormConfigInterface;
 final class TypeConfigurator implements TypeConfiguratorInterface
 {
     /**
-     * @var ConfigManager
+     * @var ConfigManagerInterface
      */
     private $configManager;
 
-    public function __construct(ConfigManager $configManager)
+    public function __construct(ConfigManagerInterface $configManager)
     {
         $this->configManager = $configManager;
     }

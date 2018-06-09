@@ -1,17 +1,9 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -37,10 +29,10 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
 
         // Configure "placeholder" option for entity fields
         if (($metadata['associationType'] & ClassMetadata::TO_ONE)
-            && !isset($options[$placeHolderOptionName = $this->getPlaceholderOptionName()])
+            && !isset($options['placeholder'])
             && isset($options['required']) && false === $options['required']
         ) {
-            $options[$placeHolderOptionName] = 'label.form.empty_value';
+            $options['placeholder'] = 'label.form.empty_value';
         }
 
         return $options;
@@ -51,25 +43,8 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isEntityType = in_array($type, array('entity', 'Symfony\Bridge\Doctrine\Form\Type\EntityType'), true);
+        $isEntityType = \in_array($type, ['entity', EntityType::class], true);
 
         return $isEntityType && 'association' === $metadata['dataType'];
     }
-
-    /**
-     * BC for Sf < 2.6
-     *
-     * The "empty_value" option in the types "choice", "date", "datetime" and "time"
-     * was deprecated in 2.6 and replaced by a new option "placeholder".
-     *
-     * @return string
-     */
-    private function getPlaceholderOptionName()
-    {
-        return defined('Symfony\\Component\\Form\\Extension\\Validator\\Constraints\\Form::NOT_SYNCHRONIZED_ERROR')
-            ? 'placeholder'
-            : 'empty_value';
-    }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator', false);

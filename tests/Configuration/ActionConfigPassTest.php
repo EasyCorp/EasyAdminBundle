@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfigPass;
@@ -33,10 +24,10 @@ class ActionConfigPassTest extends TestCase
 
     public function getWrongActionConfigs()
     {
-        return array(
-            array(array(7)),
-            array(array(true)),
-            array(array(null)),
-        );
+        return [
+            [[7]],
+            [[true]],
+            [[null]],
+        ];
     }
 }

@@ -1,16 +1,8 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler;
 
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -44,7 +36,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         $configurators = new \SplPriorityQueue();
         foreach ($container->findTaggedServiceIds('easyadmin.form.type.configurator') as $id => $tags) {
             $configuratorClass = new \ReflectionClass($container->getDefinition($id)->getClass());
-            $typeConfiguratorInterface = 'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface';
+            $typeConfiguratorInterface = TypeConfiguratorInterface::class;
             if (!$configuratorClass->implementsInterface($typeConfiguratorInterface)) {
                 throw new \InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $id, $typeConfiguratorInterface));
             }
@@ -62,7 +54,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
             }
 
             foreach ($tags as $tag) {
-                $priority = isset($tag['priority']) ? $tag['priority'] : 0;
+                $priority = $tag['priority'] ?? 0;
                 $configurators->insert(new Reference($id), $priority);
             }
         }
@@ -70,5 +62,3 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         $container->getDefinition('easyadmin.form.type')->replaceArgument(1, iterator_to_array($configurators));
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass', 'JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass', false);

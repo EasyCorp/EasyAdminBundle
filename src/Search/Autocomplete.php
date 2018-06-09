@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
@@ -23,14 +14,14 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class Autocomplete
 {
-    /** @var ConfigManager */
+    /** @var ConfigManagerInterface */
     private $configManager;
     /** @var Finder */
     private $finder;
     /** @var PropertyAccessor */
     private $propertyAccessor;
 
-    public function __construct(ConfigManager $configManager, Finder $finder, PropertyAccessor $propertyAccessor)
+    public function __construct(ConfigManagerInterface $configManager, Finder $finder, PropertyAccessor $propertyAccessor)
     {
         $this->configManager = $configManager;
         $this->finder = $finder;
@@ -45,11 +36,13 @@ class Autocomplete
      * @param int    $page
      *
      * @return array
+     *
+     * @throws \InvalidArgumentException
      */
     public function find($entity, $query, $page = 1)
     {
         if (empty($entity) || empty($query)) {
-            return array('results' => array());
+            return ['results' => []];
         }
 
         $backendConfig = $this->configManager->getBackendConfig();
@@ -59,10 +52,10 @@ class Autocomplete
 
         $paginator = $this->finder->findByAllProperties($backendConfig['entities'][$entity], $query, $page, $backendConfig['show']['max_results']);
 
-        return array(
+        return [
             'results' => $this->processResults($paginator->getCurrentPageResults(), $backendConfig['entities'][$entity]),
             'has_next_page' => $paginator->hasNextPage(),
-        );
+        ];
     }
 
     /**
@@ -70,17 +63,15 @@ class Autocomplete
      */
     private function processResults($entities, array $targetEntityConfig)
     {
-        $results = array();
+        $results = [];
 
         foreach ($entities as $entity) {
-            $results[] = array(
+            $results[] = [
                 'id' => $this->propertyAccessor->getValue($entity, $targetEntityConfig['primary_key_field_name']),
                 'text' => (string) $entity,
-            );
+            ];
         }
 
         return $results;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete', 'JavierEguiluz\Bundle\EasyAdminBundle\Search\Autocomplete', false);

@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
@@ -19,7 +10,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Autocomplete form type.
@@ -30,7 +20,7 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
 {
     private $configManager;
 
-    public function __construct(ConfigManager $configManager)
+    public function __construct(ConfigManagerInterface $configManager)
     {
         $this->configManager = $configManager;
     }
@@ -71,19 +61,13 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'multiple' => false,
             // force display errors on this form field
             'error_bubbling' => false,
-        ));
+        ]);
 
-        $resolver->setRequired(array('class'));
-    }
-
-    // BC for SF < 2.7
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
+        $resolver->setRequired(['class']);
     }
 
     /**
@@ -120,5 +104,3 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
         $data = $form->getData();
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType', false);

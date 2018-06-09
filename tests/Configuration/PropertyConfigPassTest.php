@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass;
@@ -20,31 +11,31 @@ class PropertyConfigPassTest extends TestCase
 {
     public function testUnknownGuessedFormTypeOptionsAreRemoved()
     {
-        $backendConfig = array('entities' => array(
-            'TestEntity' => array(
+        $backendConfig = ['entities' => [
+            'TestEntity' => [
                 'class' => 'AppBundle\Entity\TestEntity',
-                'properties' => array(
-                    'relations' => array(
+                'properties' => [
+                    'relations' => [
                         'type' => 'association',
-                    ),
-                ),
-                'edit' => array(
-                    'fields' => array(
-                        'relations' => array(
+                    ],
+                ],
+                'edit' => [
+                    'fields' => [
+                        'relations' => [
                             'property' => 'relations',
                             'type' => 'collection',
-                            'type_options' => array(
+                            'type_options' => [
                                 'entry_type' => 'AppBundle\Form\Type\EntityRelationType',
-                            ),
-                        ),
-                    ),
-                ),
-                'new' => array('fields' => array()),
-                'list' => array('fields' => array()),
-                'search' => array('fields' => array()),
-                'show' => array('fields' => array()),
-            ),
-        ));
+                            ],
+                        ],
+                    ],
+                ],
+                'new' => ['fields' => []],
+                'list' => ['fields' => []],
+                'search' => ['fields' => []],
+                'show' => ['fields' => []],
+            ],
+        ]];
 
         $configPass = new PropertyConfigPass($this->getFormRegistry());
         $backendConfig = $configPass->process($backendConfig);
@@ -64,32 +55,32 @@ class PropertyConfigPassTest extends TestCase
 
     public function testSameFormTypeOptionsMustKeepGuessedFormOptions()
     {
-        $backendConfig = array('entities' => array(
-            'TestEntity' => array(
+        $backendConfig = ['entities' => [
+            'TestEntity' => [
                 'class' => 'AppBundle\Entity\TestEntity',
-                'properties' => array(
-                    'relations' => array(
+                'properties' => [
+                    'relations' => [
                         'type' => 'association',
-                    ),
-                ),
-                'edit' => array(
-                    'fields' => array(
-                        'relations' => array(
+                    ],
+                ],
+                'edit' => [
+                    'fields' => [
+                        'relations' => [
                             'property' => 'relations',
                             'type' => 'entity',
-                            'type_options' => array(
+                            'type_options' => [
                                 'expanded' => true,
                                 'multiple' => false,
-                            ),
-                        ),
-                    ),
-                ),
-                'new' => array('fields' => array()),
-                'list' => array('fields' => array()),
-                'search' => array('fields' => array()),
-                'show' => array('fields' => array()),
-            ),
-        ));
+                            ],
+                        ],
+                    ],
+                ],
+                'new' => ['fields' => []],
+                'list' => ['fields' => []],
+                'search' => ['fields' => []],
+                'show' => ['fields' => []],
+            ],
+        ]];
 
         $configPass = new PropertyConfigPass($this->getFormRegistry());
         $backendConfig = $configPass->process($backendConfig);
@@ -99,42 +90,42 @@ class PropertyConfigPassTest extends TestCase
         // Assert that option from custom form type is still set.
         $this->assertSame(
             $relationsFormConfig['type_options'],
-            array(
+            [
                 'em' => 'default',
                 'class' => 'AppBundle\Form\Type\EntityRelationType',
                 'multiple' => false,
                 'expanded' => true,
-            )
+            ]
         );
     }
 
     public function testUndefinedFormTypeKeepsDefinedTypeOptions()
     {
-        $backendConfig = array('entities' => array(
-            'TestEntity' => array(
+        $backendConfig = ['entities' => [
+            'TestEntity' => [
                 'class' => 'AppBundle\Entity\TestEntity',
-                'properties' => array(
-                    'relations' => array(
+                'properties' => [
+                    'relations' => [
                         'type' => 'association',
-                    ),
-                ),
-                'edit' => array(
-                    'fields' => array(
-                        'relations' => array(
+                    ],
+                ],
+                'edit' => [
+                    'fields' => [
+                        'relations' => [
                             'property' => 'relations',
-                            'type_options' => array(
+                            'type_options' => [
                                 'expanded' => true,
                                 'multiple' => false,
-                            ),
-                        ),
-                    ),
-                ),
-                'new' => array('fields' => array()),
-                'list' => array('fields' => array()),
-                'search' => array('fields' => array()),
-                'show' => array('fields' => array()),
-            ),
-        ));
+                            ],
+                        ],
+                    ],
+                ],
+                'new' => ['fields' => []],
+                'list' => ['fields' => []],
+                'search' => ['fields' => []],
+                'show' => ['fields' => []],
+            ],
+        ]];
 
         $configPass = new PropertyConfigPass($this->getFormRegistry());
         $backendConfig = $configPass->process($backendConfig);
@@ -144,12 +135,12 @@ class PropertyConfigPassTest extends TestCase
         // Assert that option from custom form type is still set.
         $this->assertSame(
             $relationsFormConfig['type_options'],
-            array(
+            [
                 'em' => 'default',
                 'class' => 'AppBundle\Form\Type\EntityRelationType',
                 'multiple' => false,
                 'expanded' => true,
-            )
+            ]
         );
     }
 
@@ -162,11 +153,11 @@ class PropertyConfigPassTest extends TestCase
             ->method('guessType')->willReturn(
                 new TypeGuess(
                     'Symfony\Bridge\Doctrine\Form\Type\EntityType',
-                    array(
+                    [
                         'em' => 'default',
                         'class' => 'AppBundle\Form\Type\EntityRelationType',
                         'multiple' => true,
-                    ),
+                    ],
                     Guess::HIGH_CONFIDENCE
                 )
             )

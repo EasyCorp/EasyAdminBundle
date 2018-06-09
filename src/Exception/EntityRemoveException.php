@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 /**
@@ -16,7 +7,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
  */
 class EntityRemoveException extends BaseException
 {
-    public function __construct(array $parameters = array())
+    public function __construct(array $parameters = [])
     {
         $exceptionContext = new ExceptionContext(
             'exception.entity_remove',
@@ -28,5 +19,3 @@ class EntityRemoveException extends BaseException
         parent::__construct($exceptionContext);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException', 'JavierEguiluz\Bundle\EasyAdminBundle\Exception\EntityRemoveException', false);

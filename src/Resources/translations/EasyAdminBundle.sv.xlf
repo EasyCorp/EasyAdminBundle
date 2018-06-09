@@ -33,7 +33,7 @@
             <!-- 'list' view -->
             <trans-unit id="list.row_actions">
                 <source>list.row_actions</source>
-                <target>Actions</target>
+                <target>Åtgärder</target>
             </trans-unit>
 
             <!-- paginator -->
@@ -58,17 +58,67 @@
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> av <strong>%results%</strong>]]></target>
             </trans-unit>
 
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Ja</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>Nej</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Tom</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Null</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Lämna tom</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>PHP objekt</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Otillgänglig</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Det finns ingen Getter-funktion för detta fält eller så är inte egenskapen publik</target>
+            </trans-unit>
+            
             <!-- user -->
             <trans-unit id="user.logged_in_as">
                 <source>user.logged_in_as</source>
                 <target>Inloggad som</target>
             </trans-unit>
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>Namnlös användare</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>Anonym användare</target>
+            </trans-unit>
             <trans-unit id="user.signout">
                 <source>user.signout</source>
                 <target>Logga ut</target>
             </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Avsluta imitation</target>
+            </trans-unit>
 
-            <!-- misc. elements -->
+            <!-- misc. elements -->            
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Visa/Dölj navigering</target>
+            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Vill du verkligen ta bort detta?</target>
@@ -76,6 +126,60 @@
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
                 <target>Du kan inte ångra det här.</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>Ta bort</target>
+            </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Lägg till nytt objekt</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Lägg till en till</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Ta bort objekt</target>
+            </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>Fel|Fel</target>
+            </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Du har inte sparat ändringarna i formuläret.</target>
+            </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>Ett fält är fel|%count% fält är fel</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} det finns ännu ett fält som inte visas|]1,Inf] det finns %count% till fält som inte visas]]></target>
+            </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Detta objekt är inte tillgängligt längre.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Detta object kan inte tas bort för att andra objekt har ett beroende på det.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>Den åtgärd du försökte göra kan inte utföras på detta objekt.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>Applikationen är inte rätt konfigurerad.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>Applikationen är inte rätt konfigurerard för detta objekt.</target>
             </trans-unit>
         </body>
     </file>

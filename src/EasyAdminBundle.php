@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle;
 
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminConfigPass;
@@ -22,7 +13,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class EasyAdminBundle extends Bundle
 {
-    const VERSION = '1.17.13-DEV';
+    public const VERSION = '1.17.13-DEV';
 
     public function build(ContainerBuilder $container)
     {
@@ -30,5 +21,3 @@ class EasyAdminBundle extends Bundle
         $container->addCompilerPass(new EasyAdminConfigPass());
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle', 'JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle', false);

@@ -112,6 +112,28 @@ menu item:
                 - { entity: 'Category', target: '_self' }
         # ...
 
+Link Types
+~~~~~~~~~~
+
+By default, the links of the menu items don't include any ``rel`` attribute. If
+you want to customize their ``rel`` attributes, define the ``rel`` config option
+and use any of the `valid link types`_:
+
+.. code-block:: yaml
+
+    easy_admin:
+        design:
+            menu:
+                - { entity: 'Product', rel: 'dns-prefetch preconnect' }
+                - { label: 'Homepage', url: 'http://example.com', rel: 'index' }
+        # ...
+
+.. tip::
+
+    To avoid leaking internal backend information to external websites, if the
+    menu item links to an external URL and doesn't define its ``rel`` option,
+    the ``rel="noreferrer"`` attribute is added automatically.
+
 Changing the Backend Index Page
 -------------------------------
 
@@ -267,6 +289,8 @@ advanced menus with two-level submenus and all kind of items:
                     - { label: 'Help', route: 'help_index' }
                     - { label: 'Docs', url: 'http://example.com/external-docs' }
                     - { label: '%app.version%' }
+
+.. _`valid link types`: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
 
 -----
 

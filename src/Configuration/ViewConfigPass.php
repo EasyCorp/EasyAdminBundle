@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 /**
@@ -35,7 +26,7 @@ class ViewConfigPass implements ConfigPassInterface
     {
         // process the 'help' message that each view can define to display it under the page title
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
+            foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
                 // isset() cannot be used because the value can be 'null' (used to remove the inherited help message)
                 if (array_key_exists('help', $backendConfig['entities'][$entityName][$view])) {
                     continue;
@@ -60,7 +51,7 @@ class ViewConfigPass implements ConfigPassInterface
     private function processDefaultFieldsConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
+            foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
                 if (0 === count($entityConfig[$view]['fields'])) {
                     $fieldsConfig = $this->filterFieldList(
                         $entityConfig['properties'],
@@ -94,7 +85,7 @@ class ViewConfigPass implements ConfigPassInterface
     private function processFieldConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
+            foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // special case: if the field is called 'id' and doesn't define a custom
                     // label, use 'ID' as label. This improves the readability of the label
@@ -123,7 +114,7 @@ class ViewConfigPass implements ConfigPassInterface
     private function processPageTitleConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('edit', 'list', 'new', 'search', 'show') as $view) {
+            foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
                 if (!isset($entityConfig[$view]['title']) && isset($backendConfig[$view]['title'])) {
                     $backendConfig['entities'][$entityName][$view]['title'] = $backendConfig[$view]['title'];
                 }
@@ -145,7 +136,7 @@ class ViewConfigPass implements ConfigPassInterface
     private function processMaxResultsConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('list', 'search', 'show') as $view) {
+            foreach (['list', 'search', 'show'] as $view) {
                 if (!isset($entityConfig[$view]['max_results']) && isset($backendConfig[$view]['max_results'])) {
                     $backendConfig['entities'][$entityName][$view]['max_results'] = $backendConfig[$view]['max_results'];
                 }
@@ -163,11 +154,13 @@ class ViewConfigPass implements ConfigPassInterface
      * @param array $backendConfig
      *
      * @return array
+     *
+     * @throws \InvalidArgumentException
      */
     private function processSortingConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (array('list', 'search') as $view) {
+            foreach (['list', 'search'] as $view) {
                 if (!isset($entityConfig[$view]['sort'])) {
                     continue;
                 }
@@ -178,12 +171,12 @@ class ViewConfigPass implements ConfigPassInterface
                 }
 
                 if (is_string($sortConfig)) {
-                    $sortConfig = array('field' => $sortConfig, 'direction' => 'DESC');
+                    $sortConfig = ['field' => $sortConfig, 'direction' => 'DESC'];
                 } else {
-                    $sortConfig = array('field' => $sortConfig[0], 'direction' => strtoupper($sortConfig[1]));
+                    $sortConfig = ['field' => $sortConfig[0], 'direction' => strtoupper($sortConfig[1])];
                 }
 
-                if (!in_array($sortConfig['direction'], array('ASC', 'DESC'))) {
+                if (!in_array($sortConfig['direction'], ['ASC', 'DESC'])) {
                     throw new \InvalidArgumentException(sprintf('If defined, the second value of the "sort" option of the "%s" view of the "%s" entity can only be "ASC" or "DESC".', $view, $entityName));
                 }
 
@@ -223,15 +216,15 @@ class ViewConfigPass implements ConfigPassInterface
      */
     private function getFieldFormat($fieldType, array $backendConfig)
     {
-        if (in_array($fieldType, array('date', 'date_immutable', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'))) {
+        if (in_array($fieldType, ['date', 'date_immutable', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'])) {
             // make 'datetimetz' use the same format as 'datetime'
             $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
-            $fieldType = ('_immutable' === substr($fieldType, -10)) ? substr($fieldType, 0, -10) : $fieldType;
+            $fieldType = ('_immutable' === mb_substr($fieldType, -10)) ? mb_substr($fieldType, 0, -10) : $fieldType;
 
             return $backendConfig['formats'][$fieldType];
         }
 
-        if (in_array($fieldType, array('bigint', 'integer', 'smallint', 'decimal', 'float'))) {
+        if (in_array($fieldType, ['bigint', 'integer', 'smallint', 'decimal', 'float'])) {
             return isset($backendConfig['formats']['number']) ? $backendConfig['formats']['number'] : null;
         }
     }
@@ -246,15 +239,15 @@ class ViewConfigPass implements ConfigPassInterface
      */
     private function getExcludedFieldNames($view, array $entityConfig)
     {
-        $excludedFieldNames = array(
-            'edit' => array($entityConfig['primary_key_field_name']),
-            'list' => array('password', 'salt', 'slug', 'updatedAt', 'uuid'),
-            'new' => array($entityConfig['primary_key_field_name']),
-            'search' => array('password', 'salt'),
-            'show' => array(),
-        );
+        $excludedFieldNames = [
+            'edit' => [$entityConfig['primary_key_field_name']],
+            'list' => ['password', 'salt', 'slug', 'updatedAt', 'uuid'],
+            'new' => [$entityConfig['primary_key_field_name']],
+            'search' => ['password', 'salt'],
+            'show' => [],
+        ];
 
-        return isset($excludedFieldNames[$view]) ? $excludedFieldNames[$view] : array();
+        return isset($excludedFieldNames[$view]) ? $excludedFieldNames[$view] : [];
     }
 
     /**
@@ -266,15 +259,15 @@ class ViewConfigPass implements ConfigPassInterface
      */
     private function getExcludedFieldTypes($view)
     {
-        $excludedFieldTypes = array(
-            'edit' => array('binary', 'blob', 'json_array', 'json', 'object'),
-            'list' => array('array', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'),
-            'new' => array('binary', 'blob', 'json_array', 'json', 'object'),
-            'search' => array('association', 'binary', 'boolean', 'blob', 'date', 'date_immutable', 'datetime', 'datetime_immutable', 'datetimetz', 'time', 'time_immutable', 'object'),
-            'show' => array(),
-        );
+        $excludedFieldTypes = [
+            'edit' => ['binary', 'blob', 'json_array', 'json', 'object'],
+            'list' => ['array', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'],
+            'new' => ['binary', 'blob', 'json_array', 'json', 'object'],
+            'search' => ['association', 'binary', 'boolean', 'blob', 'date', 'date_immutable', 'datetime', 'datetime_immutable', 'datetimetz', 'time', 'time_immutable', 'object'],
+            'show' => [],
+        ];
 
-        return isset($excludedFieldTypes[$view]) ? $excludedFieldTypes[$view] : array();
+        return isset($excludedFieldTypes[$view]) ? $excludedFieldTypes[$view] : [];
     }
 
     /**
@@ -287,9 +280,9 @@ class ViewConfigPass implements ConfigPassInterface
      */
     private function getMaxNumberFields($view)
     {
-        $maxNumberFields = array(
+        $maxNumberFields = [
             'list' => 7,
-        );
+        ];
 
         return isset($maxNumberFields[$view]) ? $maxNumberFields[$view] : PHP_INT_MAX;
     }
@@ -306,7 +299,7 @@ class ViewConfigPass implements ConfigPassInterface
      */
     private function filterFieldList(array $fields, array $excludedFieldNames, array $excludedFieldTypes, $maxNumFields)
     {
-        $filteredFields = array();
+        $filteredFields = [];
 
         foreach ($fields as $name => $metadata) {
             if (!in_array($name, $excludedFieldNames) && !in_array($metadata['type'], $excludedFieldTypes)) {
@@ -321,5 +314,3 @@ class ViewConfigPass implements ConfigPassInterface
         return $filteredFields;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\ViewConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ViewConfigPass', false);

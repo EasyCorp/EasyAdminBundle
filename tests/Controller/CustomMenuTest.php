@@ -1,18 +1,8 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
-use Symfony\Component\HttpKernel\Kernel;
 
 class CustomMenuTest extends AbstractTestCase
 {
@@ -20,7 +10,7 @@ class CustomMenuTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'custom_menu'));
+        $this->initClient(['environment' => 'custom_menu']);
     }
 
     public function testCustomBackendHomepage()
@@ -50,10 +40,10 @@ class CustomMenuTest extends AbstractTestCase
         $this->getBackendHomepage();
         $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
-        $this->assertArraySubset(array(
+        $this->assertArraySubset([
             'route' => 'easyadmin',
-            'params' => array('action' => 'list', 'entity' => 'Category'),
-        ), $backendConfig['homepage']);
+            'params' => ['action' => 'list', 'entity' => 'Category'],
+        ], $backendConfig['homepage']);
     }
 
     public function testDefaultMenuItem()
@@ -61,11 +51,11 @@ class CustomMenuTest extends AbstractTestCase
         $this->getBackendHomepage();
         $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
-        $this->assertArraySubset(array(
+        $this->assertArraySubset([
             'label' => 'Categories',
             'entity' => 'Category',
             'type' => 'entity',
-        ), $backendConfig['default_menu_item']);
+        ], $backendConfig['default_menu_item']);
     }
 
     public function testMenuDividers()
@@ -173,10 +163,39 @@ class CustomMenuTest extends AbstractTestCase
         );
     }
 
+    public function testLinkTypes()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $this->assertSame(
+            null,
+            $crawler->filter('.sidebar-menu li:contains("Categories") a')->attr('rel'),
+            'The "rel" attribute is not added by default to menu items.'
+        );
+
+        $this->assertSame(
+            'noreferrer',
+            $crawler->filter('.sidebar-menu li:contains("Project Home") a')->attr('rel'),
+            'External URLs define a "rel=noreferrer" attribute by default'
+        );
+
+        $this->assertSame(
+            'preconnect',
+            $crawler->filter('.sidebar-menu li:contains("Documentation") a')->attr('rel'),
+            'If a URL defines a custom "rel" attribute, then "noreferrer" is not added by default.'
+        );
+
+        $this->assertSame(
+            'index dns-prefetch bookmark',
+            $crawler->filter('.sidebar-menu li:contains("Custom Internal Route") a')->attr('rel'),
+            'Items can define multiple values in the "rel" attribute'
+        );
+    }
+
     public function testMenuItemTypes()
     {
-        $expectedTypesMainMenu = array('empty', 'entity', 'entity', 'divider', 'link', 'link', 'link', 'divider', 'route', 'route');
-        $expectedTypesSubMenu = array('entity', 'entity', 'divider', 'entity', 'link');
+        $expectedTypesMainMenu = ['empty', 'entity', 'entity', 'divider', 'link', 'link', 'link', 'divider', 'route', 'route'];
+        $expectedTypesSubMenu = ['entity', 'entity', 'divider', 'entity', 'link'];
 
         $this->getBackendHomepage();
         $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
@@ -195,10 +214,8 @@ class CustomMenuTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        // Starting from Symfony 3.2, routes are generated using the PHP_QUERY_RFC3986 option
-        $queryStringParameter = Kernel::VERSION_ID >= 30200 ? 'Lorem%20Ipsum' : 'Lorem+Ipsum';
         $this->assertSame(
-            '/custom-route?custom_parameter='.$queryStringParameter,
+            '/custom-route?custom_parameter=Lorem%20Ipsum',
             $crawler->filter('.sidebar-menu li:contains("Custom External Route") a')->attr('href')
         );
 

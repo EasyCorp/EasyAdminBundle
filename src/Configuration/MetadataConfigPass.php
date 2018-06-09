@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -63,10 +54,12 @@ class MetadataConfigPass implements ConfigPassInterface
      * @param ClassMetadata $entityMetadata The entity metadata introspected via Doctrine
      *
      * @return array The entity properties metadata provided by Doctrine
+     *
+     * @throws \RuntimeException
      */
     private function processEntityPropertiesMetadata(ClassMetadata $entityMetadata)
     {
-        $entityPropertiesMetadata = array();
+        $entityPropertiesMetadata = [];
 
         if ($entityMetadata->isIdentifierComposite) {
             throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it contains a composite primary key.", $entityMetadata->name));
@@ -79,10 +72,10 @@ class MetadataConfigPass implements ConfigPassInterface
 
         // introspect fields for entity associations
         foreach ($entityMetadata->associationMappings as $fieldName => $associationMetadata) {
-            $entityPropertiesMetadata[$fieldName] = array_merge($associationMetadata, array(
+            $entityPropertiesMetadata[$fieldName] = array_merge($associationMetadata, [
                 'type' => 'association',
                 'associationType' => $associationMetadata['type'],
-            ));
+            ]);
 
             // associations different from *-to-one cannot be sorted
             if ($associationMetadata['type'] & ClassMetadata::TO_MANY) {
@@ -93,5 +86,3 @@ class MetadataConfigPass implements ConfigPassInterface
         return $entityPropertiesMetadata;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', 'JavierEguiluz\Bundle\EasyAdminBundle\Configuration\MetadataConfigPass', false);

@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -26,22 +17,22 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FormEvents::PRE_SET_DATA => 'preSetData',
             FormEvents::PRE_SUBMIT => 'preSubmit',
-        );
+        ];
     }
 
     public function preSetData(FormEvent $event)
     {
         $form = $event->getForm();
-        $data = $event->getData() ?: array();
+        $data = $event->getData() ?: [];
 
         $options = $form->getConfig()->getOptions();
         $options['compound'] = false;
-        $options['choices'] = is_array($data) || $data instanceof \Traversable ? $data : array($data);
+        $options['choices'] = \is_array($data) || $data instanceof \Traversable ? $data : [$data];
 
-        $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
+        $form->add('autocomplete', FormTypeHelper::getTypeClass('entity'), $options);
     }
 
     public function preSubmit(FormEvent $event)
@@ -51,30 +42,16 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
         $options = $form->get('autocomplete')->getConfig()->getOptions();
 
         if (!isset($data['autocomplete']) || '' === $data['autocomplete']) {
-            $options['choices'] = array();
+            $options['choices'] = [];
         } else {
-            $options['choices'] = $options['em']->getRepository($options['class'])->findBy(array(
-                $this->getIdField($options) => $data['autocomplete'],
-            ));
+            $options['choices'] = $options['em']->getRepository($options['class'])->findBy([
+                $options['id_reader']->getIdField() => $data['autocomplete'],
+            ]);
         }
 
         // reset some critical lazy options
         unset($options['em'], $options['loader'], $options['empty_data'], $options['choice_list'], $options['choices_as_values']);
 
-        $form->add('autocomplete', LegacyFormHelper::getType('entity'), $options);
-    }
-
-    private function getIdField(array $options)
-    {
-        if (isset($options['id_reader'])) {
-            $idField = $options['id_reader']->getIdField();
-        } else {
-            // BC for 2.3
-            $idField = current($options['em']->getClassMetadata($options['class'])->getIdentifierFieldNames());
-        }
-
-        return $idField;
+        $form->add('autocomplete', FormTypeHelper::getTypeClass('entity'), $options);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminAutocompleteSubscriber', false);

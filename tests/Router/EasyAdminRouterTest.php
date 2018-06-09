@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Router;
 
 use AppTestBundle\Entity\FunctionalTests\Product;
@@ -29,7 +20,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(array('environment' => 'default_backend'));
+        $this->initClient(['environment' => 'default_backend']);
 
         $this->router = $this->client->getContainer()->get('easyadmin.router');
     }
@@ -37,7 +28,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     /**
      * @dataProvider provideEntities
      */
-    public function testUrlGeneration($entity, $action, $expectEntity, array $parameters = array(), array $expectParameters = array())
+    public function testUrlGeneration($entity, $action, $expectEntity, array $parameters = [], array $expectParameters = [])
     {
         $url = $this->router->generate($entity, $action, $parameters);
 
@@ -67,17 +58,17 @@ final class EasyAdminRouterTest extends AbstractTestCase
         $refPropertyId->setAccessible(true);
         $refPropertyId->setValue($product, 1);
 
-        return array(
-            array('AppTestBundle\Entity\FunctionalTests\Category', 'new', 'Category'),
-            array('Product', 'new', 'Product', array('entity' => 'Category'), array('entity' => 'Product')),
-            array($product, 'show', 'Product', array('modal' => 1), array('id' => 1)),
-        );
+        return [
+            ['AppTestBundle\Entity\FunctionalTests\Category', 'new', 'Category'],
+            ['Product', 'new', 'Product', ['entity' => 'Category'], ['entity' => 'Product']],
+            [$product, 'show', 'Product', ['modal' => 1], ['id' => 1]],
+        ];
     }
 
     public function provideUndefinedEntities()
     {
-        return array(
-            array('ThisEntityDoesNotExist', 'new'),
-        );
+        return [
+            ['ThisEntityDoesNotExist', 'new'],
+        ];
     }
 }

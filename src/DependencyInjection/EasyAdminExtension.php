@@ -1,22 +1,10 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -51,43 +39,9 @@ class EasyAdminExtension extends Extension
             $container->removeDefinition('easyadmin.cache.config_warmer');
         }
 
-        $this->ensureBackwardCompatibility($container);
-
         if ($container->hasParameter('locale')) {
             $container->getDefinition('easyadmin.configuration.design_config_pass')
                 ->replaceArgument(2, $container->getParameter('locale'));
-        }
-    }
-
-    /**
-     * Makes some tweaks in order to ensure backward compatibilities
-     * with supported versions of Symfony components.
-     *
-     * @param ContainerBuilder $container
-     */
-    private function ensureBackwardCompatibility(ContainerBuilder $container)
-    {
-        // BC for Symfony 2.3 and Request Stack
-        $isRequestStackAvailable = class_exists('Symfony\\Component\\HttpFoundation\\RequestStack');
-        if (!$isRequestStackAvailable) {
-            $needsSetRequestMethodCall = array('easyadmin.listener.request_post_initialize', 'easyadmin.form.type.extension');
-            foreach ($needsSetRequestMethodCall as $serviceId) {
-                $container
-                    ->getDefinition($serviceId)
-                    ->addMethodCall('setRequest', array(
-                        new Reference('request', ContainerInterface::NULL_ON_INVALID_REFERENCE, false),
-                    ))
-                ;
-            }
-        }
-
-        // BC for legacy form component
-        if (!LegacyFormHelper::useLegacyFormComponent()) {
-            $container
-                ->getDefinition('easyadmin.form.type')
-                ->clearTag('form.type')
-                ->addTag('form.type')
-            ;
         }
     }
 
@@ -102,11 +56,11 @@ class EasyAdminExtension extends Extension
      */
     private function processConfigFiles(array $configs)
     {
-        $existingEntityNames = array();
+        $existingEntityNames = [];
 
         foreach ($configs as $i => $config) {
             if (array_key_exists('entities', $config)) {
-                $processedConfig = array();
+                $processedConfig = [];
 
                 foreach ($config['entities'] as $key => $value) {
                     $entityConfig = $this->normalizeEntityConfig($key, $value);
@@ -156,12 +110,14 @@ class EasyAdminExtension extends Extension
      * @param mixed $entityConfig
      *
      * @return array
+     *
+     * @throws \RuntimeException
      */
     private function normalizeEntityConfig($entityName, $entityConfig)
     {
         // normalize config formats #1 and #2 to use the 'class' option as config format #3
-        if (!is_array($entityConfig)) {
-            $entityConfig = array('class' => $entityConfig);
+        if (!\is_array($entityConfig)) {
+            $entityConfig = ['class' => $entityConfig];
         }
 
         // if config format #3 is used, ensure that it defines the 'class' option
@@ -198,7 +154,7 @@ class EasyAdminExtension extends Extension
 
         $i = 2;
         $uniqueName = $entityName;
-        while (in_array($uniqueName, $existingEntityNames)) {
+        while (\in_array($uniqueName, $existingEntityNames)) {
             $uniqueName = $entityName.($i++);
         }
 
@@ -225,5 +181,3 @@ class EasyAdminExtension extends Extension
         return 0 !== preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', 'JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\EasyAdminExtension', false);

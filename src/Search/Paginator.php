@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
 use Doctrine\ORM\Query as DoctrineQuery;
@@ -21,7 +12,7 @@ use Pagerfanta\Pagerfanta;
  */
 class Paginator
 {
-    const MAX_ITEMS = 15;
+    private const MAX_ITEMS = 15;
 
     /**
      * Creates a Doctrine ORM paginator for the given query builder.
@@ -42,5 +33,3 @@ class Paginator
         return $paginator;
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Search\Paginator', 'JavierEguiluz\Bundle\EasyAdminBundle\Search\Paginator', false);

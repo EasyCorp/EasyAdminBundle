@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the EasyAdminBundle.
- *
- * (c) Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Symfony\Component\Form\FormConfigInterface;
@@ -28,12 +19,12 @@ class IvoryCKEditorTypeConfigurator implements TypeConfiguratorInterface
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
         // when the IvoryCKEditor doesn't define the toolbar to use, EasyAdmin uses a simple toolbar
-        $options['config']['toolbar'] = array(
-            array('name' => 'styles', 'items' => array('Bold', 'Italic', 'Strike', 'Link')),
-            array('name' => 'lists', 'items' => array('BulletedList', 'NumberedList', '-', 'Outdent', 'Indent')),
-            array('name' => 'clipboard', 'items' => array('Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo')),
-            array('name' => 'advanced', 'items' => array('Source')),
-        );
+        $options['config']['toolbar'] = [
+            ['name' => 'styles', 'items' => ['Bold', 'Italic', 'Strike', 'Link']],
+            ['name' => 'lists', 'items' => ['BulletedList', 'NumberedList', '-', 'Outdent', 'Indent']],
+            ['name' => 'clipboard', 'items' => ['Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo']],
+            ['name' => 'advanced', 'items' => ['Source']],
+        ];
 
         return $options;
     }
@@ -43,10 +34,8 @@ class IvoryCKEditorTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isCkeditorField = in_array($type, array('ckeditor', 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType'), true);
+        $isCkeditorField = \in_array($type, ['ckeditor', 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType'], true);
 
         return $isCkeditorField && !isset($options['config']['toolbar']) && !isset($options['config_name']);
     }
 }
-
-class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator', false);

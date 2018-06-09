@@ -1,5 +1,4 @@
 language: php
-dist: precise
 sudo: false
 git:
     depth: 1
@@ -48,6 +47,7 @@ matrix:
         - SYMFONY_DEPRECATIONS_HELPER="strict"
     # legacy (oldest supported versions)
     - php: 5.3
+      dist: precise
       env:
         - SYMFONY_VERSION="2.3.*"
         - COMPOSER_FLAGS="--prefer-lowest"

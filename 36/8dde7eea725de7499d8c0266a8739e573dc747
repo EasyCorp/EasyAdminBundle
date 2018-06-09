@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by ktrzos at 2018-04-02T15:03:49Z
+
+Maybe it would be even better to remove it completely from the configuration (the `color_scheme` keyword)? Or do you plan to use it in the future?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-04-17T18:21:03Z
+
+I wasn't sure about removing it ... because people upgrading would see an error instead of silently ignoring the deprecated option. But I guess my reasoning is wrong and it's better to do the same as Symfony: deprecate in old versions and fail hard in new versions.

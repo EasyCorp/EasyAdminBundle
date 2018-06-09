@@ -506,7 +506,7 @@
                                     {% if tab_config.icon|default(false) %}
                                         <i class="fa fa-{{ tab_config.icon }}"></i>
                                     {% endif %}
-                                    {{ tab_config['label'] }}
+                                    {{ tab_config['label']|trans(domain = _translation_domain) }}
                                     {% if tab_config.errors > 0 %}
                                         <span class="label label-danger" title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'EasyAdminBundle') }}">
                                             {{ tab_config.errors }}

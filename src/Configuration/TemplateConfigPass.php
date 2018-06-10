@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use Symfony\Component\Finder\Finder;
+
 /**
  * Processes the template configuration to decide which template to use to
  * display each property in each view. It also processes the global templates
@@ -54,6 +56,7 @@ class TemplateConfigPass implements ConfigPassInterface
         'label_null' => '@EasyAdmin/default/label_null.html.twig',
         'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
     ];
+    private $existingTemplates = null;
 
     public function __construct(\Twig_Loader_Filesystem $twigLoader)
     {
@@ -65,6 +68,8 @@ class TemplateConfigPass implements ConfigPassInterface
         $backendConfig = $this->processEntityTemplates($backendConfig);
         $backendConfig = $this->processDefaultTemplates($backendConfig);
         $backendConfig = $this->processFieldTemplates($backendConfig);
+
+        $this->existingTemplates = null;
 
         return $backendConfig;
     }
@@ -229,8 +234,19 @@ class TemplateConfigPass implements ConfigPassInterface
 
     private function findFirstExistingTemplate(array $templatePaths)
     {
+        if (null === $this->existingTemplates) {
+            foreach ($this->twigLoader->getPaths() as $path) {
+                $finder = new Finder();
+                $finder->files()->in($path);
+
+                foreach ($finder as $templateFile) {
+                    $this->existingTemplates[substr($templateFile->getRealPath(), strlen($path) + 1)] = true;
+                }
+            }
+        }
+
         foreach ($templatePaths as $templatePath) {
-            if (null !== $templatePath && $this->twigLoader->exists($templatePath)) {
+            if (null !== $templatePath && isset($this->existingTemplates[$templatePath])) {
                 return $templatePath;
             }
         }

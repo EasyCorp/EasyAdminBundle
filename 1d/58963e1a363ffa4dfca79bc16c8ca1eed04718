@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-06-06T07:51:14Z
+
+Thanks Christian! The change looks good to me (failing tests are unrelated). Also, he shared with me some Blackfire profiles showing thousands of functions calls saved with this change.
+
+In the past we optimized these "template exists" calls because they are very slow, but this alternative approach looks indeed better.
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2018-06-08T08:24:43Z
+
+FYI, this is the comparison @javiereguiluz is talking about:
+
+![bildschirmfoto 2018-06-08 um 10 22 52](https://user-images.githubusercontent.com/1957048/41147224-1be56c1e-6b06-11e8-9f3b-6665c15f7081.png)
+
+![bildschirmfoto 2018-06-08 um 10 23 26](https://user-images.githubusercontent.com/1957048/41147228-1e53dc88-6b06-11e8-8f19-568f5baa6cef.png)

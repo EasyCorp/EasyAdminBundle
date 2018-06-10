@@ -3,29 +3,28 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 final class ConfigManager implements ConfigManagerInterface
 {
+    /** @var PropertyPathAccessor */
+    private $propertyPathAccessor;
     /** @var array */
     private $backendConfig;
-    /** @var PropertyAccessorInterface */
-    private $propertyAccessor;
     /** @var array */
     private $originalBackendConfig;
     /** @var ConfigPassInterface[] */
     private $configPasses;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor, array $originalBackendConfig)
+    public function __construct(PropertyPathAccessor $propertyPathAccessor, array $originalBackendConfig)
     {
-        $this->propertyAccessor = $propertyAccessor;
+        $this->propertyPathAccessor = $propertyPathAccessor;
         $this->originalBackendConfig = $originalBackendConfig;
     }
 
     /**
      * @param ConfigPassInterface $configPass
      */
-    public function addConfigPass(ConfigPassInterface $configPass)
+    public function addConfigPass(ConfigPassInterface $configPass): void
     {
         $this->configPasses[] = $configPass;
     }
@@ -43,10 +42,7 @@ final class ConfigManager implements ConfigManagerInterface
             return $this->backendConfig;
         }
 
-        // turns 'design.menu' into '[design][menu]', the format required by PropertyAccess
-        $propertyPath = '['.str_replace('.', '][', $propertyPath).']';
-
-        return $this->propertyAccessor->getValue($this->backendConfig, $propertyPath);
+        return $this->propertyPathAccessor->getValue($this->backendConfig, $propertyPath);
     }
 
     /**

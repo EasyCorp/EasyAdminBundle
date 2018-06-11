@@ -65,7 +65,7 @@ class TemplateConfigPass implements ConfigPassInterface
         'label_null' => '@EasyAdmin/default/label_null.html.twig',
         'label_undefined' => '@EasyAdmin/default/label_undefined.html.twig',
     );
-    private $existingTemplates = null;
+    private $existingTemplates = array();
 
     public function __construct(\Twig_Loader_Filesystem $twigLoader)
     {
@@ -78,7 +78,7 @@ class TemplateConfigPass implements ConfigPassInterface
         $backendConfig = $this->processDefaultTemplates($backendConfig);
         $backendConfig = $this->processFieldTemplates($backendConfig);
 
-        $this->existingTemplates = null;
+        $this->existingTemplates = array();
 
         return $backendConfig;
     }
@@ -241,19 +241,40 @@ class TemplateConfigPass implements ConfigPassInterface
 
     private function findFirstExistingTemplate(array $templatePaths)
     {
-        if (null === $this->existingTemplates) {
-            foreach ($this->twigLoader->getPaths() as $path) {
-                $finder = new Finder();
-                $finder->files()->in($path);
+        foreach ($templatePaths as $templatePath) {
+            // template name normalization code taken from \Twig_Loader_Filesystem::normalizeName()
+            $templatePath = preg_replace('#/{2,}#', '/', str_replace('\\', '/', $templatePath));
+            $namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE;
 
-                foreach ($finder as $templateFile) {
-                    $this->existingTemplates[substr($templateFile->getRealPath(), strlen($path) + 1)] = true;
+            if (isset($templatePath[0]) && '@' == $templatePath[0]) {
+                if (false === $pos = strpos($templatePath, '/')) {
+                    throw new \LogicException(sprintf('Malformed namespaced template name "%s" (expecting "@namespace/template_name").', $name));
+                }
+
+                $namespace = substr($templatePath, 1, $pos - 1);
+            }
+
+            if (!isset($this->existingTemplates[$namespace])) {
+                foreach ($this->twigLoader->getPaths($namespace) as $path) {
+                    $finder = new Finder();
+                    $finder->files()->in($path);
+
+                    foreach ($finder as $templateFile) {
+                        $template = $templateFile->getRelativePathname();
+
+                        if ('\\' === DIRECTORY_SEPARATOR) {
+                            $template = str_replace('\\', '/', $template);
+                        }
+
+                        if (\Twig_Loader_Filesystem::MAIN_NAMESPACE !== $namespace) {
+                            $template = sprintf('@%s/%s', $namespace, $template);
+                        }
+                        $this->existingTemplates[$namespace][$template] = true;
+                    }
                 }
             }
-        }
 
-        foreach ($templatePaths as $templatePath) {
-            if (null !== $templatePath && isset($this->existingTemplates[$templatePath])) {
+            if (null !== $templatePath && isset($this->existingTemplates[$namespace][$templatePath])) {
                 return $templatePath;
             }
         }

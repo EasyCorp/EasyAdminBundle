@@ -36,7 +36,7 @@
 
         <service id="easyadmin.router" class="EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter" public="true">
             <argument id="easyadmin.config.manager" type="service" />
-            <argument id="router.default" type="service" />
+            <argument id="router" type="service" />
             <argument id="property_accessor" type="service" />
             <argument id="request_stack" type="service" on-invalid="null" />
         </service>

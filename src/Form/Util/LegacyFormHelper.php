@@ -65,6 +65,7 @@ final class LegacyFormHelper
         'easyadmin_section' => 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminSectionType',
         // Popular third-party bundles types
         'ckeditor' => 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType',
+        'fos_ckeditor' => 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType',
         'vich_file' => 'Vich\\UploaderBundle\\Form\\Type\\VichFileType',
         'vich_image' => 'Vich\\UploaderBundle\\Form\\Type\\VichImageType',
     );

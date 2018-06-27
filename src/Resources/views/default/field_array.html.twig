@@ -2,7 +2,7 @@
     {% if value|length > 0 %}
         <ul>
             {% for element in value %}
-                <li>{{ element }}</li>
+                <li>{{ element is iterable ? element | json_encode : element }}</li>
             {% endfor %}
         </ul>
     {% else %}

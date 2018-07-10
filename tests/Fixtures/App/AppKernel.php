@@ -25,7 +25,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            // new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle(),
             new EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\AppTestBundle(),
@@ -49,18 +49,6 @@ class AppKernel extends Kernel
                 $container->loadFromExtension('framework', array(
                     'templating' => array(
                         'engines' => array('twig'),
-                    ),
-                ));
-            });
-        }
-
-        if ($this->requiresLogoutOnUserChange()) {
-            $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('security', array(
-                    'firewalls' => array(
-                        'main' => array(
-                            'logout_on_user_change' => true,
-                        ),
                     ),
                 ));
             });
@@ -91,10 +79,5 @@ class AppKernel extends Kernel
     protected function requiresTemplatingConfig()
     {
         return 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
-    }
-
-    protected function requiresLogoutOnUserChange()
-    {
-        return (int) Kernel::VERSION_ID >= 30400;
     }
 }

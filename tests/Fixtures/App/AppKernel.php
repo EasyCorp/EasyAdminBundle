@@ -85,6 +85,6 @@ class AppKernel extends Kernel
 
     protected function requiresLogoutOnUserChange()
     {
-        return (int) Kernel::VERSION_ID >= 30400;
+        return Kernel::VERSION_ID >= 30400 && Kernel::VERSION_ID < 40100;
     }
 }

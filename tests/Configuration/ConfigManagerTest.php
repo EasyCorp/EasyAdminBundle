@@ -34,8 +34,10 @@ class ConfigManagerTest extends TestCase
         if (isset($backendConfig['expected_exception']['class'])) {
             $this->expectException($backendConfig['expected_exception']['class']);
             if (isset($backendConfig['expected_exception']['message_string'])) {
+                $this->expectException($backendConfig['expected_exception']['class']);
                 $this->expectExceptionMessage($backendConfig['expected_exception']['message_string']);
             } elseif (isset($backendConfig['expected_exception']['message_regexp'])) {
+                $this->expectException($backendConfig['expected_exception']['class']);
                 $this->expectExceptionMessageRegExp($backendConfig['expected_exception']['message_regexp']);
             }
         }

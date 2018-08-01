@@ -17,7 +17,6 @@
         "doctrine/doctrine-bundle": "^1.8",
         "doctrine/orm": "^2.6",
         "pagerfanta/pagerfanta": "~1.0,>=1.0.1",
-        "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "^4.0",
         "symfony/cache": "^4.0",
         "symfony/config": "^4.0",

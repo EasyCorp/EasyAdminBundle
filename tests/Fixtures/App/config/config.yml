@@ -49,6 +49,9 @@ security:
         in_memory:
              memory: ~
 
+twig:
+    strict_variables: '%kernel.debug%'
+
 services:
     logger:
         class: Psr\Log\NullLogger

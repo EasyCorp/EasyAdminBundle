@@ -4,6 +4,8 @@
 
 {% set color_schemes = {
     'dark': {
+        info: '#39A0ED',
+        warning: '#F0AD4E',
         danger: '#D42124',
         success: '#006B2E',
         text: '#222222',
@@ -248,6 +250,13 @@ button.btn:active {
     padding: 1px 5px;
 }
 
+.btn-default,
+.btn-default:hover,
+.btn-default:active,
+.btn-default:focus,
+.btn-default:active:hover {
+    border-color: transparent;
+}
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:active,
@@ -262,18 +271,19 @@ button.btn:active {
 .btn-info:active,
 .btn-info:focus,
 .btn-info:active:hover {
-    background-color: #39a0ed;
+    background-color: {{ colors.info }};
     border-color: transparent;
     color: {{ colors.white }};
 }
-.btn-default,
-.btn-default:hover,
-.btn-default:active,
-.btn-default:focus,
-.btn-default:active:hover {
+.btn-warning,
+.btn-warning:hover,
+.btn-warning:active,
+.btn-warning:focus,
+.btn-warning:active:hover {
+    background-color: {{ colors.warning }};
     border-color: transparent;
+    color: {{ colors.white }};
 }
-
 .btn-danger,
 .btn-danger:hover,
 .btn-danger:active,
@@ -283,7 +293,6 @@ button.btn:active {
     border-color: transparent;
     color: {{ colors.white }};
 }
-
 .btn-success,
 .btn-success:hover,
 .btn-success:active,
@@ -309,6 +318,7 @@ button.btn:active {
 }
 
 .btn-primary,
+.btn-warning,
 .btn-danger,
 .btn-success,
 .btn-info {

@@ -67,17 +67,7 @@ class ControllerListener
             return;
         }
 
-        $customController = $entity['controller'];
-        $controllerMethod = $currentController[1];
-
-        // build the full controller name depending on its type
-        if (class_exists($customController)) {
-            // 'class::method' syntax for normal controllers
-            $customController .= '::'.$controllerMethod;
-        } else {
-            // 'service:method' syntax for controllers as services
-            $customController .= ':'.$controllerMethod;
-        }
+        $customController = $entity['controller'].'::'.$currentController[1];
 
         $request->attributes->set('_controller', $customController);
         $newController = $this->resolver->getController($request);

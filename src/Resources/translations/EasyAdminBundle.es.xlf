@@ -73,7 +73,7 @@
             </trans-unit>
             <trans-unit id="label.null">
                 <source>label.null</source>
-                <target>Null</target>
+                <target>Nulo</target>
             </trans-unit>
             <trans-unit id="label.nullable_field">
                 <source>label.nullable_field</source>

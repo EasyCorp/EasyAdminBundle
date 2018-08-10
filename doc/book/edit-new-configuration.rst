@@ -255,9 +255,9 @@ are displayed in the same order as defined in the related Doctrine entity.
 
     Fields that represent an association with another entity are displayed as
     ``<select>`` lists. For that reason, you must define the ``__toString()``
-    PHP method in any entity which is used in a Doctrine relation. Otherwise
-    you'll see an error message because the backend cannot represent the related
-    object as a string.
+    magic method in any entity which is used in a Doctrine relation. Otherwise
+    you'll see the following error message:  
+    ``Catchable Fatal Error: Object of class XY could not be converted to string``
 
 Virtual Properties
 ..................

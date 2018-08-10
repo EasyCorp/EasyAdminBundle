@@ -239,9 +239,9 @@ class TemplateConfigPass implements ConfigPassInterface
             $templatePath = preg_replace('#/{2,}#', '/', str_replace('\\', '/', $templatePath));
             $namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE;
 
-            if (isset($templatePath[0]) && '@' == $templatePath[0]) {
+            if (isset($templatePath[0]) && '@' === $templatePath[0]) {
                 if (false === $pos = strpos($templatePath, '/')) {
-                    throw new \LogicException(sprintf('Malformed namespaced template name "%s" (expecting "@namespace/template_name").', $name));
+                    throw new \LogicException(sprintf('Malformed namespaced template name "%s" (expecting "@namespace/template_name").', $templatePath));
                 }
 
                 $namespace = substr($templatePath, 1, $pos - 1);

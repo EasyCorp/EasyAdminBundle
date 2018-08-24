@@ -15,7 +15,6 @@
         "php": ">=5.3.0",
         "doctrine/cache": "~1.5",
         "doctrine/doctrine-bundle": "~1.2",
-        "doctrine/persistence": "^1.0",
         "doctrine/orm": "~2.3",
         "pagerfanta/pagerfanta": "~1.0,>=1.0.1|~2.0",
         "symfony/asset": "~2.3|~3.0|^4.0",

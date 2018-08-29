@@ -1062,6 +1062,12 @@ body.list .pagination > li > a:hover {
 body.list .pagination > li i {
     padding: 0 3px;
 }
+body.list .pagination > li > a.current {
+    background: {{ colors.gray_lighter }};
+}
+body.list .pagination > li > a.current:hover {
+    color: {{ colors.black }};
+}
 {# this hack is needed to avoid the last pagination page from showing wrong
    borders for the second pagination element (we need to put this element above
    the third element) #}

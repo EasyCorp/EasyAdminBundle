@@ -210,6 +210,16 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('messages')
                     ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
                 ->end()
+            
+                ->booleanNode('show_pagination')
+                    ->defaultValue(false)
+                    ->info('Show a pagination in the list views')
+                ->end()
+
+                ->integerNode('pagination_nearby_pages')
+                    ->defaultValue(5)
+                    ->info('The amount of nearby pages shown in the pagination')
+                ->end()
             ->end()
         ;
     }

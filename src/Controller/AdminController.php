@@ -518,6 +518,10 @@ class AdminController extends Controller
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
+        if (empty($sortDirection) || !in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
+            $sortDirection = 'DESC';
+        }
+        
         $queryBuilder = $this->executeDynamicMethod('create<EntityName>SearchQueryBuilder', [$entityClass, $searchQuery, $searchableFields, $sortField, $sortDirection, $dqlFilter]);
 
         $this->dispatch(EasyAdminEvents::POST_SEARCH_QUERY_BUILDER, [

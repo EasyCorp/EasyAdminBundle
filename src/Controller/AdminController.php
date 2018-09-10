@@ -491,6 +491,7 @@ class AdminController extends Controller
      */
     protected function updateEntity($entity)
     {
+        $this->em->persist($entity);
         $this->em->flush();
     }
 

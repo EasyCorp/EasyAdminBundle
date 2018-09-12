@@ -339,7 +339,7 @@ class AdminController extends Controller
             $this->executeDynamicMethod('preRemove<EntityName>Entity', array($entity, true));
 
             try {
-                $this->executeDynamicMethod('remove<EntityName>Entity', array($entity));
+                $this->executeDynamicMethod('remove<EntityName>Entity', array($entity, $form));
             } catch (ForeignKeyConstraintViolationException $e) {
                 throw new EntityRemoveException(array('entity_name' => $this->entity['name'], 'message' => $e->getMessage()));
             }

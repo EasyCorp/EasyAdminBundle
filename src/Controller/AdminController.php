@@ -216,7 +216,7 @@ class AdminController extends Controller
             $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity));
 
             $this->executeDynamicMethod('preUpdate<EntityName>Entity', array($entity, true));
-            $this->executeDynamicMethod('update<EntityName>Entity', array($entity));
+            $this->executeDynamicMethod('update<EntityName>Entity', array($entity, $editForm));
 
             $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity));
 
@@ -290,7 +290,7 @@ class AdminController extends Controller
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, array('entity' => $entity));
 
             $this->executeDynamicMethod('prePersist<EntityName>Entity', array($entity, true));
-            $this->executeDynamicMethod('persist<EntityName>Entity', array($entity));
+            $this->executeDynamicMethod('persist<EntityName>Entity', array($entity, $newForm));
 
             $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $entity));
 

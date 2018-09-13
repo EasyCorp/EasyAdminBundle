@@ -21,7 +21,7 @@
             </trans-unit>
             <trans-unit id="action.delete">
                 <source>action.delete</source>
-                <target>Видаліти</target>
+                <target>Видалити</target>
             </trans-unit>
             <trans-unit id="action.save">
                 <source>action.save</source>

@@ -18,25 +18,130 @@
 
 {% block main %}
     <div class="form-horizontal">
-        {% block show_fields %}
-            {% for field, metadata in fields %}
-                {% block show_field %}
-                    <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
-                        <label class="col-sm-2 control-label">
-                            {{ (metadata.label ?: field|humanize)|trans(_trans_parameters)|raw }}
-                        </label>
-                        <div class="col-sm-10">
-                            <div class="form-control">
-                                {{ easyadmin_render_field_for_show_view(_entity_config.name, entity, metadata) }}
-                            </div>
 
-                            {% if metadata.help|default('') != '' %}
-                                <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help|trans|raw }}</span>
+        {% set _translation_domain = _entity_config.translation_domain %}
+        {% block show_fields_tabs %}   
+            {% set hasTabs = false %} 
+            {% for field, metadata in fields %}
+                {% if metadata.type == 'tab'  %}
+                    {% set isFirstTab = ( not hasTabs ) %}
+                    {% if isFirstTab %}
+                        {% set hasTabs = true %} 
+                        <div class="col-xs-12">
+                            <div class="nav-tabs-custom">
+                                <ul class="nav nav-tabs">
+                    {% endif %}
+                    <li class="{% if isFirstTab %}active{% endif %}">
+                        <a href="#tab-{{ loop.index }}" id="{{ loop.index }}-tab-nav" data-toggle="tab">
+                            {% if metadata.icon|default(false) %}
+                                <i class="fa fa-{{ metadata.icon }}"></i>
+                            {% endif %}
+                            {{ metadata.label|default('')|trans(domain = _translation_domain)|raw }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if hasTabs %}
+                </ul>
+            {% endif %}
+        {% endblock show_fields_tabs  %}
+        {% block show_fields %}
+            {% set hasUnclosedGroup = false %}
+            {% set hasUnclosedTab = false %}
+            {% set hasTabs = false %}
+            {% for field, metadata in fields %}
+                    {% if metadata.type == 'tab'  %}
+            
+                        {# close previous group #}
+                        {% if hasUnclosedGroup == true %}
+                            </div></div></div>
+                            {% set hasUnclosedGroup = false %}  
+                        {% endif %}
+
+                        {# close previous tab #}
+                        {% if hasUnclosedTab == true %}
+                            </div></div> 
+                            {% set hasUnclosedTab = false %}  
+                        {% endif %}
+
+                        {% set hasUnclosedTab = true %}
+                        {% set isFirstTab = ( not hasTabs ) %}
+                        {% if isFirstTab %}
+                            {% set hasTabs = true %} 
+                            <div class="tab-content">
+                        {% endif %}
+                        <div id="tab-{{ loop.index }}" class="tab-pane {% if isFirstTab %}active{% endif %}">
+                            <div class="row">
+                                
+                                
+                    {% elseif metadata.type == 'group'  %}
+                        {# close previous group #}
+                        {% if hasUnclosedGroup == true %}
+                            </div></div></div>
+                            {% set hasUnclosedGroup = false %}  
+                        {% endif %}
+                        
+                        {% set hasUnclosedGroup = true %}
+                        <div class="{{ metadata.css_class | default('') }}">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong>
+                                        {% if metadata.icon is defined %}
+                                            <i class="fa fa-{{ metadata.icon }} }">&nbsp;</i>
+                                        {% endif %}
+                                        {{ metadata.label | default('') }}
+                                    </strong>
+                                </div>
+                                <div class="panel-body">
+                    {% elseif metadata.type == 'section'  %}
+                        <div class="field-section {{ metadata.css_class|default('') }}">
+                            {% if metadata.label|default(false) or metadata.icon|default(false) %}
+                                <h2>
+                                    {% if metadata.icon|default(false) %}<i class="fa fa-{{ metadata.icon }}"></i>{% endif %}
+                                    {{ metadata.label|default('')|trans(domain = _translation_domain)|raw }}
+                                </h2>
+                            {% endif %}
+
+                            {% if metadata.help|default(false) %}
+                                <p class="help-block">{{ metadata.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
                             {% endif %}
                         </div>
-                    </div>
-                {% endblock %}
+                    {% else %}
+                        {% block show_field %}
+                            <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
+                                <label class="col-sm-2 control-label">
+                                    {{ (metadata.label ?: field|humanize)|trans(_trans_parameters)|raw }}
+                                </label>
+                                <div class="col-sm-10">
+                                    <div class="form-control">
+                                        {{ easyadmin_render_field_for_show_view(_entity_config.name, entity, metadata) }}
+                                    </div>
+
+                                    {% if metadata.help|default('') != '' %}
+                                        <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help|trans|raw }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endblock %}
+                    {% endif %}
+                
             {% endfor %}
+            
+            {#  close last opened group #}
+            {% if hasUnclosedGroup == true %}
+                </div></div></div>
+                {% set hasUnclosedGroup = false %}
+            {% endif %}
+
+            {#  close last opened tab #}
+            {% if hasUnclosedTab == true %}
+                </div></div>
+
+                </div>   {# for tab content #}
+                </div>   {# for nav-tabs-custom  #}
+                </div>   {# for col-xs-12 #}
+                {% set hasUnclosedTab = false %}
+            {% endif %}
         {% endblock %}
 
         <div class="form-group form-actions">

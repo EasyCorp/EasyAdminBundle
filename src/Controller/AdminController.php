@@ -205,7 +205,7 @@ class AdminController extends Controller
         $editForm->handleRequest($this->request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity]);
-            $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);
+            $this->executeDynamicMethod('update<EntityName>Entity', [$entity, $editForm]);
             $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity]);
 
             return $this->redirectToReferrer();
@@ -276,7 +276,7 @@ class AdminController extends Controller
         $newForm->handleRequest($this->request);
         if ($newForm->isSubmitted() && $newForm->isValid()) {
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, ['entity' => $entity]);
-            $this->executeDynamicMethod('persist<EntityName>Entity', [$entity]);
+            $this->executeDynamicMethod('persist<EntityName>Entity', [$entity, $newForm]);
             $this->dispatch(EasyAdminEvents::POST_PERSIST, ['entity' => $entity]);
 
             return $this->redirectToReferrer();
@@ -324,7 +324,7 @@ class AdminController extends Controller
             $this->dispatch(EasyAdminEvents::PRE_REMOVE, ['entity' => $entity]);
 
             try {
-                $this->executeDynamicMethod('remove<EntityName>Entity', [$entity]);
+                $this->executeDynamicMethod('remove<EntityName>Entity', [$entity, $form]);
             } catch (ForeignKeyConstraintViolationException $e) {
                 throw new EntityRemoveException(['entity_name' => $this->entity['name'], 'message' => $e->getMessage()]);
             }

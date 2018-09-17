@@ -21,13 +21,13 @@
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
-                <target><![CDATA[{0} Ничого не знайдено|{1} <strong>1</strong> рядок знайдено |{2,3,4} Загалом <strong>%count%</strong> рядки |[5,Inf] Загалом <strong>%count%</strong> рядків]]></target>
+                <target><![CDATA[{0} Нічого не знайдено|{1} <strong>1</strong> рядок знайдено |{2,3,4} Загалом <strong>%count%</strong> рядки |[5,Inf] Загалом <strong>%count%</strong> рядків]]></target>
             </trans-unit>
 
             <!-- 'search' view -->
             <trans-unit id="search.no_results">
                 <source>search.no_results</source>
-                <target>Ничого не знайдено.</target>
+                <target>Нічого не знайдено.</target>
             </trans-unit>
 
             <!-- 'list' view -->
@@ -89,7 +89,7 @@
             </trans-unit>
             <trans-unit id="label.inaccessible.explanation">
                 <source>label.inaccessible.explanation</source>
-                <target>Немає геттера для цього поля або поле не публічно</target>
+                <target>Немає геттера для цього поля або поле не публічне</target>
             </trans-unit>
 
             <!-- user -->
@@ -117,7 +117,7 @@
             </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>Вы дійсно бажаєте видаліти цій об'єкт?</target>
+                <target>Ви дійсно бажаєте видалити цей об'єкт?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
@@ -145,7 +145,7 @@
             </trans-unit>
             <trans-unit id="form.are_you_sure">
                 <source>form.are_you_sure</source>
-                <target>Вы не зберегли зроблені зміни.</target>
+                <target>Ви не зберегли зроблені зміни.</target>
             </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>

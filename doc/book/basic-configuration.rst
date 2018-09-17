@@ -14,7 +14,7 @@ routes of the bundle. Change its value to meet your own requirements:
 
 .. code-block:: yaml
 
-    # app/config/routing.yml
+    # app/config/routing.yml or config/routes.yaml
     easy_admin_bundle:
         resource: "@EasyAdminBundle/Controller/AdminController.php"
         type:     annotation

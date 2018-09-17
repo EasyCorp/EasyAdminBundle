@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+
+by grachevko at 2018-09-12T10:29:57Z
+
+Why not in `removeEntity`?
+
+---------------------------------------------------------------------------
+
+by lyrixx at 2018-09-12T12:32:21Z
+
+@grachevko 1/ Because I forgot it ;) 2/ But actually I don't think this is useful because the form is here just to mitigate CSRF attack (thus I don't know why there is a form, a simple call to `crsf_token` in the view would be much simpler)
+
+---------------------------------------------------------------------------
+
+by grachevko at 2018-09-12T12:38:39Z
+
+What about delete entity through form in which i can choose some deletion detail.
+Like on delete product category select category to migrate products from deletable category? ;)
+
+---------------------------------------------------------------------------
+
+by lyrixx at 2018-09-12T14:27:14Z
+
+@grachevko done ;)

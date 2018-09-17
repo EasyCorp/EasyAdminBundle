@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" target-language="sr-rs" datatype="plaintext" original="file.ext">
+        <body>
+            <!-- page titles -->
+            <trans-unit id="new.page_title">
+                <source>new.page_title</source>
+                <target>Novi %entity_name%</target>
+            </trans-unit>
+            <trans-unit id="show.page_title">
+                <source>show.page_title</source>
+                <target>%entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="edit.page_title">
+                <source>edit.page_title</source>
+                <target>Izmena %entity_name% (#%entity_id%)</target>
+            </trans-unit>
+            <trans-unit id="list.page_title">
+                <source>list.page_title</source>
+                <target>%entity_name%</target>
+            </trans-unit>
+            <trans-unit id="search.page_title">
+                <source>search.page_title</source>
+                <target><![CDATA[{0} Nema pronađenin rezultata|{1} <strong>1</strong> pronađeno rezultata|]1,Inf] <strong>%count%</strong> pronađeno rezultata]]></target>
+            </trans-unit>
+
+            <!-- 'search' view -->
+            <trans-unit id="search.no_results">
+                <source>search.no_results</source>
+                <target>Nema pronađenin rezultata.</target>
+            </trans-unit>
+
+            <!-- 'list' view -->
+            <trans-unit id="list.row_actions">
+                <source>list.row_actions</source>
+                <target>Akcije</target>
+            </trans-unit>
+
+            <!-- paginator -->
+            <trans-unit id="paginator.first">
+                <source>paginator.first</source>
+                <target>Prva</target>
+            </trans-unit>
+            <trans-unit id="paginator.previous">
+                <source>paginator.previous</source>
+                <target>Prethodna</target>
+            </trans-unit>
+            <trans-unit id="paginator.next">
+                <source>paginator.next</source>
+                <target>Sledeća</target>
+            </trans-unit>
+            <trans-unit id="paginator.last">
+                <source>paginator.last</source>
+                <target>Poslednja</target>
+            </trans-unit>
+            <trans-unit id="paginator.counter">
+                <source>paginator.counter</source>
+                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> od <strong>%results%</strong>]]></target>
+            </trans-unit>
+
+            <!-- labels -->
+            <trans-unit id="label.true">
+                <source>label.true</source>
+                <target>Da</target>
+            </trans-unit>
+            <trans-unit id="label.false">
+                <source>label.false</source>
+                <target>Ne</target>
+            </trans-unit>
+            <trans-unit id="label.empty">
+                <source>label.empty</source>
+                <target>Prazno</target>
+            </trans-unit>
+            <trans-unit id="label.null">
+                <source>label.null</source>
+                <target>Ništa</target>
+            </trans-unit>
+            <trans-unit id="label.nullable_field">
+                <source>label.nullable_field</source>
+                <target>Ostavi prazno</target>
+            </trans-unit>
+            <trans-unit id="label.object">
+                <source>label.object</source>
+                <target>PHP Objekat</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible">
+                <source>label.inaccessible</source>
+                <target>Nedostupno</target>
+            </trans-unit>
+            <trans-unit id="label.inaccessible.explanation">
+                <source>label.inaccessible.explanation</source>
+                <target>Getter metoda ne postoji za ovo polje ili je nedostupna</target>
+            </trans-unit>
+
+            <!-- user -->
+            <trans-unit id="user.logged_in_as">
+                <source>user.logged_in_as</source>
+                <target>Ulogovan kao</target>
+            </trans-unit>
+            <trans-unit id="user.unnamed">
+                <source>user.unnamed</source>
+                <target>Korisnik bez imena</target>
+            </trans-unit>
+            <trans-unit id="user.anonymous">
+                <source>user.anonymous</source>
+                <target>Anonimni korisnik</target>
+            </trans-unit>
+            <trans-unit id="user.signout">
+                <source>user.signout</source>
+                <target>Izloguj se</target>
+            </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Izađi iz oponašanja</target>
+            </trans-unit>
+
+            <!-- misc. elements -->
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Promeni navigaciju</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.title">
+                <source>delete_modal.title</source>
+                <target>Da li sigurno želite da obrišete ovaj zapis?</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.content">
+                <source>delete_modal.content</source>
+                <target>Ova operacija je nepovratna.</target>
+            </trans-unit>
+            <trans-unit id="delete_modal.action">
+                <source>delete_modal.action</source>
+                <target>Obriši</target>
+            </trans-unit>
+            <trans-unit id="action.add_new_item">
+                <source>action.add_new_item</source>
+                <target>Dodaj novi zapis</target>
+            </trans-unit>
+            <trans-unit id="action.add_another_item">
+                <source>action.add_another_item</source>
+                <target>Dodaj još jedan zapis</target>
+            </trans-unit>
+            <trans-unit id="action.remove_item">
+                <source>action.remove_item</source>
+                <target>Ukloni zapis</target>
+            </trans-unit>
+            <trans-unit id="errors">
+                <source>errors</source>
+                <target>Greška|Greške</target>
+            </trans-unit>
+            <trans-unit id="form.are_you_sure">
+                <source>form.are_you_sure</source>
+                <target>Niste sačuvali izmene na ovoj formi.</target>
+            </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>Jedan pogrešan unos|%count% pogrešnih unosa</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} postoji još jedan zapis koji nije prikazan u ovoj listi|]1,Inf] %count% zapisa nije prikazano u ovoj listi]]></target>
+            </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Ovaj zapis više nije dostupan.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Ovaj zapis ne može biti izbrisan zato što drugi zapisi su vezani za njega.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>Data akcija ne može biti primenjena na ovaj zapis.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>Aplikacija nije pravilno konfigurisana.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>Aplikacija nije pravilno konfigurisana za ovu vrstu zapisa.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -14,8 +14,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
- * This configurator is applied to any form field of type 'ckeditor' available
- * when using the IvoryCKEditorBundle. It's used to provide a better default
+ * This configurator is applied to any form field of type 'fos_ckeditor' available
+ * when using the FOSCKEditorBundle. It's used to provide a better default
  * configuration for the WYSIWYG editors created with this bundle.
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
@@ -43,10 +43,8 @@ class FOSCKEditorTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isCkeditorField = in_array($type, array('ckeditor', 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType'), true);
+        $isFosCkeditorField = in_array($type, array('fos_ckeditor', 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType'), true);
 
-        return $isCkeditorField && !isset($options['config']['toolbar']) && !isset($options['config_name']);
+        return $isFosCkeditorField && !isset($options['config']['toolbar']) && !isset($options['config_name']);
     }
 }
-
-//class_alias('EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator', 'JavierEguiluz\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator', false);

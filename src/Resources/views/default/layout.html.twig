@@ -14,6 +14,15 @@
             <style>
                 {{ easyadmin_config('_internal.custom_css')|raw }}
             </style>
+            {% if _entity_config.assets.css is defined %}
+                {% if _entity_config.assets.css is iterable %}
+                    {% for css in _entity_config.assets.css %}
+                        <link rel="stylesheet" href="{{ asset(css) }}" />
+                    {% endfor %}
+                {% else %}
+                    <link rel="stylesheet" href="{{ asset(_entity_config.assets.css) }}" />
+                {% endif %}
+            {% endif %}
         {% endblock %}
 
         {% for css_asset in easyadmin_config('design.assets.css') %}
@@ -157,7 +166,17 @@
         {% endblock wrapper %}
         </div>
 
-        {% block body_javascript %}{% endblock body_javascript %}
+        {% block body_javascript %}
+            {% if _entity_config.assets.js is defined  %}
+                {% if  _entity_config.assets.js is iterable %}
+                    {% for js_script in _entity_config.assets.js %}
+                    <script src="{{ asset(js_script) }}"></script>
+                    {% endfor %}
+                {% else %}
+                    <script src="{{ asset(_entity_config.assets.js) }}"></script>
+                {% endif %}
+            {% endif %}
+        {% endblock body_javascript %}
 
         {% for js_asset in easyadmin_config('design.assets.js') %}
             <script src="{{ asset(js_asset) }}"></script>

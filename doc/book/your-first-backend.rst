@@ -5,12 +5,12 @@ Creating your first backend will take you less than 30 seconds. Let's suppose
 that your Symfony application defines three Doctrine ORM entities called
 ``Product``, ``Category`` and ``User``.
 
-Open the ``app/config/config.yml`` (or ``config/packages/easy_admin.yaml``) file
-and add the following configuration:
+Open the ``config/packages/easy_admin.yaml`` file and add the following
+configuration:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             # change the following to the namespaces of your own entities
@@ -33,9 +33,10 @@ the admin backend:
 
     .. code-block:: yaml
 
-        # app/config/config.yml
+        # config/packages/translation.yaml
         framework:
-            translator: { fallbacks: [ "en" ] }
+            translator:
+                fallbacks: [ "en" ]
 
 Expanded Configuration Format
 -----------------------------
@@ -46,7 +47,7 @@ to configure lots of options for each entity:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:

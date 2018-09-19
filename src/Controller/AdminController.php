@@ -370,8 +370,8 @@ class AdminController extends Controller
             return $this->redirect($this->get('router')->generate('easyadmin', $queryParameters));
         }
 
-        $id = (int) $query;
-        if (0 !== $id) {
+        $id = filter_var($query, FILTER_VALIDATE_INT);
+        if (false !== $id) {
             $entity = $this->em->getRepository($this->entity['class'])->find($id);
             if (null !== $entity) {
                 return $this->get('easyadmin.router')->generate($entity, 'show');

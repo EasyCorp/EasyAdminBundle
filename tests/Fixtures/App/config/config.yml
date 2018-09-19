@@ -17,6 +17,11 @@ framework:
     session:
         storage_id: session.storage.mock_file
 
+sensio_framework_extra:
+    # SensioFramework annotations are deprecated, use Symfony Routing component instead.
+    router:
+        annotations: false
+
 doctrine:
     dbal:
         driver: pdo_sqlite

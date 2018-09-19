@@ -43,18 +43,6 @@ class AppKernel extends Kernel
                 ]);
             });
         }
-
-        if ($this->requiresLogoutOnUserChange()) {
-            $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('security', [
-                    'firewalls' => [
-                        'main' => [
-                            'logout_on_user_change' => true,
-                        ],
-                    ],
-                ]);
-            });
-        }
     }
 
     /**
@@ -81,10 +69,5 @@ class AppKernel extends Kernel
     protected function requiresTemplatingConfig()
     {
         return 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
-    }
-
-    protected function requiresLogoutOnUserChange()
-    {
-        return Kernel::VERSION_ID >= 30400 && Kernel::VERSION_ID < 40100;
     }
 }

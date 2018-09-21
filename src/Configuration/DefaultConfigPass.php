@@ -47,14 +47,14 @@ class DefaultConfigPass implements ConfigPassInterface
     /**
      * Find the params defined at the default entity level
      *
-     * @param array $menu
+     * @param array $items
      * @param $firstEntityName
      *
      * @return array
      */
-    private function processDefaultEntityParams(array $menu, $firstEntityName)
+    private function processDefaultEntityParams(array $items, $firstEntityName)
     {
-        foreach ($menu as $item) {
+        foreach ($items as $item) {
             if ('entity' === $item['type'] && $firstEntityName === $item['entity']) {
                 if (array_key_exists('params', $item) && array_key_exists('action', $item['params'])) {
                     $defaultEntityConfig['default_entity_action'] = $item['params']['action'];

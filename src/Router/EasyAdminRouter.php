@@ -11,7 +11,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
-use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Persistence\Proxy;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,11 +116,25 @@ final class EasyAdminRouter
      */
     private function getEntityConfigByClass($class)
     {
-        if (!$config = $this->configManager->getEntityConfigByClass(ClassUtils::getRealClass($class))) {
+        if (!$config = $this->configManager->getEntityConfigByClass($this->getRealClass($class))) {
             throw new UndefinedEntityException(array('entity_name' => $class));
         }
 
         return $config;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return string
+     */
+    private function getRealClass($class)
+    {
+        if (false === $pos = strrpos($class, '\\' . Proxy::MARKER . '\\')) {
+            return $class;
+        }
+
+        return substr($class, $pos + Proxy::MARKER_LENGTH + 2);
     }
 }
 

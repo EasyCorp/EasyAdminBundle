@@ -38,6 +38,13 @@
             containerDiv.remove();
             parentDiv.trigger('easyadmin.collection.item-deleted');
 
+            var hasCountAttr = parentDiv.data('count');
+
+            if (hasCountAttr === undefined) {
+                var numItems = parentDiv.children('div.form-group').length;
+                parentDiv.data('count', ++numItems)
+            }
+
             if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
                 $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
             }
@@ -499,7 +506,7 @@
                                     {% if tab_config.icon|default(false) %}
                                         <i class="fa fa-{{ tab_config.icon }}"></i>
                                     {% endif %}
-                                    {{ tab_config['label'] }}
+                                    {{ tab_config['label']|trans(domain = _translation_domain) }}
                                     {% if tab_config.errors > 0 %}
                                         <span class="label label-danger" title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'EasyAdminBundle') }}">
                                             {{ tab_config.errors }}
@@ -530,7 +537,7 @@
     {% for group_name, group_config in easyadmin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
         <div class="field-group col-xs-12 {{ group_config.css_class|default('') }}">
             <div class="box box-default">
-                {% if group_config.label|default(false) or group_config.icon|default(false) %}
+                {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
                     <div class="box-header with-border">
                         <h3 class="box-title">
                             {% if group_config.icon|default(false) %}
@@ -538,10 +545,16 @@
                             {% endif %}
                             {{ group_config.label|trans(domain = _translation_domain)|raw }}
                         </h3>
+                        {% if group_config.collapsible|default(false) %}
+                            <a class="pull-right" role="button" data-toggle="collapse" aria-expanded="{{ group_config.expanded|default(false) ? 'true' : 'false' }}" href="#box-body-{{ group_name }}">
+                                <i class="fa fa-plus-square-o"></i>
+                                <i class="fa fa-minus-square-o"></i>
+                            </a>
+                        {% endif %}
                     </div>
                 {% endif %}
 
-                <div class="box-body">
+                <div class="box-body {% if group_config.collapsible|default(false) %}collapse {% if group_config.expanded|default(false) %}in{% endif %}{% endif %}" id="box-body-{{ group_name }}">
                     {% if group_config.help|default(false) %}
                         <p class="help-block">{{ group_config.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
                     {% endif %}

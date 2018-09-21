@@ -67,6 +67,12 @@ choice for admin applications. If you prefer a lighter alternative, add the
 .. image:: ../images/easyadmin-design-color-scheme-light.png
    :alt: The default backend homepage using the light color scheme
 
+.. caution::
+
+    The ``light`` color scheme is deprecated since 1.x version and it will be
+    removed in EasyAdmin 2.0. Always use ``dark`` as the value of the
+    ``color_scheme`` option.
+
 Adding Custom Web Assets
 ------------------------
 

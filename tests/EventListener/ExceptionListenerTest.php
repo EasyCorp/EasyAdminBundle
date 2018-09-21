@@ -13,11 +13,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException as EasyEntityNotFoundException;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
+class ExceptionListenerTest extends TestCase
 {
     private function getTwig()
     {

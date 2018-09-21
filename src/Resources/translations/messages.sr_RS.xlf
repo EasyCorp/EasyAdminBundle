@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" target-language="uk" datatype="plaintext" original="file.ext">
+    <file source-language="en" target-language="sr-rs" datatype="plaintext" original="file.ext">
         <body>
             <!-- generic actions displayed on buttons and links -->
             <trans-unit id="action.new">
                 <source>action.new</source>
-                <target>Створити %entity_name%</target>
+                <target>Dodaj %entity_name%</target>
             </trans-unit>
             <trans-unit id="action.show">
                 <source>action.show</source>
-                <target>Показати</target>
+                <target>Prikaži</target>
             </trans-unit>
             <trans-unit id="action.edit">
                 <source>action.edit</source>
-                <target>Редагувати</target>
+                <target>Izmeni</target>
             </trans-unit>
             <trans-unit id="action.search">
                 <source>action.search</source>
-                <target>Пошук</target>
+                <target>Pretraži</target>
             </trans-unit>
             <trans-unit id="action.delete">
                 <source>action.delete</source>
-                <target>Видалити</target>
+                <target>Izbriši</target>
             </trans-unit>
             <trans-unit id="action.save">
                 <source>action.save</source>
-                <target>Зберегти зміни</target>
+                <target>Sačuvaj izmene</target>
             </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
-                <target>Відмінити</target>
+                <target>Otkaži</target>
             </trans-unit>
             <trans-unit id="action.list">
                 <source>action.list</source>
-                <target>Повернутися до списку</target>
+                <target>Nazad na listu</target>
             </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>
-                <target>Пусто</target>
+                <target>Prazno</target>
             </trans-unit>
 
             <!-- forms -->

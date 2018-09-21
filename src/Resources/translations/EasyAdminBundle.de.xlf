@@ -109,6 +109,10 @@
                 <source>user.signout</source>
                 <target>Abmelden</target>
             </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Benutzerimitation verlassen</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="toggle_navigation">

@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\DataFixtu
 
 use AppTestBundle\Entity\FunctionalTests\Purchase;
 use AppTestBundle\Entity\FunctionalTests\PurchaseItem;
-use AppTestBundle\Entity\FunctionalTests\User;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;

@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" target-language="uk" datatype="plaintext" original="file.ext">
+    <file source-language="en" target-language="fa" datatype="plaintext" original="file.ext">
         <body>
             <!-- generic actions displayed on buttons and links -->
             <trans-unit id="action.new">
                 <source>action.new</source>
-                <target>Створити %entity_name%</target>
+                <target>افزودن %entity_name%</target>
             </trans-unit>
             <trans-unit id="action.show">
                 <source>action.show</source>
-                <target>Показати</target>
+                <target>نمایش</target>
             </trans-unit>
             <trans-unit id="action.edit">
                 <source>action.edit</source>
-                <target>Редагувати</target>
+                <target>ویرایش</target>
             </trans-unit>
             <trans-unit id="action.search">
                 <source>action.search</source>
-                <target>Пошук</target>
+                <target>جستجو</target>
             </trans-unit>
             <trans-unit id="action.delete">
                 <source>action.delete</source>
-                <target>Видалити</target>
+                <target>حذف</target>
             </trans-unit>
             <trans-unit id="action.save">
                 <source>action.save</source>
-                <target>Зберегти зміни</target>
+                <target>ذخیره تغییرات</target>
             </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
-                <target>Відмінити</target>
+                <target>انصراف</target>
             </trans-unit>
             <trans-unit id="action.list">
                 <source>action.list</source>
-                <target>Повернутися до списку</target>
+                <target>بازگشت به لیست</target>
             </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>
-                <target>Пусто</target>
+                <target>هیچ</target>
             </trans-unit>
 
             <!-- forms -->

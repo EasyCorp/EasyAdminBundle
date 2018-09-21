@@ -12,7 +12,12 @@ easy_admin:
     entities:
         Category:
             class: AppTestBundle\Entity\FunctionalTests\Category
+        Category2:
+            class: AppTestBundle\Entity\FunctionalTests\Category
             disabled_actions: ['list']
+        Category3:
+            class: AppTestBundle\Entity\FunctionalTests\Category
+            disabled_actions: ['list', 'edit']
         Purchase:
             class: AppTestBundle\Entity\FunctionalTests\Purchase
             list:

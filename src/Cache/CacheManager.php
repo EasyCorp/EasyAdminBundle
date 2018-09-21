@@ -22,7 +22,11 @@ class CacheManager extends FilesystemCache
 {
     public function __construct($cacheDir)
     {
-        parent::__construct($cacheDir);
+        if (isset($_SERVER['APP_ENV']) && 'dev' === $_SERVER['APP_ENV']) {
+            parent::__construct($cacheDir, self::EXTENSION, 0000);
+        } else {
+            parent::__construct($cacheDir);
+        }
     }
 
     /**

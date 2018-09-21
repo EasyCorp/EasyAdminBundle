@@ -21,7 +21,7 @@
         <a href="{{ path }}" {% if item.target|default(false) %}target="{{ item.target }}"{% endif %}>
             {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}
             <span>{{ item.label|trans(domain = translation_domain) }}</span>
-            {% if item.children|default([]) is not empty %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
+            {% if item.children|default([]) is not empty %}<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>{% endif %}
         </a>
     {% endif %}
 {% endmacro %}
@@ -30,7 +30,7 @@
 
 {% block main_menu_before %}{% endblock %}
 
-<ul class="sidebar-menu">
+<ul class="sidebar-menu" data-widget="tree" data-animation-speed="250">
     {% set _menu_items = easyadmin_config('design.menu') %}
 
     {% block main_menu %}

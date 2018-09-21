@@ -12,10 +12,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\Form\Guess\TypeGuess;
 
-class PropertyConfigPassTest extends \PHPUnit_Framework_TestCase
+class PropertyConfigPassTest extends TestCase
 {
     public function testUnknownGuessedFormTypeOptionsAreRemoved()
     {

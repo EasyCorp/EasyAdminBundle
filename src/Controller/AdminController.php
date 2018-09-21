@@ -21,7 +21,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\LegacyFormHelper;
 use Pagerfanta\Pagerfanta;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
@@ -32,6 +31,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * The controller used to render all the default EasyAdmin actions.
@@ -215,7 +216,7 @@ class AdminController extends Controller
             $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity));
 
             $this->executeDynamicMethod('preUpdate<EntityName>Entity', array($entity, true));
-            $this->executeDynamicMethod('update<EntityName>Entity', array($entity));
+            $this->executeDynamicMethod('update<EntityName>Entity', array($entity, $editForm));
 
             $this->dispatch(EasyAdminEvents::POST_UPDATE, array('entity' => $entity));
 
@@ -289,7 +290,7 @@ class AdminController extends Controller
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, array('entity' => $entity));
 
             $this->executeDynamicMethod('prePersist<EntityName>Entity', array($entity, true));
-            $this->executeDynamicMethod('persist<EntityName>Entity', array($entity));
+            $this->executeDynamicMethod('persist<EntityName>Entity', array($entity, $newForm));
 
             $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $entity));
 
@@ -338,7 +339,7 @@ class AdminController extends Controller
             $this->executeDynamicMethod('preRemove<EntityName>Entity', array($entity, true));
 
             try {
-                $this->executeDynamicMethod('remove<EntityName>Entity', array($entity));
+                $this->executeDynamicMethod('remove<EntityName>Entity', array($entity, $form));
             } catch (ForeignKeyConstraintViolationException $e) {
                 throw new EntityRemoveException(array('entity_name' => $this->entity['name'], 'message' => $e->getMessage()));
             }
@@ -490,6 +491,7 @@ class AdminController extends Controller
      */
     protected function updateEntity($entity)
     {
+        $this->em->persist($entity);
         $this->em->flush();
     }
 
@@ -815,31 +817,31 @@ class AdminController extends Controller
         @trigger_error('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Processed styles are available in the "easyadmin.config._internal.custom_css" container parameter.', E_USER_DEPRECATED);
     }
 
-    /**
+        /**
      * @return RedirectResponse
      */
     protected function redirectToReferrer()
     {
         $refererUrl = $this->request->query->get('referer', '');
         $refererAction = $this->request->query->get('action');
-
-        // redirect on list if possible
+        
+        // 1. redirect to list if possible
         if ($this->isActionAllowed('list')) {
             if (!empty($refererUrl)) {
                 return $this->redirect(urldecode($refererUrl));
             }
-
-            return $this->redirectToRoute('easyadmin', array(
+            
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'list',
                 'entity' => $this->entity['name'],
                 'menuIndex' => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
-            ));
+            ]);
         }
-
-        // else from new|edit action, redirect on edit if possible
-        elseif (in_array($refererAction, array('new', 'edit')) && $this->isActionAllowed('edit')) {
-            return $this->redirectToRoute('easyadmin', array(
+        
+        // 2. from new|edit action, redirect to edit if possible
+        if (\in_array($refererAction, ['new', 'edit']) && $this->isActionAllowed('edit')) {
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'edit',
                 'entity' => $this->entity['name'],
                 'menuIndex' => $this->request->query->get('menuIndex'),
@@ -847,19 +849,19 @@ class AdminController extends Controller
                 'id' => ('new' === $refererAction)
                     ? PropertyAccess::createPropertyAccessor()->getValue($this->request->attributes->get('easyadmin')['item'], $this->entity['primary_key_field_name'])
                     : $this->request->query->get('id'),
-            ));
+            ]);
         }
-
-        // elseif from new action, redirect on new if possible
-        elseif ('new' === $refererAction && $this->isActionAllowed('new')) {
-            return $this->redirectToRoute('easyadmin', array(
+        
+        // 3. from new action, redirect to new if possible
+        if ('new' === $refererAction && $this->isActionAllowed('new')) {
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'new',
                 'entity' => $this->entity['name'],
                 'menuIndex' => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
-            ));
+            ]);
         }
-
+        
         return $this->redirectToBackendHomepage();
     }
 

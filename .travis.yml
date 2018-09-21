@@ -1,5 +1,4 @@
 language: php
-dist: precise
 sudo: false
 git:
     depth: 1
@@ -28,7 +27,6 @@ matrix:
     - php: 7.1
       env:
         - SYMFONY_VERSION="4.0.*"
-        - STABILITY=beta
     # stable (most recent stable versions)
     - php: 7.1
       env:
@@ -44,20 +42,16 @@ matrix:
     - php: 7.1
       env:
         - SYMFONY_VERSION="3.4.*"
-        - STABILITY=beta
         - SYMFONY_DEPRECATIONS_HELPER="strict"
     # legacy (oldest supported versions)
     - php: 5.3
+      dist: precise
       env:
         - SYMFONY_VERSION="2.3.*"
         - COMPOSER_FLAGS="--prefer-lowest"
   allow_failures:
     - php: nightly
     - php: 5.3
-    # code coverage is very slow; allow a failure to get the Travis result early
-    - env:
-        - SYMFONY_VERSION="2.8.*"
-        - ENABLE_CODE_COVERAGE="true"
 
 before_install:
   - stty cols 120

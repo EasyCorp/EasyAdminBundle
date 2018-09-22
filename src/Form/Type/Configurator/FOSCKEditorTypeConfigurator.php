@@ -28,12 +28,12 @@ class FOSCKEditorTypeConfigurator implements TypeConfiguratorInterface
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
         // when the IvoryCKEditor doesn't define the toolbar to use, EasyAdmin uses a simple toolbar
-        $options['config']['toolbar'] = array(
-            array('name' => 'styles', 'items' => array('Bold', 'Italic', 'Strike', 'Link')),
-            array('name' => 'lists', 'items' => array('BulletedList', 'NumberedList', '-', 'Outdent', 'Indent')),
-            array('name' => 'clipboard', 'items' => array('Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo')),
-            array('name' => 'advanced', 'items' => array('Source')),
-        );
+        $options['config']['toolbar'] = [
+            ['name' => 'styles', 'items' => ['Bold', 'Italic', 'Strike', 'Link']],
+            ['name' => 'lists', 'items' => ['BulletedList', 'NumberedList', '-', 'Outdent', 'Indent']],
+            ['name' => 'clipboard', 'items' => ['Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo']],
+            ['name' => 'advanced', 'items' => ['Source']],
+        ];
 
         return $options;
     }
@@ -43,7 +43,7 @@ class FOSCKEditorTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isFosCkeditorField = in_array($type, array('fos_ckeditor', 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType'), true);
+        $isFosCkeditorField = in_array($type, ['fos_ckeditor', 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType'], true);
 
         return $isFosCkeditorField && !isset($options['config']['toolbar']) && !isset($options['config_name']);
     }

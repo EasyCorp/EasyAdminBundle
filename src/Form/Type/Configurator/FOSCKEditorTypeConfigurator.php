@@ -29,10 +29,10 @@ class FOSCKEditorTypeConfigurator implements TypeConfiguratorInterface
     {
         // when the IvoryCKEditor doesn't define the toolbar to use, EasyAdmin uses a simple toolbar
         $options['config']['toolbar'] = [
-            ['name' => 'styles', 'items' => ['Bold', 'Italic', 'Strike', 'Link']),
-            ['name' => 'lists', 'items' => ['BulletedList', 'NumberedList', '-', 'Outdent', 'Indent']),
-            ['name' => 'clipboard', 'items' => ['Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo']),
-            ['name' => 'advanced', 'items' => ['Source']),
+            ['name' => 'styles', 'items' => ['Bold', 'Italic', 'Strike', 'Link']],
+            ['name' => 'lists', 'items' => ['BulletedList', 'NumberedList', '-', 'Outdent', 'Indent']],
+            ['name' => 'clipboard', 'items' => ['Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo']],
+            ['name' => 'advanced', 'items' => ['Source']],
         ];
 
         return $options;

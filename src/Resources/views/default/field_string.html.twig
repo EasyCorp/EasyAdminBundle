@@ -1,7 +1,5 @@
 {% if view == 'show' %}
     {{ value|nl2br }}
-{% elseif view == 'list' %}
-    <span title="{{ value }}">{{ value|easyadmin_truncate }}</span>
 {% else %}
-    {{ value|striptags|easyadmin_truncate }}
+    <span title="{{ value }}">{{ value|striptags|easyadmin_truncate }}</span>
 {% endif %}

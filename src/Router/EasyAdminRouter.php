@@ -99,7 +99,7 @@ final class EasyAdminRouter
      */
     private function getRealClass($class)
     {
-        if (false === $pos = strrpos($class, '\\' . Proxy::MARKER . '\\')) {
+        if (false === $pos = strrpos($class, '\\'.Proxy::MARKER.'\\')) {
             return $class;
         }
 

@@ -69,7 +69,7 @@ class TemplateConfigPass implements ConfigPassInterface
         $backendConfig = $this->processDefaultTemplates($backendConfig);
         $backendConfig = $this->processFieldTemplates($backendConfig);
 
-        $this->existingTemplates = array();
+        $this->existingTemplates = [];
 
         return $backendConfig;
     }

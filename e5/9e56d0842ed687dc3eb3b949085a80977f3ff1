@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-09-22T13:25:53Z
+
+Actually, I think we did this on purpose to use the label of our delete action instead of VichUploader label. But does it make sense to do that? So I agree with this change and the new label name is correct, as you can see in https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/translations/VichUploaderBundle.en.yml Thanks @mpiot!

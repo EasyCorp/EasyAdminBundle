@@ -2,7 +2,7 @@ Chapter 7. Actions Configuration
 ================================
 
 EasyAdmin backends consist of **views** and **actions**. The **view** is the
-page where you are (``list``, ``edit``, ``show``, etc.) and the **action** is
+page where you can (``list``, ``edit``, ``show``, etc.) and the **action** is
 what you do on that page (``search``, ``delete``, etc.)
 
 Views include one or more **actions** to perform operations on the items

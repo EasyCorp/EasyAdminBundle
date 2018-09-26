@@ -1,0 +1,18 @@
+# TEST
+# overriding of list/show templates with custom ones
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    - property: name
+                      template: 'easy_admin/custom_templates/my_template.html.twig'
+            show:
+                fields:
+                    - property: name
+                      template: 'easy_admin/custom_templates/my_other_template.html.twig'
+
+

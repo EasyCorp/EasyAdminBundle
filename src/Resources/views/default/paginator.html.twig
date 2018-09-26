@@ -38,6 +38,30 @@
                             </span>
                         </li>
                     {% endif %}
+                    
+                    {% if easyadmin_config('show_pagination') %}
+    
+                        {% set nearbyPagesLimit = easyadmin_config('pagination_nearby_pages') %}
+    
+                        {% if paginator.currentPage > 1 %}
+                            {% for i in range(paginator.currentPage-nearbyPagesLimit, paginator.currentPage-1) if ( i > 0 ) %}
+                                <li>
+                                    <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: i }) ) }}">{{ i }}</a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                        <li>
+                            <a class="current">{{ paginator.currentPage }}</a>
+                        </li>
+                        {% if paginator.currentPage < paginator.nbPages %}
+                            {% for i in range(paginator.currentPage+1, paginator.currentPage + nearbyPagesLimit) if ( i <= paginator.nbPages ) %}
+                                <li>
+                                    <a href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: i }) ) }}">{{ i }}</a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+
+                    {% endif %}
 
                     {% if paginator.hasNextPage %}
                         <li>

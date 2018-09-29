@@ -15,7 +15,6 @@ env:
     - CHECK_PHP_SYNTAX="no"
     # needed to avoid some Doctrine related deprecations
     - SYMFONY_DEPRECATIONS_HELPER="100"
-    - REMOVE_DOCTRINE_PERSISTENCE="no"
 
 matrix:
   fast_finish: true
@@ -30,12 +29,10 @@ matrix:
         - SYMFONY_VERSION="4.1.*"
         - TWIG_VERSION="^2.4"
         - CHECK_PHP_SYNTAX="yes"
-        - REMOVE_DOCTRINE_PERSISTENCE="no"
     # Symfony 2 LTS
     - php: 5.6
       env:
         - SYMFONY_VERSION="2.8.*"
-        - REMOVE_DOCTRINE_PERSISTENCE="yes"
     # Symfony 3 LTS
     - php: 7.1
       env:
@@ -47,10 +44,10 @@ matrix:
       env:
         - SYMFONY_VERSION="2.3.*"
         - COMPOSER_FLAGS="--prefer-lowest"
-        - REMOVE_DOCTRINE_PERSISTENCE="yes"
   allow_failures:
     - php: nightly
     - php: 5.3
+    - php: 5.6
 
 before_install:
   - stty cols 120
@@ -62,7 +59,6 @@ before_install:
   - composer self-update
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
   - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
-  - if [[ "$REMOVE_DOCTRINE_PERSISTENCE" == "yes" ]]; then composer remove "doctrine/persistence" --no-update; fi;
   - if [[ "$STABILITY" != "" ]]; then composer config minimum-stability $STABILITY; fi
 
 install:

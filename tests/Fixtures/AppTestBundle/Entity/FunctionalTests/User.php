@@ -41,24 +41,21 @@ class User
     /**
      * @var \DateTimeInterface
      *
-     * // TODO: uncomment when the minimum Doctrine version required by this bundle supports immutable dates
-     * // ORM\Column(name="createdAtDateTimeImmutable", type="datetime_immutable")
+     * @ORM\Column(name="createdAtDateTimeImmutable", type="datetime_immutable")
      */
     private $createdAtDateTimeImmutable;
 
     /**
      * @var \DateTimeInterface
      *
-     * // TODO: uncomment when the minimum Doctrine version required by this bundle supports immutable dates
-     * // ORM\Column(name="createdAtDateImmutable", type="date_immutable")
+     * @ORM\Column(name="createdAtDateImmutable", type="date_immutable")
      */
     private $createdAtDateImmutable;
 
     /**
      * @var \DateTimeInterface
      *
-     * // TODO: uncomment when the minimum Doctrine version required by this bundle supports immutable dates
-     * // ORM\Column(name="createdAtTimeImmutable", type="time_immutable")
+     * @ORM\Column(name="createdAtTimeImmutable", type="time_immutable")
      */
     private $createdAtTimeImmutable;
 

@@ -668,8 +668,9 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testListViewImmutableDates()
     {
-        // TODO: uncomment when the minimum Doctrine version required by this bundle supports immutable dates
-        $this->markTestSkipped('This Doctrine version may not support immutable dates.');
+        if (!class_exists('\DateTimeImmutable')) {
+            $this->markTestSkipped('DateTimeImmutable class does not exist in this PHP version.');
+        }
 
         $crawler = $this->requestListView('User');
 

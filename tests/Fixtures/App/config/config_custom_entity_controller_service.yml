@@ -5,7 +5,7 @@ easy_admin:
     entities:
         Category:
             class: AppTestBundle\Entity\FunctionalTests\Category
-            controller: app.controller
+            controller: app.controller::indexAction
 
 services:
     app.controller:

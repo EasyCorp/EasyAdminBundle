@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\DataFixtures\ORM;
+namespace AppTestBundle\DataFixtures\ORM;
 
 use AppTestBundle\Entity\FunctionalTests\LegacyUser;
 use AppTestBundle\Entity\FunctionalTests\User;

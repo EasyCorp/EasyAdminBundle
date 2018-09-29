@@ -1,5 +1,5 @@
 {% if view == 'show' %}
     {{ value }}
 {% else %}
-    {{ value|easyadmin_truncate(7) }}
+    <span title="{{ value }}">{{ value|easyadmin_truncate(7) }}</span>
 {% endif %}

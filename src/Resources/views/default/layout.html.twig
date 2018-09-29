@@ -142,7 +142,7 @@
                     {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
                         <div class="box box-widget help-entity">
                             <div class="box-body">
-                                {{ _entity_config[app.request.query.get('action')]['help']|trans|raw }}
+                                {{ _entity_config[app.request.query.get('action')]['help']|trans(domain = _entity_config.translation_domain)|raw }}
                             </div>
                         </div>
                     {% endif %}

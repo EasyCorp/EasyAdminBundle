@@ -52,3 +52,19 @@ security:
 services:
     logger:
         class: Psr\Log\NullLogger
+
+    fixtures_categories:
+        class: 'AppTestBundle\DataFixtures\ORM\LoadCategories'
+        tags:  ['doctrine.fixture.orm']
+
+    fixtures_products:
+        class: 'AppTestBundle\DataFixtures\ORM\LoadProducts'
+        tags:  ['doctrine.fixture.orm']
+
+    fixtures_purchases:
+        class: 'AppTestBundle\DataFixtures\ORM\LoadPurchases'
+        tags:  ['doctrine.fixture.orm']
+
+    fixtures_users:
+        class: 'AppTestBundle\DataFixtures\ORM\LoadUsers'
+        tags:  ['doctrine.fixture.orm']

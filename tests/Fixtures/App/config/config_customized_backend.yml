@@ -22,6 +22,9 @@ framework:
     session:
         storage_id: session.storage.mock_file
 
+twig:
+    strict_variables: '%kernel.debug%'
+
 doctrine:
     dbal:
         driver: pdo_sqlite

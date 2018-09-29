@@ -184,6 +184,7 @@ easy_admin:
             class: AppTestBundle\Entity\FunctionalTests\User
             list:
                 fields:
-                    - { property: 'createdAtDateTimeImmutable', type: 'datetime_immutable' }
+                    # TODO: uncomment when the minimum Doctrine version required by this bundle supports immutable dates
+                    # - { property: 'createdAtDateTimeImmutable', type: 'datetime_immutable' }
                     - { property: 'createdAtDateImmutable', type: 'date_immutable' }
                     - { property: 'createdAtTimeImmutable', type: 'time_immutable' }

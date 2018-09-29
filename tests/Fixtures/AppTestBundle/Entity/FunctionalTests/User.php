@@ -41,7 +41,8 @@ class User
     /**
      * @var \DateTimeInterface
      *
-     * @ORM\Column(name="createdAtDateTimeImmutable", type="datetime_immutable")
+     * // TODO: uncomment when the minimum Doctrine version required by this bundle supports immutable dates
+     * // ORM\Column(name="createdAtDateTimeImmutable", type="datetime_immutable")
      */
     private $createdAtDateTimeImmutable;
 

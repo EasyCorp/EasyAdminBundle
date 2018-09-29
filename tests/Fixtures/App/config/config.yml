@@ -40,6 +40,9 @@ doctrine:
                 prefix: 'AppTestBundle\Entity\FunctionalTests'
                 is_bundle: false
 
+twig:
+    strict_variables: '%kernel.debug%'
+
 security:
     firewalls:
         main:
@@ -52,3 +55,23 @@ security:
 services:
     logger:
         class: Psr\Log\NullLogger
+
+    fixtures_categories:
+        class: 'AppTestBundle\DataFixtures\ORM\LoadCategories'
+        tags:
+            - { name: 'doctrine.fixture.orm' }
+
+    fixtures_products:
+        class: 'AppTestBundle\DataFixtures\ORM\LoadProducts'
+        tags:
+            - { name: 'doctrine.fixture.orm' }
+
+    fixtures_purchases:
+        class: 'AppTestBundle\DataFixtures\ORM\LoadPurchases'
+        tags:
+            - { name: 'doctrine.fixture.orm' }
+
+    fixtures_users:
+        class: 'AppTestBundle\DataFixtures\ORM\LoadUsers'
+        tags:
+            - { name: 'doctrine.fixture.orm' }

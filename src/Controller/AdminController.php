@@ -371,14 +371,16 @@ class AdminController extends Controller
         }
 
         $searchableFields = $this->entity['search']['fields'];
+        $defaultSortField = isset($this->entity['search']['sort']['field']) ? $this->entity['search']['sort']['field'] : null;
+        $defaultSortDirection = isset($this->entity['search']['sort']['direction']) ? $this->entity['search']['sort']['direction'] : null;
         $paginator = $this->findBy(
             $this->entity['class'],
             $query,
             $searchableFields,
             $this->request->query->get('page', 1),
             $this->entity['list']['max_results'],
-            $this->request->query->get('sortField', $this->entity['search']['sort']['field']),
-            $this->request->query->get('sortDirection', $this->entity['search']['sort']['direction']),
+            $this->request->query->get('sortField', $defaultSortField),
+            $this->request->query->get('sortDirection', $defaultSortDirection),
             $this->entity['search']['dql_filter']
         );
         $fields = $this->entity['list']['fields'];
@@ -587,7 +589,7 @@ class AdminController extends Controller
         if (empty($sortDirection) || !in_array(strtoupper($sortDirection), array('ASC', 'DESC'))) {
             $sortDirection = 'DESC';
         }
-        
+
         $queryBuilder = $this->executeDynamicMethod('create<EntityName>SearchQueryBuilder', array($entityClass, $searchQuery, $searchableFields, $sortField, $sortDirection, $dqlFilter));
 
         $this->dispatch(EasyAdminEvents::POST_SEARCH_QUERY_BUILDER, array(

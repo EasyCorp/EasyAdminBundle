@@ -92,8 +92,9 @@ class AppKernel extends Kernel
         return 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
     }
 
+    // The "security.firewalls.main.logout_on_user_change" configuration key has been deprecated in Symfony 4.1.
     protected function requiresLogoutOnUserChange()
     {
-        return (int) Kernel::VERSION_ID >= 30400;
+        return (int) Kernel::VERSION_ID >= 30400 && (int) Kernel::VERSION_ID < 40100;
     }
 }

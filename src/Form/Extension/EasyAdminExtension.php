@@ -50,10 +50,18 @@ class EasyAdminExtension extends AbstractTypeExtension
                 'entity' => $entity,
                 'view' => $action,
                 'item' => $easyadmin['item'],
-                'field' => $fields[$view->vars['name']] ?? null,
+                'field' => null,
                 'form_group' => $form->getConfig()->getAttribute('easyadmin_form_group'),
                 'form_tab' => $form->getConfig()->getAttribute('easyadmin_form_tab'),
             ];
+
+            /*
+             * Checks if current form view is direct child on the topmost form
+             * (ie. this form view`s field exists in easyadmin configuration)
+             */
+            if (null !== $view->parent && null === $view->parent->parent) {
+                $view->vars['easyadmin']['field'] = $fields[$view->vars['name']] ?? null;
+            }
         }
     }
 

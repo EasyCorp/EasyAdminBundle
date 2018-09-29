@@ -361,8 +361,8 @@ class AdminController extends Controller
             $searchableFields,
             $this->request->query->get('page', 1),
             $this->entity['list']['max_results'],
-            $this->entity['search']['sort']['field'] ?? $this->request->query->get('sortField'),
-            $this->entity['search']['sort']['direction'] ?? $this->request->query->get('sortDirection'),
+            $this->request->query->get('sortField', $this->entity['search']['sort']['field']),
+            $this->request->query->get('sortDirection', $this->entity['search']['sort']['direction']),
             $this->entity['search']['dql_filter']
         );
         $fields = $this->entity['list']['fields'];

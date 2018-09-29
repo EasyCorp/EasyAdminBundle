@@ -186,5 +186,5 @@ easy_admin:
                 fields:
                     # TODO: uncomment when the minimum Doctrine version required by this bundle supports immutable dates
                     # - { property: 'createdAtDateTimeImmutable', type: 'datetime_immutable' }
-                    - { property: 'createdAtDateImmutable', type: 'date_immutable' }
-                    - { property: 'createdAtTimeImmutable', type: 'time_immutable' }
+                    # - { property: 'createdAtDateImmutable', type: 'date_immutable' }
+                    # - { property: 'createdAtTimeImmutable', type: 'time_immutable' }

@@ -15,6 +15,8 @@ env:
     - CHECK_PHP_SYNTAX="no"
     - SYMFONY_DEPRECATIONS_HELPER="weak"
     - ENABLE_CODE_COVERAGE="false"
+    # needed to avoid some Doctrine related deprecations
+    - SYMFONY_DEPRECATIONS_HELPER="2"
 
 matrix:
   fast_finish: true

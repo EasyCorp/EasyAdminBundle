@@ -33,6 +33,7 @@ final class LegacyFormHelper
         'datetime_immutable' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateTimeType',
         'date' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateType',
         'date_immutable' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateType',
+        'dateinterval' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\DateIntervalType',
         'email' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\EmailType',
         'entity' => 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType',
         'file' => 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FileType',

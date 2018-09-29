@@ -270,7 +270,7 @@ class ViewConfigPass implements ConfigPassInterface
             'edit' => array('binary', 'blob', 'json_array', 'json', 'object'),
             'list' => array('array', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'),
             'new' => array('binary', 'blob', 'json_array', 'json', 'object'),
-            'search' => array('association', 'binary', 'boolean', 'blob', 'date', 'date_immutable', 'datetime', 'datetime_immutable', 'datetimetz', 'time', 'time_immutable', 'object'),
+            'search' => array('association', 'binary', 'boolean', 'blob', 'date', 'date_immutable', 'datetime', 'datetime_immutable', 'dateinterval', 'datetimetz', 'time', 'time_immutable', 'object'),
             'show' => array(),
         );
 

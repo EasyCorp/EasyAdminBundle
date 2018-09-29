@@ -62,7 +62,7 @@ before_install:
   - composer self-update
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
   - if [[ "$TWIG_VERSION" != "" ]]; then composer require "twig/twig:${TWIG_VERSION}" --no-update; fi;
-  - if [[ "$REMOVE_DOCTRINE_PERSISTENCE" != "yes" ]]; then composer remove "doctrine/persistence" --no-update; fi;
+  - if [[ "$REMOVE_DOCTRINE_PERSISTENCE" == "yes" ]]; then composer remove "doctrine/persistence" --no-update; fi;
   - if [[ "$STABILITY" != "" ]]; then composer config minimum-stability $STABILITY; fi
 
 install:

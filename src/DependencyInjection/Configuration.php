@@ -186,6 +186,11 @@ class Configuration implements ConfigurationInterface
                             ->info('The sprintf-compatible format applied to numeric values.')
                             ->example('%.2d (see http://php.net/sprintf)')
                         ->end()
+                        ->scalarNode('dateinterval')
+                            ->defaultValue('%y Year(s) %m Month(s) %d Day(s)')
+                            ->info('The PHP dateinterval-compatible format applied to "dateinterval" field types.')
+                            ->example('%y Year(s) %m Month(s) %d Day(s) (see http://php.net/manual/en/dateinterval.format.php)')
+                        ->end()
                     ->end()
                 ->end()
 

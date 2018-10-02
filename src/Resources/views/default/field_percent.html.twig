@@ -1,0 +1,6 @@
+{%- set type = field_options.type_options.type|default('fractional') -%}
+{%- set scale = field_options.type_options.scale|default(0) -%}
+{%- if type == 'fractional' -%}
+    {%- set value = value * 100  -%}
+{%- endif -%}
+{{ value|number_format(scale) }}%

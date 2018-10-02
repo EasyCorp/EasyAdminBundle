@@ -52,6 +52,7 @@ class TemplateConfigPass implements ConfigPassInterface
         'field_json_array' => '@EasyAdmin/default/field_json_array.html.twig',
         'field_integer' => '@EasyAdmin/default/field_integer.html.twig',
         'field_object' => '@EasyAdmin/default/field_object.html.twig',
+        'field_percent' => '@EasyAdmin/default/field_percent.html.twig',
         'field_raw' => '@EasyAdmin/default/field_raw.html.twig',
         'field_simple_array' => '@EasyAdmin/default/field_simple_array.html.twig',
         'field_smallint' => '@EasyAdmin/default/field_smallint.html.twig',

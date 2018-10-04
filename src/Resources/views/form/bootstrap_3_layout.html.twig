@@ -297,9 +297,9 @@
                 collection.prev('.collection-empty').remove();
 
                 var newItem = collection.attr('data-prototype')
-                    .replace(/\>__name__label__\</g, '>' + numItems + '<')
-                    .replace(/_{{ name }}___name__/g, '_{{ name }}_' + numItems)
-                    .replace(/{{ name }}\]\[__name__\]/g, '{{ name }}][' + numItems + ']')
+                    .replace(/\>{{ prototype.vars.name }}label__\</g, '>' + numItems + '<')
+                    .replace(/_{{ name }}_{{ prototype.vars.name }}/g, '_{{ name }}_' + numItems)
+                    .replace(/{{ name }}\]\[{{ prototype.vars.name }}\]/g, '{{ name }}][' + numItems + ']')
                 ;
 
                 // Increment the counter and store it in the collection

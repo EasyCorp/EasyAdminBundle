@@ -66,6 +66,14 @@ defined and change the ``resource`` option to point to your new controller:
 
 Save the changes and the backend will start using your own controller.
 
+.. note::
+
+    The default routing config in Symfony 4 loads the annotations of controllers
+    defined in ``src/Controller/`` first. If you override the ``AdminController``
+    in that directory, the routing config defined in ``config/routes/easy_admin.yaml``
+    will be ignored. You can comment the contents of that file and use instead
+    the ``@Route`` annotation of ``AdminController`` to configure that route.
+
 **Step 3.** You can now override in your own controller any of the methods
 executed in the default ``AdminController``. The next sections explain all the
 available methods and show some practical examples.

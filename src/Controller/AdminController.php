@@ -417,9 +417,9 @@ class AdminController extends Controller
             throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
         }
 
-        $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $value));
-
         $this->get('easy_admin.property_accessor')->setValue($entity, $property, $value);
+
+        $this->dispatch(EasyAdminEvents::PRE_UPDATE, array('entity' => $entity, 'newValue' => $value));
         $this->executeDynamicMethod('preUpdate<EntityName>Entity', array($entity, true));
 
         $this->em->persist($entity);

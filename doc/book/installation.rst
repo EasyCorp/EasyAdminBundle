@@ -12,6 +12,13 @@ download, register and configure the bundle automatically:
 
     $ composer require admin
 
+.. note::
+
+    The above command creates a ``config/routes/easy_admin.yaml`` file to enable
+    the routes of the bundle. Depending on your existing routing configuration,
+    Symfony may ignore this configuration. Run the ``debug:router`` command to
+    troubleshoot any problem with the application routes.
+
 That's all! You can skip the rest of this chapter and go to the next chapter.
 
 Installation without Symfony Flex

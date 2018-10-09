@@ -1,0 +1,47 @@
+---------------------------------------------------------------------------
+
+by ro0NL at 2018-05-05T10:42:27Z
+
+HI @CheapHasz it seems the same is happening from the list template at `{% for item in paginator.currentPageResults %}`
+
+---------------------------------------------------------------------------
+
+by CheapHasz at 2018-05-05T17:52:09Z
+
+Hi.
+
+I don't understand your concern, would you care to elaborate ?
+
+---------------------------------------------------------------------------
+
+by ro0NL at 2018-05-05T20:25:33Z
+
+If i sort the list overview using an embedded field the pagination also makes the query builder crash:
+
+```
+En exception has been thrown during the rendering of a template ("[Semantical Error] line 0, col 75 near 'embedded ORDER': Error: Class App\Entity has no association named embedded").
+```
+
+Even after applying this fix.
+
+---------------------------------------------------------------------------
+
+by CheapHasz at 2018-05-06T16:33:30Z
+
+ Would you happen to sort directly on the embedded field, and not on one of its attributes ?
+
+It would make sense that the querybuilder don't know what to do with it, as embedded objects don't have an intrinsic fields on which to sort, and sorting on the object property wouldn't mean anything.
+
+However, if i use an `embedded.name` as my listing field, the sorting works and don't make the listing crash.
+
+---------------------------------------------------------------------------
+
+by kristoftorfs at 2018-09-14T11:57:05Z
+
+Is there any change this could get merged pretty soon? I just had to downgrade to 1.17.10 because of this issue.
+
+---------------------------------------------------------------------------
+
+by EtchAkhtar at 2018-09-22T05:03:49Z
+
+same .... would be very helpful to get this merged.  thx

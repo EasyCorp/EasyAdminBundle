@@ -13,6 +13,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 
 /**
@@ -43,13 +44,15 @@ class QueryBuilder
     {
         /* @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+        /* @var ClassMetadata */
+        $classMetadata = $em->getClassMetadata($entityConfig['class']);
         /* @var DoctrineQueryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($sortField, $entityConfig['class'], $em);
+        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {
             $sortFieldParts = explode('.', $sortField);
             $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
@@ -82,6 +85,8 @@ class QueryBuilder
     {
         /* @var EntityManager */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+        /* @var ClassMetadata */
+        $classMetadata = $em->getClassMetadata($entityConfig['class']);
         /* @var DoctrineQueryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
@@ -98,7 +103,7 @@ class QueryBuilder
         $entitiesAlreadyJoined = array();
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
-            if ($this->isDoctrineAssociation($fieldName, $entityConfig['class'], $em)) {
+            if ($this->isDoctrineAssociation($classMetadata, $fieldName)) {
                 list($associatedEntityName, $associatedFieldName) = explode('.', $fieldName);
                 if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
@@ -144,7 +149,7 @@ class QueryBuilder
             $queryBuilder->andWhere($dqlFilter);
         }
 
-        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($sortField, $entityConfig['class'], $em);
+        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {
             list($associatedEntityName, $associatedFieldName) = explode('.', $sortField);
             if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
@@ -161,25 +166,24 @@ class QueryBuilder
     }
 
     /**
-     * Even if field parts contains a '.', it might be an embedded class and not an association.
-     * Therefore we also must check the embeddedClasses when considering if the field must be considered as an association
+     * Checking if the field name contains a '.' is not enough to decide if it's a
+     * Doctrine association. This also happens when using embedded classes, so the
+     * embeddedClasses property from Doctrine class metadata must be checked too.
      *
-     * @param string|null   $field
-     * @param string        $className
-     * @param EntityManager $em
+     * @param ClassMetadata $classMetadata
+     * @param string|null   $fieldName
      *
      * @return bool
      */
-    protected function isDoctrineAssociation($field, $className, EntityManager $em)
+    protected function isDoctrineAssociation(ClassMetadata $classMetadata, $fieldName)
     {
-        if (null === $field) {
-            // field shouldn't be null in this case, but if it was, it's clear that it is not a doctrine association
+        if (null === $fieldName) {
             return false;
         }
-        $fieldParts = explode('.', $field);
-        $metaData = $em->getClassMetadata($className);
 
-        return false !== strpos($field, '.') && !array_key_exists($fieldParts[0], $metaData->embeddedClasses);
+        $fieldNameParts = explode('.', $fieldName);
+
+        return false !== strpos($fieldName, '.') && !array_key_exists($fieldNameParts[0], $classMetadata->embeddedClasses);
     }
 }
 

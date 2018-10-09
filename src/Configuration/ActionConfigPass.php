@@ -195,7 +195,7 @@ class ActionConfigPass implements ConfigPassInterface
                     if ('-' === $entityAction['name'][0]) {
                         $actionName = mb_substr($entityAction['name'], 1);
 
-                        unset($entityActions[$actionName], $entityActions['-'.$actionName], $defaultActions[$actionName]);
+                        unset($entityActions[$actionName], $entityActions['-'.$actionName], $defaultActions[$actionName], $backendActions[$actionName]);
                     }
                 }
 

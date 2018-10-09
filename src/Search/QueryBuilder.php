@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 
 /**
@@ -34,13 +35,15 @@ class QueryBuilder
     {
         /* @var EntityManager $em */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+        /* @var ClassMetadata $classMetadata */
+        $classMetadata = $em->getClassMetadata($entityConfig['class']);
         /* @var DoctrineQueryBuilder $queryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
             ->from($entityConfig['class'], 'entity')
         ;
 
-        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
+        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {
             $sortFieldParts = explode('.', $sortField);
             $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
@@ -73,6 +76,8 @@ class QueryBuilder
     {
         /* @var EntityManager $em */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+        /* @var ClassMetadata $classMetadata */
+        $classMetadata = $em->getClassMetadata($entityConfig['class']);
         /* @var DoctrineQueryBuilder $queryBuilder */
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
@@ -89,7 +94,7 @@ class QueryBuilder
         $entitiesAlreadyJoined = [];
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
-            if (false !== strpos($fieldName, '.')) {
+            if ($this->isDoctrineAssociation($classMetadata, $fieldName)) {
                 [$associatedEntityName, $associatedFieldName] = explode('.', $fieldName);
                 if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
@@ -135,7 +140,7 @@ class QueryBuilder
             $queryBuilder->andWhere($dqlFilter);
         }
 
-        $isSortedByDoctrineAssociation = false !== strpos($sortField, '.');
+        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {
             $associatedEntityName = explode('.', $sortField)[0];
             if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
@@ -149,5 +154,26 @@ class QueryBuilder
         }
 
         return $queryBuilder;
+    }
+
+    /**
+     * Checking if the field name contains a '.' is not enough to decide if it's a
+     * Doctrine association. This also happens when using embedded classes, so the
+     * embeddedClasses property from Doctrine class metadata must be checked too.
+     *
+     * @param ClassMetadata $classMetadata
+     * @param string|null   $fieldName
+     *
+     * @return bool
+     */
+    protected function isDoctrineAssociation(ClassMetadata $classMetadata, $fieldName)
+    {
+        if (null === $fieldName) {
+            return false;
+        }
+
+        $fieldNameParts = explode('.', $fieldName);
+
+        return false !== strpos($fieldName, '.') && !array_key_exists($fieldNameParts[0], $classMetadata->embeddedClasses);
     }
 }

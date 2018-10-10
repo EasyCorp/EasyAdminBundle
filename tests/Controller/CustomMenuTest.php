@@ -124,6 +124,41 @@ class CustomMenuTest extends AbstractTestCase
         );
     }
 
+    public function testMenuCssClasses()
+    {
+        $crawler = $this->getBackendHomepage();
+
+        $this->assertSame(
+            'label-custom-css-class',
+            $crawler->filter('.sidebar-menu li:contains("Products") a')->attr('class'),
+            'First level label menu item with custom CSS class'
+        );
+
+        $this->assertSame(
+            'entity-custom-css-class',
+            $crawler->filter('.sidebar-menu li:contains("Images") a')->attr('class'),
+            'First level entity menu item with custom CSS class'
+        );
+
+        $this->assertSame(
+            '',
+            $crawler->filter('.sidebar-menu li:contains("Purchases") a')->attr('class'),
+            'First level entity menu item without custom CSS class'
+        );
+
+        $this->assertSame(
+            'route-custom-css-class',
+            $crawler->filter('.sidebar-menu li:contains("Custom Internal Route") a')->attr('class'),
+            'First level route menu item with custom CSS class'
+        );
+
+        $this->assertSame(
+            'children-custom-css-class',
+            $crawler->filter('.sidebar-menu .treeview-menu li:contains("Categories") a')->attr('class'),
+            'Second level menu item with custom CSS class'
+        );
+    }
+
     public function testMenuTargets()
     {
         $crawler = $this->getBackendHomepage();

@@ -21,8 +21,8 @@
         <a href="{{ path }}"
            {% if item.target|default(false) %}target="{{ item.target }}"{% endif %}
            {% if item.rel|default(false) %}rel="{{ item.rel }}"{% endif %}>
-            {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}
-            <span>{{ item.label|trans(domain = translation_domain) }}</span>
+            {% if item.icon is not empty %}<i class="fa {{ item.icon }} {{ item.icon_class|default('') }}"></i>{% endif %}
+            <span class="{{ item.css_class|default('') }}">{{ item.label|trans(domain = translation_domain) }}</span>
             {% if item.children|default([]) is not empty %}<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>{% endif %}
         </a>
     {% endif %}

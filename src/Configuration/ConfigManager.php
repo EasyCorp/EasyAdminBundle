@@ -3,23 +3,29 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-final class ConfigManager implements ConfigManagerInterface
+final class ConfigManager
 {
+    private const CACHE_KEY = 'easyadmin.processed_config';
+
     /** @var array */
     private $backendConfig;
-    /** @var PropertyAccessorInterface */
+    private $debug;
     private $propertyAccessor;
+    private $cache;
     /** @var array */
     private $originalBackendConfig;
     /** @var ConfigPassInterface[] */
     private $configPasses;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor, array $originalBackendConfig)
+    public function __construct(array $originalBackendConfig, bool $debug, PropertyAccessorInterface $propertyAccessor, CacheItemPoolInterface $cache)
     {
-        $this->propertyAccessor = $propertyAccessor;
         $this->originalBackendConfig = $originalBackendConfig;
+        $this->debug = $debug;
+        $this->propertyAccessor = $propertyAccessor;
+        $this->cache = $cache;
     }
 
     /**
@@ -30,14 +36,9 @@ final class ConfigManager implements ConfigManagerInterface
         $this->configPasses[] = $configPass;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBackendConfig(string $propertyPath = null)
     {
-        if (null === $this->backendConfig) {
-            $this->backendConfig = $this->doProcessConfig($this->originalBackendConfig);
-        }
+        $this->backendConfig = $this->loadBackendConfig();
 
         if (empty($propertyPath)) {
             return $this->backendConfig;
@@ -49,9 +50,6 @@ final class ConfigManager implements ConfigManagerInterface
         return $this->propertyAccessor->getValue($this->backendConfig, $propertyPath);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEntityConfig(string $entityName): array
     {
         $backendConfig = $this->getBackendConfig();
@@ -62,9 +60,6 @@ final class ConfigManager implements ConfigManagerInterface
         return $backendConfig['entities'][$entityName];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEntityConfigByClass(string $fqcn): ?array
     {
         $backendConfig = $this->getBackendConfig();
@@ -77,9 +72,6 @@ final class ConfigManager implements ConfigManagerInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getActionConfig(string $entityName, string $view, string $action): array
     {
         try {
@@ -91,9 +83,6 @@ final class ConfigManager implements ConfigManagerInterface
         return $entityConfig[$view]['actions'][$action] ?? [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isActionEnabled(string $entityName, string $view, string $action): bool
     {
         $entityConfig = $this->getEntityConfig($entityName);
@@ -114,6 +103,25 @@ final class ConfigManager implements ConfigManagerInterface
         foreach ($this->configPasses as $configPass) {
             $backendConfig = $configPass->process($backendConfig);
         }
+
+        return $backendConfig;
+    }
+
+    private function loadBackendConfig(): array
+    {
+        if (true === $this->debug) {
+            return $this->doProcessConfig($this->originalBackendConfig);
+        }
+
+        $cachedBackendConfig = $this->cache->getItem(self::CACHE_KEY);
+
+        if ($cachedBackendConfig->isHit()) {
+            return $cachedBackendConfig->get();
+        }
+
+        $backendConfig = $this->doProcessConfig($this->originalBackendConfig);
+        $cachedBackendConfig->set($backendConfig);
+        $this->cache->save($cachedBackendConfig);
 
         return $backendConfig;
     }

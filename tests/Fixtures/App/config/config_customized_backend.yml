@@ -41,9 +41,6 @@ doctrine:
                 prefix: 'AppTestBundle\Entity\FunctionalTests'
                 is_bundle: false
 
-twig:
-    strict_variables: '%kernel.debug%'
-
 services:
     logger:
         class: Psr\Log\NullLogger

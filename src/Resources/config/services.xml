@@ -4,14 +4,19 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
+        <service id="easyadmin.config.property_path_accessor" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyPathAccessor" public="false">
             <argument type="service" id="property_accessor" />
+        </service>
+
+        <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
+            <argument type="service" id="easyadmin.config.property_path_accessor" />
             <argument>%easyadmin.config%</argument>
         </service>
 
         <service id="easyadmin.cache.cache_config_manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\CacheConfigManager" decorates="easyadmin.config.manager" public="false">
             <argument type="service" id="easyadmin.cache.cache_config_manager.inner" />
             <argument type="service" id="Psr\Cache\CacheItemPoolInterface" />
+            <argument type="service" id="easyadmin.config.property_path_accessor" />
             <argument>%kernel.debug%</argument>
             <tag name="kernel.cache_warmer" priority="-2048" />
         </service>

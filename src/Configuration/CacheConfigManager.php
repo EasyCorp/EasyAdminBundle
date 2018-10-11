@@ -23,14 +23,20 @@ final class CacheConfigManager implements ConfigManagerInterface, CacheWarmerInt
     private $cache;
 
     /**
+     * @var PropertyPathAccessor
+     */
+    private $propertyPathAccessor;
+
+    /**
      * @var bool
      */
     private $debug;
 
-    public function __construct(ConfigManagerInterface $configManager, CacheItemPoolInterface $cache, bool $debug)
+    public function __construct(ConfigManagerInterface $configManager, CacheItemPoolInterface $cache, PropertyPathAccessor $propertyPathAccessor, bool $debug)
     {
         $this->configManager = $configManager;
         $this->cache = $cache;
+        $this->propertyPathAccessor = $propertyPathAccessor;
         $this->debug = $debug;
     }
 
@@ -46,11 +52,17 @@ final class CacheConfigManager implements ConfigManagerInterface, CacheWarmerInt
         $item = $this->cache->getItem(self::CACHE_KEY);
 
         if (!$item->isHit()) {
-            $item->set($this->configManager->getBackendConfig($propertyPath));
+            $item->set($this->configManager->getBackendConfig());
             $this->cache->save($item);
         }
 
-        return $item->get();
+        $backendConfig = $item->get();
+
+        if (empty($propertyPath)) {
+            return $backendConfig;
+        }
+
+        return $this->propertyPathAccessor->getValue($backendConfig, $propertyPath);
     }
 
     /**

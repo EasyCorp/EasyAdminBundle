@@ -86,6 +86,11 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['icon'] = 'fa-'.$itemConfig['icon'];
             }
 
+            // normalize css_class configuration
+            if (!array_key_exists('css_class', $itemConfig)) {
+                $itemConfig['css_class'] = '';
+            }
+
             // normalize submenu configuration (only for main menu items)
             if (!isset($itemConfig['children']) && -1 === $parentItemIndex) {
                 $itemConfig['children'] = array();

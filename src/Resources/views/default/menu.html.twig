@@ -19,6 +19,7 @@
         {% endif %}
 
         <a href="{{ path }}"
+           class="{{ item.css_class|default('') }}"
            {% if item.target|default(false) %}target="{{ item.target }}"{% endif %}
            {% if item.rel|default(false) %}rel="{{ item.rel }}"{% endif %}>
             {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}

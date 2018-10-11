@@ -94,6 +94,26 @@ the ``icon`` option and leave it empty or set it to ``null``:
                 - { entity: 'Product', icon: '' }
         # ...
 
+CSS Classes
+~~~~~~~~~~~
+
+Applications that need full customization, for example to display each menu item
+with a different color or style, can define the ``css_class`` option for one or
+more menu items:
+
+.. code-block:: yaml
+
+    easy_admin:
+        design:
+            menu:
+                - { entity: 'User', css_class: 'menu--user' }
+                - { entity: 'Product', css_class: 'menu--product text-bold text-center' }
+                - { entity: 'Category', css_class: 'default' }
+        # ...
+
+The CSS class is applied to the ``<a>`` element that wraps both the icon and
+the label of the menu item.
+
 Targets
 ~~~~~~~
 

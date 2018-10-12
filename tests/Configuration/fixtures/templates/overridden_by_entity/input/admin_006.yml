@@ -1,0 +1,18 @@
+# TEST
+# default behavior when template exists in the "easy_admin/" directory
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    - property: name
+                      template: 'custom_templates/my_template.html.twig'
+            show:
+                fields:
+                    - property: name
+                      template: 'custom_templates/my_other_template.html.twig'
+
+

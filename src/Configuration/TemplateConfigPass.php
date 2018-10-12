@@ -145,6 +145,7 @@ class TemplateConfigPass implements ConfigPassInterface
                             'easy_admin/'.$entityName.'/'.$templatePath,
                             'easy_admin/'.$templatePath,
                             $templatePath,
+                            $fieldMetadata['template'],
                         ));
                     } else {
                         // At this point, we don't know the exact data type associated with each field.

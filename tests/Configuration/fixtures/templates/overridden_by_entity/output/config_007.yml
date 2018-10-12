@@ -1,0 +1,14 @@
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    name:
+                        property: name
+                        template: 'easy_admin/custom_templates/my_template.html.twig'
+            show:
+                fields:
+                    name:
+                        property: name
+                        template: 'easy_admin/custom_templates/my_other_template.html.twig'

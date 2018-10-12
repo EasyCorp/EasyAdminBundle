@@ -52,6 +52,7 @@ Now you can define the ``restockAction()`` method in your own controller:
     // src/AppBundle/Controller/AdminController.php
     namespace AppBundle\Controller;
 
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
     // ...
 
     class AdminController extends BaseAdminController
@@ -85,6 +86,19 @@ Now you can define the ``restockAction()`` method in your own controller:
             ));
         }
     }
+    
+.. tip::
+
+    Make sure that you have this controller in your routing. For example, your confiuration should look like this:
+    
+    .. code-block:: yaml
+
+    # config/routes/easy_admin.yaml
+
+    easy_admin_bundle:
+        resource: 'App\Controller\AdminController'
+        prefix: /admin
+        type: annotation
 
 And that's it! Click again on the ``Restock`` action and everything will work as
 expected. Custom actions can define any of the properties available for the

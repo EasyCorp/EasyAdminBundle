@@ -8,8 +8,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class EasyAdminAutocompleteTypeTest extends TypeTestCase
 {
@@ -62,14 +64,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             ->with(self::ENTITY_CLASS)
             ->willReturn($this->entityManager);
 
-        $this->configManager = $this->getMockBuilder(ConfigManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->configManager
-            ->expects($this->any())
-            ->method('getEntityConfigByClass')
-            ->with(self::ENTITY_CLASS)
-            ->willReturn(['name' => 'Category']);
+        $this->configManager = $this->createConfigManagerMock();
 
         parent::setUp();
     }
@@ -186,5 +181,26 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
 
         $this->assertTrue($form->isSynchronized());
         $this->assertEquals(new ArrayCollection(), $form->getData());
+    }
+
+    /**
+     * The ConfigManager class is final, so it cannot be mocked easily.
+     */
+    private function createConfigManagerMock()
+    {
+        $processedConfig = ['entities' => [
+            'Category' => [
+                'class' => 'AppTestBundle\Entity\UnitTests\Category',
+                'name' => 'Category',
+            ]
+        ]];
+
+        $cache = new ArrayAdapter();
+        // the name must be like the private const ConfigManager::CACHE_KEY
+        $cacheItem = $cache->getItem('easyadmin.processed_config');
+        $cacheItem->set($processedConfig);
+        $cache->save($cacheItem);
+
+        return new ConfigManager([], false, new PropertyAccessor(), $cache);
     }
 }

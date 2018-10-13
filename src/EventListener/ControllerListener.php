@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -16,12 +16,12 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class ControllerListener
 {
-    /** @var ConfigManagerInterface */
+    /** @var ConfigManager */
     private $configManager;
     /** @var ControllerResolverInterface */
     private $resolver;
 
-    public function __construct(ConfigManagerInterface $configManager, ControllerResolverInterface $resolver)
+    public function __construct(ConfigManager $configManager, ControllerResolverInterface $resolver)
     {
         $this->configManager = $configManager;
         $this->resolver = $resolver;

@@ -5,15 +5,10 @@
 
     <services>
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
-            <argument type="service" id="property_accessor" />
             <argument>%easyadmin.config%</argument>
-        </service>
-
-        <service id="easyadmin.cache.cache_config_manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\CacheConfigManager" decorates="easyadmin.config.manager" public="false">
-            <argument type="service" id="easyadmin.cache.cache_config_manager.inner" />
-            <argument type="service" id="Psr\Cache\CacheItemPoolInterface" />
             <argument>%kernel.debug%</argument>
-            <tag name="kernel.cache_warmer" priority="-2048" />
+            <argument type="service" id="property_accessor" />
+            <argument type="service" id="Psr\Cache\CacheItemPoolInterface" />
         </service>
 
         <service id="easyadmin.query_builder" class="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" public="true">

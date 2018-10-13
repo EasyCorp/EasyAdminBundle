@@ -27,6 +27,7 @@ First, define a new ``restock`` action using the ``actions`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -49,8 +50,8 @@ Now you can define the ``restockAction()`` method in your own controller:
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/AdminController.php
-    namespace AppBundle\Controller;
+    // src/Controller/AdminController.php
+    namespace App\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
     // ...
@@ -68,17 +69,17 @@ Now you can define the ``restockAction()`` method in your own controller:
 
             // change the properties of the given entity and save the changes
             $id = $this->request->query->get('id');
-            $entity = $this->em->getRepository('AppBundle:Product')->find($id);
+            $entity = $this->em->getRepository('Product::class')->find($id);
             $entity->setStock(100 + $entity->getStock());
             $this->em->flush();
 
-            // redirect to the 'list' view of the given entity
+            // redirect to the 'list' view of the given entity ...
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'list',
                 'entity' => $this->request->query->get('entity'),
             ));
 
-            // redirect to the 'edit' view of the given entity item
+            // ... or redirect to the 'edit' view of the given entity item
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'edit',
                 'id' => $id,
@@ -93,6 +94,7 @@ built-in actions:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -105,6 +107,7 @@ The inheritance of actions is also applied to custom actions:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         list:
             # show the 'restock' action for all entities except those which remove it
@@ -129,6 +132,7 @@ add a ``type`` option with the ``route`` value:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -147,8 +151,8 @@ would look as follows:
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/ProductController.php
-    namespace AppBundle\Controller;
+    // src/Controller/ProductController.php
+    namespace App\Controller;
 
     // ...
     use Symfony\Component\HttpFoundation\Request;
@@ -165,20 +169,20 @@ would look as follows:
         {
             // change the properties of the given entity and save the changes
             $em = $this->getDoctrine()->getManager();
-            $repository = $this->getDoctrine()->getRepository('AppBundle:Product');
+            $repository = $this->getDoctrine()->getRepository('Product::class');
 
             $id = $request->query->get('id');
             $entity = $repository->find($id);
             $entity->setStock(100 + $entity->getStock());
             $em->flush();
 
-            // redirect to the 'list' view of the given entity
+            // redirect to the 'list' view of the given entity ...
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'list',
                 'entity' => $this->request->query->get('entity'),
             ));
 
-            // redirect to the 'edit' view of the given entity item
+            // ... or redirect to the 'edit' view of the given entity item
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'edit',
                 'id' => $id,

@@ -15,6 +15,7 @@ global ``design`` YAML key:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             # ... design configuration options
@@ -27,6 +28,7 @@ backend interface:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             brand_color: '#1ABC9C'
@@ -39,6 +41,7 @@ The value of the ``brand_color`` option can be any of the valid CSS color format
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             brand_color: 'red'
@@ -58,6 +61,7 @@ pages. All kinds of assets are supported and linked accordingly:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             assets:
@@ -86,7 +90,6 @@ CSS Selectors
 
 The ``<body>`` element of every backend page includes different ``id`` and ``class``
 attributes to help you target your own styles. The ``id`` follows this pattern:
-
 
 ========  ============================================
 View      ``<body>`` ID attribute
@@ -127,6 +130,7 @@ format: ``.ico``, ``.png``, ``.gif``, ``.jpg``) and set the ``favicon`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             assets:
@@ -141,6 +145,7 @@ of the favicon and its ``mime_type``:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             assets:
@@ -159,6 +164,7 @@ locale of the application is ``ar`` (Arabic), ``fa`` (Persian) or ``he``
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             rtl: true

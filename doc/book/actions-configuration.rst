@@ -35,6 +35,7 @@ some entity. For example, to disable the ``show`` action for all entities:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         disabled_actions: ['show']
         # ...
@@ -48,6 +49,7 @@ disable the ``new`` action just for the ``User`` entity:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
@@ -59,6 +61,7 @@ entity. If the backend configuration is the following:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         disabled_actions: ['show']
         # ...
@@ -79,6 +82,7 @@ Define the actions to display on each backend view using the ``actions`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         edit:
             actions: ['show']
@@ -99,6 +103,7 @@ the same ``actions`` option but prefix each action name with a dash (``-``):
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         edit:
             actions: ['show', '-delete']
@@ -125,6 +130,7 @@ Define the actions to add to each entity view using the ``actions`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Invoice:
@@ -143,6 +149,7 @@ prefixing the action name with a dash (``-``):
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
@@ -155,6 +162,7 @@ entity's ``action`` configuration. Consider the following example:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         list:
             actions: ['-edit']
@@ -210,6 +218,7 @@ configuration format:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         list:
             # shortcut configuration format
@@ -255,6 +264,7 @@ Adding an icon for each action is as easy as defining their ``icon`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         list:
             actions:
@@ -273,6 +283,7 @@ for the ``label`` option or set its value to ``false``:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         list:
             actions:
@@ -294,6 +305,7 @@ icon:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         list:
             actions:

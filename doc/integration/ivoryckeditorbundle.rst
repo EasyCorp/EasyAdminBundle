@@ -22,40 +22,16 @@ thanks to the `IvoryCKEditorBundle`_:
 
     $ composer require egeloen/ckeditor-bundle
 
-2) Enable the bundle:
-
-.. code-block:: php
-
-    // app/AppKernel.php
-    class AppKernel extends Kernel
-    {
-        public function registerBundles()
-        {
-            return array(
-                // ...
-                new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
-            );
-        }
-    }
-
-4) install CKEditor:
+2) install CKEditor:
 
 .. code-block:: terminal
 
-    # Symfony 2
-    $ php app/console ckeditor:install
-
-    # Symfony 3
     $ php bin/console ckeditor:install
 
-4) Install the JavaScript/CSS files used by the bundle:
+3) Install the JavaScript/CSS files used by the bundle:
 
 .. code-block:: terminal
 
-    # Symfony 2
-    $ php app/console assets:install --symlink
-
-    # Symfony 3
     $ php bin/console assets:install --symlink
 
 Using the Rich Text Editor
@@ -67,6 +43,7 @@ rich text editor:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -97,7 +74,7 @@ application under the ``ivory_ck_editor`` option. For example:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/ivory_ck_editor.yaml
     ivory_ck_editor:
         input_sync: true
         default_config: base_config
@@ -106,6 +83,7 @@ application under the ``ivory_ck_editor`` option. For example:
                 toolbar:
                     - { name: "styles", items: ['Bold', 'Italic', 'BulletedList', 'Link'] }
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -125,6 +103,7 @@ setting of the property:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -140,7 +119,7 @@ globally and then select the toolbar to use in each property:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/ivory_ck_editor.yaml
     ivory_ck_editor:
         input_sync: true
         default_config: simple_config
@@ -152,6 +131,7 @@ globally and then select the toolbar to use in each property:
                 toolbar:
                     # ...
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -180,6 +160,7 @@ page loaded by EasyAdmin:
 
 .. code-block:: yaml
 
+    # config/packages/ivory_ck_editor.yaml
     easy_admin:
         design:
             assets:

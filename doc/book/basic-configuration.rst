@@ -14,13 +14,17 @@ routes of the bundle. Change its value to meet your own requirements:
 
 .. code-block:: yaml
 
-    # app/config/routing.yml or config/routes.yaml
+    # config/routes/easy_admin.yaml
     easy_admin_bundle:
-        resource: "@EasyAdminBundle/Controller/AdminController.php"
-        type:     annotation
-        prefix:   /_secret_backend  # <-- change this value
+        resource: '@EasyAdminBundle/Controller/AdminController.php'
+        prefix: /_secret_backend  # <-- change this value
+        type: annotation
 
-    # ...
+.. note::
+
+    Depending on your existing routing configuration, Symfony may ignore this
+    configuration. Run the ``debug:router`` command to troubleshoot any problem
+    with the application routes.
 
 Changing the Name of the Backend
 --------------------------------
@@ -30,7 +34,7 @@ By default, the backend displays ``Easy Admin`` as its name. Use the
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         site_name: 'ACME Megacorp.'
         # ...
@@ -40,7 +44,7 @@ HTML tags if needed:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         site_name: 'ACME <em style="font-size: 80%;">Megacorp.</em>'
         # ...
@@ -50,9 +54,9 @@ logo instead of a text-based logo:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
-        site_name: '<img src="http://symfony.com/logos/symfony_white_01.png" />'
+        site_name: '<img src="https://symfony.com/logos/symfony_white_01.png" />'
         # ...
 
 Changing the Homepage of the Backend

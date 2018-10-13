@@ -24,10 +24,11 @@ use the special ``form`` view:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:  # <-- 'form' is applied to both 'new' and 'edit' views
                     fields:
                         - 'id'
@@ -43,10 +44,11 @@ views to define just the specific options you want to override:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     title: 'Add customer'
                     form_options: { validation_groups: ['Default'] }
@@ -60,10 +62,11 @@ The above configuration is equivalent to the following:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 new:
                     title:  'Add customer'
                     form_options: { validation_groups: ['Default', 'Customer'] }
@@ -88,10 +91,11 @@ Consider the following complex form field configuration:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     fields:
                         - id
@@ -112,10 +116,11 @@ The above configuration is equivalent to the following:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 new:
                     fields:
                         - { property: 'name', icon: 'user' }
@@ -144,11 +149,11 @@ the entity. Define the ``title`` option to set a custom page title:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 label: 'Customers'
                 form:
                     title: "Add/edit customers"
@@ -175,10 +180,11 @@ The ``title`` option can include the following special variables:
 
     .. code-block:: yaml
 
+        # config/packages/easy_admin.yaml
         easy_admin:
             entities:
                 Customer:
-                    class: AppBundle\Entity\Customer
+                    class: App\Entity\Customer
                     label: 'Customers'
                     form:
                         title: '%%entity_label%% listing'
@@ -190,7 +196,7 @@ global titles are always overridden by the title defined by each entity):
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         edit:
             title: '%%entity_label%%_edit'
@@ -211,11 +217,11 @@ entity views:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 help: 'Global message displayed in all views'
                 # ...
                 form:
@@ -239,11 +245,11 @@ view:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     fields: ['firstName', 'lastName', 'phone', 'email']
         # ...
@@ -256,7 +262,7 @@ are displayed in the same order as defined in the related Doctrine entity.
     Fields that represent an association with another entity are displayed as
     ``<select>`` lists. For that reason, you must define the ``__toString()``
     magic method in any entity which is used in a Doctrine relation. Otherwise
-    you'll see the following error message:  
+    you'll see the following error message:
     ``Catchable Fatal Error: Object of class XY could not be converted to string``
 
 Virtual Properties
@@ -285,7 +291,7 @@ By default, the forms built to create and edit entities only define the
 .. code-block:: php
 
     $form = $this->createFormBuilder($entity, array(
-        'data_class' => 'AppBundle\Entity\Customer',
+        'data_class' => 'App\Entity\Customer',
     ))
     -> ...
 
@@ -294,10 +300,11 @@ option under the ``edit``, ``new`` or ``form`` options:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     form_options: { validation_groups: ['Default', 'my_validation_group'] }
         # ...
@@ -307,7 +314,7 @@ The above example makes the backend use the following PHP code to build the form
 .. code-block:: php
 
     $form = $this->createFormBuilder($entity, array(
-        'data_class' => 'AppBundle\Entity\Customer',
+        'data_class' => 'App\Entity\Customer',
         'validation_groups' => array('Default', 'my_validation_group'),
     ))
     -> ...
@@ -321,11 +328,11 @@ control their appearance, start by using the extended field configuration:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     fields: ['name', { property: 'email', label: 'Contact' }]
         # ...
@@ -340,11 +347,11 @@ following example is equivalent to the above example:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     fields:
                         - name
@@ -382,10 +389,11 @@ tens of options suited for each form type:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     fields:
                         - 'id'
@@ -412,6 +420,7 @@ the ``widget`` form field option (commonly used together with ``format``):
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Event:
@@ -433,6 +442,7 @@ the ``currency`` option of the ``MoneyType`` form type:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -454,10 +464,11 @@ saying that the ``utcdatetime`` type couldn't be loaded:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     fields:
                         - { property: 'createdAt', type: 'utcdatetime' }
@@ -484,10 +495,11 @@ records:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 form:
                     fields:
                         - { property: 'category', type: 'easyadmin_autocomplete' }
@@ -500,7 +512,7 @@ automatically. If you prefer to define it explicitly, do it in the type options:
 .. code-block:: yaml
 
     # ...
-    - { property: 'category', type: 'easyadmin_autocomplete', type_options: { class: 'AppBundle\Entity\Category' } }
+    - { property: 'category', type: 'easyadmin_autocomplete', type_options: { class: 'App\Entity\Category' } }
 
 When the user types in an autocomplete field, EasyAdmin performs a fuzzy search
 on all the properties of the related entity. This is the same behavior applied
@@ -521,7 +533,7 @@ change this value (globally or per entity):
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         show:
             max_results: 20
@@ -548,6 +560,7 @@ default form style is equivalent to using this configuration:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             form_theme: 'horizontal'
@@ -558,6 +571,7 @@ change the value of this option to ``vertical``:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             form_theme: 'vertical'
@@ -573,9 +587,10 @@ built-in form themes. But you can also use your own form themes:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
-            form_theme: '@App/form/custom_layout.html.twig'
+            form_theme: 'admin/form/custom_layout.html.twig'
         # ...
 
 The ``form_theme`` option even allows to define an array of form themes and all of
@@ -583,10 +598,11 @@ them will be used when rendering the backend forms:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             form_theme:
-                - '@App/form/custom_layout.html.twig'
+                - 'admin/form/custom_layout.html.twig'
                 - 'form_div_layout.html.twig'
         # ...
 
@@ -603,6 +619,7 @@ additional information. If the field is called ``title`` and belongs to a
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         # ...
         entities:
@@ -628,6 +645,7 @@ Finally, add this custom theme to the list of themes used to render backend form
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         # ...
         design:
@@ -654,10 +672,11 @@ line. It's useful to easily separate fields in long forms:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     fields:
                         - id
@@ -680,10 +699,11 @@ by a title and, optionally, an icon, a help message and a custom CSS class:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     fields:
                         - id
@@ -712,10 +732,11 @@ very advanced layouts.
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 form:
                     fields:
                         - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
@@ -775,10 +796,11 @@ way around) to create clean interfaces when forms contains lots of fields.
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 form:
                     fields:
                         - { type: 'tab' , label: 'Account Information', icon: 'user' }
@@ -842,8 +864,8 @@ overridden it (the first template which exists is used):
 1. ``easy_admin.entities.<EntityName>.templates.<TemplateName>`` configuration
    option.
 2. ``easy_admin.design.templates.<TemplateName>`` configuration option.
-3. ``app/Resources/views/easy_admin/<EntityName>/<TemplateName>.html.twig``
-4. ``app/Resources/views/easy_admin/<TemplateName>.html.twig``
+3. ``templates/easy_admin/<EntityName>/<TemplateName>.html.twig``
+4. ``templates/easy_admin/<TemplateName>.html.twig``
 5. ``@EasyAdmin/default/<TemplateName>.html.twig``
 
 The last one is the path of the built-in templates and they are always available.
@@ -869,28 +891,24 @@ configure its location with the ``templates`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
                 # ...
                 templates:
-                    # Twig namespace template syntax
-                    edit: '@User/Backend/edit.html.twig'
-                    # legacy template syntax works too:
-                    # edit: 'UserBundle:Backend:edit.html.twig'
+                    edit: 'admin/user/edit.html.twig'
 
 Similarly, to override some template for all entities, define the ``templates``
 option under the global ``design`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             templates:
-                # Twig namespace template syntax
-                edit: '@App/Backend/edit.html.twig'
-                # legacy template syntax works too:
-                edit: 'AppBundle:Backend:edit.html.twig'
+                edit: 'admin/user/edit.html.twig'
         entities:
             # ...
 
@@ -898,9 +916,9 @@ Overriding the Default Templates By Convention
 ..............................................
 
 If you don't mind the location of your custom templates, consider creating them
-in the ``app/Resources/views/easy_admin/`` directory. When the ``templates``
-option is not defined, EasyAdmin looks into this directory before falling back
-to the default templates.
+in the ``templates/easy_admin/`` directory. When the ``templates`` option is not
+defined, EasyAdmin looks into this directory before falling back to the default
+templates.
 
 For example, to override the ``edit`` template just for the ``Customer`` entity,
 you only need to create this template in this exact location (there is no need
@@ -909,16 +927,14 @@ to define the ``templates`` configuration option):
 ::
 
     your-project/
-    ├─ app/
-    │  ├─ ...
-    │  └─ Resources/
-    │     └─ views/
-    │        └─ easy_admin/
-    │           └─ Customer/
-    │              └─ edit.html.twig
+    ├─ config
+    ├─ public/
+    ├─ templates/
+    │  └─ easy_admin/
+    │     └─ Customer/
+    │        └─ edit.html.twig
     ├─ src/
-    ├─ vendor/
-    └─ web/
+    └─ vendor/
 
 In case you want to override the template for all entities, define the new
 template right under the ``easy_admin/`` directory:
@@ -926,15 +942,13 @@ template right under the ``easy_admin/`` directory:
 ::
 
     your-project/
-    ├─ app/
-    │  ├─ ...
-    │  └─ Resources/
-    │     └─ views/
-    │        └─ easy_admin/
-    │           └─ edit.html.twig
+    ├─ config
+    ├─ public/
+    ├─ templates/
+    │  └─ easy_admin/
+    │     └─ edit.html.twig
     ├─ src/
-    ├─ vendor/
-    └─ web/
+    └─ vendor/
 
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html

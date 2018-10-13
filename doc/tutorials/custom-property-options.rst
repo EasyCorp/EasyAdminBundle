@@ -16,11 +16,11 @@ options (``property``, ``label``, ``template``, ``type``, ``help`` and
 
 .. code-block:: yaml
 
-    # app/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 list:
                     fields:
                         - { property: 'email', label: 'Contact' }
@@ -44,9 +44,9 @@ option called ``domain`` which defines the name of the translation domain to use
 
 .. code-block:: yaml
 
-    # app/config.yml
+    # config/packages/easy_admin.yaml
     Product:
-        class: AppBundle\Entity\Product
+        class: App\Entity\Product
         label: 'Products'
         list:
             fields:
@@ -69,7 +69,7 @@ and ``domain`` options:
 
 .. code-block:: twig
 
-    {# app/Resources/views/easy_admin/field_string.html.twig #}
+    {# templates/easy_admin/field_string.html.twig #}
 
     {% if field_options.trans|default(false) %}
         {# translate fields defined as "translatable" #}
@@ -90,11 +90,11 @@ for this property and make use of the ``label_colors`` custom option:
 
 .. code-block:: yaml
 
-    # app/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 list:
                     fields:
                         # ...
@@ -105,7 +105,7 @@ The custom ``tag_collection.html.twig`` template would look as follows:
 
 .. code-block:: twig
 
-    {# app/Resources/views/easy_admin/tag_collection.html.twig #}
+    {# templates/easy_admin/tag_collection.html.twig #}
 
     {% set colors = field_options.label_colors|default(['primary']) %}
 
@@ -127,12 +127,12 @@ needed. Just define their name and value to use them everywhere on the backend:
 
 .. code-block:: yaml
 
-    # app/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
-                class: AppBundle\Entity\User
-                export_path: '%kernel.root_dir/../var/export/user'
+                class: App\Entity\User
+                export_path: '%kernel.project_dir/var/export/user'
                 password_encoding: { algorithm: 'bcrypt', cost: 12 }
                 # ...
 
@@ -148,12 +148,12 @@ option:
 
 .. code-block:: yaml
 
-    # app/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 acme_project:
-                    export_path: '%kernel.root_dir/../var/export/user'
+                    export_path: '%kernel.project_dir/var/export/user'
                     password_encoding: { algorithm: 'bcrypt', cost: 12 }
                 # ...

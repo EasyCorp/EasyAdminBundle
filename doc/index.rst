@@ -5,8 +5,8 @@ EasyAdminBundle
 
 .. seealso::
 
-    Do you prefer video tutorials? Check out the `EasyAdminBundle for an Amazing Admin Interface`_
-    screencast series from KnpUniversity.
+    Do you prefer video tutorials? Check out this SymfonyCasts series:
+    `EasyAdminBundle for an Amazing Admin Interface`_.
 
 .. toctree::
     :maxdepth: 1
@@ -54,4 +54,4 @@ About
     misc/about
 
 .. _`EasyAdminBundle`: https://github.com/EasyCorp/EasyAdminBundle
-.. _`EasyAdminBundle for an Amazing Admin Interface`: https://knpuniversity.com/screencast/easyadminbundle
+.. _`EasyAdminBundle for an Amazing Admin Interface`: https://symfonycasts.com/screencast/easyadminbundle

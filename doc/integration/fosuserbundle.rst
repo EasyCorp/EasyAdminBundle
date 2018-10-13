@@ -22,8 +22,8 @@ override the way users are created and persisted:
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/AdminController.php
-    namespace AppBundle\Controller;
+    // src/Controller/AdminController.php
+    namespace App\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
@@ -61,10 +61,11 @@ properties in the same way you manage any property of any other entity:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 form:
                     fields:
                         - username
@@ -80,6 +81,7 @@ Therefore, open your AdminController and add the following method:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends BaseAdminController
     {
         // ...
@@ -107,10 +109,11 @@ user is created:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 edit:
                     fields:
                         # ...

@@ -687,21 +687,6 @@ class AdminController extends Controller
     }
 
     /**
-     * Utility shortcut to render an error when the requested action is not allowed
-     * for the given entity.
-     *
-     * @param string $action
-     *
-     * @deprecated Use the ForbiddenException instead of this method
-     *
-     * @return Response
-     */
-    protected function renderForbiddenActionError($action)
-    {
-        return $this->render('@EasyAdmin/error/forbidden_action.html.twig', ['action' => $action], new Response('', 403));
-    }
-
-    /**
      * Given a method name pattern, it looks for the customized version of that
      * method (based on the entity name) and executes it. If the custom method
      * does not exist, it executes the regular method.

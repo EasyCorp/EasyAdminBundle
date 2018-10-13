@@ -33,9 +33,8 @@ and make it extend from the default ``AdminController`` class:
 
 .. code-block:: php
 
-    // In Symfony 2 and 3: src/AppBundle/Controller/AdminController.php
-    // In Symfony 4: src/Controller/AdminController.php
-    namespace AppBundle\Controller;
+    // src/Controller/AdminController.php
+    namespace App\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
@@ -44,20 +43,12 @@ and make it extend from the default ``AdminController`` class:
         // ...
     }
 
-**Step 2.** Open the routing file where the ``easy_admin_bundle`` route is
-defined and change the ``resource`` option to point to your new controller:
+**Step 2.** Open the EasyAdmin routing config file and change the ``resource``
+option to point to your new controller:
 
 .. code-block:: yaml
 
-    # In Symfony 2 and 3: app/config/routing.yml
-    easy_admin_bundle:
-        # this is just an example; update the value of 'resource' accordingly
-        resource: '@AppBundle/Controller/AdminController.php'
-        type:     annotation
-        prefix:   /admin
-
-
-    # In Symfony 4: config/routes/easy_admin.yaml
+    # config/routes/easy_admin.yaml
     easy_admin_bundle:
         # this is just an example; update the value of 'resource' accordingly
         resource: 'App\Controller\AdminController'
@@ -68,8 +59,8 @@ Save the changes and the backend will start using your own controller.
 
 .. note::
 
-    The default routing config in Symfony 4 loads the annotations of controllers
-    defined in ``src/Controller/`` first. If you override the ``AdminController``
+    The default Symfony routing config loads first the annotations of controllers
+    defined in ``src/Controller/``. If you override the ``AdminController``
     in that directory, the routing config defined in ``config/routes/easy_admin.yaml``
     will be ignored. You can comment the contents of that file and use instead
     the ``@Route`` annotation of ``AdminController`` to configure that route.
@@ -86,6 +77,7 @@ so you have access to all its shortcuts and utility methods:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     use Symfony\Bundle\FrameworkBundle\Controller\Controller;
     // ...
 
@@ -99,6 +91,7 @@ are commonly used in the rest of the methods:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         /** @var array The full configuration of the entire backend */
@@ -121,6 +114,7 @@ the actual executed method, such as ``listAction()``, ``showAction()``, etc.:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         /** @Route("/", name="easyadmin") */
@@ -137,6 +131,7 @@ shown above:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         // override this method to initialize your custom properties
@@ -148,6 +143,7 @@ methods are complex because they need to perform lots of checks:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         protected function listAction();
@@ -168,6 +164,7 @@ The rest of the available methods are specific for each action:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         // Creates the Doctrine query builder used to get all the items. Override it
@@ -184,6 +181,7 @@ The rest of the available methods are specific for each action:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         // Creates the Doctrine query builder used to look for items according to the
@@ -201,6 +199,7 @@ The rest of the available methods are specific for each action:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         // Creates the form used to delete an entity item (a form is required because
@@ -212,14 +211,11 @@ The rest of the available methods are specific for each action:
         protected function removeEntity($entity);
     }
 
-.. versionadded:: 1.17.8
-    The ``removeEntity()`` method was added in EasyAdmin 1.17.8. Previously it
-    was called ``preRemoveEntity()``.
-
 **Edit** action:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         // Creates the form used to edit an entity item
@@ -230,14 +226,11 @@ The rest of the available methods are specific for each action:
         protected function updateEntity($entity)
     }
 
-.. versionadded:: 1.17.8
-    The ``updateEntity()`` method was added in EasyAdmin 1.17.8. Previously it
-    was called ``preUpdateEntity()``.
-
 **New** action:
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         // Creates a new instance of the entity being created. This instance is passed
@@ -253,10 +246,6 @@ The rest of the available methods are specific for each action:
         protected function persistEntity($entity)
     }
 
-.. versionadded:: 1.17.8
-    The ``persistEntity()`` method was added in EasyAdmin 1.17.8. Previously it
-    was called ``prePersistEntity()``.
-
 **Edit** and **New** actions:
 
 These methods are useful to make the same customizations for the ``edit`` and
@@ -264,6 +253,7 @@ These methods are useful to make the same customizations for the ``edit`` and
 
 .. code-block:: php
 
+    // src/Controller/AdminController.php
     class AdminController extends Controller
     {
         // Creates the form builder used to create the form rendered in the
@@ -291,8 +281,8 @@ to save the changes made on an existing entity:
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/AdminController.php
-    namespace AppBundle\Controller;
+    // src/Controller/AdminController.php
+    namespace App\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
@@ -315,8 +305,8 @@ creating (``persistEntity()``) or editing (``updateEntity()``) them:
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/AdminController.php
-    namespace AppBundle\Controller;
+    // src/Controller/AdminController.php
+    namespace App\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
@@ -339,7 +329,7 @@ creating (``persistEntity()``) or editing (``updateEntity()``) them:
         private function updateSlug($entity)
         {
             if (method_exists($entity, 'setSlug') and method_exists($entity, 'getTitle')) {
-                $entity->setSlug($this->get('app.slugger')->slugify($entity->getTitle()));
+                $entity->setSlug($this->slugger->slugify($entity->getTitle()));
             }
         }
     }
@@ -381,8 +371,8 @@ Instead of overriding the ``createNewEntity()`` method and check for the
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/AdminController.php
-    namespace AppBundle\Controller;
+    // src/Controller/AdminController.php
+    namespace App\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
@@ -408,8 +398,8 @@ anywhere in your Symfony application and make it extend from the default
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/ProductController.php
-    namespace AppBundle\Controller;
+    // src/Controller/ProductController.php
+    namespace App\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
@@ -423,11 +413,12 @@ will use that controller and set the fully qualified class name as its value:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             # ...
             Product:
-                controller: AppBundle\Controller\ProductController
+                controller: App\Controller\ProductController
                 # ...
 
 **Step 3.** You can now override any of the default ``AdminController`` methods
@@ -519,11 +510,12 @@ property of the ``BlogPost`` entity before persisting it:
 
 .. code-block:: php
 
-    namespace AppBundle\EventListener;
+    # src/EventSubscriber/EasyAdminSubscriber.php
+    namespace App\EventSubscriber;
 
     use Symfony\Component\EventDispatcher\EventSubscriberInterface;
     use Symfony\Component\EventDispatcher\GenericEvent;
-    use AppBundle\Entity\BlogPost;
+    use App\Entity\BlogPost;
 
     class EasyAdminSubscriber implements EventSubscriberInterface
     {

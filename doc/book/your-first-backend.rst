@@ -14,9 +14,9 @@ configuration:
     easy_admin:
         entities:
             # change the following to the namespaces of your own entities
-            - AppBundle\Entity\Product
-            - AppBundle\Entity\Category
-            - AppBundle\Entity\User
+            - App\Entity\Product
+            - App\Entity\Category
+            - App\Entity\User
 
 **Congratulations! You've just created your first fully-featured backend!**
 Browse the ``/admin`` URL in your Symfony application and you'll get access to
@@ -25,11 +25,10 @@ the admin backend:
 .. image:: ../images/easyadmin-default-backend.png
    :alt: Default EasyAdmin Backend interface
 
-
 .. note::
 
-    If the interface of your backend displays translation strings instead of
-    the actual contents, make sure that the ``translator`` service is enabled:
+    If the interface of your backend displays translation keys instead of the
+    actual contents, make sure that the ``translator`` service is enabled:
 
     .. code-block:: yaml
 
@@ -51,11 +50,11 @@ to configure lots of options for each entity:
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
             Order:
-                class: AppBundle\Entity\Order
+                class: App\Entity\Order
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
 
 Entities are configured as elements under the ``entities`` key. The name of the
 entities are used as the YAML keys. These names must be unique in the backend

@@ -17,26 +17,11 @@ Installing the File Uploader Bundle
 
     $ composer require vich/uploader-bundle
 
-2) Enable the bundle:
-
-.. code-block:: php
-
-    // app/AppKernel.php
-    class AppKernel extends Kernel
-    {
-        public function registerBundles()
-        {
-            return array(
-                // ...
-                new Vich\UploaderBundle\VichUploaderBundle(),
-            );
-        }
-    }
-
-3) Add the minimal configuration that makes the bundle work:
+2) Add the minimal configuration that makes the bundle work:
 
 .. code-block:: yaml
 
+    # config/packages/vich_uploader.yaml
     vich_uploader:
         db_driver: orm
 
@@ -57,12 +42,12 @@ This is the configuration needed for this example:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/services.yaml
     parameters:
         app.path.product_images: /uploads/images/products
+        # ...
 
-    # ...
-
+    # config/packages/vich_uploader.yaml
     vich_uploader:
         # ...
         mappings:
@@ -178,6 +163,7 @@ contents of a property as an image:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -208,6 +194,7 @@ VichUploaderBundle configuration.
 
     .. code-block:: yaml
 
+        # config/packages/easy_admin.yaml
         easy_admin:
             entities:
                 Product:
@@ -218,7 +205,7 @@ VichUploaderBundle configuration.
 
     .. code-block:: twig
 
-        {# app/Resources/views/easy_admin/vich_uploader_image.html.twig #}
+        {# templates/vich_uploader_image.html.twig #}
         <a href="#" class="easyadmin-thumbnail" data-featherlight="#easyadmin-lightbox-{{ item.id }}" data-featherlight-close-on-click="anywhere">
             {# the second parameter is the name of the property with the UploadableField annotation #}
             <img src="{{ vich_uploader_asset(item, 'imageFile') }}">
@@ -237,6 +224,7 @@ The easiest way to enable uploading images in the forms of the ``edit`` and
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -256,6 +244,7 @@ the best experience, use ``VichImageType`` as the type of the property:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -286,16 +275,18 @@ Define the "mapping" for the new user contracts:
 
 .. code-block:: yaml
 
+    # config/services.yaml
     parameters:
-        # ...
         app.path.user_contracts: /uploads/files/user/contracts
+        # ...
 
+    # config/packages/vich_uploader.yaml
     vich_uploader:
         # ...
         mappings:
             user_contracts:
                 uri_prefix: '%app.path.user_contracts%'
-                upload_destination: '%kernel.root_dir%/../web/uploads/files/user/contracts'
+                upload_destination: '%kernel.root_dir%/../public/uploads/files/user/contracts'
 
 Preparing your Entities to Persist Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -344,6 +335,7 @@ First, add the ``contract`` property to the list of properties to display:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
@@ -358,6 +350,7 @@ the contents of this property:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
@@ -367,8 +360,7 @@ the contents of this property:
                         # ...
                         - { property: 'contract', template: 'contract.html.twig' }
 
-Now you must create the ``app/Resources/views/easy_admin/contract.html.twig``
-template with this content:
+Now you must create the ``templates/contract.html.twig`` template with this content:
 
 .. code-block:: twig
 
@@ -414,6 +406,7 @@ straightforward:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
@@ -442,10 +435,11 @@ EasyAdmin's default form theme):
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         # ...
         design:
-            form_theme: ['horizontal', 'VichUploaderBundle:Form:fields.html.twig']
+            form_theme: ['horizontal', '@VichUploader/Form/fields.html.twig']
 
 Apply the same technique in case you want to use your own form theme instead
 of the one provided by VichUploaderBundle.

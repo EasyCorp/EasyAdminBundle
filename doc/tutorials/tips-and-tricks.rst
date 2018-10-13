@@ -14,7 +14,7 @@ following configuration:
 
 .. code-block:: yaml
 
-    # app/config/config_prod.yml
+    # config/packages/prod/doctrine.yaml
     doctrine:
         orm:
             metadata_cache_driver: apc
@@ -40,6 +40,7 @@ won't be able to add, modify or remove any information:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         disabled_actions: ['delete', 'edit', 'new']
 
@@ -69,8 +70,8 @@ create a custom admin controller and override the ``initialize()`` method
 
 .. code-block:: php
 
-    // src/AppBundle/Controller/AdminController.php
-    namespace AppBundle\Controller;
+    // src/Controller/AdminController.php
+    namespace App\Controller;
 
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
@@ -134,7 +135,7 @@ been published yet (their ``status`` property is ``PUBLISHED``):
 
 .. code-block:: twig
 
-    {# app/Resources/views/easy_admin/list.html.twig #}
+    {# templates/easy_admin/list.html.twig #}
     {% extends '@EasyAdmin/default/list.html.twig' %}
 
     {% block item_actions %}

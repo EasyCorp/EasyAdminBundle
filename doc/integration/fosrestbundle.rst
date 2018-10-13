@@ -17,7 +17,7 @@ If you have enabled this format listener, disable it for the backend routes:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/fos_rest.yaml
     fos_rest:
         format_listener:
             enabled: true

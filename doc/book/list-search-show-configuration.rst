@@ -42,11 +42,11 @@ the entity. Define the ``title`` option to set a custom page title:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 label: 'Customers'
                 list:
                     title: "Most recent customers"
@@ -73,10 +73,11 @@ The ``title`` value can include the following special variables:
 
     .. code-block:: yaml
 
+        # config/packages/easy_admin.yaml
         easy_admin:
             entities:
                 Customer:
-                    class: AppBundle\Entity\Customer
+                    class: App\Entity\Customer
                     label: 'Customers'
                     list:
                         title: '%%entity_label%% listing'
@@ -88,7 +89,7 @@ global titles are always overridden by the title defined by each entity):
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         list:
             title: 'list.%%entity_label%%'
@@ -109,11 +110,11 @@ entity views:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 help: 'Global message displayed in all views'
                 # ...
                 list:
@@ -137,7 +138,7 @@ rows. To change this value, define the ``max_results`` option under the global
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         list:
             max_results: 30
@@ -155,7 +156,7 @@ global ``show`` key or the local ``show`` key of any entity:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         show:
             max_results: 20
@@ -176,11 +177,11 @@ Use the ``fields`` option to explicitly set the properties to display:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 list:
                     fields: ['id', 'firstName', 'lastName', 'phone', 'email']
 
@@ -214,11 +215,11 @@ configuration:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 list:
                     fields: ['id', 'name', { property: 'email', label: 'Contact' }]
         # ...
@@ -233,11 +234,11 @@ following example is equivalent to the above example:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 list:
                     fields:
                         - id
@@ -287,8 +288,7 @@ The fields of the ``show`` view can define another option:
 
     In addition to these options defined by EasyAdmin, you can define any custom
     option for the fields. This way you can create very powerful backend
-    customizations, as explained in the :doc:`../tutorials/custom-property-options`
-    tutorial.
+    customizations, as explained in this tutorial: :doc:`../tutorials/custom-property-options`.
 
 Formatting Dates and Numbers
 ----------------------------
@@ -310,6 +310,7 @@ formats for all entities and their properties:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         formats:
             date:     'd/m/Y'
@@ -327,10 +328,11 @@ the ``format`` option. This local option always overrides the global format:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 list:
                     fields:
                         - { property: 'dateOfBirth', format: 'j/n/Y' }
@@ -349,6 +351,7 @@ The global ``formats`` option applies the same formatting for all entities:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         formats:
             # ...
@@ -364,10 +367,11 @@ option. This local option always overrides the global format:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 list:
                     fields:
                         - { property: 'serialNumber', format: '%010s' }
@@ -388,10 +392,11 @@ First add the virtual property to the entity configuration as any other property
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 list:
                     # 'name' doesn't exist as a Doctrine entity property
                     fields: ['id', 'name', 'phone', 'email']
@@ -434,15 +439,15 @@ appropriate data type:
 
 .. code-block:: yaml
 
-    # in this example, the virtual properties 'is_eligible' and 'last_contact' define
-    # their 'type' option to avoid displaying them as regular text contents
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
-                class: AppBundle\Entity\Customer
+                class: App\Entity\Customer
                 list:
                     fields:
                         - 'id'
+                        # these virtual properties define their 'type' option to not display them as text
                         - { property: 'is_eligible',  type: 'boolean' }
                         - { property: 'last_contact', type: 'datetime' }
         # ...
@@ -459,7 +464,7 @@ property using the ``sort`` configuration option:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             User:
@@ -503,14 +508,15 @@ a basic filter to differentiate each type of user:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             VipCustomers:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 list:
                     dql_filter: 'entity.budget > 100000'
             RegularCustomers:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 list:
                     dql_filter: 'entity.budget <= 100000'
 
@@ -523,10 +529,11 @@ or even dynamic values:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             VipCustomers:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 list:
                     dql_filter: 'entity.budget > %customers.budget_threshold%'
             # ...
@@ -536,18 +543,19 @@ put anything that is considered valid as a ``WHERE`` clause in a Doctrine query)
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             UrgentIssues:
-                class: AppBundle\Entity\Issue
+                class: App\Entity\Issue
                 list:
                     dql_filter: "entity.label = 'CRITICAL' OR entity.priority > 4"
             ImportantIssues:
-                class: AppBundle\Entity\Issue
+                class: App\Entity\Issue
                 list:
                     dql_filter: "entity.priority > 2 AND entity.numComments > 10"
             AllIssues:
-                class: AppBundle\Entity\Issue
+                class: App\Entity\Issue
 
 .. note::
 
@@ -557,10 +565,11 @@ put anything that is considered valid as a ``WHERE`` clause in a Doctrine query)
 
     .. code-block:: yaml
 
+        # config/packages/easy_admin.yaml
         easy_admin:
             entities:
                 Issues:
-                    class: AppBundle\Entity\Issue
+                    class: App\Entity\Issue
                     list:
                         dql_filter: "LOWER(entity.title) LIKE '%%issue%%'"
                     search:
@@ -588,10 +597,11 @@ It displays the contents of the property as a clickable ``mailto:`` link:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 list:
                     fields:
                         - { property: 'contact', type: 'email' }
@@ -606,10 +616,11 @@ new browser tab:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 list:
                     fields:
                         - { property: 'blogUrl', type: 'url' }
@@ -624,10 +635,11 @@ that some browsers don't support these links:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\User
+                class: App\Entity\User
                 list:
                     fields:
                         - { property: 'workPhoneNumber', type: 'tel' }
@@ -657,10 +669,11 @@ explicitly as ``boolean``:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 list:
                     fields:
                         - { property: 'hasStock', type: 'boolean' }
@@ -682,10 +695,11 @@ need to set the ``type`` property to ``image``:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 list:
                     fields:
                         - { property: 'photo', type: 'image' }
@@ -700,10 +714,11 @@ path to be prefixed to the image path:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 list:
                     fields:
                         - { property: 'photo', type: 'image', base_path: '/img/' }
@@ -729,10 +744,11 @@ value for different properties or different views:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 image_base_path: 'http://static.acme.org/img/'
                 list:
                     fields:
@@ -752,10 +768,11 @@ to display a link to the actual file. In most cases, you just need to set the
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 list:
                     fields:
                         - { property: 'instructions', type: 'file' }
@@ -770,10 +787,11 @@ absolute or relative path to be prefixed to the file path:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 list:
                     fields:
                         - { property: 'instructions', type: 'file', base_path: '/pdf/' }
@@ -785,10 +803,11 @@ value for different properties or different views:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 file_base_path: 'http://static.acme.org/pdf/'
                 list:
                     fields:
@@ -805,10 +824,11 @@ explicitly:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 list:
                     fields:
                         - { property: 'instructions', type: 'file', filename: 'View instructions (PDF)' }
@@ -825,10 +845,11 @@ define the ``type`` option with a ``raw`` value:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Product:
-                class: AppBundle\Entity\Product
+                class: App\Entity\Product
                 list:
                     fields:
                         - { property: 'features', type: 'raw' }
@@ -853,7 +874,7 @@ four templates related to ``list``, ``search`` and ``show`` views:
 * ``layout``, the common layout that decorates the rest of the main templates;
 * ``show``, renders the contents stored by a given entity;
 * ``list``, renders the entity listings and the search results page;
-* ``paginator``, renders the paginator of the ``list`` view.
+* ``paginator``, renders the pagination of the ``list`` view.
 
 Depending on your needs you can override these templates in different ways:
 
@@ -872,8 +893,8 @@ overridden it (the first template which exists is used):
 1. ``easy_admin.entities.<EntityName>.templates.<TemplateName>`` configuration
    option.
 2. ``easy_admin.design.templates.<TemplateName>`` configuration option.
-3. ``app/Resources/views/easy_admin/<EntityName>/<TemplateName>.html.twig``
-4. ``app/Resources/views/easy_admin/<TemplateName>.html.twig``
+3. ``templates/easy_admin/<EntityName>/<TemplateName>.html.twig``
+4. ``templates/easy_admin/<TemplateName>.html.twig``
 5. ``@EasyAdmin/default/<TemplateName>.html.twig``
 
 The last one is the path of the built-in templates and they are always available.
@@ -899,15 +920,13 @@ application and then, configure its location with the ``templates`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         entities:
             Customer:
                 # ...
                 templates:
-                    # Twig namespace template syntax
-                    paginator: '@App/Default/fragments/_paginator.html.twig'
-                    # legacy template syntax works too:
-                    # paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
+                    paginator: 'admin/fragments/_paginator.html.twig'
 
 Similarly, to override some template for all entities, define the ``templates``
 option under the global ``design`` option:
@@ -917,10 +936,7 @@ option under the global ``design`` option:
     easy_admin:
         design:
             templates:
-                # Twig namespace template syntax
-                paginator: '@App/Default/fragments/_paginator.html.twig'
-                # legacy template syntax works too:
-                paginator: 'AppBundle:Default:fragments/_paginator.html.twig'
+                paginator: 'admin/fragments/_paginator.html.twig'
         entities:
             # ...
 
@@ -928,9 +944,9 @@ Overriding the Default Templates By Convention
 ..............................................
 
 If you don't mind the location of your custom templates, consider creating them
-in the ``app/Resources/views/easy_admin/`` directory. When the ``templates``
-option is not defined, EasyAdmin looks into this directory before falling back
-to the default templates.
+in the ``templates/easy_admin/`` directory. When the ``templates`` option is not
+defined, EasyAdmin looks into this directory before falling back to the default
+templates.
 
 For example, to override the ``paginator`` template just for the ``Customer``
 entity, you only need to create this template in this exact location (there is
@@ -939,16 +955,14 @@ no need to define the ``templates`` configuration option):
 ::
 
     your-project/
-    ├─ app/
-    │  ├─ ...
-    │  └─ Resources/
-    │     └─ views/
-    │        └─ easy_admin/
-    │           └─ Customer/
-    │              └─ paginator.html.twig
+    ├─ config
+    ├─ public/
+    ├─ templates/
+    │  └─ easy_admin/
+    │     └─ Customer/
+    │        └─ paginator.html.twig
     ├─ src/
-    ├─ vendor/
-    └─ web/
+    └─ vendor/
 
 In case you want to override the template for all entities, define the new
 template right under the ``easy_admin/`` directory:
@@ -956,15 +970,13 @@ template right under the ``easy_admin/`` directory:
 ::
 
     your-project/
-    ├─ app/
-    │  ├─ ...
-    │  └─ Resources/
-    │     └─ views/
-    │        └─ easy_admin/
-    │           └─ paginator.html.twig
+    ├─ config
+    ├─ public/
+    ├─ templates/
+    │  └─ easy_admin/
+    │     └─ paginator.html.twig
     ├─ src/
-    ├─ vendor/
-    └─ web/
+    └─ vendor/
 
 Tweaking the Design of the Default Templates
 ............................................
@@ -977,15 +989,8 @@ customize.
 
 Suppose you want to change the search form of the ``list`` view. First, create a
 new ``list.html.twig`` template as explained in the previous sections. Then, make
-your template extend from the default ``list.html.twig`` template:
-
-.. code-block:: twig
-
-    {% extends '@EasyAdmin/default/list.html.twig' %}
-
-    {# ... #}
-
-Lastly, override the ``search_action`` block to just change that template fragment:
+your template extend from the default ``list.html.twig`` template and override
+only the blocks you want to change:
 
 .. code-block:: twig
 
@@ -1054,7 +1059,7 @@ The same template overriding mechanism explained in the previous sections can be
 applied to customize the templates used to render each property. Therefore, you
 can override these templates globally or for each entity and you can do that
 defining the ``template`` configuration option or storing the templates in the
-``app/Resources/views/easy_admin/`` directory.
+``templates/easy_admin/`` directory.
 
 Before customizing these templates, it's recommended to check out the default
 ``field_*.html.twig`` and ``label_*.html.twig`` templates to learn about their
@@ -1085,6 +1090,7 @@ path of the custom template in the ``template`` option of the property:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         # ...
         entities:
@@ -1098,23 +1104,12 @@ template instead of the default ``field_float.html.twig`` template. As usual,
 EasyAdmin first looks for custom templates in the following locations (the first
 existing template is used):
 
-1. ``app/Resources/views/easy_admin/<EntityName>/<TemplateOptionValue>``
-2. ``app/Resources/views/easy_admin/<TemplateOptionValue>``
+1. ``templates/easy_admin/<EntityName>/<TemplateOptionValue>``
+2. ``templates/easy_admin/<TemplateOptionValue>``
 
 If none of these templates exist, the value of the ``template`` option is
-considered a Symfony template path, so you can use any of the valid template
-syntaxes:
-
-.. code-block:: yaml
-
-    easy_admin:
-        # ...
-        entities:
-            Invoice:
-                list:
-                    fields:
-                        - { property: 'total', template: 'AppBundle:Invoice:total.html.twig' }
-                        - { property: 'price', template: '@App/Invoice/unit_price.html.twig' }
+considered the full Symfony template path (e.g. ``template: 'foo.html.twig'``
+will turn into the ``templates/foo.html.twig`` Twig template).
 
 Custom templates receive the same parameters as built-in templates
 (``field_options``, ``item``, ``value`` and ``view``).

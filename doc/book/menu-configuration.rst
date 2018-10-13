@@ -22,6 +22,7 @@ the menu:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu: ['User', 'Product', 'Category']
@@ -47,6 +48,7 @@ format):
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu: ['User', 'Product', { entity: 'Category', label: 'Tags' }]
@@ -57,6 +59,7 @@ to maintain:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -75,6 +78,7 @@ display the ``fa-user`` icon):
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -88,6 +92,7 @@ the ``icon`` option and leave it empty or set it to ``null``:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -103,6 +108,7 @@ more menu items:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -124,6 +130,7 @@ menu item:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -141,6 +148,7 @@ and use any of the `valid link types`_:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -158,14 +166,12 @@ Changing the Backend Index Page
 -------------------------------
 
 By default, when accessing the index page of the backend, you are redirected to
-the ``list`` view of the first configured entity.
-
-If you define a custom menu configuration, you can set any of its items as the
-default backend index. Just add ``default: true`` to the menu item you want to
-display when loading the backend index:
+the ``list`` view of the first configured entity. To change this, add
+``default: true`` to any other item of your custom menu configuration:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -177,12 +183,12 @@ display when loading the backend index:
 Linking Menu Items to Other Actions
 -----------------------------------
 
-Instead of linking to the ``list`` view of an entity, you can make a menu item to
-link to other entity actions. Just define the ``params`` option to set the
-parameters used to generate the link of the menu item:
+By default menu items link to the ``list`` view of the entities. This can be
+customized using the ``params`` option of any menu item:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -191,11 +197,12 @@ parameters used to generate the link of the menu item:
                 - { entity: 'Category', params: { action: 'edit', id: 341 } }
         # ...
 
-The ``params`` option is also useful to change the sort field or sort direction of
-the ``list`` action:
+The ``params`` option is also useful to change the sort field or sort direction
+of the ``list`` action:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -219,6 +226,7 @@ separate the menu items:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -239,6 +247,7 @@ They are created by adding a menu item which defines the ``url`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -259,6 +268,7 @@ They are created by adding a menu item which defines the route name in the
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -276,6 +286,7 @@ easy as adding an empty menu item and defining its ``children`` option:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:
@@ -295,6 +306,7 @@ advanced menus with two-level submenus and all kind of items:
 
 .. code-block:: yaml
 
+    # config/packages/easy_admin.yaml
     easy_admin:
         design:
             menu:

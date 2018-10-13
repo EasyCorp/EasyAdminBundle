@@ -192,7 +192,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             'Category' => [
                 'class' => 'AppTestBundle\Entity\UnitTests\Category',
                 'name' => 'Category',
-            ]
+            ],
         ]];
 
         $cache = new ArrayAdapter();

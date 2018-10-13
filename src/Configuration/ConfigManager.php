@@ -20,7 +20,7 @@ final class ConfigManager
     /** @var ConfigPassInterface[] */
     private $configPasses;
 
-    public function __construct(array $originalBackendConfig, bool $debug, PropertyAccessorInterface $propertyAccessor,  CacheItemPoolInterface $cache)
+    public function __construct(array $originalBackendConfig, bool $debug, PropertyAccessorInterface $propertyAccessor, CacheItemPoolInterface $cache)
     {
         $this->originalBackendConfig = $originalBackendConfig;
         $this->debug = $debug;
@@ -36,9 +36,6 @@ final class ConfigManager
         $this->configPasses[] = $configPass;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBackendConfig(string $propertyPath = null)
     {
         $this->backendConfig = $this->loadBackendConfig();
@@ -53,9 +50,6 @@ final class ConfigManager
         return $this->propertyAccessor->getValue($this->backendConfig, $propertyPath);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEntityConfig(string $entityName): array
     {
         $backendConfig = $this->getBackendConfig();
@@ -66,9 +60,6 @@ final class ConfigManager
         return $backendConfig['entities'][$entityName];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEntityConfigByClass(string $fqcn): ?array
     {
         $backendConfig = $this->getBackendConfig();
@@ -81,9 +72,6 @@ final class ConfigManager
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getActionConfig(string $entityName, string $view, string $action): array
     {
         try {
@@ -95,9 +83,6 @@ final class ConfigManager
         return $entityConfig[$view]['actions'][$action] ?? [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isActionEnabled(string $entityName, string $view, string $action): bool
     {
         $entityConfig = $this->getEntityConfig($entityName);

@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -11,11 +11,11 @@ use Symfony\Component\Form\FormConfigInterface;
 final class TypeConfigurator implements TypeConfiguratorInterface
 {
     /**
-     * @var ConfigManagerInterface
+     * @var ConfigManager
      */
     private $configManager;
 
-    public function __construct(ConfigManagerInterface $configManager)
+    public function __construct(ConfigManager $configManager)
     {
         $this->configManager = $configManager;
     }

@@ -49,12 +49,10 @@ class ConfigManagerTest extends TestCase
     {
         $inputs = array_merge(
             glob(__DIR__.'/fixtures/configurations/input/admin_*.yml'),
-            glob(__DIR__.'/fixtures/deprecations/input/admin_*.yml'),
             glob(__DIR__.'/fixtures/templates/*/input/admin_*.yml')
         );
         $outputs = array_merge(
             glob(__DIR__.'/fixtures/configurations/output/config_*.yml'),
-            glob(__DIR__.'/fixtures/deprecations/output/config_*.yml'),
             glob(__DIR__.'/fixtures/templates/*/output/config_*.yml')
         );
 

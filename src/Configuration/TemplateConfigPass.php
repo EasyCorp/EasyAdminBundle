@@ -123,13 +123,6 @@ class TemplateConfigPass implements ConfigPassInterface
                     if (isset($fieldMetadata['template'])) {
                         $templatePath = $fieldMetadata['template'];
 
-                        // template path should contain the .html.twig extension
-                        // however, for usability reasons, we silently fix this issue if needed
-                        if ('.html.twig' !== mb_substr($templatePath, -10)) {
-                            $templatePath .= '.html.twig';
-                            @trigger_error(sprintf('Passing a template path without the ".html.twig" extension is deprecated since version 1.11.7 and will be removed in 2.0. Use "%s" as the value of the "template" option for the "%s" field in the "%s" view of the "%s" entity.', $templatePath, $fieldName, $view, $entityName), E_USER_DEPRECATED);
-                        }
-
                         // before considering $templatePath a regular Symfony template
                         // path, check if the given template exists in any of these directories:
                         // * app/Resources/views/easy_admin/<entityName>/<templatePath>

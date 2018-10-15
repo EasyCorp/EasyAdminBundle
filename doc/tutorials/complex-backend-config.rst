@@ -67,5 +67,18 @@ create the four files with these contents:
             User:
                 # ...
 
+
+Update your Kernel to make symfony load the file:
+
+.. code-block:: php
+
+    # src/Kernel.php
+    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
+    {
+        # ...
+        $loader->load($confDir.'/{packages}/easy_admin/*'.self::CONFIG_EXTS, 'glob');
+    }
+
+
 Beware that each configuration file must define its contents under the ``easy_admin``
 key. Otherwise, Symfony won't be able to merge the different configurations.

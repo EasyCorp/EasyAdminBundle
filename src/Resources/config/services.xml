@@ -29,6 +29,15 @@
         <service id="easyadmin.paginator" class="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" public="true">
         </service>
 
+        <service id="easyadmin.dto_factory_storage" class="EasyCorp\Bundle\EasyAdminBundle\Form\DTO\DTOFactoryStorage" public="true">
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="service" id="service_container" />
+        </service>
+
+        <service id="easyadmin.dto_entity_callable_storage" class="EasyCorp\Bundle\EasyAdminBundle\Form\DTO\DTOEntityCallableStorage" public="true">
+            <argument type="service" id="easyadmin.config.manager" />
+        </service>
+
         <service id="easyadmin.router" class="EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter" public="true">
             <argument id="easyadmin.config.manager" type="service" />
             <argument id="router" type="service" />
@@ -124,5 +133,6 @@
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" alias="easyadmin.query_builder" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" alias="easyadmin.paginator" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete" alias="easyadmin.autocomplete" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Form\DTO\DTOEntityCallableStorage" alias="easyadmin.dto_entity_callable_storage" />
     </services>
 </container>

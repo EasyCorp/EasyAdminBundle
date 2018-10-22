@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Form\DTO\DTOEntityCallableStorage;
+use EasyCorp\Bundle\EasyAdminBundle\Form\DTO\DTOFactoryStorage;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder;
@@ -27,6 +29,7 @@ class EasyAdminController extends AbstractController
             'easyadmin.paginator' => Paginator::class,
             'easyadmin.query_builder' => QueryBuilder::class,
             'easyadmin.property_accessor' => PropertyAccessorInterface::class,
+            'easyadmin.dto_entity_callable_storage' => DTOEntityCallableStorage::class,
             'event_dispatcher' => EventDispatcherInterface::class,
         ];
     }

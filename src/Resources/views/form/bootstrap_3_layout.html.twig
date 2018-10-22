@@ -1,0 +1,628 @@
+{% use 'form_div_layout.html.twig' %}
+
+{% block form_start -%}
+    {% if 'easyadmin' == block_prefixes|slice(-2)|first %}
+        {% set attr = attr|merge({
+            'class': [
+                _easyadmin_form_type|default('') == 'horizontal' ? 'form-horizontal' : 'form-vertical',
+                attr.class|default(''),
+                easyadmin.view ~ '-form'
+            ]|join(' '),
+            'data-view': easyadmin.view,
+            'data-entity': easyadmin.entity.name,
+            'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name) ?? '',
+        }) %}
+    {% endif %}
+
+    {% if form.vars.errors|length > 0 %}
+        {{ form_errors(form) }}
+    {% endif %}
+
+    {{- parent() -}}
+
+    <input type="hidden" name="referer" value="{{ app.request.query.get('referer', '') }}"/>
+{%- endblock form_start %}
+
+{# Widgets #}
+
+{% block form_widget %}
+    {{- parent() -}}
+
+    {% if form.parent.vars.allow_delete|default(false) %}
+        {% set remove_item_javascript %}
+            $(function() {
+            if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+            var containerDiv = $('#{{ id }}').parents('.form-group:first');
+            var parentDiv = containerDiv.parents('[data-prototype]:first');
+            containerDiv.remove();
+            parentDiv.trigger('easyadmin.collection.item-deleted');
+
+            var hasCountAttr = parentDiv.data('count');
+
+            if (hasCountAttr === undefined) {
+                var numItems = parentDiv.children('div.form-group').length;
+                parentDiv.data('count', ++numItems)
+            }
+
+            if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
+                $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
+            }
+            });
+        {% endset %}
+
+        <div class="text-right field-collection-item-action">
+            <a href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
+                <i class="fa fa-remove"></i>
+                {{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}
+            </a>
+        </div>
+    {% endif %}
+{% endblock form_widget %}
+
+{% block form_widget_simple -%}
+    {% if type is not defined or type not in ['file', 'hidden'] %}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    {% endif %}
+    {{- parent() -}}
+{%- endblock form_widget_simple %}
+
+{% block textarea_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
+    {{- parent() -}}
+{%- endblock textarea_widget %}
+
+{% block button_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('btn-default') ~ ' btn')|trim}) %}
+    {{- parent() -}}
+{%- endblock %}
+
+{% block money_widget -%}
+    <div class="input-group">
+        {% set prepend = '{{' == money_pattern[0:2] %}
+        {% if not prepend %}
+            <span class="input-group-addon">{{ money_pattern|replace({ '{{ widget }}':''}) }}</span>
+        {% endif %}
+        {{- block('form_widget_simple') -}}
+        {% if prepend %}
+            <span class="input-group-addon">{{ money_pattern|replace({ '{{ widget }}':''}) }}</span>
+        {% endif %}
+    </div>
+{%- endblock money_widget %}
+
+{% block percent_widget -%}
+    <div class="input-group">
+        {{- block('form_widget_simple') -}}
+        <span class="input-group-addon">%</span>
+    </div>
+{%- endblock percent_widget %}
+
+{% block datetime_widget -%}
+    {% if widget == 'single_text' %}
+        {{- block('form_widget_simple') -}}
+    {% else -%}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
+        <div {{ block('widget_container_attributes') }}>
+            {{- form_errors(form.date) -}}
+            {{- form_errors(form.time) -}}
+            {{- form_widget(form.date, { datetime: true } ) -}}
+            {{- form_widget(form.time, { datetime: true } ) -}}
+        </div>
+    {%- endif %}
+{%- endblock datetime_widget %}
+
+{% block date_widget -%}
+    {% if widget == 'single_text' %}
+        {{- block('form_widget_simple') -}}
+    {% else -%}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
+        {% if datetime is not defined or not datetime -%}
+            <div {{ block('widget_container_attributes') -}}>
+        {%- endif %}
+            {{- date_pattern|replace({
+                '{{ year }}': form_widget(form.year),
+                '{{ month }}': form_widget(form.month),
+                '{{ day }}': form_widget(form.day),
+            })|raw -}}
+        {% if datetime is not defined or not datetime -%}
+            </div>
+        {%- endif -%}
+    {% endif %}
+{%- endblock date_widget %}
+
+{% block time_widget -%}
+    {% if widget == 'single_text' %}
+        {{- block('form_widget_simple') -}}
+    {% else -%}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
+        {% if datetime is not defined or false == datetime -%}
+            <div {{ block('widget_container_attributes') -}}>
+        {%- endif -%}
+        {{- form_widget(form.hour) }}:{{ form_widget(form.minute) }}{% if with_seconds %}:{{ form_widget(form.second) }}{% endif %}
+        {% if datetime is not defined or false == datetime -%}
+            </div>
+        {%- endif -%}
+    {% endif %}
+{%- endblock time_widget %}
+
+{% block choice_widget_collapsed -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
+    {{- parent() -}}
+    {% if form.parent.vars.allow_delete|default(false) %}
+        {% set remove_item_javascript %}
+            $(function() {
+            if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+            var containerDiv = $('#{{ id }}').parents('.form-group:first');
+            var parentDiv = containerDiv.parents('[data-prototype]:first');
+            containerDiv.remove();
+            parentDiv.trigger('easyadmin.collection.item-deleted');
+
+            if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
+            $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
+            }
+            });
+        {% endset %}
+
+        <div class="text-right field-collection-item-action">
+            <a href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
+                <i class="fa fa-remove"></i>
+                {{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}
+            </a>
+        </div>
+    {% endif %}
+{%- endblock %}
+
+{% block choice_widget_expanded -%}
+    {% if '-inline' in label_attr.class|default('') -%}
+        <div class="control-group">
+            {%- for child in form %}
+                {{- form_widget(child, {
+                    parent_label_class: label_attr.class|default(''),
+                    translation_domain: choice_translation_domain,
+                }) -}}
+            {% endfor -%}
+        </div>
+    {%- else -%}
+        <div {{ block('widget_container_attributes') }}>
+            {%- for child in form %}
+                {{- form_widget(child, {
+                    parent_label_class: label_attr.class|default(''),
+                    translation_domain: choice_translation_domain,
+                }) -}}
+            {% endfor -%}
+        </div>
+    {%- endif %}
+{%- endblock choice_widget_expanded %}
+
+{% block checkbox_widget -%}
+    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
+    {% if 'checkbox-inline' in parent_label_class %}
+        {{- form_label(form, null, { widget: parent() }) -}}
+    {% else -%}
+        <div class="checkbox">
+            {{- form_label(form, null, { widget: parent() }) -}}
+        </div>
+    {%- endif %}
+{%- endblock checkbox_widget %}
+
+{% block radio_widget -%}
+    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
+    {% if 'radio-inline' in parent_label_class %}
+        {{- form_label(form, null, { widget: parent() }) -}}
+    {% else -%}
+        <div class="radio">
+            {{- form_label(form, null, { widget: parent() }) -}}
+        </div>
+    {%- endif %}
+{%- endblock radio_widget %}
+
+{# Labels #}
+
+{% block form_label -%}
+    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label')|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_label %}
+
+{% block choice_label -%}
+    {# remove the checkbox-inline and radio-inline class, it's only useful for embed labels #}
+    {%- set label_attr = label_attr|merge({class: label_attr.class|default('')|replace({'checkbox-inline': '', 'radio-inline': ''})|trim}) -%}
+    {{- block('form_label') -}}
+{% endblock %}
+
+{% block checkbox_label -%}
+    {{- block('checkbox_radio_label') -}}
+{%- endblock checkbox_label %}
+
+{% block radio_label -%}
+    {{- block('checkbox_radio_label') -}}
+{%- endblock radio_label %}
+
+{% block checkbox_radio_label %}
+    {# Do no display the label if widget is not defined in order to prevent double label rendering #}
+    {% if widget is defined %}
+        {% if required %}
+            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
+        {% endif %}
+        {% if parent_label_class is defined %}
+            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) %}
+        {% endif %}
+        {% if label is not same as(false) and label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+            {{- widget|raw -}}
+            {{- label is not same as(false) ? label|trans({}, translation_domain ?: easyadmin.entity.translation_domain) -}}
+        </label>
+    {% endif %}
+{% endblock checkbox_radio_label %}
+
+{# Rows #}
+
+{% block form_row -%}
+    {% set _field_type = easyadmin.field.fieldType|default('default') %}
+    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+
+        {% if _field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and easyadmin.field.nullable|default(false) %}
+            <div class="nullable-control">
+                <label>
+                    <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
+                    {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle')}}
+                </label>
+            </div>
+        {% endif %}
+
+        {{- form_errors(form) -}}
+
+        {% if easyadmin.field.help|default('') != '' %}
+            <span class="help-block"><i class="fa fa-info-circle"></i> {{ easyadmin.field.help|trans(domain = easyadmin.entity.translation_domain)|raw }}</span>
+        {% endif %}
+    </div>
+{%- endblock form_row %}
+
+{% block collection_row %}
+    {{ block('form_row') }}
+
+    {% if allow_add|default(false) %}
+        {% set js_add_item %}
+            $(function() {
+                if (event.preventDefault) event.preventDefault(); else event.returnValue = false;
+
+                var collection = $('#{{ id }}');
+                // Use a counter to avoid having the same index more than once
+                var numItems = collection.data('count') || collection.children('div.form-group').length;
+
+                collection.prev('.collection-empty').remove();
+
+                var newItem = collection.attr('data-prototype')
+                    .replace(/\>{{ prototype.vars.name }}label__\</g, '>' + numItems + '<')
+                    .replace(/_{{ name }}_{{ prototype.vars.name }}/g, '_{{ name }}_' + numItems)
+                    .replace(/{{ name }}\]\[{{ prototype.vars.name }}\]/g, '{{ name }}][' + numItems + ']')
+                ;
+
+                // Increment the counter and store it in the collection
+                collection.data('count', ++numItems);
+
+                collection.append(newItem).trigger('easyadmin.collection.item-added');
+            });
+        {% endset %}
+
+        <div class="text-right field-collection-action">
+            <a href="#" onclick="{{ js_add_item|raw }}" class="text-primary">
+                <i class="fa fa-plus-square"></i>
+                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
+            </a>
+        </div>
+    {% endif %}
+{% endblock collection_row %}
+
+{% block button_row -%}
+    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ easyadmin.field.css_class|default('') }}">
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock button_row %}
+
+{% block choice_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock choice_row %}
+
+{% block date_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock date_row %}
+
+{% block time_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock time_row %}
+
+{% block datetime_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock datetime_row %}
+
+{% block checkbox_row -%}
+    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock checkbox_row %}
+
+{% block radio_row -%}
+    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock radio_row %}
+
+{# Errors #}
+{% block form_errors %}
+    {% set error_count = errors|length %}
+    {% if error_count >= 1 %}
+        <div class="error-block">
+            <span class="label label-danger">{{ 'errors'|transchoice(error_count, {}, 'EasyAdminBundle') }}</span>
+            {% if error_count == 1 %}
+                {{ errors|first.message }}
+            {% else %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock form_errors %}
+
+{%- block form_widget_compound -%}
+    {# the "is iterable" check is needed because if an object implements __toString() and
+       returns an empty string, "is empty" returns true even if it's not a collection #}
+    {% if value is iterable and value is empty %}
+        {{ block('empty_collection') }}
+    {% endif %}
+    {% if value is iterable and value is empty or form.vars.prototype is defined %}
+        {% set attr = attr|merge({'data-empty-collection': block('empty_collection') }) %}
+    {% endif %}
+
+    {{ parent() }}
+{%- endblock form_widget_compound -%}
+
+{% block empty_collection %}
+    <div class="empty collection-empty">
+        {{ include(easyadmin.entity.templates.label_empty) }}
+    </div>
+{% endblock empty_collection %}
+
+{% block vich_file_row %}
+    {% set force_error = true %}
+    {{ block('form_row') }}
+{% endblock %}
+
+{% block vich_file_widget %}
+{% spaceless %}
+    <div class="easyadmin-vich-file">
+        {% if download_uri|default('') is not empty %}
+            {% set download_title = download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') %}
+            <a href="{{ asset(download_uri) }}">{{ download_title }}</a>
+        {% endif %}
+
+        <div class="row">
+            {% if form.delete is defined %}
+            <div class="col-sm-3 col-md-2">
+                {{ form_row(form.delete, { label: 'form.label.delete' }) }}
+            </div>
+            {% endif %}
+            <div class="{{ form.delete is defined ? 'col-sm-9 col-md-10' : 'col-sm-12' }}">
+                {{ form_widget(form.file) }}
+            </div>
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock %}
+
+{% block vich_image_row %}
+    {% set force_error = true %}
+    {{ block('form_row') }}
+{% endblock %}
+
+{% block vich_image_widget %}
+{% spaceless %}
+    <div class="easyadmin-vich-image">
+        {{ form_widget(form.file) }}
+        {% if form.delete is defined %}
+            {{ form_row(form.delete, { label: 'form.label.delete' }) }}
+        {% endif %}
+
+        {% if image_uri|default('') is not empty %}
+            {% if download_uri|default('') is empty %}
+                <div class="easyadmin-thumbnail">
+                    <img style="cursor: initial" src="{{ asset(image_uri) }}">
+                </div>
+            {% else %}
+                {% set _lightbox_id = 'easyadmin-lightbox-' ~ id %}
+
+                <a href="#" class="easyadmin-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
+                    <img src="{{ asset(download_uri) }}">
+                </a>
+
+                <div id="{{ _lightbox_id }}" class="easyadmin-lightbox">
+                    <img src="{{ asset(download_uri) }}">
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endspaceless %}
+{% endblock %}
+
+{% block easyadmin_rest %}
+    {{- form_rest(form) -}}
+    <div class="row">
+        <div class="col-xs-12 form-actions">
+            <div class="form-group">
+                <div id="form-actions-row">
+                    {{- block('item_actions') -}}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock easyadmin_rest %}
+
+{% block item_actions %}
+    {% set _translation_domain = easyadmin.entity.translation_domain %}
+    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
+
+    {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
+    <button type="submit" class="btn btn-primary action-save">
+        <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, _translation_domain) }}
+    </button>
+
+    {% set _entity_actions = (easyadmin.view == 'new')
+        ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
+        : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
+
+    {% set _entity_id = (easyadmin.view == 'new')
+        ? null
+        : attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) %}
+
+    {% set _request_parameters = { entity: easyadmin.entity.name, referer: app.request.query.get('referer') } %}
+
+    {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+        actions: _entity_actions,
+        request_parameters: _request_parameters,
+        translation_domain: _translation_domain,
+        trans_parameters: _trans_parameters,
+        item_id: _entity_id
+    }, with_context = false) }}
+{% endblock item_actions %}
+
+{# EasyAdmin form type #}
+{% block easyadmin_widget %}
+    {% set _translation_domain = easyadmin.entity.translation_domain %}
+    <div class="row">
+        {% if easyadmin_form_tabs | length > 0 %}
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        {% for tab_name, tab_config in easyadmin_form_tabs %}
+                            <li class="{% if tab_config.active %}active{% endif %}">
+                                <a href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
+                                    {% if tab_config.icon|default(false) %}
+                                        <i class="fa fa-{{ tab_config.icon }}"></i>
+                                    {% endif %}
+                                    {{ tab_config['label']|trans(domain = _translation_domain) }}
+                                    {% if tab_config.errors > 0 %}
+                                        <span class="label label-danger" title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'EasyAdminBundle') }}">
+                                            {{ tab_config.errors }}
+                                        </span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="tab-content">
+                        {% for tab_name, tab_config in easyadmin_form_tabs %}
+                            <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %}">
+                                <div class="row">
+                                    {{ block('easyadmin_widget_groups') }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            {{ block('easyadmin_widget_groups') }}
+        {% endif %}
+    </div>
+{% endblock easyadmin_widget %}
+
+{% block easyadmin_widget_groups %}
+    {% for group_name, group_config in easyadmin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
+        <div class="field-group col-xs-12 {{ group_config.css_class|default('') }}">
+            <div class="box box-default">
+                {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
+                    <div class="box-header with-border">
+                        <h3 class="box-title">
+                            {% if group_config.icon|default(false) %}
+                                <i class="fa fa-{{ group_config.icon }}"></i>
+                            {% endif %}
+                            {{ group_config.label|trans(domain = _translation_domain)|raw }}
+                        </h3>
+                        {% if group_config.collapsible|default(false) %}
+                            <a class="pull-right" role="button" data-toggle="collapse" aria-expanded="{{ group_config.expanded|default(false) ? 'true' : 'false' }}" href="#box-body-{{ group_name }}">
+                                <i class="fa fa-plus-square-o"></i>
+                                <i class="fa fa-minus-square-o"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="box-body {% if group_config.collapsible|default(false) %}collapse {% if group_config.expanded|default(false) %}in{% endif %}{% endif %}" id="box-body-{{ group_name }}">
+                    {% if group_config.help|default(false) %}
+                        <p class="help-block">{{ group_config.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
+                    {% endif %}
+
+                    <div class="row">
+                        {% for field in form if 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name %}
+                            {% if not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name %}
+                                <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                                    {{ form_row(field) }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% for field in form if 'hidden' not in field.vars.block_prefixes and (not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name) %}
+            <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                {{ form_row(field) }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endblock easyadmin_widget_groups %}
+
+{# EasyAdminAutocomplete form type #}
+{% block easyadmin_autocomplete_widget %}
+    {{ form_widget(form.autocomplete, {
+        attr: attr|merge({
+            'data-easyadmin-autocomplete-url' : path('easyadmin', {
+                action: 'autocomplete',
+                entity: autocomplete_entity_name,
+            })|raw })
+        })
+    }}
+{% endblock easyadmin_autocomplete_widget %}
+
+{% block easyadmin_autocomplete_inner_label %}
+    {% set name = form.parent.vars.name %}
+    {{- block('form_label') -}}
+{% endblock easyadmin_autocomplete_inner_label %}
+
+{# EasyAdminDivider form type #}
+{% block easyadmin_divider_row %}
+    <div class="field-divider">
+        <hr>
+    </div>
+{% endblock easyadmin_divider_row %}
+
+{# EasyAdminSection form type #}
+{% block easyadmin_section_row %}
+    {% set _translation_domain = easyadmin.entity.translation_domain %}
+    <div class="field-section {{ easyadmin.field.css_class|default('') }}">
+        {% if easyadmin.field.label|default(false) or easyadmin.field.icon|default(false) %}
+            <h2>
+                {% if easyadmin.field.icon|default(false) %}<i class="fa fa-{{ easyadmin.field.icon }}"></i>{% endif %}
+                {{ easyadmin.field.label|default('')|trans(domain = _translation_domain)|raw }}
+            </h2>
+        {% endif %}
+
+        {% if easyadmin.field.help|default(false) %}
+            <p class="help-block">{{ easyadmin.field.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
+        {% endif %}
+    </div>
+{% endblock easyadmin_section_row %}

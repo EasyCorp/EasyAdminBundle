@@ -33,6 +33,7 @@ Tutorials
     tutorials/custom-property-options
     tutorials/complex-backend-config
     tutorials/tips-and-tricks
+    tutorials/dtos
 
 Integration with other bundles
 ------------------------------

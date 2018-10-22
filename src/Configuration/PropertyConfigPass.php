@@ -141,8 +141,13 @@ class PropertyConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
                 $originalViewConfig = $backendConfig['entities'][$entityName][$view];
+
+                if (\in_array($view, ['edit', 'new']) && $entityConfig[$view]['dto_class'] && 0 === \count($entityConfig[$view]['fields'])) {
+                    $entityConfig[$view]['fields'] = $this->processDefaultFieldsForDTOs($entityConfig, $view);
+                }
+
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
-                    $originalFieldConfig = $originalViewConfig['fields'][$fieldName] ?? null;
+                    $originalFieldConfig = $originalViewConfig['fields'][$fieldName] ?? [];
 
                     if (\array_key_exists($fieldName, $entityConfig['properties'])) {
                         $fieldMetadata = \array_merge(
@@ -306,5 +311,81 @@ class PropertyConfigPass implements ConfigPassInterface
         if (\in_array($fieldType, ['bigint', 'integer', 'smallint', 'decimal', 'float'])) {
             return isset($backendConfig['formats']['number']) ? $backendConfig['formats']['number'] : null;
         }
+    }
+
+    private function processDefaultFieldsForDTOs(array $entityConfig, $view)
+    {
+        // When using a DTO, the properties must come from its and not the entity.
+        // This is why we configure the fields from the DTO instead of letting the ViewConfigPass do it.
+
+        $reflection = new \ReflectionClass($entityConfig[$view]['dto_class']);
+
+        $allFields = [];
+
+        do {
+            $allFields[] = $this->getFieldsFromReflection($reflection, $entityConfig);
+
+            $parentClass = $reflection->getParentClass();
+            if ($parentClass) {
+                $parentClass = $parentClass->getName();
+            }
+
+            $reflection = $parentClass ? new \ReflectionClass($parentClass) : null;
+        } while ($reflection);
+
+        $fieldsConfig = [];
+
+        // Reverse fields to get parents first and last class to override everything.
+        $allFields = array_reverse($allFields);
+
+        foreach ($allFields as $fields) {
+            $fieldsConfig = array_merge_recursive($fieldsConfig, $fields);
+        }
+
+        return $fieldsConfig;
+    }
+
+    private function getFieldsFromReflection(\ReflectionClass $refl, array $entityConfig): array
+    {
+        $fields = [];
+
+        foreach ($refl->getProperties() as $property) {
+            if ($property->isStatic()) {
+                continue;
+            }
+
+            $params = [];
+
+            $propertyName = $property->getName();
+
+            if (array_key_exists($propertyName, $entityConfig['properties'])) {
+                // Use default entity field config if the field exists in both the entity and the DTO
+                $params = $entityConfig['properties'][$propertyName];
+            }
+
+            $params = \array_merge($this->defaultEntityFieldConfig, $this->defaultVirtualFieldMetadata, $params);
+
+            // Remove forced virtual fields
+            if ('virtual' === $params['columnName']) {
+                unset($params['columnName']);
+            }
+            if ('virtual' === $params['fieldName']) {
+                unset($params['columnName']);
+            }
+
+            if (!isset($params['fieldType'])) {
+                $params['fieldType'] = $params['type'];
+            }
+            if (!isset($params['dataType'])) {
+                $params['dataType'] = $params['type'];
+            }
+            if (!isset($params['property'])) {
+                $params['property'] = $propertyName;
+            }
+
+            $fields[$propertyName] = $params;
+        }
+
+        return $fields;
     }
 }

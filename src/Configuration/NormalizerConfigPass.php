@@ -55,6 +55,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         $backendConfig = $this->normalizeActionConfig($backendConfig);
         $backendConfig = $this->normalizeBatchActionConfig($backendConfig);
         $backendConfig = $this->normalizeFormConfig($backendConfig);
+        $backendConfig = $this->normalizeDTOConfig($backendConfig);
         $backendConfig = $this->normalizeControllerConfig($backendConfig);
         $backendConfig = $this->normalizeTranslationConfig($backendConfig);
 
@@ -103,6 +104,100 @@ class NormalizerConfigPass implements ConfigPassInterface
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * Makes checks on DTO configuration to be able to spread it
+     * from entity config to each action config.
+     */
+    private function normalizeDTOConfig(array $backendConfig)
+    {
+        // First, merge different configs.
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            $dtoClass = $entityConfig['dto_class'] ?? null;
+            $dtoConstructor = $entityConfig['dto_factory'] ?? null;
+            $dtoEntityMethod = $entityConfig['dto_entity_callable'] ?? null;
+
+            foreach (['edit', 'form', 'new'] as $action) {
+                if (!isset($entityConfig[$action]['dto_class'])) {
+                    $entityConfig[$action]['dto_class'] = $dtoClass;
+                }
+                if (!isset($entityConfig[$action]['dto_factory'])) {
+                    $entityConfig[$action]['dto_factory'] = $dtoConstructor;
+                }
+                if (!isset($entityConfig[$action]['dto_entity_callable'])) {
+                    $entityConfig[$action]['dto_entity_callable'] = $dtoEntityMethod;
+                }
+            }
+
+            $backendConfig['entities'][$entityName] = $entityConfig;
+        }
+
+        // Check config validity for "edit" and "new" actions
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+
+            foreach (['edit', 'new'] as $action) {
+                $config = $entityConfig[$action];
+                if ($config['dto_class'] && !\class_exists($config['dto_class'] )) {
+                    throw new \InvalidArgumentException(\sprintf('The "%s" class defined in the "dto_class" option of the "%s" entity does not exist.', $config['dto_class'], $entityName));
+                }
+
+                if ($config['dto_class'] && !$config['dto_entity_callable']) {
+                    throw new \InvalidArgumentException(\sprintf(
+                        'If you specify the "%s" option, you must also specify the "%s" option in the "%s" entity to know which method EasyAdmin must execute to %s the entity with the DTO.',
+                        'dto_class', 'dto_entity_callable', $entityName, $action === 'edit' ? 'update' : 'create'
+                    ));
+                }
+
+                if (
+                    $config['dto_class']
+                    && $config['dto_factory']
+                    && '__construct' !== $config['dto_factory']
+                    && !$this->container->get('easyadmin.dto_factory_storage')->hasFactory($config['dto_factory'])
+                    && !\is_callable($config['dto_class'], $config['dto_factory'])
+                ) {
+                    try {
+                        $refl = new \ReflectionMethod($config['dto_class'], $config['dto_factory']);
+                    } catch (\ReflectionException $e) {
+                        $msgToCheck = \sprintf('Method %s::%s does not exist', $config['dto_class'], $config['dto_factory']);
+                        if ($e->getMessage() !== $msgToCheck) {
+                            throw $e;
+                        }
+                        throw new \InvalidArgumentException(\sprintf(
+                            'Method "%s" used as factory for the "%s" entity\'s DTO does not exist. It must be a public and static method.',
+                            $config['dto_class'].'::'.$config['dto_factory'], $entityName
+                        ));
+                    }
+
+                    if (!$refl->isStatic()) {
+                        throw new \InvalidArgumentException(\sprintf(
+                            'If not using the constructor, the "%s" method used as factory for the "%s" entity\'s DTO must be static.',
+                            $config['dto_class'].'::'.$config['dto_factory'], $entityName
+                        ));
+                    }
+                    if (!$refl->isPublic()) {
+                        throw new \InvalidArgumentException(\sprintf(
+                            'If not using the constructor, the "%s" method used as factory for the "%s" entity\'s DTO must be public.',
+                            $config['dto_class'].'::'.$config['dto_factory'], $entityName
+                        ));
+                    }
+                }
+
+                if (
+                    $config['dto_class']
+                    && $config['dto_entity_callable']
+                    && !$this->container->get('easyadmin.dto_entity_callable_storage')->hasCallable($config['dto_entity_callable'])
+                    && !\is_callable($config['dto_entity_callable'])
+                ) {
+                    throw new \InvalidArgumentException(\sprintf(
+                        'The "%s" method as entity callable for the "%s" entity class does not exist.',
+                        $config['dto_entity_callable'], $entityName
+                    ));
+                }
+            }
         }
 
         return $backendConfig;

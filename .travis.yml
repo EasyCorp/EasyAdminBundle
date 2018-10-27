@@ -31,6 +31,8 @@ matrix:
           # Latest commit to master
         - php: 7.2
           env: STABILITY="dev"
+          
+        - php: 7.3
 
     allow_failures:
           # Dev-master is allowed to fail.

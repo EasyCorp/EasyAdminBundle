@@ -38,7 +38,7 @@ final class ConfigManager
 
     public function getBackendConfig(string $propertyPath = null)
     {
-        $this->backendConfig = $this->loadBackendConfig();
+        $this->loadBackendConfig();
 
         if (empty($propertyPath)) {
             return $this->backendConfig;
@@ -109,20 +109,24 @@ final class ConfigManager
 
     private function loadBackendConfig(): array
     {
+        if (null !== $this->backendConfig) {
+            return $this->backendConfig;
+        }
+
         if (true === $this->debug) {
-            return $this->doProcessConfig($this->originalBackendConfig);
+            return $this->backendConfig = $this->doProcessConfig($this->originalBackendConfig);
         }
 
         $cachedBackendConfig = $this->cache->getItem(self::CACHE_KEY);
 
         if ($cachedBackendConfig->isHit()) {
-            return $cachedBackendConfig->get();
+            return $this->backendConfig = $cachedBackendConfig->get();
         }
 
         $backendConfig = $this->doProcessConfig($this->originalBackendConfig);
         $cachedBackendConfig->set($backendConfig);
         $this->cache->save($cachedBackendConfig);
 
-        return $backendConfig;
+        return $this->backendConfig = $backendConfig;
     }
 }

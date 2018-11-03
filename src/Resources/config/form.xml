@@ -69,6 +69,11 @@
             <tag name="easyadmin.form.type.configurator" priority="-130" />
         </service>
 
+        <service id="easyadmin.form.type.configurator.fos_ckeditor" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\FOSCKEditorTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="-130" />
+        </service>
+
         <!-- Type Configurators -->
 
         <service id="easyadmin.form.guesser.missing_doctrine_orm_type_guesser" public="true"

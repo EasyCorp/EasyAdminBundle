@@ -18,8 +18,6 @@ matrix:
     fast_finish: true
     include:
           # Minimum supported dependencies with the latest and oldest PHP version
-        - php: 7.3
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="2"
         - php: 7.2
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="2"
         - php: 7.1
@@ -29,14 +27,12 @@ matrix:
         - php: 7.1
         - php: 7.2
           env: CHECK_PHP_SYNTAX="true"
-        - php: 7.3
-          env: CHECK_PHP_SYNTAX="true"
 
           # Latest commit to master
         - php: 7.2
           env: STABILITY="dev"
+          
         - php: 7.3
-          env: STABILITY="dev"
 
     allow_failures:
           # Dev-master is allowed to fail.

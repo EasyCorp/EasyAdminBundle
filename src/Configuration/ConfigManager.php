@@ -38,7 +38,9 @@ final class ConfigManager
 
     public function getBackendConfig(string $propertyPath = null)
     {
-        $this->backendConfig = $this->loadBackendConfig();
+        if (null === $this->backendConfig) {
+            $this->backendConfig = $this->loadBackendConfig();
+        }
 
         if (empty($propertyPath)) {
             return $this->backendConfig;

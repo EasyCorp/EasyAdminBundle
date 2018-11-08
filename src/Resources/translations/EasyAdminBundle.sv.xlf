@@ -91,7 +91,7 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Det finns ingen Getter-funktion för detta fält eller så är inte egenskapen publik</target>
             </trans-unit>
-            
+
             <!-- user -->
             <trans-unit id="user.logged_in_as">
                 <source>user.logged_in_as</source>
@@ -114,11 +114,7 @@
                 <target>Avsluta imitation</target>
             </trans-unit>
 
-            <!-- misc. elements -->            
-            <trans-unit id="toggle_navigation">
-                <source>toggle_navigation</source>
-                <target>Visa/Dölj navigering</target>
-            </trans-unit>
+            <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Vill du verkligen ta bort detta?</target>

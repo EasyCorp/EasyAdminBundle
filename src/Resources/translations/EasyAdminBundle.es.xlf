@@ -115,10 +115,6 @@
             </trans-unit>
 
             <!-- misc. elements -->
-            <trans-unit id="toggle_navigation">
-                <source>toggle_navigation</source>
-                <target>Turnar navegación</target>
-            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>¿Realmente quieres borrar este elemento?</target>
@@ -159,7 +155,7 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} existe otro elemento que no se muestra en este listado|]1,Inf] existen otros %count% elementos que no se muestran en este listado]]></target>
             </trans-unit>
-            
+
             <!-- exceptions -->
             <trans-unit id="exception.entity_not_found">
                 <source>exception.entity_not_found</source>

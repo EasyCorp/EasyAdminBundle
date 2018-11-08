@@ -127,6 +127,10 @@
                 <source>action.remove_item</source>
                 <target>Șterge un item</target>
             </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Alege fișierul</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Eroare|Erori</target>

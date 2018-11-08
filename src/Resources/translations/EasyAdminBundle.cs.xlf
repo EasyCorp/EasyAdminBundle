@@ -139,6 +139,10 @@
                 <source>action.remove_item</source>
                 <target>Odstranit položku</target>
             </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Vybrat soubor</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Chyba|Chyby</target>

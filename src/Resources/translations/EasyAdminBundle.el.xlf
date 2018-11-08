@@ -143,6 +143,10 @@
                 <source>action.remove_item</source>
                 <target>Αφαίρεση αντικειμένου</target>
             </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Επιλογή αρχείου</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Λάθος|Λάθοι</target>

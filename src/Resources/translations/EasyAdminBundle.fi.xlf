@@ -139,6 +139,10 @@
                 <source>action.remove_item</source>
                 <target>Poista rivi</target>
             </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Valitse tiedosto</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Virhe|Virheet</target>

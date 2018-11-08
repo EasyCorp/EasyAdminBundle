@@ -135,6 +135,10 @@
                 <source>action.remove_item</source>
                 <target>Elementu hau ezabatu</target>
             </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Hautatu fitxategi bat</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Errore|Erroreak</target>

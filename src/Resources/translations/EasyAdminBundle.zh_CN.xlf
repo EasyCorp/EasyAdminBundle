@@ -139,6 +139,10 @@
                 <source>action.remove_item</source>
                 <target>删除一项</target>
             </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>选择文件</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>错误|错误</target>

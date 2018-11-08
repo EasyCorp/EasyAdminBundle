@@ -139,6 +139,10 @@
                 <source>action.remove_item</source>
                 <target>Elem eltávolítása</target>
             </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Fájl kiválasztása</target>
+            </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
                 <target>Hiba|Hibák</target>

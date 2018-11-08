@@ -259,7 +259,7 @@ class ActionConfigPass implements ConfigPassInterface
             'new' => ['name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'],
             'search' => ['name' => 'search', 'label' => 'action.search'],
             'show' => ['name' => 'show', 'label' => 'action.show'],
-            'list' => ['name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary'],
+            'list' => ['name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-link'],
         ]);
 
         // minor tweaks for some action + view combinations
@@ -267,7 +267,7 @@ class ActionConfigPass implements ConfigPassInterface
             $actions['delete']['icon'] = null;
             $actions['delete']['css_class'] = 'text-danger';
             $actions['edit']['icon'] = null;
-            $actions['edit']['css_class'] = 'text-primary';
+            $actions['edit']['css_class'] = '';
             $actions['list']['css_class'] = '';
         }
 

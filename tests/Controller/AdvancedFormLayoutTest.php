@@ -38,156 +38,170 @@ class AdvancedFormLayoutTest extends AbstractTestCase
                 $crawler->filter('ul.nav-tabs li')->eq(0)->filter('i')->attr('class'),
                 'The first tab displays the configured icon.'
             );
+            $this->assertCount(
+                0,
+                $crawler->filter('.tab-pane')->eq(0)->filter('.tab-help'),
+                'The first tab does not display a help message.'
+            );
             $this->assertSame(
                 'Extra information',
                 trim($crawler->filter('ul.nav-tabs li')->eq(1)->text()),
                 'The second tab of the form is displayed correctly.'
             );
+            $this->assertContains(
+                'The <b>help message</b> of this tab',
+                trim($crawler->filter('.tab-pane')->eq(1)->filter('.tab-help')->html()),
+                'The second tab of the form displays a help message.'
+            );
 
             $this->assertSame(
                 'product_name',
-                $crawler->filter('form .field-group')->eq(0)->filter('.box .box-body input')->attr('id'),
+                $crawler->filter('form .field-group')->eq(0)->filter('fieldset input')->attr('id'),
                 'The "name" field is displayed in a "group" created automatically to not have ungrouped form fields.'
             );
             $this->assertCount(
                 1,
-                $crawler->filter('form .field-group')->eq(0)->filter('.box .box-body input'),
+                $crawler->filter('form .field-group')->eq(0)->filter('fieldset input'),
                 'The "group" created automatically to not have ungrouped form fields only contains one field.'
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-8',
-                $crawler->filter('form .field-group')->eq(1)->attr('class')
+                'field-group col-8',
+                trim($crawler->filter('form .field-group')->eq(1)->attr('class'))
             );
             $this->assertSame(
                 'Basic information',
-                trim($crawler->filter('form .field-group')->eq(1)->filter('.box .box-title')->text())
+                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset legend')->text())
             );
             $this->assertSame(
                 'fa fa-pencil',
-                $crawler->filter('form .field-group')->eq(1)->filter('.box .box-title i')->attr('class')
+                $crawler->filter('form .field-group')->eq(1)->filter('fieldset legend i')->attr('class')
             );
             $this->assertSame(
                 'product_description',
-                $crawler->filter('form .field-group')->eq(1)->filter('.box .box-body textarea')->attr('id')
+                $crawler->filter('form .field-group')->eq(1)->filter('fieldset textarea')->attr('id')
             );
             $this->assertCount(
                 1,
-                $crawler->filter('form .field-group')->eq(1)->filter('.box .box-body .field-divider')
+                $crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')
             );
-            $this->assertSame(
-                '<hr>',
-                trim($crawler->filter('form .field-group')->eq(1)->filter('.box .box-body .field-divider')->html())
+            $this->assertContains(
+                '<h2>',
+                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')->html())
+            );
+            $this->assertContains(
+                '<span></span>',
+                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')->html())
             );
             $this->assertSame(
                 'product_categories',
-                $crawler->filter('form .field-group')->eq(1)->filter('.box .box-body select')->attr('id')
+                $crawler->filter('form .field-group')->eq(1)->filter('fieldset select')->attr('id')
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-4',
-                $crawler->filter('form .field-group')->eq(2)->attr('class')
+                'field-group col-4',
+                trim($crawler->filter('form .field-group')->eq(2)->attr('class'))
             );
             $this->assertSame(
                 'Product Details',
-                trim($crawler->filter('form .field-group')->eq(2)->filter('.box .box-title')->text())
+                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset legend')->text())
             );
             $this->assertCount(
                 0,
-                $crawler->filter('form .field-group')->eq(2)->filter('.box .box-title i')
+                $crawler->filter('form .field-group')->eq(2)->filter('fieldset legend i')
             );
             $this->assertSame(
                 'product_ean',
-                $crawler->filter('form .field-group')->eq(2)->filter('.box .box-body input')->eq(0)->attr('id')
+                $crawler->filter('form .field-group')->eq(2)->filter('fieldset input')->eq(0)->attr('id')
             );
             $this->assertSame(
                 'product_price',
-                $crawler->filter('form .field-group')->eq(2)->filter('.box .box-body input')->eq(1)->attr('id')
+                $crawler->filter('form .field-group')->eq(2)->filter('fieldset input')->eq(1)->attr('id')
             );
             $this->assertCount(
                 1,
-                $crawler->filter('form .field-group')->eq(2)->filter('.box .box-body .field-section')
+                $crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section')
             );
             $this->assertSame(
                 'Advanced Settings',
-                trim($crawler->filter('form .field-group')->eq(2)->filter('.box .box-body .field-section h2')->text())
+                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section h2')->text())
             );
             $this->assertSame(
                 'fa fa-warning',
-                $crawler->filter('form .field-group')->eq(2)->filter('.box .box-body .field-section i')->attr('class')
+                $crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section i')->attr('class')
             );
             $this->assertSame(
                 'Reserved for administrators use',
-                trim($crawler->filter('form .field-group')->eq(2)->filter('.box .box-body .field-section .help-block')->text())
+                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section-help')->text())
             );
             $this->assertSame(
                 'product_enabled',
-                $crawler->filter('form .field-group')->eq(2)->filter('.box .box-body input')->eq(2)->attr('id')
+                $crawler->filter('form .field-group')->eq(2)->filter('fieldset input')->eq(2)->attr('id')
             );
             $this->assertSame(
                 'product_createdAt_date_month',
-                $crawler->filter('form .field-group')->eq(2)->filter('.box .box-body select')->eq(0)->attr('id')
+                $crawler->filter('form .field-group')->eq(2)->filter('fieldset select')->eq(0)->attr('id')
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-8 new-row',
-                $crawler->filter('form .field-group')->eq(3)->attr('class')
+                'field-group col-8 w-100',
+                trim($crawler->filter('form .field-group')->eq(3)->attr('class'))
             );
             $this->assertCount(
                 0,
-                $crawler->filter('form .field-group')->eq(3)->filter('.box .box-title')
+                $crawler->filter('form .field-group')->eq(3)->filter('fieldset > legend')
             );
             $this->assertCount(
                 1,
-                $crawler->filter('form .field-group')->eq(3)->filter('.box .box-body div#product_features')
+                $crawler->filter('form .field-group')->eq(3)->filter('fieldset div#product_features')
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-4',
-                $crawler->filter('form .field-group')->eq(4)->attr('class')
+                'field-group col-4',
+                trim($crawler->filter('form .field-group')->eq(4)->attr('class'))
             );
             $this->assertCount(
                 0,
-                $crawler->filter('form .field-group')->eq(4)->filter('.box .box-title')
+                $crawler->filter('form .field-group')->eq(4)->filter('fieldset > legend')
             );
             $this->assertCount(
                 1,
-                $crawler->filter('form .field-group')->eq(4)->filter('.box .box-body div#product_tags')
+                $crawler->filter('form .field-group')->eq(4)->filter('fieldset div#product_tags')
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-4',
-                $crawler->filter('form .field-group')->eq(5)->attr('class')
+                'field-group col-4',
+                trim($crawler->filter('form .field-group')->eq(5)->attr('class'))
             );
             $this->assertSame(
                 'Attachments',
-                trim($crawler->filter('form .field-group')->eq(5)->filter('.box .box-title')->text())
+                trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset legend')->text())
             );
             $this->assertSame(
                 'fa fa-paperclip',
-                $crawler->filter('form .field-group')->eq(5)->filter('.box .box-title i')->attr('class')
+                $crawler->filter('form .field-group')->eq(5)->filter('fieldset legend i')->attr('class')
             );
             $this->assertSame(
                 'PNG format is preferred',
-                trim($crawler->filter('form .field-group')->eq(5)->filter('.box .box-body .help-block')->text())
+                trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset .legend-help')->text())
             );
             $this->assertSame(
                 'product_image',
-                $crawler->filter('form .field-group')->eq(5)->filter('.box .box-body input')->eq(0)->attr('id')
+                $crawler->filter('form .field-group')->eq(5)->filter('fieldset input')->eq(0)->attr('id')
             );
 
             $this->assertSame(
                 'Save changes',
-                trim($crawler->filter('#form-actions-row button')->eq(0)->text())
+                trim($crawler->filter('.form-actions button')->eq(0)->text())
             );
             $this->assertSame(
                 'Back to listing',
-                trim($crawler->filter('#form-actions-row a.action-list')->text())
+                trim($crawler->filter('.form-actions a.action-list')->text())
             );
             if ('edit' === $view) {
                 $this->assertSame(
                     'Delete',
-                    trim($crawler->filter('#form-actions-row a.action-delete')->text())
+                    trim($crawler->filter('.form-actions a.action-delete')->text())
                 );
             }
         }

@@ -11,7 +11,7 @@ easy_admin:
                     - { property: 'ean', type_options: { required: true } }
                     - { type: 'section', label: 'Section Label 1', help: 'Section Help' }
                     - 'name'
-                    - { type: 'divider' }
+                    - { type: 'section' }
                     - 'description'
             new:
                 fields:

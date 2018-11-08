@@ -111,10 +111,6 @@
             </trans-unit>
 
             <!-- misc. elements -->
-            <trans-unit id="toggle_navigation">
-                <source>toggle_navigation</source>
-                <target>Nabigazioa txandakatu</target>
-            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Ziur zaude elementu hau ezabatu nahi duzula?</target>
@@ -134,6 +130,10 @@
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Elementu hau ezabatu</target>
+            </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Hautatu fitxategi bat</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>

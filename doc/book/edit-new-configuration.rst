@@ -372,11 +372,11 @@ These are the options that you can define for each field:
   that contains the entire form field. For example, when using the default
   Bootstrap form theme, this value is applied to the ``<div>`` element which
   wraps the label, the widget and the error messages of the field.
-* ``type`` (optional): the Symfony Form type used to render this field. You can
-  use the short type name (e.g. ``email``) instead of its fully qualified class
-  name (e.g. ``Symfony\Component\Form\Extension\Core\Type\EmailType``) even if
-  your application runs on Symfony 3 (the needed conversion is done internally
-  by the bundle).The allowed values are:
+* ``type`` (optional): the Symfony Form type used to render this field. In
+  addition to its fully qualified class name (e.g.
+  ``Symfony\Component\Form\Extension\Core\Type\EmailType``), you can also use
+  the short type name (e.g. ``email``) (the map between names and classes is
+  done internally by the bundle). The allowed values are:
 
   * Any of the `Symfony Form types`_.
   * Any of the custom EasyAdmin form types: ``easyadmin_autocomplete`` (they are
@@ -543,77 +543,48 @@ change this value (globally or per entity):
                     max_results: 5
         # ...
 
+.. _edit-new-advanced-form-design:
+
 Advanced Form Design
 --------------------
 
 Selecting the Form Theme
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, forms are displayed using the **horizontal style** defined by the
-Bootstrap 3 CSS framework:
+By default, forms are displayed using a proprietary form theme compatible with
+the Bootstrap 4 CSS framework.
 
-.. image:: ../images/easyadmin-form-horizontal.png
-   :alt: Default horizontal form style
+.. image:: ../images/easyadmin-new-view.png
+   :alt: Default form style
 
-The form style can be changed with the ``form_theme`` design option. In fact, the
-default form style is equivalent to using this configuration:
-
-.. code-block:: yaml
-
-    # config/packages/easy_admin.yaml
-    easy_admin:
-        design:
-            form_theme: 'horizontal'
-        # ...
-
-If you prefer to display your forms using the **vertical Bootstrap style**,
-change the value of this option to ``vertical``:
+The form style can be changed with the ``form_theme`` design option:
 
 .. code-block:: yaml
 
     # config/packages/easy_admin.yaml
     easy_admin:
         design:
-            form_theme: 'vertical'
-        # ...
+            # ...
 
-The same form shown previously will now be rendered as follows:
+            # this is the default form theme used by backends
+            form_theme: '@EasyAdmin/form/bootstrap_4.html.twig'
 
-.. image:: ../images/easyadmin-form-vertical.png
-   :alt: Vertical form style
+            # you can use your own form theme
+            form_theme: '@App/form/custom_layout.html.twig'
 
-The ``horizontal`` and ``vertical`` values are just nice shortcuts for the two
-built-in form themes. But you can also use your own form themes:
-
-.. code-block:: yaml
-
-    # config/packages/easy_admin.yaml
-    easy_admin:
-        design:
-            form_theme: 'admin/form/custom_layout.html.twig'
-        # ...
-
-The ``form_theme`` option even allows to define an array of form themes and all of
-them will be used when rendering the backend forms:
-
-.. code-block:: yaml
-
-    # config/packages/easy_admin.yaml
-    easy_admin:
-        design:
+            # you can also define an array of form themes to use all of them
             form_theme:
                 - 'admin/form/custom_layout.html.twig'
                 - 'form_div_layout.html.twig'
-        # ...
+                - '@EasyAdmin/form/bootstrap_4.html.twig'
 
 Customizing the Form Fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`Symfony form fields can be customized individually`_ creating custom form themes
-and that's the same mechanism used to customize individual fields of the new and
-edit forms in EasyAdmin.
+EasyAdmin forms follow the same mechanism defined by Symfony to
+`customize individual form fields`_.
 
-Imagine a form field where you want to include a `<a>` element that links to
+Imagine a form field where you want to include a ``<a>`` element that links to
 additional information. If the field is called ``title`` and belongs to a
 ``Product`` entity, the configuration would look like this:
 
@@ -650,7 +621,7 @@ Finally, add this custom theme to the list of themes used to render backend form
         # ...
         design:
             form_theme:
-                - 'horizontal'
+                - '@EasyAdmin/form/bootstrap_4.html.twig'
                 # the following Twig template can be located anywhere in the application.
                 # it can also be added to the twig.form_themes option to use it in the
                 # entire application, not only the backend
@@ -661,46 +632,20 @@ Customizing the Form Layout
 
 The default form layout is pretty basic: fields are displayed in the same order
 they were defined and they span the full browser window width. However, forms
-can also include special design elements (dividers, groups, sections) to create
+can also include special design elements (tabs, groups, sections) to create
 more advanced layouts.
-
-Form Dividers
-.............
-
-This is the simplest form design element. It just displays a straight horizontal
-line. It's useful to easily separate fields in long forms:
-
-.. code-block:: yaml
-
-    # config/packages/easy_admin.yaml
-    easy_admin:
-        entities:
-            Customer:
-                class: App\Entity\Customer
-                form:
-                    fields:
-                        - id
-                        - { type: 'divider' }
-                        - name
-                        - surname
-                        - { type: 'divider' }
-                        - email
-                        - phoneNumber
-        # ...
-
-.. image:: ../images/easyadmin-form-divider.png
-   :alt: A form using dividers to separate its fields
 
 Form Sections
 .............
 
-This design element helps you divide a long form into different sections defined
-by a title and, optionally, an icon, a help message and a custom CSS class:
+This design element helps you divide a long form into different sections using
+a subtle divider line. They are defined with elements of type ``section``:
 
 .. code-block:: yaml
 
     # config/packages/easy_admin.yaml
     easy_admin:
+        # ...
         entities:
             Customer:
                 class: App\Entity\Customer
@@ -711,13 +656,23 @@ by a title and, optionally, an icon, a help message and a custom CSS class:
                         - name
                         - surname
                         - { type: 'section', label: 'Contact information', icon: 'phone',
-                            help: 'Phone number is preferred', css_class: 'danger' }
+                            help: 'Phone number is preferred' }
                         - email
                         - phoneNumber
-        # ...
+
+The configurable options of this element are:
+
+* ``label`` (optional, ``string``), leave it empty if you only want to display
+  a separator line.
+* ``icon`` (optional, ``string``), the name of the FontAwesome icon without the
+  ``fa-`` prefix (e.g. don't use ``fa fa-user`` or ``fa-user`` but ``user``).
+* ``css_class`` (optional, ``string``), you can apply multiple classes separating
+  them with white spaces.
+* ``help`` (optional, ``string``), text displayed to describe the form section
+  or display helpful messages. It can include HTML elements.
 
 A form that includes sections is still displayed as a single form that spans
-the entire browser window width. Multi-column forms are created with "groups"
+the entire available width. Multi-column forms are created with "groups"
 as explained below.
 
 .. image:: ../images/easyadmin-form-section.png
@@ -726,9 +681,10 @@ as explained below.
 Form Groups
 ...........
 
-This element groups one or more fields and displays them separately from the
-rest of the form fields. It's useful to create multi-column forms and to create
-very advanced layouts.
+This element groups one or more fields using ``<fieldset>`` elements and
+displays them separately from the rest of the form fields. It's useful to create
+multi-column forms and to create very advanced layouts. They are defined with
+elements of type ``group``:
 
 .. code-block:: yaml
 
@@ -739,60 +695,52 @@ very advanced layouts.
                 class: App\Entity\Customer
                 form:
                     fields:
-                        - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
+                        - { type: 'group', columns: 4, label: 'Basic information' }
+                        - id
                         - name
                         - surname
-                        - { type: 'group', label: 'Contact information', icon: 'phone',
-                            css_class: 'col-sm-6' }
+                        - { type: 'group', label: 'Contact information', icon: 'phone', columns: 6 }
                         - email
                         - phoneNumber
-                        - { type: 'group', css_class: 'col-sm-6', help: 'Only for administrators' }
-                        - id
-        # ...
-
-.. tip::
-
-    When using form groups, it's recommended to use the ``vertical`` form theme.
-    Otherwise, the field label will take up too much space.
 
 .. image:: ../images/easyadmin-form-group.png
    :alt: A form using groups to separate its fields
 
+The configurable options of this element are:
+
+* ``label`` (optional, ``string``), leave it empty if you only want to display
+  a the ``<fieldset>`` without the ``<legend>`` element.
+* ``icon`` (optional, ``string``), the name of the FontAwesome icon without the
+  ``fa-`` prefix (e.g. don't use ``fa fa-user`` or ``fa-user`` but ``user``).
+* ``css_class`` (optional, ``string``), you can apply multiple classes separating
+  them with white spaces.
+* ``columns`` (optional, ``integer``), the number of columns that spans this
+  form group. The default value is ``12``, which spans the whole row. Ideal to
+  display complex forms as multi-column forms.
+* ``help`` (optional, ``string``), text displayed to describe the form group
+  or display helpful messages. It can include HTML elements.
+
 .. tip::
 
     Because of the way CSS works, when creating multi-column forms is common to
-    have ugly gaps between some rows and columns. EasyAdmin provides a ``.new-row``
-    CSS class that forces the form group to be displayed in a new row:
+    have ugly gaps between some rows and columns. Use the ``.w-100`` CSS class
+    provided by Bootstrap 4 to force the form group to be displayed in a new row:
 
     .. code-block:: yaml
 
         # ...
-        - { type: 'group', css_class: 'new-row ...' }
+        - { type: 'group', css_class: 'w-100 ...' }
 
     This solves most of the issues, but sometimes you might be forced to also
     reorder the form group positions.
-
-.. tip::
-
-    Form groups can define the ``collapsible`` option (``false`` by default) to
-    show/hide their contents dynamically thanks to a toggle icon displayed at
-    their header. The ``expanded`` option (``true`` by default) defines the
-    initial state of the contents:
-
-    .. code-block:: yaml
-
-        # ...
-        # allow to show/hide contents and show them by default
-        - { type: 'group', collapsible: true }
-        # allow to show/hide contents and hide them by default
-        - { type: 'group', collapsible: true, expanded: false }
 
 Form Tabs
 .........
 
 This element groups one or more fields and displays them in a separate tab. You
 can combine it with the other elements (tabs can contain groups, but no the other
-way around) to create clean interfaces when forms contains lots of fields.
+way around) to create clean interfaces when forms contains lots of fields. They
+are defined with elements of type ``tab``:
 
 .. code-block:: yaml
 
@@ -803,24 +751,29 @@ way around) to create clean interfaces when forms contains lots of fields.
                 class: App\Entity\User
                 form:
                     fields:
-                        - { type: 'tab' , label: 'Account Information', icon: 'user' }
-                        - username
-                        - firstName
-                        - lastName
-                        - { type: 'tab', label: 'Contact Information', icon: 'envelope-o' }
-                        - { type: 'group', label: 'Address', css_class: 'col-sm-6' }
-                        - street
-                        - zip
-                        - city
-                        - { type: 'group', label: 'Media', css_class: 'col-sm-6' }
+                        - { type: 'tab' , label: 'Basic Information' }
+                        - id
+                        - name
+                        - surname
+                        - { type: 'tab', label: 'Contact Information', icon: 'phone' }
                         - email
                         - phone
 
 .. image:: ../images/easyadmin-form-tabs.png
    :alt: A form using tabs to separate its fields
 
-Design elements can be combined to display dividers and sections inside groups
-and create advanced layouts:
+The configurable options of this element are:
+
+* ``label`` (mandatory, ``string``), displayed as the clickable name of the tab.
+* ``icon`` (optional, ``string``), the name of the FontAwesome icon without the
+  ``fa-`` prefix (e.g. don't use ``fa fa-user`` or ``fa-user`` but ``user``).
+* ``css_class`` (optional, ``string``), you can apply multiple classes separating
+  them with white spaces.
+* ``help`` (optional, ``string``), text displayed to describe the form tab
+  or display helpful messages. It can include HTML elements.
+
+Design elements can be combined to display sections inside groups and create
+advanced layouts:
 
 .. image:: ../images/easyadmin-form-complex-layout.png
    :alt: A complex form layout combining dividers, sections and groups
@@ -953,7 +906,7 @@ template right under the ``easy_admin/`` directory:
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
-.. _`Symfony form fields can be customized individually`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
+.. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
 .. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks
 
 -----

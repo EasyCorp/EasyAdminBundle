@@ -1,0 +1,33 @@
+// Images and lightbox
+// ----------------------------------------------------------------------------
+.show .field-image .form-control {
+    background: transparent;
+    border: 0;
+    padding: 0;
+}
+.show .form-control .easyadmin-thumbnail img {
+    box-shadow: 0 0 0 4px var(--white), 0px 0px 8px 2px var(--gray-600);
+    margin: 10px 7px;
+    max-height: 300px;
+    max-width: 400px;
+}
+
+.easyadmin-thumbnail img:hover {
+    cursor: zoom-in;
+}
+
+.easyadmin-lightbox {
+    display: none;
+}
+
+.easyadmin-lightbox img {
+    max-width: 100%;
+}
+
+.featherlight .easyadmin-lightbox {
+    display: block;
+}
+
+.featherlight .easyadmin-lightbox:hover {
+    cursor: zoom-out;
+}

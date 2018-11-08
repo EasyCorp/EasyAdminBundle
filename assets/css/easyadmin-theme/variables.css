@@ -1,0 +1,58 @@
+/* ----------------------------------------------------------------------------
+   This file defines the CSS variables used in the backend design.
+   Most of the times, overriding some of these variables is all you need to
+   customize the design of your backends. However, beacuse of how Bootstrap 3
+   works, some styles can't be customized with CSS variables and you'll need
+   to also customize the Sass variables defined in variables.scss.
+ --------------------------------------------------------------------------- */
+:root {
+    --body-max-width: 1440px;
+    --sidebar-width: 215px;
+
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-family-base: var(--font-family-sans-serif);
+
+    --font-size-base: 0.875rem; /* 14px */
+    --font-size-lg: 1rem; /* 16px */
+    --font-size-sm: 0.8125rem; /* 13px */
+
+    --body-bg: hsl(220, 20%, 91%);
+    --text-color: hsl(213, 12%, 15%);
+    --box-shadow-lg: 0 7px 14px 0 hsla(231, 23%, 30%, .1), 0 3px 6px 0 hsla(0, 0%, 0%, .07);
+    --form-bg: hsl(210, 45%, 98%);
+    --fieldset-bg: hsl(210, 30%, 97%);
+
+    --white: hsl(0, 0%, 100%);
+    --gray-50: hsl(210, 17%, 98%);
+    --gray-100: hsl(210, 17%, 95%);
+    --gray-200: hsl(210, 16%, 93%);
+    --gray-300: hsl(210, 14%, 89%);
+    --gray-400: hsl(210, 14%, 83%);
+    --gray-500: hsl(210, 11%, 71%);
+    --gray-600: hsl(210, 7%, 56%);
+    --gray-700: hsl(210, 9%, 31%);
+    --gray-800: hsl(210, 10%, 23%);
+    --gray-900: hsl(213, 12%, 15%);
+    --black: hsl(0, 0%, 0%);
+
+    --color-primary: hsl(230, 55%, 60%);
+    --color-success: hsl(157, 69%, 38%);
+    --color-info: hsl(201, 94%, 37%);
+    --color-warning: hsl(30, 81%, 47%);
+    --color-danger: hsl(344, 59%, 52%);
+
+    --highlight-bg: hsl(42, 82%, 85%);
+
+    --text-on-primary: var(--white);
+    --text-muted: var(--gray-500);
+
+    --link-color: hsl(230, 60%, 60%);
+    --link-hover-color: hsl(230, 60%, 75%);
+    --link-hover-decoration: none;
+
+    --border-radius: 4px;
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: hsl(213, 24%, 91%);
+}

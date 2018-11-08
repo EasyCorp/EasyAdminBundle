@@ -111,10 +111,6 @@
             </trans-unit>
 
             <!-- misc. elements -->
-            <trans-unit id="toggle_navigation">
-                <source>toggle_navigation</source>
-                <target>导航</target>
-            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>是否删除</target>
@@ -138,6 +134,10 @@
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>删除一项</target>
+            </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>选择文件</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>

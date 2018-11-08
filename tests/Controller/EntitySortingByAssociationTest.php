@@ -17,15 +17,15 @@ class EntitySortingByAssociationTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertContains('sorted', $crawler->filter('th[data-property-name="parent"]')->attr('class'));
-        $this->assertContains('fa-caret-down', $crawler->filter('th[data-property-name="parent"] i')->attr('class'));
+        $this->assertContains('sorted', $crawler->filter('th:contains("Parent")')->attr('class'));
+        $this->assertContains('fa-arrow-down', $crawler->filter('th:contains("Parent") i')->attr('class'));
     }
 
     public function testSearchViewSorting()
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertContains('sorted', $crawler->filter('th[data-property-name="parent"]')->attr('class'));
-        $this->assertContains('fa-caret-up', $crawler->filter('th[data-property-name="parent"] i')->attr('class'));
+        $this->assertContains('sorted', $crawler->filter('th:contains("Parent")')->attr('class'));
+        $this->assertContains('fa-arrow-up', $crawler->filter('th:contains("Parent") i')->attr('class'));
     }
 }

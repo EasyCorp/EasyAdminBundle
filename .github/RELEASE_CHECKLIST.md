@@ -5,8 +5,8 @@ How to release a new EasyAdmin version
    `EasyAdminBundle.php` file) to remove the `-DEV` suffix and prepare the
    stable release. Example: change `1.12.6-DEV` to `1.12.6`
 2. Commit and push the previous change.
-3. Execute the `Resources/bin/compile_assets.sh` script to compile the CSS and
-   JavaScript assets. If there are any changes, commit and push them.
+3. Execute the `yarn encore production` script to compile the CSS and JavaScript
+   assets into `src/Resources/public/`. If there are any changes, commit and push them.
 4. Create the tag and sign it. Example: `git tag -s v1.12.6` (the tag version is
    always prefixed with `v`, but remove it for the tag comment: `1.12.6`).
 5. Push the tag to GitHub. Example: `git push origin v1.12.6`

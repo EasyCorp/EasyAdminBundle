@@ -2,9 +2,9 @@ easy_admin:
     design:
         theme: default
         color_scheme: dark
-        brand_color: '#205081'
+        brand_color: 'hsl(230, 55%, 60%)'
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+            - '@EasyAdmin/form/bootstrap_4.html.twig'
         assets:
             css: {  }
             js: {  }
@@ -15,7 +15,7 @@ easy_admin:
             -
                 entity: Category
                 label: Category
-                icon: fa-chevron-circle-right
+                icon: fa-folder-open
                 children: {  }
                 default: false
                 target: false
@@ -81,7 +81,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: null
             list:
                 fields:
@@ -112,7 +112,7 @@ easy_admin:
                         name: edit
                         type: method
                         label: action.edit
-                        css_class: 'text-primary action-edit'
+                        css_class: ' action-edit'
                         icon: null
                     delete:
                         name: delete
@@ -140,7 +140,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: null
             search:
                 fields:
@@ -207,7 +207,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: null
             disabled_actions: {  }
             primary_key_field_name: id

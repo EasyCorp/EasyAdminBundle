@@ -1,0 +1,471 @@
+// Forms
+// ----------------------------------------------------------------------------
+
+.content-body form,
+.content-body .form-horizontal {
+    background: var(--form-bg);
+    padding: 18px 20px;
+}
+
+// Base form groups
+.form-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.form-group label,
+.form-group legend.col-form-label {
+    align-self: self-start;
+    color: var(--gray-800);
+    flex: 30% 0 0;
+    font-size: var(--font-size-base);
+    font-weight: 400;
+    margin: 5px 5px 0 0;
+    text-align: right;
+}
+.form-group .col-form-label {
+    padding: 0;
+}
+
+.form-group label.required:after,
+.form-group .col-form-label.required:after {
+    bottom: 4px;
+    color: var(--color-danger);
+    content: "\2022"; // \2022 = &bull; (bullet)
+    filter: opacity(75%);
+    position: relative;
+    right: -2px;
+}
+
+// Form widgets (inputs, selects, etc.)
+.form-widget {
+    align-items: flex-start;
+    flex: 0 0 55%;
+    flex-direction: column;
+    padding-left: 5px;
+}
+
+.form-widget .help-block {
+    color: var(--text-muted);
+    display: inline-block;
+    font-size: var(--font-size-sm);
+    margin-bottom: 0;
+    margin-top: 4px;
+}
+
+.form-widget input.form-control,
+.form-widget textarea.form-control,
+.form-widget select.form-control {
+    border: 0;
+    padding: 3px 7px 5px;
+    box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
+    height: 30px;
+    max-width: 350px;
+    white-space: nowrap;
+    word-break: keep-all;
+    transition: box-shadow .08s ease-in, color .08s ease-in;
+}
+
+.form-widget input.form-control:focus,
+.form-widget textarea.form-control:focus,
+.form-widget select.form-control:focus {
+    box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(6, 122, 184, .2), 0 0 0 2px rgba(6, 122, 184, .25), 0 1px 1px rgba(0, 0, 0, .08);
+    outline: 0;
+}
+
+.form-widget textarea.form-control {
+    height: auto;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.form-widget select.form-control {
+    box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .07), 0 1px 2px 0 rgba(0, 0, 0, .08);
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.form-widget select[multiple].form-control {
+    height: auto;
+}
+
+// Checkbox widgets
+.field-checkbox .form-widget,
+.form-group.field-collection-action {
+    margin-left: calc(30% + 5px);
+    margin-bottom: 0;
+    margin-top: 0;
+}
+.form-group.field-collection-action {
+    margin-left: 30%;
+}
+
+.field-checkbox .form-check {
+    padding-left: 0;
+}
+.field-checkbox .form-check-label {
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    margin-top: 0;
+    margin-left: 4px;
+}
+.field-checkbox .form-check-input {
+    margin: 0;
+    position: static;
+}
+
+// Date-time widgets
+.field-date .form-widget,
+.field-time .form-widget,
+.field-datetime .form-widget {
+    margin: 0;
+}
+
+.field-datetime .form-inline {
+    display: flex;
+}
+
+.datetime-widget + .datetime-widget {
+    margin-left: 10px;
+}
+
+.datetime-widget select + select {
+    margin-left: 4px;
+}
+
+.datetime-widget-time select {
+    margin: 0 2px;
+}
+.datetime-widget-time select:first-child {
+    margin-left: 0;
+}
+.datetime-widget-time select:last-child {
+    margin-right: 0;
+}
+
+.nullable-control label,
+fieldset .form-group .nullable-control label {
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+// Utilities to create common form fields (long, short, etc.)
+.short .form-widget {
+    flex: 0 0 20% !important;
+}
+
+.long .form-control, .large .form-control {
+    max-width: unset !important;
+}
+
+.large .input.form-control {
+    font-size: 18px !important;
+}
+
+.large textarea.form-control {
+    height: 500px;
+    max-width: unset !important;
+}
+
+.code input.form-control, .code textarea.form-control {
+    font-family: monospace !important;
+}
+
+.field-group .long .form-control, .field-group .large .form-control {
+    flex: 0 0 100% !important;
+    max-width: unset !important;
+}
+
+.field-group .large textarea.form-control {
+    flex: 0 0 100% !important;
+    height: 500px;
+    max-width: unset !important;
+}
+
+// Form collections
+.form-widget-compound label {
+    display: none;
+}
+
+.form-widget-compound .collection-empty {
+    padding-top: 5px;
+}
+
+.form-widget-compound .form-group {
+    padding: 0 20px 15px 0;
+}
+
+.form-widget-compound .form-group .form-widget {
+    flex: 0 0 100%;
+    padding-left: 0;
+}
+
+.field-collection-item-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.field-collection-item-row .field-collection-item-action {
+    flex: 0 0 35px;
+}
+
+.field-collection-item-row .field-collection-item-widget {
+    flex: 1;
+}
+
+.field-collection-item-action .fa {
+    font-size: 21px;
+    margin-left: 4px;
+    margin-top: 4px;
+}
+
+.field-collection-action .btn {
+    margin-left: -5px;
+    padding: 4px 10px;
+}
+
+// Form tabs
+.form-tabs .nav-tabs {
+    background: var(--white);
+    margin: -20px -20px 20px;
+    padding-left: 20px;
+}
+
+.form-tabs a, .form-tabs a:hover {
+    color: var(--gray-800);
+    font-size: var(--font-size-sm);
+}
+
+.form-tabs .fa {
+    color: var(--text-muted);
+    font-size: var(--font-size-lg);
+    margin-right: 4px;
+}
+
+.form-tabs .nav-link.active {
+    transform: translateY(1px);
+}
+
+.form-tabs .nav-item .badge {
+    margin-left: 4px;
+    padding: 3px 6px;
+}
+
+.form-tabs .tab-help {
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+
+// Form fieldsets (used for the "from groups" feature)
+fieldset {
+    background: var(--fieldset-bg);
+    border: var(--border-width) var(--border-style) var(--border-color);
+    border-radius: var(--border-radius);
+    margin: 10px 0;
+    padding: 10px 20px 15px;
+}
+
+fieldset > legend {
+    border: 0;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: 0 0 5px -5px;
+    padding: 0 5px;
+    width: auto;
+}
+fieldset > legend .fa {
+    color: var(--text-muted);
+    font-size: var(--font-size-lg);
+    margin-right: 4px;
+}
+
+fieldset .form-section {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+fieldset .form-group {
+    padding: 10px 0;
+}
+
+fieldset .form-group label,
+fieldset .form-group legend.col-form-label {
+    flex: 100% 0 0;
+    margin: 0 0 4px 0;
+    text-align: left;
+}
+
+fieldset .form-group .form-widget,
+fieldset .field-checkbox .form-widget {
+    flex: 0 0 100%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+fieldset .field-checkbox .form-widget,
+fieldset .form-group.field-collection-action {
+    margin-left: 0;
+}
+
+fieldset .form-group.field-collection-action {
+    padding-top: 0;
+}
+
+fieldset .field-collection-action .btn {
+    margin-left: 0;
+}
+
+fieldset .legend-help {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    margin-bottom: 15px;
+    margin-top: -5px;
+}
+
+// Form sections
+.form-section {
+    padding: 30px 10px 20px;
+}
+
+.form-section-empty {
+    padding: 25px 10px 25px;
+}
+
+.form-section h2 {
+    color: var(--gray-800);
+    display: flex;
+    font-size: 15px;
+    font-weight: 400;
+    margin: 0 0 10px;
+    position: relative;
+    width: 100%;
+}
+
+.form-section h2 span {
+    border-bottom: var(--border-width) var(--border-style) var(--border-color);
+    flex: 1;
+    padding-bottom: 7px;
+}
+
+.form-section h2 .fa {
+    background-color: var(--body-bg);
+    border-radius: var(--border-radius);
+    color: var(--text-muted);
+    display: inline-block;
+    font-size: var(--font-size-base);
+    height: 24px;
+    margin-right: 7px;
+    padding: 5px 3px 3px;
+    text-align: center;
+    width: 24px;
+}
+
+.form-section-help {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    margin-bottom: 0;
+    margin-top: -4px;
+}
+
+// Form actions ("Save changes", "Delete", etc.)
+.form-actions {
+    display: flex;
+    justify-items: flex-end;
+    flex-direction: row-reverse;
+    padding: 0;
+}
+
+.form-actions .btn {
+    margin-left: 10px;
+}
+
+// Form errors
+.has-error .help-block, .has-error .control-label, .has-error .radio,
+.has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline,
+.has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label,
+.has-error.checkbox-inline label {
+    color: var(--gray-800);
+}
+
+.has-error .form-widget input.form-control,
+.has-error .form-widget textarea.form-control,
+.has-error .form-widget select.form-control {
+    box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(183, 6, 32, .2), 0 0 0 2px rgba(183, 6, 32, .25), 0 1px 1px rgba(0, 0, 0, .08);
+}
+
+form .invalid-feedback {
+    color: var(--color-danger);
+    font-weight: 500;
+    padding-top: 6px;
+}
+form .invalid-feedback .badge-danger {
+    font-size: 0.6875rem;
+    margin-right: 2px;
+    padding: 3px 4px;
+}
+form .invalid-feedback > .d-block + .d-block {
+    margin-top: 5px;
+}
+
+// Image/file uploads
+.easyadmin-vich-image img {
+    box-shadow: 0 0 0 4px var(--white), 0px 0px 4px 3px var(--gray-600);
+    margin: 6px 4px 12px;
+    max-height: 300px;
+    max-width: 100%;
+}
+
+.easyadmin-vich-file-name {
+    display: block;
+    margin: 4px 0 8px;
+}
+
+.easyadmin-vich-file-name .fa {
+    font-size: 18px;
+}
+
+// this element should use 'display: flex', but that doesn't work with
+// the CSS trick used to customize the <input type="file" /> fields.
+.easyadmin-vich-image-actions,
+.easyadmin-vich-file-actions {
+    overflow: hidden;
+}
+
+.easyadmin-vich-image-actions > div,
+.easyadmin-vich-file-actions > div {
+    float: left;
+    margin-right: 4px;
+}
+
+.easyadmin-vich-image-actions .field-checkbox,
+.easyadmin-vich-file-actions .field-checkbox {
+    padding-top: 4px;
+}
+
+.easyadmin-vich-image-actions .form-widget {
+    flex-basis: 100%;
+}
+
+// This CSS trick allows to customize the <input type="file" /> field entirely
+// as explained in https://gist.github.com/barneycarroll/5244258
+.input-file-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.input-file-container [type=file] {
+    cursor: inherit;
+    display: block;
+    font-size: 999px;
+    filter: opacity(0);
+    min-height: 100%;
+    min-width: 100%;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
+}

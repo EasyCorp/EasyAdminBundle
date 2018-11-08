@@ -1,0 +1,81 @@
+// Datagrid tables
+// ----------------------------------------------------------------------------
+
+table.datagrid {
+  border-spacing: 0;
+  width: 100%;
+}
+.datagrid thead {
+  background: var(--form-bg);
+}
+.datagrid thead th {
+  padding: 0;
+}
+.datagrid thead a, .datagrid thead span {
+  color: var(--gray-900);
+  display: block;
+  font-weight: 500;
+  line-height: 1.357;
+  padding: 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+.datagrid th:first-child a, .datagrid th:first-child span, .datagrid td:first-child {
+  padding-left: 20px;
+}
+.datagrid th:last-child a, .datagrid th:last-child span, .datagrid td:last-child {
+  padding-right: 20px;
+}
+.datagrid td {
+  padding: 8px;
+}
+.datagrid thead .sorted a, .datagrid thead .sorted span {
+  font-weight: 700;
+}
+.datagrid thead i {
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+.datagrid thead .sorted i {
+  color: var(--color-primary);
+}
+.datagrid th, .datagrid td {
+  border-bottom: var(--border-width) var(--border-style) var(--border-color);
+  vertical-align: middle;
+}
+.datagrid tr:last-child > td {
+  border: 0;
+}
+.datagrid tbody tr:hover td {
+  background: var(--form-bg);
+}
+.datagrid td.actions {
+  text-align: right;
+}
+.datagrid td.actions a {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-left: 10px;
+}
+.datagrid td.actions .fa {
+  font-size: var(--font-size-base);
+}
+
+.datagrid .easyadmin-thumbnail img {
+  box-shadow: 0 0 0 2px var(--white), 0px 0px 4px 1px var(--gray-600);
+  margin-bottom: 2px;
+  margin-top: 2px;
+  max-height: 50px;
+  max-width: 100px;
+}
+
+.datagrid th.boolean, .datagrid th.boolean a, .datagrid td.boolean,
+.datagrid th.image, .datagrid th.image a, .datagrid td.image {
+  text-align: center;
+}
+
+.datagrid .highlight {
+    border-radius: var(--border-radius);
+    background: var(--highlight-bg);
+    padding: 1px;
+}

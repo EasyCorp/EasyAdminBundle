@@ -14,15 +14,14 @@ unprecedented simplicity.
 
   * **CRUD** operations on Doctrine entities (create, edit, list, delete).
   * Full-text **search**, **pagination** and column **sorting**.
-  * Fully **responsive** design (smartphones, tablets and desktops).
   * Supports Symfony 2.x, 3.x and 4.x.
   * Translated into tens of languages.
   * **Fast**, **simple** and **smart** where appropriate.
 
 **Requirements**
 
-  * Symfony 2.3+ or 3.x or 4.x applications (Silex not supported).
-  * Doctrine ORM entities (Doctrine ODM and Propel not supported).
+  * Symfony 2.3+ or 3.x or 4.x applications.
+  * Doctrine ORM entities (Doctrine ODM not supported).
   * Entities with composite keys or using inheritance are not supported.
 
 Demo Application

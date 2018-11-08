@@ -115,10 +115,6 @@
             </trans-unit>
 
             <!-- misc. elements -->
-            <trans-unit id="toggle_navigation">
-                <source>toggle_navigation</source>
-                <target>Navigation ein-/ausblenden</target>
-            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Soll das Element wirklich gelöscht werden?</target>
@@ -142,6 +138,10 @@
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Element entfernen</target>
+            </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Datei auswählen</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>

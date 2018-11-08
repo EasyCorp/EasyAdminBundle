@@ -16,9 +16,9 @@ easy_admin:
                 mime_type: image/x-icon
         theme: default
         color_scheme: dark
-        brand_color: '#205081'
+        brand_color: 'hsl(230, 55%, 60%)'
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+            - '@EasyAdmin/form/bootstrap_4.html.twig'
         menu: {  }
         templates:
             layout: '@EasyAdmin/default/layout.html.twig'

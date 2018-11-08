@@ -1,77 +1,23 @@
 // ----------------------------------------------------------------------------
-// This file defines all the config variables available to customize EasyAdmin design.
-// Most of the customization can be done overriding the valur of the CSS variables.
-// However, given that EasyAdmin is based on Bootstrap 3, some styles can't be
-// customized using CSS variables and you'll need to also override some Sass variables.
+// This file defines Sass variables used to customize the Bootstrap 3 design.
+// Most of the times you don't need to customize any of these variables and it's
+// enough to override the CSS variables defined in variables.css. However,
+// Bootstrap 3 doesn't allow to customize all styles using CSS variables and
+// that's when you'll need to override some of the variables of this file.
 // ----------------------------------------------------------------------------
+$body-bg:                   hsl(220, 20%, 91%);
+$text-color:                hsl(213, 12%, 15%);
 
-// Common variables used both for CSS variables and Bootstrap variables
-// ----------------------------------------------------------------------------
-$body-bg:         hsl(220, 20%, 91%);
-$text-color:      hsl(213, 12%, 15%);
-$font-size-base:  14px;
-$font-size-large: 16px;
-$font-size-small: 13px;
-$brand-primary:   hsl(230, 55%, 60%);
-$brand-success:   hsl(157, 69%, 38%);
-$brand-info:      hsl(201, 94%, 37%);
-$brand-warning:   hsl(30, 81%, 47%);
-$brand-danger:    hsl(344, 59%, 52%);
+$font-size-base:            14px;
+$font-size-large:           16px;
+$font-size-small:           13px;
 
-// CSS variables
-// ----------------------------------------------------------------------------
-:root {
-    --body-max-width: 1440px;
-    --sidebar-width: 215px;
+$brand-primary:             hsl(230, 55%, 60%);
+$brand-success:             hsl(157, 69%, 38%);
+$brand-info:                hsl(201, 94%, 37%);
+$brand-warning:             hsl(30, 81%, 47%);
+$brand-danger:              hsl(344, 59%, 52%);
 
-    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    --font-family-base: var(--font-family-sans-serif);
-
-    --font-size-base: #{$font-size-base};
-    --font-size-lg: #{$font-size-large};
-    --font-size-sm: #{$font-size-small};
-
-    --body-bg: #{$body-bg};
-    --text-color: #{$text-color};
-    --box-shadow-lg: 0 7px 14px 0 hsla(231, 23%, 30%, .1), 0 3px 6px 0 hsla(0, 0%, 0%, .07);
-    --form-bg: hsl(210, 45%, 98%);
-
-    --white: hsl(0, 0%, 100%);
-    --gray-50: hsl(210, 17%, 98%);
-    --gray-100: hsl(210, 17%, 95%);
-    --gray-200: hsl(210, 16%, 93%);
-    --gray-300: hsl(210, 14%, 89%);
-    --gray-400: hsl(210, 14%, 83%);
-    --gray-500: hsl(210, 11%, 71%);
-    --gray-600: hsl(210, 7%, 56%);
-    --gray-700: hsl(210, 9%, 31%);
-    --gray-800: hsl(210, 10%, 23%);
-    --gray-900: hsl(213, 12%, 15%);
-    --black: hsl(0, 0%, 0%);
-
-    --color-primary: #{$brand-primary};
-    --color-success: #{$brand-success};
-    --color-info: #{$brand-info};
-    --color-warning: #{$brand-warning};
-    --color-danger: #{$brand-danger};
-
-    --color-accent: hsl(230, 55%, 60%);
-    --text-on-accent: var(--white);
-    --text-muted: var(--gray-500);
-
-    --link-color: hsl(230, 60%, 60%);
-    --link-hover-color: hsl(230, 60%, 75%);
-    --link-hover-decoration: none;
-
-    --border-radius: 4px;
-    --border-width: 1px;
-    --border-style: solid;
-    --border-color: hsl(213, 24%, 91%);
-}
-
-// Bootstrap SCSS variables
-// ----------------------------------------------------------------------------
 $gray-base:                 var(--black);
 $gray-darker:               var(--gray-900);
 $gray-dark:                 var(--gray-800);

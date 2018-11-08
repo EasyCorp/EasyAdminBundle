@@ -57,6 +57,10 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> de <strong>%results%</strong>]]></target>
             </trans-unit>
+            <trans-unit id="paginator.results">
+                <source>paginator.results</source>
+                <target><![CDATA[{0} Ningún resultado|{1} <strong>1</strong> resultado|]1,Inf] <strong>%count%</strong> resultados]]></target>
+            </trans-unit>
 
             <!-- labels -->
             <trans-unit id="label.true">
@@ -138,6 +142,10 @@
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Eliminar este elemento</target>
+            </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Seleccionar archivo</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>

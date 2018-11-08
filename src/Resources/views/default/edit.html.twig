@@ -41,8 +41,6 @@
         $(function() {
             $('.edit-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
 
-            $('.form-actions').easyAdminSticky();
-
             $('a.action-delete').on('click', function(e) {
                 e.preventDefault();
 

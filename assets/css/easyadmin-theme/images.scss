@@ -1,0 +1,19 @@
+// Images and lightbox
+// ----------------------------------------------------------------------------
+
+.easyadmin-thumbnail img:hover {
+  cursor: zoom-in;
+}
+.easyadmin-lightbox {
+  display: none;
+}
+.easyadmin-lightbox img {
+  max-width: 100%;
+}
+
+.featherlight .easyadmin-lightbox {
+  display: block;
+}
+.featherlight .easyadmin-lightbox:hover {
+  cursor: zoom-out;
+}

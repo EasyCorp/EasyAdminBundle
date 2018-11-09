@@ -1,0 +1,1 @@
+{"entrypoints":{"app":{"css":["bundles/easyadmin/app.css"],"js":["bundles/easyadmin/app.js"]},"app-rtl":{"css":["bundles/easyadmin/app-rtl.css"],"js":["bundles/easyadmin/app-rtl.js"]},"bootstrap-all":{"css":["bundles/easyadmin/bootstrap-all.css"],"js":["bundles/easyadmin/bootstrap-all.js"]}}}

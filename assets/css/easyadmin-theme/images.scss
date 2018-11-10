@@ -2,18 +2,21 @@
 // ----------------------------------------------------------------------------
 
 .easyadmin-thumbnail img:hover {
-  cursor: zoom-in;
+    cursor: zoom-in;
 }
+
 .easyadmin-lightbox {
-  display: none;
+    display: none;
 }
+
 .easyadmin-lightbox img {
-  max-width: 100%;
+    max-width: 100%;
 }
 
 .featherlight .easyadmin-lightbox {
-  display: block;
+    display: block;
 }
+
 .featherlight .easyadmin-lightbox:hover {
-  cursor: zoom-out;
+    cursor: zoom-out;
 }

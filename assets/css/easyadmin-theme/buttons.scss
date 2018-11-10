@@ -3,13 +3,13 @@
 
 .btn {
   padding: 4px 10px 4px;
-  background-color: #fff;
+  background-color: var(--white);
   border: 0;
   border-radius: var(--border-radius);
-  box-shadow: 0 0 0 1px rgba(43,45,80,.1), 0 2px 5px 0 rgba(43,45,80,.08), 0 1px 1.5px 0 rgba(0,0,0,.07), 0 1px 2px 0 rgba(0,0,0,.08);
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .07), 0 1px 2px 0 rgba(0, 0, 0, .08);
   color: var(--gray-800);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--font-size-base);
   font-weight: 400;
   line-height: 1.6;
   text-align: center;
@@ -20,8 +20,8 @@
   transition: all .08s ease-in;
 }
 .btn:hover, .bnt:active, .btn:focus {
-  background-color: #fff;
-  box-shadow: 0 0 0 1px rgba(43,45,80,.1), 0 2px 5px 0 rgba(43,45,80,.1), 0 3px 9px 0 rgba(43,45,80,.08), 0 1px 1.5px 0 rgba(0,0,0,.08), 0 1px 2px 0 rgba(0,0,0,.08);
+  background-color: var(--white);
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .1), 0 3px 9px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .08), 0 1px 2px 0 rgba(0, 0, 0, .08);
   color: var(--gray-900);
 }
 
@@ -39,7 +39,7 @@
   padding: 7px 12px 8px;
 }
 .btn-small {
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   padding: 3px 5px;
 }
 .btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:active {

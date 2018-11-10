@@ -26,8 +26,7 @@
 .form-group label.required:after {
   bottom: 4px;
   color: var(--color-danger);
-  // \2022 = &bull; (bullet)
-  content: "\2022";
+  content: "\2022";  // \2022 = &bull; (bullet)
   filter: opacity(75%);
   position: relative;
   right: -2px;
@@ -42,7 +41,7 @@
 }
 .form-widget .help-block {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   margin-bottom: 0;
 }
 .form-widget input.form-control,
@@ -50,7 +49,7 @@
 .form-widget select.form-control {
   border: 0;
   padding: 3px 7px 5px;
-  box-shadow: 0 0 0 1px rgba(43,45,80,.16), 0 0 0 1px rgba(6,122,184,0), 0 0 0 2px rgba(6,122,184,0), 0 1px 1px rgba(0,0,0,.08);
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
   height: 30px;
   max-width: 350px;
   white-space: nowrap;
@@ -60,7 +59,7 @@
 .form-widget input.form-control:focus,
 .form-widget textarea.form-control:focus,
 .form-widget select.form-control:focus {
-  box-shadow: 0 0 0 1px rgba(43,45,80,0), 0 0 0 1px rgba(6,122,184,.2), 0 0 0 2px rgba(6,122,184,.25), 0 1px 1px rgba(0,0,0,.08);
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(6, 122, 184, .2), 0 0 0 2px rgba(6, 122, 184, .25), 0 1px 1px rgba(0, 0, 0, .08);
   outline: 0;
 }
 
@@ -70,7 +69,7 @@
 }
 
 .form-widget select.form-control {
-  box-shadow: 0 0 0 1px rgba(43,45,80,.1), 0 2px 5px 0 rgba(43,45,80,.08), 0 1px 1.5px 0 rgba(0,0,0,.07), 0 1px 2px 0 rgba(0,0,0,.08);
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .07), 0 1px 2px 0 rgba(0, 0, 0, .08);
   padding-left: 4px;
   padding-right: 4px;
 }
@@ -161,7 +160,7 @@ fieldset .form-group .nullable-control label {
 
 // Form tabs
 .form-tabs .nav-tabs {
-  background: #fff;
+  background: var(--white);
   margin-top: -20px;
   margin-left: -12px;
   margin-right: -12px;
@@ -175,7 +174,7 @@ fieldset .form-group .nullable-control label {
 }
 .form-tabs a, .form-tabs a:hover {
   color: var(--gray-800);
-  font-size: 13px;
+  font-size: var(--font-size-sm);
 }
 .form-tabs .fa {
   color: var(--text-muted);
@@ -266,7 +265,7 @@ fieldset .legend-help {
   border-radius: var(--border-radius);
   color: var(--text-muted);
   display: inline-block;
-  font-size: 14px;
+  font-size: var(--font-size-base);
   height: 24px;
   margin-right: 7px;
   padding: 5px 3px 3px;
@@ -302,7 +301,7 @@ fieldset .legend-help {
 .has-error .form-widget input.form-control,
 .has-error .form-widget textarea.form-control,
 .has-error .form-widget select.form-control {
-  box-shadow: 0 0 0 1px rgba(43,45,80,0), 0 0 0 1px rgba(183,6,32,.2), 0 0 0 2px rgba(183,6,32,.25), 0 1px 1px rgba(0,0,0,.08);
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(183, 6, 32, .2), 0 0 0 2px rgba(183, 6, 32, .25), 0 1px 1px rgba(0, 0, 0, .08);
 }
 
 .has-error .error-block {
@@ -352,7 +351,7 @@ fieldset .legend-help {
   padding-top: 4px;
 }
 
-// This CSS trick allows to customize the <input type="file" /> filed entirely
+// This CSS trick allows to customize the <input type="file" /> field entirely
 // as explained in https://gist.github.com/barneycarroll/5244258
 .input-file-container {
   overflow: hidden;

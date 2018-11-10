@@ -61,16 +61,16 @@ $border-radius-large: var(--border-radius);
 $btn-border-radius-base: var(--border-radius);
 
 $state-success-text: hsl(159, 75%, 22%);
-$state-success-bg: $brand-success;
+$state-success-bg: hsl(117, 66%, 87%);
 $state-success-border: transparent;
-$state-info-text: $text-color;
-$state-info-bg: $brand-info;
+$state-info-text: hsl(238, 41%, 48%);
+$state-info-bg: hsl(208, 100%, 92%);
 $state-info-border: transparent;
-$state-warning-text: hsl(27, 96%, 37%);
-$state-warning-bg: $brand-warning;
+$state-warning-text: hsl(20, 94%, 31%);
+$state-warning-bg: hsl(42, 82%, 85%);
 $state-warning-border: transparent;
 $state-danger-text: hsl(338, 71%, 38%);
-$state-danger-bg: $brand-danger;
+$state-danger-bg: hsl(9, 89%, 93%);
 $state-danger-border: transparent;
 
 $label-default-bg: $body-bg;

@@ -18,7 +18,7 @@
   align-self: self-start;
   color: var(--gray-800);
   flex: 30% 0 0;
-  font-size: 13px;
+  font-size: var(--font-size-base);
   font-weight: 400;
   margin: 6px 5px 0 0;
   text-align: right;
@@ -27,10 +27,10 @@
   bottom: 4px;
   color: var(--color-danger);
   // \2022 = &bull; (bullet)
-  content: "\00a0\2022";
+  content: "\2022";
   filter: opacity(75%);
   position: relative;
-  right: 2px;
+  right: -2px;
 }
 
 // Form widgets (inputs, selects, etc.)
@@ -126,6 +126,9 @@ fieldset .form-group .nullable-control label {
 // Form collections
 .form-widget-compound label {
   display: none;
+}
+.form-widget-compound .collection-empty {
+  padding-top: 5px;
 }
 .form-widget-compound .form-group {
   padding: 0 20px 15px 0;

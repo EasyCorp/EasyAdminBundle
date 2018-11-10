@@ -340,14 +340,14 @@ fieldset .legend-help {
 }
 
 // Form actions ("Save changes", "Delete", etc.)
-#form-actions-row {
+.form-actions {
     display: flex;
     justify-items: flex-end;
     flex-direction: row-reverse;
     padding: 0;
 }
 
-#form-actions-row .btn {
+.form-actions .btn {
     margin-left: 10px;
 }
 

@@ -19,10 +19,9 @@ class CustomTranslationDomainTest extends AbstractTestCase
 
         $this->assertSame('__Category__', trim($crawler->filter('.sidebar-menu li')->first()->text()));
         $this->assertSame('__Category__', trim($crawler->filter('h1.title')->text()));
-        $this->assertSame('__Search__', trim($crawler->filter('.global-actions form button[type="submit"]')->text()));
         $this->assertSame('__New__', trim($crawler->filter('.global-actions a.action-new')->text()));
-        $this->assertSame('__Name__', trim($crawler->filter('th[data-property-name="name"]')->text()));
-        $this->assertSame('__Products__', trim($crawler->filter('th[data-property-name="products"]')->text()));
+        $this->assertSame('__Name__', trim($crawler->filter('th')->eq(1)->text()));
+        $this->assertSame('__Products__', trim($crawler->filter('th')->eq(2)->text()));
         $this->assertSame('__Edit__', trim($crawler->filter('td.actions')->first()->filter('a.action-edit')->text()));
         $this->assertSame('__Delete__', trim($crawler->filter('td.actions')->first()->filter('a.action-delete')->text()));
     }

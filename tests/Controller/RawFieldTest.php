@@ -17,7 +17,7 @@ class RawFieldTest extends AbstractTestCase
     {
         $crawler = $this->requestListView('Product');
 
-        $this->assertRegExp('/\s*<ul>\s*(<li>.*<\/li>\s*){2}\s*<\/ul>/', $crawler->filter('#main table td[data-label="Html features"]')->eq(0)->html());
+        $this->assertRegExp('/\s*<ul>\s*(<li>.*<\/li>\s*){2}\s*<\/ul>/', $crawler->filter('#main table td.raw')->eq(0)->html());
     }
 
     public function testShowViewRawField()

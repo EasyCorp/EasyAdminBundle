@@ -17,9 +17,9 @@ class CustomFieldTemplateTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertContains('Custom template for "name" field in the "list" view.', $crawler->filter('#main table td[data-label="Name"]')->eq(0)->text());
-        $this->assertContains('The value of the custom option is "custom_list_value".', $crawler->filter('#main table td[data-label="Name"]')->eq(0)->text());
-        $this->assertContains('The custom template knows that the "this_property_does_no_exist" field is not accessible.', $crawler->filter('#main table td[data-label="This property does no exist"]')->eq(0)->text());
+        $this->assertContains('Custom template for "name" field in the "list" view.', $crawler->filter('#main .datagrid td.string')->eq(0)->text());
+        $this->assertContains('The value of the custom option is "custom_list_value".', $crawler->filter('#main .datagrid td.string')->eq(0)->text());
+        $this->assertContains('The custom template knows that the "this_property_does_no_exist" field is not accessible.', $crawler->filter('#main .datagrid td.text')->eq(0)->text());
     }
 
     public function testShowViewCustomFieldTemplate()

@@ -30,7 +30,7 @@ class DefaultMenuTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        $this->assertCount(5, $crawler->filter('.sidebar-menu i[class*="fa-chevron-circle-right"]'));
+        $this->assertCount(5, $crawler->filter('.sidebar-menu i[class*="fa-folder-open"]'));
     }
 
     public function testMenuUrls()

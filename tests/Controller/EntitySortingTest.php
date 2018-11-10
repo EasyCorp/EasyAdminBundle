@@ -27,9 +27,10 @@ class EntitySortingTest extends AbstractTestCase
         // click on any menu item to sort contents differently
         $link = $crawler->filter('.sidebar-menu a:contains("Product 2")')->link();
         $crawler = $this->client->click($link);
-        $this->assertNotContains('sorted', $crawler->filter('th[data-property-name="name"]')->attr('class'));
-        $this->assertContains('sorted', $crawler->filter('th[data-property-name="price"]')->attr('class'));
-        $this->assertContains('fa-caret-up', $crawler->filter('th[data-property-name="price"] i')->attr('class'));
+
+        $this->assertNotContains('sorted', $crawler->filter('th:contains("Name")')->attr('class'));
+        $this->assertContains('sorted', $crawler->filter('th:contains("Price")')->attr('class'));
+        $this->assertContains('fa-arrow-up', $crawler->filter('th:contains("Price") i')->attr('class'));
     }
 
     public function testListViewSorting()
@@ -37,15 +38,15 @@ class EntitySortingTest extends AbstractTestCase
         $crawler = $this->requestListView('Product');
 
         // check the default sorting of the page
-        $this->assertContains('sorted', $crawler->filter('th[data-property-name="name"]')->attr('class'));
-        $this->assertContains('fa-caret-down', $crawler->filter('th[data-property-name="name"] i')->attr('class'));
+        $this->assertContains('sorted', $crawler->filter('th:contains("Name")')->attr('class'));
+        $this->assertContains('fa-arrow-down', $crawler->filter('th:contains("Name") i')->attr('class'));
 
         // click on any other table column to sort contents differently
-        $link = $crawler->filter('th[data-property-name="price"] a')->link();
+        $link = $crawler->filter('th:contains("Price") a')->link();
         $crawler = $this->client->click($link);
-        $this->assertNotContains('sorted', $crawler->filter('th[data-property-name="name"]')->attr('class'));
-        $this->assertContains('sorted', $crawler->filter('th[data-property-name="price"]')->attr('class'));
-        $this->assertContains('fa-caret-down', $crawler->filter('th[data-property-name="price"] i')->attr('class'));
+        $this->assertNotContains('sorted', $crawler->filter('th:contains("Name")')->attr('class'));
+        $this->assertContains('sorted', $crawler->filter('th:contains("Price")')->attr('class'));
+        $this->assertContains('fa-arrow-down', $crawler->filter('th:contains("Price") i')->attr('class'));
     }
 
     public function testSearchViewSorting()
@@ -53,14 +54,14 @@ class EntitySortingTest extends AbstractTestCase
         $crawler = $this->requestSearchView('lorem', 'Product');
 
         // check the default sorting of the page
-        $this->assertContains('sorted', $crawler->filter('th[data-property-name="createdAt"]')->attr('class'));
-        $this->assertContains('fa-caret-up', $crawler->filter('th[data-property-name="createdAt"] i')->attr('class'));
+        $this->assertContains('sorted', $crawler->filter('th:contains("Created at")')->attr('class'));
+        $this->assertContains('fa-arrow-up', $crawler->filter('th:contains("Created at") i')->attr('class'));
 
         // click on any other table column to sort contents differently
-        $link = $crawler->filter('th[data-property-name="name"] a')->link();
+        $link = $crawler->filter('th:contains("Name") a')->link();
         $crawler = $this->client->click($link);
-        $this->assertNotContains('sorted', $crawler->filter('th[data-property-name="createdAt"]')->attr('class'));
-        $this->assertContains('sorted', $crawler->filter('th[data-property-name="name"]')->attr('class'));
-        $this->assertContains('fa-caret-down', $crawler->filter('th[data-property-name="name"] i')->attr('class'));
+        $this->assertNotContains('sorted', $crawler->filter('th:contains("Created at")')->attr('class'));
+        $this->assertContains('sorted', $crawler->filter('th:contains("Name")')->attr('class'));
+        $this->assertContains('fa-arrow-down', $crawler->filter('th:contains("Name") i')->attr('class'));
     }
 }

@@ -41,7 +41,7 @@
     </div>
 
     <section class="content-footer">
-        <div id="form-actions-row">
+        <div class="form-actions">
             {% block item_actions %}
                 {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
                 {% set _request_parameters = { entity: _entity_config.name, referer: app.request.query.get('referer') } %}

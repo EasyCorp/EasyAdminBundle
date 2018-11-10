@@ -66,44 +66,42 @@
     font-size: 21px;
     font-weight: 600;
     line-height: 1;
-    margin: 20px 15px 15px;
+    margin: 5px 15px 16px;
 }
 
 .main-header #header-logo a {
     color: var(--gray-900);
 }
 
-/* User details menu */
-.navbar-custom-menu {
-    margin-left: 10px;
+// Content bar at the top of the page (e.g. user menu)
+.content-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 0 0 15px;
 }
 
-.navbar-custom-menu .popover.bottom > .arrow {
-    left: 78% !important;
-}
-
-.navbar-custom-menu .popover {
-    // "left" formula: browser window width - popover content width - some margin
-    left: calc(100vw - 200px - 20px) !important;
-    width: 200px;
-}
-
-.navbar-custom-menu .user-icon {
-    color: var(--text-muted);
+.navbar-custom-menu .user {
+    color: var(--gray-500);
     cursor: pointer;
-    filter: opacity(70%);
-    font-size: 30px;
-    line-height: 30px;
+    height: 15px; // actual height is larger, but this makes .content-top look better
+}
+.navbar-custom-menu .user-icon {
+    font-size: 18px;
+    line-height: 18px;
+    margin-right: 2px;
+    vertical-align: bottom;
+}
+.navbar-custom-menu.user-is-impersonated .user {
+    color: var(--color-danger);
 }
 
 .navbar-custom-menu .popover-content {
     padding: 0;
 }
-
 .navbar-custom-menu .popover-content-section {
     padding: 12px;
 }
-
 .navbar-custom-menu p:last-child {
     margin-bottom: 0;
 }
@@ -116,11 +114,6 @@
 .navbar-custom-menu .user-action {
     display: block;
     font-size: var(--font-size-sm);
-}
-
-.navbar-custom-menu.user-is-impersonated,
-.navbar-custom-menu.user-is-impersonated .user-icon {
-    color: var(--color-danger);
 }
 
 /* Sidebar menu */
@@ -224,7 +217,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 15px 20px;
+    padding: 15px 17px 15px 20px;
 }
 
 .content-header-title {
@@ -233,6 +226,7 @@
 
 .content-header-title .title {
     font-size: var(--font-size-lg);
+    line-height: 24px;
     margin: 0;
 }
 
@@ -246,6 +240,7 @@
     align-items: center;
     display: flex;
     flex-direction: row;
+    height: 24px; // actual height is larger, but this makes .content-header look better
     justify-content: space-between;
     margin-left: 10px;
 }

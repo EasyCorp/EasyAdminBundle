@@ -1,0 +1,15 @@
+---------------------------------------------------------------------------
+
+by xabbuh at 2018-11-05T08:29:43Z
+
+What do you think about moving the initialisation of the property to `loadBackendConfig()` too? That method already deals with caching the config and then the whole lazy loading would be in one place.
+
+And what about doing this change for 1.x too?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-11-11T18:34:24Z
+
+I agree about moving the logic. Done in 241e0ec.
+
+About 1.x version, it already has that code: https://github.com/EasyCorp/EasyAdminBundle/blob/aa306230277fbed92c81fbcf4000144aac3eecba/src/Configuration/ConfigManager.php#L66-L68

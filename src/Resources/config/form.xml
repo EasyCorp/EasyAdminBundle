@@ -69,7 +69,7 @@
             <tag name="easyadmin.form.type.configurator" priority="-130" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.fos_ivory_ckeditor" public="false"
+        <service id="easyadmin.form.type.configurator.fos_ckeditor" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\FOSCKEditorTypeConfigurator">
             <tag name="easyadmin.form.type.configurator" priority="-130" />
         </service>

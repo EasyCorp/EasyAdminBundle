@@ -110,3 +110,11 @@
 .checkbox-switch input + span:before {
     box-shadow: none;
 }
+
+.checkbox-switch.disabled label {
+    cursor: not-allowed;
+}
+.checkbox-switch input:disabled + span:before {
+    background: var(--gray-300);
+    cursor: not-allowed;
+}

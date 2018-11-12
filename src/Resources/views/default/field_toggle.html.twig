@@ -7,7 +7,7 @@
         <span class="label label-danger">{{ 'label.false'|trans }}</span>
     {% endif %}
 {% else %}
-    <div class="checkbox-switch">
+    <div class="checkbox-switch" data-propertyname="{{ field_options.property }}">
         <label>
             <input type="checkbox" {{ value == true ? 'checked' }}>
             {# the empty <span> is needed for styling. Don't remove it! #}<span></span>

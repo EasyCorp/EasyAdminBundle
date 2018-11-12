@@ -8,9 +8,9 @@
 $body-bg: hsl(220, 20%, 91%);
 $text-color: hsl(213, 12%, 15%);
 
-$font-size-base: 14px;
-$font-size-large: 16px;
-$font-size-small: 13px;
+$font-size-base: 0.875rem; // 14px;
+$font-size-large: 1rem; // 16px;
+$font-size-small: 0.8125rem; // 13px;
 
 $brand-primary: hsl(230, 55%, 60%);
 $brand-success: hsl(157, 69%, 38%);
@@ -25,8 +25,8 @@ $gray: var(--gray-700);
 $gray-light: var(--gray-600);
 $gray-lighter: var(--gray-200);
 
-$link-color: var(--link-color);
-$link-hover-color: var(--link-hover-color);
+$link-color: hsl(230, 60%, 60%);
+$link-hover-color: hsl(230, 60%, 75%);
 $link-hover-decoration: var(--link-hover-decoration);
 $text-muted: var(--text-muted);
 

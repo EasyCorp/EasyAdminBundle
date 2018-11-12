@@ -1,23 +1,37 @@
 @import "./easyadmin-theme/variables.css";
 @import "./easyadmin-theme/variables.scss";
 
+$enable-grid-classes: false;
+$enable-print-styles: false;
+$enable-gradients: false;
+
+// $theme-colors: map-remove($theme-colors, 'secondary', 'light', 'dark');
+// $theme-colors: map-remove($grid-breakpoints, 'xs', 'sm', 'md', 'lg', 'xl');
+
 // Imports only the Bootstrap styles used by default in the backend.
 // If you develop features that need other Bootstrap components, check out the
 // bootstrap-all.css file that provides the rest of the Bootstrap styles
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/mixins";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/normalize";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/scaffolding";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/type";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/grid";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/forms";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/navs";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/labels";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/badges";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/alerts";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/modals";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/utilities";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/popovers";
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/transitions";
+@import "~bootstrap/scss/dropdown";
+@import "~bootstrap/scss/button-group";
+@import "~bootstrap/scss/input-group";
+@import "~bootstrap/scss/custom-forms";
+@import "~bootstrap/scss/nav";
+@import "~bootstrap/scss/badge";
+@import "~bootstrap/scss/alert";
+@import "~bootstrap/scss/close";
+@import "~bootstrap/scss/modal";
+@import "~bootstrap/scss/tooltip";
+@import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/utilities";
 
 @import "~font-awesome/css/font-awesome.css";
 

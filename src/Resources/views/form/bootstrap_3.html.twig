@@ -550,7 +550,7 @@
     {% set _translation_domain = easyadmin.entity.translation_domain %}
     <div class="row">
         {% if easyadmin_form_tabs | length > 0 %}
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="nav-tabs-custom form-tabs">
                     <ul class="nav nav-tabs">
                         {% for tab_name, tab_config in easyadmin_form_tabs %}
@@ -588,7 +588,7 @@
 
 {% block easyadmin_widget_groups %}
     {% for group_name, group_config in easyadmin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
-        <div class="field-group col-xs-12 {{ group_config.css_class|default('') }}">
+        <div class="field-group col-12 {{ group_config.css_class|default('') }}">
             <fieldset>
                 {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
                     <legend class="{{ group_config.icon|default(false) ? 'with-icon' }}">
@@ -606,7 +606,7 @@
                 <div class="row">
                     {% for field in form if 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name %}
                         {% if not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name %}
-                            <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                            <div class="col-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
                                 {{ form_row(field) }}
                             </div>
                         {% endif %}
@@ -616,7 +616,7 @@
         </div>
     {% else %}
         {% for field in form if 'hidden' not in field.vars.block_prefixes and (not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name) %}
-            <div class="col-xs-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+            <div class="col-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
                 {{ form_row(field) }}
             </div>
         {% endfor %}

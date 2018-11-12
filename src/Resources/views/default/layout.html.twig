@@ -89,7 +89,7 @@
                 {% set _user_menu_content %}
                     <div class="popover-content-section user-details {{ _user_has_logout or _user_is_impersonated ? 'user-has-actions' }}">
                         <p class="text-small text-muted mb-0">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</p>
-                        <p class="text-truncate text-semibold user-name">
+                        <p class="text-truncate user-name">
                             {% if app.user|default(false) == false %}
                                 {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
                             {% else %}
@@ -102,10 +102,10 @@
                         {% if _user_has_logout or _user_is_impersonated %}
                             <div class="popover-content-section user-menu">
                                 {% if _user_has_logout %}
-                                    <p><a class="user-action user-action-logout" href="{{ _logout_path }}">{{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a></p>
+                                    <a class="user-action user-action-logout" href="{{ _logout_path }}">{{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
                                 {% endif %}
                                 {% if _user_is_impersonated %}
-                                    <p><a class="user-action user-action-exit-impersonation" href="?_switch_user=_exit">{{ 'user.exit_impersonation'|trans(domain = 'EasyAdminBundle') }}</a></p>
+                                    <a class="user-action user-action-exit-impersonation" href="?_switch_user=_exit">{{ 'user.exit_impersonation'|trans(domain = 'EasyAdminBundle') }}</a>
                                 {% endif %}
                             </div>
                         {% endif %}

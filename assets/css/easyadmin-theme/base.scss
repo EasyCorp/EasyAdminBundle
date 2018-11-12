@@ -25,6 +25,12 @@
     margin-bottom: 0;
 }
 
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: unset;
+}
+
 /* Layout
    ========================================================================= */
 .wrapper {
@@ -51,9 +57,10 @@
     flex-direction: column;
     height: calc(100vh - 15px);
     margin-left: 10px;
-    margin-right: 15px;
+    margin-right: 10px;
     margin-top: 15px;
-    justify-content: flex-end;
+    padding-right: 5px;
+    justify-content: flex-start;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -66,7 +73,7 @@
     font-size: 21px;
     font-weight: 600;
     line-height: 1;
-    margin: 5px 15px 16px;
+    margin: 8px 15px 15px;
 }
 
 .main-header #header-logo a {
@@ -78,42 +85,48 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    padding: 0 0 15px;
+    padding: 0 0 12px;
 }
 
 .navbar-custom-menu .user {
+    align-items: baseline;
     color: var(--gray-500);
     cursor: pointer;
-    height: 15px; // actual height is larger, but this makes .content-top look better
+    display: flex;
 }
 .navbar-custom-menu .user-icon {
-    font-size: 18px;
-    line-height: 18px;
-    margin-right: 2px;
-    vertical-align: bottom;
+    font-size: 16px;
+    line-height: 1;
+    margin-right: 4px;
 }
-.navbar-custom-menu.user-is-impersonated .user {
+.navbar-custom-menu .user.user-is-impersonated {
     color: var(--color-danger);
 }
 
-.navbar-custom-menu .popover-content {
-    padding: 0;
-}
-.navbar-custom-menu .popover-content-section {
-    padding: 12px;
-}
-.navbar-custom-menu p:last-child {
+.user-details .user-name {
+    font-size: var(--font-size-base);
+    font-weight: 500;
     margin-bottom: 0;
 }
 
-.navbar-custom-menu .user-menu {
-    border-top: var(--border-width) var(--border-style) var(--border-color);
-    padding-top: 12px;
-}
-
-.navbar-custom-menu .user-action {
+.user-menu .user-action {
     display: block;
     font-size: var(--font-size-sm);
+}
+.user-menu .user-action + .user-action {
+    margin-top: var(--font-size-sm);
+}
+
+// Popovers (used for the user menu)
+.popover-body {
+    padding: 0;
+}
+.popover-content-section {
+    padding: 12px;
+}
+.popover-content-section + .popover-content-section {
+    border-top: var(--border-width) var(--border-style) var(--border-color);
+    padding-top: 12px;
 }
 
 /* Sidebar menu */

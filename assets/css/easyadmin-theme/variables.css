@@ -13,9 +13,9 @@
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --font-family-base: var(--font-family-sans-serif);
 
-    --font-size-base: 14px;
-    --font-size-lg: 16px;
-    --font-size-sm: 13px;
+    --font-size-base: 0.875rem; /* 14px */
+    --font-size-lg: 1rem; /* 16px */
+    --font-size-sm: 0.8125rem; /* 13px */
 
     --body-bg: hsl(220, 20%, 91%);
     --text-color: hsl(213, 12%, 15%);

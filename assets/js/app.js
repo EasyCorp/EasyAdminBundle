@@ -6,10 +6,10 @@ global.$ = global.jQuery = require('jquery');
 // Imports only the Bootstrap JS components used by default in the backend.
 // If you develop features that need other Bootstrap components, check out the
 // bootstrap-all.js file that provides the rest of the Bootstrap JS plugins
-import 'bootstrap-sass/assets/javascripts/bootstrap/modal.js';
-import 'bootstrap-sass/assets/javascripts/bootstrap/tab.js';
-import 'bootstrap-sass/assets/javascripts/bootstrap/tooltip.js';
-import 'bootstrap-sass/assets/javascripts/bootstrap/popover.js';
+import 'bootstrap/js/src/modal.js';
+import 'bootstrap/js/src/tab.js';
+import 'bootstrap/js/src/tooltip.js';
+import 'bootstrap/js/src/popover.js';
 
 import './adminlte.js';
 import 'jquery.are-you-sure';

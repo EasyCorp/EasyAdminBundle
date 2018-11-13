@@ -554,8 +554,8 @@
                 <div class="nav-tabs-custom form-tabs">
                     <ul class="nav nav-tabs">
                         {% for tab_name, tab_config in easyadmin_form_tabs %}
-                            <li class="{% if tab_config.active %}active{% endif %}">
-                                <a href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
+                            <li class="nav-item">
+                                <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
                                     {% if tab_config.icon|default(false) %}
                                         <i class="fa fa-{{ tab_config.icon }}"></i>
                                     {% endif %}
@@ -588,7 +588,7 @@
 
 {% block easyadmin_widget_groups %}
     {% for group_name, group_config in easyadmin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
-        <div class="field-group col-12 {{ group_config.css_class|default('') }}">
+        <div class="field-group col-{{ group_config.columns|default('12') }} {{ group_config.css_class|default('') }}">
             <fieldset>
                 {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
                     <legend class="{{ group_config.icon|default(false) ? 'with-icon' }}">
@@ -606,7 +606,7 @@
                 <div class="row">
                     {% for field in form if 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name %}
                         {% if not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name %}
-                            <div class="col-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+                            <div class="col-{{ field.vars.easyadmin.field.columns|default('12') }} {{ field.vars.easyadmin.field.css_class|default('') }}">
                                 {{ form_row(field) }}
                             </div>
                         {% endif %}
@@ -616,7 +616,7 @@
         </div>
     {% else %}
         {% for field in form if 'hidden' not in field.vars.block_prefixes and (not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name) %}
-            <div class="col-12 {{ field.vars.easyadmin.field.css_class|default('') }}">
+            <div class="col-{{ field.vars.easyadmin.field.columns|default('12') }} {{ field.vars.easyadmin.field.css_class|default('') }}">
                 {{ form_row(field) }}
             </div>
         {% endfor %}

@@ -99,14 +99,13 @@ $dropdown-link-hover-color: var(--gray-900);
 $navbar-inverse-color: var(--gray-400);
 $navbar-inverse-link-color: var(--gray-400);
 
-$nav-link-hover-bg: transparent;
 $nav-tabs-border-color: var(--border-color);
+$nav-tabs-border-width: var(--border-width);
+$nav-tabs-border-radius: var(--border-radius);
 $nav-tabs-link-hover-border-color: transparent;
-$nav-tabs-active-link-hover-bg: var(--form-bg);
-$nav-tabs-active-link-hover-color: var(--gray-800);
-$nav-tabs-active-link-hover-border-color: var(--border-color);
-$nav-tabs-justified-link-border-color: var(--border-color);
-$nav-tabs-justified-active-link-border-color: var(--border-color);
+$nav-tabs-link-active-color: var(--gray-800);
+$nav-tabs-link-active-bg: var(--form-bg);
+$nav-tabs-link-active-border-color: var(--border-color) var(--border-color) transparent var(--border-color);
 
 $modal-inner-padding: 15px 20px;
 $modal-title-padding: 15px 20px;

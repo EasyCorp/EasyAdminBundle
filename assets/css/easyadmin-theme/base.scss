@@ -232,28 +232,29 @@ body {
     justify-content: space-between;
     padding: 15px 17px 15px 20px;
 }
+// when contents define help, change vertical align to 'flex-start' because it looks better than 'center'
+.content-header.has-content-help {
+    align-items: flex-start;
+}
+// reduce the padding in 'list' pages to compensate for the height of '.global-actions'
+.list .content-header {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
 
 .content-header-title {
     flex: 1;
 }
-
 .content-header-title .title {
     font-size: var(--font-size-lg);
     line-height: 24px;
     margin: 0;
 }
 
-.content-header-help {
-    color: var(--text-muted);
-    font-size: var(--font-size-sm);
-    margin-top: 5px;
-}
-
 .content-header .global-actions {
     align-items: center;
     display: flex;
     flex-direction: row;
-    height: 24px; // actual height is larger, but this makes .content-header look better
     justify-content: space-between;
     margin-left: 10px;
 }
@@ -275,6 +276,11 @@ body {
     background-position: 10px 8px;
     padding-left: 32px;
     width: 300px;
+}
+
+.content-header-help {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
 }
 
 .content-footer {

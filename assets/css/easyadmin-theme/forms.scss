@@ -203,18 +203,8 @@ fieldset .form-group .nullable-control label {
 // Form tabs
 .form-tabs .nav-tabs {
     background: var(--white);
-    margin-top: -20px;
-    margin-left: -12px;
-    margin-right: -12px;
-    margin-bottom: 20px;
-}
-
-.form-tabs .nav-tabs li.active:first-child {
-    margin-left: 20px;
-}
-
-.form-tabs .nav-tabs li:first-child {
-    margin-left: 4px;
+    margin: -20px -20px 20px;
+    padding-left: 20px;
 }
 
 .form-tabs a, .form-tabs a:hover {
@@ -226,6 +216,10 @@ fieldset .form-group .nullable-control label {
     color: var(--text-muted);
     font-size: var(--font-size-lg);
     margin-right: 4px;
+}
+
+.form-tabs .nav-link.active {
+    transform: translateY(1px);
 }
 
 // Form fieldsets (used for the "from groups" feature)

@@ -403,31 +403,3 @@ body.show .field-text .form-widget .form-control {
     box-shadow: var(--box-shadow-lg);
     margin-bottom: 15px;
 }
-
-.label {
-    background-color: var(--body-bg);
-    border-radius: var(--border-radius);
-    color: var(--gray-800);
-    font-size: 12px;
-    font-weight: 500;
-    min-width: 30px;
-    padding: 3px 7px;
-}
-
-.label-success {
-    background-color: var(--color-success);
-    color: var(--white);
-}
-
-.label-danger {
-    background-color: var(--color-danger);
-    color: var(--white);
-}
-
-.label-empty {
-    text-transform: uppercase;
-}
-
-.badge {
-    min-width: 30px;
-}

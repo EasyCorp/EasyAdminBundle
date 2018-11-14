@@ -2,9 +2,9 @@
 
 {% if view == 'show' or ('edit' in backend_config.disabled_actions) %}
     {% if value == true %}
-        <span class="label label-success">{{ 'label.true'|trans }}</span>
+        <span class="badge badge-success">{{ 'label.true'|trans }}</span>
     {% else %}
-        <span class="label label-danger">{{ 'label.false'|trans }}</span>
+        <span class="badge badge-danger">{{ 'label.false'|trans }}</span>
     {% endif %}
 {% else %}
     <div class="checkbox-switch" data-propertyname="{{ field_options.property }}">

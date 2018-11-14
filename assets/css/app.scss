@@ -1,12 +1,6 @@
 @import "./easyadmin-theme/variables.css";
 @import "./easyadmin-theme/variables.scss";
 
-$enable-print-styles: false;
-$enable-gradients: false;
-
-// $theme-colors: map-remove($theme-colors, 'secondary', 'light', 'dark');
-// $theme-colors: map-remove($grid-breakpoints, 'xs', 'sm', 'md', 'lg', 'xl');
-
 // Imports only the Bootstrap styles used by default in the backend.
 // If you develop features that need other Bootstrap components, check out the
 // bootstrap-all.css file that provides the rest of the Bootstrap styles

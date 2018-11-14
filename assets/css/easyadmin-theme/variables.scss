@@ -5,18 +5,35 @@
 // Bootstrap 3 doesn't allow to customize all styles using CSS variables and
 // that's when you'll need to override some of the variables of this file.
 // ----------------------------------------------------------------------------
+$enable-print-styles: false;
+$enable-gradients: false;
+
 $body-bg: hsl(220, 20%, 91%);
 $text-color: hsl(213, 12%, 15%);
+
+$primary: hsl(230, 55%, 60%);
+$secondary: $body-bg;
+$success: hsl(157, 69%, 38%);
+$info: hsl(201, 94%, 37%);
+$warning: hsl(30, 81%, 47%);
+$danger: hsl(344, 59%, 52%);
+
+$theme-colors: (
+    'primary': $primary,
+    'secondary': $secondary,
+    'success': $success,
+    'info':    $info,
+    'warning': $warning,
+    'danger':  $danger
+);
+
+$grid-breakpoints: (
+    xs: 0
+);
 
 $font-size-base: 0.875rem; // 14px;
 $font-size-large: 1rem; // 16px;
 $font-size-small: 0.8125rem; // 13px;
-
-$brand-primary: hsl(230, 55%, 60%);
-$brand-success: hsl(157, 69%, 38%);
-$brand-info: hsl(201, 94%, 37%);
-$brand-warning: hsl(30, 81%, 47%);
-$brand-danger: hsl(344, 59%, 52%);
 
 $gray-base: var(--black);
 $gray-darker: var(--gray-900);
@@ -74,11 +91,11 @@ $state-danger-bg: hsl(9, 89%, 93%);
 $state-danger-border: transparent;
 
 $label-default-bg: $body-bg;
-$label-primary-bg: $brand-primary;
-$label-success-bg: $brand-success;
-$label-info-bg: $brand-info;
-$label-warning-bg: $brand-warning;
-$label-danger-bg: $brand-danger;
+$label-primary-bg: $primary;
+$label-success-bg: $success;
+$label-info-bg: $info;
+$label-warning-bg: $warning;
+$label-danger-bg: $danger;
 $label-color: $text-color;
 $label-link-hover-color: $text-color;
 
@@ -86,13 +103,8 @@ $alert-padding: 15px 20px;
 $alert-border-radius: var(--border-radius);
 $alert-link-font-weight: 500;
 
-$badge-color: var(--gray-900);
-$badge-link-hover-color: var(--gray-900);
-$badge-bg: $body-bg;
-$badge-active-color: var(--white);
-$badge-active-bg: var(--color-accent);
+$badge-font-size: var(--font-size-sm);
 $badge-font-weight: 500;
-$badge-line-height: 1;
 $badge-border-radius: var(--border-radius);
 
 $dropdown-link-hover-color: var(--gray-900);

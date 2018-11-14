@@ -572,6 +572,12 @@
                     <div class="tab-content">
                         {% for tab_name, tab_config in easyadmin_form_tabs %}
                             <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %}">
+                                {% if tab_config['help']|default(false) %}
+                                    <div class="content-header-help tab-help">
+                                        {{ tab_config['help']|trans(domain = _translation_domain)|raw|nl2br }}
+                                    </div>
+                                {% endif %}
+
                                 <div class="row">
                                     {{ block('easyadmin_widget_groups') }}
                                 </div>

@@ -222,6 +222,11 @@ fieldset .form-group .nullable-control label {
     transform: translateY(1px);
 }
 
+.form-tabs .tab-help {
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+
 // Form fieldsets (used for the "from groups" feature)
 fieldset {
     border: var(--border-width) var(--border-style) var(--border-color);

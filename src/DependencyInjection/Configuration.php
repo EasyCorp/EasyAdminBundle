@@ -134,8 +134,8 @@ class Configuration implements ConfigurationInterface
                         ->end()
 
                         ->variableNode('form_theme')
-                            ->defaultValue(['@EasyAdmin/form/bootstrap_3.html.twig'])
-                            ->treatNullLike(['@EasyAdmin/form/bootstrap_3.html.twig'])
+                            ->defaultValue(['@EasyAdmin/form/bootstrap_4.html.twig'])
+                            ->treatNullLike(['@EasyAdmin/form/bootstrap_4.html.twig'])
                             ->info('The form theme applied to backend forms. Allowed values: any valid form theme path or an array of theme paths.')
                             ->validate()
                                 ->ifString()->then(function ($v) {

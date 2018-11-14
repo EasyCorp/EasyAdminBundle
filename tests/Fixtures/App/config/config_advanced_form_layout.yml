@@ -9,20 +9,20 @@ easy_admin:
                 fields:
                     - { type: 'tab', label: 'Basic information', icon: 'pencil' }
                     - 'name'
-                    - { type: 'group', css_class: 'col-sm-8', label: 'Basic information', icon: 'pencil' }
+                    - { type: 'group', columns: 8, label: 'Basic information', icon: 'pencil' }
                     - 'description'
                     - { type: 'divider' }
                     - 'categories'
-                    - { type: 'group', css_class: 'col-sm-4', label: 'Product Details' }
+                    - { type: 'group', columns: 4, label: 'Product Details' }
                     - 'ean'
                     - 'price'
                     - { type: 'section', label: 'Advanced Settings', icon: 'warning', help: 'Reserved for administrators use' }
                     - 'enabled'
                     - 'createdAt'
-                    - { type: 'tab', label: 'Extra information' }
-                    - { type: 'group', css_class: 'col-sm-8 new-row' }
+                    - { type: 'tab', label: 'Extra information', help: 'The <b>help message</b> of this tab' }
+                    - { type: 'group', columns: 8, css_class: 'w-100' }
                     - 'features'
-                    - { type: 'group', css_class: 'col-sm-4' }
+                    - { type: 'group', columns: 4 }
                     - 'tags'
-                    - { type: 'group', css_class: 'col-sm-4', label: 'Attachments', icon: 'paperclip', help: 'PNG format is preferred' }
+                    - { type: 'group', columns: 4, label: 'Attachments', icon: 'paperclip', help: 'PNG format is preferred' }
                     - { property: 'image', type: 'text' }

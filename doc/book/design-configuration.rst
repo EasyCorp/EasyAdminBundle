@@ -2,8 +2,8 @@ Chapter 4. Design Configuration
 ===============================
 
 The design of the backend is loosely based on the popular `AdminLTE template`_
-and it's created with `Bootstrap 3`_ (the version which uses `Sass`_), `jQuery`_
-and `Font Awesome icons`_. You can customize this design in two ways:
+and it's created with `Bootstrap 4`_, `jQuery`_ and `Font Awesome icons`_. You
+can customize this design in two ways:
 
 1. For **simple backends**, you can change the value of some YAML configuration
    options and create a CSS file to override some CSS variables.
@@ -205,7 +205,7 @@ Then, load this CSS file in your backend:
 
 .. note::
 
-    Because of how Bootstrap 3 styles are defined, it's not possible to use CSS
+    Because of how Bootstrap styles are defined, it's not possible to use CSS
     variables to override every style. Sometimes you may need to also override
     the value of some Sass variables (which are also defined in the same
     ``assets/css/easyadmin-theme/variables.scss`` file).
@@ -244,7 +244,7 @@ can create complex forms. Read the :ref:`Advanced Form Design <edit-new-advanced
 section to learn more about it.
 
 .. _`AdminLTE template`: https://github.com/almasaeed2010/AdminLTE
-.. _`Bootstrap 3`: https://github.com/twbs/bootstrap
+.. _`Bootstrap 4`: https://github.com/twbs/bootstrap
 .. _`Sass`: https://sass-lang.com/
 .. _`jQuery`: https://github.com/jquery/jquery
 .. _`Font Awesome icons`: https://github.com/FortAwesome/Font-Awesome

@@ -38,10 +38,20 @@ class AdvancedFormLayoutTest extends AbstractTestCase
                 $crawler->filter('ul.nav-tabs li')->eq(0)->filter('i')->attr('class'),
                 'The first tab displays the configured icon.'
             );
+            $this->assertCount(
+                0,
+                $crawler->filter('.tab-pane')->eq(0)->filter('.tab-help'),
+                'The first tab does not display a help message.'
+            );
             $this->assertSame(
                 'Extra information',
                 trim($crawler->filter('ul.nav-tabs li')->eq(1)->text()),
                 'The second tab of the form is displayed correctly.'
+            );
+            $this->assertContains(
+                'The <b>help message</b> of this tab',
+                trim($crawler->filter('.tab-pane')->eq(1)->filter('.tab-help')->html()),
+                'The second tab of the form displays a help message.'
             );
 
             $this->assertSame(
@@ -56,8 +66,8 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-8',
-                $crawler->filter('form .field-group')->eq(1)->attr('class')
+                'field-group col-8',
+                trim($crawler->filter('form .field-group')->eq(1)->attr('class'))
             );
             $this->assertSame(
                 'Basic information',
@@ -85,8 +95,8 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-4',
-                $crawler->filter('form .field-group')->eq(2)->attr('class')
+                'field-group col-4',
+                trim($crawler->filter('form .field-group')->eq(2)->attr('class'))
             );
             $this->assertSame(
                 'Product Details',
@@ -130,8 +140,8 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-8 new-row',
-                $crawler->filter('form .field-group')->eq(3)->attr('class')
+                'field-group col-8 w-100',
+                trim($crawler->filter('form .field-group')->eq(3)->attr('class'))
             );
             $this->assertCount(
                 0,
@@ -143,8 +153,8 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-4',
-                $crawler->filter('form .field-group')->eq(4)->attr('class')
+                'field-group col-4',
+                trim($crawler->filter('form .field-group')->eq(4)->attr('class'))
             );
             $this->assertCount(
                 0,
@@ -156,8 +166,8 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
 
             $this->assertSame(
-                'field-group col-xs-12 col-sm-4',
-                $crawler->filter('form .field-group')->eq(5)->attr('class')
+                'field-group col-4',
+                trim($crawler->filter('form .field-group')->eq(5)->attr('class'))
             );
             $this->assertSame(
                 'Attachments',

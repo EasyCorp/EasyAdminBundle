@@ -46,8 +46,8 @@
   padding: 3px 5px;
 }
 .btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:not(:disabled):not(.disabled):active {
-  background-color: var(--color-accent);
-  color: var(--text-on-accent);
+  background-color: var(--color-primary);
+  color: var(--text-on-primary);
 }
 .btn-info, .btn-info:hover, .btn-info:focus, .btn-info:not(:disabled):not(.disabled):active {
   background-color: var(--color-info);
@@ -70,7 +70,7 @@
   padding: 4px 0;
 }
 .btn-link:hover, .btn-link:focus, .btn-link:not(:disabled):not(.disabled):active {
-  color: var(--color-accent);
+  color: var(--color-primary);
 }
 .btn-disabled, .btn-disabled:hover, .btn-disabled:focus, .btn-disabled:active {
   box-shadow: none;

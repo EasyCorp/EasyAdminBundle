@@ -88,8 +88,8 @@
                 {% set _user_is_impersonated = is_granted('ROLE_PREVIOUS_ADMIN') %}
                 {% set _user_menu_content %}
                     <div class="popover-content-section user-details {{ _user_has_logout or _user_is_impersonated ? 'user-has-actions' }}">
-                        <p class="text-small text-muted mb-0">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</p>
-                        <p class="text-truncate user-name">
+                        <p class="small text-muted mb-0">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</p>
+                        <p class="user-name">
                             {% if app.user|default(false) == false %}
                                 {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
                             {% else %}

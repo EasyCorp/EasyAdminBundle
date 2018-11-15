@@ -7,24 +7,6 @@
     -moz-osx-font-smoothing: auto;
 }
 
-.text-truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.text-small {
-    font-size: var(--font-size-sm);
-}
-
-.text-semibold {
-    font-weight: 500;
-}
-
-.mb-0 {
-    margin-bottom: 0;
-}
-
 body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: auto;

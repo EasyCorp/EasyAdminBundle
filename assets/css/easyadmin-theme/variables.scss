@@ -34,6 +34,7 @@ $grid-breakpoints: (
 $font-size-base: 0.875rem; // 14px;
 $font-size-large: 1rem; // 16px;
 $font-size-small: 0.8125rem; // 13px;
+$small-font-size: $font-size-small;
 
 $gray-base: var(--black);
 $gray-darker: var(--gray-900);

@@ -73,3 +73,9 @@ table.datagrid {
 .datagrid th.image, .datagrid th.image a, .datagrid td.image {
   text-align: center;
 }
+
+.datagrid .highlight {
+    border-radius: var(--border-radius);
+    background: var(--highlight-bg);
+    padding: 1px;
+}

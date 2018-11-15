@@ -41,6 +41,8 @@
     --color-warning: hsl(30, 81%, 47%);
     --color-danger: hsl(344, 59%, 52%);
 
+    --highlight-bg: hsl(42, 82%, 85%);
+
     --text-on-primary: var(--white);
     --text-muted: var(--gray-500);
 

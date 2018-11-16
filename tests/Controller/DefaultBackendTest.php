@@ -105,7 +105,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $this->getBackendHomepage();
 
-        $this->assertContains('--color-accent: hsl(230, 55%, 60%);', $this->client->getResponse()->getContent(), 'The HTML content includes the value of the default brand color.');
+        $this->assertContains('--color-primary: hsl(230, 55%, 60%);', $this->client->getResponse()->getContent(), 'The HTML content includes the value of the default brand color.');
     }
 
     public function testListViewTitle()

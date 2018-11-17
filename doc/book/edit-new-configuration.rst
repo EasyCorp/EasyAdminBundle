@@ -554,8 +554,8 @@ Selecting the Form Theme
 By default, forms are displayed using a proprietary form theme compatible with
 the Bootstrap 4 CSS framework.
 
-.. image:: ../images/easyadmin-form-horizontal.png
-   :alt: Default horizontal form style
+.. image:: ../images/easyadmin-new-view.png
+   :alt: Default form style
 
 The form style can be changed with the ``form_theme`` design option:
 
@@ -656,7 +656,7 @@ a subtle divider line. They are defined with elements of type ``section``:
                         - name
                         - surname
                         - { type: 'section', label: 'Contact information', icon: 'phone',
-                            help: 'Phone number is preferred', css_class: 'danger' }
+                            help: 'Phone number is preferred' }
                         - email
                         - phoneNumber
 
@@ -695,15 +695,13 @@ elements of type ``group``:
                 class: App\Entity\Customer
                 form:
                     fields:
-                        - { type: 'group', columns: 6, label: 'Basic information' }
+                        - { type: 'group', columns: 4, label: 'Basic information' }
+                        - id
                         - name
                         - surname
                         - { type: 'group', label: 'Contact information', icon: 'phone', columns: 6 }
                         - email
                         - phoneNumber
-                        - { type: 'group', columns: 6, css_class: 'text-danger', help: 'Only for administrators' }
-                        - id
-        # ...
 
 .. image:: ../images/easyadmin-form-group.png
    :alt: A form using groups to separate its fields
@@ -753,16 +751,11 @@ are defined with elements of type ``tab``:
                 class: App\Entity\User
                 form:
                     fields:
-                        - { type: 'tab' , label: 'Account Information', icon: 'user' }
-                        - username
-                        - firstName
-                        - lastName
-                        - { type: 'tab', label: 'Contact Information', icon: 'envelope-o' }
-                        - { type: 'group', label: 'Address', columns: 6 }
-                        - street
-                        - zip
-                        - city
-                        - { type: 'group', label: 'Media', columns: 6 }
+                        - { type: 'tab' , label: 'Basic Information' }
+                        - id
+                        - name
+                        - surname
+                        - { type: 'tab', label: 'Contact Information', icon: 'phone' }
                         - email
                         - phone
 

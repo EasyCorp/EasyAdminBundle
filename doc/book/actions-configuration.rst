@@ -260,7 +260,7 @@ By default, the actions showed in the ``list`` view only display their label
 .. image:: ../images/easyadmin-listing-actions-label-only.png
    :alt: Action Labels in Entity Listing
 
-Adding an icon for each action is as easy as defining their ``icon`` option:
+This is configurable thanks to the ``icon``, ``label`` and ``title`` options:
 
 .. code-block:: yaml
 
@@ -268,50 +268,14 @@ Adding an icon for each action is as easy as defining their ``icon`` option:
     easy_admin:
         list:
             actions:
-                - { name: 'show', icon: 'search' }
+                # displays both the action label and a custom icon
                 - { name: 'edit', icon: 'pencil' }
-        # ...
 
-This configuration makes the entity listing looks as follow:
+                # hides the action label and displays only the icon
+                - { name: 'edit', icon: 'pencil', label: false }
 
-.. image:: ../images/easyadmin-listing-actions-label-and-icon.png
-   :alt: Action Labels and Icons in Entity Listing
-
-When displaying entities with lots of information, it may be useful to remove
-the action label and display just their icons. To do so, define an empty string
-for the ``label`` option or set its value to ``false``:
-
-.. code-block:: yaml
-
-    # config/packages/easy_admin.yaml
-    easy_admin:
-        list:
-            actions:
-                - { name: 'show', icon: 'search', label: '' }
-                - { name: 'edit', icon: 'pencil', label: '' }
-                # if you prefer, set labels to false
-                # - { name: 'show', icon: 'search', label: false }
-                # - { name: 'edit', icon: 'pencil', label: false }
-        # ...
-
-This configuration makes the entity listing looks as follow:
-
-.. image:: ../images/easyadmin-listing-actions-icon-only.png
-   :alt: Action Icons in Entity Listing
-
-Finally, when displaying only the action icon, it's useful to define the
-``title`` attribute to display it when the user moves the cursor over the action
-icon:
-
-.. code-block:: yaml
-
-    # config/packages/easy_admin.yaml
-    easy_admin:
-        list:
-            actions:
-                - { name: 'show', icon: 'search', label: '', title: 'Search' }
-                - { name: 'edit', icon: 'pencil', label: '', title: 'Edit' }
-        # ...
+                # the 'title' content is displayed when the cursor is over the icon
+                - { name: 'edit', icon: 'pencil', label: false, title: 'Search' }
 
 -----
 

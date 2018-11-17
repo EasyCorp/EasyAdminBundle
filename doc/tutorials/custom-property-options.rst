@@ -106,17 +106,11 @@ The custom ``tag_collection.html.twig`` template would look as follows:
 .. code-block:: twig
 
     {# templates/easy_admin/tag_collection.html.twig #}
-
     {% set colors = field_options.label_colors|default(['primary']) %}
 
     {% for tag in value %}
         <span class="label label-{{ cycle(colors, loop.index) }}">{{ tag }}</span>
     {% endfor %}
-
-And this property would be rendered in the ``list`` view as follows:
-
-.. image:: ../images/easyadmin-design-customization-custom-data-types.png
-   :alt: Default listing interface
 
 Custom Entity Options
 ---------------------

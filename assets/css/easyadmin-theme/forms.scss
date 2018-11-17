@@ -44,8 +44,10 @@
 
 .form-widget .help-block {
     color: var(--text-muted);
+    display: inline-block;
     font-size: var(--font-size-sm);
     margin-bottom: 0;
+    margin-top: 4px;
 }
 
 .form-widget input.form-control,
@@ -71,6 +73,7 @@
 .form-widget textarea.form-control {
     height: auto;
     line-height: 1.6;
+    white-space: pre-wrap;
 }
 
 .form-widget select.form-control {
@@ -386,7 +389,7 @@ fieldset .legend-help {
 // Image/file uploads
 .easyadmin-vich-image img {
     box-shadow: 0 0 0 4px var(--white), 0px 0px 4px 3px var(--gray-600);
-    margin: 6px 0 12px;
+    margin: 6px 4px 12px;
     max-height: 300px;
     max-width: 100%;
 }
@@ -416,6 +419,10 @@ fieldset .legend-help {
 .easyadmin-vich-image-actions .field-checkbox,
 .easyadmin-vich-file-actions .field-checkbox {
     padding-top: 4px;
+}
+
+.easyadmin-vich-image-actions .form-widget {
+    flex-basis: 100%;
 }
 
 // This CSS trick allows to customize the <input type="file" /> field entirely

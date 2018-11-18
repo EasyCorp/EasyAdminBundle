@@ -83,11 +83,15 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertCount(
                 1,
-                $crawler->filter('form .field-group')->eq(1)->filter('fieldset .field-divider')
+                $crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')
             );
-            $this->assertSame(
-                '<hr>',
-                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset .field-divider')->html())
+            $this->assertContains(
+                '<h2>',
+                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')->html())
+            );
+            $this->assertContains(
+                '<span></span>',
+                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')->html())
             );
             $this->assertSame(
                 'product_categories',
@@ -145,7 +149,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertCount(
                 0,
-                $crawler->filter('form .field-group')->eq(3)->filter('fieldset legend')
+                $crawler->filter('form .field-group')->eq(3)->filter('fieldset > legend')
             );
             $this->assertCount(
                 1,
@@ -158,7 +162,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertCount(
                 0,
-                $crawler->filter('form .field-group')->eq(4)->filter('fieldset legend')
+                $crawler->filter('form .field-group')->eq(4)->filter('fieldset > legend')
             );
             $this->assertCount(
                 1,

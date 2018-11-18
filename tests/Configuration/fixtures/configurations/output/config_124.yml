@@ -1,7 +1,7 @@
 easy_admin:
     design:
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3.html.twig'
+            - '@EasyAdmin/form/bootstrap_4.html.twig'
             - '@EasyAdmin/form/bootstrap_3_layout.html.twig'
         theme: default
         color_scheme: dark

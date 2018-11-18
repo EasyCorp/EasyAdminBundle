@@ -26,7 +26,7 @@ class FormViewTest extends AbstractTestCase
 
         $this->assertCount(1, $crawler->filter('form fieldset #product_name'));
 
-        $this->assertCount(1, $crawler->filter('form fieldset .form-section'));
+        $this->assertCount(2, $crawler->filter('form fieldset .form-section'));
 
         $this->assertCount(0, $crawler->filter('form fieldset #product_description'),
             'The description field defined in the form view is removed by the new view.'
@@ -48,7 +48,7 @@ class FormViewTest extends AbstractTestCase
         $this->assertCount(1, $crawler->filter('form fieldset #product_name'));
         $this->assertSame('Edit Help', trim($crawler->filter('form fieldset input + .help-block')->eq(0)->text()));
 
-        $this->assertCount(1, $crawler->filter('form fieldset .form-section'));
+        $this->assertCount(2, $crawler->filter('form fieldset .form-section'));
         $this->assertCount(1, $crawler->filter('form fieldset #product_description'));
         $this->assertCount(1, $crawler->filter('form fieldset #product_price'));
     }

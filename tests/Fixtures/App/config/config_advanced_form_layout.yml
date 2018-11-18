@@ -11,7 +11,7 @@ easy_admin:
                     - 'name'
                     - { type: 'group', columns: 8, label: 'Basic information', icon: 'pencil' }
                     - 'description'
-                    - { type: 'divider' }
+                    - { type: 'section' }
                     - 'categories'
                     - { type: 'group', columns: 4, label: 'Product Details' }
                     - 'ean'

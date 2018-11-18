@@ -1,5 +1,5 @@
 # TEST
-# if the 'form_theme' option is null, the default '@EasyAdmin/form/bootstrap_3.html.twig' form theme is used
+# if the 'form_theme' option is null, the default '@EasyAdmin/form/bootstrap_4.html.twig' form theme is used
 
 # CONFIGURATION
 easy_admin:

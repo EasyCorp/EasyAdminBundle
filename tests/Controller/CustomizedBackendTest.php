@@ -592,7 +592,7 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertCount(15, $crawler->filter('.table tbody td:contains("Inaccessible")'));
 
         $firstVirtualField = $crawler->filter('.table tbody td:contains("Inaccessible") span')->first();
-        $this->assertSame('label label-danger', $firstVirtualField->attr('class'));
+        $this->assertSame('badge badge-danger', $firstVirtualField->attr('class'));
         $this->assertSame(
             'Getter method does not exist for this field or the property is not public',
             $firstVirtualField->attr('title')

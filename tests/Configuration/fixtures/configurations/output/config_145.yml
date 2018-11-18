@@ -18,8 +18,6 @@ easy_admin:
                         label: 'Section Label 1'
                     field2:
                         property: field2
-                    _easyadmin_form_design_element_4:
-                        type: easyadmin_divider
             edit:
                 fields:
                     _easyadmin_form_design_element_0:
@@ -34,5 +32,3 @@ easy_admin:
                         property: field2
                         type_options:
                             required: false
-                    _easyadmin_form_design_element_4:
-                        type: easyadmin_divider

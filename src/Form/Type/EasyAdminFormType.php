@@ -93,8 +93,8 @@ class EasyAdminFormType extends AbstractType
                 continue;
             }
 
-            // 'divider' and 'section' are 'fake' form fields used to create the design
-            // elements of the complex form layouts: define them as unmapped and non-required
+            // 'section' is a 'fake' form field used to create the design elements of the
+            // complex form layouts: define it as unmapped and non-required
             if (0 === strpos($metadata['property'], '_easyadmin_form_design_element_')) {
                 $formFieldOptions['mapped'] = false;
                 $formFieldOptions['required'] = false;

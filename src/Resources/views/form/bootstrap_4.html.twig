@@ -1,13 +1,9 @@
-{% use 'form_div_layout.html.twig' %}
+{% use 'bootstrap_4_layout.html.twig' %}
 
 {% block form_start -%}
     {% if 'easyadmin' == block_prefixes|slice(-2)|first %}
         {% set attr = attr|merge({
-            'class': [
-                _easyadmin_form_type|default('') == 'horizontal' ? 'form-horizontal' : 'form-vertical',
-                attr.class|default(''),
-                easyadmin.view ~ '-form'
-            ]|join(' '),
+            'class': [attr.class|default(''), easyadmin.view ~ '-form']|join(' '),
             'data-view': easyadmin.view,
             'data-entity': easyadmin.entity.name,
             'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name),
@@ -68,95 +64,29 @@
     {% if type is not defined or type not in ['file', 'hidden'] %}
         {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
     {% endif %}
+    {%- if type is defined and (type == 'range' or type == 'color') %}
+        {# Attribute "required" is not supported #}
+        {%- set required = false -%}
+    {% endif %}
     {{- parent() -}}
 {%- endblock form_widget_simple %}
 
-{% block textarea_widget -%}
-    {% set attr = { rows: 5 }|merge(attr)|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
-    {{- parent() -}}
-{%- endblock textarea_widget %}
-
-{% block button_widget -%}
-    {% set attr = attr|merge({class: (attr.class|default('btn-default') ~ ' btn')|trim}) %}
-    {{- parent() -}}
-{%- endblock %}
-
-{% block money_widget -%}
-    <div class="input-group">
-        {% set prepend = '{{' == money_pattern[0:2] %}
-        {% if not prepend %}
-            <span class="input-group-addon">{{ money_pattern|replace({ '{{ widget }}':''}) }}</span>
-        {% endif %}
-        {{- block('form_widget_simple') -}}
-        {% if prepend %}
-            <span class="input-group-addon">{{ money_pattern|replace({ '{{ widget }}':''}) }}</span>
-        {% endif %}
-    </div>
-{%- endblock money_widget %}
-
-{% block percent_widget -%}
-    <div class="input-group">
-        {{- block('form_widget_simple') -}}
-        <span class="input-group-addon">%</span>
-    </div>
-{%- endblock percent_widget %}
-
-{% block datetime_widget -%}
-    {% if widget == 'single_text' %}
-        {{- block('form_widget_simple') -}}
-    {% else -%}
-        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
-        <div {{ block('widget_container_attributes') }}>
-            {{- form_errors(form.date) -}}
-            {{- form_errors(form.time) -}}
-
-            {{- form_widget(form.date, { datetime: true } ) -}}
-            {{- form_widget(form.time, { datetime: true } ) -}}
-        </div>
-    {%- endif %}
-{%- endblock datetime_widget %}
-
 {% block date_widget -%}
-<div class="datetime-widget datetime-widget-date">
-    {% if widget == 'single_text' %}
-        {{- block('form_widget_simple') -}}
-    {% else -%}
-        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
-        {% if datetime is not defined or not datetime -%}
-            <div {{ block('widget_container_attributes') -}}>
-        {%- endif %}
-            {{- date_pattern|replace({
-                '{{ year }}': form_widget(form.year),
-                '{{ month }}': form_widget(form.month),
-                '{{ day }}': form_widget(form.day),
-            })|raw -}}
-        {% if datetime is not defined or not datetime -%}
-            </div>
-        {%- endif -%}
-    {% endif %}
-</div>
+    <div class="datetime-widget datetime-widget-date">
+        {{- parent() -}}
+    </div>
 {%- endblock date_widget %}
 
 {% block time_widget -%}
-<div class="datetime-widget datetime-widget-time">
-    {% if widget == 'single_text' %}
-        {{- block('form_widget_simple') -}}
-    {% else -%}
-        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
-        {% if datetime is not defined or false == datetime -%}
-            <div {{ block('widget_container_attributes') -}}>
-        {%- endif -%}
-        {{- form_widget(form.hour) }}<span class="time-divider">:</span>{{ form_widget(form.minute) }}{% if with_seconds %}<span class="time-divider">:</span>{{ form_widget(form.second) }}{% endif %}
-        {% if datetime is not defined or false == datetime -%}
-            </div>
-        {%- endif -%}
-    {% endif %}
-</div>
+    <div class="datetime-widget datetime-widget-time">
+        {{- parent() -}}
+    </div>
 {%- endblock time_widget %}
 
 {% block choice_widget_collapsed -%}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
     {{- parent() -}}
+
     {% if form.parent.vars.allow_delete|default(false) %}
         {% set remove_item_javascript %}
             $(function() {
@@ -182,90 +112,6 @@
     {% endif %}
 {%- endblock %}
 
-{% block choice_widget_expanded -%}
-    {% if '-inline' in label_attr.class|default('') -%}
-        <div class="control-group">
-            {%- for child in form %}
-                {{- form_widget(child, {
-                    parent_label_class: label_attr.class|default(''),
-                    translation_domain: choice_translation_domain,
-                }) -}}
-            {% endfor -%}
-        </div>
-    {%- else -%}
-        <div {{ block('widget_container_attributes') }}>
-            {%- for child in form %}
-                {{- form_widget(child, {
-                    parent_label_class: label_attr.class|default(''),
-                    translation_domain: choice_translation_domain,
-                }) -}}
-            {% endfor -%}
-        </div>
-    {%- endif %}
-{%- endblock choice_widget_expanded %}
-
-{% block checkbox_widget -%}
-    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
-    {% if 'checkbox-inline' in parent_label_class %}
-        {{- form_label(form, null, { widget: parent() }) -}}
-    {% else -%}
-        <div class="form-widget">
-            {{- form_label(form, null, { widget: parent() }) -}}
-        </div>
-    {%- endif %}
-{%- endblock checkbox_widget %}
-
-{% block radio_widget -%}
-    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
-    {% if 'radio-inline' in parent_label_class %}
-        {{- form_label(form, null, { widget: parent() }) -}}
-    {% else -%}
-        <div class="radio">
-            {{- form_label(form, null, { widget: parent() }) -}}
-        </div>
-    {%- endif %}
-{%- endblock radio_widget %}
-
-{# Labels #}
-
-{% block form_label -%}
-    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label')|trim}) -%}
-    {{- parent() -}}
-{%- endblock form_label %}
-
-{% block choice_label -%}
-    {# remove the checkbox-inline and radio-inline class, it's only useful for embed labels #}
-    {%- set label_attr = label_attr|merge({class: label_attr.class|default('')|replace({'checkbox-inline': '', 'radio-inline': ''})|trim}) -%}
-    {{- block('form_label') -}}
-{% endblock %}
-
-{% block checkbox_label -%}
-    {{- block('checkbox_radio_label') -}}
-{%- endblock checkbox_label %}
-
-{% block radio_label -%}
-    {{- block('checkbox_radio_label') -}}
-{%- endblock radio_label %}
-
-{% block checkbox_radio_label %}
-    {# Do no display the label if widget is not defined in order to prevent double label rendering #}
-    {% if widget is defined %}
-        {% if required %}
-            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
-        {% endif %}
-        {% if parent_label_class is defined %}
-            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) %}
-        {% endif %}
-        {% if label is not same as(false) and label is empty %}
-            {% set label = name|humanize %}
-        {% endif %}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-            {{- widget|raw -}}
-            {{- label is not same as(false) ? label|trans({}, translation_domain ?: easyadmin.entity.translation_domain) -}}
-        </label>
-    {% endif %}
-{% endblock checkbox_radio_label %}
-
 {# Rows #}
 
 {% block form_row -%}
@@ -287,9 +133,9 @@
             {% if easyadmin.field.help|default('') != '' %}
                 <span class="help-block">{{ easyadmin.field.help|trans(domain = easyadmin.entity.translation_domain)|raw }}</span>
             {% endif %}
-        </div>
 
-        {{- form_errors(form) -}}
+            {{- form_errors(form) -}}
+        </div>
     </div>
 {%- endblock form_row %}
 
@@ -337,58 +183,34 @@
     </div>
 {%- endblock button_row %}
 
-{% block choice_row -%}
-    {% set force_error = true %}
-    {{- block('form_row') }}
-{%- endblock choice_row %}
+{# Labels #}
 
-{% block date_row -%}
-    {% set force_error = true %}
-    {{- block('form_row') }}
-{%- endblock date_row %}
-
-{% block time_row -%}
-    {% set force_error = true %}
-    {{- block('form_row') }}
-{%- endblock time_row %}
-
-{% block datetime_row -%}
-    {% set force_error = true %}
-    {{- block('form_row') }}
-{%- endblock datetime_row %}
-
-{% block checkbox_row -%}
-    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
-        {{- form_widget(form) -}}
-        {{- form_errors(form) -}}
-    </div>
-{%- endblock checkbox_row %}
-
-{% block radio_row -%}
-    <div class="form-group {% if not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
-        {{- form_widget(form) -}}
-        {{- form_errors(form) -}}
-    </div>
-{%- endblock radio_row %}
+{% block form_label -%}
+    {% if label is not same as(false) -%}
+        {%- if compound is defined and compound -%}
+            {%- set element = 'legend' -%}
+            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label')|trim}) -%}
+        {%- else -%}
+            {%- set label_attr = label_attr|merge({for: id, class: (label_attr.class|default('') ~ ' form-control-label')|trim}) -%}
+        {%- endif -%}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif -%}
+        {% if label is empty -%}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</{{ element|default('label') }}>
+    {%- endif -%}
+{%- endblock form_label %}
 
 {# Errors #}
-{% block form_errors %}
-    {% set error_count = errors|length %}
-    {% if error_count >= 1 %}
-        <div class="error-block">
-            <span class="label label-danger">{{ 'errors'|transchoice(error_count, {}, 'EasyAdminBundle') }}</span>
-            {% if error_count == 1 %}
-                {{ errors|first.message }}
-            {% else %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error.message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-    {% endif %}
-{% endblock form_errors %}
 
 {%- block form_widget_compound -%}
     <div class="form-widget-compound">
@@ -417,7 +239,6 @@
 {% endblock %}
 
 {% block vich_file_widget %}
-{% spaceless %}
     <div class="easyadmin-vich-file">
         {% if download_uri|default('') is not empty %}
             {% set download_title = download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') %}
@@ -455,7 +276,6 @@
         </div>
         <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
     </div>
-{% endspaceless %}
 {% endblock %}
 
 {% block vich_image_row %}
@@ -464,7 +284,6 @@
 {% endblock %}
 
 {% block vich_image_widget %}
-{% spaceless %}
     <div class="easyadmin-vich-image">
         {% if image_uri|default('') is not empty %}
             {% if download_uri|default('') is empty %}
@@ -504,7 +323,6 @@
         </div>
         <div class="small" id="{{ form.file.vars.id }}_new_file_name"></div>
     </div>
-{% endspaceless %}
 {% endblock %}
 
 {% block easyadmin_rest %}
@@ -645,13 +463,6 @@
     {% set name = form.parent.vars.name %}
     {{- block('form_label') -}}
 {% endblock easyadmin_autocomplete_inner_label %}
-
-{# EasyAdminDivider form type #}
-{% block easyadmin_divider_row %}
-    <div class="field-divider">
-        <hr>
-    </div>
-{% endblock easyadmin_divider_row %}
 
 {# EasyAdminSection form type #}
 {% block easyadmin_section_row %}

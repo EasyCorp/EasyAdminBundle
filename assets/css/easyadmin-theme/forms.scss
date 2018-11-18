@@ -15,17 +15,22 @@
     padding: 10px 20px;
 }
 
-.form-group label {
+.form-group label,
+.form-group legend.col-form-label {
     align-self: self-start;
     color: var(--gray-800);
     flex: 30% 0 0;
     font-size: var(--font-size-base);
     font-weight: 400;
-    margin: 6px 5px 0 0;
+    margin: 5px 5px 0 0;
     text-align: right;
 }
+.form-group .col-form-label {
+    padding: 0;
+}
 
-.form-group label.required:after {
+.form-group label.required:after,
+.form-group .col-form-label.required:after {
     bottom: 4px;
     color: var(--color-danger);
     content: "\2022"; // \2022 = &bull; (bullet)
@@ -89,23 +94,35 @@
 // Checkbox widgets
 .field-checkbox .form-widget,
 .form-group.field-collection-action {
-    margin-left: 30%;
+    margin-left: calc(30% + 5px);
     margin-bottom: 0;
     margin-top: 0;
 }
-
-.field-checkbox input[type="checkbox"] {
-    margin-left: 5px;
-    margin-right: 4px;
+.form-group.field-collection-action {
+    margin-left: 30%;
 }
 
-.field-checkbox label {
+.field-checkbox .form-check {
+    padding-left: 0;
+}
+.field-checkbox .form-check-label {
     cursor: pointer;
     font-size: var(--font-size-base);
     margin-top: 0;
+    margin-left: 4px;
+}
+.field-checkbox .form-check-input {
+    margin: 0;
+    position: static;
 }
 
 // Date-time widgets
+.field-date .form-widget,
+.field-time .form-widget,
+.field-datetime .form-widget {
+    margin: 0;
+}
+
 .field-datetime .form-inline {
     display: flex;
 }
@@ -118,14 +135,20 @@
     margin-left: 4px;
 }
 
-.datetime-widget-time .time-divider {
+.datetime-widget-time select {
     margin: 0 2px;
+}
+.datetime-widget-time select:first-child {
+    margin-left: 0;
+}
+.datetime-widget-time select:last-child {
+    margin-right: 0;
 }
 
 .nullable-control label,
 fieldset .form-group .nullable-control label {
     cursor: pointer;
-    margin-top: 6px;
+    margin-top: 5px;
 }
 
 // Utilities to create common form fields (long, short, etc.)
@@ -225,6 +248,11 @@ fieldset .form-group .nullable-control label {
     transform: translateY(1px);
 }
 
+.form-tabs .nav-item .badge {
+    margin-left: 4px;
+    padding: 3px 6px;
+}
+
 .form-tabs .tab-help {
     margin-top: -10px;
     margin-bottom: 15px;
@@ -238,7 +266,7 @@ fieldset {
     padding: 10px 20px 15px;
 }
 
-fieldset legend {
+fieldset > legend {
     border: 0;
     font-size: var(--font-size-sm);
     font-weight: 500;
@@ -247,8 +275,7 @@ fieldset legend {
     padding: 0 5px;
     width: auto;
 }
-
-fieldset legend .fa {
+fieldset > legend .fa {
     color: var(--text-muted);
     font-size: var(--font-size-lg);
     margin-right: 4px;
@@ -263,7 +290,8 @@ fieldset .form-group {
     padding: 10px 0;
 }
 
-fieldset .form-group label {
+fieldset .form-group label,
+fieldset .form-group legend.col-form-label {
     flex: 100% 0 0;
     margin: 0 0 4px 0;
     text-align: left;
@@ -367,23 +395,18 @@ fieldset .legend-help {
     box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(183, 6, 32, .2), 0 0 0 2px rgba(183, 6, 32, .25), 0 1px 1px rgba(0, 0, 0, .08);
 }
 
-.has-error .error-block {
+form .invalid-feedback {
     color: var(--color-danger);
     font-weight: 500;
     padding-top: 6px;
 }
-
-.has-error .error-block .label-danger {
-    margin-right: 3px;
+form .invalid-feedback .badge-danger {
+    font-size: 0.6875rem;
+    margin-right: 2px;
+    padding: 3px 4px;
 }
-
-.has-error .error-block ul {
-    margin: .5em 0 .5em 1.5em;
-}
-
-.has-error .error-block ul li {
-    margin: 5px 0 5px 15px;
-    padding-left: 10px;
+form .invalid-feedback > .d-block + .d-block {
+    margin-top: 5px;
 }
 
 // Image/file uploads

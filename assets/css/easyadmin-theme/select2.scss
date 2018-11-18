@@ -6,6 +6,12 @@
     max-width: 350px;
     transition: box-shadow .08s ease-in, color .08s ease-in;
 }
+.long .select2-container--bootstrap .select2-selection {
+    max-width: unset !important;
+}
+.short .select2-container--bootstrap .select2-selection {
+    max-width: 150px;
+}
 
 .select2-container--bootstrap.select2-container--focus .select2-selection,
 .select2-container--bootstrap.select2-container--open .select2-selection,

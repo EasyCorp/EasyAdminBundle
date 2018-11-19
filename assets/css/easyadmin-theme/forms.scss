@@ -260,6 +260,7 @@ fieldset .form-group .nullable-control label {
 
 // Form fieldsets (used for the "from groups" feature)
 fieldset {
+    background: var(--fieldset-bg);
     border: var(--border-width) var(--border-style) var(--border-color);
     border-radius: var(--border-radius);
     margin: 10px 0;

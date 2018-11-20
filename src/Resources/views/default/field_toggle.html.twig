@@ -2,13 +2,15 @@
 
 {% if view == 'show' or ('edit' in backend_config.disabled_actions) %}
     {% if value == true %}
-        <span class="label label-success">{{ 'label.true'|trans }}</span>
+        <span class="badge badge-success">{{ 'label.true'|trans }}</span>
     {% else %}
-        <span class="label label-danger">{{ 'label.false'|trans }}</span>
+        <span class="badge badge-danger">{{ 'label.false'|trans }}</span>
     {% endif %}
 {% else %}
-    <input type="checkbox" {{ value == true ? 'checked' : '' }}
-       data-toggle="toggle" data-size="mini"
-       data-onstyle="success" data-offstyle="danger"
-       data-on="{{ 'label.true'|trans }}" data-off="{{ 'label.false'|trans }}">
+    <div class="checkbox-switch" data-propertyname="{{ field_options.property }}">
+        <label>
+            <input type="checkbox" {{ value == true ? 'checked' }}>
+            {# the empty <span> is needed for styling. Don't remove it! #}<span></span>
+        </label>
+    </div>
 {% endif %}

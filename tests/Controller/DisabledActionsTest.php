@@ -19,7 +19,7 @@ class DisabledActionsTest extends AbstractTestCase
 
         $this->assertSame(
             'user1',
-            trim($crawler->filter('td[data-label="Buyer"]')->first()->html()),
+            trim($crawler->filter('td.association')->first()->html()),
             'The "buyer" field in the "list" view of the "Purchase" item does not contain a link because the "show" action is disabled for the "User" entity.'
         );
     }
@@ -30,7 +30,7 @@ class DisabledActionsTest extends AbstractTestCase
         // 'show' view of the first 'Purchase' entity, browse the 'list' view
         // and get the 'id' from the first row of the listing
         $crawler = $this->requestListView('Purchase');
-        $firstPurchaseId = trim($crawler->filter('td[data-label="ID"]')->first()->text());
+        $firstPurchaseId = trim($crawler->filter('td')->first()->text());
         $crawler = $this->requestShowView('Purchase', $firstPurchaseId);
 
         $this->assertSame(
@@ -54,8 +54,8 @@ class DisabledActionsTest extends AbstractTestCase
     {
         $crawler = $this->requestListView('Product');
 
-        $this->assertCount(15, $crawler->filter('td[data-label="Enabled"].boolean'), 'When "edit" action is disabled, boolean properties are displayed as labels, not toggles.');
-        $this->assertCount(0, $crawler->filter('td[data-label="Enabled"].toggle'));
+        $this->assertCount(15, $crawler->filter('td.boolean'), 'When "edit" action is disabled, boolean properties are displayed as labels, not toggles.');
+        $this->assertCount(0, $crawler->filter('td.toggle'));
     }
 
     /**

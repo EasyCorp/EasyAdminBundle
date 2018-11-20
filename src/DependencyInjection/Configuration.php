@@ -120,8 +120,8 @@ class Configuration implements ConfigurationInterface
 
                         ->scalarNode('brand_color')
                             ->info('The color used in the backend design to highlight important elements.')
-                            ->defaultValue('#205081')
-                            ->treatNullLike('#205081')
+                            ->defaultValue('hsl(230, 55%, 60%)')
+                            ->treatNullLike('hsl(230, 55%, 60%)')
                             ->validate()
                                 // if present, remove the trailing ';' to avoid CSS issues
                                 ->ifTrue(function ($v) {
@@ -134,25 +134,12 @@ class Configuration implements ConfigurationInterface
                         ->end()
 
                         ->variableNode('form_theme')
-                            ->defaultValue(['@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
-                            ->treatNullLike(['@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
-                            ->info('The form theme applied to backend forms. Allowed values: "horizontal", "vertical", any valid form theme path or an array of theme paths.')
+                            ->defaultValue(['@EasyAdmin/form/bootstrap_4.html.twig'])
+                            ->treatNullLike(['@EasyAdmin/form/bootstrap_4.html.twig'])
+                            ->info('The form theme applied to backend forms. Allowed values: any valid form theme path or an array of theme paths.')
                             ->validate()
                                 ->ifString()->then(function ($v) {
                                     return [$v];
-                                })
-                            ->end()
-                            ->validate()
-                                ->ifArray()->then(function ($values) {
-                                    foreach ($values as $k => $v) {
-                                        if ('horizontal' === $v) {
-                                            $values[$k] = '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig';
-                                        } elseif ('vertical' === $v) {
-                                            $values[$k] = '@EasyAdmin/form/bootstrap_3_layout.html.twig';
-                                        }
-                                    }
-
-                                    return $values;
                                 })
                             ->end()
                         ->end()

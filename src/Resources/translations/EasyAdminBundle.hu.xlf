@@ -111,10 +111,6 @@
             </trans-unit>
 
             <!-- misc. elements -->
-            <trans-unit id="toggle_navigation">
-                <source>toggle_navigation</source>
-                <target>Menü megjelenítése/elrejtése</target>
-            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Biztos benne, hogy törli ezt az elemet?</target>
@@ -138,6 +134,10 @@
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Elem eltávolítása</target>
+            </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Fájl kiválasztása</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>

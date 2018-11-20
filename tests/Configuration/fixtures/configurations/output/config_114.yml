@@ -16,7 +16,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: null
             edit:
                 form_options:
@@ -34,7 +34,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: null
             name: Category
             label: Category
@@ -67,7 +67,7 @@ easy_admin:
                         name: edit
                         type: method
                         label: action.edit
-                        css_class: 'text-primary action-edit'
+                        css_class: ' action-edit'
                         icon: null
                     delete:
                         name: delete
@@ -152,7 +152,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: null
             disabled_actions: {  }
             primary_key_field_name: id
@@ -227,14 +227,14 @@ easy_admin:
                 mime_type: image/x-icon
         theme: default
         color_scheme: dark
-        brand_color: '#205081'
+        brand_color: 'hsl(230, 55%, 60%)'
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+            - '@EasyAdmin/form/bootstrap_4.html.twig'
         menu:
             -
                 entity: Category
                 label: Category
-                icon: fa-chevron-circle-right
+                icon: fa-folder-open
                 children: {  }
                 default: false
                 target: false

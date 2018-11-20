@@ -26,18 +26,13 @@ class RtlTest extends AbstractTestCase
         $crawler = $this->getBackendHomepage();
 
         $this->assertSame(
-            '/bundles/easyadmin/stylesheet/easyadmin-all.min.css',
+            '/bundles/easyadmin/app.css',
             $crawler->filter('link[rel="stylesheet"]')->eq(0)->attr('href')
         );
 
         $this->assertSame(
-            '/bundles/easyadmin/stylesheet/bootstrap-rtl.min.css',
+            '/bundles/easyadmin/app-rtl.css',
             $crawler->filter('link[rel="stylesheet"]')->eq(1)->attr('href')
-        );
-
-        $this->assertSame(
-            '/bundles/easyadmin/stylesheet/adminlte-rtl.min.css',
-            $crawler->filter('link[rel="stylesheet"]')->eq(2)->attr('href')
         );
     }
 }

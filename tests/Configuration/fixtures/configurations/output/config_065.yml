@@ -11,7 +11,7 @@ easy_admin:
                 name: edit
                 type: method
                 label: custom-edit-label
-                css_class: text-primary
+                css_class:
                 icon: null
             custom_action_for_list:
                 name: custom_action_for_list
@@ -32,7 +32,7 @@ easy_admin:
                 name: list
                 type: method
                 label: custom-list-label
-                css_class: 'btn btn-secondary'
+                css_class: 'btn btn-link'
                 icon: null
             custom_action_for_edit:
                 name: custom_action_for_edit
@@ -88,7 +88,7 @@ easy_admin:
                         name: list
                         type: method
                         label: custom-list-label
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: null
                     custom_action_for_edit:
                         name: custom_action_for_edit
@@ -125,7 +125,7 @@ easy_admin:
                         name: edit
                         type: method
                         label: custom-edit-label
-                        css_class: 'text-primary action-edit'
+                        css_class: ' action-edit'
                         icon: null
                     custom_action_for_list:
                         name: custom_action_for_list
@@ -295,14 +295,14 @@ easy_admin:
                 mime_type: image/x-icon
         theme: default
         color_scheme: dark
-        brand_color: '#205081'
+        brand_color: 'hsl(230, 55%, 60%)'
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+            - '@EasyAdmin/form/bootstrap_4.html.twig'
         menu:
             -
                 entity: Category
                 label: Category
-                icon: fa-chevron-circle-right
+                icon: fa-folder-open
                 children: {  }
                 default: false
                 target: false

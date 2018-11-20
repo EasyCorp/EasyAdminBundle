@@ -1,0 +1,40 @@
+@import "./easyadmin-theme/variables.css";
+@import "./easyadmin-theme/variables.scss";
+
+// Imports only the Bootstrap styles used by default in the backend.
+// If you develop features that need other Bootstrap components, check out the
+// bootstrap-all.css file that provides the rest of the Bootstrap styles
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/transitions";
+@import "~bootstrap/scss/dropdown";
+@import "~bootstrap/scss/input-group";
+@import "~bootstrap/scss/nav";
+@import "~bootstrap/scss/badge";
+@import "~bootstrap/scss/alert";
+@import "~bootstrap/scss/close";
+@import "~bootstrap/scss/modal";
+@import "~bootstrap/scss/tooltip";
+@import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/utilities";
+
+@import "~font-awesome/css/font-awesome.css";
+
+@import "~featherlight/src/featherlight.css";
+@import "~select2/dist/css/select2.css";
+@import "~select2-bootstrap-theme/dist/select2-bootstrap.css";
+
+@import "./easyadmin-theme/base.scss";
+@import "./easyadmin-theme/datagrids.scss";
+@import "./easyadmin-theme/images.scss";
+@import "./easyadmin-theme/forms.scss";
+@import "./easyadmin-theme/buttons.scss";
+@import "./easyadmin-theme/switches.scss";
+@import "./easyadmin-theme/select2.scss";
+@import "./easyadmin-theme/errors.scss";

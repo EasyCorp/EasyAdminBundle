@@ -26,7 +26,7 @@
             </div>
         {% endif %}
     {% elseif 'list' == view %}
-        <span class="badge">{{ value|length }}</span>
+        <span class="badge badge-secondary">{{ value|length }}</span>
     {% endif %}
 {# a simple *-to-one value associated with an entity managed by this backend #}
 {% elseif link_parameters is defined %}

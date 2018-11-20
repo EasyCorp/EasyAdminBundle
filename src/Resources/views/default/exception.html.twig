@@ -8,14 +8,10 @@
 {% block body_class 'error' %}
 {% block page_title %}{{ 'errors'|transchoice(1, {}, 'EasyAdminBundle') }}{% endblock %}
 
-{% block content %}
-    <section id="main" class="content">
-        <div class="error-description">
-            <h1><i class="fa fa-exclamation-circle"></i> {{ block('page_title') }}</h1>
-
-            <div class="error-message">
-                {{ exception.publicMessage|trans(exception.translationParameters, 'EasyAdminBundle') }}
-            </div>
-        </div>
-    </section>
+{% block content_header '' %}
+{% block main %}
+    <div class="error-message">
+        <h1><i class="fa fa-exclamation-circle"></i> {{ block('page_title') }}</h1>
+        {{ exception.publicMessage|trans(exception.translationParameters, 'EasyAdminBundle') }}
+    </div>
 {% endblock %}

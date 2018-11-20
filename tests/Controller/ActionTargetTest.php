@@ -17,7 +17,6 @@ class ActionTargetTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('_top', $crawler->filter('.global-actions form button[type="submit"]')->attr('formtarget'));
         $this->assertSame('custom_target', $crawler->filter('.button-action a:contains("Add Category")')->attr('target'));
 
         $this->assertSame('_blank', $crawler->filter('table a:contains("Edit")')->attr('target'));

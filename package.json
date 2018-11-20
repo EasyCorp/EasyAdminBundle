@@ -1,0 +1,27 @@
+{
+  "devDependencies": {
+    "@symfony/webpack-encore": "^0.21",
+    "bootstrap": "^4.1.0",
+    "bootstrap-rtl": "^3.3.4",
+    "cssnano": "^4.1.7",
+    "featherlight": "^1.7.13",
+    "font-awesome": "4.7.0",
+    "jquery": "^3.3.1",
+    "jquery-highlight": "^3.4.0",
+    "jquery.are-you-sure": "^1.9.0",
+    "node-sass": "^4.9.4",
+    "popper.js": "^1.14.5",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "select2": "4.0.5",
+    "select2-bootstrap-theme": "^0.1.0-beta.10"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production"
+  }
+}

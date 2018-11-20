@@ -1,5 +1,5 @@
 # TEST
-# special form design elements (groups, sections, dividers) can't be overridden
+# special form design elements (groups, sections) can't be overridden
 # by the 'new' and 'edit' views when they are defined in the 'form' view too
 
 # CONFIGURATION
@@ -13,7 +13,6 @@ easy_admin:
                     - { property: 'field1', type_options: { required: false } }
                     - { type: 'section', label: 'Section Label 1', help: 'Section Help' }
                     - 'field2'
-                    - { type: 'divider' }
                     - 'field3'
             new:
                 fields:

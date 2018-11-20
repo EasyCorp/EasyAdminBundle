@@ -111,10 +111,6 @@
             </trans-unit>
 
             <!-- misc. elements -->
-            <trans-unit id="toggle_navigation">
-                <source>toggle_navigation</source>
-                <target>Preklop navigacije</target>
-            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Ali res želite izbrisati ta element?</target>
@@ -138,6 +134,10 @@
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Odstrani element</target>
+            </trans-unit>
+            <trans-unit id="action.choose_file">
+                <source>action.choose_file</source>
+                <target>Izberite datoteko</target>
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>

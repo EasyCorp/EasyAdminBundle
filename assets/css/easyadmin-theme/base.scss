@@ -1,0 +1,387 @@
+/* Reset styles
+   ========================================================================= */
+/* make the Symfony Web Toolbar look nice by neutralizing the aliasing applied
+  globally by the AdminLTE template styles */
+.sf-toolbarreset {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+}
+
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: unset;
+}
+
+/* Layout
+   ========================================================================= */
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: calc(1024px + var(--sidebar-width) + 15px * 2);
+    max-width: var(--body-max-width);
+}
+
+.content-wrapper {
+    flex: 1;
+    margin: 15px 15px 45px 15px;
+}
+
+/* Sidebar logo */
+.main-sidebar {
+    align-self: flex-start;
+    display: flex;
+    flex: 0 0 var(--sidebar-width);
+    flex-direction: column;
+    height: calc(100vh - 15px);
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 15px;
+    padding-right: 5px;
+    justify-content: flex-start;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.main-header .navbar {
+    margin-left: 0;
+}
+
+.main-header #header-logo {
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1;
+    margin: 8px 15px 15px;
+}
+
+.main-header #header-logo a {
+    color: var(--gray-900);
+}
+
+// Content bar at the top of the page (e.g. user menu)
+.content-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 0 0 12px;
+}
+
+.navbar-custom-menu .user {
+    align-items: baseline;
+    color: var(--gray-500);
+    cursor: pointer;
+    display: flex;
+}
+.navbar-custom-menu .user-icon {
+    font-size: 16px;
+    line-height: 1;
+    margin-right: 4px;
+}
+.navbar-custom-menu .user.user-is-impersonated {
+    color: var(--color-danger);
+}
+
+.user-details .user-name {
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.user-menu .user-action {
+    display: block;
+    font-size: var(--font-size-sm);
+}
+.user-menu .user-action + .user-action {
+    margin-top: var(--font-size-sm);
+}
+
+// Popovers (used for the user menu)
+.popover-body {
+    padding: 0;
+}
+.popover-content-section {
+    padding: 12px;
+}
+.popover-content-section + .popover-content-section {
+    border-top: var(--border-width) var(--border-style) var(--border-color);
+    padding-top: 12px;
+}
+
+/* Sidebar menu */
+.sidebar {
+    flex: 1;
+}
+
+.sidebar-menu,
+.sidebar-menu ul {
+    padding-left: 0;
+}
+
+.sidebar-menu .header {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 20px;
+    padding: 7px 5px 7px 15px;
+    text-transform: uppercase;
+}
+
+.sidebar-menu li {
+    list-style: none;
+}
+
+.sidebar-menu a {
+    color: var(--gray-900);
+    display: block;
+    line-height: 20px;
+    padding: 7px 5px 7px 15px;
+}
+
+.sidebar-menu .fa {
+    color: var(--gray-900);
+    filter: opacity(50%);
+    font-size: 17px;
+    width: 24px;
+}
+
+.sidebar-menu li:not(.submenu-active).active {
+    border-radius: var(--border-radius);
+    font-weight: 500;
+}
+
+.sidebar-menu li:not(.submenu-active).active a,
+.sidebar-menu li:not(.submenu-active).active .fa {
+    color: var(--color-primary);
+    filter: opacity(100%);
+}
+
+.sidebar-menu .menu-open .treeview-icon {
+    transform: rotate(90deg);
+}
+
+.treeview {
+    position: relative;
+}
+
+.treeview-menu {
+    display: none;
+    margin-bottom: 8px;
+}
+
+.sidebar-menu .active .treeview-menu {
+    display: block;
+}
+
+.treeview-menu a {
+    color: var(--gray-800);
+    line-height: 20px;
+    padding: 3px 5px 3px 43px;
+}
+
+.treeview-menu a .fa {
+    color: var(--gray-800);
+    filter: opacity(50%);
+    font-size: var(--font-size-base);
+    width: 18px;
+}
+
+.treeview .treeview-icon {
+    position: absolute;
+    top: 8px;
+    right: 1px;
+    transition: transform 0.25s ease;
+    width: auto;
+}
+
+.treeview.menu-open .treeview-icon {
+    transform: rotate(90deg);
+}
+
+.content {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-lg);
+}
+
+.content-header {
+    align-items: center;
+    border-bottom: var(--border-width) var(--border-style) var(--border-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 15px 17px 15px 20px;
+}
+// when contents define help, change vertical align to 'flex-start' because it looks better than 'center'
+.content-header.has-content-help {
+    align-items: flex-start;
+}
+// reduce the padding in 'list' pages to compensate for the height of '.global-actions'
+.list .content-header {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.content-header-title {
+    flex: 1;
+}
+.content-header-title .title {
+    font-size: var(--font-size-lg);
+    line-height: 24px;
+    margin: 0;
+}
+
+.content-header .global-actions {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-left: 10px;
+}
+
+.global-actions .btn {
+    margin-left: 15px;
+}
+
+.form-action-search .form-group {
+    margin: 0;
+    padding: 0;
+}
+
+.form-action-search input[type="search"].form-control {
+    background-color: var(--white);
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path fill="%23aaa" d="M1216 832q0-185-131.5-316.5t-316.5-131.5-316.5 131.5-131.5 316.5 131.5 316.5 316.5 131.5 316.5-131.5 131.5-316.5zm512 832q0 52-38 90t-90 38q-54 0-90-38l-343-342q-179 124-399 124-143 0-273.5-55.5t-225-150-150-225-55.5-273.5 55.5-273.5 150-225 225-150 273.5-55.5 273.5 55.5 225 150 150 225 55.5 273.5q0 220-124 399l343 343q37 37 37 90z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: 13px 13px;
+    background-position: 10px 8px;
+    padding-left: 32px;
+    width: 300px;
+}
+
+.content-header-help {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.content-footer {
+    background: var(--white);
+    border-top: var(--border-width) var(--border-style) var(--border-color);
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    padding: 15px 20px;
+}
+
+.content-body form {
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+.content-body table {
+    margin-bottom: 0;
+}
+
+form .content-footer {
+    margin: 20px -20px -18px;
+}
+
+.list-pagination {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.pager .btn {
+    display: inline-block;
+}
+
+.pager .btn + .btn {
+    margin-left: -2px;
+}
+
+.pager .btn:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    transform: translateX(1px);
+}
+
+.pager .btn:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 0;
+}
+
+/* Modal for delete action */
+.modal-body h4 {
+    font-size: var(--font-size-lg);
+}
+
+.modal-footer {
+    background: var(--white);
+}
+
+// Boolean labels (not switches/toggles)
+.boolean .label {
+    display: inline-block;
+    min-width: 33px;
+}
+
+body.show .form-horizontal {
+    background: var(--form-bg);
+}
+
+body.show .form-horizontal .control-label {
+    padding-top: 0;
+}
+
+body.show .form-control {
+    border: var(--border-width) var(--border-style) var(--border-color);
+    box-shadow: none;
+    height: auto;
+    min-height: 30px;
+    padding: 4px 7px 5px;
+}
+
+body.show .field-integer .form-widget,
+body.show .field-float .form-widget,
+body.show .field-boolean .form-widget {
+    max-width: 100px;
+}
+
+body.show .field-date .form-widget,
+body.show .field-time .form-widget,
+body.show .field-datetime .form-widget {
+    max-width: 250px;
+}
+
+body.show .field-string .form-widget {
+    max-width: 450px;
+}
+
+body.show .field-text .form-widget,
+body.show .field-association .form-widget {
+    max-width: 550px;
+}
+
+body.show .field-simple_array ul,
+body.show .field-association ul {
+    margin: 5px;
+    padding-left: 15px;
+}
+
+body.show .field-text .form-widget {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+body.show .field-text .form-widget .form-control {
+    min-height: 60px;
+}
+
+// Flash messages
+.alert {
+    box-shadow: var(--box-shadow-lg);
+    margin-bottom: 15px;
+}

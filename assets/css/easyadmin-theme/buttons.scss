@@ -1,0 +1,79 @@
+// Buttons
+// ----------------------------------------------------------------------------
+
+.btn {
+  padding: 4px 10px 4px;
+  background-color: var(--white);
+  border: 0;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .07), 0 1px 2px 0 rgba(0, 0, 0, .08);
+  color: var(--gray-800);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  line-height: 1.6;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  outline: 0;
+  transition: all .08s ease-in;
+}
+.btn:hover, .btn:focus, .btn:not(:disabled):not(.disabled):active {
+  background-color: var(--white);
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .1), 0 3px 9px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .08), 0 1px 2px 0 rgba(0, 0, 0, .08);
+  color: var(--gray-900);
+}
+.btn:not(:disabled):not(.disabled):active:focus {
+  box-shadow: 0 0 0 1px rgba(43, 45, 80, .1), 0 2px 5px 0 rgba(43, 45, 80, .1), 0 3px 9px 0 rgba(43, 45, 80, .08), 0 1px 1.5px 0 rgba(0, 0, 0, .08), 0 1px 2px 0 rgba(0, 0, 0, .08);
+}
+
+.btn a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.btn i {
+  margin-right: 4px;
+}
+
+.btn-large {
+  font-size: var(--font-size-base);
+  padding: 7px 12px 8px;
+}
+.btn-small {
+  font-size: var(--font-size-sm);
+  padding: 3px 5px;
+}
+.btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:not(:disabled):not(.disabled):active {
+  background-color: var(--color-primary);
+  color: var(--text-on-primary);
+}
+.btn-info, .btn-info:hover, .btn-info:focus, .btn-info:not(:disabled):not(.disabled):active {
+  background-color: var(--color-info);
+  color: var(--white);
+}
+.btn-success, .btn-success:hover, .btn-success:focus, .btn-success:not(:disabled):not(.disabled):active {
+  background-color: var(--color-success);
+  color: var(--white);
+}
+.btn-danger, .btn-danger:hover, .btn-danger:focus, .btn-danger:not(:disabled):not(.disabled):active {
+  background-color: var(--color-danger);
+  color: var(--white);
+}
+.btn-warning, .btn-warning:hover, .btn-warning:focus, .btn-warning:not(:disabled):not(.disabled):active {
+  background-color: var(--color-warning);
+  color: var(--white);
+}
+.btn-link, .btn-link:hover, .btn-link:focus, .btn-link:not(:disabled):not(.disabled):active {
+  box-shadow: none;
+  padding: 4px 0;
+}
+.btn-link:hover, .btn-link:focus, .btn-link:not(:disabled):not(.disabled):active {
+  color: var(--color-primary);
+}
+.btn-disabled, .btn-disabled:hover, .btn-disabled:focus, .btn-disabled:active {
+  box-shadow: none;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}

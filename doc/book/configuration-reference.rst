@@ -198,27 +198,12 @@ to create a backend that matches your branding perfectly. Example:
 form_theme
 ~~~~~~~~~~
 
-(**default value**: ``'horizontal'``, **type**: string or array of strings,
-**values**: ``'horizontal'``, ``'vertical'``, any valid form theme template path)
+(**default value**: ``'@EasyAdmin/form/bootstrap_4.html.twig'``, **type**: string or array of strings,
+**values**: any valid form theme template path)
 
 The form theme used to render the form fields in the ``edit`` and ``new`` views.
-The default ``'horizontal'`` value is a shortcut of ``@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig``
-which displays the form fields using the default horizontal Bootstrap 3 design.
-
-The ``'vertical'`` value is a shortcut of ``@EasyAdmin/form/bootstrap_3_layout.html.twig``
-which displays the form fields using the more common vertical Bootstrap 3 design.
-This style is better than ``'horizontal'`` when you want to increase the space
-available to edit the property values. Example:
-
-.. code-block:: yaml
-
-    easy_admin:
-        design:
-            form_theme: 'vertical'
-        # ...
-
-Moreover, you can use your own form theme just by defining the path to its
-templates. Example:
+By default forms use the design created by EasyAdmin, buy you can use your own
+form themes and the default Symfony form theme for Bootstrap 4 too:
 
 .. code-block:: yaml
 

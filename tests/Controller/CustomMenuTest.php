@@ -84,7 +84,7 @@ class CustomMenuTest extends AbstractTestCase
         );
 
         $this->assertSame(
-            'fa fa-chevron-circle-right',
+            'fa fa-folder-open',
             $crawler->filter('.sidebar-menu li:contains("Images") i')->attr('class'),
             'First level menu item with default icon'
         );
@@ -101,10 +101,10 @@ class CustomMenuTest extends AbstractTestCase
             'Second level menu item with custom icon'
         );
 
-        $this->assertSame(
-            'fa fa-chevron-right',
-            $crawler->filter('.sidebar-menu .treeview-menu li:contains("Add Product") i')->attr('class'),
-            'Second level menu item with default icon'
+        $this->assertCount(
+            0,
+            $crawler->filter('.sidebar-menu .treeview-menu li:contains("Add Product") i'),
+            'Second level menu items don\'t show any icon by default'
         );
 
         $this->assertCount(
@@ -272,7 +272,7 @@ class CustomMenuTest extends AbstractTestCase
         $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should contain the custom query string param
-        $refererUrl = $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('href');
+        $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 

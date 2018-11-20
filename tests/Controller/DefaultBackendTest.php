@@ -49,7 +49,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->getBackendHomepage();
 
         $this->assertSame(
-            '/bundles/easyadmin/stylesheet/easyadmin-all.min.css',
+            '/bundles/easyadmin/app.css',
             $crawler->filter('link[rel="stylesheet"]')->eq(0)->attr('href')
         );
     }
@@ -59,7 +59,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->getBackendHomepage();
 
         $this->assertSame(
-            '/bundles/easyadmin/javascript/easyadmin-all.min.js',
+            '/bundles/easyadmin/app.js',
             $crawler->filter('script')->eq(1)->attr('src')
         );
     }
@@ -97,27 +97,15 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        $this->assertContains('Anonymous', $crawler->filter('header .user-menu')->text());
-        $this->assertCount(0, $crawler->filter('header .user-menu .dropdown-menu'));
+        $this->assertContains('Anonymous', $crawler->filter('[data-toggle="popover"]')->attr('data-content'));
+        $this->assertCount(0, $crawler->filter('.user-details .user-menu'));
     }
 
-    public function testCustomCssFile()
+    public function testBrandColor()
     {
         $this->getBackendHomepage();
 
-        $this->assertSame(13, substr_count($this->client->getResponse()->getContent(), '#205081'), 'The admin.css file uses the default brand color.');
-        // #222222 color is only used by the "dark" color scheme, not the "light" one
-        $this->assertSame(7, substr_count($this->client->getResponse()->getContent(), '#222222'), 'The admin.css file uses the dark color scheme.');
-    }
-
-    public function testCustomCssProperty()
-    {
-        $this->getBackendHomepage();
-        $customCssContent = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
-
-        $this->assertSame(13, substr_count($customCssContent['_internal']['custom_css'], '#205081'), 'The generated custom CSS uses the default brand color.');
-        // #222222 color is only used by the "dark" color scheme, not the "light" one
-        $this->assertSame(7, substr_count($customCssContent['_internal']['custom_css'], '#222222'), 'The generated custom CSS uses the dark color scheme.');
+        $this->assertContains('--color-primary: hsl(230, 55%, 60%);', $this->client->getResponse()->getContent(), 'The HTML content includes the value of the default brand color.');
     }
 
     public function testListViewTitle()
@@ -139,9 +127,8 @@ class DefaultBackendTest extends AbstractTestCase
             'sortDirection' => 'DESC',
         ];
 
-        $this->assertSame('Search', trim($crawler->filter('.action-search button[type=submit]')->text()));
-        $this->assertContains('action-search', $crawler->filter('.global-actions > div')->first()->attr('class'));
-        $this->assertSame('_self', $crawler->filter('.action-search button')->attr('formtarget'));
+        $this->assertSame('Search', trim($crawler->filter('.form-action-search input[type="search"]')->attr('placeholder')));
+        $this->assertContains('form-action-search', $crawler->filter('.global-actions > div')->first()->attr('class'));
 
         $i = 0;
         foreach ($hiddenParameters as $name => $value) {
@@ -177,7 +164,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('ID', trim($crawler->filter('table th[data-property-name="id"]')->text()),
+        $this->assertSame('ID', trim($crawler->filter('table th')->first()->text()),
             'The ID entity property is very special and we uppercase it automatically to improve its readability.'
         );
     }
@@ -192,23 +179,13 @@ class DefaultBackendTest extends AbstractTestCase
         }
     }
 
-    public function testListViewTableColumnAttributes()
-    {
-        $crawler = $this->requestListView();
-        $columnAttributes = ['id', 'name', 'products', 'parent'];
-
-        foreach ($columnAttributes as $i => $attribute) {
-            $this->assertSame($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
-        }
-    }
-
     public function testListViewDefaultTableSorting()
     {
         $crawler = $this->requestListView();
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
         $this->assertSame('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
-        $this->assertSame('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+        $this->assertSame('fa fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
     public function testListViewColumnSortingResetsPaginator()
@@ -233,27 +210,15 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertCount(15, $crawler->filter('.table tbody tr'));
     }
 
-    public function testListViewTableRowAttributes()
-    {
-        $crawler = $this->requestListView();
-        $columnAttributes = ['ID', 'Name', 'Products', 'Parent'];
-
-        foreach ($columnAttributes as $i => $attribute) {
-            $this->assertSame($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
-        }
-    }
-
     public function testListViewPagination()
     {
         $crawler = $this->requestListView();
 
-        $this->assertContains('1 - 15 of 200', $crawler->filter('.list-pagination')->text());
+        $this->assertContains('200 results', $crawler->filter('.list-pagination')->text());
 
-        $this->assertSame('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
-        $this->assertSame('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
+        $this->assertSame('btn btn-disabled', $crawler->filter('.list-pagination span:contains("Previous")')->attr('class'));
 
-        $this->assertStringStartsWith('/admin/?action=list&entity=Category&view=list&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
-        $this->assertStringStartsWith('/admin/?action=list&entity=Category&view=list&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=list&entity=Category&view=list&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination a:contains("Next")')->attr('href'));
     }
 
     public function testListViewDefaultFormats()
@@ -268,15 +233,15 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView('Product');
 
-        $this->assertCount(15, $crawler->filter('td[data-label="Enabled"].toggle'), 'Boolean properties are displayed with a toggle widget unless configured explicitly.');
-        $this->assertCount(0, $crawler->filter('td[data-label="Enabled"].boolean'));
+        $this->assertCount(15, $crawler->filter('td.toggle'), 'Boolean properties are displayed with a toggle widget unless configured explicitly.');
+        $this->assertCount(0, $crawler->filter('td.boolean'));
     }
 
     public function testListViewStripsHtmlTags()
     {
         $crawler = $this->requestListView('Product');
 
-        $this->assertNotContains('&lt;ul&gt;', trim($crawler->filter('#main table td[data-label="Html features"]')->first()->text()), 'HTML tags are removed by default in the "list" view.');
+        $this->assertNotContains('&lt;ul&gt;', trim($crawler->filter('#main table td.string')->first()->text()), 'HTML tags are removed by default in the "list" view.');
     }
 
     public function testShowViewPageTitle()
@@ -322,7 +287,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         // list action
         $this->assertContains('action-list', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
-        $this->assertSame('btn btn-secondary action-list', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
+        $this->assertSame('btn btn-link action-list', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
         $this->assertSame('_self', $crawler->filter('.form-actions a:contains("Back to listing")')->attr('target'));
     }
 
@@ -344,7 +309,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
-        $refererUrl = $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('href');
+        $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 
@@ -401,16 +366,15 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestEditView();
 
         // save action
-        $this->assertContains('action-save', trim($crawler->filter('#form-actions-row button:contains("Save changes")')->attr('class')));
-        $this->assertContains('fa-save', trim($crawler->filter('#form-actions-row button:contains("Save changes") i')->attr('class')));
+        $this->assertContains('action-save', trim($crawler->filter('.form-actions button:contains("Save changes")')->attr('class')));
 
         // delete action
-        $this->assertContains('action-delete', trim($crawler->filter('#form-actions-row a:contains("Delete")')->attr('class')));
-        $this->assertContains('fa-trash', trim($crawler->filter('#form-actions-row a:contains("Delete") i')->attr('class')));
+        $this->assertContains('action-delete', trim($crawler->filter('.form-actions a:contains("Delete")')->attr('class')));
+        $this->assertContains('fa-trash', trim($crawler->filter('.form-actions a:contains("Delete") i')->attr('class')));
 
         // list action
-        $this->assertSame('btn btn-secondary action-list', trim($crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('class')));
-        $this->assertSame('_self', $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('target'));
+        $this->assertSame('btn btn-link action-list', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
+        $this->assertSame('_self', $crawler->filter('.form-actions a:contains("Back to listing")')->attr('target'));
     }
 
     public function testEditViewReferer()
@@ -431,7 +395,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
-        $refererUrl = $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('href');
+        $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 
@@ -522,12 +486,11 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestNewView();
 
         // save action
-        $this->assertContains('action-save', trim($crawler->filter('#form-actions-row button:contains("Save changes")')->attr('class')));
-        $this->assertContains('fa-save', trim($crawler->filter('#form-actions-row button:contains("Save changes") i')->attr('class')));
+        $this->assertContains('action-save', trim($crawler->filter('.form-actions button:contains("Save changes")')->attr('class')));
 
         // list action
-        $this->assertSame('btn btn-secondary action-list', trim($crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('class')));
-        $this->assertSame('_self', $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('target'));
+        $this->assertSame('btn btn-link action-list', trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
+        $this->assertSame('_self', $crawler->filter('.form-actions a:contains("Back to listing")')->attr('target'));
     }
 
     public function testNewViewReferer()
@@ -548,7 +511,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
-        $refererUrl = $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('href');
+        $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 
@@ -591,15 +554,6 @@ class DefaultBackendTest extends AbstractTestCase
         }
     }
 
-    public function testSearchViewTableIdColumn()
-    {
-        $crawler = $this->requestSearchView();
-
-        $this->assertSame('ID', trim($crawler->filter('table th[data-property-name="id"]')->text()),
-            'The ID entity property is very special and we uppercase it automatically to improve its readability.'
-        );
-    }
-
     public function testSearchViewTableColumnLabels()
     {
         $crawler = $this->requestSearchView();
@@ -610,23 +564,13 @@ class DefaultBackendTest extends AbstractTestCase
         }
     }
 
-    public function testSearchViewTableColumnAttributes()
-    {
-        $crawler = $this->requestSearchView();
-        $columnAttributes = ['id', 'name', 'products', 'parent'];
-
-        foreach ($columnAttributes as $i => $attribute) {
-            $this->assertSame($attribute, trim($crawler->filter('.table thead th')->eq($i)->attr('data-property-name')));
-        }
-    }
-
     public function testSearchViewDefaultTableSorting()
     {
         $crawler = $this->requestSearchView();
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
         $this->assertSame('ID', trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
-        $this->assertSame('fa fa-caret-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+        $this->assertSame('fa fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
     public function testSearchViewColumnSortingResetsPaginator()
@@ -651,27 +595,15 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertCount(15, $crawler->filter('.table tbody tr'));
     }
 
-    public function testSearchViewTableRowAttributes()
-    {
-        $crawler = $this->requestSearchView();
-        $columnAttributes = ['ID', 'Name', 'Products', 'Parent'];
-
-        foreach ($columnAttributes as $i => $attribute) {
-            $this->assertSame($attribute, trim($crawler->filter('.table tbody tr td')->eq($i)->attr('data-label')));
-        }
-    }
-
     public function testSearchViewPagination()
     {
         $crawler = $this->requestSearchView();
 
-        $this->assertContains('1 - 15 of 200', $crawler->filter('.list-pagination')->text());
+        $this->assertContains('200 results', $crawler->filter('.list-pagination')->text());
 
-        $this->assertSame('disabled', $crawler->filter('.list-pagination li:contains("First")')->attr('class'));
-        $this->assertSame('disabled', $crawler->filter('.list-pagination li:contains("Previous")')->attr('class'));
+        $this->assertSame('btn btn-disabled', $crawler->filter('.list-pagination span:contains("Previous")')->attr('class'));
 
-        $this->assertStringStartsWith('/admin/?action=search&entity=Category&query=cat&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination li a:contains("Next")')->attr('href'));
-        $this->assertStringStartsWith('/admin/?action=search&entity=Category&query=cat&sortField=id&sortDirection=DESC&page=14', $crawler->filter('.list-pagination li a:contains("Last")')->attr('href'));
+        $this->assertStringStartsWith('/admin/?action=search&entity=Category&query=cat&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination a:contains("Next")')->attr('href'));
     }
 
     public function testSearchViewItemActions()
@@ -702,7 +634,7 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
-        $refererUrl = $crawler->filter('#form-actions-row a:contains("Back to listing")')->attr('href');
+        $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
         $queryString = parse_url($refererUrl, PHP_URL_QUERY);
         parse_str($queryString, $refererParameters);
 

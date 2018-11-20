@@ -5,7 +5,7 @@ easy_admin:
                 name: edit
                 type: route
                 label: 'Global Edit Label'
-                css_class: text-primary
+                css_class:
                 icon: global-edit-icon
         max_results: 15
     edit:
@@ -31,7 +31,7 @@ easy_admin:
                 name: list
                 type: route
                 label: 'Global List Label'
-                css_class: 'btn btn-secondary'
+                css_class: 'btn btn-link'
                 icon: global-list-icon
     entities:
         Category:
@@ -42,7 +42,7 @@ easy_admin:
                         name: edit
                         type: method
                         label: 'Entity Edit Label'
-                        css_class: 'text-primary action-edit'
+                        css_class: ' action-edit'
                         icon: entity-edit-icon
                     delete:
                         name: delete
@@ -97,7 +97,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: null
                 fields: {  }
                 form_options: {  }
@@ -119,7 +119,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: null
                 fields:
                     id:
@@ -150,7 +150,7 @@ easy_admin:
                         name: list
                         type: route
                         label: 'Entity List Label'
-                        css_class: 'btn btn-secondary action-list'
+                        css_class: 'btn btn-link action-list'
                         icon: entity-list-icon
                 fields: {  }
                 form_options: {  }
@@ -253,14 +253,14 @@ easy_admin:
                 mime_type: image/x-icon
         theme: default
         color_scheme: dark
-        brand_color: '#205081'
+        brand_color: 'hsl(230, 55%, 60%)'
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
+            - '@EasyAdmin/form/bootstrap_4.html.twig'
         menu:
             -
                 entity: Category
                 label: Category
-                icon: fa-chevron-circle-right
+                icon: fa-folder-open
                 children: {  }
                 default: false
                 target: false

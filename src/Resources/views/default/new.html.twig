@@ -30,6 +30,18 @@
             $('.new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
 
             $('.form-actions').easyAdminSticky();
+
+            // prevent multiple form submissions to avoid creating duplicated entities
+            var form = document.querySelector('form.new-form');
+            form.addEventListener('submit', function() {
+                // this timeout is needed to include the disabled button into the submitted form
+                setTimeout(function() {
+                    var submitButtons = form.querySelectorAll('[type="submit"]');
+                    submitButtons.forEach(function(button) {
+                        button.setAttribute('disabled', 'disabled');
+                    });
+                }, 1);
+            }, false);
         });
     </script>
 

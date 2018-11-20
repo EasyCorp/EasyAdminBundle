@@ -1,0 +1,148 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2018-11-08T11:06:59Z
+
+That's absolutely awesome! Great news and amazing work!
+
+However, I'm not sure any human would be able to review this: ![image](https://user-images.githubusercontent.com/3369266/48194964-bf39f180-e34e-11e8-9db8-d3cc4df636e0.png)
+
+🤣
+
+But I'm going to test it in the few backends I have and make some checks in the next weeks! 👍
+
+---------------------------------------------------------------------------
+
+by DanieleGBX at 2018-11-08T18:50:22Z
+
+I'm not loving the fact that the user menu is integrated with the products table, they are conceptually separate, and if you check stripe, they do keep them separate as well, I think a content-independent bar above the content is unavoidable, unless you want to move the user profile management to the left side bar.
+
+(For context, I'm loving literally everything else about this)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-11-10T15:53:18Z
+
+@DanieleGBX I agree with your comment. Thanks for sharing it. I spent a lot of time with the user menu (I put it under the site logo, under the menu, stick at the bottom left of the page, etc.) and at the end I put it inside the content header ... but you are right it's not OK.
+
+I've decided to change it and display it like Stripe, in a small top content bar. This is how it looks for logged users:
+
+![user-logged](https://user-images.githubusercontent.com/73419/48303303-00760100-e509-11e8-99e4-3249b043d227.png)
+
+For anonymous users:
+
+![user-anonymous](https://user-images.githubusercontent.com/73419/48303308-066be200-e509-11e8-8bd6-a22905e4d879.png)
+
+And when you are impersonating someone else:
+
+![user-impersonated](https://user-images.githubusercontent.com/73419/48303315-0cfa5980-e509-11e8-81f1-6cb03e5426f5.png)
+
+---------------------------------------------------------------------------
+
+by neeckeloo at 2018-11-12T09:30:03Z
+
+@javiereguiluz IMHO, this PR should be the opportunity to upgrade to Bootstrap 4. What do you think about? Is it planned?
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2018-11-12T09:51:03Z
+
+@neeckeloo Template is using AdminLTE, which uses Bootstrap 3 😕
+
+---------------------------------------------------------------------------
+
+by welcoMattic at 2018-11-12T10:35:19Z
+
+AdminLTE 3 is based on Bootstrap 4 https://github.com/almasaeed2010/AdminLTE/tree/v3-dev
+
+However, I don't know if it's ready to use
+
+---------------------------------------------------------------------------
+
+by Pierstoval at 2018-11-12T11:48:45Z
+
+There is no 3.x release yet, so I'd avoid using it to avoid bigger maintenance problems :)
+
+---------------------------------------------------------------------------
+
+by guice12 at 2018-11-18T08:51:34Z
+
+Hi,
+Loading the entire Bootstrap Framework, the fieldset's .field-group are override by bootstrap-all.css.
+
+With bootstrap-all.css :
+![With Bootstrap](https://i.imgur.com/W5jzUKI.png)
+
+Without bootstrap-all.css :
+![Without Bootstrap](https://i.imgur.com/URRONAG.png)
+
+---------------------------------------------------------------------------
+
+by guice12 at 2018-11-18T09:51:58Z
+
+Hi,
+When field using select2 andcss_class is long, field's width is not full.
+`{ property: 'tags', label: label.tags, css_class: 'long' }`
+![Select2 and full with](https://i.imgur.com/qKeCWYh.png)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-11-18T19:19:50Z
+
+@guice12 thanks for reporting these issues. I made some changes to app.scss/bootstrap-all.scss and I can no longer reproduce the first issue. The second issue has been fixed.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-11-18T19:20:25Z
+
+I consider this pull request **finished**, so please test it so we can merge it as soon as possible. Thanks!
+
+---------------------------------------------------------------------------
+
+by guice12 at 2018-11-18T20:39:47Z
+
+@javiereguiluz it's good for the  2 issues :). Thanks
+
+---------------------------------------------------------------------------
+
+by guice12 at 2018-11-18T21:08:42Z
+
+@javiereguiluz, for checkboxes and radios, we could by default use Bootstrap's Custom forms :
+[https://getbootstrap.com/docs/4.1/components/forms/#custom-forms](https://getbootstrap.com/docs/4.1/components/forms/#custom-formsl)
+
+---------------------------------------------------------------------------
+
+by guice12 at 2018-11-18T21:23:22Z
+
+When an entity is saved (create, update, delete), it would be cool to have a message of success or error depending on the case! :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-11-19T08:08:30Z
+
+@guice12 thanks for your proposals. However, I'm not sure about customizing radios/checkboxes. They look nice and feel natural when using the default operating system style.
+
+About the success/failure alerts ... we decided a long ago to never show success messages. Why? Because 99.99% of the times things will work in your backend and you don't need to remind the user that it worked. About failures, we display prominent error pages, so it's not possible to miss that something didn't work. Cheers!
+
+---------------------------------------------------------------------------
+
+by guice12 at 2018-11-19T12:19:46Z
+
+This is my personal opinion but I think we must add to fieldsets `background-color: #FFF;`
+It will also match the first version of EasyAdmin :
+![Before vs After](https://user-images.githubusercontent.com/73419/48194304-eb547300-e34c-11e8-8237-1ffddce85e21.png)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-11-19T19:51:53Z
+
+@guice12 a white background for `<fieldset>` wouldn't look OK because of the new design ... but I agree with you about doing something to make `<fieldset>` look better.
+
+This is how it looks:
+
+#### Before
+
+![before](https://user-images.githubusercontent.com/73419/48731163-b5609a00-ec3c-11e8-98bb-956036ee85ce.png)
+
+### After
+
+![after](https://user-images.githubusercontent.com/73419/48731170-b8f42100-ec3c-11e8-90f8-6ac4302c93e9.png)

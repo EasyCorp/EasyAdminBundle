@@ -32,7 +32,7 @@
             $('.form-actions').easyAdminSticky();
 
             // prevent multiple form submissions to avoid creating duplicated entities
-            var form = document.querySelector('#main > form');
+            var form = document.querySelector('form.new-form');
             form.addEventListener('submit', function() {
                 // this timeout is needed to include the disabled button into the submitted form
                 setTimeout(function() {

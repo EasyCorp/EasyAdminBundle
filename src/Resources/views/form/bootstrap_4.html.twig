@@ -392,7 +392,7 @@
                             <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %}">
                                 {% if tab_config['help']|default(false) %}
                                     <div class="content-header-help tab-help">
-                                        {{ tab_config['help']|trans(domain = _translation_domain)|raw|nl2br }}
+                                        {{ tab_config['help']|trans(domain = _translation_domain)|raw }}
                                     </div>
                                 {% endif %}
 
@@ -423,7 +423,7 @@
                     </legend>
 
                     {% if group_config.help|default(false) %}
-                        <div class="legend-help">{{ group_config.help|trans(domain = _translation_domain)|nl2br|raw }}</div>
+                        <div class="legend-help">{{ group_config.help|trans(domain = _translation_domain)|raw }}</div>
                     {% endif %}
                 {% endif %}
 
@@ -474,7 +474,7 @@
         </h2>
 
         {% if easyadmin.field.help|default(false) %}
-            <p class="form-section-help">{{ easyadmin.field.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
+            <p class="form-section-help">{{ easyadmin.field.help|trans(domain = _translation_domain)|raw }}</p>
         {% endif %}
     </div>
 {% endblock easyadmin_section_row %}

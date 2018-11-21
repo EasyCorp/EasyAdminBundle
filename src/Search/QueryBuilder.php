@@ -95,14 +95,21 @@ class QueryBuilder
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
             if ($this->isDoctrineAssociation($classMetadata, $fieldName)) {
-                [$associatedEntityName, $associatedFieldName] = explode('.', $fieldName);
-                if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
-                    $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
-                    $entitiesAlreadyJoined[] = $associatedEntityName;
-                }
+                // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
+                $associationComponents = explode('.', $fieldName);
+                for ($i = 0; $i < count($associationComponents) - 1; ++$i) {
+                    $associatedEntityName = $associationComponents[$i];
+                    $associatedFieldName = $associationComponents[$i + 1];
 
-                $entityName = $associatedEntityName;
-                $fieldName = $associatedFieldName;
+                    if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+                        $parentEntityName = 0 === $i ? 'entity' : $associationComponents[$i - 1];
+                        $queryBuilder->leftJoin($parentEntityName.'.'.$associatedEntityName, $associatedEntityName);
+                        $entitiesAlreadyJoined[] = $associatedEntityName;
+                    }
+
+                    $entityName = $associatedEntityName;
+                    $fieldName = $associatedFieldName;
+                }
             }
 
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];

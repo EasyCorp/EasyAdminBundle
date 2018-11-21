@@ -562,7 +562,7 @@
 
                 <div class="box-body {% if group_config.collapsible|default(false) %}collapse {% if group_config.expanded|default(false) %}in{% endif %}{% endif %}" id="box-body-{{ group_name }}">
                     {% if group_config.help|default(false) %}
-                        <p class="help-block">{{ group_config.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
+                        <p class="help-block">{{ group_config.help|trans(domain = _translation_domain)|raw|nl2br }}</p>
                     {% endif %}
 
                     <div class="row">
@@ -622,7 +622,7 @@
         {% endif %}
 
         {% if easyadmin.field.help|default(false) %}
-            <p class="help-block">{{ easyadmin.field.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
+            <p class="help-block">{{ easyadmin.field.help|trans(domain = _translation_domain)|raw|nl2br }}</p>
         {% endif %}
     </div>
 {% endblock easyadmin_section_row %}

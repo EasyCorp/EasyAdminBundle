@@ -239,6 +239,13 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('theme')
                             ->defaultValue('default')
                             ->info('The theme used to render the backend pages. For now this value can only be "default".')
+                            ->beforeNormalization()
+                                ->always(function ($v) {
+                                    @trigger_error('The "design.theme" option is deprecated since EasyAdmin 1.x version and it will be removed in 2.0.', E_USER_DEPRECATED);
+
+                                    return $v;
+                                })
+                            ->end()
                             ->validate()
                                 ->ifNotInArray(array('default'))
                                 ->thenInvalid('The theme name can only be "default".')
@@ -250,12 +257,9 @@ class Configuration implements ConfigurationInterface
                             ->info('The color scheme applied to the backend design (values: "dark" or "light").')
                             ->defaultValue('dark')
                             ->treatNullLike('dark')
-                            ->validate()
-                                ->ifTrue(function ($v) {
-                                    return 'light' === $v;
-                                })
-                                ->then(function ($v) {
-                                    @trigger_error('The "light" color scheme is deprecated since EasyAdmin 1.x version and it will be removed in 2.0. Use "dark" as the value of the "color_scheme" option.', E_USER_DEPRECATED);
+                            ->beforeNormalization()
+                                ->always(function ($v) {
+                                    @trigger_error('The "design.color_scheme" option is deprecated since EasyAdmin 1.x version and it will be removed in 2.0.', E_USER_DEPRECATED);
 
                                     return $v;
                                 })

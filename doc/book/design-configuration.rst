@@ -69,9 +69,8 @@ choice for admin applications. If you prefer a lighter alternative, add the
 
 .. caution::
 
-    The ``light`` color scheme is deprecated since 1.x version and it will be
-    removed in EasyAdmin 2.0. Always use ``dark`` as the value of the
-    ``color_scheme`` option.
+    The ``color_scheme`` option is deprecated since 1.x version and it will be
+    removed in EasyAdmin 2.0.
 
 Adding Custom Web Assets
 ------------------------

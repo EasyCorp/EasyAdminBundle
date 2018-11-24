@@ -15,6 +15,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomizedBackendTest extends AbstractTestCase
 {
+    /**
+     * @group legacy
+     */
     public function setUp()
     {
         parent::setUp();

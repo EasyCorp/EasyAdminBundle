@@ -256,7 +256,7 @@ are displayed in the same order as defined in the related Doctrine entity.
     Fields that represent an association with another entity are displayed as
     ``<select>`` lists. For that reason, you must define the ``__toString()``
     magic method in any entity which is used in a Doctrine relation. Otherwise
-    you'll see the following error message:  
+    you'll see the following error message:
     ``Catchable Fatal Error: Object of class XY could not be converted to string``
 
 Virtual Properties
@@ -896,6 +896,13 @@ option under the global ``design`` option:
 
 Overriding the Default Templates By Convention
 ..............................................
+
+.. caution::
+
+    Overriding the default EasyAdmin templates by convention is deprecated since
+    1.x version and it will be removed in EasyAdmin 2.0. Instead, use Symfony's
+    template overriding mechanism or override the templates by configuration as
+    explained the previous section.
 
 If you don't mind the location of your custom templates, consider creating them
 in the ``app/Resources/views/easy_admin/`` directory. When the ``templates``

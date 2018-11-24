@@ -927,6 +927,13 @@ option under the global ``design`` option:
 Overriding the Default Templates By Convention
 ..............................................
 
+.. caution::
+
+    Overriding the default EasyAdmin templates by convention is deprecated since
+    1.x version and it will be removed in EasyAdmin 2.0. Instead, use Symfony's
+    template overriding mechanism or override the templates by configuration as
+    explained the previous section.
+
 If you don't mind the location of your custom templates, consider creating them
 in the ``app/Resources/views/easy_admin/`` directory. When the ``templates``
 option is not defined, EasyAdmin looks into this directory before falling back

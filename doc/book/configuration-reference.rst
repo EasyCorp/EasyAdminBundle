@@ -201,6 +201,11 @@ form_theme
 (**default value**: ``'@EasyAdmin/form/bootstrap_4.html.twig'``, **type**: string or array of strings,
 **values**: any valid form theme template path)
 
+.. caution::
+
+    The ``horizontal`` and ``vertical`` form theme shortcuts are deprecated
+    since 1.x version and they will be removed in EasyAdmin 2.0.
+
 The form theme used to render the form fields in the ``edit`` and ``new`` views.
 By default forms use the design created by EasyAdmin, buy you can use your own
 form themes and the default Symfony form theme for Bootstrap 4 too:

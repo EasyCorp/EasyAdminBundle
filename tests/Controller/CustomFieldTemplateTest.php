@@ -13,6 +13,9 @@ class CustomFieldTemplateTest extends AbstractTestCase
         $this->initClient(['environment' => 'custom_field_template']);
     }
 
+    /**
+     * @group legacy
+     */
     public function testListViewCustomFieldTemplate()
     {
         $crawler = $this->requestListView();
@@ -22,6 +25,9 @@ class CustomFieldTemplateTest extends AbstractTestCase
         $this->assertContains('The custom template knows that the "this_property_does_no_exist" field is not accessible.', $crawler->filter('#main .datagrid td.text')->eq(0)->text());
     }
 
+    /**
+     * @group legacy
+     */
     public function testShowViewCustomFieldTemplate()
     {
         $crawler = $this->requestShowView();

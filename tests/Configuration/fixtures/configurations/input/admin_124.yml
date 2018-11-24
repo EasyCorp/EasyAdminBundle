@@ -1,8 +1,0 @@
-# TEST
-# When using an array of form themes, the '@EasyAdmin/form/bootstrap_4.html.twig' and '@EasyAdmin/form/bootstrap_3_layout.html.twig' shortcuts
-# must keep being automatically transformed into their full form theme paths
-
-# CONFIGURATION
-easy_admin:
-    design:
-        form_theme: ['@EasyAdmin/form/bootstrap_4.html.twig', '@EasyAdmin/form/bootstrap_3_layout.html.twig']

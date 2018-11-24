@@ -13,6 +13,9 @@ class FormViewTest extends AbstractTestCase
         $this->initClient(['environment' => 'form_view']);
     }
 
+    /**
+     * @group legacy
+     */
     public function testNewView()
     {
         $crawler = $this->requestNewView('Product');
@@ -33,6 +36,9 @@ class FormViewTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @group legacy
+     */
     public function testEditView()
     {
         $crawler = $this->requestEditView('Product', 1);

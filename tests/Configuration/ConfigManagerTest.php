@@ -15,6 +15,7 @@ class ConfigManagerTest extends TestCase
     }
 
     /**
+     * @group legacy
      * @dataProvider provideConfigFilePaths
      */
     public function testLoadConfig($backendConfigFilePath, $expectedConfigFilePath)

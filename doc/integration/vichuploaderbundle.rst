@@ -439,7 +439,9 @@ EasyAdmin's default form theme):
     easy_admin:
         # ...
         design:
-            form_theme: ['horizontal', '@VichUploader/Form/fields.html.twig']
+            form_theme:
+                - '@EasyAdmin/form/bootstrap_4.html.twig'
+                - '@VichUploader/Form/fields.html.twig'
 
 Apply the same technique in case you want to use your own form theme instead
 of the one provided by VichUploaderBundle.

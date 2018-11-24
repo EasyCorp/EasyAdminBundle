@@ -263,6 +263,10 @@ class TemplateConfigPass implements ConfigPassInterface
             }
 
             if (null !== $templatePath && isset($this->existingTemplates[$namespace][$templatePath])) {
+                if ('easy_admin/' === substr($templatePath, 0, 11)) {
+                    @trigger_error(sprintf('Using the "convention mode" to override templates is deprecated since EasyAdmin 1.x and it will be removed in 2.0. Instead, use Symfony\'s template overriding mechanism and move the "%s" template to "app/Resources/EasyAdminBundle/views/default/%s" (or "templates/bundles/EasyAdminBundle/default/%s" if you use the modern Symfony dir structure). Alternatively, you can define the custom template using the "design.templates" global option or the "templates" option of your entities as explained in the docs.', $templatePath, substr($templatePath, 11), substr($templatePath, 11)), E_USER_DEPRECATED);
+                }
+
                 return $templatePath;
             }
         }

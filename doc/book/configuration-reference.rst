@@ -160,6 +160,11 @@ The name of the theme used to create the backend. The only theme available is
 called ``default``. This option is in fact a placeholder for future use. You can
 safely ignore it.
 
+.. caution::
+
+    The ``theme`` option is deprecated since 1.x version and it will be
+    removed in EasyAdmin 2.0.
+
 color_scheme
 ~~~~~~~~~~~~
 
@@ -167,8 +172,8 @@ color_scheme
 
 .. caution::
 
-    The ``light`` color scheme is deprecated since 1.x version and it will be
-    removed in EasyAdmin 2.0. Always use ``dark`` as the value of this option.
+    The ``color_scheme`` option is deprecated since 1.x version and it will be
+    removed in EasyAdmin 2.0.
 
 It defines the colors used in the backend design. If you find the default
 ``dark`` color scheme too dark, try the ``light`` color scheme. Example:

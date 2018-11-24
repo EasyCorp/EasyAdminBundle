@@ -3,8 +3,6 @@ easy_admin:
         form_theme:
             - '@App/form/custom_layout.html.twig'
             - form_div_layout.html.twig
-        theme: default
-        color_scheme: dark
         brand_color: 'hsl(230, 55%, 60%)'
         assets:
             css: {  }

@@ -15,10 +15,8 @@ config key:
 * `disabled_actions`_
 * `design`_
 
-* `theme`_
-* `color_scheme`_
-* `brand_color`_
-* `form_theme`_
+  * `brand_color`_
+  * `form_theme`_
 * `assets`_
 
   * `css`_
@@ -150,36 +148,6 @@ design
 
 This is the parent key of the options that configure the options related to the
 visual design of the backend.
-
-theme
-~~~~~
-
-(**default value**: ``'default'``, **type**: string)
-
-The name of the theme used to create the backend. The only theme available is
-called ``default``. This option is in fact a placeholder for future use. You can
-safely ignore it.
-
-.. caution::
-
-    The ``theme`` option is deprecated since 1.x version and it will be
-    removed in EasyAdmin 2.0.
-
-color_scheme
-~~~~~~~~~~~~
-
-(**default value**: ``'dark'``, **type**: string, **values**: ``'dark'``)
-
-It defines the colors used in the backend design. The only available color
-scheme is ``dark`` (the ``light`` color scheme was deprecated in the previous
-EasyAdmin version):
-
-.. code-block:: yaml
-
-    easy_admin:
-        design:
-            color_scheme: 'dark'
-        # ...
 
 brand_color
 ~~~~~~~~~~~

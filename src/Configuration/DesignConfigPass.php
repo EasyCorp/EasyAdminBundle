@@ -34,7 +34,6 @@ class DesignConfigPass implements ConfigPassInterface
     public function process(array $backendConfig)
     {
         $backendConfig = $this->processRtlLanguages($backendConfig);
-        $backendConfig = $this->processCustomCss($backendConfig);
 
         return $backendConfig;
     }
@@ -49,20 +48,6 @@ class DesignConfigPass implements ConfigPassInterface
                 $backendConfig['design']['rtl'] = false;
             }
         }
-
-        return $backendConfig;
-    }
-
-    private function processCustomCss(array $backendConfig)
-    {
-        $customCssContent = $this->container->get('twig')->render('@EasyAdmin/css/easyadmin.css.twig', [
-            'brand_color' => $backendConfig['design']['brand_color'],
-            'color_scheme' => $backendConfig['design']['color_scheme'],
-            'kernel_debug' => $this->kernelDebug,
-        ]);
-
-        $minifiedCss = preg_replace(['/\n/', '/\s{2,}/'], ' ', $customCssContent);
-        $backendConfig['_internal']['custom_css'] = $minifiedCss;
 
         return $backendConfig;
     }

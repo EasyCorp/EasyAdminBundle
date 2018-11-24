@@ -116,26 +116,9 @@ class TemplateConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['list', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
-                    // if the field defines its own template, resolve its location
-                    if (isset($fieldMetadata['template'])) {
-                        $templatePath = $fieldMetadata['template'];
-
-                        // before considering $templatePath a regular Symfony template
-                        // path, check if the given template exists in any of these directories:
-                        // * app/Resources/views/easy_admin/<entityName>/<templatePath>
-                        // * app/Resources/views/easy_admin/<templatePath>
-                        $templatePath = $this->findFirstExistingTemplate([
-                            'easy_admin/'.$entityName.'/'.$templatePath,
-                            'easy_admin/'.$templatePath,
-                            $templatePath,
-                        ]);
-                    } else {
-                        // At this point, we don't know the exact data type associated with each field.
-                        // The template is initialized to null and it will be resolved at runtime in the Configurator class
-                        $templatePath = null;
-                    }
-
-                    $entityConfig[$view]['fields'][$fieldName]['template'] = $templatePath;
+                    // if the field defines its own template, use it. Otherwise, initialize
+                    // it to null because it will be resolved at runtime in the Configurator
+                    $entityConfig[$view]['fields'][$fieldName]['template'] = $fieldMetadata['template'] ?? null;
                 }
             }
 

@@ -294,6 +294,14 @@ class NormalizerConfigPass implements ConfigPassInterface
                     // this is a form design element instead of a regular property
                     $isFormDesignElement = !isset($fieldConfig['property']) && isset($fieldConfig['type']);
                     if ($isFormDesignElement && in_array($fieldConfig['type'], array('divider', 'group', 'section', 'tab'))) {
+                        if ('divider' === $fieldConfig['type']) {
+                            @trigger_error(sprintf('The "type: divider" form design element used in the "%s" config of the "%s" entity is deprecated since EasyAdmin 1.x version and it will be removed in 2.0. Use the "type: section" design element instead.', $view, $entityName), E_USER_DEPRECATED);
+                        }
+
+                        if ('group' === $fieldConfig['type'] and isset($fieldConfig['collapsible'])) {
+                            @trigger_error(sprintf('The "collapsible" option used in a "type: group" form design element in the "%s" config of the "%s" entity is deprecated since EasyAdmin 1.x version and it will be removed in 2.0.', $view, $entityName), E_USER_DEPRECATED);
+                        }
+
                         // assign them a property name to add them later as unmapped form fields
                         $fieldConfig['property'] = $fieldName;
 

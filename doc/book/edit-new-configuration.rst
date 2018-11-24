@@ -859,10 +859,10 @@ must use a special syntax inside ``extends`` to avoid an infinite loop:
     {# templates/bundles/EasyAdminBundle/default/layout.html.twig #}
 
     {# DON'T DO THIS: it will cause an infinite loop #}
-    {% extends '@EasyAdminBundle/default/layout.html.twig' %}
+    {% extends '@EasyAdmin/default/layout.html.twig' %}
 
     {# DO THIS: the '!' symbol tells Symfony to extend from the original template #}
-    {% extends '@!EasyAdminBundle/default/layout.html.twig' %}
+    {% extends '@!EasyAdmin/default/layout.html.twig' %}
 
     {% block sidebar %}
         {# ... #}

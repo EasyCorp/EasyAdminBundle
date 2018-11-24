@@ -136,7 +136,7 @@ been published yet (their ``status`` property is ``PUBLISHED``):
 .. code-block:: twig
 
     {# templates/bundles/EasyAdminBundle/default/list.html.twig #}
-    {% extends '@!EasyAdminBundle/default/list.html.twig' %}
+    {% extends '@!EasyAdmin/default/list.html.twig' %}
 
     {% block item_actions %}
         {% set filtered_actions = {} %}

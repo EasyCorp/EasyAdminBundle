@@ -23,6 +23,8 @@ class AdvancedFormLayoutTest extends AbstractTestCase
     }
 
     /**
+     * @group legacy
+     *
      * This test checks that a complex form layout is properly generated for
      * both 'edit' and 'new' forms. Testing very specific CSS selectors and
      * HTML elements is needed to prevent regressions.

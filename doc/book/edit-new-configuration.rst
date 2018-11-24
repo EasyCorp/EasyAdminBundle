@@ -256,7 +256,7 @@ are displayed in the same order as defined in the related Doctrine entity.
     Fields that represent an association with another entity are displayed as
     ``<select>`` lists. For that reason, you must define the ``__toString()``
     magic method in any entity which is used in a Doctrine relation. Otherwise
-    you'll see the following error message:  
+    you'll see the following error message:
     ``Catchable Fatal Error: Object of class XY could not be converted to string``
 
 Virtual Properties
@@ -649,6 +649,11 @@ more advanced layouts.
 Form Dividers
 .............
 
+.. caution::
+
+    The ``divider`` form type is deprecated since 1.x version and it will
+    be removed in EasyAdmin 2.0. Use the ``section`` type instead.
+
 This is the simplest form design element. It just displays a straight horizontal
 line. It's useful to easily separate fields in long forms:
 
@@ -765,6 +770,11 @@ very advanced layouts.
         - { type: 'group', collapsible: true }
         # allow to show/hide contents and hide them by default
         - { type: 'group', collapsible: true, expanded: false }
+
+    .. caution::
+
+        The ``collapsible`` option is deprecated since 1.x version and it will
+        be removed in EasyAdmin 2.0.
 
 Form Tabs
 .........

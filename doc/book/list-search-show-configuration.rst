@@ -878,10 +878,12 @@ four templates related to ``list``, ``search`` and ``show`` views:
 
 Depending on your needs you can override these templates in different ways:
 
-* Override the templates **via configuration**, when you want to decide where
-  to store the custom templates;
-* Override the templates **via convention**, which is faster to set up because
-  you store the custom templates in a specific directory defined by EasyAdmin.
+* Override the templates **via Symfony's template overriding mechanism**. It's
+  the standard way to override templates in Symfony apps, but it's not flexible
+  enough when you want to override templates differently per entity.
+* Override the templates **via configuration**. You can define, globally or per
+  entity, which template to use to render each part of the backend. It gives you
+  unlimited flexibility, but it requires to add some config manually.
 
 Selecting the Template to Render
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -893,12 +895,10 @@ overridden it (the first template which exists is used):
 1. ``easy_admin.entities.<EntityName>.templates.<TemplateName>`` configuration
    option.
 2. ``easy_admin.design.templates.<TemplateName>`` configuration option.
-3. ``templates/easy_admin/<EntityName>/<TemplateName>.html.twig``
-4. ``templates/easy_admin/<TemplateName>.html.twig``
-5. ``@EasyAdmin/default/<TemplateName>.html.twig``
+3. ``@EasyAdmin/default/<TemplateName>.html.twig``
 
 The last one is the path of the built-in templates and they are always available.
-The following sections explain the first four ways to customize the templates
+The following sections explain the first two ways to customize the templates
 used by the backend.
 
 .. tip::
@@ -907,6 +907,43 @@ used by the backend.
     check first the variables provided by the backend to those templates. The
     easiest way to do this is to include an empty ``{{ dump() }}`` call in your
     templates.
+
+Overriding the Default Templates Using Symfony's Mechanism
+..........................................................
+
+Symfony allows to `override any part of third-party bundles`_. To override a
+template, create inside ``templates/bundles/EasyAdminBundle/default/`` a new
+template with the same path as the template to override:
+
+::
+
+    your-project/
+    ├─ ...
+    └─ templates/
+       └─ bundles/
+          └─ EasyAdminBundle/
+             └─ default/
+                ├─ list.html.twig
+                ├─ edit.html.twig
+                └─ paginator.html.twig
+
+Instead of creating the new templates from scratch, you can extend from the
+original templates and change only the parts you want to override. However, you
+must use a special syntax inside ``extends`` to avoid an infinite loop:
+
+.. code-block:: twig
+
+    {# templates/bundles/EasyAdminBundle/default/layout.html.twig #}
+
+    {# DON'T DO THIS: it will cause an infinite loop #}
+    {% extends '@EasyAdminBundle/default/layout.html.twig' %}
+
+    {# DO THIS: the '!' symbol tells Symfony to extend from the original template #}
+    {% extends '@!EasyAdminBundle/default/layout.html.twig' %}
+
+    {% block sidebar %}
+        {# ... #}
+    {% endblock %}
 
 Overriding the Default Templates By Configuration
 .................................................
@@ -939,51 +976,6 @@ option under the global ``design`` option:
                 paginator: 'admin/fragments/_paginator.html.twig'
         entities:
             # ...
-
-Overriding the Default Templates By Convention
-..............................................
-
-.. caution::
-
-    Overriding the default EasyAdmin templates by convention is deprecated since
-    1.x version and it will be removed in EasyAdmin 2.0. Instead, use Symfony's
-    template overriding mechanism or override the templates by configuration as
-    explained the previous section.
-
-If you don't mind the location of your custom templates, consider creating them
-in the ``templates/easy_admin/`` directory. When the ``templates`` option is not
-defined, EasyAdmin looks into this directory before falling back to the default
-templates.
-
-For example, to override the ``paginator`` template just for the ``Customer``
-entity, you only need to create this template in this exact location (there is
-no need to define the ``templates`` configuration option):
-
-::
-
-    your-project/
-    ├─ config
-    ├─ public/
-    ├─ templates/
-    │  └─ easy_admin/
-    │     └─ Customer/
-    │        └─ paginator.html.twig
-    ├─ src/
-    └─ vendor/
-
-In case you want to override the template for all entities, define the new
-template right under the ``easy_admin/`` directory:
-
-::
-
-    your-project/
-    ├─ config
-    ├─ public/
-    ├─ templates/
-    │  └─ easy_admin/
-    │     └─ paginator.html.twig
-    ├─ src/
-    └─ vendor/
 
 Tweaking the Design of the Default Templates
 ............................................
@@ -1063,10 +1055,7 @@ In addition, there are other templates defined to render special labels:
   happens when trying to access the value of the property.
 
 The same template overriding mechanism explained in the previous sections can be
-applied to customize the templates used to render each property. Therefore, you
-can override these templates globally or for each entity and you can do that
-defining the ``template`` configuration option or storing the templates in the
-``templates/easy_admin/`` directory.
+applied to customize the templates used to render each property.
 
 Before customizing these templates, it's recommended to check out the default
 ``field_*.html.twig`` and ``label_*.html.twig`` templates to learn about their
@@ -1106,17 +1095,11 @@ path of the custom template in the ``template`` option of the property:
                     fields:
                         - { property: 'total', template: 'invoice_total.html.twig' }
 
-The value of the ``total`` property is now rendered with ``invoice_total.html.twig``
-template instead of the default ``field_float.html.twig`` template. As usual,
-EasyAdmin first looks for custom templates in the following locations (the first
-existing template is used):
-
-1. ``templates/easy_admin/<EntityName>/<TemplateOptionValue>``
-2. ``templates/easy_admin/<TemplateOptionValue>``
-
-If none of these templates exist, the value of the ``template`` option is
-considered the full Symfony template path (e.g. ``template: 'foo.html.twig'``
-will turn into the ``templates/foo.html.twig`` Twig template).
+The value of ``total`` is now rendered with ``invoice_total.html.twig`` template
+instead of the default ``field_float.html.twig`` template. The ``template``
+option is considered the full Symfony template path, so you can use any valid
+Twig template name (e.g. ``template: 'foo.html.twig'`` will turn into the
+``templates/foo.html.twig`` Twig template).
 
 Custom templates receive the same parameters as built-in templates
 (``field_options``, ``item``, ``value`` and ``view``).
@@ -1124,6 +1107,7 @@ Custom templates receive the same parameters as built-in templates
 .. _`date configuration options`: http://php.net/manual/en/function.date.php
 .. _`PHP format specifiers`: http://php.net/manual/en/function.sprintf.php
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
+.. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
 
 -----
 

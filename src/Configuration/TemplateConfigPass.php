@@ -92,18 +92,15 @@ class TemplateConfigPass implements ConfigPassInterface
         // first, resolve the general template overriding mechanism
         // 1st level priority: easy_admin.entities.<entityName>.templates.<templateName> config option
         // 2nd level priority: easy_admin.design.templates.<templateName> config option
-        // 3rd level priority: app/Resources/views/easy_admin/<entityName>/<templateName>.html.twig
-        // 4th level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-        // 5th level priority: @EasyAdmin/default/<templateName>.html.twig
+        // 3rd level priority: @EasyAdmin/default/<templateName>.html.twig
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
                 $candidateTemplates = [
-                    isset($entityConfig['templates'][$templateName]) ? $entityConfig['templates'][$templateName] : null,
-                    isset($backendConfig['design']['templates'][$templateName]) ? $backendConfig['design']['templates'][$templateName] : null,
-                    'easy_admin/'.$entityName.'/'.$templateName.'.html.twig',
-                    'easy_admin/'.$templateName.'.html.twig',
+                    $entityConfig['templates'][$templateName] ?? null,
+                    $backendConfig['design']['templates'][$templateName] ?? null,
+                    $defaultTemplatePath,
                 ];
-                $templatePath = $this->findFirstExistingTemplate($candidateTemplates) ?: $defaultTemplatePath;
+                $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
 
                 if (null === $templatePath) {
                     throw new \RuntimeException(sprintf('None of the templates defined for the "%s" fragment of the "%s" entity exists (templates defined: %s).', $templateName, $entityName, implode(', ', $candidateTemplates)));
@@ -162,14 +159,13 @@ class TemplateConfigPass implements ConfigPassInterface
     private function processDefaultTemplates(array $backendConfig)
     {
         // 1st level priority: easy_admin.design.templates.<templateName> config option
-        // 2nd level priority: app/Resources/views/easy_admin/<templateName>.html.twig
-        // 3rd level priority: @EasyAdmin/default/<templateName>.html.twig
+        // 2nd level priority: @EasyAdmin/default/<templateName>.html.twig
         foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
             $candidateTemplates = [
-                isset($backendConfig['design']['templates'][$templateName]) ? $backendConfig['design']['templates'][$templateName] : null,
-                'easy_admin/'.$templateName.'.html.twig',
+                $backendConfig['design']['templates'][$templateName] ?? null,
+                $defaultTemplatePath,
             ];
-            $templatePath = $this->findFirstExistingTemplate($candidateTemplates) ?: $defaultTemplatePath;
+            $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
 
             if (null === $templatePath) {
                 throw new \RuntimeException(sprintf('None of the templates defined for the global "%s" template of the backend exists (templates defined: %s).', $templateName, implode(', ', $candidateTemplates)));
@@ -263,15 +259,6 @@ class TemplateConfigPass implements ConfigPassInterface
             }
 
             if (null !== $templatePath && isset($this->existingTemplates[$namespace][$templatePath])) {
-                if ('easy_admin/' === substr($templatePath, 0, 11)) {
-                    $templateRelativePath = substr($templatePath, 11);
-                    if ($isFieldTemplateFragment) {
-                        @trigger_error(sprintf('Using the "convention mode" to define the template fragment used to render fields in list/search/show views is deprecated since EasyAdmin 1.x and it will be removed in 2.0. Instead of using "template: \'%s\'" in your backend config, move the template for example to "app/Resources/views/admin/%s" (or "templates/admin/%s" if you use the modern Symfony dir structure) and use "template: \'admin/%s\'" in your config (instead of "admin/" you can put your templates in any other location and use any valid Twig template path as explained in the docs).', $templateRelativePath, $templateRelativePath, $templateRelativePath, $templateRelativePath), E_USER_DEPRECATED);
-                    } elseif (!$isFieldTemplateFragment) {
-                        @trigger_error(sprintf('Using the "convention mode" to override templates is deprecated since EasyAdmin 1.x and it will be removed in 2.0. Instead, use Symfony\'s template overriding mechanism and move the "%s" template to "app/Resources/EasyAdminBundle/views/default/%s" (or "templates/bundles/EasyAdminBundle/default/%s" if you use the modern Symfony dir structure). Alternatively, you can define the custom template using the "design.templates" global option or the "templates" option of your entities as explained in the docs.', $templatePath, $templateRelativePath, $templateRelativePath), E_USER_DEPRECATED);
-                    }
-                }
-
                 return $templatePath;
             }
         }

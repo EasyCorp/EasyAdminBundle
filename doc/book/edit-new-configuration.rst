@@ -639,7 +639,7 @@ Form Sections
 .............
 
 This design element helps you divide a long form into different sections using
-a subtle divider line. They are defined with elements of type ``section``:
+a subtle line. They are defined with elements of type ``section``:
 
 .. code-block:: yaml
 
@@ -776,7 +776,7 @@ Design elements can be combined to display sections inside groups and create
 advanced layouts:
 
 .. image:: ../images/easyadmin-form-complex-layout.png
-   :alt: A complex form layout combining dividers, sections and groups
+   :alt: A complex form layout combining sections and groups
 
 Advanced Design Configuration
 -----------------------------

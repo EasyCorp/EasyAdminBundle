@@ -165,6 +165,11 @@ color_scheme
 
 (**default value**: ``'dark'``, **type**: string, **values**: ``'dark'`` or ``'light'``)
 
+.. caution::
+
+    The ``light`` color scheme is deprecated since 1.x version and it will be
+    removed in EasyAdmin 2.0. Always use ``dark`` as the value of this option.
+
 It defines the colors used in the backend design. If you find the default
 ``dark`` color scheme too dark, try the ``light`` color scheme. Example:
 
@@ -174,11 +179,6 @@ It defines the colors used in the backend design. If you find the default
         design:
             color_scheme: 'light'
         # ...
-
-.. caution::
-
-    The ``light`` color scheme is deprecated since 1.x version and it will be
-    removed in EasyAdmin 2.0. Always use ``dark`` as the value of this option.
 
 brand_color
 ~~~~~~~~~~~
@@ -204,6 +204,11 @@ form_theme
 
 (**default value**: ``'horizontal'``, **type**: string or array of strings,
 **values**: ``'horizontal'``, ``'vertical'``, any valid form theme template path)
+
+.. caution::
+
+    The ``horizontal`` and ``vertical`` form theme shortcuts are deprecated
+    since 1.x version and they will be removed in EasyAdmin 2.0.
 
 The form theme used to render the form fields in the ``edit`` and ``new`` views.
 The default ``'horizontal'`` value is a shortcut of ``@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig``

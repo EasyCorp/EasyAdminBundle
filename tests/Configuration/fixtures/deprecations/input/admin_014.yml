@@ -1,6 +1,6 @@
 # TEST
-# the 'vertical' shortcut of 'form_theme' option is correctly transformed into
-# the full form theme path
+# the deprecated 'vertical' shortcut of 'form_theme' option is correctly transformed
+# into the full form theme path
 
 # CONFIGURATION
 easy_admin:

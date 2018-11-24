@@ -256,7 +256,7 @@ are displayed in the same order as defined in the related Doctrine entity.
     Fields that represent an association with another entity are displayed as
     ``<select>`` lists. For that reason, you must define the ``__toString()``
     magic method in any entity which is used in a Doctrine relation. Otherwise
-    you'll see the following error message:  
+    you'll see the following error message:
     ``Catchable Fatal Error: Object of class XY could not be converted to string``
 
 Virtual Properties
@@ -567,6 +567,11 @@ The same form shown previously will now be rendered as follows:
 
 .. image:: ../images/easyadmin-form-vertical.png
    :alt: Vertical form style
+
+.. caution::
+
+    The ``horizontal`` and ``vertical`` form theme shortcuts are deprecated
+    since 1.x version and they will be removed in EasyAdmin 2.0.
 
 The ``horizontal`` and ``vertical`` values are just nice shortcuts for the two
 built-in form themes. But you can also use your own form themes:

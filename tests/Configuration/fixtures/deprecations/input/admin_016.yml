@@ -1,5 +1,5 @@
 # TEST
-# the 'light' color scheme can be selected
+# the color_scheme option is deprecated
 
 # CONFIGURATION
 easy_admin:

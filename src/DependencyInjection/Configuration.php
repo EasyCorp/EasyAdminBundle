@@ -293,14 +293,16 @@ class Configuration implements ConfigurationInterface
                             ->validate()
                                 ->ifArray()->then(function ($values) {
                                     foreach ($values as $k => $v) {
-                                        $deprecationMessage = sprintf('The "%s" form theme shortcut is deprecated since EasyAdmin 1.x version and it will be removed in 2.0. Remove "%s" from the "design.form_theme" config option.', $v, $v);
-
                                         if ('horizontal' === $v) {
-                                            @trigger_error($deprecationMessage, E_USER_DEPRECATED);
+                                            @trigger_error(printf('The "%s" form theme shortcut is deprecated since EasyAdmin 1.x version and it will be removed in 2.0. Remove "%s" from the "design.form_theme" config option.', $v, $v), E_USER_DEPRECATED);
                                             $values[$k] = '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig';
                                         } elseif ('vertical' === $v) {
-                                            @trigger_error($deprecationMessage, E_USER_DEPRECATED);
+                                            @trigger_error(printf('The "%s" form theme shortcut is deprecated since EasyAdmin 1.x version and it will be removed in 2.0. Remove "%s" from the "design.form_theme" config option.', $v, $v), E_USER_DEPRECATED);
                                             $values[$k] = '@EasyAdmin/form/bootstrap_3_layout.html.twig';
+                                        } elseif ('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig' === $v) {
+                                            @trigger_error(printf('The "%s" form theme is deprecated since EasyAdmin 1.x version and it will be removed in 2.0. Remove "%s" from the "design.form_theme" config option.', $v, $v), E_USER_DEPRECATED);
+                                        } elseif ('@EasyAdmin/form/bootstrap_3_layout.html.twig' === $v) {
+                                            @trigger_error(printf('The "%s" form theme is deprecated since EasyAdmin 1.x version and it will be removed in 2.0. Remove "%s" from the "design.form_theme" config option.', $v, $v), E_USER_DEPRECATED);
                                         }
                                     }
 

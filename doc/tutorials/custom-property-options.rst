@@ -69,14 +69,15 @@ and ``domain`` options:
 
 .. code-block:: twig
 
-    {# templates/easy_admin/field_string.html.twig #}
+    {# templates/bundles/EasyAdminBundle/default/field_string.html.twig #}
+    {% extends '@!EasyAdminBundle/default/field_string.html.twig' %}
 
     {% if field_options.trans|default(false) %}
         {# translate fields defined as "translatable" #}
         {{ value|trans({}, field_options.domain|default('messages')) }}
     {% else %}
         {# if not translatable, simply include the default template #}
-        {{ include('@EasyAdmin/default/field_string.html.twig') }}
+        {{ parent() }}
     {% endif %}
 
 If the custom logic is too complex, it may be better to render the property with
@@ -98,14 +99,14 @@ for this property and make use of the ``label_colors`` custom option:
                 list:
                     fields:
                         # ...
-                        - { property: 'tags', template: 'tag_collection.html.twig',
+                        - { property: 'tags', template: 'admin/tag_collection.html.twig',
                             label_colors: ['primary', 'success', 'info'] }
 
 The custom ``tag_collection.html.twig`` template would look as follows:
 
 .. code-block:: twig
 
-    {# templates/easy_admin/tag_collection.html.twig #}
+    {# templates/admin/tag_collection.html.twig #}
     {% set colors = field_options.label_colors|default(['primary']) %}
 
     {% for tag in value %}

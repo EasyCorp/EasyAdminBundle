@@ -15,6 +15,6 @@ class OverridingEasyAdminController extends Controller
      */
     public function overrideLayout()
     {
-        return $this->render('override_templates/layout.html.twig');
+        return $this->render('override_controller/layout.html.twig');
     }
 }

@@ -1,5 +1,5 @@
-Integrating IvoryCKEditorBundle to Create a WYSIWYG Editor
-==========================================================
+Integrating FOSCKEditorBundle to Create a WYSIWYG Editor
+========================================================
 
 EasyAdmin uses a ``<textarea>`` form field to render long text properties:
 
@@ -14,15 +14,15 @@ Installing the Rich Text Editor
 -------------------------------
 
 The recommended WYSIWYG editor is called `CKEditor`_ and you can integrate it
-thanks to the `IvoryCKEditorBundle`_:
+thanks to the `FOSCKEditorBundle`_:
 
 1) Install the bundle:
 
 .. code-block:: terminal
 
-    $ composer require egeloen/ckeditor-bundle
+    $ composer require friendsofsymfony/ckeditor-bundle
 
-2) install CKEditor:
+2) Install CKEditor:
 
 .. code-block:: terminal
 
@@ -37,7 +37,7 @@ thanks to the `IvoryCKEditorBundle`_:
 Using the Rich Text Editor
 --------------------------
 
-IvoryCKEditorBundle provides a new form type called ``ckeditor``. Just set the
+FOSCKEditorBundle provides a new form type called ``fos_ckeditor``. Set the
 ``type`` option of any property to this value to display its contents using a
 rich text editor:
 
@@ -51,12 +51,12 @@ rich text editor:
                 form:
                     fields:
                         # ...
-                        - { property: 'description', type: 'ckeditor' }
+                        - { property: 'description', type: 'fos_ckeditor' }
 
 .. tip::
 
     Even if your application uses Symfony 3 there is no need to use the FQCN of
-    the ``CKEditorType`` (``type: 'Ivory\CKEditorBundle\Form\Type\CKEditorType'``)
+    the ``CKEditorType`` (``type: 'FOS\CKEditorBundle\Form\Type\CKEditorType'``)
     because EasyAdmin supports the short types for some popular third-party bundles.
 
 Now, the ``description`` property will be rendered as a rich text editor and not as
@@ -70,12 +70,12 @@ Customizing the Rich Text Editor
 
 EasyAdmin tweaks some CKEditor settings to improve the user experience. In case
 you need further customization, configure the editor globally in your Symfony
-application under the ``ivory_ck_editor`` option. For example:
+application under the ``fos_ck_editor`` option. For example:
 
 .. code-block:: yaml
 
-    # config/packages/ivory_ck_editor.yaml
-    ivory_ck_editor:
+    # config/packages/fos_ck_editor.yaml
+    fos_ck_editor:
         input_sync: true
         default_config: base_config
         configs:
@@ -91,7 +91,7 @@ application under the ``ivory_ck_editor`` option. For example:
                 form:
                     fields:
                         # ...
-                        - { property: 'description', type: 'ckeditor' }
+                        - { property: 'description', type: 'fos_ckeditor' }
 
 In this example, the toolbar is simplified to display just a few common options:
 
@@ -111,7 +111,7 @@ setting of the property:
                 form:
                     fields:
                         # ...
-                        - { property: 'description', type: 'ckeditor', type_options: { 'config': { 'toolbar': [ { name: 'styles', items: ['Bold', 'Italic', 'BulletedList', 'Link'] } ] } } }
+                        - { property: 'description', type: 'fos_ckeditor', type_options: { 'config': { 'toolbar': [ { name: 'styles', items: ['Bold', 'Italic', 'BulletedList', 'Link'] } ] } } }
 
 This inline configuration is very hard to maintain, so it's recommended to use
 the global configuration instead. You can even combine both to define the toolbars
@@ -119,8 +119,8 @@ globally and then select the toolbar to use in each property:
 
 .. code-block:: yaml
 
-    # config/packages/ivory_ck_editor.yaml
-    ivory_ck_editor:
+    # config/packages/fos_ck_editor.yaml
+    fos_ck_editor:
         input_sync: true
         default_config: simple_config
         configs:
@@ -139,9 +139,9 @@ globally and then select the toolbar to use in each property:
                 form:
                     fields:
                         # ...
-                        - { property: 'excerpt', type: 'ckeditor',
+                        - { property: 'excerpt', type: 'fos_ckeditor',
                             type_options: { config_name: 'simple_config' } }
-                        - { property: 'description', type: 'ckeditor',
+                        - { property: 'description', type: 'fos_ckeditor',
                             type_options: { config_name: 'advanced_config' } }
 
 Check out the original CKEditor documentation to get
@@ -170,7 +170,7 @@ page loaded by EasyAdmin:
                     # ...
 
 .. _`CKEditor`: http://ckeditor.com/
-.. _`IvoryCKEditorBundle`: https://github.com/egeloen/IvoryCKEditorBundle
+.. _`FOSCKEditorBundle`: https://github.com/FriendsOfSymfony/FOSCKEditorBundle
 .. _`its full list of configuration options`: http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html
 .. _`CKFinder`: https://cksource.com/ckfinder
 .. _`CKEditor integration docs`: https://docs.ckeditor.com/ckeditor4/docs/#!/guide/dev_ckfinder_integration

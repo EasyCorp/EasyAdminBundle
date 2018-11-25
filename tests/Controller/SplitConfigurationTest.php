@@ -28,6 +28,9 @@ class SplitConfigurationTest extends AbstractTestCase
         $this->assertSame('blue', $backendConfig['design']['brand_color']);
     }
 
+    /**
+     * @group legacy
+     */
     public function testConfigurationErrorsInDifferentFiles()
     {
         if (method_exists($this, 'expectException')) {

@@ -145,7 +145,7 @@ class TemplateConfigPass implements ConfigPassInterface
                             'easy_admin/'.$entityName.'/'.$templatePath,
                             'easy_admin/'.$templatePath,
                             $templatePath,
-                        ));
+                        ), true);
                     } else {
                         // At this point, we don't know the exact data type associated with each field.
                         // The template is initialized to null and it will be resolved at runtime in the Configurator class
@@ -241,7 +241,7 @@ class TemplateConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function findFirstExistingTemplate(array $templatePaths)
+    private function findFirstExistingTemplate(array $templatePaths, bool $isFieldTemplateFragment = false)
     {
         foreach ($templatePaths as $templatePath) {
             // template name normalization code taken from \Twig_Loader_Filesystem::normalizeName()
@@ -278,7 +278,12 @@ class TemplateConfigPass implements ConfigPassInterface
 
             if (null !== $templatePath && isset($this->existingTemplates[$namespace][$templatePath])) {
                 if ('easy_admin/' === substr($templatePath, 0, 11)) {
-                    @trigger_error(sprintf('Using the "convention mode" to override templates is deprecated since EasyAdmin 1.x and it will be removed in 2.0. Instead, use Symfony\'s template overriding mechanism and move the "%s" template to "app/Resources/EasyAdminBundle/views/default/%s" (or "templates/bundles/EasyAdminBundle/default/%s" if you use the modern Symfony dir structure). Alternatively, you can define the custom template using the "design.templates" global option or the "templates" option of your entities as explained in the docs.', $templatePath, substr($templatePath, 11), substr($templatePath, 11)), E_USER_DEPRECATED);
+                    $templateRelativePath = substr($templatePath, 11);
+                    if ($isFieldTemplateFragment) {
+                        @trigger_error(sprintf('Using the "convention mode" to define the template fragment used to render fields in list/search/show views is deprecated since EasyAdmin 1.x and it will be removed in 2.0. Instead of using "template: \'%s\'" in your backend config, move the template for example to "app/Resources/views/admin/%s" (or "templates/admin/%s" if you use the modern Symfony dir structure) and use "template: \'admin/%s\'" in your config (instead of "admin/" you can put your templates in any other location and use any valid Twig template path as explained in the docs).', $templateRelativePath, $templateRelativePath, $templateRelativePath, $templateRelativePath), E_USER_DEPRECATED);
+                    } elseif (!$isFieldTemplateFragment) {
+                        @trigger_error(sprintf('Using the "convention mode" to override templates is deprecated since EasyAdmin 1.x and it will be removed in 2.0. Instead, use Symfony\'s template overriding mechanism and move the "%s" template to "app/Resources/EasyAdminBundle/views/default/%s" (or "templates/bundles/EasyAdminBundle/default/%s" if you use the modern Symfony dir structure). Alternatively, you can define the custom template using the "design.templates" global option or the "templates" option of your entities as explained in the docs.', $templatePath, $templateRelativePath, $templateRelativePath), E_USER_DEPRECATED);
+                    }
                 }
 
                 return $templatePath;

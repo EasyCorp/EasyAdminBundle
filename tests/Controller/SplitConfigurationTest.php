@@ -19,6 +19,9 @@ class SplitConfigurationTest extends AbstractTestCase
         $this->assertSame('blue', $backendConfig['design']['brand_color']);
     }
 
+    /**
+     * @group legacy
+     */
     public function testConfigurationErrorsInDifferentFiles()
     {
         $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');

@@ -101,6 +101,13 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('theme')
                             ->defaultValue('default')
                             ->info('The theme used to render the backend pages. For now this value can only be "default".')
+                            ->beforeNormalization()
+                                ->always(function ($v) {
+                                    @trigger_error('The "design.theme" option is deprecated since EasyAdmin 1.x version and it will be removed in 2.0.', E_USER_DEPRECATED);
+
+                                    return $v;
+                                })
+                            ->end()
                             ->validate()
                                 ->ifNotInArray(['default'])
                                 ->thenInvalid('The theme name can only be "default".')

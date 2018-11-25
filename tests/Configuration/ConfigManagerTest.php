@@ -27,6 +27,7 @@ class ConfigManagerTest extends TestCase
     }
 
     /**
+     * @group legacy
      * @dataProvider provideConfigExceptionFilePaths
      */
     public function testBackendExceptions($backendConfigFilePath)

@@ -349,6 +349,7 @@ class AdminController extends Controller
         $query = trim($this->request->query->get('query'));
         // if the search query is empty, redirect to the 'list' action
         if ('' === $query) {
+            $this->request->query->remove('query');
             $this->request->query->set('action', 'list');
             return $this->redirect($this->get('router')->generate('easyadmin', $this->request->query->all()));
         }

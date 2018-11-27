@@ -16,7 +16,7 @@ class ActionOverrideTest extends AbstractTestCase
     public function testListViewActions()
     {
         $crawler = $this->requestListView();
-dump($this->client->getResponse()->getContent());exit;
+
         $this->assertCount(15, $crawler->filter('table a:contains("Edit")'));
     }
 

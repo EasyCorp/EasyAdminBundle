@@ -26,7 +26,7 @@ matrix:
           # Test the latest stable release
         - php: 7.1
         - php: 7.2
-          env: CHECK_PHP_SYNTAX="true"
+          #env: CHECK_PHP_SYNTAX="true"
 
           # Latest commit to master
         - php: 7.2

@@ -43,7 +43,7 @@
             <div class="col-sm-10 col-sm-offset-2">
             {% block item_actions %}
                 {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
-                {% set _request_parameters = { entity: _entity_config.name, referer: app.request.query.get('referer') } %}
+                {% set _request_parameters = app.request.query.all %}
 
                 {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
                     actions: _show_actions,

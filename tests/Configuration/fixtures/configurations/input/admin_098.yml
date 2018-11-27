@@ -1,9 +1,0 @@
-# TEST
-# a 'null' color scheme is transformed into the default 'dark' color scheme
-
-# CONFIGURATION
-easy_admin:
-    design:
-        color_scheme: null
-    entities:
-        - AppTestBundle\Entity\UnitTests\Category

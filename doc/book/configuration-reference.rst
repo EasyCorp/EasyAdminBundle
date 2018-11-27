@@ -15,10 +15,8 @@ config key:
 * `disabled_actions`_
 * `design`_
 
-* `theme`_
-* `color_scheme`_
-* `brand_color`_
-* `form_theme`_
+  * `brand_color`_
+  * `form_theme`_
 * `assets`_
 
   * `css`_
@@ -151,36 +149,6 @@ design
 This is the parent key of the options that configure the options related to the
 visual design of the backend.
 
-theme
-~~~~~
-
-(**default value**: ``'default'``, **type**: string)
-
-The name of the theme used to create the backend. The only theme available is
-called ``default``. This option is in fact a placeholder for future use. You can
-safely ignore it.
-
-.. caution::
-
-    The ``theme`` option is deprecated since 1.x version and it will be
-    removed in EasyAdmin 2.0.
-
-color_scheme
-~~~~~~~~~~~~
-
-(**default value**: ``'dark'``, **type**: string, **values**: ``'dark'``)
-
-It defines the colors used in the backend design. The only available color
-scheme is ``dark`` (the ``light`` color scheme was deprecated in the previous
-EasyAdmin version):
-
-.. code-block:: yaml
-
-    easy_admin:
-        design:
-            color_scheme: 'dark'
-        # ...
-
 brand_color
 ~~~~~~~~~~~
 
@@ -206,11 +174,6 @@ form_theme
 (**default value**: ``'@EasyAdmin/form/bootstrap_4.html.twig'``, **type**: string or array of strings,
 **values**: any valid form theme template path)
 
-.. caution::
-
-    The ``horizontal`` and ``vertical`` form theme shortcuts are deprecated
-    since 1.x version and they will be removed in EasyAdmin 2.0.
-
 The form theme used to render the form fields in the ``edit`` and ``new`` views.
 By default forms use the design created by EasyAdmin, buy you can use your own
 form themes and the default Symfony form theme for Bootstrap 4 too:
@@ -219,17 +182,14 @@ form themes and the default Symfony form theme for Bootstrap 4 too:
 
     easy_admin:
         design:
+            # using your own custom form theme
             form_theme: '@App/custom_form_theme.html.twig'
-        # ...
 
-You can even use several form themes at the same time. Example:
-
-.. code-block:: yaml
-
-    easy_admin:
-        design:
+            # using multiple custom form themes
             form_theme: ['@App/custom_form_theme.html.twig', '@Acme/form/global_theme.html.twig']
-        # ...
+
+            # using EasyAdmin theme and your own custom theme
+            form_theme: ['@EasyAdmin/form/bootstrap_4.html.twig', '@App/custom_form_theme.html.twig']
 
 assets
 ~~~~~~
@@ -510,78 +470,3 @@ entities
 (**default value**: empty array, **type**: array)
 
 Defines the list of entities managed by the bundle.
-
-Deprecated Configuration Options
---------------------------------
-
-EasyAdmin handles deprecated options transparently, so your backend will keep
-working even if your configuration is outdated. However, it's a good practice to
-not use these deprecated options:
-
-list_actions
-~~~~~~~~~~~~
-
-.. code-block:: yaml
-
-    # DEPRECATED
-    easy_admin:
-        list_actions: ['new', 'edit']
-        # ...
-
-    # USE THIS INSTEAD
-    easy_admin:
-        list:
-            actions: ['new', 'edit']
-        # ...
-
-list_max_results
-~~~~~~~~~~~~~~~~
-
-.. code-block:: yaml
-
-    # DEPRECATED
-    easy_admin:
-        list_max_results: 20
-        # ...
-
-    # USE THIS INSTEAD
-    easy_admin:
-        list:
-            max_results: 20
-        # ...
-
-assets.css
-~~~~~~~~~~
-
-.. code-block:: yaml
-
-    # DEPRECATED
-    easy_admin:
-        assets:
-            css: ['/bundles/app/custom_backend.css']
-        # ...
-
-    # USE THIS INSTEAD
-    easy_admin:
-        design:
-            assets:
-                css: ['/bundles/app/custom_backend.css']
-        # ...
-
-assets.js
-.........
-
-.. code-block:: yaml
-
-    # DEPRECATED
-    easy_admin:
-        assets:
-            js: ['/bundles/app/custom_widgets.js']
-        # ...
-
-    # USE THIS INSTEAD
-    easy_admin:
-        design:
-            assets:
-                js: ['/bundles/app/custom_widgets.js']
-        # ...

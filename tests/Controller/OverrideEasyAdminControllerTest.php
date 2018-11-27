@@ -4,13 +4,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
-class OverrideEasyAdminTemplateTest extends AbstractTestCase
+class OverrideEasyAdminControllerTest extends AbstractTestCase
 {
     public function setUp()
     {
         parent::setUp();
 
-        $this->initClient(['environment' => 'override_templates']);
+        $this->initClient(['environment' => 'override_controller']);
     }
 
     public function testLayoutIsOverridden()

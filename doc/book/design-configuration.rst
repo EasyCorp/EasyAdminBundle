@@ -239,7 +239,7 @@ section to learn more about it.
 In read-write pages (``edit`` and ``new``) EasyAdmin relies on Symfony's Form
 component to render contents, so you'll need to create a new form theme to
 override the default design. In addition, this bundle defines some elements not
-available by default in Symfony (form tabs, fieldsets, dividers, etc.) so you
+available by default in Symfony (form tabs, fieldsets, sections, etc.) so you
 can create complex forms. Read the :ref:`Advanced Form Design <edit-new-advanced-form-design>`
 section to learn more about it.
 

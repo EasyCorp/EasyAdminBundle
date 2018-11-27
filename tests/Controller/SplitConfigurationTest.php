@@ -25,7 +25,7 @@ class SplitConfigurationTest extends AbstractTestCase
     public function testConfigurationErrorsInDifferentFiles()
     {
         $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
-        $this->expectExceptionMessage('The value "wrong_value" is not allowed for path "easy_admin.design.color_scheme". Permissible values: "dark"');
+        $this->expectExceptionMessage('Invalid type for path "easy_admin.design.rtl". Expected boolean, but got integer.');
 
         $this->initClient(['environment' => 'split_configuration_error']);
     }

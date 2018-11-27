@@ -14,8 +14,6 @@ easy_admin:
             favicon:
                 path: favicon.ico
                 mime_type: image/x-icon
-        theme: default
-        color_scheme: dark
         brand_color: 'hsl(230, 55%, 60%)'
         form_theme:
             - '@EasyAdmin/form/bootstrap_4.html.twig'

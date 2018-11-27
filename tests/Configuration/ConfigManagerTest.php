@@ -49,14 +49,8 @@ class ConfigManagerTest extends TestCase
 
     public function provideConfigFilePaths()
     {
-        $inputs = array_merge(
-            glob(__DIR__.'/fixtures/configurations/input/admin_*.yml'),
-            glob(__DIR__.'/fixtures/templates/*/input/admin_*.yml')
-        );
-        $outputs = array_merge(
-            glob(__DIR__.'/fixtures/configurations/output/config_*.yml'),
-            glob(__DIR__.'/fixtures/templates/*/output/config_*.yml')
-        );
+        $inputs = glob(__DIR__.'/fixtures/configurations/input/admin_*.yml');
+        $outputs = glob(__DIR__.'/fixtures/configurations/output/config_*.yml');
 
         return array_map(null, $inputs, $outputs);
     }

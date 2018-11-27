@@ -606,7 +606,7 @@ requires to know the `form fragment naming rules`_ defined by Symfony:
 
 .. code-block:: twig
 
-    {# easy_admin/form.html.twig #}
+    {# templates/admin/form.html.twig #}
     {% block _product_custom_title_widget %}
         {# ... #}
         <a href="...">More information</a>
@@ -625,7 +625,7 @@ Finally, add this custom theme to the list of themes used to render backend form
                 # the following Twig template can be located anywhere in the application.
                 # it can also be added to the twig.form_themes option to use it in the
                 # entire application, not only the backend
-                - 'easy_admin/form.html.twig'
+                - 'admin/form.html.twig'
 
 Customizing the Form Layout
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -639,7 +639,7 @@ Form Sections
 .............
 
 This design element helps you divide a long form into different sections using
-a subtle divider line. They are defined with elements of type ``section``:
+a subtle line. They are defined with elements of type ``section``:
 
 .. code-block:: yaml
 
@@ -776,7 +776,7 @@ Design elements can be combined to display sections inside groups and create
 advanced layouts:
 
 .. image:: ../images/easyadmin-form-complex-layout.png
-   :alt: A complex form layout combining dividers, sections and groups
+   :alt: A complex form layout combining sections and groups
 
 Advanced Design Configuration
 -----------------------------
@@ -802,10 +802,12 @@ four templates related to ``edit`` and ``new`` views:
 
 Depending on your needs you can override these templates in different ways:
 
-* Override the templates **via configuration**, when you want to decide where
-  to store the custom templates;
-* Override the templates **via convention**, which is faster to set up because
-  you store the custom templates in a specific directory defined by EasyAdmin.
+* Override the templates **via Symfony's template overriding mechanism**. It's
+  the standard way to override templates in Symfony apps, but it's not flexible
+  enough when you want to override templates differently per entity.
+* Override the templates **via configuration**. You can define, globally or per
+  entity, which template to use to render each part of the backend. It gives you
+  unlimited flexibility, but it requires to add some config manually.
 
 Selecting the Template to Render
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -817,12 +819,10 @@ overridden it (the first template which exists is used):
 1. ``easy_admin.entities.<EntityName>.templates.<TemplateName>`` configuration
    option.
 2. ``easy_admin.design.templates.<TemplateName>`` configuration option.
-3. ``templates/easy_admin/<EntityName>/<TemplateName>.html.twig``
-4. ``templates/easy_admin/<TemplateName>.html.twig``
-5. ``@EasyAdmin/default/<TemplateName>.html.twig``
+3. ``@EasyAdmin/default/<TemplateName>.html.twig``
 
 The last one is the path of the built-in templates and they are always available.
-The following sections explain the first four ways to customize the templates
+The following sections explain the first two ways to customize the templates
 used by the backend.
 
 .. tip::
@@ -831,6 +831,42 @@ used by the backend.
     check first the variables provided by the backend to those templates. The
     easiest way to do this is to include an empty ``{{ dump() }}`` call in your
     templates.
+
+Overriding the Default Templates Using Symfony's Mechanism
+..........................................................
+
+Symfony allows to `override any part of third-party bundles`_. To override a
+template, create inside ``templates/bundles/EasyAdminBundle/default/`` a new
+template with the same path as the template to override:
+
+::
+
+    your-project/
+    ├─ ...
+    └─ templates/
+       └─ bundles/
+          └─ EasyAdminBundle/
+             └─ default/
+                ├─ new.html.twig
+                └─ edit.html.twig
+
+Instead of creating the new templates from scratch, you can extend from the
+original templates and change only the parts you want to override. However, you
+must use a special syntax inside ``extends`` to avoid an infinite loop:
+
+.. code-block:: twig
+
+    {# templates/bundles/EasyAdminBundle/default/layout.html.twig #}
+
+    {# DON'T DO THIS: it will cause an infinite loop #}
+    {% extends '@EasyAdmin/default/layout.html.twig' %}
+
+    {# DO THIS: the '!' symbol tells Symfony to extend from the original template #}
+    {% extends '@!EasyAdmin/default/layout.html.twig' %}
+
+    {% block sidebar %}
+        {# ... #}
+    {% endblock %}
 
 Overriding the Default Templates By Configuration
 .................................................
@@ -865,56 +901,12 @@ option under the global ``design`` option:
         entities:
             # ...
 
-Overriding the Default Templates By Convention
-..............................................
-
-.. caution::
-
-    Overriding the default EasyAdmin templates by convention is deprecated since
-    1.x version and it will be removed in EasyAdmin 2.0. Instead, use Symfony's
-    template overriding mechanism or override the templates by configuration as
-    explained the previous section.
-
-If you don't mind the location of your custom templates, consider creating them
-in the ``templates/easy_admin/`` directory. When the ``templates`` option is not
-defined, EasyAdmin looks into this directory before falling back to the default
-templates.
-
-For example, to override the ``edit`` template just for the ``Customer`` entity,
-you only need to create this template in this exact location (there is no need
-to define the ``templates`` configuration option):
-
-::
-
-    your-project/
-    ├─ config
-    ├─ public/
-    ├─ templates/
-    │  └─ easy_admin/
-    │     └─ Customer/
-    │        └─ edit.html.twig
-    ├─ src/
-    └─ vendor/
-
-In case you want to override the template for all entities, define the new
-template right under the ``easy_admin/`` directory:
-
-::
-
-    your-project/
-    ├─ config
-    ├─ public/
-    ├─ templates/
-    │  └─ easy_admin/
-    │     └─ edit.html.twig
-    ├─ src/
-    └─ vendor/
-
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
 .. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks
+.. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
 
 -----
 

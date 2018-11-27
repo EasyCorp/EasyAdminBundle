@@ -1,8 +1,0 @@
-easy_admin:
-    entities:
-        Category:
-            templates:
-                edit: custom_templates/my_template.html.twig
-    design:
-        templates:
-            edit: '@EasyAdmin/default/edit.html.twig'

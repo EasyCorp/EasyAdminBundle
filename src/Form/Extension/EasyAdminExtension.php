@@ -72,4 +72,13 @@ class EasyAdminExtension extends AbstractTypeExtension
     {
         return FormTypeHelper::getTypeClass('form');
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getExtendedTypes()
+    {
+        // needed to avoid a deprecation when using Symfony 4.2
+        return array(LegacyFormHelper::getType('form'));
+    }
 }

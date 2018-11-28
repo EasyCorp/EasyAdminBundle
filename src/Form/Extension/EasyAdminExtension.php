@@ -102,7 +102,7 @@ class EasyAdminExtension extends AbstractTypeExtension
     public static function getExtendedTypes()
     {
         // needed to avoid a deprecation when using Symfony 4.2
-        return [LegacyFormHelper::getType('form')];
+        return array(LegacyFormHelper::getType('form'));
     }
 }
 

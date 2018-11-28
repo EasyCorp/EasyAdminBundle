@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Extension;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -68,17 +69,16 @@ class EasyAdminExtension extends AbstractTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function getExtendedType()
+    public static function getExtendedTypes()
     {
-        return FormTypeHelper::getTypeClass('form');
+        return [FormType::class];
     }
 
     /**
-     * {@inheritdoc}
+     * This legacy method can be removed when the minimum supported version is Symfony 4.2.
      */
-    public static function getExtendedTypes()
+    public function getExtendedType()
     {
-        // needed to avoid a deprecation when using Symfony 4.2
-        return array(LegacyFormHelper::getType('form'));
+        return FormType::class;
     }
 }

@@ -149,7 +149,7 @@
 
                 var collection = $('#{{ id }}');
                 // Use a counter to avoid having the same index more than once
-                var numItems = collection.data('count') || collection.children('div.form-group').length;
+                var numItems = collection.data('count') || {{ form.children|length ? form.children|keys|last + 1 : 0 }};
 
                 collection.prev('.collection-empty').remove();
 

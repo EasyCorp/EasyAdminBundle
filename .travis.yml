@@ -11,8 +11,8 @@ env:
         - COVERAGE="false"
         - PHPUNIT_FLAGS="-v"
         - SYMFONY_PHPUNIT_DIR="$HOME/symfony-bridge/.phpunit"
-        # needed to avoid some Doctrine related deprecations
-        - SYMFONY_DEPRECATIONS_HELPER="2"
+        # needed to avoid some hard to fix deprecations
+        - SYMFONY_DEPRECATIONS_HELPER="150"
 
 matrix:
     fast_finish: true

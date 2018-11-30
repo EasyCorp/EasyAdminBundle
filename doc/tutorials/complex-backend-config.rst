@@ -67,5 +67,17 @@ create the four files with these contents:
             User:
                 # ...
 
-Beware that each configuration file must define its contents under the ``easy_admin``
-key. Otherwise, Symfony won't be able to merge the different configurations.
+.. note::
+
+    Beware that each configuration file must define its contents under
+    the ``easy_admin`` key. Otherwise, Symfony won't be able to merge
+    the different configurations.
+
+Lastly, update the contents of the main ``easy_admin.yaml`` file to import all
+these new files:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    imports:
+        - { resource: easy_admin/ }

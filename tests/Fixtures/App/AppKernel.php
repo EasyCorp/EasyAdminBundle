@@ -26,23 +26,11 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
 
-        if ($this->requiresAssetsConfig()) {
-            $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('framework', [
-                    'assets' => null,
-                ]);
-            });
-        }
-
-        if ($this->requiresTemplatingConfig()) {
-            $loader->load(function (ContainerBuilder $container) {
-                $container->loadFromExtension('framework', [
-                    'templating' => [
-                        'engines' => ['twig'],
-                    ],
-                ]);
-            });
-        }
+        $loader->load(function (ContainerBuilder $container) {
+            $container->loadFromExtension('framework', [
+                'assets' => null,
+            ]);
+        });
     }
 
     /**
@@ -59,15 +47,5 @@ class AppKernel extends Kernel
     public function getLogDir()
     {
         return __DIR__.'/../../../build/kernel_logs/'.$this->getEnvironment();
-    }
-
-    protected function requiresAssetsConfig()
-    {
-        return (int) Kernel::MAJOR_VERSION >= 3;
-    }
-
-    protected function requiresTemplatingConfig()
-    {
-        return 2 === (int) Kernel::MAJOR_VERSION && 3 === (int) Kernel::MINOR_VERSION;
     }
 }

@@ -28,7 +28,7 @@ class TextareaTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isTextareaField = in_array($type, ['textarea', TextareaType::class], true);
+        $isTextareaField = \in_array($type, ['textarea', TextareaType::class], true);
 
         return $isTextareaField && !isset($options['attr']['rows']);
     }

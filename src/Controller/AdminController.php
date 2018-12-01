@@ -91,7 +91,7 @@ class AdminController extends Controller
             return;
         }
 
-        if (!array_key_exists($entityName, $this->config['entities'])) {
+        if (!\array_key_exists($entityName, $this->config['entities'])) {
             throw new UndefinedEntityException(['entity_name' => $entityName]);
         }
 
@@ -115,7 +115,7 @@ class AdminController extends Controller
 
     protected function dispatch($eventName, array $arguments = [])
     {
-        $arguments = array_replace([
+        $arguments = \array_replace([
             'config' => $this->config,
             'em' => $this->em,
             'entity' => $this->entity,
@@ -184,11 +184,11 @@ class AdminController extends Controller
         $entity = $easyadmin['item'];
 
         if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
-            $newValue = 'true' === mb_strtolower($this->request->query->get('newValue'));
+            $newValue = 'true' === \mb_strtolower($this->request->query->get('newValue'));
             $fieldsMetadata = $this->entity['list']['fields'];
 
             if (!isset($fieldsMetadata[$property]) || 'toggle' !== $fieldsMetadata[$property]['dataType']) {
-                throw new \RuntimeException(sprintf('The type of the "%s" property is not "toggle".', $property));
+                throw new \RuntimeException(\sprintf('The type of the "%s" property is not "toggle".', $property));
             }
 
             $this->updateEntityProperty($entity, $property, $newValue);
@@ -346,10 +346,10 @@ class AdminController extends Controller
     {
         $this->dispatch(EasyAdminEvents::PRE_SEARCH);
 
-        $query = trim($this->request->query->get('query'));
+        $query = \trim($this->request->query->get('query'));
         // if the search query is empty, redirect to the 'list' action
         if ('' === $query) {
-            $queryParameters = array_replace($this->request->query->all(), ['action' => 'list']);
+            $queryParameters = \array_replace($this->request->query->all(), ['action' => 'list']);
             unset($queryParameters['query']);
 
             return $this->redirect($this->get('router')->generate('easyadmin', $queryParameters));
@@ -398,7 +398,7 @@ class AdminController extends Controller
         $entityConfig = $this->entity;
 
         if (!$this->get('easy_admin.property_accessor')->isWritable($entity, $property)) {
-            throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
+            throw new \RuntimeException(\sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
         }
 
         $this->get('easy_admin.property_accessor')->setValue($entity, $property, $value);
@@ -475,7 +475,7 @@ class AdminController extends Controller
      */
     protected function findAll($entityClass, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        if (!\in_array(strtoupper($sortDirection), ['ASC', 'DESC'])) {
+        if (!\in_array(\strtoupper($sortDirection), ['ASC', 'DESC'])) {
             $sortDirection = 'DESC';
         }
 
@@ -522,7 +522,7 @@ class AdminController extends Controller
      */
     protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        if (empty($sortDirection) || !in_array(strtoupper($sortDirection), ['ASC', 'DESC'])) {
+        if (empty($sortDirection) || !\in_array(\strtoupper($sortDirection), ['ASC', 'DESC'])) {
             $sortDirection = 'DESC';
         }
 
@@ -592,7 +592,7 @@ class AdminController extends Controller
     {
         $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', [$entity, $view]);
 
-        return $this->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), FormTypeHelper::getTypeClass('easyadmin'), $entity, $formOptions);
+        return $this->get('form.factory')->createNamedBuilder(\mb_strtolower($this->entity['name']), FormTypeHelper::getTypeClass('easyadmin'), $entity, $formOptions);
     }
 
     /**
@@ -626,10 +626,10 @@ class AdminController extends Controller
      */
     protected function createEntityForm($entity, array $entityProperties, $view)
     {
-        if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EntityForm')) {
+        if (\method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EntityForm')) {
             $form = $this->{$customMethodName}($entity, $entityProperties, $view);
             if (!$form instanceof FormInterface) {
-                throw new \UnexpectedValueException(sprintf(
+                throw new \UnexpectedValueException(\sprintf(
                     'The "%s" method must return a FormInterface, "%s" given.',
                     $customMethodName, \is_object($form) ? \get_class($form) : \gettype($form)
                 ));
@@ -641,7 +641,7 @@ class AdminController extends Controller
         $formBuilder = $this->executeDynamicMethod('create<EntityName>EntityFormBuilder', [$entity, $view]);
 
         if (!$formBuilder instanceof FormBuilderInterface) {
-            throw new \UnexpectedValueException(sprintf(
+            throw new \UnexpectedValueException(\sprintf(
                 'The "%s" method must return a FormBuilderInterface, "%s" given.',
                 'createEntityForm', \is_object($formBuilder) ? \get_class($formBuilder) : \gettype($formBuilder)
             ));
@@ -703,10 +703,10 @@ class AdminController extends Controller
      */
     protected function executeDynamicMethod($methodNamePattern, array $arguments = [])
     {
-        $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
+        $methodName = \str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
 
         if (!\is_callable([$this, $methodName])) {
-            $methodName = str_replace('<EntityName>', '', $methodNamePattern);
+            $methodName = \str_replace('<EntityName>', '', $methodNamePattern);
         }
 
         return \call_user_func_array([$this, $methodName], $arguments);
@@ -735,7 +735,7 @@ class AdminController extends Controller
         // 1. redirect to list if possible
         if ($this->isActionAllowed('list')) {
             if (!empty($refererUrl)) {
-                return $this->redirect(urldecode($refererUrl));
+                return $this->redirect(\urldecode($refererUrl));
             }
 
             return $this->redirectToRoute('easyadmin', [

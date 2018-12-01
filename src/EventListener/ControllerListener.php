@@ -69,7 +69,7 @@ class ControllerListener
         $controllerMethod = $currentController[1];
 
         // build the full controller name depending on its type
-        if (Kernel::VERSION_ID >= 40100 || class_exists($customController)) {
+        if (Kernel::VERSION_ID >= 40100 || \class_exists($customController)) {
             // 'class::method' syntax for normal controllers
             $customController .= '::'.$controllerMethod;
         } else {
@@ -81,7 +81,7 @@ class ControllerListener
         $newController = $this->resolver->getController($request);
 
         if (false === $newController) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" entity in your EasyAdmin backend.', $request->getPathInfo(), $entityName));
+            throw new NotFoundHttpException(\sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" entity in your EasyAdmin backend.', $request->getPathInfo(), $entityName));
         }
 
         $event->setController($newController);

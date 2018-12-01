@@ -51,7 +51,7 @@ class EasyAdminDataCollector extends DataCollector
 
         $backendConfig = $this->configManager->getBackendConfig();
         $entityName = $request->query->get('entity');
-        $currentEntityConfig = array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : [];
+        $currentEntityConfig = \array_key_exists($entityName, $backendConfig['entities']) ? $backendConfig['entities'][$entityName] : [];
 
         $this->data = [
             'num_entities' => \count($backendConfig['entities']),
@@ -128,16 +128,16 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function dump($variable)
     {
-        if (class_exists(HtmlDumper::class)) {
+        if (\class_exists(HtmlDumper::class)) {
             $cloner = new VarCloner();
             $dumper = new HtmlDumper();
 
-            $dumper->dump($cloner->cloneVar($variable), $output = fopen('php://memory', 'r+b'));
-            $dumpedData = stream_get_contents($output, -1, 0);
-        } elseif (class_exists(Yaml::class)) {
-            $dumpedData = sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
+            $dumper->dump($cloner->cloneVar($variable), $output = \fopen('php://memory', 'r+b'));
+            $dumpedData = \stream_get_contents($output, -1, 0);
+        } elseif (\class_exists(Yaml::class)) {
+            $dumpedData = \sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
         } else {
-            $dumpedData = sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));
+            $dumpedData = \sprintf('<pre class="sf-dump">%s</pre>', \var_export($variable, true));
         }
 
         return $dumpedData;

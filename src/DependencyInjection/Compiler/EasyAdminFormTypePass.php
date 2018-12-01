@@ -24,8 +24,8 @@ class EasyAdminFormTypePass implements CompilerPassInterface
     private function configureTypeGuesserChain(ContainerBuilder $container)
     {
         $definition = $container->getDefinition('easyadmin.form.type_guesser_chain');
-        $guesserIds = array_keys($container->findTaggedServiceIds('form.type_guesser'));
-        $guessers = array_map(function ($id) {
+        $guesserIds = \array_keys($container->findTaggedServiceIds('form.type_guesser'));
+        $guessers = \array_map(function ($id) {
             return new Reference($id);
         }, $guesserIds);
         $definition->replaceArgument(0, $guessers);
@@ -38,7 +38,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
             $configuratorClass = new \ReflectionClass($container->getDefinition($id)->getClass());
             $typeConfiguratorInterface = TypeConfiguratorInterface::class;
             if (!$configuratorClass->implementsInterface($typeConfiguratorInterface)) {
-                throw new \InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $id, $typeConfiguratorInterface));
+                throw new \InvalidArgumentException(\sprintf('Service "%s" must implement interface "%s".', $id, $typeConfiguratorInterface));
             }
 
             // Register the Ivory CKEditor type configurator only if the bundle
@@ -59,6 +59,6 @@ class EasyAdminFormTypePass implements CompilerPassInterface
             }
         }
 
-        $container->getDefinition('easyadmin.form.type')->replaceArgument(1, iterator_to_array($configurators));
+        $container->getDefinition('easyadmin.form.type')->replaceArgument(1, \iterator_to_array($configurators));
     }
 }

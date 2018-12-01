@@ -25,7 +25,7 @@ final class TypeConfigurator implements TypeConfiguratorInterface
      */
     public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
     {
-        if (!array_key_exists('label', $options) && array_key_exists('label', $metadata)) {
+        if (!\array_key_exists('label', $options) && \array_key_exists('label', $metadata)) {
             $options['label'] = $metadata['label'];
         }
 

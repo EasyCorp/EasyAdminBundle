@@ -24,7 +24,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
     {
         // a dataProvider can't be used because it can't create the Crawlers
         foreach (['edit', 'new'] as $view) {
-            $queryParams = array_merge(
+            $queryParams = \array_merge(
                 ['action' => $view, 'entity' => 'Product'],
                 'edit' === $view ? ['id' => 1] : []
             );
@@ -32,7 +32,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'Basic information',
-                trim($crawler->filter('ul.nav-tabs li')->eq(0)->text()),
+                \trim($crawler->filter('ul.nav-tabs li')->eq(0)->text()),
                 'The first tab of the form is displayed correctly.'
             );
             $this->assertContains(
@@ -47,12 +47,12 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'Extra information',
-                trim($crawler->filter('ul.nav-tabs li')->eq(1)->text()),
+                \trim($crawler->filter('ul.nav-tabs li')->eq(1)->text()),
                 'The second tab of the form is displayed correctly.'
             );
             $this->assertContains(
                 'The <b>help message</b> of this tab',
-                trim($crawler->filter('.tab-pane')->eq(1)->filter('.tab-help')->html()),
+                \trim($crawler->filter('.tab-pane')->eq(1)->filter('.tab-help')->html()),
                 'The second tab of the form displays a help message.'
             );
 
@@ -69,11 +69,11 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'field-group col-8',
-                trim($crawler->filter('form .field-group')->eq(1)->attr('class'))
+                \trim($crawler->filter('form .field-group')->eq(1)->attr('class'))
             );
             $this->assertSame(
                 'Basic information',
-                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset legend')->text())
+                \trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset legend')->text())
             );
             $this->assertSame(
                 'fa fa-pencil',
@@ -89,11 +89,11 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertContains(
                 '<h2>',
-                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')->html())
+                \trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')->html())
             );
             $this->assertContains(
                 '<span></span>',
-                trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')->html())
+                \trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset .form-section')->html())
             );
             $this->assertSame(
                 'product_categories',
@@ -102,11 +102,11 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'field-group col-4',
-                trim($crawler->filter('form .field-group')->eq(2)->attr('class'))
+                \trim($crawler->filter('form .field-group')->eq(2)->attr('class'))
             );
             $this->assertSame(
                 'Product Details',
-                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset legend')->text())
+                \trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset legend')->text())
             );
             $this->assertCount(
                 0,
@@ -126,7 +126,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'Advanced Settings',
-                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section h2')->text())
+                \trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section h2')->text())
             );
             $this->assertSame(
                 'fa fa-warning',
@@ -134,7 +134,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'Reserved for administrators use',
-                trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section-help')->text())
+                \trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section-help')->text())
             );
             $this->assertSame(
                 'product_enabled',
@@ -147,7 +147,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'field-group col-8 w-100',
-                trim($crawler->filter('form .field-group')->eq(3)->attr('class'))
+                \trim($crawler->filter('form .field-group')->eq(3)->attr('class'))
             );
             $this->assertCount(
                 0,
@@ -160,7 +160,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'field-group col-4',
-                trim($crawler->filter('form .field-group')->eq(4)->attr('class'))
+                \trim($crawler->filter('form .field-group')->eq(4)->attr('class'))
             );
             $this->assertCount(
                 0,
@@ -173,11 +173,11 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'field-group col-4',
-                trim($crawler->filter('form .field-group')->eq(5)->attr('class'))
+                \trim($crawler->filter('form .field-group')->eq(5)->attr('class'))
             );
             $this->assertSame(
                 'Attachments',
-                trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset legend')->text())
+                \trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset legend')->text())
             );
             $this->assertSame(
                 'fa fa-paperclip',
@@ -185,7 +185,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
             );
             $this->assertSame(
                 'PNG format is preferred',
-                trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset .legend-help')->text())
+                \trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset .legend-help')->text())
             );
             $this->assertSame(
                 'product_image',
@@ -194,16 +194,16 @@ class AdvancedFormLayoutTest extends AbstractTestCase
 
             $this->assertSame(
                 'Save changes',
-                trim($crawler->filter('.form-actions button')->eq(0)->text())
+                \trim($crawler->filter('.form-actions button')->eq(0)->text())
             );
             $this->assertSame(
                 'Back to listing',
-                trim($crawler->filter('.form-actions a.action-list')->text())
+                \trim($crawler->filter('.form-actions a.action-list')->text())
             );
             if ('edit' === $view) {
                 $this->assertSame(
                     'Delete',
-                    trim($crawler->filter('.form-actions a.action-delete')->text())
+                    \trim($crawler->filter('.form-actions a.action-delete')->text())
                 );
             }
         }

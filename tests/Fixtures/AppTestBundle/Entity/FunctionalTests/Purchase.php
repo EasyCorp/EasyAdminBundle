@@ -228,7 +228,7 @@ class Purchase
      */
     public function generateId($storeId = 1)
     {
-        return preg_replace('/[^0-9]/i', '', sprintf('%d%d%03d%s', $storeId, date('Y'), date('z'), microtime()));
+        return \preg_replace('/[^0-9]/i', '', \sprintf('%d%d%03d%s', $storeId, \date('Y'), \date('z'), \microtime()));
     }
 
     public function __toString()

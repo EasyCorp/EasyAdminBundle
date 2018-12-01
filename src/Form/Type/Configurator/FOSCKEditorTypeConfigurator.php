@@ -34,7 +34,7 @@ class FOSCKEditorTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isFosCkeditorField = in_array($type, ['fos_ckeditor', 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType'], true);
+        $isFosCkeditorField = \in_array($type, ['fos_ckeditor', 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType'], true);
 
         return $isFosCkeditorField && !isset($options['config']['toolbar']) && !isset($options['config_name']);
     }

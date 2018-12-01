@@ -60,7 +60,7 @@ class MenuConfigPass implements ConfigPassInterface
         // by the expanded config syntax:
         //   design.menu: [{ entity: 'Product' }, { entity: 'User' }]
         foreach ($menuConfig as $i => $itemConfig) {
-            if (is_string($itemConfig)) {
+            if (\is_string($itemConfig)) {
                 $itemConfig = ['entity' => $itemConfig];
             }
 
@@ -69,7 +69,7 @@ class MenuConfigPass implements ConfigPassInterface
 
         foreach ($menuConfig as $i => $itemConfig) {
             // normalize icon configuration
-            if (!array_key_exists('icon', $itemConfig)) {
+            if (!\array_key_exists('icon', $itemConfig)) {
                 $itemConfig['icon'] = ($parentItemIndex > -1) ? '' : 'fa-folder-open';
             } elseif (empty($itemConfig['icon'])) {
                 $itemConfig['icon'] = null;
@@ -78,7 +78,7 @@ class MenuConfigPass implements ConfigPassInterface
             }
 
             // normalize css_class configuration
-            if (!array_key_exists('css_class', $itemConfig)) {
+            if (!\array_key_exists('css_class', $itemConfig)) {
                 $itemConfig['css_class'] = '';
             }
 
@@ -88,22 +88,22 @@ class MenuConfigPass implements ConfigPassInterface
             }
 
             // normalize 'default' option, which sets the menu item used as the backend index
-            if (!array_key_exists('default', $itemConfig)) {
+            if (!\array_key_exists('default', $itemConfig)) {
                 $itemConfig['default'] = false;
             } else {
                 $itemConfig['default'] = (bool) $itemConfig['default'];
             }
 
             // normalize 'target' option, which allows to open menu items in different windows or tabs
-            if (!array_key_exists('target', $itemConfig)) {
+            if (!\array_key_exists('target', $itemConfig)) {
                 $itemConfig['target'] = false;
             } else {
                 $itemConfig['target'] = (string) $itemConfig['target'];
             }
 
             // normalize 'rel' option, which adds html5 rel attribute (https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types)
-            if (!array_key_exists('rel', $itemConfig)) {
-                $itemConfig['rel'] = array_key_exists('url', $itemConfig) ? 'noreferrer' : false;
+            if (!\array_key_exists('rel', $itemConfig)) {
+                $itemConfig['rel'] = \array_key_exists('url', $itemConfig) ? 'noreferrer' : false;
             } else {
                 $itemConfig['rel'] = (string) $itemConfig['rel'];
             }
@@ -126,8 +126,8 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['type'] = 'entity';
                 $entityName = $itemConfig['entity'];
 
-                if (!array_key_exists($entityName, $backendConfig['entities'])) {
-                    throw new \RuntimeException(sprintf('The "%s" entity included in the "menu" option is not managed by EasyAdmin. The menu can only include any of these entities: %s.', $entityName, implode(', ', array_keys($backendConfig['entities']))));
+                if (!\array_key_exists($entityName, $backendConfig['entities'])) {
+                    throw new \RuntimeException(\sprintf('The "%s" entity included in the "menu" option is not managed by EasyAdmin. The menu can only include any of these entities: %s.', $entityName, \implode(', ', \array_keys($backendConfig['entities']))));
                 }
 
                 if (!isset($itemConfig['label'])) {
@@ -144,7 +144,7 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['type'] = 'link';
 
                 if (!isset($itemConfig['label'])) {
-                    throw new \RuntimeException(sprintf('The configuration of the menu item with "url = %s" must define the "label" option.', $itemConfig['url']));
+                    throw new \RuntimeException(\sprintf('The configuration of the menu item with "url = %s" must define the "label" option.', $itemConfig['url']));
                 }
             }
 
@@ -153,7 +153,7 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['type'] = 'route';
 
                 if (!isset($itemConfig['label'])) {
-                    throw new \RuntimeException(sprintf('The configuration of the menu item with "route = %s" must define the "label" option.', $itemConfig['route']));
+                    throw new \RuntimeException(\sprintf('The configuration of the menu item with "route = %s" must define the "label" option.', $itemConfig['route']));
                 }
 
                 if (!isset($itemConfig['params'])) {
@@ -172,7 +172,7 @@ class MenuConfigPass implements ConfigPassInterface
                     $itemConfig['type'] = 'empty';
                 }
             } else {
-                throw new \RuntimeException(sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.', $i));
+                throw new \RuntimeException(\sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.', $i));
             }
 
             $menuConfig[$i] = $itemConfig;

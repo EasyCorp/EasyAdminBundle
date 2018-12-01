@@ -12,7 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Pagerfanta\Pagerfanta;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
@@ -30,7 +30,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class AdminController extends Controller
+class AdminController extends AbstractController
 {
     /** @var array The full configuration of the entire backend */
     protected $config;

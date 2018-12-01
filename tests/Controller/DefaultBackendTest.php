@@ -198,7 +198,7 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertSame(2, $this->client->getRequest()->query->getInt('page'));
 
         // 2. Click on the 'Name' table column to reorder the listing
-        $crawler = $this->client->click($crawler->filter('thead')->selectLink('Name')->link());
+        $this->client->click($crawler->filter('thead')->selectLink('Name')->link());
         $this->assertSame('name', $this->client->getRequest()->query->get('sortField'));
         $this->assertSame(1, $this->client->getRequest()->query->getInt('page'), 'When the listing contents are reordered, the pagination is reset to the first page.');
     }
@@ -583,7 +583,7 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertSame(2, $this->client->getRequest()->query->getInt('page'));
 
         // 2. Click on the 'Name' table column to reorder the search results
-        $crawler = $this->client->click($crawler->filter('thead')->selectLink('Name')->link());
+        $this->client->click($crawler->filter('thead')->selectLink('Name')->link());
         $this->assertSame('name', $this->client->getRequest()->query->get('sortField'));
         $this->assertSame(1, $this->client->getRequest()->query->getInt('page'), 'When the search results are reordered, the pagination is reset to the first page.');
     }

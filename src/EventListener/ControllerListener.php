@@ -69,7 +69,7 @@ class ControllerListener
         $controllerMethod = $currentController[1];
 
         // build the full controller name depending on its type
-        if (class_exists($customController) || Kernel::VERSION_ID >= 40100) {
+        if (Kernel::VERSION_ID >= 40100 || class_exists($customController)) {
             // 'class::method' syntax for normal controllers
             $customController .= '::'.$controllerMethod;
         } else {

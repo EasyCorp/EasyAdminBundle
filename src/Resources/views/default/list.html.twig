@@ -180,20 +180,20 @@
 
     <script type="text/javascript">
         $(function() {
-            var toggles = document.querySelectorAll('.checkbox-switch input[type="checkbox"]');
+            const toggles = document.querySelectorAll('.checkbox-switch input[type="checkbox"]');
             for (i = 0; i < toggles.length; i++) {
                 toggles[i].addEventListener('change', function () {
-                    var toggle = this;
-                    var newValue = this.checked;
-                    var oldValue = !newValue;
-                    var propertyName = this.closest('.checkbox-switch').dataset.propertyname;
+                    const toggle = this;
+                    const newValue = this.checked;
+                    const oldValue = !newValue;
+                    const propertyName = this.closest('.checkbox-switch').dataset.propertyname;
 
-                    var toggleUrl = "{{ path('easyadmin', { action: 'edit', entity: _entity_config.name, view: 'list' })|raw }}"
+                    const toggleUrl = "{{ path('easyadmin', { action: 'edit', entity: _entity_config.name, view: 'list' })|raw }}"
                         + "&id=" + this.closest('tr').dataset.id
                         + "&property=" + propertyName
                         + "&newValue=" + newValue.toString();
 
-                    var toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
+                    let toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
 
                     toggleRequest.done(function(result) {});
 
@@ -208,12 +208,12 @@
 
             $('.action-delete').on('click', function(e) {
                 e.preventDefault();
-                var id = $(this).parents('tr').first().data('id');
+                const id = $(this).parents('tr').first().data('id');
 
                 $('#modal-delete').modal({ backdrop: true, keyboard: true })
                     .off('click', '#modal-delete-button')
                     .on('click', '#modal-delete-button', function () {
-                        var deleteForm = $('#delete-form');
+                        let deleteForm = $('#delete-form');
                         deleteForm.attr('action', deleteForm.attr('action').replace('__id__', id));
                         deleteForm.trigger('submit');
                     });
@@ -223,7 +223,7 @@
 
     {% if 'search' == app.request.get('action') %}
         <script type="text/javascript">
-            var _search_query = "{{ app.request.get('query')|default('')|e('js') }}";
+            const _search_query = "{{ app.request.get('query')|default('')|e('js') }}";
             // the original query is prepended to allow matching exact phrases in addition to single words
             $('#main').find('table tbody').highlight($.merge([_search_query], _search_query.split(' ')));
         </script>

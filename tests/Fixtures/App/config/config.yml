@@ -43,6 +43,7 @@ doctrine:
 
 twig:
     strict_variables: '%kernel.debug%'
+    default_path: '%kernel.root_dir%/templates'
 
 security:
     firewalls:

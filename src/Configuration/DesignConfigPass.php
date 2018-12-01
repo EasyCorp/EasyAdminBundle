@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 /**
  * Processes the custom CSS styles applied to the backend design based on the
  * value of the design configuration options.
@@ -12,22 +10,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DesignConfigPass implements ConfigPassInterface
 {
-    /** @var ContainerInterface */
-    private $container;
-    /** @var bool */
-    private $kernelDebug;
     /** @var string */
     private $locale;
 
-    /**
-     * @var ContainerInterface to prevent ServiceCircularReferenceException
-     * @var bool               $kernelDebug
-     * @var string             $locale
-     */
-    public function __construct(ContainerInterface $container, $kernelDebug, $locale)
+    public function __construct($locale)
     {
-        $this->container = $container;
-        $this->kernelDebug = $kernelDebug;
         $this->locale = $locale;
     }
 

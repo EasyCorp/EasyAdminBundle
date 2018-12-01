@@ -15,7 +15,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 interface ConfigPassInterface
 {
     /**
-     * @param array $backendConfig
+     * This method is given the whole backend config and it must return it
+     * with all the changes/processing needed by the implementing class.
      *
      * @return array
      */

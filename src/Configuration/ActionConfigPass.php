@@ -38,7 +38,7 @@ class ActionConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function processDisabledActions(array $backendConfig)
+    private function processDisabledActions(array $backendConfig): array
     {
         $actionsDisabledByBackend = $backendConfig['disabled_actions'];
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {

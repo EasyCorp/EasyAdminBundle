@@ -32,7 +32,7 @@ class ViewConfigPass implements ConfigPassInterface
                     continue;
                 }
 
-                $backendConfig['entities'][$entityName][$view]['help'] = array_key_exists('help', $entityConfig) ? $entityConfig['help'] : null;
+                $backendConfig['entities'][$entityName][$view]['help'] = $entityConfig['help'] ?? null;
             }
         }
 

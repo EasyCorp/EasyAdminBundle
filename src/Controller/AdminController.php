@@ -356,7 +356,7 @@ class AdminController extends Controller
         }
 
         $searchableFields = $this->entity['search']['fields'];
-        $defaultSortField = isset($this->entity['search']['sort']['field']) ? $this->entity['search']['sort']['field'] : null;
+        $defaultSortField = $this->entity['search']['sort']['field'] ?? null;
         $defaultSortDirection = isset($this->entity['search']['sort']['direction']) ? $this->entity['search']['sort']['direction'] : null;
         $paginator = $this->findBy(
             $this->entity['class'],

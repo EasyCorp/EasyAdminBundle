@@ -142,7 +142,7 @@ class PropertyConfigPass implements ConfigPassInterface
             foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
                 $originalViewConfig = $backendConfig['entities'][$entityName][$view];
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
-                    $originalFieldConfig = isset($originalViewConfig['fields'][$fieldName]) ? $originalViewConfig['fields'][$fieldName] : null;
+                    $originalFieldConfig = $originalViewConfig['fields'][$fieldName] ?? null;
 
                     if (array_key_exists($fieldName, $entityConfig['properties'])) {
                         $fieldMetadata = array_merge(

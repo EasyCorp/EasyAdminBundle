@@ -18,12 +18,4 @@ class EasyAdminSectionType extends AbstractType
     {
         return 'easyadmin_section';
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
 }

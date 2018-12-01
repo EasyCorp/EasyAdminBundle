@@ -154,14 +154,6 @@ class EasyAdminFormType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
      * Returns a closure normalizing the form html attributes.
      *
      * @return \Closure

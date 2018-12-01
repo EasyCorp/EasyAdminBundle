@@ -18,12 +18,4 @@ class EasyAdminGroupType extends AbstractType
     {
         return 'easyadmin_group';
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
 }

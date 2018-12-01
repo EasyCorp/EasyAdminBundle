@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Symfony\Component\Form\FormConfigInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 /**
  * This configurator is applied to any form field of type 'textarea'.
@@ -27,7 +28,7 @@ class TextareaTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        $isTextareaField = in_array($type, ['textarea', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\TextareaType'], true);
+        $isTextareaField = in_array($type, ['textarea', TextareaType::class], true);
 
         return $isTextareaField && !isset($options['attr']['rows']);
     }

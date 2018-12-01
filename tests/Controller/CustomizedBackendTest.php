@@ -465,7 +465,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $form = $crawler->selectButton('Save changes')->form();
         $form->remove('form[name]');
-        $crawler = $this->client->submit($form);
+        $this->client->submit($form);
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
 
         // test validation groups

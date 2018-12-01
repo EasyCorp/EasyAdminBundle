@@ -42,7 +42,7 @@ class DisabledActionsTest extends AbstractTestCase
 
     public function testAccessingDisabledActions()
     {
-        $crawler = $this->requestShowView('User', 1);
+        $this->requestShowView('User', 1);
 
         $this->assertContains(
             'The requested &quot;show&quot; action is not allowed for the &quot;User&quot; entity.',

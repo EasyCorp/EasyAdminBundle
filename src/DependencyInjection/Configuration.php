@@ -15,8 +15,8 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('easy_admin');
+        $treeBuilder = new TreeBuilder('easy_admin');
+        $rootNode = $this->getRootNode($treeBuilder, 'easy_admin');
 
         $this->addGlobalOptionsSection($rootNode);
         $this->addDesignSection($rootNode);
@@ -318,5 +318,15 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
+    }
+
+    private function getRootNode(TreeBuilder $treeBuilder, $name)
+    {
+        // BC layer for symfony/config 4.1 and older
+        if (!\method_exists($treeBuilder, 'getRootNode')) {
+            return $treeBuilder->root($name);
+        }
+
+        return $treeBuilder->getRootNode();
     }
 }

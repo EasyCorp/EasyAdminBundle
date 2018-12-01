@@ -68,7 +68,7 @@ class EasyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (in_array($formFieldType, ['easyadmin_group', EasyAdminGroupType::class])) {
+            if (\in_array($formFieldType, ['easyadmin_group', EasyAdminGroupType::class])) {
                 $metadata['form_tab'] = $currentFormTab ?: null;
                 $currentFormGroup = $metadata['fieldName'];
                 $formGroups[$currentFormGroup] = $metadata;
@@ -95,7 +95,7 @@ class EasyAdminFormType extends AbstractType
 
             // 'section' is a 'fake' form field used to create the design elements of the
             // complex form layouts: define it as unmapped and non-required
-            if (0 === strpos($metadata['property'], '_easyadmin_form_design_element_')) {
+            if (0 === \strpos($metadata['property'], '_easyadmin_form_design_element_')) {
                 $formFieldOptions['mapped'] = false;
                 $formFieldOptions['required'] = false;
             }
@@ -169,8 +169,8 @@ class EasyAdminFormType extends AbstractType
     private function getAttributesNormalizer()
     {
         return function (Options $options, $value) {
-            return array_replace([
-                'id' => sprintf('%s-%s-form', $options['view'], mb_strtolower($options['entity'])),
+            return \array_replace([
+                'id' => \sprintf('%s-%s-form', $options['view'], \mb_strtolower($options['entity'])),
             ], $value);
         };
     }

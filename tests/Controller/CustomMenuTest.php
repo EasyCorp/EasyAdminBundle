@@ -26,12 +26,12 @@ class CustomMenuTest extends AbstractTestCase
 
         $this->assertSame(
             'Products',
-            trim($crawler->filter('.sidebar-menu li.active.submenu-active a')->text())
+            \trim($crawler->filter('.sidebar-menu li.active.submenu-active a')->text())
         );
 
         $this->assertSame(
             'Categories',
-            trim($crawler->filter('.sidebar-menu .treeview-menu li.active a')->text())
+            \trim($crawler->filter('.sidebar-menu .treeview-menu li.active a')->text())
         );
     }
 
@@ -273,8 +273,8 @@ class CustomMenuTest extends AbstractTestCase
 
         // 3. the 'referer' parameter should contain the custom query string param
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
-        $queryString = parse_url($refererUrl, PHP_URL_QUERY);
-        parse_str($queryString, $refererParameters);
+        $queryString = \parse_url($refererUrl, PHP_URL_QUERY);
+        \parse_str($queryString, $refererParameters);
 
         $this->assertSame('customValue', $refererParameters['customParameter']);
     }

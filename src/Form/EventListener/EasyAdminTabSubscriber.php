@@ -48,7 +48,7 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
         }
 
         // ensure that the first tab with errors is displayed
-        $firstTab = key($formTabs);
+        $firstTab = \key($formTabs);
         if ($firstTab !== $firstTabWithErrors) {
             $formTabs[$firstTab]['active'] = false;
             $formTabs[$firstTabWithErrors]['active'] = true;

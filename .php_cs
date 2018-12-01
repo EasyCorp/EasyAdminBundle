@@ -20,6 +20,7 @@ return PhpCsFixer\Config::create()
             'align_double_arrow' => false,
         ),
         'combine_consecutive_unsets' => true,
+        'native_function_invocation' => true,
         'no_useless_else' => true,
         'no_useless_return' => true,
         'ordered_imports' => true,

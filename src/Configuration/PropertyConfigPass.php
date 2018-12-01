@@ -104,7 +104,7 @@ class PropertyConfigPass implements ConfigPassInterface
                     $guessedTypeOptions['required'] = $requiredGuess->getValue();
                 }
 
-                $properties[$propertyName] = array_replace(
+                $properties[$propertyName] = \array_replace(
                     $this->defaultEntityFieldConfig,
                     $propertyMetadata,
                     [
@@ -117,7 +117,7 @@ class PropertyConfigPass implements ConfigPassInterface
 
                 // 'boolean' properties are displayed by default as toggleable
                 // flip switches (if the 'edit' action is enabled for the entity)
-                if ('boolean' === $properties[$propertyName]['dataType'] && !in_array('edit', $entityConfig['disabled_actions'])) {
+                if ('boolean' === $properties[$propertyName]['dataType'] && !\in_array('edit', $entityConfig['disabled_actions'])) {
                     $properties[$propertyName]['dataType'] = 'toggle';
                 }
             }
@@ -144,21 +144,21 @@ class PropertyConfigPass implements ConfigPassInterface
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     $originalFieldConfig = $originalViewConfig['fields'][$fieldName] ?? null;
 
-                    if (array_key_exists($fieldName, $entityConfig['properties'])) {
-                        $fieldMetadata = array_merge(
+                    if (\array_key_exists($fieldName, $entityConfig['properties'])) {
+                        $fieldMetadata = \array_merge(
                             $entityConfig['properties'][$fieldName],
                             ['virtual' => false]
                         );
                     } else {
                         // this is a virtual field which doesn't exist as a property of
                         // the related entity. That's why Doctrine can't provide metadata for it
-                        $fieldMetadata = array_merge(
+                        $fieldMetadata = \array_merge(
                             $this->defaultVirtualFieldMetadata,
                             ['columnName' => $fieldName, 'fieldName' => $fieldName]
                         );
                     }
 
-                    $normalizedConfig = array_replace_recursive(
+                    $normalizedConfig = \array_replace_recursive(
                         $this->defaultEntityFieldConfig,
                         $fieldMetadata,
                         $fieldConfig
@@ -167,14 +167,14 @@ class PropertyConfigPass implements ConfigPassInterface
                     // 'list', 'search' and 'show' views: use the value of the 'type' option
                     // as the 'dataType' option because the previous code has already
                     // prioritized end-user preferences over Doctrine and default values
-                    if (in_array($view, ['list', 'search', 'show'])) {
+                    if (\in_array($view, ['list', 'search', 'show'])) {
                         $normalizedConfig['dataType'] = $normalizedConfig['type'];
                     }
 
                     // 'new' and 'edit' views: if the user has defined the 'type' option
                     // for the field, use it as 'fieldType'. Otherwise, use the guessed
                     // form type of the property data type.
-                    if (in_array($view, ['edit', 'new'])) {
+                    if (\in_array($view, ['edit', 'new'])) {
                         $normalizedConfig['fieldType'] = isset($originalFieldConfig['type'])
                             ? $originalFieldConfig['type']
                             : $normalizedConfig['fieldType'];
@@ -196,7 +196,7 @@ class PropertyConfigPass implements ConfigPassInterface
                         // conditions:
                         //   1) the end-user hasn't configured the field type explicitly
                         //   2) the 'edit' action is enabled for the 'list' view of this entity
-                        if (!isset($originalFieldConfig['type']) && !in_array('edit', $entityConfig['disabled_actions'])) {
+                        if (!isset($originalFieldConfig['type']) && !\in_array('edit', $entityConfig['disabled_actions'])) {
                             $normalizedConfig['dataType'] = 'toggle';
                         }
                     }
@@ -233,8 +233,8 @@ class PropertyConfigPass implements ConfigPassInterface
             isset($userDefinedConfig['type'], $guessedConfig['fieldType'])
             && $userDefinedConfig['type'] !== $guessedConfig['fieldType']
         ) {
-            $resolvedFormOptions = array_merge(
-                array_intersect_key($resolvedFormOptions, ['required' => null]),
+            $resolvedFormOptions = \array_merge(
+                \array_intersect_key($resolvedFormOptions, ['required' => null]),
                 isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : []
             );
         }
@@ -249,7 +249,7 @@ class PropertyConfigPass implements ConfigPassInterface
                 !isset($userDefinedConfig['type']) && isset($userDefinedConfig['type_options'])
             )
         ) {
-            $resolvedFormOptions = array_merge(
+            $resolvedFormOptions = \array_merge(
                 $resolvedFormOptions,
                 isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : []
             );
@@ -295,15 +295,15 @@ class PropertyConfigPass implements ConfigPassInterface
      */
     private function getFieldFormat($fieldType, array $backendConfig)
     {
-        if (in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'])) {
+        if (\in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'])) {
             // make 'datetimetz' use the same format as 'datetime'
             $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
-            $fieldType = ('_immutable' === mb_substr($fieldType, -10)) ? mb_substr($fieldType, 0, -10) : $fieldType;
+            $fieldType = ('_immutable' === \mb_substr($fieldType, -10)) ? \mb_substr($fieldType, 0, -10) : $fieldType;
 
             return $backendConfig['formats'][$fieldType];
         }
 
-        if (in_array($fieldType, ['bigint', 'integer', 'smallint', 'decimal', 'float'])) {
+        if (\in_array($fieldType, ['bigint', 'integer', 'smallint', 'decimal', 'float'])) {
             return isset($backendConfig['formats']['number']) ? $backendConfig['formats']['number'] : null;
         }
     }

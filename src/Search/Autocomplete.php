@@ -44,7 +44,7 @@ class Autocomplete
 
         $backendConfig = $this->configManager->getBackendConfig();
         if (!isset($backendConfig['entities'][$entity])) {
-            throw new \InvalidArgumentException(sprintf('The "entity" argument must contain the name of an entity managed by EasyAdmin ("%s" given).', $entity));
+            throw new \InvalidArgumentException(\sprintf('The "entity" argument must contain the name of an entity managed by EasyAdmin ("%s" given).', $entity));
         }
 
         $paginator = $this->finder->findByAllProperties($backendConfig['entities'][$entity], $query, $page, $backendConfig['show']['max_results']);

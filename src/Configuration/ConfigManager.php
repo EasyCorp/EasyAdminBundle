@@ -45,7 +45,7 @@ final class ConfigManager
         }
 
         // turns 'design.menu' into '[design][menu]', the format required by PropertyAccess
-        $propertyPath = '['.str_replace('.', '][', $propertyPath).']';
+        $propertyPath = '['.\str_replace('.', '][', $propertyPath).']';
 
         return $this->propertyAccessor->getValue($this->backendConfig, $propertyPath);
     }
@@ -87,7 +87,7 @@ final class ConfigManager
     {
         $entityConfig = $this->getEntityConfig($entityName);
 
-        return !\in_array($action, $entityConfig['disabled_actions'], true) && array_key_exists($action, $entityConfig[$view]['actions']);
+        return !\in_array($action, $entityConfig['disabled_actions'], true) && \array_key_exists($action, $entityConfig[$view]['actions']);
     }
 
     /**

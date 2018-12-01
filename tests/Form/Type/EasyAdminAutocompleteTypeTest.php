@@ -114,11 +114,11 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
 
         $view = $form->createView();
         $children = $view->children;
-        foreach (array_keys($formData) as $key) {
+        foreach (\array_keys($formData) as $key) {
             $this->assertArrayHasKey($key, $children);
         }
 
-        if (class_exists('Symfony\Component\Form\ChoiceList\View\ChoiceView', false)) {
+        if (\class_exists('Symfony\Component\Form\ChoiceList\View\ChoiceView', false)) {
             $choiceView = new \Symfony\Component\Form\ChoiceList\View\ChoiceView($category, 1, '1');
         } else {
             $choiceView = new \Symfony\Component\Form\Extension\Core\View\ChoiceView($category, 1, '1');

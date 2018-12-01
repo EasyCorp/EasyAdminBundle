@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * It looks for the values of entity which match the given query. It's used for
@@ -14,14 +14,11 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class Autocomplete
 {
-    /** @var ConfigManager */
     private $configManager;
-    /** @var Finder */
     private $finder;
-    /** @var PropertyAccessor */
     private $propertyAccessor;
 
-    public function __construct(ConfigManager $configManager, Finder $finder, PropertyAccessor $propertyAccessor)
+    public function __construct(ConfigManager $configManager, Finder $finder, PropertyAccessorInterface $propertyAccessor)
     {
         $this->configManager = $configManager;
         $this->finder = $finder;

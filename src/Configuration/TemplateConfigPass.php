@@ -206,7 +206,7 @@ class TemplateConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function findFirstExistingTemplate(array $templatePaths, bool $isFieldTemplateFragment = false)
+    private function findFirstExistingTemplate(array $templatePaths)
     {
         foreach ($templatePaths as $templatePath) {
             // template name normalization code taken from \Twig_Loader_Filesystem::normalizeName()

@@ -5,10 +5,9 @@ easy_admin:
     entities:
         Category:
             class: AppTestBundle\Entity\FunctionalTests\Category
-            controller: app.controller
+            controller: EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryControllerAsService
 
 services:
-    app.controller:
-        class: EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryControllerAsService
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\Admin\CustomCategoryControllerAsService:
         arguments: ['@request_stack']
         public: true

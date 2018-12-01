@@ -12,7 +12,7 @@ env:
         - PHPUNIT_FLAGS="-v"
         - SYMFONY_PHPUNIT_DIR="$HOME/symfony-bridge/.phpunit"
         # needed to avoid some hard to fix deprecations
-        - SYMFONY_DEPRECATIONS_HELPER="66"
+        - SYMFONY_DEPRECATIONS_HELPER="8"
 
 matrix:
     fast_finish: true

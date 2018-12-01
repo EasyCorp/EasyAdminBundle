@@ -18,12 +18,4 @@ class EasyAdminTabType extends AbstractType
     {
         return 'easyadmin_tab';
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
 }

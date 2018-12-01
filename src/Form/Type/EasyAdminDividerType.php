@@ -18,12 +18,4 @@ class EasyAdminDividerType extends AbstractType
     {
         return 'easyadmin_divider';
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
 }

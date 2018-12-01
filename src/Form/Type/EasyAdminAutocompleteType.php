@@ -81,14 +81,6 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function mapDataToForms($data, $forms)
     {
         $form = \current(\iterator_to_array($forms));

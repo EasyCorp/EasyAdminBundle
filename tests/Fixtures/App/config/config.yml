@@ -6,7 +6,8 @@ parameters:
 
 framework:
     secret:          secret
-    translator:      ~
+    translator:
+        default_path: '%kernel.root_dir%/translations'
     default_locale:  '%locale%'
     test:            ~
     router:          { resource: '%kernel.root_dir%/config/routing_base.yml' }

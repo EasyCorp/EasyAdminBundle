@@ -133,14 +133,16 @@ class EasyAdminDataCollector extends DataCollector
             $dumper = new HtmlDumper();
 
             $dumper->dump($cloner->cloneVar($variable), $output = \fopen('php://memory', 'r+b'));
-            $dumpedData = \stream_get_contents($output, -1, 0);
-        } elseif (\class_exists(Yaml::class)) {
-            $dumpedData = \sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
-        } else {
-            $dumpedData = \sprintf('<pre class="sf-dump">%s</pre>', \var_export($variable, true));
+            if (false !== $dumpedData = \stream_get_contents($output, -1, 0)) {
+                return $dumpedData;
+            }
         }
 
-        return $dumpedData;
+        if (\class_exists(Yaml::class)) {
+            return \sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
+        }
+
+        return \sprintf('<pre class="sf-dump">%s</pre>', \var_export($variable, true));
     }
 
     /**

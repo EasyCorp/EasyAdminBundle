@@ -171,12 +171,8 @@ class EasyAdminExtension extends Extension
 
     /**
      * Checks whether the given string is valid as a PHP method name.
-     *
-     * @param string $name
-     *
-     * @return bool
      */
-    private function isValidMethodName($name)
+    private function isValidMethodName(string $name): bool
     {
         return 0 !== \preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
     }

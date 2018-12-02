@@ -20,7 +20,7 @@ final class EasyAdminRouter
     private $urlGenerator;
     /** @var PropertyAccessorInterface */
     private $propertyAccessor;
-    /** @var RequestStack */
+    /** @var RequestStack|null */
     private $requestStack;
 
     public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator, PropertyAccessorInterface $propertyAccessor, RequestStack $requestStack = null)

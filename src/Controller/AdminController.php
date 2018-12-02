@@ -41,7 +41,7 @@ class AdminController extends Controller
     protected $entity = [];
     /** @var Request The instance of the current Symfony request */
     protected $request;
-    /** @var EntityManager The Doctrine entity manager for the current entity */
+    /** @var EntityManager|null The Doctrine entity manager for the current entity */
     protected $em;
 
     /**

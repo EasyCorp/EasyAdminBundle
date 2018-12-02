@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -32,7 +33,7 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
         $options['compound'] = false;
         $options['choices'] = \is_array($data) || $data instanceof \Traversable ? $data : [$data];
 
-        $form->add('autocomplete', FormTypeHelper::getTypeClass('entity'), $options);
+        $form->add('autocomplete', EntityType::class, $options);
     }
 
     public function preSubmit(FormEvent $event)
@@ -52,6 +53,6 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
         // reset some critical lazy options
         unset($options['em'], $options['loader'], $options['empty_data'], $options['choice_list'], $options['choices_as_values']);
 
-        $form->add('autocomplete', FormTypeHelper::getTypeClass('entity'), $options);
+        $form->add('autocomplete', EntityType::class, $options);
     }
 }

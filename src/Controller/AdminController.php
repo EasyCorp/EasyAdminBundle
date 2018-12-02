@@ -10,10 +10,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -592,7 +595,7 @@ class AdminController extends Controller
     {
         $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', [$entity, $view]);
 
-        return $this->get('form.factory')->createNamedBuilder(\mb_strtolower($this->entity['name']), FormTypeHelper::getTypeClass('easyadmin'), $entity, $formOptions);
+        return $this->get('form.factory')->createNamedBuilder(\mb_strtolower($this->entity['name']), EasyAdminFormType::class, $entity, $formOptions);
     }
 
     /**
@@ -667,9 +670,9 @@ class AdminController extends Controller
             ->setAction($this->generateUrl('easyadmin', ['action' => 'delete', 'entity' => $entityName, 'id' => $entityId]))
             ->setMethod('DELETE')
         ;
-        $formBuilder->add('submit', FormTypeHelper::getTypeClass('submit'), ['label' => 'delete_modal.action', 'translation_domain' => 'EasyAdminBundle']);
+        $formBuilder->add('submit', SubmitType::class, ['label' => 'delete_modal.action', 'translation_domain' => 'EasyAdminBundle']);
         // needed to avoid submitting empty delete forms (see issue #1409)
-        $formBuilder->add('_easyadmin_delete_flag', FormTypeHelper::getTypeClass('hidden'), ['data' => '1']);
+        $formBuilder->add('_easyadmin_delete_flag', HiddenType::class, ['data' => '1']);
 
         return $formBuilder->getForm();
     }

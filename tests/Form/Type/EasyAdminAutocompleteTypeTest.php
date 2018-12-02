@@ -103,7 +103,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             ->with($category)
             ->willReturn(['id' => $category->id]);
 
-        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
+        $form = $this->factory->create(EasyAdminAutocompleteType::class, null, [
             'class' => self::ENTITY_CLASS,
         ]);
         $formData = ['autocomplete' => '1'];
@@ -150,7 +150,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
             ->with($category1)
             ->willReturn(['id' => $category1->id]);
 
-        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
+        $form = $this->factory->create(EasyAdminAutocompleteType::class, null, [
             'class' => self::ENTITY_CLASS,
             'multiple' => true,
         ]);
@@ -162,7 +162,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
 
     public function testSubmitEmptySingleData()
     {
-        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
+        $form = $this->factory->create(EasyAdminAutocompleteType::class, null, [
             'class' => self::ENTITY_CLASS,
         ]);
         $form->submit(['autocomplete' => '']);
@@ -173,7 +173,7 @@ class EasyAdminAutocompleteTypeTest extends TypeTestCase
 
     public function testSubmitEmptyMultipleData()
     {
-        $form = $this->factory->create(FormTypeHelper::getTypeClass('easyadmin_autocomplete'), null, [
+        $form = $this->factory->create(EasyAdminAutocompleteType::class, null, [
             'class' => self::ENTITY_CLASS,
             'multiple' => true,
         ]);

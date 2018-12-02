@@ -1,9 +1,9 @@
 // Error pages (shown when exceptions are triggered in production)
 // ----------------------------------------------------------------------------
 body.error .error-message {
-  min-height: 500px;
-  max-width: 400px;
-  padding: 45px 60px;
+  max-width: 500px;
+  min-height: 400px;
+  padding: 45px;
 }
 body.error .error-message h1 {
   color: var(--color-danger);

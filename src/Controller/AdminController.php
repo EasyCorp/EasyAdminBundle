@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
@@ -12,8 +13,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
+use EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete;
+use EasyCorp\Bundle\EasyAdminBundle\Search\Paginator;
+use EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder as EasyAdminQueryBuilder;
 use Pagerfanta\Pagerfanta;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -26,6 +31,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -33,7 +39,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class AdminController extends Controller
+class AdminController extends AbstractController
 {
     /** @var array The full configuration of the entire backend */
     protected $config;
@@ -43,6 +49,18 @@ class AdminController extends Controller
     protected $request;
     /** @var EntityManager|null The Doctrine entity manager for the current entity */
     protected $em;
+
+    public static function getSubscribedServices()
+    {
+        return array_merge(parent::getSubscribedServices(), [
+            'easyadmin.autocomplete' => Autocomplete::class,
+            'easyadmin.config.manager' => ConfigManager::class,
+            'event_dispatcher' => EventDispatcherInterface::class,
+            'easyadmin.paginator' => Paginator::class,
+            'easyadmin.query_builder' => EasyAdminQueryBuilder::class,
+            'property_accessor' => PropertyAccessorInterface::class,
+        ]);
+    }
 
     /**
      * @Route("/", name="easyadmin")
@@ -400,11 +418,11 @@ class AdminController extends Controller
     {
         $entityConfig = $this->entity;
 
-        if (!$this->get('easy_admin.property_accessor')->isWritable($entity, $property)) {
+        if (!$this->get('property_accessor')->isWritable($entity, $property)) {
             throw new \RuntimeException(\sprintf('The "%s" property of the "%s" entity is not writable.', $property, $entityConfig['name']));
         }
 
-        $this->get('easy_admin.property_accessor')->setValue($entity, $property, $value);
+        $this->get('property_accessor')->setValue($entity, $property, $value);
 
         $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity, 'newValue' => $value]);
         $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);

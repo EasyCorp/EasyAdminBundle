@@ -1,9 +1,4 @@
-{% set _entity_config = app.request.query.get('entity') ? easyadmin_entity(app.request.query.get('entity')) %}
-{% extends [
-    _entity_config.templates.layout|default(''),
-    easyadmin_config('design.templates.layout'),
-    '@EasyAdmin/default/layout.html.twig'
-] %}
+{% extends layout_template_path %}
 
 {% block body_class 'error' %}
 {% block page_title %}{{ 'errors'|transchoice(1, {}, 'EasyAdminBundle') }}{% endblock %}

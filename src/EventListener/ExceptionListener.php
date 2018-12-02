@@ -81,11 +81,16 @@ class ExceptionListener extends BaseExceptionListener
             : isset($this->easyAdminConfig['design']['templates']['exception'])
                 ? $this->easyAdminConfig['design']['templates']['exception']
                 : '@EasyAdmin/default/exception.html.twig';
+        $exceptionLayoutTemplatePath = isset($entityConfig['templates']['layout'])
+            ? $entityConfig['templates']['layout']
+            : isset($this->easyAdminConfig['design']['templates']['layout'])
+                ? $this->easyAdminConfig['design']['templates']['layout']
+                : '@EasyAdmin/default/layout.html.twig';
 
-        return Response::create($this->twig->render(
-            $exceptionTemplatePath,
-            array('exception' => $exception)
-        ), $exception->getStatusCode());
+        return Response::create($this->twig->render($exceptionTemplatePath, array(
+            'exception' => $exception,
+            'layout_template_path' => $exceptionLayoutTemplatePath,
+        )), $exception->getStatusCode());
     }
 
     /**

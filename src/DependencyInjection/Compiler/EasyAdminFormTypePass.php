@@ -25,9 +25,8 @@ class EasyAdminFormTypePass implements CompilerPassInterface
     {
         $definition = $container->getDefinition('easyadmin.form.type_guesser_chain');
         $guesserIds = \array_keys($container->findTaggedServiceIds('form.type_guesser'));
-        $guessers = \array_map(function ($id) {
-            return new Reference($id);
-        }, $guesserIds);
+        $guessers = \array_map(function ($id) { return new Reference($id); }, $guesserIds);
+
         $definition->replaceArgument(0, $guessers);
     }
 
@@ -36,20 +35,17 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         $configurators = new \SplPriorityQueue();
         foreach ($container->findTaggedServiceIds('easyadmin.form.type.configurator') as $id => $tags) {
             $configuratorClass = new \ReflectionClass($container->getDefinition($id)->getClass());
-            $typeConfiguratorInterface = TypeConfiguratorInterface::class;
-            if (!$configuratorClass->implementsInterface($typeConfiguratorInterface)) {
-                throw new \InvalidArgumentException(\sprintf('Service "%s" must implement interface "%s".', $id, $typeConfiguratorInterface));
+            if (!$configuratorClass->implementsInterface(TypeConfiguratorInterface::class)) {
+                throw new \InvalidArgumentException(\sprintf('Service "%s" must implement interface "%s".', $id, TypeConfiguratorInterface::class));
             }
 
-            // Register the Ivory CKEditor type configurator only if the bundle
-            // is installed and no default configuration is provided.
-            if ('easyadmin.form.type.configurator.ivory_ckeditor' === $id
-                && !(
-                    $container->has('ivory_ck_editor.config_manager')
-                    && null === $container->get('ivory_ck_editor.config_manager')->getDefaultConfig()
-                )
-            ) {
+            if ('easyadmin.form.type.configurator.ivory_ckeditor' === $id && $this->ivoryCkEditorHasDefaultConfiguration($container)) {
                 $container->removeDefinition('easyadmin.form.type.configurator.ivory_ckeditor');
+                continue;
+            }
+
+            if ('easyadmin.form.type.configurator.fos_ckeditor' === $id && $this->fosCkEditorHasDefaultConfiguration($container)) {
+                $container->removeDefinition('easyadmin.form.type.configurator.fos_ckeditor');
                 continue;
             }
 
@@ -60,5 +56,23 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         }
 
         $container->getDefinition('easyadmin.form.type')->replaceArgument(1, \iterator_to_array($configurators));
+    }
+
+    private function ivoryCkEditorHasDefaultConfiguration(ContainerBuilder $container): bool
+    {
+        try {
+            return null !== $container->get('ivory_ck_editor.config_manager')->getDefaultConfig();
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    private function fosCkEditorHasDefaultConfiguration(ContainerBuilder $container): bool
+    {
+        try {
+            return null !== $container->get('fos_ck_editor.configuration')->getDefaultConfig();
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

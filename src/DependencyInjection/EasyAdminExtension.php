@@ -25,7 +25,6 @@ class EasyAdminExtension extends Extension
         $configs = $this->processConfigFiles($configs);
         $backendConfig = $this->processConfiguration(new Configuration(), $configs);
         $container->setParameter('easyadmin.config', $backendConfig);
-        $container->setParameter('easyadmin.cache.dir', $container->getParameter('kernel.cache_dir').'/easy_admin');
 
         // load bundle's services
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
@@ -35,8 +34,6 @@ class EasyAdminExtension extends Extension
         if ($container->getParameter('kernel.debug')) {
             // in 'dev', use the built-in Symfony exception listener
             $container->removeDefinition('easyadmin.listener.exception');
-            // avoid parsing the entire config in 'dev' (even for requests unrelated to the backend)
-            $container->removeDefinition('easyadmin.cache.config_warmer');
         }
 
         if ($container->hasParameter('locale')) {

@@ -41,7 +41,7 @@ class AdminController extends Controller
     protected $entity = [];
     /** @var Request The instance of the current Symfony request */
     protected $request;
-    /** @var EntityManager The Doctrine entity manager for the current entity */
+    /** @var EntityManager|null The Doctrine entity manager for the current entity */
     protected $em;
 
     /**
@@ -478,7 +478,7 @@ class AdminController extends Controller
      */
     protected function findAll($entityClass, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        if (!\in_array(\strtoupper($sortDirection), ['ASC', 'DESC'])) {
+        if (null === $sortDirection || !\in_array(\strtoupper($sortDirection), ['ASC', 'DESC'])) {
             $sortDirection = 'DESC';
         }
 

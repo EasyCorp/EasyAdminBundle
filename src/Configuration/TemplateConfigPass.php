@@ -96,8 +96,8 @@ class TemplateConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
                 $candidateTemplates = [
-                    $entityConfig['templates'][$templateName] ?? null,
-                    $backendConfig['design']['templates'][$templateName] ?? null,
+                    $entityConfig['templates'][$templateName] ?? '',
+                    $backendConfig['design']['templates'][$templateName] ?? '',
                     $defaultTemplatePath,
                 ];
                 $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
@@ -145,7 +145,7 @@ class TemplateConfigPass implements ConfigPassInterface
         // 2nd level priority: @EasyAdmin/default/<templateName>.html.twig
         foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
             $candidateTemplates = [
-                $backendConfig['design']['templates'][$templateName] ?? null,
+                $backendConfig['design']['templates'][$templateName] ?? '',
                 $defaultTemplatePath,
             ];
             $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
@@ -206,9 +206,16 @@ class TemplateConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function findFirstExistingTemplate(array $templatePaths)
+    /**
+     * @param string[] $templatePaths
+     */
+    private function findFirstExistingTemplate(array $templatePaths): ?string
     {
         foreach ($templatePaths as $templatePath) {
+            if ('' === $templatePath) {
+                continue;
+            }
+
             // template name normalization code taken from \Twig_Loader_Filesystem::normalizeName()
             $templatePath = \preg_replace('#/{2,}#', '/', \str_replace('\\', '/', $templatePath));
             $namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE;

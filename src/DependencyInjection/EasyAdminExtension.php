@@ -34,8 +34,6 @@ class EasyAdminExtension extends Extension
         if ($container->getParameter('kernel.debug')) {
             // in 'dev', use the built-in Symfony exception listener
             $container->removeDefinition('easyadmin.listener.exception');
-            // avoid parsing the entire config in 'dev' (even for requests unrelated to the backend)
-            $container->removeDefinition('easyadmin.cache.config_warmer');
         }
 
         if ($container->hasParameter('locale')) {

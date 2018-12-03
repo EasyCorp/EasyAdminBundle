@@ -16,7 +16,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder as EasyAdminQueryBuilder;
 use Pagerfanta\Pagerfanta;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
@@ -36,8 +38,10 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class AdminController extends AbstractController
+class AdminController implements ContainerAwareInterface
 {
+    /** @var ContainerInterface */
+    protected $container;
     /** @var array The full configuration of the entire backend */
     protected $config;
     /** @var array The full configuration of the current entity */
@@ -47,16 +51,42 @@ class AdminController extends AbstractController
     /** @var EntityManager The Doctrine entity manager for the current entity */
     protected $em;
 
+    use ControllerTrait;
+
+    protected function getParameter(string $name)
+    {
+        return $this->container->get('parameter_bag')->get($name);
+    }
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
     public static function getSubscribedServices()
     {
-        return array_merge(parent::getSubscribedServices(), [
+        return [
+            'doctrine' => '?'.ManagerRegistry::class,
             'easyadmin.autocomplete' => Autocomplete::class,
             'easyadmin.config.manager' => ConfigManager::class,
-            'event_dispatcher' => EventDispatcherInterface::class,
             'easyadmin.paginator' => Paginator::class,
             'easyadmin.query_builder' => EasyAdminQueryBuilder::class,
+            'event_dispatcher' => EventDispatcherInterface::class,
+            'form.factory' => '?'.FormFactoryInterface::class,
+            'http_kernel' => '?'.HttpKernelInterface::class,
+            'message_bus' => '?'.MessageBusInterface::class,
+            'parameter_bag' => '?'.ContainerBagInterface::class,
             'property_accessor' => PropertyAccessorInterface::class,
-        ]);
+            'request_stack' => '?'.RequestStack::class,
+            'router' => '?'.RouterInterface::class,
+            'security.authorization_checker' => '?'.AuthorizationCheckerInterface::class,
+            'security.csrf.token_manager' => '?'.CsrfTokenManagerInterface::class,
+            'security.token_storage' => '?'.TokenStorageInterface::class,
+            'serializer' => '?'.SerializerInterface::class,
+            'session' => '?'.SessionInterface::class,
+            'templating' => '?'.EngineInterface::class,
+            'twig' => '?'.Environment::class,
+        ];
     }
 
     /**

@@ -103,8 +103,8 @@ class Configuration implements ConfigurationInterface
 
                         ->scalarNode('brand_color')
                             ->info('The color used in the backend design to highlight important elements.')
-                            ->defaultValue('hsl(230, 55%, 60%)')
-                            ->treatNullLike('hsl(230, 55%, 60%)')
+                            ->defaultValue('hsl(230, 55%%, 60%%)')
+                            ->treatNullLike('hsl(230, 55%%, 60%%)')
                             ->validate()
                                 // if present, remove the trailing ';' to avoid CSS issues
                                 ->ifTrue(function ($v) {

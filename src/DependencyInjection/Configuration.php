@@ -291,7 +291,7 @@ class Configuration implements ConfigurationInterface
                             ->info('The form theme applied to backend forms. Allowed values: "horizontal", "vertical", any valid form theme path or an array of theme paths.')
                             ->beforeNormalization()
                                 ->ifTrue(function ($v) {
-                                    return in_array($v, ['@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig', '@EasyAdmin/form/bootstrap_3_layout.html.twig'], true);
+                                    return in_array($v, array('@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig', '@EasyAdmin/form/bootstrap_3_layout.html.twig'), true);
                                 })
                                 ->then(function ($v) {
                                     @trigger_error(sprintf('The "%s" form theme is deprecated since EasyAdmin 1.x version and it will be removed in 2.0. Remove "%s" from the "design.form_theme" config option.', $v, $v), E_USER_DEPRECATED);

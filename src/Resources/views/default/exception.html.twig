@@ -1,7 +1,7 @@
 {% extends layout_template_path %}
 
 {% block body_class 'error' %}
-{% block page_title %}{{ 'errors'|transchoice(1, {}, 'EasyAdminBundle') }}{% endblock %}
+{% block page_title %}{{ 'errors'|trans({'%count%': 1}, 'EasyAdminBundle') }}{% endblock %}
 
 {% block content_header '' %}
 {% block main %}

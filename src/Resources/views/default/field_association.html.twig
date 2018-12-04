@@ -17,7 +17,7 @@
 
                 {% set _remaining_items = value|length - entity_config.show.max_results %}
                 {% if _remaining_items > 0 %}
-                    <li class="remaining-items">({{ 'show.remaining_items'|transchoice(_remaining_items, {}, 'EasyAdminBundle') }})</li>
+                    <li class="remaining-items">({{ 'show.remaining_items'|trans({'%count%': _remaining_items}, 'EasyAdminBundle') }})</li>
                 {% endif %}
             </ul>
         {% else %}

@@ -120,7 +120,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(['@EasyAdmin/form/bootstrap_4.html.twig'])
                             ->treatNullLike(['@EasyAdmin/form/bootstrap_4.html.twig'])
                             ->info('The form theme applied to backend forms. Allowed values: any valid form theme path or an array of theme paths.')
-                            ->beforeNormalization()->castToArray()->end()
+                            ->validate()->castToArray()->end()
                         ->end()
 
                         ->arrayNode('assets')

@@ -1,0 +1,12 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2018-12-04T15:04:11Z
+
+That's correct, if you use a string that starts with ``@`` or  has ``%`` anywhere in it, you need to escape it by adding another ``@`` or ``%``, otherwise you're refering to any container parameter (as usual,
+wrapping their names with ``%`` characters).
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-12-04T15:06:06Z
+
+Thanks for validating! I didn't know if this escaping was also necessary inside these PHP methods. It's strange that I cannot reproduce this issue ... but let's merge it anyway. Thanks!

@@ -122,7 +122,7 @@
                             _entity_config is defined ? _entity_config.templates.menu,
                             easyadmin_config('design.templates.menu'),
                             '@EasyAdmin/default/menu.html.twig'
-                        ]) }}
+                        ], { translation_domain: (_entity_config.translation_domain)|default(easyadmin_config('translation_domain'))|default('messages') }) }}
                     {% endblock main_menu_wrapper %}
                 </section>
             {% endblock sidebar %}

@@ -30,6 +30,7 @@
 
 {% block main_menu_before %}{% endblock %}
 
+{% set _translation_domain = (_entity_config.translation_domain)|default(easyadmin_config('translation_domain'))|default('messages') %}
 <ul class="sidebar-menu" data-widget="tree" data-animation-speed="250">
     {% set _menu_items = easyadmin_config('design.menu') %}
 
@@ -37,14 +38,14 @@
         {% for item in _menu_items %}
             {% block menu_item %}
                 <li class="{{ item.type == 'divider' ? 'header' }} {{ item.children is not empty ? 'treeview' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.index0 ? 'active' }} {{ app.request.query.get('submenuIndex')|default(-1) != -1 ? 'submenu-active' }}">
-                    {{ helper.render_menu_item(item, _entity_config.translation_domain|default('messages')) }}
+                    {{ helper.render_menu_item(item, _translation_domain) }}
 
                     {% if item.children|default([]) is not empty %}
                         <ul class="treeview-menu">
                             {% for subitem in item.children %}
                                 {% block menu_subitem %}
                                     <li class="{{ subitem.type == 'divider' ? 'header' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.parent.loop.index0 and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
-                                        {{ helper.render_menu_item(subitem, _entity_config.translation_domain|default('messages')) }}
+                                        {{ helper.render_menu_item(subitem, _translation_domain) }}
                                     </li>
                                 {% endblock menu_subitem %}
                             {% endfor %}

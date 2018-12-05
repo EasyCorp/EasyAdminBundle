@@ -5,6 +5,9 @@
 # You are not allowed to define new elements for path "security.firewalls".
 # Please define all elements for this path in one config file.
 
+imports:
+    - { resource: services.yml }
+
 parameters:
     locale: en
     database_path: '%kernel.root_dir%/../../../build/test.db'
@@ -40,10 +43,6 @@ doctrine:
                 alias: 'FunctionalTests'
                 prefix: 'AppTestBundle\Entity\FunctionalTests'
                 is_bundle: false
-
-services:
-    logger:
-        class: Psr\Log\NullLogger
 
 security:
     encoders:

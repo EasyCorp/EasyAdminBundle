@@ -113,9 +113,13 @@
         </service>
 
         <!-- aliases needed for the service locator of the AdminController -->
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" alias="easyadmin.config.manager"></service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" alias="easyadmin.query_builder"></service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" alias="easyadmin.paginator"></service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete" alias="easyadmin.autocomplete"></service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" alias="easyadmin.config.manager" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" alias="easyadmin.query_builder" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" alias="easyadmin.paginator" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete" alias="easyadmin.autocomplete" />
+
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController" class="EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController" public="true" autowire="true">
+            <tag name="container.service_subscriber" />
+        </service>
     </services>
 </container>

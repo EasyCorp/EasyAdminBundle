@@ -12,7 +12,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder as EasyAdminQueryBuilder;
@@ -52,14 +51,14 @@ class AdminController extends AbstractController
 
     public static function getSubscribedServices()
     {
-        return array_merge(parent::getSubscribedServices(), [
+        return parent::getSubscribedServices() + [
             'easyadmin.autocomplete' => Autocomplete::class,
             'easyadmin.config.manager' => ConfigManager::class,
-            'event_dispatcher' => EventDispatcherInterface::class,
             'easyadmin.paginator' => Paginator::class,
             'easyadmin.query_builder' => EasyAdminQueryBuilder::class,
+            'event_dispatcher' => EventDispatcherInterface::class,
             'property_accessor' => PropertyAccessorInterface::class,
-        ]);
+        ];
     }
 
     /**

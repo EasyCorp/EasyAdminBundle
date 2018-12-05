@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-12-05T15:32:10Z
+
+I'm sorry this translation is wrong ... but this file comes directly from select2 repo and we copy it automatically to the `src/Resources/public/select2/` dir using Webpack:
+
+https://github.com/EasyCorp/EasyAdminBundle/blob/811f2492d65598e7ec65af62ab34838e10bf8655/webpack.config.js#L19-L26
+
+If we merge this, the change will be overridden next time we update the assets 🤔  Maybe updating the assets (or only select2 asst if we prefer) solves this?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-12-05T15:56:28Z
+
+I've just release 2.0.0-RC1 version with updated frontend dependencies: https://github.com/EasyCorp/EasyAdminBundle/releases/tag/v2.0.0-RC1  Please let me know if the problem was solved. Thanks!
+
+---------------------------------------------------------------------------
+
+by alterphp at 2018-12-05T16:33:57Z
+
+And what about branch 1.x ?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2018-12-05T16:38:40Z
+
+I'm sorry. I missed that. I thought this was for 2.x only. Let's merge it. Thanks!

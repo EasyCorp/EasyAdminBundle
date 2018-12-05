@@ -294,7 +294,18 @@ class AdminController extends Controller
 
             $this->dispatch(EasyAdminEvents::POST_PERSIST, array('entity' => $entity));
 
-            return $this->redirectToReferrer();
+            if ( !$this->request->isXmlHttpRequest() ) {
+
+                return $this->redirectToReferrer();
+            } else {
+
+                return new JsonResponse(
+                    [
+                        'id' => $entity->getId(),
+                        'string' => $entity->__toString(),
+                    ]
+                );
+            }
         }
 
         $this->dispatch(EasyAdminEvents::POST_NEW, array(

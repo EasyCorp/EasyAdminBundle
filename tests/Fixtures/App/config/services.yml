@@ -17,4 +17,4 @@ services:
     EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\:
         resource: '../../AppTestBundle/{Admin,Controller}'
 
-    EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController: ~
+    EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController: ~

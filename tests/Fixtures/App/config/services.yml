@@ -1,0 +1,20 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    logger:
+        class: Psr\Log\NullLogger
+
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\DataFixtures\AppFixtures:
+        tags: ['doctrine.fixture.orm']
+
+    EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager: '@easyadmin.config.manager'
+    EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder: '@easyadmin.query_builder'
+    EasyCorp\Bundle\EasyAdminBundle\Search\Paginator: '@easyadmin.paginator'
+    EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete: '@easyadmin.autocomplete'
+
+    EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AppTestBundle\:
+        resource: '../../AppTestBundle/{Admin,Controller}'
+
+    EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController: ~

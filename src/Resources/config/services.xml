@@ -112,6 +112,16 @@
             <tag name="easyadmin.config_pass" priority="10" />
         </service>
 
-        <service id="easy_admin.property_accessor" alias="property_accessor" public="true" />
+        <service id="easyadmin.property_accessor" alias="property_accessor" public="true" />
+
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController" class="EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController" public="true" autowire="true">
+            <tag name="container.service_subscriber" />
+        </service>
+
+        <!-- aliases needed for the service locator of the AbstractAdminController -->
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" alias="easyadmin.config.manager" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" alias="easyadmin.query_builder" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" alias="easyadmin.paginator" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete" alias="easyadmin.autocomplete" />
     </services>
 </container>

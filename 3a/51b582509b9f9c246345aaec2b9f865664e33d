@@ -1,0 +1,77 @@
+---------------------------------------------------------------------------
+
+by odolbeau at 2018-12-05T17:52:43Z
+
+Do you consider injecting services per method instead of by the constructor?
+Maybe it will ease the overriding of the default controller when you need to use a custom service?
+
+Not sure if I'm clear or if it's a good idea.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2018-12-05T18:51:08Z
+
+Yes, but this `AdminController` has only one "real" route/action -> `indexAction()`, hence the service argument feature with `controller.service_arguments` tag doesn't make sense here. Probably the best migration path for these changes is option 2.
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2018-12-06T14:55:05Z
+
+Are we sure this is the way to go from a DX point of view? I'd expect the fact that we don't get the full container anymore will break lots of apps out there. We currently miss a smooth upgrade path (e.g. a proper deprecation in 1.x). This feels like a bad experience for too many users to me.
+
+Would it be a viable solution to introduce a new controller class in 1.x instead that extends `AbstractController` and deprecate the old one instead?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2018-12-06T16:23:41Z
+
+> Are we sure this is the way to go from a DX point of view? I'd expect the fact that we don't get the full container anymore will break lots of apps out there. [...]
+
+> The "Symfony\Bundle\FrameworkBundle\Controller\Controller" class is deprecated
+since Symfony 4.2, use AbstractController instead.
+
+It'll happen anyway, whether is this the moment or not.. is the point. I think yes :) but with the proper deprecation in `1.x` as you've suggested. Also it'll enable Symfony 5.0 compatibility in 2.x when the `Controller` class is gone. Otherwise, we need to do this in the next major release (3.x).
+
+> [...] We currently miss a smooth upgrade path (e.g. a proper deprecation in 1.x). This feels like a bad experience for too many users to me.
+
+> Would it be a viable solution to introduce a new controller class in 1.x instead that extends `AbstractController` and deprecate the old one instead?
+
+I agree, we forgot that and makes sense to me. My concern now is that we would have to duplicate the whole code in the new controller class... :thinking:... or create traits... thoughts?
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2018-12-06T16:42:00Z
+
+I thought about the trait too, but that would mean that we had to drop PHP 5.3 compatibility.
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2018-12-06T16:42:52Z
+
+~I thought about the trait too, but that would mean that we had to drop PHP 5.3 compatibility.~ (sorry, GitHub hick-up it seems)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2018-12-06T17:01:22Z
+
+That's mean we can start deprecating it as of 2.x and create the new controller here?
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2018-12-06T17:27:03Z
+
+I think duplicating the logic in the `1.x` branch would be okay too. If we decide to stop integrating new large features there, the cost to keep both classes in sync is quite low.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2018-12-06T18:16:05Z
+
+The proposed in last commit: Deprecating the `AdminController` as of 2.x using `trait` to avoid code duplication and then remove the `AdminController` definitely in 3.x. We've  a smooth upgrade path now with less maintenance cost.
+
+Tests are using the new `EasyAdminController` class, so `Controller` deprecation is gone.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2018-12-06T18:25:44Z
+
+Description updated with the new approach.

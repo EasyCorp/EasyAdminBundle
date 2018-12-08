@@ -130,8 +130,8 @@
                 </div>
             {% endif %}
 
-            {% if easyadmin.field.help|default('') != '' %}
-                <span class="help-block">{{ easyadmin.field.help|trans(domain = easyadmin.entity.translation_domain)|raw }}</span>
+            {% if easyadmin.field.help|default(form.vars.help) != '' %}
+                <span class="help-block">{{ easyadmin.field.help|default(form.vars.help)|trans(domain = easyadmin.entity.translation_domain)|raw }}</span>
             {% endif %}
 
             {{- form_errors(form) -}}

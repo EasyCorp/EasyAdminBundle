@@ -155,6 +155,10 @@
                 <source>form.are_you_sure</source>
                 <target>Vous n'avez pas sauvegardé vos modifications.</target>
             </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>1 champ invalide|%count% champs invalides</target>
+            </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} il y a un autre élément qui n'est pas affiché dans cette liste|]1,Inf] %count% autres éléments ne sont pas affichés dans cette liste]]></target>

@@ -57,9 +57,12 @@ body {
     line-height: 1;
     margin: 8px 15px 15px;
 }
-
 .main-header #header-logo a {
     color: var(--gray-900);
+}
+.main-header #header-logo img,
+.main-header #header-logo svg {
+    max-width: 100%;
 }
 
 // Content bar at the top of the page (e.g. user menu)

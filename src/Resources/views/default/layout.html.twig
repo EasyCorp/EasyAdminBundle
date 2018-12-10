@@ -27,20 +27,6 @@
         {% endblock %}
 
         {% block head_javascript %}
-            {% block adminlte_options %}
-                <script type="text/javascript">
-                    let AdminLTEOptions = {
-                        animationSpeed: 'normal',
-                        sidebarExpandOnHover: false,
-                        enableBoxRefresh: false,
-                        enableBSToppltip: false,
-                        enableFastclick: false,
-                        enableControlSidebar: false,
-                        enableBoxWidget: false,
-                    };
-                </script>
-            {% endblock %}
-
             <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
         {% endblock head_javascript %}
 

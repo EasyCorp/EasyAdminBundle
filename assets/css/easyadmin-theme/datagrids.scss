@@ -46,7 +46,7 @@ table.datagrid {
 .datagrid tr:last-child > td {
   border: 0;
 }
-.datagrid tbody tr:hover td {
+.datagrid tbody tr:hover td, .datagrid tbody tr:hover th {
   background: var(--form-bg);
 }
 .datagrid td.actions {

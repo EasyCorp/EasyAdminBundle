@@ -6,7 +6,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 $routes = new RouteCollection();
 
-$easyAdminBundleRoutes = $loader->import('@EasyAdminBundle/Controller/', 'annotation');
+$easyAdminBundleRoutes = $loader->import('@EasyAdminBundle/Controller/EasyAdminController.php', 'annotation');
 $easyAdminBundleRoutes->addPrefix('/admin/');
 $routes->addCollection($easyAdminBundleRoutes);
 

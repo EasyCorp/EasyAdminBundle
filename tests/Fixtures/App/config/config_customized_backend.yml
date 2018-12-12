@@ -80,7 +80,7 @@ easy_admin:
         title: 'Global Title for Edit'
     entities:
         Category:
-            help:  'Global help message for categories'
+            help:  'Global help message for <b>categories</b>'
             class: AppTestBundle\Entity\FunctionalTests\Category
             label: 'Categories'
             list:

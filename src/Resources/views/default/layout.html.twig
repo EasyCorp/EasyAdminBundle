@@ -121,7 +121,7 @@
                                     {% block content_help %}
                                         {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
                                             <div class="content-header-help">
-                                                {{ _entity_config[app.request.query.get('action')]['help']|trans(domain = _entity_config.translation_domain)|nl2br|raw }}
+                                                {{ _entity_config[app.request.query.get('action')]['help']|trans(domain = _entity_config.translation_domain)|raw }}
                                             </div>
                                         {% endif %}
                                     {% endblock content_help %}

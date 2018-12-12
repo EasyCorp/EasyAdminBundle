@@ -168,7 +168,7 @@
 
         <div class="form-group field-collection-action">
             <div class="form-widget">
-                <a href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-small">
+                <a href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-sm">
                     <i class="fa fa-plus"></i>
                     {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
                 </a>

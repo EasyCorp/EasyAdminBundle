@@ -45,7 +45,7 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $this->assertSame('Global help message for categories', \trim($crawler->filter('.content-header-help')->text()));
+        $this->assertSame('Global help message for <b>categories</b>', \trim($crawler->filter('.content-header-help')->html()));
     }
 
     public function testListViewSearchAction()

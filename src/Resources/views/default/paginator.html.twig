@@ -5,7 +5,7 @@
 {% if paginator.haveToPaginate %}
     <div class="list-pagination">
         <div class="list-pagination-counter">
-            {{ 'paginator.results'|transchoice(paginator.nbResults)|raw }}
+            {{ 'paginator.results'|trans({ '%count%': paginator.nbResults })|raw }}
         </div>
 
         <div class="pager pagination list-pagination-paginator {{ not paginator.hasPreviousPage ? 'first-page' }} {{ not paginator.hasNextPage ? 'last-page' }}">

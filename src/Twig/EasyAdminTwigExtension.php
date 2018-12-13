@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -25,17 +24,14 @@ class EasyAdminTwigExtension extends AbstractExtension
     private $easyAdminRouter;
     private $debug;
     private $logoutUrlGenerator;
-    /** @var TranslatorInterface|null */
-    private $translator;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
         $this->easyAdminRouter = $easyAdminRouter;
         $this->debug = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
-        $this->translator = $translator;
     }
 
     /**
@@ -66,10 +62,6 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
         ];
-
-        if (Kernel::VERSION_ID >= 40200) {
-            $filters[] = new TwigFilter('transchoice', [$this, 'transchoice']);
-        }
 
         return $filters;
     }
@@ -381,19 +373,6 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         return $value;
-    }
-
-    /**
-     * Remove this filter when the Symfony's requirement is equal or greater than 4.2
-     * and use the built-in trans filter instead with a %count% parameter.
-     */
-    public function transchoice($message, $count, array $arguments = [], $domain = null, $locale = null)
-    {
-        if (null === $this->translator) {
-            return strtr($message, $arguments);
-        }
-
-        return $this->translator->trans($message, array_merge(['%count%' => $count], $arguments), $domain, $locale);
     }
 
     /**

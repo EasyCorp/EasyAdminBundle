@@ -8,7 +8,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field1
                         type: text
                         fieldType: textarea
                         dataType: null
@@ -30,7 +30,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field2
                         type: text
                         fieldType: textarea
                         dataType: null
@@ -62,7 +62,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field3
                         type: text
                         fieldType: textarea
                         dataType: null
@@ -84,7 +84,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field4
                         type: text
                         fieldType: textarea
                         dataType: null
@@ -122,7 +122,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field5
                         type: text
                         fieldType: null
                         dataType: text
@@ -144,7 +144,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field6
                         type: text
                         fieldType: null
                         dataType: text
@@ -193,7 +193,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field7
                         type: text
                         fieldType: null
                         dataType: text
@@ -215,7 +215,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field8
                         type: text
                         fieldType: null
                         dataType: text

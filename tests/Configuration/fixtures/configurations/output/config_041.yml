@@ -8,7 +8,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field1
                         type: image
                         fieldType: null
                         dataType: image

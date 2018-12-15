@@ -863,8 +863,10 @@ Advanced Design Configuration
 
 This section explains how to completely customize the design of the ``list``,
 ``search`` and ``show`` views. EasyAdmin defines several Twig templates to
-create its interface. These are the four templates related to ``list``,
-``search`` and ``show`` views:
+create its interface. These are the templates related to ``list``, ``search``
+and ``show`` views:
+
+.. _default-templates:
 
 * ``@EasyAdmin/default/layout.html.twig``, the common layout that decorates the
   rest of the main templates;
@@ -896,8 +898,8 @@ Depending on your needs, there are several customization options:
 Overriding the Default Templates Using Symfony's Mechanism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Symfony's overriding mechanism allows to `override any part of third-party bundles`_.
-To override one of the default EasyAdmin templates, create a new template inside
+Symfony allows to `override any part of third-party bundles`_. To override one
+of the default EasyAdmin templates, create a new template inside
 ``templates/bundles/EasyAdminBundle/default/`` with the same path as the
 template to override. Example:
 

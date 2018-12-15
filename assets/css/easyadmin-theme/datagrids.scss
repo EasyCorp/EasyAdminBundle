@@ -79,3 +79,11 @@ table.datagrid {
     background: var(--highlight-bg);
     padding: 1px;
 }
+
+.datagrid .no-results {
+    padding: 60px 0;
+    text-align: center;
+}
+.datagrid .no-results:hover {
+    background: transparent;
+}

@@ -36,6 +36,11 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
             $options['entry_type'] = FormTypeHelper::getTypeClass($options['entry_type']);
         }
 
+        // Default : do not display numeric labels for entries
+        if (!isset($options['entry_options']['label'])) {
+            $options['entry_options']['label'] = false;
+        }
+
         return $options;
     }
 

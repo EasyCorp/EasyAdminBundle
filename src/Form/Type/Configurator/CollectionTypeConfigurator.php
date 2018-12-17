@@ -40,6 +40,10 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
         if (!isset($options['entry_options']['label'])) {
             $options['entry_options']['label'] = false;
         }
+        // configure entry_options.label to TRUE to keep default symfony numeric labels
+        elseif (true === $options['entry_options']['label']) {
+            unset($options['entry_options']['label']);
+        }
 
         return $options;
     }

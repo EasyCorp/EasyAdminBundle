@@ -32,9 +32,7 @@ $grid-breakpoints: (
 );
 
 $font-size-base: 0.875rem; // 14px;
-$font-size-large: 1rem; // 16px;
-$font-size-small: 0.8125rem; // 13px;
-$small-font-size: $font-size-small;
+$small-font-size: 0.8125rem;
 
 $gray-base: var(--black);
 $gray-darker: var(--gray-900);
@@ -132,3 +130,12 @@ $modal-footer-border-color: $modal-header-border-color;
 $modal-lg: 900px;
 $modal-md: 500px;
 $modal-sm: 300px;
+
+// Buttons
+$btn-transition: all .08s ease-in;
+$btn-font-weight: 400;
+$btn-padding-x: 10px;
+$btn-padding-y: 4px;
+$btn-line-height: 1.6;
+$btn-border-width: 0;
+$btn-border-radius: var(--border-radius);

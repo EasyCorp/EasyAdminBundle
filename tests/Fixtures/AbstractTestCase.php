@@ -31,6 +31,11 @@ abstract class AbstractTestCase extends WebTestCase
         $this->initDatabase();
     }
 
+    protected static function getKernelClass()
+    {
+        return 'AppKernel';
+    }
+
     protected function initClient(array $options = array())
     {
         $this->client = static::createClient($options);

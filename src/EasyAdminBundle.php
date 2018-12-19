@@ -11,6 +11,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle;
 
+use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\AnnotatedRouteControllerLoaderPass;
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminConfigPass;
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -28,6 +29,15 @@ class EasyAdminBundle extends Bundle
     {
         $container->addCompilerPass(new EasyAdminFormTypePass(), PassConfig::TYPE_BEFORE_REMOVING);
         $container->addCompilerPass(new EasyAdminConfigPass());
+
+        if (trait_exists('Symfony\Component\DependencyInjection\PriorityTaggedServiceTrait')) { // DI >= 3.2, we can use priority rules
+            $container->addCompilerPass(new AnnotatedRouteControllerLoaderPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 10);
+        } else {
+            $passConfig = $container->getCompilerPassConfig();
+            $passes = $passConfig->getBeforeOptimizationPasses();
+            array_unshift($passes, new AnnotatedRouteControllerLoaderPass()); // Make sure our pass is executed before the RoutingResolverPass
+            $passConfig->setBeforeOptimizationPasses($passes);
+        }
     }
 }
 

@@ -24,7 +24,7 @@ class LoadUsers extends AbstractFixture implements OrderedFixtureInterface
             $user->setEmail('user'.$i.'@example.com');
 
             // TODO: remove this check when PHP 5.3 is no longer supported
-            if (class_exists('\DateTimeImmutable')) {
+            if (class_exists('Doctrine\DBAL\Types\DateTimeImmutableType') && class_exists('\DateTimeImmutable')) {
                 $user->setCreatedAtDateTimeImmutable(new \DateTimeImmutable('October 18th 2005 16:27:36'));
                 $user->setCreatedAtDateImmutable(new \DateTimeImmutable('October 18th 2005'));
                 $user->setCreatedAtTimeImmutable(new \DateTimeImmutable('16:27:36'));

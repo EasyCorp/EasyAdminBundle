@@ -2,32 +2,30 @@
 
 {% set _paginator_request_parameters = _request_parameters|merge({'referer': null}) %}
 
-{% if paginator.haveToPaginate %}
-    <div class="list-pagination">
-        <div class="list-pagination-counter">
-            {{ 'paginator.results'|transchoice(paginator.nbResults)|raw }}
-        </div>
-
-        <div class="pager pagination list-pagination-paginator {{ not paginator.hasPreviousPage ? 'first-page' }} {{ not paginator.hasNextPage ? 'last-page' }}">
-            {% if paginator.hasPreviousPage %}
-                <a class="btn" href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.previousPage }) ) }}">
-                    <i class="fa fa-angle-left"></i> {{ 'paginator.previous'|trans }}
-                </a>
-            {% else %}
-                <span class="btn btn-disabled">
-                    <i class="fa fa-angle-left"></i> {{ 'paginator.previous'|trans }}
-                </span>
-            {% endif %}
-
-            {% if paginator.hasNextPage %}
-                <a class="btn" href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.nextPage }) ) }}">
-                    {{ 'paginator.next'|trans }} <i class="fa fa-angle-right"></i>
-                </a>
-            {% else %}
-                <span class="btn btn-disabled">
-                    {{ 'paginator.next'|trans }} <i class="fa fa-angle-right"></i>
-                </span>
-            {% endif %}
-        </div>
+<div class="list-pagination">
+    <div class="list-pagination-counter">
+        {{ 'paginator.results'|transchoice(paginator.nbResults)|raw }}
     </div>
-{% endif %}
+
+    <div class="pager pagination list-pagination-paginator {{ not paginator.hasPreviousPage ? 'first-page' }} {{ not paginator.hasNextPage ? 'last-page' }}">
+        {% if paginator.hasPreviousPage %}
+            <a class="btn" href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.previousPage }) ) }}">
+                <i class="fa fa-angle-left"></i> {{ 'paginator.previous'|trans }}
+            </a>
+        {% else %}
+            <span class="btn btn-disabled">
+                <i class="fa fa-angle-left"></i> {{ 'paginator.previous'|trans }}
+            </span>
+        {% endif %}
+
+        {% if paginator.hasNextPage %}
+            <a class="btn" href="{{ path('easyadmin', _paginator_request_parameters|merge({ page: paginator.nextPage }) ) }}">
+                {{ 'paginator.next'|trans }} <i class="fa fa-angle-right"></i>
+            </a>
+        {% else %}
+            <span class="btn btn-disabled">
+                {{ 'paginator.next'|trans }} <i class="fa fa-angle-right"></i>
+            </span>
+        {% endif %}
+    </div>
+</div>

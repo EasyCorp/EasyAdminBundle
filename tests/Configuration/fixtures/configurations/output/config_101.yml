@@ -5,7 +5,7 @@ easy_admin:
                 name: delete
                 type: method
                 label: action.delete
-                css_class: 'btn btn-default'
+                css_class: 'btn btn-danger'
                 icon: trash-o
             list:
                 name: list

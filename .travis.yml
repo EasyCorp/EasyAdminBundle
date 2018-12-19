@@ -64,6 +64,7 @@ before_install:
 install:
   - if [[ "$CHECK_PHP_SYNTAX" == "yes" ]]; then composer require --dev --no-update friendsofphp/php-cs-fixer; fi;
   - composer update --prefer-dist --no-interaction --no-suggest --no-progress --ansi $COMPOSER_FLAGS
+  - vendor/bin/simple-phpunit install
 
 script:
   - vendor/bin/simple-phpunit

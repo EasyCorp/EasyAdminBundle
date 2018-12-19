@@ -847,13 +847,15 @@ class AdminController extends Controller
 
         // 2. from new|edit action, redirect to edit if possible
         if (in_array($refererAction, array('new', 'edit')) && $this->isActionAllowed('edit')) {
+            $easyAdminAttributes = $this->request->attributes->get('easyadmin');
+
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'edit',
                 'entity' => $this->entity['name'],
                 'menuIndex' => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
                 'id' => ('new' === $refererAction)
-                    ? PropertyAccess::createPropertyAccessor()->getValue($this->request->attributes->get('easyadmin')['item'], $this->entity['primary_key_field_name'])
+                    ? PropertyAccess::createPropertyAccessor()->getValue($easyAdminAttributes['item'], $this->entity['primary_key_field_name'])
                     : $this->request->query->get('id'),
             ));
         }

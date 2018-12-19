@@ -80,7 +80,7 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: 'btn btn-danger action-delete'
+                        css_class: 'btn text-danger action-delete'
                         icon: trash-o
                     list:
                         name: list
@@ -182,7 +182,7 @@ easy_admin:
                         name: delete
                         type: method
                         label: action.delete
-                        css_class: 'btn btn-danger action-delete'
+                        css_class: 'btn text-danger action-delete'
                         icon: trash-o
                     list:
                         name: list

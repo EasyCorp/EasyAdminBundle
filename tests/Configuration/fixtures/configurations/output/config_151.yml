@@ -1,0 +1,59 @@
+easy_admin:
+    entities:
+        Category:
+            list:
+                fields:
+                    id:
+                        label: ID
+                    field1:
+                        label: Field1
+                    field2:
+                        label: 'some LABEL'
+                    field3:
+                        label: ''
+                    field4:
+                        label: ''
+                    field5:
+                        label: 'Field5'
+            show:
+                fields:
+                    id:
+                        label: 'some ID label'
+                    field1:
+                        label: Field1
+                    field2:
+                        label: 'some LABEL'
+                    field3:
+                        label: ''
+                    field4:
+                        label: ''
+                    field5:
+                        label: 'Field5'
+            edit:
+                fields:
+                    id:
+                        label: ''
+                    field1:
+                        label: Field1
+                    field2:
+                        label: 'some LABEL'
+                    field3:
+                        label: ''
+                    field4:
+                        label: ''
+                    field5:
+                        label: 'Field5'
+            new:
+                fields:
+                    id:
+                        label: ''
+                    field1:
+                        label: Field1
+                    field2:
+                        label: 'some LABEL'
+                    field3:
+                        label: ''
+                    field4:
+                        label: ''
+                    field5:
+                        label: 'Field5'

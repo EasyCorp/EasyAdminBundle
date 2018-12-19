@@ -1,0 +1,40 @@
+# TEST
+# field labels are properly managed and/or generated automatically
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    - 'id'
+                    - { property: 'field1' }
+                    - { property: 'field2', label: 'some LABEL' }
+                    - { property: 'field3', label: '' }
+                    - { property: 'field4', label: false }
+                    - { property: 'field5', label: null }
+            show:
+                fields:
+                    - { property: 'id', label: 'some ID label' }
+                    - { property: 'field1' }
+                    - { property: 'field2', label: 'some LABEL' }
+                    - { property: 'field3', label: '' }
+                    - { property: 'field4', label: false }
+                    - { property: 'field5', label: null }
+            edit:
+                fields:
+                    - { property: 'id', label: '' }
+                    - { property: 'field1' }
+                    - { property: 'field2', label: 'some LABEL' }
+                    - { property: 'field3', label: '' }
+                    - { property: 'field4', label: false }
+                    - { property: 'field5', label: null }
+            new:
+                fields:
+                    - { property: 'id', label: false }
+                    - { property: 'field1' }
+                    - { property: 'field2', label: 'some LABEL' }
+                    - { property: 'field3', label: '' }
+                    - { property: 'field4', label: false }
+                    - { property: 'field5', label: null }

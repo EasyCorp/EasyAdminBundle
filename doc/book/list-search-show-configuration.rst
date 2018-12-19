@@ -254,9 +254,13 @@ These are the options that you can define for each field:
   the ``list`` and ``search`` views and as the ``<label>`` element in the
   ``show`` view).
 
-  The default title is the "humanized" version of the property name (e.g.
-  ``published`` is displayed as ``Published`` and ``dateOfBirth`` as
-  ``Date of birth``).
+  If you don't define this option or set it to ``null``, the title is generated
+  automatically as the "humanized" version of the property name (e.g. ``published``
+  is displayed as ``Published`` and ``dateOfBirth`` as ``Date of birth``).
+
+  If you don't want to display any title for a field (e.g. when displaying an
+  image in the "avatar" property) set this option to ``false``. This also sets
+  the ``sortable`` option to ``false`` for the field.
 * ``css_class`` (optional): the CSS class applied to the parent HTML element that
   encloses the field contents. In the ``list`` and ``search`` views, this class
   is also applied to the ``<th>`` header of the column associated with this field.

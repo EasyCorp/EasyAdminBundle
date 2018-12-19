@@ -22,7 +22,7 @@ class PropertyConfigPass implements ConfigPassInterface
         'format' => null,
         // form field help message
         'help' => null,
-        // form field label (if 'null', autogenerate it)
+        // form field label (if 'null', autogenerate it; if 'false', hide it)
         'label' => null,
         // its value matches the value of 'dataType' for list/show and the value of 'fieldType' for new/edit
         'type' => null,

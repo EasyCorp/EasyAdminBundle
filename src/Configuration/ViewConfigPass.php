@@ -87,11 +87,18 @@ class ViewConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
-                    // special case: if the field is called 'id' and doesn't define a custom
-                    // label, use 'ID' as label. This improves the readability of the label
-                    // of this important field, which is usually related to the primary key
-                    if ('id' === $fieldConfig['fieldName'] && !isset($fieldConfig['label'])) {
+                    if (!isset($fieldConfig['label']) && 'id' === $fieldConfig['property']) {
+                        // if the field is called 'id' and doesn't define a custom label, use 'ID' as label to
+                        // improve the readability of the label, which is usually related to a primary key
                         $fieldConfig['label'] = 'ID';
+                    } elseif (isset($fieldConfig['label']) && false === $fieldConfig['label']) {
+                        // if the label is the special value 'false', label must be hidden (use an empty string as the label)
+                        $fieldConfig['label'] = '';
+                        $fieldConfig['sortable'] = false;
+                    } elseif (null === $fieldConfig['label'] && 0 !== strpos($fieldConfig['property'], '_easyadmin_form_design_element_')) {
+                        // else, generate the label automatically from its name (except if it's a
+                        // special element created to render complex forms)
+                        $fieldConfig['label'] = $this->humanize($fieldConfig['property']);
                     }
 
                     $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
@@ -312,5 +319,12 @@ class ViewConfigPass implements ConfigPassInterface
         }
 
         return $filteredFields;
+    }
+
+    // Copied from Symfony\Component\Form\FormRenderer::humanize()
+    // @author Bernhard Schussek <bschussek@gmail.com>
+    private function humanize(string $value): string
+    {
+        return ucfirst(strtolower(trim(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $value))));
     }
 }

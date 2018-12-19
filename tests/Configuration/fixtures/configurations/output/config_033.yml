@@ -8,7 +8,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field1
                         type: text
                         fieldType: textarea
                         dataType: null
@@ -30,7 +30,7 @@ easy_admin:
                         css_class: ''
                         format: null
                         help: null
-                        label: null
+                        label: Field2
                         type: text
                         fieldType: textarea
                         dataType: null

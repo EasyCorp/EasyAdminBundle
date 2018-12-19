@@ -23,7 +23,7 @@
                 {% block show_field %}
                     <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
                         <label class="control-label">
-                            {{ (metadata.label ?: field|humanize)|trans(_trans_parameters)|raw }}
+                            {{ metadata.label|trans(_trans_parameters)|raw }}
                         </label>
                         <div class="form-widget">
                             <div class="form-control">

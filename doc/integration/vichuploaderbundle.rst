@@ -53,7 +53,7 @@ This is the configuration needed for this example:
         mappings:
             product_images:
                 uri_prefix:         '%app.path.product_images%'
-                upload_destination: '%kernel.root_dir%/../public%app.path.product_images%'
+                upload_destination: '%kernel.project_dir%/public%app.path.product_images%'
 
 The ``product_images`` value is a freely chosen name which holds the configuration
 for a specific mapping. This value will be used later in the entity configuration.
@@ -286,7 +286,7 @@ Define the "mapping" for the new user contracts:
         mappings:
             user_contracts:
                 uri_prefix: '%app.path.user_contracts%'
-                upload_destination: '%kernel.root_dir%/../public%app.path.user_contracts%'
+                upload_destination: '%kernel.project_dir%/public%app.path.user_contracts%'
 
 Preparing your Entities to Persist Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -51,7 +51,7 @@ recommended in Symfony 4.x apps.
 
 ### Before
 
-Extend from `EasyCorp\Bundle\EasyAdminBundle\AdminController` class and:
+Extend from `EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController` class and:
 
 ```php
 // in some place from extended child controller:
@@ -60,7 +60,7 @@ $this->get('custom_service')->doSomething();
 
 ### After
 
-Extend from `EasyCorp\Bundle\EasyAdminBundle\EasyAdminController` class and:
+Extend from `EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController` class and:
 
 **Option 1**: Inject your service as argument of the constructor:
 

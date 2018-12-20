@@ -5,6 +5,13 @@ Although EasyAdmin 2.0 is a new major version, it doesn't contain many
 backward compatibility breaks when you upgrade from EasyAdmin 1.x versions.
 Also, the breaking changes are related to mostly unimportant features.
 
+> **TIP**
+>
+> If you use [Rector](https://github.com/rectorphp/rector), a tool to automate
+> the upgrade of PHP applications, you can upgrade your admin controllers to
+> EasyAdmin 2.0 running this command:
+> `$ ./vendor/bin/rector process /src --level easy-admin-bundle20`
+
 Upgraded Requirements
 ---------------------
 

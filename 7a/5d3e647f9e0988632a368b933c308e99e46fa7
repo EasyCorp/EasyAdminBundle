@@ -1,0 +1,33 @@
+---------------------------------------------------------------------------
+
+by alterphp at 2018-12-17T16:29:19Z
+
+- To keep default symfony numeric labels :
+```
+          MyEntity:
+              form:
+                  - property: collectionFields
+                      label: 'Collection fields'
+                      type: collection
+                      type_options:
+                        entry_type: SomeType
+                        entry_options: { label: true }
+                        allow_add: true
+                        allow_delete: true
+                        by_reference: false
+```
+
+@javiereguiluz When merged, you'll have to re-compile assets. I did not push them as it may breaks other PRs changes. I guess you compile them after every merge.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2018-12-17T16:43:04Z
+
+Should we also remove this code, right?
+https://github.com/EasyCorp/EasyAdminBundle/blob/c1826e69d963fbc585c2a2449d7ea59d5181f8fb/assets/css/easyadmin-theme/forms.scss#L188-L190
+
+---------------------------------------------------------------------------
+
+by alterphp at 2018-12-17T16:47:22Z
+
+@yceruto  my bad, missing commits were unpushed. that's done !

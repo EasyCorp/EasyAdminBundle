@@ -31,7 +31,7 @@ easy_admin:
                 name: list
                 type: method
                 label: action.list
-                css_class: 'btn btn-link'
+                css_class: 'btn btn-link pr-0'
                 icon: null
     entities:
         Category:
@@ -85,7 +85,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
                 fields: {  }
                 form_options: {  }
@@ -101,7 +101,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
                 fields:
                     id:

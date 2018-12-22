@@ -259,7 +259,7 @@ class ActionConfigPass implements ConfigPassInterface
             'new' => ['name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'],
             'search' => ['name' => 'search', 'label' => 'action.search'],
             'show' => ['name' => 'show', 'label' => 'action.show'],
-            'list' => ['name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-link'],
+            'list' => ['name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-link pr-0'],
         ]);
 
         // minor tweaks for some action + view combinations

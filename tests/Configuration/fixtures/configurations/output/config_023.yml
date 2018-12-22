@@ -18,7 +18,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             list:
                 fields:
@@ -77,7 +77,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             search:
                 fields:
@@ -144,7 +144,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             disabled_actions: {  }
             primary_key_field_name: id
@@ -228,7 +228,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             list:
                 fields:
@@ -287,7 +287,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             search:
                 fields:
@@ -354,7 +354,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             disabled_actions: {  }
             primary_key_field_name: id

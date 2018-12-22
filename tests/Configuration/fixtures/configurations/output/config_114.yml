@@ -16,7 +16,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             edit:
                 form_options:
@@ -34,7 +34,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             name: Category
             label: Category
@@ -152,7 +152,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             disabled_actions: {  }
             primary_key_field_name: id

@@ -216,7 +216,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertContains('200 results', $crawler->filter('.list-pagination')->text());
 
-        $this->assertSame('btn btn-disabled', $crawler->filter('.list-pagination span:contains("Previous")')->attr('class'));
+        $this->assertSame('btn btn-secondary disabled', $crawler->filter('.list-pagination a:contains("Previous")')->attr('class'));
 
         $this->assertStringStartsWith('/admin/?action=list&entity=Category&view=list&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination a:contains("Next")')->attr('href'));
     }
@@ -287,7 +287,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         // list action
         $this->assertContains('action-list', \trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
-        $this->assertSame('btn btn-link action-list', \trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
+        $this->assertSame('btn btn-link pr-0 action-list', \trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
         $this->assertSame('_self', $crawler->filter('.form-actions a:contains("Back to listing")')->attr('target'));
     }
 
@@ -373,7 +373,7 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertContains('fa-trash', \trim($crawler->filter('.form-actions a:contains("Delete") i')->attr('class')));
 
         // list action
-        $this->assertSame('btn btn-link action-list', \trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
+        $this->assertSame('btn btn-link pr-0 action-list', \trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
         $this->assertSame('_self', $crawler->filter('.form-actions a:contains("Back to listing")')->attr('target'));
     }
 
@@ -489,7 +489,7 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertContains('action-save', \trim($crawler->filter('.form-actions button:contains("Save changes")')->attr('class')));
 
         // list action
-        $this->assertSame('btn btn-link action-list', \trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
+        $this->assertSame('btn btn-link pr-0 action-list', \trim($crawler->filter('.form-actions a:contains("Back to listing")')->attr('class')));
         $this->assertSame('_self', $crawler->filter('.form-actions a:contains("Back to listing")')->attr('target'));
     }
 
@@ -601,7 +601,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertContains('200 results', $crawler->filter('.list-pagination')->text());
 
-        $this->assertSame('btn btn-disabled', $crawler->filter('.list-pagination span:contains("Previous")')->attr('class'));
+        $this->assertSame('btn btn-secondary disabled', $crawler->filter('.list-pagination a:contains("Previous")')->attr('class'));
 
         $this->assertStringStartsWith('/admin/?action=search&entity=Category&query=cat&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination a:contains("Next")')->attr('href'));
     }

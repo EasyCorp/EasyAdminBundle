@@ -32,7 +32,7 @@ easy_admin:
                 name: list
                 type: method
                 label: custom-list-label
-                css_class: 'btn btn-link'
+                css_class: 'btn btn-link pr-0'
                 icon: null
             custom_action_for_edit:
                 name: custom_action_for_edit
@@ -88,7 +88,7 @@ easy_admin:
                         name: list
                         type: method
                         label: custom-list-label
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
                     custom_action_for_edit:
                         name: custom_action_for_edit

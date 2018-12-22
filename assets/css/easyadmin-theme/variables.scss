@@ -32,7 +32,8 @@ $grid-breakpoints: (
 );
 
 $font-size-base: 0.875rem; // 14px;
-$small-font-size: 0.8125rem;
+$font-size-lg: 1rem; // 16px;
+$font-size-sm: 0.8125rem; // 13px;
 
 $gray-base: var(--black);
 $gray-darker: var(--gray-900);
@@ -131,11 +132,16 @@ $modal-lg: 900px;
 $modal-md: 500px;
 $modal-sm: 300px;
 
-// Buttons
 $btn-transition: all .08s ease-in;
 $btn-font-weight: 400;
-$btn-padding-x: 10px;
 $btn-padding-y: 4px;
+$btn-padding-x: 10px;
+$btn-padding-y-lg: 7px;
+$btn-padding-x-lg: 12px;
+$btn-padding-y-sm: 3px;
+$btn-padding-x-sm: 5px;
 $btn-line-height: 1.6;
 $btn-border-width: 0;
 $btn-border-radius: var(--border-radius);
+$btn-border-radius-lg: var(--border-radius);
+$btn-border-radius-sm: var(--border-radius);

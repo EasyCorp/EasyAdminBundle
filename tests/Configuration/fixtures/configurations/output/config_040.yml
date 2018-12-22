@@ -54,7 +54,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             edit:
                 fields:
@@ -114,7 +114,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             list:
                 fields:
@@ -250,7 +250,7 @@ easy_admin:
                         name: list
                         type: method
                         label: action.list
-                        css_class: 'btn btn-link action-list'
+                        css_class: 'btn btn-link pr-0 action-list'
                         icon: null
             name: Category
             label: Category

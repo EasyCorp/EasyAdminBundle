@@ -141,7 +141,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertContains('200 results', $crawler->filter('.list-pagination')->text());
 
-        $this->assertSame('btn btn-disabled', $crawler->filter('.list-pagination span:contains("Previous")')->attr('class'));
+        $this->assertSame('btn btn-secondary disabled', $crawler->filter('.list-pagination a:contains("Previous")')->attr('class'));
 
         $this->assertStringStartsWith('/admin/?action=list&entity=Category&view=list&sortField=id&sortDirection=DESC&page=2', $crawler->filter('.list-pagination a:contains("Next")')->attr('href'));
     }
@@ -531,7 +531,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertContains('200 results', $crawler->filter('.list-pagination')->text());
 
-        $this->assertSame('btn btn-disabled', $crawler->filter('.list-pagination span:contains("Previous")')->attr('class'));
+        $this->assertSame('btn btn-secondary disabled', $crawler->filter('.list-pagination a:contains("Previous")')->attr('class'));
 
         $this->assertStringStartsWith('/admin/?action=search&entity=Category&query=cat&sortField=name&sortDirection=ASC&page=2', $crawler->filter('.list-pagination a:contains("Next")')->attr('href'));
     }

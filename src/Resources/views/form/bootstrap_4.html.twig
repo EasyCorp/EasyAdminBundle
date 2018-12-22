@@ -168,7 +168,7 @@
 
         <div class="form-group field-collection-action">
             <div class="form-widget">
-                <a href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-sm">
+                <a href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-secondary btn-sm">
                     <i class="fa fa-plus"></i>
                     {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
                 </a>
@@ -265,7 +265,7 @@
 
         <div class="easyadmin-vich-file-actions">
             {# the container element is needed to allow customizing the <input type="file" /> #}
-            <div class="btn input-file-container">
+            <div class="btn btn-secondary input-file-container">
                 <i class="fa fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
                 {{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}
             </div>
@@ -312,7 +312,7 @@
 
         <div class="easyadmin-vich-image-actions">
             {# the container element is needed to allow customizing the <input type="file" /> #}
-            <div class="btn input-file-container">
+            <div class="btn btn-secondary input-file-container">
                 <i class="fa fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
                 {{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}
             </div>

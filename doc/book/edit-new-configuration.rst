@@ -367,6 +367,11 @@ These are the options that you can define for each field:
   form field. The default label is the "humanized" version of the property name
   (e.g. ``published`` is displayed as ``Published`` and ``dateOfBirth`` as
   ``Date of birth``).
+
+  If the form field renders a collection of items, the numeric auto-increment
+  label of the collection items is hidden by default. If you want to display it,
+  set the ``entry_options.label`` option to ``true``:
+  ``- { property: '...', type: 'collection', type_options: { entry_options: { label: true } }``
 * ``help`` (optional): the help message displayed below the form field.
 * ``css_class`` (optional): the CSS class applied to the parent HTML element
   that contains the entire form field. For example, when using the default

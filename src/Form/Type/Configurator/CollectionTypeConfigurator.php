@@ -36,11 +36,11 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
             $options['entry_type'] = FormTypeHelper::getTypeClass($options['entry_type']);
         }
 
-        // Default : do not display numeric labels for entries
+        // by default, the numeric auto-increment label of collection items is hidden...
         if (!isset($options['entry_options']['label'])) {
             $options['entry_options']['label'] = false;
         }
-        // configure entry_options.label to TRUE to keep default symfony numeric labels
+        // ...but you can set the 'entry_options.label' option to TRUE to display it
         elseif (true === $options['entry_options']['label']) {
             unset($options['entry_options']['label']);
         }

@@ -88,30 +88,33 @@ body {
     color: var(--color-danger);
 }
 
-.user-details .user-name {
-    font-size: var(--font-size-base);
-    font-weight: 500;
-    margin-bottom: 0;
-}
+#user-menu-wrapper {
 
-.user-menu .user-action {
-    display: block;
-    font-size: var(--font-size-sm);
-}
-.user-menu .user-action + .user-action {
-    margin-top: var(--font-size-sm);
-}
+    // Popovers (used for the user menu)
+    .popover-body {
+        padding: 0;
+    }
+    .popover-content-section {
+        padding: 12px;
+    }
+    .popover-content-section + .popover-content-section {
+        border-top: var(--border-width) var(--border-style) var(--border-color);
+        padding-top: 12px;
+    }
 
-// Popovers (used for the user menu)
-.popover-body {
-    padding: 0;
-}
-.popover-content-section {
-    padding: 12px;
-}
-.popover-content-section + .popover-content-section {
-    border-top: var(--border-width) var(--border-style) var(--border-color);
-    padding-top: 12px;
+    .user-details .user-name {
+        font-size: var(--font-size-base);
+        font-weight: 500;
+        margin-bottom: 0;
+    }
+
+    .user-menu .user-action {
+        display: block;
+        font-size: var(--font-size-sm);
+    }
+    .user-menu .user-action + .user-action {
+        margin-top: var(--font-size-sm);
+    }
 }
 
 /* Sidebar menu */

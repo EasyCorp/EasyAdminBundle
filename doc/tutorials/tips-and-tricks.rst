@@ -164,4 +164,4 @@ The solution work as follows:
    parent template (``{{ parent() }}``).
 
 .. _`Doctrine caching drivers`: https://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
-.. _`Doctrine filters`: http://doctrine-orm.readthedocs.io/projects/doctrine-orm/en/latest/reference/filters.html
+.. _`Doctrine filters`: https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/filters.html

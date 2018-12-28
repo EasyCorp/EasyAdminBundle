@@ -18,11 +18,27 @@ import 'jquery-highlight';
 import 'select2';
 
 $(function () {
+    $('.main-sidebar-collapse').on('click', toggleNavigation);
     $('[data-toggle="popover"]').popover();
     createNullableControls();
     createAutoCompleteFields();
     $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);
 });
+
+function toggleNavigation() {
+    // Toggle main-sidebar state (VanillaJS)
+    const sideBar = document.querySelector('#main-sidebar');
+    if (sideBar) {
+      sideBar.classList.toggle('collapsed');
+    }
+    // Store main-sidebar state in a cookie
+    var cookieName = '_easyadmin_navigation_iscollapsed';
+    if ($('#main-sidebar').hasClass('collapsed')) {
+        document.cookie = encodeURIComponent(cookieName) + "=" + encodeURIComponent(true) + "; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+    } else {
+        document.cookie = encodeURIComponent(cookieName) + "=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+}
 
 function createNullableControls() {
     var fnNullDates = function() {

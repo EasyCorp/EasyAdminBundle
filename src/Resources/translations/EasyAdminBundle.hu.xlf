@@ -111,6 +111,10 @@
             </trans-unit>
 
             <!-- misc. elements -->
+            <trans-unit id="toggle_navigation">
+                <source>toggle_navigation</source>
+                <target>Menü megjelenítése/elrejtése</target>
+            </trans-unit>
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
                 <target>Biztos benne, hogy törli ezt az elemet?</target>

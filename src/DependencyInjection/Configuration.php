@@ -116,6 +116,11 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
 
+                        ->booleanNode('full_width')
+                            ->defaultFalse()
+                            ->info('Makes theme use full screen width.')
+                        ->end()
+
                         ->variableNode('form_theme')
                             ->defaultValue(['@EasyAdmin/form/bootstrap_4.html.twig'])
                             ->treatNullLike(['@EasyAdmin/form/bootstrap_4.html.twig'])

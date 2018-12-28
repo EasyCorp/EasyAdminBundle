@@ -6,8 +6,11 @@
    to also customize the Sass variables defined in variables.scss.
  --------------------------------------------------------------------------- */
 :root {
-    --body-max-width: 1440px;
     --sidebar-width: 215px;
+    --sidebar-marginh: 10px;
+    --sidebar-collapsed-width: 35px;
+    --sidebar-collapsed-marginh: 5px;
+    --sidebar-collapsed-bg: hsl(220, 20%, 70%);
 
     --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;

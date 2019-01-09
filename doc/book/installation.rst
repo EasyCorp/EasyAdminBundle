@@ -15,7 +15,7 @@ enable the routes of the bundle:
 
     # config/routes/easy_admin.yaml
     easy_admin_bundle:
-        resource: '@EasyAdminBundle/Controller/AdminController.php'
+        resource: '@EasyAdminBundle/Controller/EasyAdminController.php'
         prefix: /admin
         type: annotation
 

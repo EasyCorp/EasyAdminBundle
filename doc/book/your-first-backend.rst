@@ -1,9 +1,10 @@
 Chapter 2. Your First Backend
 =============================
 
-Creating your first backend will take you less than 30 seconds. Let's suppose
-that your Symfony application defines three Doctrine ORM entities called
-``Product``, ``Category`` and ``User``.
+Creating your first backend will take you less than 30 seconds if your Symfony
+application already defines some Doctrine ORM entities. Otherwise, create some
+entities before continuing (you can use the ``make:entity`` command from the
+`Symfony MakerBundle`_ to generate them quickly).
 
 Open the ``config/packages/easy_admin.yaml`` file and add the following
 configuration:
@@ -68,3 +69,5 @@ backend.
 -----
 
 Next chapter: :doc:`basic-configuration`
+
+.. _`Symfony MakerBundle`: https://symfony.com/doc/current/bundles/SymfonyMakerBundle/index.html

@@ -113,6 +113,10 @@
                 <source>user.signout</source>
                 <target>Wyloguj</target>
             </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Opuść tryb maskowania</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">

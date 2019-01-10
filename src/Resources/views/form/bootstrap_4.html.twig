@@ -170,7 +170,7 @@
             <div class="form-widget">
                 <a href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-secondary btn-sm">
                     <i class="fa fa-plus"></i>
-                    <label>{{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}</label>
+                    <span class="btn-label">{{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}</span>
                 </a>
             </div>
         </div>
@@ -267,7 +267,7 @@
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
                 <i class="fa fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
-                <label>{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}</label>
+                <span class="btn-label">{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}</span>
             </div>
 
             {% if form.delete is defined %}
@@ -314,7 +314,7 @@
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
                 <i class="fa fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
-                <label>{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}</label>
+                <span class="btn-label">{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}</span>
             </div>
 
             {% if form.delete is defined %}
@@ -341,8 +341,7 @@
 
     {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
     <button type="submit" class="btn btn-primary action-save">
-        <i class="fa fa-save"></i>
-        <label>{{ 'action.save'|trans(_trans_parameters, _translation_domain) }}</label>
+        <span class="btn-label">{{ 'action.save'|trans(_trans_parameters, _translation_domain) }}</span>
     </button>
 
     {% set _entity_actions = (easyadmin.view == 'new')

@@ -67,13 +67,13 @@ a.btn.disabled, fieldset:disabled a.btn {
     pointer-events: unset;
 }
 
-.btn > label {
+.btn > .btn-label {
 	margin: 0;
 	cursor: inherit;
 }
-.btn > i + label {
+.btn > i + .btn-label {
     margin-left: 4px;
 }
-.btn > label + i {
+.btn > .btn-label + i {
     margin-left: 4px;
 }

@@ -10,12 +10,12 @@
     <div class="pager pagination list-pagination-paginator {{ not paginator.hasPreviousPage ? 'first-page' }} {{ not paginator.hasNextPage ? 'last-page' }}">
         <a class="btn btn-secondary {{ not paginator.hasPreviousPage ? 'disabled' }}"
            href="{{ not paginator.hasPreviousPage ? '#' : path('easyadmin', _paginator_request_parameters|merge({ page: paginator.previousPage }) ) }}">
-            <i class="fa fa-angle-left"></i> {{ 'paginator.previous'|trans }}
+            <i class="fa fa-angle-left"></i> <span class="btn-label">{{ 'paginator.previous'|trans }}</span>
         </a>
 
         <a class="btn btn-secondary {{ not paginator.hasNextPage ? 'disabled' }}"
            href="{{ not paginator.hasNextPage ? '#' : path('easyadmin', _paginator_request_parameters|merge({ page: paginator.nextPage }) ) }}">
-            {{ 'paginator.next'|trans }} <i class="fa fa-angle-right"></i>
+            <span class="btn-label">{{ 'paginator.next'|trans }}</span> <i class="fa fa-angle-right"></i>
         </a>
     </div>
 </div>

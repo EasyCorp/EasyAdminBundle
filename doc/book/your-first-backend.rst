@@ -6,8 +6,9 @@ application already defines some Doctrine ORM entities. Otherwise, create some
 entities before continuing (you can use the ``make:entity`` command from the
 `Symfony MakerBundle`_ to generate them quickly).
 
-Open the ``config/packages/easy_admin.yaml`` file and add the following
-configuration:
+Let's consider that the app defines three entities called ``Product``,
+``Category`` and ``User``. Open the ``config/packages/easy_admin.yaml`` file and
+add the following configuration:
 
 .. code-block:: yaml
 

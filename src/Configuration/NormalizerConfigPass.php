@@ -53,6 +53,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         $backendConfig = $this->normalizePropertyConfig($backendConfig);
         $backendConfig = $this->normalizeFormDesignConfig($backendConfig);
         $backendConfig = $this->normalizeActionConfig($backendConfig);
+        $backendConfig = $this->normalizeBatchActionConfig($backendConfig);
         $backendConfig = $this->normalizeFormConfig($backendConfig);
         $backendConfig = $this->normalizeControllerConfig($backendConfig);
         $backendConfig = $this->normalizeTranslationConfig($backendConfig);
@@ -329,6 +330,28 @@ class NormalizerConfigPass implements ConfigPassInterface
                 if (!\is_array($backendConfig['entities'][$entityName][$view]['actions'])) {
                     throw new \InvalidArgumentException(\sprintf('The "actions" configuration for the "%s" view of the "%s" entity must be an array (a string was provided).', $view, $entityName));
                 }
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    private function normalizeBatchActionConfig(array $backendConfig)
+    {
+        if (!isset($backendConfig['list']['batch_actions'])) {
+            $backendConfig['list']['batch_actions'] = [];
+        }
+
+        // there is no need to check if the "batch_actions" option for the global
+        // view is an array because it's done by the Configuration definition
+
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            if (!isset($entityConfig['list']['batch_actions'])) {
+                $backendConfig['entities'][$entityName]['list']['batch_actions'] = [];
+            }
+
+            if (!\is_array($backendConfig['entities'][$entityName]['list']['batch_actions'])) {
+                throw new \InvalidArgumentException(\sprintf('The "batch_actions" configuration for the "list" view of the "%s" entity must be an array (a string was provided).', $entityName));
             }
         }
 

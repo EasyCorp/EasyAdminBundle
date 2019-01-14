@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -165,6 +166,7 @@ trait AdminControllerTrait
         $parameters = [
             'paginator' => $paginator,
             'fields' => $fields,
+            'batch_form' => $this->createBatchForm($this->entity['name'])->createView(),
             'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
         ];
 
@@ -381,10 +383,52 @@ trait AdminControllerTrait
         $parameters = [
             'paginator' => $paginator,
             'fields' => $fields,
+            'batch_form' => $this->createBatchForm($this->entity['name'])->createView(),
             'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
         ];
 
         return $this->executeDynamicMethod('render<EntityName>Template', ['search', $this->entity['templates']['list'], $parameters]);
+    }
+
+    /**
+     * The method that is executed when the user performs a 'batch' action to any entity.
+     */
+    protected function batchAction(): RedirectResponse
+    {
+        $batchForm = $this->createBatchForm($this->entity['name']);
+        $batchForm->handleRequest($this->request);
+
+        if ($batchForm->isSubmitted() && $batchForm->isValid()) {
+            $actionName = $batchForm->get('name')->getData();
+            $actionIds = $batchForm->get('ids')->getData();
+
+            $this->executeDynamicMethod($actionName.'<EntityName>BatchAction', [$actionIds, $batchForm]);
+        }
+
+        return $this->redirectToReferrer();
+    }
+
+    protected function createBatchForm(string $entityName): FormInterface
+    {
+        return $this->get('form.factory')->createNamed('batch_form', EasyAdminBatchFormType::class, null, [
+            'action' => $this->generateUrl('easyadmin', ['action' => 'batch', 'entity' => $entityName]),
+            'entity' => $entityName,
+        ]);
+    }
+
+    protected function deleteBatchAction(array $ids): void
+    {
+        $class = $this->entity['class'];
+
+        $this->getDoctrine()->getManagerForClass($class)
+            ->createQueryBuilder()
+            ->delete()
+            ->from($class, 'o')
+            ->where(sprintf('o.%s IN (:ids)', $this->entity['primary_key_field_name']))
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->execute()
+        ;
     }
 
     /**

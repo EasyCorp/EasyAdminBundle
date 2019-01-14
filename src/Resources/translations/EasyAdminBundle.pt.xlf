@@ -57,7 +57,11 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> de <strong>%results%</strong>]]></target>
             </trans-unit>
-
+            <trans-unit id="paginator.results">
+                <source>paginator.results</source>
+                <target><![CDATA[{0} Sem resultados|{1} <strong>1</strong> resultado|]1,Inf] <strong>%count%</strong> resultados]]></target>
+            </trans-unit>
+            
             <!-- labels -->
             <trans-unit id="label.true">
                 <source>label.true</source>

@@ -21,7 +21,7 @@
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
-                <target><![CDATA[{0} Brak wyników|{1} Znaleziono <strong>1</strong> wynik|{2,3,4} Znaleziono <strong>%count%</strong> wyniki|[5,Inf] Znaleziono <strong>%count%</strong> wyników]]></target>
+                <target><![CDATA[Znaleziono <strong>%count%</strong> wynik|Znaleziono <strong>%count%</strong> wyniki|Znaleziono <strong>%count%</strong> wyników|{0} Brak wyników]]></target>
             </trans-unit>
 
             <!-- 'search' view -->
@@ -59,7 +59,7 @@
             </trans-unit>
             <trans-unit id="paginator.results">
                 <source>paginator.results</source>
-                <target><![CDATA[{0} Brak wyników|{1} <strong>1</strong> wynik|{2,3,4} <strong>%count%</strong> wyniki|[5,21] <strong>%count%</strong> wyników|[22,Inf]Liczba wyników <strong>%count%</strong>]]></target>
+                <target><![CDATA[<strong>%count%</strong> wynik|<strong>%count%</strong> wyniki|<strong>%count%</strong> wyników|{0} Brak wyników]]></target>
             </trans-unit>
 
             <!-- labels -->

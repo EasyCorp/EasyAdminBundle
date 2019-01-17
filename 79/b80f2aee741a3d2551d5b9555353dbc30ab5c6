@@ -1,0 +1,46 @@
+---------------------------------------------------------------------------
+
+by IonBazan at 2019-01-09T20:36:29Z
+
+@dominikhajduk What about 32-34, 42-44, etc?
+
+---------------------------------------------------------------------------
+
+by dominikhajduk at 2019-01-09T20:41:58Z
+
+@IonBazan good point. As we can't handle all of them my proposal reverse sentence for numbers greater than 22. And then declination is not needed. We can only consider colon (`Znaleziono wyników: %count%` or `Znalezionych wyników: %count%`).
+
+---------------------------------------------------------------------------
+
+by ktrzos at 2019-01-09T21:14:18Z
+
+The _"Znaleziono wyników 22"_ option do not sound too good in polish ;). If we want really use this type of words, lets change it on: _"Znaleziono wyników: 22"_ ;).
+
+---------------------------------------------------------------------------
+
+by dominikhajduk at 2019-01-09T21:22:02Z
+
+@ktrzos What about `Znalezionych wyników 22`? Or maybe `Liczba wyników 22` or `Liczba znalezionych wyników 22`.
+
+---------------------------------------------------------------------------
+
+by ktrzos at 2019-01-09T21:28:25Z
+
+@dominikhajduk
+I think it'll be ok, if before the number colon will be added. So "Liczba wyników: 22", for example. And what I think, this is the best option. Or maybe "Ilość wyników: 22", because "ilość" is about amount, and "number" is just a "number" :).
+
+---------------------------------------------------------------------------
+
+by mateuszmaslanka at 2019-01-09T21:46:19Z
+
+@dominikhajduk there are already provided default pluralization rules for polish language https://github.com/symfony/translation/blob/master/PluralizationRules.php#L181
+
+So what about this: `<![CDATA[Znaleziono <strong>%count%</strong> wynik|Znaleziono <strong>%count%</strong> wyniki|Znaleziono <strong>%count%</strong> wyników]]>` ?
+
+---------------------------------------------------------------------------
+
+by dominikhajduk at 2019-01-10T19:38:43Z
+
+@mateuszmaslanka thanks for tip! Also @IonBazan and @ktrzos thanks for comment. Updated translation for search and for `paginator.result` to be consistent (improvement for https://github.com/EasyCorp/EasyAdminBundle/pull/2564). Paginator result is reusable across list and search results. Please confirm that it's ok right now.
+
+![search-trans](https://user-images.githubusercontent.com/11769575/50992441-7dc4ee80-1517-11e9-8ef9-a777a8ceef9f.jpg)

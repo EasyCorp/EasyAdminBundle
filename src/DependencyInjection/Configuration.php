@@ -87,6 +87,10 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('messages')
                     ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
                 ->end()
+
+                ->scalarNode('minimum_role')
+                    ->defaultNull()
+                ->end()
             ->end()
         ;
     }

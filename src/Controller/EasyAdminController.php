@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -22,6 +23,7 @@ class EasyAdminController extends AbstractController
     public static function getSubscribedServices(): array
     {
         return parent::getSubscribedServices() + [
+            'easyadmin.authorization_checker' => AdminAuthorizationChecker::class,
             'easyadmin.autocomplete' => Autocomplete::class,
             'easyadmin.config.manager' => ConfigManager::class,
             'easyadmin.paginator' => Paginator::class,

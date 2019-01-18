@@ -45,7 +45,7 @@
     <section class="content-footer">
         <div class="form-actions">
             {% block item_actions %}
-                {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
+                {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name)|prune_item_actions(_entity_config, [], entity) %}
                 {% set _request_parameters = app.request.query.all %}
 
                 {{ include('@EasyAdmin/default/includes/_actions.html.twig', {

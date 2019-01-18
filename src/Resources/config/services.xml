@@ -119,7 +119,27 @@
             <tag name="container.service_subscriber" />
         </service>
 
+        <!-- Role based security services -->
+        <service id="easyadmin.authorization_checker" class="EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker" public="true">
+            <argument type="service" id="security.authorization_checker"/>
+            <argument>%easyadmin.minimum_role%</argument>
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Helper\MenuHelper">
+            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker"/>
+            <argument type="service" id="security.authorization_checker"/>
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Twig\AdminAuthorizationExtension">
+            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker"/>
+            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Helper\MenuHelper"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\UnauthorizedFieldConfigurator">
+            <argument type="service" id="security.authorization_checker"/>
+            <tag name="easyadmin.form.type.configurator" />
+        </service>
+
         <!-- aliases needed for the service locator of the AbstractAdminController -->
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker" alias="easyadmin.authorization_checker" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" alias="easyadmin.config.manager" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" alias="easyadmin.query_builder" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" alias="easyadmin.paginator" />

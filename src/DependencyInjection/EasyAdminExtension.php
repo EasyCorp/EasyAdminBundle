@@ -40,6 +40,8 @@ class EasyAdminExtension extends Extension
             $container->getDefinition('easyadmin.configuration.design_config_pass')
                 ->replaceArgument(0, $container->getParameter('locale'));
         }
+
+        $container->setParameter('easyadmin.minimum_role', $backendConfig['minimum_role']);
     }
 
     /**

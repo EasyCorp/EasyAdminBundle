@@ -1,11 +1,7 @@
 {% trans_default_domain 'EasyAdminBundle' %}
 
-{% if view == 'show' or ('edit' in backend_config.disabled_actions) %}
-    {% if value == true %}
-        <span class="badge badge-success">{{ 'label.true'|trans }}</span>
-    {% else %}
-        <span class="badge badge-danger">{{ 'label.false'|trans }}</span>
-    {% endif %}
+{% if view == 'show' or ('edit' in backend_config.disabled_actions) or (not is_easyadmin_granted(entity_config, 'edit', item)) %}
+    {% include '@EasyAdmin/default/field_boolean.html.twig' %}
 {% else %}
     <div class="checkbox-switch" data-propertyname="{{ field_options.property }}">
         <label>

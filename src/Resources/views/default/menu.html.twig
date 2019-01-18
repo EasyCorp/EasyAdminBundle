@@ -35,7 +35,7 @@
 
 {% set _translation_domain = (_entity_config.translation_domain)|default(easyadmin_config('translation_domain'))|default('messages') %}
 <ul class="sidebar-menu" data-widget="tree" data-animation-speed="250">
-    {% set _menu_items = easyadmin_config('design.menu') %}
+    {% set _menu_items = easyadmin_config('design.menu')|prune_menu_items(easyadmin_config('entities')) %}
 
     {% block main_menu %}
         {% for item in _menu_items %}

@@ -731,6 +731,20 @@ trait AdminControllerTrait
      */
     protected function isActionAllowed($actionName)
     {
+        switch ($actionName) {
+            // autocomplete action is mapped to list action for access permissions
+            case 'autocomplete':
+                $actionName = 'list';
+                break;
+            default:
+                break;
+        }
+
+        // Get item for edit/show or custom actions => security voters may apply
+        $easyadmin = $this->request->attributes->get('easyadmin');
+        $subject = $easyadmin['item'] ?? null;
+        $this->get('easyadmin.authorization_checker')->checksUserAccess($this->entity, $actionName, $subject);
+
         return false === \in_array($actionName, $this->entity['disabled_actions'], true);
     }
 

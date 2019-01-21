@@ -15,64 +15,111 @@ body {
 
 /* Layout
    ========================================================================= */
-.wrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    margin-left: auto;
-    margin-right: auto;
-    min-width: calc(1024px + var(--sidebar-width) + 15px * 2);
+.main-header { grid-area: header; }
+.main-sidebar { grid-area: sidebar; }
+.content-wrapper { grid-area: content; }
+#sidebar-resizer-handler { grid-area: sidebar-resizer-handler; }
+#content-resizer-handler { grid-area: content-resizer-handler; }
+
+body:not(.easyadmin-content-width-full) .wrapper {
     max-width: var(--body-max-width);
 }
 
+.wrapper {
+    display: grid;
+    grid-row-gap: 20px;
+    grid-template-areas:
+            "header"
+            "content"
+    ;
+    margin: 20px 15px;
+
+    @media(min-width: 992px) {
+        grid-template-columns: var(--sidebar-width) 10px auto 10px;
+        grid-column-gap: 20px;
+        grid-template-areas:
+                "header   header                   header   header"
+                "sidebar  sidebar-resizer-handler  content  content-resizer-handler"
+        ;
+        width: calc(100% - 2 * 20px);
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
 .content-wrapper {
-    flex: 1;
-    margin: 15px 15px 45px 15px;
+    @media(min-width: 992px) {
+        // needed to compensate for grid-column-gap
+        margin-left: -20px;
+        margin-right: -20px;
+    }
 }
 
-/* Sidebar logo */
-.main-sidebar {
-    align-self: flex-start;
+.main-header {
     display: flex;
-    flex: 0 0 var(--sidebar-width);
-    flex-direction: column;
-    height: calc(100vh - 15px);
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 15px;
-    padding-right: 5px;
-    justify-content: flex-start;
-    overflow-x: hidden;
-    overflow-y: auto;
+    justify-content: space-between;
+    padding-right: 15px; // same as the width of #content-resizer-handler
 }
-
 .main-header .navbar {
-    margin-left: 0;
+    display: flex;
 }
 
 .main-header #header-logo {
     font-size: 21px;
     font-weight: 600;
     line-height: 1;
-    margin: 8px 15px 15px;
+    margin: 0;
 }
 .main-header #header-logo a {
-    color: var(--gray-900);
+    color: var(--text-color);
 }
 .main-header #header-logo img,
 .main-header #header-logo svg {
     max-width: 100%;
 }
 
-// Content bar at the top of the page (e.g. user menu)
-.content-top {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    padding: 0 0 12px;
+#navigation-toggler {
+    background: transparent;
+    border: 0;
+    color: var(--text-color-dark);
+    cursor: pointer;
+    filter: opacity(50%);
+    font-size: 17px;
+    margin: 0 5px 0 -5px;
+    padding: 0;
+    width: 24px;
+
+    @media(min-width: 992px) {
+        display: none;
+    }
 }
 
+.main-sidebar {
+    background: var(--body-bg);
+    height: 100vh;
+    left: calc(0px - 2 * 20px - var(--sidebar-width));
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 15px 20px;
+    position: absolute;
+    top: 0;
+    transition: left 0.3s;
+    z-index: $zindex-modal-backdrop + 1;
+    width: calc(2 * 20px + var(--sidebar-width));
+
+    @media(min-width: 992px) {
+        height: unset;
+        padding: 0;
+        position: static;
+        width: var(--sidebar-width);
+        z-index: $zindex-modal-backdrop - 1;
+    }
+}
+body.easyadmin-navigation-open .main-sidebar {
+    left: 0;
+}
+
+// Content bar at the top of the page (e.g. user menu)
 .navbar-custom-menu .user {
     align-items: baseline;
     color: var(--gray-500);
@@ -112,10 +159,6 @@ body {
 }
 
 /* Sidebar menu */
-.sidebar {
-    flex: 1;
-}
-
 .sidebar-menu,
 .sidebar-menu ul {
     padding-left: 0;
@@ -134,14 +177,14 @@ body {
 }
 
 .sidebar-menu a {
-    color: var(--gray-900);
+    color: var(--text-color-dark);
     display: block;
     line-height: 20px;
-    padding: 7px 5px 7px 15px;
+    padding: 4px 5px 10px 0;
 }
 
 .sidebar-menu .fa {
-    color: var(--gray-900);
+    color: var(--text-color-dark);
     filter: opacity(50%);
     font-size: 17px;
     width: 24px;
@@ -176,13 +219,13 @@ body {
 }
 
 .treeview-menu a {
-    color: var(--gray-800);
+    color: var(--text-color);
     line-height: 20px;
     padding: 3px 5px 3px 43px;
 }
 
 .treeview-menu a .fa {
-    color: var(--gray-800);
+    color: var(--text-color);
     filter: opacity(50%);
     font-size: var(--font-size-base);
     width: 18px;
@@ -200,10 +243,124 @@ body {
     transform: rotate(90deg);
 }
 
+body.easyadmin-sidebar-width-compact .wrapper {
+    @media(min-width: 992px) {
+        grid-template-columns: 24px 10px auto 10px;
+    }
+}
+body.easyadmin-sidebar-width-compact .main-sidebar {
+    overflow: visible;
+
+    @media(min-width: 992px) {
+        width: auto;
+    }
+}
+
+@media(min-width: 992px) {
+    body.easyadmin-sidebar-width-compact .sidebar-menu li span,
+    body.easyadmin-sidebar-width-compact .sidebar-menu li .treeview-icon {
+        display: none;
+    }
+    body.easyadmin-sidebar-width-compact .sidebar-menu li {
+        position: relative;
+    }
+    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover {
+        background: var(--body-bg);
+        border-radius: var(--border-radius);
+        width: var(--sidebar-width);
+        z-index: $zindex-modal-backdrop;
+    }
+    body.easyadmin-sidebar-width-compact .sidebar-menu .treeview-menu li:hover {
+        width: unset;
+    }
+    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover span {
+        display: inline-block;
+        left: 32px;
+        position: absolute;
+        top: 7px;
+    }
+
+    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover .treeview-menu a {
+        padding: 3px 5px 3px 11px;
+    }
+    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover .treeview-menu span {
+        position: static;
+    }
+    body.easyadmin-sidebar-width-compact .sidebar-menu li .fa {
+        font-size: 21px;
+        width: 24px;
+    }
+    body.easyadmin-sidebar-width-compact .sidebar-menu .treeview-menu li .fa {
+        font-size: var(--font-size-base);
+        width: 18px;
+    }
+    body.easyadmin-sidebar-width-compact .sidebar-menu a {
+        padding: 7px 5px 7px 0;
+    }
+
+
+    .easyadmin-sidebar-width-compact .sidebar-menu > li > .treeview-menu {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-bottom-right-radius: 4px;
+    }
+    .easyadmin-sidebar-width-compact .main-sidebar .user-panel > .info,
+    .easyadmin-sidebar-width-compact .sidebar-form,
+    .easyadmin-sidebar-width-compact .sidebar-menu > li > a > span,
+    .easyadmin-sidebar-width-compact .sidebar-menu > li > .treeview-menu,
+    .easyadmin-sidebar-width-compact .sidebar-menu > li > a > .pull-right,
+    .easyadmin-sidebar-width-compact .sidebar-menu li.header {
+        display: none !important;
+    }
+
+
+    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > a > span,
+    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu {
+        background: var(--body-bg);
+        display: block !important;
+        position: absolute;
+        //width: var(--sidebar-width);
+        left: 32px;
+        width: calc(var(--sidebar-width) - 32px);
+    }
+    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > a > span {
+        //top: 0;
+    }
+    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu {
+        top: 32px;
+        margin-left: 0;
+    }
+}
+
 .content {
     background-color: var(--white);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-lg);
+}
+
+.resizer-handler {
+    background: rgba(0, 0, 0, 0.1) center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" viewBox="0 0 320 512"><path fill="rgba(0, 0, 0, 0.7)" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"></path></svg>');
+    display: block;
+    cursor: col-resize;
+    display: none;
+    opacity: 0.2;
+    transition: opacity 0.7s;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    @media(min-width: 992px) {
+        display: block;
+    }
+}
+.resizer-handler-left {
+    border-bottom-left-radius: var(--border-radius);
+    border-top-left-radius: var(--border-radius);
+}
+.resizer-handler-right {
+    border-bottom-right-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
 }
 
 .content-header {

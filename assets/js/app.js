@@ -17,11 +17,13 @@ import 'featherlight';
 import 'jquery-highlight';
 import 'select2';
 
-$(function () {
+window.addEventListener('load', function() {
     $('[data-toggle="popover"]').popover();
     createNullableControls();
     createAutoCompleteFields();
     $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);
+    createContentResizer();
+    createNavigationToggler();
 });
 
 function createNullableControls() {
@@ -74,5 +76,53 @@ function createAutoCompleteFields() {
             allowClear: true,
             minimumInputLength: 1
         });
+    });
+}
+
+function createContentResizer() {
+    const sidebarResizerHandler = document.getElementById('sidebar-resizer-handler');
+    sidebarResizerHandler.addEventListener('click', function() {
+        const oldValue = localStorage.getItem('easyadmin/sidebar/width') || 'normal';
+        const newValue = 'normal' == oldValue ? 'compact' : 'normal';
+
+        document.querySelector('body').classList.remove('easyadmin-sidebar-width-' + oldValue);
+        document.querySelector('body').classList.add('easyadmin-sidebar-width-' + newValue);
+        localStorage.setItem('easyadmin/sidebar/width', newValue);
+
+        if ('compact' == newValue) {
+            document.querySelector('body').classList.add('sidebar-mini', 'sidebar-collapse');
+        } else {
+            document.querySelector('body').classList.remove('sidebar-mini', 'sidebar-collapse');
+        }
+    });
+
+    const contentResizerHandler = document.getElementById('content-resizer-handler');
+    contentResizerHandler.addEventListener('click', function() {
+        const oldValue = localStorage.getItem('easyadmin/content/width') || 'normal';
+        const newValue = 'normal' == oldValue ? 'full' : 'normal';
+
+        document.querySelector('body').classList.remove('easyadmin-content-width-' + oldValue);
+        document.querySelector('body').classList.add('easyadmin-content-width-' + newValue);
+        localStorage.setItem('easyadmin/content/width', newValue);
+    });
+}
+
+function createNavigationToggler() {
+    const toggler = document.getElementById('navigation-toggler');
+    const cssClassName = 'easyadmin-navigation-open';
+
+    toggler.addEventListener('click', function() {
+        document.querySelector('body').classList.toggle(cssClassName);
+
+        if (document.querySelector('body').classList.contains(cssClassName)) {
+            var modalBackdrop = document.createElement('div');
+            modalBackdrop.classList.add('modal-backdrop', 'fade', 'show');
+            modalBackdrop.onclick = function() {
+                modalBackdrop.style.height = 0;
+                document.querySelector('body').classList.remove(cssClassName)
+            };
+
+            document.body.appendChild(modalBackdrop);
+        }
     });
 }

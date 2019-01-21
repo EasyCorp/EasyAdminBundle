@@ -37,24 +37,69 @@
 
     {% block body %}
     <body id="{% block body_id %}{% endblock %}" class="easyadmin {% block body_class %}{% endblock %}">
+        <script>
+            document.body.classList.add('easyadmin-content-width-' + localStorage.getItem('easyadmin/content/width') || 'normal');
+            document.body.classList.add('easyadmin-sidebar-width-' + localStorage.getItem('easyadmin/sidebar/width') || 'normal');
+        </script>
+
         <div class="wrapper">
         {% block wrapper %}
+            <header class="main-header">
+                {% block header %}
+                    <nav class="navbar" role="navigation">
+                        <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
+                            <i class="fa fa-bars"></i>
+                        </button>
+
+                        <div id="header-logo">
+                            {% block header_logo %}
+                                <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
+                                    {{ easyadmin_config('site_name')|raw }}
+                                </a>
+                            {% endblock header_logo %}
+                        </div>
+                    </nav>
+
+                    {% set _logout_path = easyadmin_logout_path() %}
+                    {% set _user_has_logout = _logout_path is not empty %}
+                    {% set _user_is_impersonated = is_granted('ROLE_PREVIOUS_ADMIN') %}
+                    {% set _user_menu_content %}
+                        <div class="popover-content-section user-details {{ _user_has_logout or _user_is_impersonated ? 'user-has-actions' }}">
+                            <p class="small text-muted mb-0">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</p>
+                            <p class="user-name">
+                                {% if app.user|default(false) == false %}
+                                    {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
+                                {% else %}
+                                    {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        {% block user_menu %}
+                            {% if _user_has_logout or _user_is_impersonated %}
+                                <div class="popover-content-section user-menu">
+                                    {% if _user_has_logout %}
+                                        <a class="user-action user-action-logout" href="{{ _logout_path }}">{{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
+                                    {% endif %}
+                                    {% if _user_is_impersonated %}
+                                        <a class="user-action user-action-exit-impersonation" href="?_switch_user=_exit">{{ 'user.exit_impersonation'|trans(domain = 'EasyAdminBundle') }}</a>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endblock user_menu %}
+                    {% endset %}
+
+                    <div class="content-top navbar-custom-menu">
+                        <div class="user user-menu-wrapper {{ _user_is_impersonated ? 'user-is-impersonated' }}" data-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
+                            <i class="fa {{ app.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-icon"></i>
+                            {{ app.user is not null ? app.user.username }}
+                        </div>
+                    </div>
+                {% endblock header %}
+            </header>
+
             <aside class="main-sidebar">
             {% block sidebar %}
-                <header class="main-header">
-                    {% block header %}
-                        <nav class="navbar" role="navigation">
-                            <div id="header-logo">
-                                {% block header_logo %}
-                                    <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
-                                        {{ easyadmin_config('site_name')|raw }}
-                                    </a>
-                                {% endblock header_logo %}
-                            </div>
-                        </nav>
-                    {% endblock header %}
-                </header>
-
                 <section class="sidebar">
                     {% block main_menu_wrapper %}
                         {{ include([
@@ -68,43 +113,9 @@
             {% endblock sidebar %}
             </aside>
 
+            <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
+
             <div class="content-wrapper">
-                {% set _logout_path = easyadmin_logout_path() %}
-                {% set _user_has_logout = _logout_path is not empty %}
-                {% set _user_is_impersonated = is_granted('ROLE_PREVIOUS_ADMIN') %}
-                {% set _user_menu_content %}
-                    <div class="popover-content-section user-details {{ _user_has_logout or _user_is_impersonated ? 'user-has-actions' }}">
-                        <p class="small text-muted mb-0">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</p>
-                        <p class="user-name">
-                            {% if app.user|default(false) == false %}
-                                {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
-                            {% else %}
-                                {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
-                            {% endif %}
-                        </p>
-                    </div>
-
-                    {% block user_menu %}
-                        {% if _user_has_logout or _user_is_impersonated %}
-                            <div class="popover-content-section user-menu">
-                                {% if _user_has_logout %}
-                                    <a class="user-action user-action-logout" href="{{ _logout_path }}">{{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
-                                {% endif %}
-                                {% if _user_is_impersonated %}
-                                    <a class="user-action user-action-exit-impersonation" href="?_switch_user=_exit">{{ 'user.exit_impersonation'|trans(domain = 'EasyAdminBundle') }}</a>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% endblock user_menu %}
-                {% endset %}
-
-                <div class="content-top navbar-custom-menu">
-                    <div class="user user-menu-wrapper {{ _user_is_impersonated ? 'user-is-impersonated' }}" data-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
-                        <i class="fa {{ app.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-icon"></i>
-                        {{ app.user is not null ? app.user.username }}
-                    </div>
-                </div>
-
                 {% block flash_messages %}
                     {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@EasyAdmin/default/flash_messages.html.twig') }}
                 {% endblock flash_messages %}
@@ -148,6 +159,8 @@
                     </div>
                 {% endblock content %}
             </div>
+
+            <div id="content-resizer-handler" class="resizer-handler resizer-handler-right"></div>
         {% endblock wrapper %}
         </div>
 

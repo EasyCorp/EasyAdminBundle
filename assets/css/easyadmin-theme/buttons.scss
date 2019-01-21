@@ -23,11 +23,11 @@
 
 .btn-secondary, .btn-secondary[disabled], .btn-secondary.disabled {
     background-color: var(--white);
-    color: var(--gray-800);
+    color: var(--color-text);
 }
 .btn-secondary:hover, .btn-secondary:not(:disabled):not(.disabled):focus, .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled):active:focus {
     background-color: var(--white);
-    color: var(--gray-700);
+    color: var(--color-text-dark);
 }
 
 .btn.btn-info, .btn-info, .btn-info:hover, .btn-info:not(:disabled):not(.disabled):focus, .btn-info:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled):active:focus {

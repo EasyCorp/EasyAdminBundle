@@ -9,7 +9,9 @@ $enable-print-styles: false;
 $enable-gradients: false;
 
 $body-bg: hsl(220, 20%, 91%);
-$text-color: hsl(213, 12%, 15%);
+$body-color: hsl(225, 15%, 35%);
+$text-color: hsl(225, 15%, 35%);
+$headings-color: var(--text-color-dark);
 
 $primary: hsl(230, 55%, 60%);
 $secondary: $body-bg;
@@ -60,7 +62,7 @@ $font-size-h6: calc(var(--font-size-base) * 0.85);
 
 $input-bg: var(--white);
 $input-bg-disabled: var(--gray-100);
-$input-color: var(--gray-900);
+$input-color: var(--text-color-dark);
 $input-border: var(--border-color);
 $input-border-radius: var(--border-radius);
 $input-border-focus: hsla(201, 94, 37, 0.2);
@@ -131,6 +133,7 @@ $modal-footer-border-color: $modal-header-border-color;
 $modal-lg: 900px;
 $modal-md: 500px;
 $modal-sm: 300px;
+$zindex-modal-backdrop: 1040;
 
 $btn-transition: all .08s ease-in;
 $btn-font-weight: 400;

@@ -36,9 +36,9 @@ and make it extend from the default ``AdminController`` class:
     // src/Controller/AdminController.php
     namespace App\Controller;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 
-    class AdminController extends BaseAdminController
+    class AdminController extends EasyAdminController
     {
         // ...
     }
@@ -284,9 +284,9 @@ to save the changes made on an existing entity:
     // src/Controller/AdminController.php
     namespace App\Controller;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 
-    class AdminController extends BaseAdminController
+    class AdminController extends EasyAdminController
     {
         // ...
 
@@ -308,9 +308,9 @@ creating (``persistEntity()``) or editing (``updateEntity()``) them:
     // src/Controller/AdminController.php
     namespace App\Controller;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 
-    class AdminController extends BaseAdminController
+    class AdminController extends EasyAdminController
     {
         // ...
 
@@ -374,9 +374,9 @@ Instead of overriding the ``createNewEntity()`` method and check for the
     // src/Controller/AdminController.php
     namespace App\Controller;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 
-    class AdminController extends BaseAdminController
+    class AdminController extends EasyAdminController
     {
         // Customizes the instantiation of entities only for the 'User' entity
         public function createNewUserEntity()
@@ -401,9 +401,9 @@ anywhere in your Symfony application and make it extend from the default
     // src/Controller/ProductController.php
     namespace App\Controller;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 
-    class ProductController extends BaseAdminController
+    class ProductController extends EasyAdminController
     {
         // ...
     }

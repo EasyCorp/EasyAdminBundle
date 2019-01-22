@@ -88,12 +88,6 @@ function createContentResizer() {
         document.querySelector('body').classList.remove('easyadmin-sidebar-width-' + oldValue);
         document.querySelector('body').classList.add('easyadmin-sidebar-width-' + newValue);
         localStorage.setItem('easyadmin/sidebar/width', newValue);
-
-        if ('compact' == newValue) {
-            document.querySelector('body').classList.add('sidebar-mini', 'sidebar-collapse');
-        } else {
-            document.querySelector('body').classList.remove('sidebar-mini', 'sidebar-collapse');
-        }
     });
 
     const contentResizerHandler = document.getElementById('content-resizer-handler');
@@ -109,7 +103,7 @@ function createContentResizer() {
 
 function createNavigationToggler() {
     const toggler = document.getElementById('navigation-toggler');
-    const cssClassName = 'easyadmin-navigation-open';
+    const cssClassName = 'easyadmin-mobile-sidebar-visible';
 
     toggler.addEventListener('click', function() {
         document.querySelector('body').classList.toggle(cssClassName);

@@ -21,44 +21,43 @@ body {
 #sidebar-resizer-handler { grid-area: sidebar-resizer-handler; }
 #content-resizer-handler { grid-area: content-resizer-handler; }
 
-body:not(.easyadmin-content-width-full) .wrapper {
-    max-width: var(--body-max-width);
-}
-
 .wrapper {
     display: grid;
     grid-row-gap: 20px;
     grid-template-areas:
-            "header"
-            "content"
+        "header"
+        "content"
     ;
     margin: 20px 15px;
 
     @media(min-width: 992px) {
         grid-template-columns: var(--sidebar-width) 10px auto 10px;
-        grid-column-gap: 20px;
+        grid-column-gap: 15px;
         grid-template-areas:
-                "header   header                   header   header"
-                "sidebar  sidebar-resizer-handler  content  content-resizer-handler"
+            "header   header                   header   header"
+            "sidebar  sidebar-resizer-handler  content  content-resizer-handler"
         ;
-        width: calc(100% - 2 * 20px);
         margin-left: auto;
         margin-right: auto;
+        width: calc(100% - 2 * 20px);
     }
 }
 
-.content-wrapper {
+body:not(.easyadmin-content-width-full) .wrapper {
+    max-width: var(--body-max-width);
+}
+body.easyadmin-sidebar-width-compact .wrapper {
     @media(min-width: 992px) {
-        // needed to compensate for grid-column-gap
-        margin-left: -20px;
-        margin-right: -20px;
+        grid-template-columns: 24px 10px auto 10px;
     }
 }
 
 .main-header {
     display: flex;
     justify-content: space-between;
-    padding-right: 15px; // same as the width of #content-resizer-handler
+    @media(min-width: 992px) {
+        padding-right: 10px; // same as the width of #content-resizer-handler
+    }
 }
 .main-header .navbar {
     display: flex;
@@ -115,14 +114,14 @@ body:not(.easyadmin-content-width-full) .wrapper {
         z-index: $zindex-modal-backdrop - 1;
     }
 }
-body.easyadmin-navigation-open .main-sidebar {
+body.easyadmin-mobile-sidebar-visible .main-sidebar {
     left: 0;
 }
 
 // Content bar at the top of the page (e.g. user menu)
 .navbar-custom-menu .user {
     align-items: baseline;
-    color: var(--gray-500);
+    color: var(--text-color-light);
     cursor: pointer;
     display: flex;
 }
@@ -158,177 +157,11 @@ body.easyadmin-navigation-open .main-sidebar {
     margin-top: var(--font-size-sm);
 }
 
-/* Sidebar menu */
-.sidebar-menu,
-.sidebar-menu ul {
-    padding-left: 0;
-}
-
-.sidebar-menu .header {
-    color: var(--text-muted);
-    font-size: 12px;
-    margin-top: 20px;
-    padding: 7px 5px 7px 15px;
-    text-transform: uppercase;
-}
-
-.sidebar-menu li {
-    list-style: none;
-}
-
-.sidebar-menu a {
-    color: var(--text-color-dark);
-    display: block;
-    line-height: 20px;
-    padding: 4px 5px 10px 0;
-}
-
-.sidebar-menu .fa {
-    color: var(--text-color-dark);
-    filter: opacity(50%);
-    font-size: 17px;
-    width: 24px;
-}
-
-.sidebar-menu li:not(.submenu-active).active {
-    border-radius: var(--border-radius);
-    font-weight: 500;
-}
-
-.sidebar-menu li:not(.submenu-active).active a,
-.sidebar-menu li:not(.submenu-active).active .fa {
-    color: var(--color-primary);
-    filter: opacity(100%);
-}
-
-.sidebar-menu .menu-open .treeview-icon {
-    transform: rotate(90deg);
-}
-
-.treeview {
-    position: relative;
-}
-
-.treeview-menu {
-    display: none;
-    margin-bottom: 8px;
-}
-
-.sidebar-menu .active .treeview-menu {
-    display: block;
-}
-
-.treeview-menu a {
-    color: var(--text-color);
-    line-height: 20px;
-    padding: 3px 5px 3px 43px;
-}
-
-.treeview-menu a .fa {
-    color: var(--text-color);
-    filter: opacity(50%);
-    font-size: var(--font-size-base);
-    width: 18px;
-}
-
-.treeview .treeview-icon {
-    position: absolute;
-    top: 8px;
-    right: 1px;
-    transition: transform 0.25s ease;
-    width: auto;
-}
-
-.treeview.menu-open .treeview-icon {
-    transform: rotate(90deg);
-}
-
-body.easyadmin-sidebar-width-compact .wrapper {
+.content-wrapper {
     @media(min-width: 992px) {
-        grid-template-columns: 24px 10px auto 10px;
-    }
-}
-body.easyadmin-sidebar-width-compact .main-sidebar {
-    overflow: visible;
-
-    @media(min-width: 992px) {
-        width: auto;
-    }
-}
-
-@media(min-width: 992px) {
-    body.easyadmin-sidebar-width-compact .sidebar-menu li span,
-    body.easyadmin-sidebar-width-compact .sidebar-menu li .treeview-icon {
-        display: none;
-    }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li {
-        position: relative;
-    }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover {
-        background: var(--body-bg);
-        border-radius: var(--border-radius);
-        width: var(--sidebar-width);
-        z-index: $zindex-modal-backdrop;
-    }
-    body.easyadmin-sidebar-width-compact .sidebar-menu .treeview-menu li:hover {
-        width: unset;
-    }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover span {
-        display: inline-block;
-        left: 32px;
-        position: absolute;
-        top: 7px;
-    }
-
-    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover .treeview-menu a {
-        padding: 3px 5px 3px 11px;
-    }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover .treeview-menu span {
-        position: static;
-    }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li .fa {
-        font-size: 21px;
-        width: 24px;
-    }
-    body.easyadmin-sidebar-width-compact .sidebar-menu .treeview-menu li .fa {
-        font-size: var(--font-size-base);
-        width: 18px;
-    }
-    body.easyadmin-sidebar-width-compact .sidebar-menu a {
-        padding: 7px 5px 7px 0;
-    }
-
-
-    .easyadmin-sidebar-width-compact .sidebar-menu > li > .treeview-menu {
-        padding-top: 5px;
-        padding-bottom: 5px;
-        border-bottom-right-radius: 4px;
-    }
-    .easyadmin-sidebar-width-compact .main-sidebar .user-panel > .info,
-    .easyadmin-sidebar-width-compact .sidebar-form,
-    .easyadmin-sidebar-width-compact .sidebar-menu > li > a > span,
-    .easyadmin-sidebar-width-compact .sidebar-menu > li > .treeview-menu,
-    .easyadmin-sidebar-width-compact .sidebar-menu > li > a > .pull-right,
-    .easyadmin-sidebar-width-compact .sidebar-menu li.header {
-        display: none !important;
-    }
-
-
-    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > a > span,
-    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu {
-        background: var(--body-bg);
-        display: block !important;
-        position: absolute;
-        //width: var(--sidebar-width);
-        left: 32px;
-        width: calc(var(--sidebar-width) - 32px);
-    }
-    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > a > span {
-        //top: 0;
-    }
-    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu {
-        top: 32px;
-        margin-left: 0;
+        // needed to compensate for grid-column-gap and show the resizers close to content
+        margin-left: -15px;
+        margin-right: -15px;
     }
 }
 
@@ -340,10 +173,9 @@ body.easyadmin-sidebar-width-compact .main-sidebar {
 
 .resizer-handler {
     background: rgba(0, 0, 0, 0.1) center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" viewBox="0 0 320 512"><path fill="rgba(0, 0, 0, 0.7)" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"></path></svg>');
-    display: block;
     cursor: col-resize;
     display: none;
-    opacity: 0.2;
+    opacity: 0.15;
     transition: opacity 0.7s;
 
     &:hover {

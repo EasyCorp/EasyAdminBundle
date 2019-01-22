@@ -38,8 +38,10 @@
     {% block body %}
     <body id="{% block body_id %}{% endblock %}" class="easyadmin {% block body_class %}{% endblock %}">
         <script>
-            document.body.classList.add('easyadmin-content-width-' + localStorage.getItem('easyadmin/content/width') || 'normal');
-            document.body.classList.add('easyadmin-sidebar-width-' + localStorage.getItem('easyadmin/sidebar/width') || 'normal');
+            document.body.classList.add(
+                'easyadmin-content-width-' + (localStorage.getItem('easyadmin/content/width') || 'normal'),
+                'easyadmin-sidebar-width-' + (localStorage.getItem('easyadmin/sidebar/width') || 'normal')
+            );
         </script>
 
         <div class="wrapper">

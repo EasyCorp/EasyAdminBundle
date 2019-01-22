@@ -111,7 +111,7 @@
 
                 {% block content %}
                     <div class="content">
-                        {% if block('content_header')|trim is not empty %}
+                        {% block content_header_wrapper %}
                         {% set _has_content_help = _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
                         <section class="content-header {{ _has_content_help ? 'has-content-help' }}">
                             {% block content_header %}
@@ -127,24 +127,22 @@
                                     {% endblock content_help %}
                                 </div>
 
-                                {% if block('global_actions')|trim is not empty %}
+                                {% block global_actions_wrapper %}
                                     <div class="global-actions">{% block global_actions %}{% endblock %}</div>
-                                {% endif %}
-
-
+                                {% endblock %}
                             {% endblock content_header %}
                         </section>
-                        {% endif %}
+                        {% endblock content_header_wrapper %}
 
                         <section id="main" class="content-body">
                             {% block main %}{% endblock %}
                         </section>
 
-                        {% if block('content_footer')|trim is not empty %}
+                        {% block content_footer_wrapper %}
                             <section class="content-footer">
                                 {% block content_footer %}{% endblock %}
                             </section>
-                        {% endif %}
+                        {% endblock %}
                     </div>
                 {% endblock content %}
             </div>

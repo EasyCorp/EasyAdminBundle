@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+
+by alterphp at 2019-01-22T14:31:18Z
+
+Hi @yceruto ! I don't understand the BEFORE/AFTER example ?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-22T15:35:26Z
+
+Hi @alterphp,
+
+| PR | Your code | EA Layout | Result |
+| --- | --- | --- | --- |
+| Before | Empty block `{% block content_header %}{% endblock %}` | `{% if block('content_header')\|trim is not empty %}` | don't show `<section class="content-header ...` |
+| After | Empty block `{% block content_header_wrapper %}{% endblock %}` | The `content_header_wrapper` block has been overridden | don't show `<section class="content-header ...` |
+
+Same for `global_actions` and `content_footer` blocks.
+
+---------------------------------------------------------------------------
+
+by alterphp at 2019-01-22T15:42:56Z
+
+Ok, I get it !

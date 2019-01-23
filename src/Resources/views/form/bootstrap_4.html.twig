@@ -341,7 +341,7 @@
 
     {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
     <button type="submit" class="btn btn-primary action-save">
-        <span class="btn-label">{{ 'action.save'|trans(_trans_parameters, _translation_domain) }}</span>
+        <span class="btn-label">{{ easyadmin.entity[easyadmin.view].submit_label|default('action.save'|trans(_trans_parameters, _translation_domain)) }}</span>
     </button>
 
     {% set _entity_actions = (easyadmin.view == 'new')

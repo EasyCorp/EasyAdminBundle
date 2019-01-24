@@ -47,10 +47,15 @@ class Autocomplete
             throw new \InvalidArgumentException(\sprintf('The "entity" argument must contain the name of an entity managed by EasyAdmin ("%s" given).', $entity));
         }
 
-        $paginator = $this->finder->findByAllProperties($backendConfig['entities'][$entity], $query, $page, $backendConfig['show']['max_results']);
+        $entityConfig = $backendConfig['entities'][$entity];
+
+        $sortField = $entityConfig['list']['sort']['field'] ?? null;
+        $sortDirection = $entityConfig['list']['sort']['direction'] ?? null;
+
+        $paginator = $this->finder->findByAllProperties($entityConfig, $query, $page, $backendConfig['show']['max_results'], $sortField, $sortDirection);
 
         return [
-            'results' => $this->processResults($paginator->getCurrentPageResults(), $backendConfig['entities'][$entity]),
+            'results' => $this->processResults($paginator->getCurrentPageResults(), $entityConfig),
             'has_next_page' => $paginator->hasNextPage(),
         ];
     }

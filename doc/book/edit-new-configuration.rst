@@ -551,6 +551,7 @@ change this value (globally or per entity):
 You can use the ``list.sort`` option to sort your autocomplete entity.
 
 .. code-block:: yaml
+
     # app/config/config.yml
     easy_admin:
         entities:

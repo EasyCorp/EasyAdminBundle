@@ -11,10 +11,7 @@ class Finder
 {
     private const MAX_RESULTS = 15;
 
-    /** @var QueryBuilder */
     private $queryBuilder;
-
-    /** @var Paginator */
     private $paginator;
 
     public function __construct(QueryBuilder $queryBuilder, Paginator $paginator)
@@ -23,19 +20,9 @@ class Finder
         $this->paginator = $paginator;
     }
 
-    /**
-     * @param array  $entityConfig
-     * @param string $searchQuery
-     * @param int    $page
-     * @param int    $maxResults
-     * @param string $sortField
-     * @param string $sortDirection
-     *
-     * @return Pagerfanta
-     */
-    public function findByAllProperties(array $entityConfig, $searchQuery, $page = 1, $maxResults = self::MAX_RESULTS, $sortField = null, $sortDirection = null)
+    public function findByAllProperties(array $entityConfig, string $searchQuery, int $page = 1, int $maxResults = self::MAX_RESULTS, string $sortField = null, string $sortDirection = null, string $dqlFilter = null): Pagerfanta
     {
-        $queryBuilder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField, $sortDirection);
+        $queryBuilder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField, $sortDirection, $dqlFilter);
 
         return $this->paginator->createOrmPaginator($queryBuilder, $page, $maxResults);
     }

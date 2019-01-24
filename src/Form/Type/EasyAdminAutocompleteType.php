@@ -40,11 +40,14 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        if (null === $config = $this->configManager->getEntityConfigByClass($options['class'])) {
+        if (null === $entityConfig = $this->configManager->getEntityConfigByClass($options['class'])) {
             throw new \InvalidArgumentException(\sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field).', $options['class'], $form->getName()));
         }
 
-        $view->vars['autocomplete_entity_name'] = $config['name'];
+        $view->vars['autocomplete_entity_name'] = $entityConfig['name'];
+        $view->vars['autocomplete_entity_max_results'] = $options['max_results'] ?? $entityConfig['autocomplete']['max_results'] ?? null;
+        $view->vars['autocomplete_entity_sort_field'] = $options['sort_field'] ?? $entityConfig['autocomplete']['sort']['field'] ?? null;
+        $view->vars['autocomplete_entity_sort_direction'] = $options['sort_direction'] ?? $entityConfig['autocomplete']['sort']['direction'] ?? null;
     }
 
     /**
@@ -65,8 +68,13 @@ class EasyAdminAutocompleteType extends AbstractType implements DataMapperInterf
             'multiple' => false,
             // force display errors on this form field
             'error_bubbling' => false,
+            'max_results' => null,
+            'sort_field' => null,
+            'sort_direction' => null,
         ]);
-
+        $resolver->setAllowedTypes('max_results', ['null', 'int']);
+        $resolver->setAllowedTypes('sort_field', ['null', 'string']);
+        $resolver->setAllowedValues('sort_direction', [null, 'ASC', 'DESC']);
         $resolver->setRequired(['class']);
     }
 

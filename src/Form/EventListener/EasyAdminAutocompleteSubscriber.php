@@ -32,6 +32,7 @@ class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
         $options = $form->getConfig()->getOptions();
         $options['compound'] = false;
         $options['choices'] = \is_array($data) || $data instanceof \Traversable ? $data : [$data];
+        unset($options['max_results'], $options['sort_field'], $options['sort_direction']);
 
         $form->add('autocomplete', EntityType::class, $options);
     }

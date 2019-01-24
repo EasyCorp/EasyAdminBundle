@@ -14,6 +14,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  */
 class Autocomplete
 {
+    private const MAX_RESULTS = 10;
+
     private $configManager;
     private $finder;
     private $propertyAccessor;
@@ -28,15 +30,9 @@ class Autocomplete
     /**
      * Finds the values of the given entity which match the query provided.
      *
-     * @param string $entity
-     * @param string $query
-     * @param int    $page
-     *
-     * @return array
-     *
      * @throws \InvalidArgumentException
      */
-    public function find($entity, $query, $page = 1)
+    public function find(string $entity = null, string $query = null, int $page = 1, int $maxResults = null, string $sortField = null, string $sortDirection = null, string $dqlFilter = null): array
     {
         if (empty($entity) || empty($query)) {
             return ['results' => []];
@@ -46,11 +42,15 @@ class Autocomplete
         if (!isset($backendConfig['entities'][$entity])) {
             throw new \InvalidArgumentException(\sprintf('The "entity" argument must contain the name of an entity managed by EasyAdmin ("%s" given).', $entity));
         }
+        $entityConfig = $backendConfig['entities'][$entity];
 
-        $paginator = $this->finder->findByAllProperties($backendConfig['entities'][$entity], $query, $page, $backendConfig['show']['max_results']);
+        $maxResults = $maxResults ?? self::MAX_RESULTS;
+        $dqlFilter = $dqlFilter ?? $entityConfig['autocomplete']['dql_filter'] ?? null;
+
+        $paginator = $this->finder->findByAllProperties($entityConfig, $query, $page, $maxResults, $sortField, $sortDirection, $dqlFilter);
 
         return [
-            'results' => $this->processResults($paginator->getCurrentPageResults(), $backendConfig['entities'][$entity]),
+            'results' => $this->processResults($paginator->getCurrentPageResults(), $entityConfig),
             'has_next_page' => $paginator->hasNextPage(),
         ];
     }

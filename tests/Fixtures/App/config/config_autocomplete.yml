@@ -6,6 +6,9 @@ framework:
     router: { resource: "%kernel.root_dir%/config/routing_override.yml" }
 
 easy_admin:
+    autocomplete:
+        max_results: 10
+
     entities:
         Category:
             class: AppTestBundle\Entity\FunctionalTests\Category

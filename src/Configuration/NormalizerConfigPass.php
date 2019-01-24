@@ -21,6 +21,9 @@ class NormalizerConfigPass implements ConfigPassInterface
             'dql_filter' => null,
             'fields' => [],
         ],
+        'autocomplete' => [
+            'dql_filter' => null,
+        ],
         'show' => [
             'fields' => [],
         ],
@@ -124,7 +127,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                 $entityConfig['search']['dql_filter'] = $entityConfig['list']['dql_filter'] ?? null;
             }
 
-            foreach (['edit', 'form', 'list', 'new', 'search', 'show'] as $view) {
+            foreach (['edit', 'form', 'list', 'new', 'search', 'show', 'autocomplete'] as $view) {
                 $entityConfig[$view] = \array_replace_recursive(
                     $this->defaultViewConfig[$view],
                     $entityConfig[$view] ?? []

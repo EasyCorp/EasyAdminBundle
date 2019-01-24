@@ -34,4 +34,22 @@ class DqlFilterTest extends AbstractTestCase
             $crawler->filter('#main .table tbody tr')->extract('data-id')
         );
     }
+
+    public function testAutocompleteDqlFilter()
+    {
+        $this->getBackendPage([
+            'action' => 'autocomplete',
+            'entity' => 'Category',
+            'query' => 21,
+        ]);
+
+        // the results are only all parent categories
+        $response = \json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertSame(
+            [
+                ['id' => 21, 'text' => 'Parent Category #21'],
+            ],
+            $response['results']
+        );
+    }
 }

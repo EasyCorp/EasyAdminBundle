@@ -143,7 +143,10 @@ trait AdminControllerTrait
         $results = $this->get('easyadmin.autocomplete')->find(
             $this->request->query->get('entity'),
             $this->request->query->get('query'),
-            $this->request->query->get('page', 1)
+            $this->request->query->get('page', 1),
+            $this->request->query->get('maxResults'),
+            $this->request->query->get('sortField'),
+            $this->request->query->get('sortDirection')
         );
 
         return new JsonResponse($results);

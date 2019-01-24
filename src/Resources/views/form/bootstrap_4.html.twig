@@ -455,6 +455,9 @@
             'data-easyadmin-autocomplete-url' : path('easyadmin', {
                 action: 'autocomplete',
                 entity: autocomplete_entity_name,
+                maxResults: autocomplete_entity_max_results,
+                sortField: autocomplete_entity_sort_field,
+                sortDirection: autocomplete_entity_sort_direction,
             })|raw })
         })
     }}

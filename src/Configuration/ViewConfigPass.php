@@ -143,7 +143,7 @@ class ViewConfigPass implements ConfigPassInterface
     private function processMaxResultsConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (['list', 'search', 'show'] as $view) {
+            foreach (['list', 'search', 'show', 'autocomplete'] as $view) {
                 if (!isset($entityConfig[$view]['max_results']) && isset($backendConfig[$view]['max_results'])) {
                     $backendConfig['entities'][$entityName][$view]['max_results'] = $backendConfig[$view]['max_results'];
                 }
@@ -167,7 +167,7 @@ class ViewConfigPass implements ConfigPassInterface
     private function processSortingConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach (['list', 'search'] as $view) {
+            foreach (['list', 'search', 'autocomplete'] as $view) {
                 if (!isset($entityConfig[$view]['sort'])) {
                     continue;
                 }

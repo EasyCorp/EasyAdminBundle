@@ -41,6 +41,8 @@ class AutocompleteTest extends AbstractTestCase
             'action' => 'autocomplete',
             'entity' => 'Category',
             'query' => 'Parent Categ',
+            'sortField' => 'id',
+            'sortDirection' => 'ASC',
         ]);
 
         // the results are the first 10 parent categories
@@ -49,6 +51,37 @@ class AutocompleteTest extends AbstractTestCase
             $this->assertSame($i, $response['results'][$i - 1]['id']);
             $this->assertSame('Parent Category #'.$i, $response['results'][$i - 1]['text']);
         }
+    }
+
+    public function testAutocompleteSort()
+    {
+        $this->getBackendPage([
+            'action' => 'autocomplete',
+            'entity' => 'Category',
+            'query' => 'Parent Categ',
+            'sortField' => 'id',
+            'sortDirection' => 'DESC',
+        ]);
+
+        // the results are the last 10 parent categories
+        $response = \json_decode($this->client->getResponse()->getContent(), true);
+        foreach (\range(100, 91) as $i => $id) {
+            $this->assertSame($id, $response['results'][$i]['id']);
+            $this->assertSame('Parent Category #'.$id, $response['results'][$i]['text']);
+        }
+    }
+
+    public function testAutocompleteMaxResults()
+    {
+        $this->getBackendPage([
+            'action' => 'autocomplete',
+            'entity' => 'Category',
+            'query' => 'Parent Categ',
+            'maxResults' => 5,
+        ]);
+
+        $response = \json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertCount(5, $response['results']);
     }
 
     public function testAutocompleteNumber()
@@ -62,8 +95,8 @@ class AutocompleteTest extends AbstractTestCase
         $response = \json_decode($this->client->getResponse()->getContent(), true);
         $this->assertSame(
             [
-                ['id' => 21, 'text' => 'Parent Category #21'],
                 ['id' => 121, 'text' => 'Category #21'],
+                ['id' => 21, 'text' => 'Parent Category #21'],
             ],
             $response['results']
         );

@@ -549,6 +549,7 @@ change this value (globally or per entity):
         # ...
 
 You can use the ``list.sort`` option to sort your autocomplete entity.
+The ``dql_filter`` option is available to allow you to filter your autocomplete results.
 
 .. code-block:: yaml
 
@@ -557,6 +558,7 @@ You can use the ``list.sort`` option to sort your autocomplete entity.
         entities:
             Category:
                 list:
+                    dql_filter: 'entity.publishedAt IS NOT NULL'
                     sort: ['label', 'ASC']
         # ...
 

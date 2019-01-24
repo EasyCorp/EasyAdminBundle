@@ -51,8 +51,9 @@ class Autocomplete
 
         $sortField = $entityConfig['list']['sort']['field'] ?? null;
         $sortDirection = $entityConfig['list']['sort']['direction'] ?? null;
+        $dqlFilter = $entityConfig['list']['dql_filter'] ?? null;
 
-        $paginator = $this->finder->findByAllProperties($entityConfig, $query, $page, $backendConfig['show']['max_results'], $sortField, $sortDirection);
+        $paginator = $this->finder->findByAllProperties($entityConfig, $query, $page, $backendConfig['show']['max_results'], $sortField, $sortDirection, $dqlFilter);
 
         return [
             'results' => $this->processResults($paginator->getCurrentPageResults(), $entityConfig),

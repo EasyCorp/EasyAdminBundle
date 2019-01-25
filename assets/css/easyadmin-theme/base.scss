@@ -161,15 +161,16 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 
 .content-wrapper {
     display: grid;
-
-    @media(min-width: 992px) {
-        grid-auto-rows: max-content;
-        grid-column-gap: 0;
-        grid-row-gap: 0;
-        grid-template-areas:
+    grid-auto-rows: max-content;
+    grid-column-gap: 0;
+    grid-row-gap: 0;
+    grid-template-areas:
             "flash-messages           flash-messages  flash-messages"
             "sidebar-resizer-handler  content         content-resizer-handler"
-        ;
+    ;
+    grid-template-columns: 0 auto 0;
+
+    @media(min-width: 992px) {
         grid-template-columns: 10px auto 10px;
     }
 }

@@ -115,12 +115,12 @@
             {% endblock sidebar %}
             </aside>
 
-            <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
-
             <div class="content-wrapper">
                 {% block flash_messages %}
                     {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@EasyAdmin/default/flash_messages.html.twig') }}
                 {% endblock flash_messages %}
+
+                <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
 
                 {% block content %}
                     <div class="content">
@@ -158,9 +158,9 @@
                         {% endblock %}
                     </div>
                 {% endblock content %}
-            </div>
 
-            <div id="content-resizer-handler" class="resizer-handler resizer-handler-right"></div>
+                <div id="content-resizer-handler" class="resizer-handler resizer-handler-right"></div>
+            </div>
         {% endblock wrapper %}
         </div>
 

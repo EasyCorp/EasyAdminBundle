@@ -5,7 +5,7 @@
 easy_admin:
     list:
         actions:
-            ['-edit', '-list', '-new', '-search', '-show']
+            ['-edit', '-delete', '-list', '-new', '-search', '-show']
     edit:
         actions:
             ['-delete', '-list']

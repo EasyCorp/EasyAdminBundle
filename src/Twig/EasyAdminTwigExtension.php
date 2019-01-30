@@ -4,7 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Helper\MenuHelper;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
+use EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
@@ -23,16 +25,20 @@ class EasyAdminTwigExtension extends AbstractExtension
     private $configManager;
     private $propertyAccessor;
     private $easyAdminRouter;
+    protected $adminAuthorizationChecker;
+    protected $menuHelper;
     private $debug;
     private $logoutUrlGenerator;
     /** @var TranslatorInterface|null */
     private $translator;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, AdminAuthorizationChecker $adminAuthorizationChecker, MenuHelper $menuHelper, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
         $this->easyAdminRouter = $easyAdminRouter;
+        $this->adminAuthorizationChecker = $adminAuthorizationChecker;
+        $this->menuHelper = $menuHelper;
         $this->debug = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->translator = $translator;
@@ -55,6 +61,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFunction('easyadmin_get_actions_for_*_item', [$this, 'getActionsForItem']),
             new TwigFunction('easyadmin_logout_path', [$this, 'getLogoutPath']),
             new TwigFunction('easyadmin_read_property', [$this, 'readProperty']),
+            new TwigFunction('is_easyadmin_granted', [$this, 'isEasyAdminGranted']),
         ];
     }
 
@@ -66,6 +73,8 @@ class EasyAdminTwigExtension extends AbstractExtension
         $filters = [
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
+            new TwigFilter('prune_item_actions', [$this, 'pruneItemsActions']),
+            new TwigFilter('prune_menu_items', [$this, 'pruneMenuItems']),
         ];
 
         if (Kernel::VERSION_ID >= 40200) {
@@ -434,5 +443,24 @@ class EasyAdminTwigExtension extends AbstractExtension
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public function isEasyAdminGranted(array $entityConfig, string $actionName = 'list', $subject = null)
+    {
+        return $this->adminAuthorizationChecker->isEasyAdminGranted($entityConfig, $actionName, $subject);
+    }
+
+    public function pruneItemsActions(
+        array $itemActions, array $entityConfig, $subject = null, array $forbiddenActions = []
+    ) {
+        return \array_filter($itemActions, function ($action) use ($entityConfig, $subject, $forbiddenActions) {
+            return !\in_array($action, $forbiddenActions)
+                && $this->isEasyAdminGranted($entityConfig, $action, $subject);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    public function pruneMenuItems(array $menuConfig, array $entitiesConfig)
+    {
+        return $this->menuHelper->pruneMenuItems($menuConfig, $entitiesConfig);
     }
 }

@@ -40,6 +40,8 @@
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="property_accessor" />
             <argument type="service" id="easyadmin.router" />
+            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker"/>
+            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Helper\MenuHelper"/>
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <argument type="service" id="translator" on-invalid="null" />
@@ -127,11 +129,6 @@
         <service id="EasyCorp\Bundle\EasyAdminBundle\Helper\MenuHelper">
             <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker"/>
             <argument type="service" id="security.authorization_checker"/>
-        </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Twig\AdminAuthorizationExtension">
-            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker"/>
-            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Helper\MenuHelper"/>
-            <tag name="twig.extension"/>
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\UnauthorizedFieldConfigurator">
             <argument type="service" id="security.authorization_checker"/>

@@ -350,8 +350,6 @@ This is the full list of templates that can be redefined:
                 new: '...'
                 # Used to render the contents stored by a given entity
                 show: '...'
-                # Used to render the form displayed in the new and edit pages
-                form: '...'
                 # Used to render the notification area were flash messages are displayed
                 flash_messages: '...'
                 # Used to render the paginator in the list page

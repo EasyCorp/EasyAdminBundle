@@ -45,9 +45,9 @@ class AdminAuthorizationExtension extends AbstractExtension
     }
 
     public function pruneItemsActions(
-        array $itemActions, array $entityConfig, array $forbiddenActions = [], $subject = null
+        array $itemActions, array $entityConfig, $subject = null, array $forbiddenActions = []
     ) {
-        return \array_filter($itemActions, function ($action) use ($entityConfig, $forbiddenActions, $subject) {
+        return \array_filter($itemActions, function ($action) use ($entityConfig, $subject, $forbiddenActions) {
             return !\in_array($action, $forbiddenActions)
                 && $this->isEasyAdminGranted($entityConfig, $action, $subject);
         }, ARRAY_FILTER_USE_KEY);

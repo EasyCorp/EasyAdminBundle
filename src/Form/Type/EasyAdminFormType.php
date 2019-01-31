@@ -129,14 +129,15 @@ class EasyAdminFormType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $configManager = $this->configManager;
-
         $resolver
             ->setDefaults([
                 'allow_extra_fields' => true,
-                'data_class' => function (Options $options) use ($configManager) {
-                    $entity = $options['entity'];
-                    $entityConfig = $configManager->getEntityConfig($entity);
+                'data_class' => function (Options $options, $dataClass) {
+                    if (null !== $dataClass) {
+                        return $dataClass;
+                    }
+
+                    $entityConfig = $this->configManager->getEntityConfig($options['entity']);
 
                     return $entityConfig['class'];
                 },

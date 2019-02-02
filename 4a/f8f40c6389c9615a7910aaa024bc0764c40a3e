@@ -1,0 +1,159 @@
+---------------------------------------------------------------------------
+
+by Pierstoval at 2019-01-15T08:45:05Z
+
+I really like the idea!
+
+However, I'm not fan at all (or "not fan anymore", don't remember 🤣) of the "magic" method naming that resolves automatically to `{name}BatchAction()`
+
+I prefer having a method such as `batchAction(string $actionName);` instead, where `$actionName` equals the name in the configuration.
+
+This allows creating custom methods that are owned by the developer while still having the EasyAdmin method documented & auto-completed.
+
+IMO we should remove the "magic" in EasyAdmin (dynamic methods, etc.), because it introduces lots of undocumented complexity. Overriding a method should be the main entry point to customizing, instead of "magic" ones.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-15T13:41:19Z
+
+Hi @Pierstoval, thanks for your input. I'm not fan of "magic" methods neither, but I don't think it's something  we can solve soon. The current convention of the bundle is calling to `batchAction()` from `indexAction()` so there is no chance to have `batchAction(string $actionName)`.
+
+However, it seems that ppl don't like "magic" so much and https://github.com/EasyCorp/EasyAdminBundle/pull/2578#discussion_r247691291 proposes that too.
+
+@alterphp I've addressed your comment, thanks.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-15T13:46:50Z
+
+PR description updated with latest changes, it should feel less "magic" now.
+
+---------------------------------------------------------------------------
+
+by alterphp at 2019-01-15T17:21:16Z
+
+> However, I'm not fan at all (or "not fan anymore", don't remember rofl) of the "magic" method naming that resolves automatically to `{name}BatchAction()`
+
+I don't like it, but I think it's important in order to ease adoption of the bundle by less experimented developers and it increases the amount of installations. So finally, even if I don't use it at all, it could be useful for me (more people using the bundle implies bigger community, more contributors and so on).
+
+---------------------------------------------------------------------------
+
+by alterphp at 2019-01-15T18:06:52Z
+
+Would be even better ! And pass $ids and form data to the (name)BatchAction.
+
+Le mar. 15 janv. 2019 à 18:49, Yonel Ceruto <notifications@github.com> a
+écrit :
+
+> *@yceruto* commented on this pull request.
+> ------------------------------
+>
+> In src/Resources/views/default/list.html.twig
+> <https://github.com/EasyCorp/EasyAdminBundle/pull/2578#discussion_r247996489>
+> :
+>
+> > @@ -76,6 +83,25 @@
+>              </div>
+>          {% endblock new_action %}
+>      {% endif %}
+> +    </div>
+> +
+> +    {% if _list_batch_actions is not empty %}
+> +        <div class="batch-actions" style="display: none">
+> +            <form method="post" action="{{ path('easyadmin', {action: 'batch', entity: _request_parameters.entity}) }}">
+> +                <input type="hidden" name="batch_action_ids">
+>
+> In that case I'd prefer move the form definition to some controller/method
+> and make there the extension point, thus you could add custom
+> batch-fields/form-theme/custom-rendering, etc. WDYT?
+>
+> —
+> You are receiving this because you were mentioned.
+> Reply to this email directly, view it on GitHub
+> <https://github.com/EasyCorp/EasyAdminBundle/pull/2578#discussion_r247996489>,
+> or mute the thread
+> <https://github.com/notifications/unsubscribe-auth/AAtFzXGt2CSIoqa4KyBlN0iRcXej0Zb7ks5vDhTGgaJpZM4Z_lO5>
+> .
+>
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-15T23:34:59Z
+
+**Update:**
+ * Added new form type `EasyAdminBatchFormType` to define the batch form and batch fields/buttons. It'll allow you a custom batch form with inputs/dropdown/etc.. and custom rendering overriding `block easyadmin_batch_widget` if needed.
+ * Added `{% block batch_actions %}` in `list.html.twig` template for easy customization.
+ * Added method `createBatchForm()` in `AdminControllerTrait` for batch form creation and easy customization. The `batchAction()` method is a bit more readable now.
+ * The final batch method (`<name>BatchAction`) now accepts the batch form instance as 2nd argument for advanced usage.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-18T01:43:27Z
+
+Hey! demo project ready! https://github.com/yceruto/ea2_batch_actions check it out.
+
+See diff https://github.com/yceruto/ea2_batch_actions/commit/2f228668cf99df612e6738d753a2aa785e065097 to know what changes you'll need to create a batch action.
+
+---------------------------------------------------------------------------
+
+by alterphp at 2019-01-18T14:13:00Z
+
+To me it's ready to merge ! @javiereguiluz WDYT ?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-18T14:30:31Z
+
+I just pushed a new branch: https://github.com/yceruto/ea2_batch_actions/tree/custom_batch_form with custom batch form. See diff https://github.com/yceruto/ea2_batch_actions/commit/f720a88a7523f4352f74be8e4ef2209f02e74fdd
+
+![eas2-status-batch-actions](https://user-images.githubusercontent.com/2028198/51392117-076d5100-1b02-11e9-94b7-1dea67c223c8.gif)
+
+@alterphp It was your idea, tell me how it looks for you?
+
+And this feature clears the road for this card too: https://github.com/EasyCorp/EasyAdminBundle/projects/1#card-1953061 (Export to CSV, Excel, JSON, PDF).
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-18T14:33:42Z
+
+@alterphp not yet, see TODO list :) and I need the @javiereguiluz's approval to continue.
+
+---------------------------------------------------------------------------
+
+by alterphp at 2019-01-18T21:35:30Z
+
+CSS is broken on my side, did not manage to get it right even after compiling EAB vendor styles. aNything I'm missing ?
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-18T23:56:10Z
+
+@alterphp It should be fixed now (update dep).
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-23T19:18:16Z
+
+(Rebased) This is ready for review.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-01-26T18:08:20Z
+
+@yceruto thanks a lot for contributing this feature. I love it. I'm going to review it soon and merge it. In your description you say that "docs" and "tests" are left to do.
+
+I propose you something: let's finish this feature making sure all existing tests pass and merge it. Later, I can work on both tests and docs. That way I'll learn how this works and could propose changes/tweaks if needed. Thanks.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-01-27T13:21:38Z
+
+@javiereguiluz thank you for worrying about this PR.
+
+Rebased and conflicts solved. [Tests passed] So this is finished on my side according to what you proposed.
+
+---------------------------------------------------------------------------
+
+by Destroy666x at 2019-01-27T16:26:14Z
+
+What would be also nice as batch features - mass edition and addition. The first could be based on the list view with quick edit based on some JS (and a possibility of custom view if needed), similar to the toggle field, the second would require a custom view because there's an unknown number of required fields.

@@ -15,6 +15,11 @@
             <tag name="form.type" alias="easyadmin_autocomplete" />
         </service>
 
+        <service id="easyadmin.form.type.batch" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType">
+            <argument type="service" id="easyadmin.config.manager"/>
+            <tag name="form.type" alias="easyadmin_batch" />
+        </service>
+
         <service id="easyadmin.form.type.divider" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType">
             <tag name="form.type" alias="easyadmin_divider" />
         </service>

@@ -32,8 +32,11 @@ class ActionConfigPass implements ConfigPassInterface
     {
         $backendConfig = $this->processDisabledActions($backendConfig);
         $backendConfig = $this->normalizeActionsConfig($backendConfig);
+        $backendConfig = $this->normalizeBatchActionsConfig($backendConfig);
         $backendConfig = $this->resolveActionInheritance($backendConfig);
+        $backendConfig = $this->resolveBatchActionInheritance($backendConfig);
         $backendConfig = $this->processActionsConfig($backendConfig);
+        $backendConfig = $this->processBatchActionsConfig($backendConfig);
 
         return $backendConfig;
     }
@@ -93,6 +96,47 @@ class ActionConfigPass implements ConfigPassInterface
 
                 $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
             }
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * Transforms the different batch action configuration formats into a normalized
+     * and expanded format. These are the two simple formats allowed:.
+     *
+     * # Config format #1: no custom option
+     * easy_admin:
+     *     entities:
+     *         User:
+     *             list:
+     *                 batch_actions: ['delete', 'reset']
+     *
+     * # Config format #2: one or more actions define any of their options
+     * easy_admin:
+     *     entities:
+     *         User:
+     *             list:
+     *                 batch_actions: ['delete', { name: 'reset', label: 'Reset Account' }]
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function normalizeBatchActionsConfig(array $backendConfig)
+    {
+        // first, normalize batch actions defined globally for the entire backend
+        $batchActionsConfig = $backendConfig['list']['batch_actions'];
+        $batchActionsConfig = $this->doNormalizeActionsConfig($batchActionsConfig, 'the global "list" view defined under "easy_admin" option');
+
+        $backendConfig['list']['batch_actions'] = $batchActionsConfig;
+
+        // second, normalize batch actions defined for each entity
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            $batchActionsConfig = $entityConfig['list']['batch_actions'];
+            $batchActionsConfig = $this->doNormalizeActionsConfig($batchActionsConfig, \sprintf('the "list" view of the "%s" entity', $entityName));
+
+            $backendConfig['entities'][$entityName]['list']['batch_actions'] = $batchActionsConfig;
         }
 
         return $backendConfig;
@@ -216,6 +260,53 @@ class ActionConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
+    /**
+     * Batch actions can be added/removed globally in the list view of
+     * the backend and locally in each of the configured entities. Local config always
+     * wins over the global config (e.g. if backend removes 'delete' action in the
+     * 'list' view but some action explicitly adds 'delete' in its 'list' view,
+     * then that entity shows the 'delete' action and the others don't).
+     */
+    private function resolveBatchActionInheritance(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            $backendBatchActions = $backendConfig['list']['batch_actions'];
+            $entityBatchActions = $entityConfig['list']['batch_actions'];
+
+            // filter batch actions removed in the global view configuration
+            foreach ($backendBatchActions as $backendAction) {
+                if ('-' === $backendAction['name'][0]) {
+                    $actionName = \mb_substr($backendAction['name'], 1);
+
+                    unset($backendBatchActions[$actionName], $backendBatchActions['-'.$actionName]);
+                }
+            }
+
+            // filter batch actions removed in the local entity configuration
+            foreach ($entityBatchActions as $entityAction) {
+                if ('-' === $entityAction['name'][0]) {
+                    $actionName = \mb_substr($entityAction['name'], 1);
+
+                    unset($entityBatchActions[$actionName], $entityBatchActions['-'.$actionName], $backendBatchActions[$actionName]);
+                }
+            }
+
+            $batchActionsConfig = \array_merge($backendBatchActions, $entityBatchActions);
+
+            // reorder the batch actions to match the order set by the user in the
+            // entity or in the global backend options
+            if (!empty($entityBatchActions)) {
+                $batchActionsConfig = $this->reorderArrayItems($batchActionsConfig, \array_keys($entityBatchActions));
+            } elseif (!empty($backendBatchActions)) {
+                $batchActionsConfig = $this->reorderArrayItems($batchActionsConfig, \array_keys($backendBatchActions));
+            }
+
+            $backendConfig['entities'][$entityName]['list']['batch_actions'] = $batchActionsConfig;
+        }
+
+        return $backendConfig;
+    }
+
     private function processActionsConfig(array $backendConfig)
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
@@ -236,6 +327,31 @@ class ActionConfigPass implements ConfigPassInterface
 
                     $backendConfig['entities'][$entityName][$view]['actions'][$actionName] = $actionConfig;
                 }
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    private function processBatchActionsConfig(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach ($entityConfig['list']['batch_actions'] as $actionName => $actionConfig) {
+                if ('method' !== $actionConfig['type']) {
+                    throw new \InvalidArgumentException(sprintf('Batch actions only support "method" type, "%s" given.', $actionConfig['type']));
+                }
+
+                // 'name' value is used as the class method name or the Symfony route name
+                // check that its value complies with the PHP method name rules
+                if (!$this->isValidMethodName($actionName)) {
+                    throw new \InvalidArgumentException(\sprintf('The name of the "%s" action defined in the "list" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $actionName, $entityName));
+                }
+
+                if (null === $actionConfig['label']) {
+                    $actionConfig['label'] = $this->humanizeString($actionName);
+                }
+
+                $backendConfig['entities'][$entityName]['list']['batch_actions'][$actionName] = $actionConfig;
             }
         }
 

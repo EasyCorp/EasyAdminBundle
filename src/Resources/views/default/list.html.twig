@@ -24,6 +24,7 @@
 {% endif %}
 
 {% set _request_parameters = _request_parameters|merge({ referer: path('easyadmin', _request_parameters)|url_encode }) %}
+{% set _has_batch_actions = batch_form is defined and batch_form.vars.batch_actions|length > 0 %}
 
 {% block body_id 'easyadmin-list-' ~ _entity_config.name %}
 {% block body_class 'list list-' ~ _entity_config.name|lower %}
@@ -78,6 +79,20 @@
     {% endif %}
 {% endblock global_actions %}
 
+{% block batch_actions %}
+    {% if _has_batch_actions %}
+        <div class="batch-actions" style="display: none">
+            {% form_theme batch_form with easyadmin_config('design.form_theme') %}
+            {{ form(batch_form) }}
+        </div>
+    {% endif %}
+{% endblock batch_actions %}
+
+{% block content_header %}
+    {{ parent() }}
+    {{ block('batch_actions') }}
+{% endblock content_header %}
+
 {% block main %}
     {% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity_config.name) %}
 
@@ -85,6 +100,10 @@
         <thead>
         {% block table_head %}
             <tr>
+                {% if _has_batch_actions %}
+                    <th width="1px"><span><input type="checkbox" class="form-batch-checkbox-all"></span></th>
+                {% endif %}
+
                 {% for field, metadata in fields %}
                     {% set isSortingField = (metadata.property == app.request.get('sortField')) or ('association' == metadata.type and app.request.get('sortField') starts with metadata.property ~ '.') %}
                     {% set nextSortDirection = isSortingField ? (app.request.get('sortDirection') == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
@@ -117,6 +136,10 @@
                 {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
                 {% set _item_id = '' ~ attribute(item, _entity_config.primary_key_field_name) %}
                 <tr data-id="{{ _item_id }}">
+                    {% if _has_batch_actions %}
+                        <td><input type="checkbox" class="form-batch-checkbox" value="{{ _item_id }}"></td>
+                    {% endif %}
+
                     {% for field, metadata in fields %}
                         {% set isSortingField = metadata.property == app.request.get('sortField') %}
                         {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters)  %}
@@ -219,6 +242,44 @@
                         deleteForm.trigger('submit');
                     });
             });
+
+            {% if _has_batch_actions %}
+            let title = $('.content-header-title > .title').text();
+            $(document).on('click', '.deselect-batch-button', function () {
+                $(this).closest('.content').find(':checkbox.form-batch-checkbox-all').prop('checked', false).trigger('change');
+            });
+            $(document).on('change', '.form-batch-checkbox-all', function () {
+                $(this).closest('.content').find(':checkbox.form-batch-checkbox').prop('checked', $(this).prop('checked')).trigger('change');
+            });
+            $(document).on('change', '.form-batch-checkbox', function () {
+                let $content = $(this).closest('.content');
+                let $input = $content.find(':hidden#batch_form_ids');
+                let ids = $input.val() ? $input.val().split(',') : [];
+                let id = $(this).val();
+
+                if ($(this).prop('checked')) {
+                    if (ids.indexOf(id) === -1) {
+                        ids.push(id);
+                    }
+                } else {
+                    ids = ids.filter(function(value) { return value !== id });
+                    $content.find(':checkbox.form-batch-checkbox-all').prop('checked', false);
+                }
+
+                if (ids.length === 0) {
+                    $content.find('.global-actions').show();
+                    $content.find('.batch-actions').hide();
+                    $content.find('table').removeClass('table-batch');
+                } else {
+                    $content.find('.batch-actions').show();
+                    $content.find('.global-actions').hide();
+                    $content.find('table').addClass('table-batch');
+                }
+
+                $input.val(ids.join(','));
+                $content.find('.content-header-title > .title').text(0 === ids.length ? title : ids.length + ' selected');
+            });
+            {% endif %}
         });
     </script>
 

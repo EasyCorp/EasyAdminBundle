@@ -1,0 +1,12 @@
+# TEST
+# entity batch actions override the configuration of the default actions configured globally
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions: [{ name: 'delete', css_class: 'global-delete-class', label: 'Global Delete Label', icon: 'global-delete-icon' }]
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                batch_actions: [{ name: 'delete', css_class: 'entity-delete-class', label: 'Entity Delete Label', icon: 'entity-delete-icon' }]

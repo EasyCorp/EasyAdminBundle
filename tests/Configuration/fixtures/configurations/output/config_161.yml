@@ -1,0 +1,9 @@
+easy_admin:
+    list:
+        batch_actions:
+            custom_batch_action:
+                name: custom_batch_action
+    entities:
+        Category:
+            list:
+                batch_actions: { }

@@ -1,0 +1,14 @@
+# TEST
+# entity actions remove one batch action explicitly added by the global actions
+# and mixing different configuration formats
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions:
+            - { name: 'delete' }
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                batch_actions: ['-delete']

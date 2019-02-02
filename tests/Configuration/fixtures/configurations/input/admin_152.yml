@@ -1,0 +1,11 @@
+# TEST
+# the properties of the batch actions can be configured
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions:
+            - { name: 'delete', icon: 'custom-delete-icon', css_class: 'custom-delete-class', label: 'custom-delete-label' }
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

@@ -1,0 +1,23 @@
+easy_admin:
+    entities:
+        Category:
+            list:
+                batch_actions:
+                    CamelCaseAction:
+                        name: CamelCaseAction
+                        label: 'Camel case action'
+                    snakeCaseAction:
+                        name: snakeCaseAction
+                        label: 'Snake case action'
+                    underscore_action:
+                        name: underscore_action
+                        label: 'Underscore action'
+                    UPPERCASE_ACTION:
+                        name: UPPERCASE_ACTION
+                        label: 'U p p e r c a s e a c t i o n'
+                    lowercaseaction:
+                        name: lowercaseaction
+                        label: Lowercaseaction
+                    WEIRD_caseAction:
+                        name: WEIRD_caseAction
+                        label: 'W e i r d case action'

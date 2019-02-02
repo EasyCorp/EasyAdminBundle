@@ -1,0 +1,16 @@
+# TEST
+# when using the expanded action configuration, is mandatory to define the
+# 'name' option
+
+# EXCEPTION
+expected_exception:
+    class: RuntimeException
+    message_string: 'One of the actions defined by the global "list" view defined under "easy_admin" option does not define its name, which is the only mandatory option for actions.'
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions:
+            - { label: 'Unnamed Batch Action' }
+    entities:
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

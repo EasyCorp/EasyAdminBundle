@@ -1,0 +1,10 @@
+# TEST
+# it's possible to define custom batch actions
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions: ['custom_batch_action']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

@@ -482,8 +482,11 @@
 
 {# EasyAdminBatch form type #}
 {% block easyadmin_batch_widget %}
+    {% set _translation_domain = easyadmin.entity.translation_domain %}
+    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
+
     {{ form_widget(form.ids) }}
-    <button type="button" class="btn btn-link deselect-batch-button">Deselect</button>
+    <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(_trans_parameters, _translation_domain) }}</button>
     {% for action in batch_actions %}
         <button type="submit" class="btn {{ action.css_class|default('btn-secondary') }}" title="{{ action.title|default('') is empty ? '' : action.title|trans(_trans_parameters) }}" name="{{ form.name.vars.full_name }}" value="{{ action.name }}">
             {%- if action.icon %}<i class="fa fa-{{ action.icon }}"></i> {% endif -%}

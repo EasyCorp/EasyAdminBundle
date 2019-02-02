@@ -1,0 +1,9 @@
+easy_admin:
+    entities:
+        Category:
+            list:
+                batch_actions:
+                    zzz_first_action:
+                        name: zzz_first_action
+                    aaa_second_action:
+                        name: aaa_second_action

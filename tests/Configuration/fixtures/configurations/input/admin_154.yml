@@ -1,0 +1,13 @@
+# TEST
+# it's possible to remove custom batch actions at global level
+# of course this makes no sense because at global level you only inherit the
+# default actions defined by EasyAdmin, so you will never inherit a custom batch
+# action and therefore, removing a custom action have no effect
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions: ['-custom_batch_action']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

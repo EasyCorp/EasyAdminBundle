@@ -244,7 +244,7 @@
             });
 
             {% if _has_batch_actions %}
-            let title = $('.content-header-title > .title').text();
+            const titleContent = $('.content-header-title > .title').html();
             $(document).on('click', '.deselect-batch-button', function () {
                 $(this).closest('.content').find(':checkbox.form-batch-checkbox-all').prop('checked', false).trigger('change');
             });
@@ -252,13 +252,13 @@
                 $(this).closest('.content').find(':checkbox.form-batch-checkbox').prop('checked', $(this).prop('checked')).trigger('change');
             });
             $(document).on('change', '.form-batch-checkbox', function () {
-                let $content = $(this).closest('.content');
+                const $content = $(this).closest('.content');
                 let $input = $content.find(':hidden#batch_form_ids');
                 let ids = $input.val() ? $input.val().split(',') : [];
-                let id = $(this).val();
+                const id = $(this).val();
 
                 if ($(this).prop('checked')) {
-                    if (ids.indexOf(id) === -1) {
+                    if (-1 === ids.indexOf(id)) {
                         ids.push(id);
                     }
                 } else {
@@ -266,7 +266,7 @@
                     $content.find(':checkbox.form-batch-checkbox-all').prop('checked', false);
                 }
 
-                if (ids.length === 0) {
+                if (0 === ids.length) {
                     $content.find('.global-actions').show();
                     $content.find('.batch-actions').hide();
                     $content.find('table').removeClass('table-batch');
@@ -277,7 +277,7 @@
                 }
 
                 $input.val(ids.join(','));
-                $content.find('.content-header-title > .title').text(0 === ids.length ? title : ids.length + ' selected');
+                $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
             });
             {% endif %}
         });

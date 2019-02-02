@@ -194,3 +194,56 @@ would look as follows:
 Similarly to method based actions, you can configure any option for these
 actions (icons, labels, etc.) and you can also leverage the action inheritance
 mechanism.
+
+.. _custom-batch-actions:
+
+Batch Actions
+-------------
+
+Batch actions are the actions which are applied to multiple items at the same
+time. They are only available in the views that display more than one item:
+``list`` and ``search``. The only built-in batch action is ``delete``, but you
+can create your own batch actions.
+
+Imagine that you manage users with a ``User`` entity and a common administration
+task is to approve their sign ups. Instead of creating a normal ``approve``
+action as explained in the previous section, create a batch action to be more
+productive and approve multiple users at once.
+
+The first step is to :ref:`create a custom AdminController <overriding-the-default-controller>`.
+Then, create a new method to handle the batch action. The method name must
+follow the pattern ``action_name`` + ``BatchAction()`` and they receive an array
+argument with the IDs of the entities the action should be applied to. In this
+example, create an ``approveBatchAction()`` method:
+
+.. code-block:: php
+
+    // src/Controller/AdminController.php
+    namespace App\Controller;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
+    // ...
+
+    class AdminController extends EasyAdminController
+    {
+        // ...
+
+        public function approveBatchAction(array $ids)
+        {
+            $class = $this->entity['class'];
+            $em = $this->getDoctrine()->getManagerForClass($class);
+
+            foreach ($ids as $id) {
+                $user = $em->find($id);
+                $user->approve();
+            }
+
+            $this->em->flush();
+
+            // don't return anything or redirect to any URL because it will be ignored
+            // when a batch action finishes, user is redirected to the original page
+        }
+    }
+
+Batch actions can be configured in the same way as regular actions (icon, label,
+etc.) and they can be defined globally or locally per entity.

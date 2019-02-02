@@ -277,6 +277,38 @@ This is configurable thanks to the ``icon``, ``label`` and ``title`` options:
                 # the 'title' content is displayed when the cursor is over the icon
                 - { name: 'edit', icon: 'pencil', label: false, title: 'Search' }
 
+Batch Actions
+-------------
+
+Batch actions are the actions which are applied to multiple items at the same
+time. They are only available in the views that display more than one item:
+``list`` and ``search``.
+
+These actions are configured in the ``batch_actions`` option, which can be
+defined globally and/or per entity (entity config overrides the global config).
+The only built-in batch action is ``delete``:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        list:
+            # allow deleting multiple items at once ...
+            batch_actions: ['delete']
+            # ...
+        entities:
+            User:
+                # ... except for this 'User' entity
+                batch_actions: ['-delete']
+
+Batch actions are configured the same as regular actions, so you can change
+their label, icon and title as explained in the previous sections. The merging
+of global and local config is also done in the same way and the config of
+``disabled_actions`` is applied to these batch actions too.
+
+Read how to :ref:`create your own batch actions <custom-batch-actions>` to get
+the most out of this feature.
+
 -----
 
 Next chapter: :doc:`menu-configuration`

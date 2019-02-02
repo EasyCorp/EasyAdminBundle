@@ -1,0 +1,17 @@
+easy_admin:
+    list:
+        batch_actions:
+            delete:
+                name: delete
+                label: 'Global Delete Label'
+                css_class: global-delete-class
+                icon: global-delete-icon
+    entities:
+        Category:
+            list:
+                batch_actions:
+                    delete:
+                        name: delete
+                        label: 'Entity Delete Label'
+                        css_class: entity-delete-class
+                        icon: entity-delete-icon

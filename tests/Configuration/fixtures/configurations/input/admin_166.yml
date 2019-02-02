@@ -1,0 +1,11 @@
+# TEST
+# when the global batch action doesn't define a label, the generated label is a
+# humanized version of the entity name
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions: ['CamelCaseAction', 'snakeCaseAction', 'underscore_action', 'UPPERCASE_ACTION', 'lowercaseaction', 'WEIRD_caseAction']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

@@ -35,6 +35,10 @@
                 <source>action.list</source>
                 <target>Wróć do listy</target>
             </trans-unit>
+            <trans-unit id="action.deselect">
+                <source>action.deselect</source>
+                <target>Odznacz</target>
+            </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>
                 <target>Pusta wartość</target>

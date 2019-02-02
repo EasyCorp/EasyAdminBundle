@@ -35,6 +35,10 @@
                 <source>action.list</source>
                 <target>返回列表</target>
             </trans-unit>
+            <trans-unit id="action.deselect">
+                <source>action.deselect</source>
+                <target>*** Deselect ***</target>
+            </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>
                 <target>空</target>

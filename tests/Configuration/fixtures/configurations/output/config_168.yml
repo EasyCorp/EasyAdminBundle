@@ -1,0 +1,19 @@
+easy_admin:
+    list:
+        batch_actions:
+            delete:
+                name: delete
+                type: method
+                label: action.delete
+                css_class: btn-danger
+                icon: null
+    entities:
+        Category:
+            list:
+                batch_actions:
+                    delete:
+                        name: delete
+                        type: method
+                        label: action.delete
+                        css_class: btn-danger
+                        icon: null

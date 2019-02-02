@@ -277,7 +277,7 @@
                 }
 
                 $input.val(ids.join(','));
-                $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : ids.length + ' selected');
+                $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
             });
             {% endif %}
         });

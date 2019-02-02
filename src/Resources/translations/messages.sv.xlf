@@ -35,6 +35,10 @@
                 <source>action.list</source>
                 <target>Åter till lista</target>
             </trans-unit>
+            <trans-unit id="action.deselect">
+                <source>action.deselect</source>
+                <target>*** Deselect ***</target>
+            </trans-unit>
 
             <!-- forms -->
             <trans-unit id="form.label.collections">

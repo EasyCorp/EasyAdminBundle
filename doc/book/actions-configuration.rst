@@ -301,9 +301,9 @@ The only built-in batch action is ``delete``:
                 # ... except for this 'User' entity
                 batch_actions: ['-delete']
 
-Batch actions are configured the same as rgular actions, so you can change their
-label, icon and title as explained in the previous sections. The merging of
-global and local config is also done in the same way and the config of
+Batch actions are configured the same as regular actions, so you can change
+their label, icon and title as explained in the previous sections. The merging
+of global and local config is also done in the same way and the config of
 ``disabled_actions`` is applied to these batch actions too.
 
 Read how to :ref:`create your own batch actions <custom-batch-actions>` to get

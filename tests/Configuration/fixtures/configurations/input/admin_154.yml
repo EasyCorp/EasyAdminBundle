@@ -7,7 +7,7 @@
 # CONFIGURATION
 easy_admin:
     list:
-        actions: ['-custom_batch_action']
+        batch_actions: ['-custom_batch_action']
     entities:
         Category:
             class: AppTestBundle\Entity\UnitTests\Category

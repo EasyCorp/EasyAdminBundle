@@ -1,0 +1,12 @@
+# TEST
+# entity actions remove one custom batch action explicitly added by the global actions
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions: ['custom_batch_action']
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                actions: ['-custom_batch_action']

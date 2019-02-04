@@ -1,0 +1,15 @@
+easy_admin:
+    list:
+        batch_actions:
+            CamelCaseAction:
+                name: CamelCaseAction
+            snakeCaseAction:
+                name: snakeCaseAction
+            underscore_action:
+                name: underscore_action
+            UPPERCASE_ACTION:
+                name: UPPERCASE_ACTION
+            lowercaseaction:
+                name: lowercaseaction
+            WEIRD_caseAction:
+                name: WEIRD_caseAction

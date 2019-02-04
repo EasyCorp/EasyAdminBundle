@@ -1,0 +1,17 @@
+# TEST
+# Special case for the labels of the batch actions that match any of the default
+# actions (e.g. 'delete'):
+#   * if its label is null, use 'action.<action name>'
+#   * if its label is not null, use that value
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions:
+            - { name: 'delete' } # its label should be 'action.delete'
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                batch_actions:
+                    - { name: 'delete', 'label': 'This label should not be action.delete' }

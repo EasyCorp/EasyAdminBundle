@@ -130,11 +130,22 @@ class ActionConfigPass implements ConfigPassInterface
         $batchActionsConfig = $this->doNormalizeActionsConfig($batchActionsConfig, 'the global "list" view defined under "easy_admin" option');
 
         $backendConfig['list']['batch_actions'] = $batchActionsConfig;
+        foreach ($backendConfig['list']['batch_actions'] as $actionName => $actionConfig) {
+            if (null === $actionConfig['css_class'] && 'delete' === $actionName) {
+                $backendConfig['list']['batch_actions'][$actionName]['css_class'] = 'btn-danger';
+            }
+        }
 
         // second, normalize batch actions defined for each entity
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             $batchActionsConfig = $entityConfig['list']['batch_actions'];
             $batchActionsConfig = $this->doNormalizeActionsConfig($batchActionsConfig, \sprintf('the "list" view of the "%s" entity', $entityName));
+
+            foreach ($batchActionsConfig as $actionName => $actionConfig) {
+                if (null === $actionConfig['css_class'] && 'delete' === $actionName) {
+                    $batchActionsConfig[$actionName]['css_class'] = 'btn-danger';
+                }
+            }
 
             $backendConfig['entities'][$entityName]['list']['batch_actions'] = $batchActionsConfig;
         }
@@ -145,6 +156,7 @@ class ActionConfigPass implements ConfigPassInterface
     private function doNormalizeActionsConfig(array $actionsConfig, $errorOrigin = '')
     {
         $normalizedConfig = [];
+        $builtInActions = ['delete', 'edit', 'new', 'search', 'show', 'list'];
 
         foreach ($actionsConfig as $i => $actionConfig) {
             if (!\is_string($actionConfig) && !\is_array($actionConfig)) {
@@ -165,6 +177,15 @@ class ActionConfigPass implements ConfigPassInterface
             }
 
             $actionName = $actionConfig['name'];
+
+            if (null === $actionConfig['label']) {
+                if (\in_array($actionName, $builtInActions, true)) {
+                    $actionConfig['label'] = 'action.'.$actionName;
+                } else {
+                    $actionConfig['label'] = $this->humanizeString($actionName);
+                }
+            }
+
             $normalizedConfig[$actionName] = $actionConfig;
         }
 
@@ -318,10 +339,6 @@ class ActionConfigPass implements ConfigPassInterface
                         throw new \InvalidArgumentException(\sprintf('The name of the "%s" action defined in the "%s" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $actionName, $view, $entityName));
                     }
 
-                    if (null === $actionConfig['label']) {
-                        $actionConfig['label'] = $this->humanizeString($actionName);
-                    }
-
                     // Add default classes ("action-{actionName}") to each action configuration
                     $actionConfig['css_class'] .= ' action-'.$actionName;
 
@@ -345,10 +362,6 @@ class ActionConfigPass implements ConfigPassInterface
                 // check that its value complies with the PHP method name rules
                 if (!$this->isValidMethodName($actionName)) {
                     throw new \InvalidArgumentException(\sprintf('The name of the "%s" action defined in the "list" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $actionName, $entityName));
-                }
-
-                if (null === $actionConfig['label']) {
-                    $actionConfig['label'] = $this->humanizeString($actionName);
                 }
 
                 $backendConfig['entities'][$entityName]['list']['batch_actions'][$actionName] = $actionConfig;

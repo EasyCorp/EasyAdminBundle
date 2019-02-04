@@ -35,6 +35,10 @@
                 <source>action.list</source>
                 <target>Zerrendara itzuli</target>
             </trans-unit>
+            <trans-unit id="action.deselect">
+                <source>action.deselect</source>
+                <target>Desaukeratu</target>
+            </trans-unit>
 
             <!-- forms -->
             <trans-unit id="form.label.collections">

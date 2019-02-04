@@ -1,0 +1,11 @@
+# TEST
+# when the entity batch action doesn't define a label, the generated label is a
+# humanized version of the entity name
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                batch_actions: ['CamelCaseAction', 'snakeCaseAction', 'underscore_action', 'UPPERCASE_ACTION', 'lowercaseaction', 'WEIRD_caseAction']

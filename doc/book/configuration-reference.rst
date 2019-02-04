@@ -26,6 +26,7 @@ config key:
 
   * :ref:`title <reference-list-title>`
   * :ref:`actions <reference-list-actions>`
+  * :ref:`batch_actions <reference-list-batch_actions>`
   * :ref:`max_results <reference-list-max-results>`
 * `edit`_
 * `new`_
@@ -397,6 +398,34 @@ To remove an action, add it to this list prepending its name with a dash (``-``)
     easy_admin:
         list:
             actions: ['-new', '-show', 'myAction', 'myOtherAction']
+
+.. _reference-list-batch-actions:
+
+batch_actions
+~~~~~~~~~~~~~
+
+(**default value**: empty array, **type**: array)
+
+Defines the "batch actions" available in the ``list`` view, which are those
+actions applied to multiple items at the same time. The only built-in batch
+action is ``delete``, but you can create your own
+:ref:`custom batch actions <custom-batch-actions>`.
+
+This option can be defined globally and/or per entity (entity config overrides
+the global config). To remove an action, add it to this list prefixing its name
+with a dash (``-``):
+
+.. code-block:: yaml
+
+    easy_admin:
+        list:
+            batch_actions: ['delete', 'myAction']
+        # ...
+        entities:
+            Product:
+                # ...
+                list:
+                    batch_actions: ['-delete', 'myOtherAction']
 
 .. _reference-list-max-results:
 

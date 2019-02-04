@@ -104,19 +104,24 @@ function createContentResizer() {
 function createNavigationToggler() {
     const toggler = document.getElementById('navigation-toggler');
     const cssClassName = 'easyadmin-mobile-sidebar-visible';
+    let modalBackdrop;
 
     toggler.addEventListener('click', function() {
         document.querySelector('body').classList.toggle(cssClassName);
 
         if (document.querySelector('body').classList.contains(cssClassName)) {
-            var modalBackdrop = document.createElement('div');
+            modalBackdrop = document.createElement('div');
             modalBackdrop.classList.add('modal-backdrop', 'fade', 'show');
             modalBackdrop.onclick = function() {
-                modalBackdrop.style.height = 0;
-                document.querySelector('body').classList.remove(cssClassName)
+                document.querySelector('body').classList.remove(cssClassName);
+                document.body.removeChild(modalBackdrop);
+                modalBackdrop = null;
             };
 
             document.body.appendChild(modalBackdrop);
+        } else if (modalBackdrop) {
+            document.body.removeChild(modalBackdrop);
+            modalBackdrop = null;
         }
     });
 }

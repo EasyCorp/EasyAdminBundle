@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------
+
+by odolbeau at 2019-02-04T15:29:58Z
+
+I didn't propose this fix on the `1.x` branch cause fix #2602 have been merged on `master` branch only.
+
+![image](https://user-images.githubusercontent.com/680206/52217911-be572400-2899-11e9-90b7-2848694bc730.png)
+
+Should I propose only this change:
+```php
+$isGuidField = \in_array($metadata['dataType'], array('guid', 'uuid'));
+```
+
+Or should I add this:
+```php
+// 'citext' is a PostgreSQL extension (https://github.com/EasyCorp/EasyAdminBundle/issues/2556)
+$isTextField = \in_array($metadata['dataType'], array('string', 'text', 'citext'));
+$isGuidField = \in_array($metadata['dataType'], array('guid', 'uuid'));
+```
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-02-04T15:44:11Z
+
+Well, https://github.com/EasyCorp/EasyAdminBundle/pull/2602 was tagged as a new feature, so we should probably do the same here. Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-02-04T17:01:10Z
+
+To give some more context, `guid` database types comes from:
+
+* https://github.com/doctrine/dbal/blob/92920ede68e1d16246712cd41318dd82bb72c015/lib/Doctrine/DBAL/Types/Type.php#L42
+* https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Types/GuidType.php
+
+But let's merge this to fix the other occurrences. Thanks Olivier!

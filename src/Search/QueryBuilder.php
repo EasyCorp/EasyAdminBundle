@@ -117,7 +117,7 @@ class QueryBuilder
             $isNumericField = \in_array($metadata['dataType'], ['number', 'bigint', 'decimal', 'float']);
             // 'citext' is a PostgreSQL extension (https://github.com/EasyCorp/EasyAdminBundle/issues/2556)
             $isTextField = \in_array($metadata['dataType'], ['string', 'text', 'citext']);
-            $isGuidField = 'guid' === $metadata['dataType'];
+            $isGuidField = \in_array($metadata['dataType'], ['guid', 'uuid']);
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
             if (

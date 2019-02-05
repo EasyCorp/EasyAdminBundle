@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-02-05T19:39:43Z
+
+Who would have thought that this is so complicated :(  Maybe we need to stop using Pagerfanta and use Doctrine's Paginator directly? (https://www.doctrine-project.org/api/orm/latest/Doctrine/ORM/Tools/Pagination/Paginator.html)  Maybe doing that we have the same problems but we need to fix them ourselves 🤔
+
+In any case, let's merge this. Thanks Yonel!

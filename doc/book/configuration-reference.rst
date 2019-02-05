@@ -13,6 +13,12 @@ config key:
 * `datetime`_
 * `number`_
 * `disabled_actions`_
+* `user`_
+
+  * `avatar_property_path`_
+  * `display_avatar`_
+  * `display_name`_
+  * `name_property_path`_
 * `design`_
 
   * `brand_color`_
@@ -143,6 +149,48 @@ and then re-enable some of them for some entities. Example:
     easy_admin:
         disabled_actions: ['new', 'edit']
         # ...
+
+user
+----
+
+avatar_property_path
+~~~~~~~~~~~~~~~~~~~~
+
+(**default value**: ``null``, **type**: ``string`` | ``null``)
+
+The value of this option is any valid `PropertyAccess component`_ expression.
+It is applied to the ``app.user`` object of the Twig template to get the value
+of the user avatar. This value is used in the ``src`` attribute of the ``<img>``
+element used to display the avatar.
+
+display_avatar
+~~~~~~~~~~~~~~
+
+(**default value**: ``true``, **type**: bool)
+
+If ``true``, the avatar of the logged in user is displayed on all pages. Set it
+to ``false`` to hide it. By default, the avatar is a generic user icon. Use the
+``avatar_property_path`` to change this.
+
+display_name
+~~~~~~~~~~~~
+
+(**default value**: ``true``, **type**: bool)
+
+If ``true``, the name of the logged in user is displayed on all pages. Set it
+to ``false`` to hide it. By default, the user name is the string conversion of
+the user object returned by ``app.user`` in the Twig template. Use the
+``name_property_path`` to change this.
+
+name_property_path
+~~~~~~~~~~~~~~~~~~
+
+(**default value**: ``__toString``, **type**: ``string`` | ``null``)
+
+The value of this option is any valid `PropertyAccess component`_ expression.
+It is applied to the ``app.user`` object of the Twig template to get the value
+of the user name. The special ``__toString`` value is used to perform a string
+conversion of the user object.
 
 design
 ------
@@ -497,3 +545,5 @@ entities
 (**default value**: empty array, **type**: array)
 
 Defines the list of entities managed by the bundle.
+
+.. _`PropertyAccess component`: https://symfony.com/components/PropertyAccess

@@ -54,6 +54,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFunction('easyadmin_get_action_for_*_view', [$this, 'getActionConfiguration']),
             new TwigFunction('easyadmin_get_actions_for_*_item', [$this, 'getActionsForItem']),
             new TwigFunction('easyadmin_logout_path', [$this, 'getLogoutPath']),
+            new TwigFunction('easyadmin_read_property', [$this, 'readProperty']),
         ];
     }
 
@@ -411,6 +412,27 @@ class EasyAdminTwigExtension extends AbstractExtension
             return $this->logoutUrlGenerator->getLogoutPath();
         } catch (\Exception $e) {
             return;
+        }
+    }
+
+    public function readProperty($objectOrArray, ?string $propertyPath)
+    {
+        if (null === $propertyPath) {
+            return null;
+        }
+
+        if ('__toString' === $propertyPath) {
+            try {
+                return (string) $objectOrArray;
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        try {
+            return $this->propertyAccessor->getValue($objectOrArray, $propertyPath);
+        } catch (\Exception $e) {
+            return null;
         }
     }
 }

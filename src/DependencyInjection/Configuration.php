@@ -19,6 +19,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $this->getRootNode($treeBuilder, 'easy_admin');
 
         $this->addGlobalOptionsSection($rootNode);
+        $this->addUserSection($rootNode);
         $this->addDesignSection($rootNode);
         $this->addViewsSection($rootNode);
         $this->addEntitiesSection($rootNode);
@@ -85,6 +86,38 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->defaultValue('messages')
                     ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addUserSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('user')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('display_name')
+                            ->defaultTrue()
+                            ->info('If true, the user name is displayed in the logged user section.')
+                        ->end()
+
+                        ->booleanNode('display_avatar')
+                            ->defaultTrue()
+                            ->info('If true, the user avatar image is displayed in the logged user section.')
+                        ->end()
+
+                        ->scalarNode('name_property_path')
+                            ->defaultValue('__toString')
+                            ->info('A valid PropertyPath expression used to get the value of the user name (by default, __toString() is used).')
+                        ->end()
+
+                        ->scalarNode('avatar_property_path')
+                            ->defaultNull()
+                            ->info('A valid PropertyPath expression used to get the value of the avatar image path which is used as the "src" attribute of the <img> element.')
+                        ->end()
+                    ->end()
                 ->end()
             ->end()
         ;

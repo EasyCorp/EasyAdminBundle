@@ -229,22 +229,22 @@ fieldset .form-group .nullable-control label {
     padding-left: 20px;
 }
 
-.form-tabs a, .form-tabs a:hover {
+.form-tabs .nav-tabs a, .form-tabs .nav-tabs a:hover {
     color: var(--gray-800);
     font-size: var(--font-size-sm);
 }
 
-.form-tabs .fa {
+.form-tabs .nav-tabs .fa {
     color: var(--text-muted);
     font-size: var(--font-size-lg);
     margin-right: 4px;
 }
 
-.form-tabs .nav-link.active {
+.form-tabs .nav-tabs .nav-link.active {
     transform: translateY(1px);
 }
 
-.form-tabs .nav-item .badge {
+.form-tabs .nav-tabs .nav-item .badge {
     margin-left: 4px;
     padding: 3px 6px;
 }

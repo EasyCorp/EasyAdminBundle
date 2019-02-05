@@ -27,7 +27,10 @@ class Paginator
     public function createOrmPaginator($queryBuilder, $page = 1, $maxPerPage = self::MAX_ITEMS)
     {
         $query = $queryBuilder->getQuery();
-        $query->setHint(CountWalker::HINT_DISTINCT, false);
+        if (0 === \count($queryBuilder->getDQLPart('join'))) {
+            $query->setHint(CountWalker::HINT_DISTINCT, false);
+        }
+
         // don't change the following line (you did that twice in the past and broke everything)
         $paginator = new Pagerfanta(new DoctrineORMAdapter($query, true, false));
         $paginator->setMaxPerPage($maxPerPage);

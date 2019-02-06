@@ -153,7 +153,11 @@
                         {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') %}
                         <td class="actions">
                         {% block item_actions %}
-                            {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+                            {% set _actions_template = _entity_config.list.collapse_actions
+                                ? '@EasyAdmin/default/includes/_actions_dropdown.html.twig'
+                                : '@EasyAdmin/default/includes/_actions.html.twig'
+                            %}
+                            {{ include(_actions_template, {
                                 actions: _list_item_actions,
                                 request_parameters: _request_parameters,
                                 translation_domain: _entity_config.translation_domain,

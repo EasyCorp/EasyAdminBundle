@@ -96,6 +96,10 @@ class ActionConfigPass implements ConfigPassInterface
 
                 $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
             }
+
+            if (!array_key_exists('collapse_actions', $entityConfig['list'])) {
+                $backendConfig['entities'][$entityName]['list']['collapse_actions'] = $backendConfig['list']['collapse_actions'];
+            }
         }
 
         return $backendConfig;

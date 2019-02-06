@@ -60,6 +60,20 @@ table.datagrid {
 .datagrid td.actions .fa {
   font-size: var(--font-size-base);
 }
+.datagrid td.actions .dropdown-actions {
+  padding: 1px 8px 0 8px;
+  box-shadow: none;
+  background: transparent;
+}
+.datagrid td.actions .dropdown-actions:after {
+  display: none;
+}
+.datagrid td.actions a.dropdown-item {
+  margin: 0;
+}
+.datagrid td.actions a.dropdown-item i {
+  margin-right: 5px;
+}
 
 .datagrid .easyadmin-thumbnail img {
   box-shadow: 0 0 0 2px var(--white), 0px 0px 4px 1px var(--gray-600);

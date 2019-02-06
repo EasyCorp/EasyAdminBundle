@@ -75,8 +75,40 @@ how to protect the backend URLs.
 When accessing a protected backend, EasyAdmin displays the name of user who is
 logged in the application. Otherwise it displays *"Anonymous User"*.
 
-.. _`Symfony Security documentation`: https://symfony.com/doc/current/book/security.html
+Configuring the Logged In User Information
+------------------------------------------
+
+The information of the logged in user is displayed by default in all pages. The
+user name is the string conversion of the ``app.user`` object of the Twig
+template and the avatar is a generic user icon. If you want to hide any of this
+information, use these config options:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        user:
+            display_name: true
+            display_avatar: false
+        # ...
+
+You can also change how the user name and avatar are obtained with these other
+options. Their values are any valid `PropertyAccess component`_ expression,
+which is applied to the ``app.user`` object of the Twig template:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        user:
+            # this will look for getFullName(), isFullName(), ..., and 'fullName' property
+            name_property_path: 'fullName'
+            avatar_property_path: 'gravatar'
+        # ...
 
 -----
 
 Next chapter: :doc:`design-configuration`
+
+.. _`Symfony Security documentation`: https://symfony.com/doc/current/book/security.html
+.. _`PropertyAccess component`: https://symfony.com/components/PropertyAccess

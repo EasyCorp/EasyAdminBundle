@@ -92,6 +92,13 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertCount(15, $crawler->filter('#main .table td.actions a[title="Custom Action 2"]:contains("Action 2")'));
     }
 
+    public function testListViewDropdownItemActions()
+    {
+        $crawler = $this->requestListView('Product');
+
+        $this->assertCount(15, $crawler->filter('#main .table td.actions div.dropdown a.dropdown-item:contains("Edit")'));
+    }
+
     public function testListViewTableIdColumn()
     {
         $crawler = $this->requestListView();

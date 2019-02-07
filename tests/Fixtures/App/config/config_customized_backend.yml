@@ -150,6 +150,7 @@ easy_admin:
             class: AppTestBundle\Entity\FunctionalTests\Product
             label: 'Products'
             list:
+                collapse_actions: true
                 fields:
                     - id
                     - name

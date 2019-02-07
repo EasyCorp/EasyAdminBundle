@@ -731,13 +731,9 @@ trait AdminControllerTrait
      */
     protected function isActionAllowed($actionName)
     {
-        switch ($actionName) {
-            // autocomplete action is mapped to list action for access permissions
-            case 'autocomplete':
-                $actionName = 'list';
-                break;
-            default:
-                break;
+        // autocomplete action is mapped to list action for access permissions
+        if ('autocomplete' === $actionName) {
+            $actionName = 'list';
         }
 
         // Get item for edit/show or custom actions => security voters may apply

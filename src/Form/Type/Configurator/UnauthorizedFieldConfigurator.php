@@ -10,9 +10,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 final class UnauthorizedFieldConfigurator implements TypeConfiguratorInterface
 {
-    /**
-     * @var AuthorizationCheckerInterface
-     */
     private $authorizationChecker;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker)

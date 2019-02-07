@@ -2,41 +2,34 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Helper;
 
+use EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
 /**
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  */
 class MenuHelper
 {
-    /**
-     * @var \EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker
-     */
-    protected $adminAuthorizationChecker;
-    /**
-     * @var \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface
-     */
-    protected $authorizationChecker;
+    private $adminAuthorizationChecker;
+    private $authorizationChecker;
 
     /**
      * MenuHelper constructor.
      *
-     * @param \EasyCorp\Bundle\EasyAdminBundle\Security\AdminAuthorizationChecker          $adminAuthorizationChecker
-     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     * @param AdminAuthorizationChecker     $adminAuthorizationChecker
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct($adminAuthorizationChecker, $authorizationChecker)
-    {
+    public function __construct(
+        AdminAuthorizationChecker $adminAuthorizationChecker, AuthorizationCheckerInterface $authorizationChecker
+    ) {
         $this->adminAuthorizationChecker = $adminAuthorizationChecker;
         $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
-     * Prune unauthorized menu items
-     *
-     * @param  array  $menuConfig
-     * @param  array  $entitiesConfig
-     *
-     * @return array
+     * Prune unauthorized menu items.
      */
-    public function pruneMenuItems(array $menuConfig, array $entitiesConfig)
+    public function pruneMenuItems(array $menuConfig, array $entitiesConfig): array
     {
         $menuConfig = $this->pruneAccessDeniedEntries($menuConfig, $entitiesConfig);
         $menuConfig = $this->pruneEmptyFolderEntries($menuConfig);
@@ -45,7 +38,7 @@ class MenuHelper
         return $menuConfig;
     }
 
-    protected function pruneAccessDeniedEntries(array $menuConfig, array $entitiesConfig)
+    private function pruneAccessDeniedEntries(array $menuConfig, array $entitiesConfig)
     {
         foreach ($menuConfig as $key => $entry) {
             if (
@@ -58,7 +51,9 @@ class MenuHelper
             ) {
                 unset($menuConfig[$key]);
                 continue;
-            } elseif (isset($entry['role']) && !$this->authorizationChecker->isGranted($entry['role'])) {
+            }
+
+            if (isset($entry['role']) && !$this->authorizationChecker->isGranted($entry['role'])) {
                 unset($menuConfig[$key]);
                 continue;
             }
@@ -71,7 +66,7 @@ class MenuHelper
         return \array_values($menuConfig);
     }
 
-    protected function pruneEmptyFolderEntries(array $menuConfig)
+    private function pruneEmptyFolderEntries(array $menuConfig)
     {
         foreach ($menuConfig as $key => $entry) {
             if (isset($entry['children'])) {
@@ -88,7 +83,7 @@ class MenuHelper
         return \array_values($menuConfig);
     }
 
-    protected function reindexMenuEntries($menuConfig)
+    private function reindexMenuEntries($menuConfig)
     {
         foreach ($menuConfig as $key => $firstLevelItem) {
             $menuConfig[$key]['menu_index'] = $key;

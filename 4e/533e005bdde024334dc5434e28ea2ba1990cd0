@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2019-02-06T14:40:29Z
+
+Also, there is another example with different icon:
+![menu-1](https://user-images.githubusercontent.com/2028198/52348739-0f2e6000-29f3-11e9-86d2-5d5c4927b2aa.gif)
+
+Which one would you like?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-02-06T17:00:01Z
+
+This was very high in my TODO list, so thank you for implementing it!
+
+I prefer the `⋯` icon because that's the most popular icon for this kind of thing and it's also the icon used by Stripe:
+
+![actions](https://user-images.githubusercontent.com/73419/52358826-fc3e7e80-2a38-11e9-8f30-392eacafa86c.png)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-02-06T17:38:23Z
+
+Okay, I'll add the documentation then, unless you prefer to do it yourself ? which I would prefer :)
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-02-06T17:52:11Z
+
+Yes. I can add de docs :)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-02-07T16:11:00Z
+
+Rebased.

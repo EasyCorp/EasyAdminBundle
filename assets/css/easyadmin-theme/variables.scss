@@ -112,6 +112,10 @@ $badge-border-radius: var(--border-radius);
 $dropdown-link-hover-color: var(--gray-900);
 $navbar-inverse-color: var(--gray-400);
 $navbar-inverse-link-color: var(--gray-400);
+$dropdown-border-color: var(--border-color);
+$dropdown-border-width: var(--border-width);
+$dropdown-box-shadow: var(--box-shadow-lg);
+$zindex-dropdown: 1000;
 
 $nav-tabs-border-color: var(--border-color);
 $nav-tabs-border-width: var(--border-width);

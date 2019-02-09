@@ -60,19 +60,46 @@ table.datagrid {
 .datagrid td.actions .fa {
   font-size: var(--font-size-base);
 }
-.datagrid td.actions .dropdown-actions {
-  padding: 1px 8px 0 8px;
-  box-shadow: none;
-  background: transparent;
+
+.datagrid .actions-dropdown {
+  position: relative;
 }
-.datagrid td.actions .dropdown-actions:after {
+.datagrid .actions-dropdown .dropdown-toggle {
+  background: transparent !important;
+  border: var(--border-width) solid transparent;
+  box-shadow: none !important;
+  padding: 1px 8px 0 8px;
+}
+.datagrid .actions-dropdown .dropdown-toggle:after {
   display: none;
 }
-.datagrid td.actions a.dropdown-item {
+.datagrid .actions-dropdown a.dropdown-item {
   margin: 0;
 }
-.datagrid td.actions a.dropdown-item i {
+.datagrid .actions-dropdown a.dropdown-item i {
   margin-right: 5px;
+}
+.datagrid .actions-dropdown .dropdown-menu-right {
+  border-top-right-radius: 0;
+  right: 0;
+  top: 22px;
+}
+.datagrid .actions-dropdown:hover {
+  cursor: pointer;
+
+  .dropdown-toggle {
+    background: var(--white) !important;
+    border: var(--border-width) solid var(--border-color);
+    border-bottom-color: var(--white);
+    z-index: $zindex-dropdown + 1;
+    position: relative;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .dropdown-menu {
+    display: block;
+  }
 }
 
 .datagrid .easyadmin-thumbnail img {

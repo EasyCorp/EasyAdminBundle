@@ -277,6 +277,32 @@ This is configurable thanks to the ``icon``, ``label`` and ``title`` options:
                 # the 'title' content is displayed when the cursor is over the icon
                 - { name: 'edit', icon: 'pencil', label: false, title: 'Search' }
 
+Displaying Item Actions in a Dropdown Menu
+------------------------------------------
+
+In complex backends it's common to display lots of fields on each list row. In
+those cases it's recommended to display the actions in a dropdown menu instead
+of the expanded design used by default.
+
+To do so, set the ``collapse_actions`` to ``true`` in the global ``list`` option
+or the local ``list`` option of each entity (the local option overrides the
+global option):
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        list:
+            # hide actions by default in a dropdown menu...
+            collapse_actions: true
+            # ...
+        entities:
+            Category:
+                list:
+                    # ...except for this entity, where actions are displayed expanded
+                    collapse_actions: false
+                # ...
+
 Batch Actions
 -------------
 

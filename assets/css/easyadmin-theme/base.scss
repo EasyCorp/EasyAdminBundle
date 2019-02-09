@@ -212,17 +212,12 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 }
 
 .content-header {
-    align-items: center;
     border-bottom: var(--border-width) var(--border-style) var(--border-color);
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
     padding: 15px 17px 15px 20px;
 }
-// when contents define help, change vertical align to 'flex-start' because it looks better than 'center'
-.content-header.has-content-help {
-    align-items: flex-start;
-}
+
 // reduce the padding in 'list' pages to compensate for the height of '.global-actions'
 .list .content-header {
     padding-top: 12px;
@@ -230,7 +225,12 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 }
 
 .content-header-title {
+    align-self: center;
     flex: 1;
+}
+// when contents define help, change vertical align to 'flex-start' because it looks better than 'center'
+.content-header.has-content-help .content-header-title {
+    align-self: flex-end;
 }
 .content-header-title .title {
     font-size: var(--font-size-lg);
@@ -275,6 +275,7 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 .content-header-help {
     color: var(--text-muted);
     font-size: var(--font-size-sm);
+    margin-top: 12px;
 }
 
 .content-footer {

@@ -32,7 +32,8 @@ config key:
 
   * :ref:`title <reference-list-title>`
   * :ref:`actions <reference-list-actions>`
-  * :ref:`batch_actions <reference-list-batch_actions>`
+  * :ref:`batch_actions <reference-list-batch-actions>`
+  * :ref:`collapse_actions <reference-list-collapse-actions>`
   * :ref:`max_results <reference-list-max-results>`
 * `edit`_
 * `new`_
@@ -474,6 +475,18 @@ with a dash (``-``):
                 # ...
                 list:
                     batch_actions: ['-delete', 'myOtherAction']
+
+.. _reference-list-collapse-actions:
+
+collapse_actions
+~~~~~~~~~~~~~~~~
+
+(**default value**: ``false``, **type**: boolean)
+
+If set to ``true``, the actions of each listing item are displayed inside a
+dropdown menu that is revealed when moving the mouse over it. It's useful for
+complex backends that display lots of information on each list row and don't
+have enough space to display the actions expanded.
 
 .. _reference-list-max-results:
 

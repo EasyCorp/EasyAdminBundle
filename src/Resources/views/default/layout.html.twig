@@ -138,21 +138,23 @@
                         {% set _has_content_help = _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
                         <section class="content-header {{ _has_content_help ? 'has-content-help' }}">
                             {% block content_header %}
-                                <div class="content-header-title">
-                                    <h1 class="title">{% block content_title %}{% endblock %}</h1>
+                                <div class="d-flex flex-row justify-content-between align-content-center w-100">
+                                    <div class="content-header-title">
+                                        <h1 class="title">{% block content_title %}{% endblock %}</h1>
+                                    </div>
 
-                                    {% block content_help %}
-                                        {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
-                                            <div class="content-header-help">
-                                                {{ _entity_config[app.request.query.get('action')]['help']|trans(domain = _entity_config.translation_domain)|raw }}
-                                            </div>
-                                        {% endif %}
-                                    {% endblock content_help %}
+                                    {% block global_actions_wrapper %}
+                                        <div class="global-actions">{% block global_actions %}{% endblock %}</div>
+                                    {% endblock %}
                                 </div>
 
-                                {% block global_actions_wrapper %}
-                                    <div class="global-actions">{% block global_actions %}{% endblock %}</div>
-                                {% endblock %}
+                                {% block content_help %}
+                                    {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
+                                        <div class="content-header-help">
+                                            {{ _entity_config[app.request.query.get('action')]['help']|trans(domain = _entity_config.translation_domain)|raw }}
+                                        </div>
+                                    {% endif %}
+                                {% endblock content_help %}
                             {% endblock content_header %}
                         </section>
                         {% endblock content_header_wrapper %}

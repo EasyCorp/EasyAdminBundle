@@ -6,7 +6,7 @@
             'class': [attr.class|default(''), easyadmin.view ~ '-form']|join(' '),
             'data-view': easyadmin.view,
             'data-entity': easyadmin.entity.name,
-            'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name),
+            'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name) ?? '',
         }) %}
     {% endif %}
 

@@ -122,7 +122,7 @@
                 {% endfor %}
 
                 {% if _list_item_actions|length > 0 %}
-                    <th  {{ easyadmin_config('design.rtl') ? 'dir="rtl"' }}>
+                    <th {% if _entity_config.list.collapse_actions %}width="10px"{% endif %} {{ easyadmin_config('design.rtl') ? 'dir="rtl"' }}>
                         <span class="sr-only">{{ 'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') }}</span>
                     </th>
                 {% endif %}

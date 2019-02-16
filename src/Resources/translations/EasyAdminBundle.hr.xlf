@@ -173,6 +173,20 @@
                 <source>exception.undefined_entity</source>
                 <target>Aplikacija nije ispravno konfigurirana za ove vrste stavki.</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Korisničko ime</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Lozinka</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Prijavi se</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

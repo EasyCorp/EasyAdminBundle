@@ -173,6 +173,20 @@
                 <source>exception.undefined_entity</source>
                 <target>未定义该类型记录</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>用户名</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>密码</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>登录</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

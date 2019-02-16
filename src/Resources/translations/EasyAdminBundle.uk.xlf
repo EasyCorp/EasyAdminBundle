@@ -151,6 +151,20 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} %count% елемент не відображається у цьому списку|{2,3,4} %count% елемента не відображаються у цьому списку|]5,Inf] %count% елементів не відображаються у цьому списку]]></target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Логін</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Пароль</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Ввійти</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -151,6 +151,20 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} On olemassa myös toinen rivi joka ei ole näkyvillä listauksessa|]1,Inf] Yhteensä %count%  muuta rivia jotka eivät ole näkyvillä listauksessa]]></target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Username</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Sign in</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

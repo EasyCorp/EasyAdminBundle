@@ -2,26 +2,26 @@
   "entrypoints": {
     "app": {
       "css": [
-        "bundles/easyadmin/app.css"
+        "./app.css"
       ],
       "js": [
-        "bundles/easyadmin/app.js"
+        "./app.js"
       ]
     },
     "app-rtl": {
       "css": [
-        "bundles/easyadmin/app-rtl.css"
+        "./app-rtl.css"
       ],
       "js": [
-        "bundles/easyadmin/app-rtl.js"
+        "./app-rtl.js"
       ]
     },
     "bootstrap-all": {
       "css": [
-        "bundles/easyadmin/bootstrap-all.css"
+        "./bootstrap-all.css"
       ],
       "js": [
-        "bundles/easyadmin/bootstrap-all.js"
+        "./bootstrap-all.js"
       ]
     }
   }

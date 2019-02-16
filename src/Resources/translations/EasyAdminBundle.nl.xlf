@@ -151,6 +151,20 @@
                 <source>form.are_you_sure</source>
                 <target>Je hebt de wijzigingen op dit formulier nog niet opgeslagen.</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Gebruikersnaam</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Wachtwoord</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Inloggen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

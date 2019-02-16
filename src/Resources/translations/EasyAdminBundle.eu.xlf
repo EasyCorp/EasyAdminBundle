@@ -143,6 +143,20 @@
                 <source>form.are_you_sure</source>
                 <target>Formularioen aldaketak ez dituzu gorde.</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Username</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Sign in</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

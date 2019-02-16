@@ -147,6 +147,20 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} هناك عنصر آخر لم يتم عرضه في هذه القائمة|]1,Inf] عنصر آخر لم يتم عرضه في هذه القائمة %count% ]]></target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Username</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Sign in</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

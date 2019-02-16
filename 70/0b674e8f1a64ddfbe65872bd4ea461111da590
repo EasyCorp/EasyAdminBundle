@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-02-12T19:57:05Z
+
+@Nogrod if you have some time, please test this pull request. The only thing you have to do is to make this change in EasyAdmin's Webpack config and run `yarn encore production` to recompile the assets ... and see if your problems are fixed. Thanks!
+
+![webpack-encore-fix](https://user-images.githubusercontent.com/73419/52664210-b9811880-2f08-11e9-976a-3a0b62ac7457.png)
+
+---------------------------------------------------------------------------
+
+by Nogrod at 2019-02-14T08:49:13Z
+
+Working fine with that change.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-02-16T14:23:45Z
+
+@Nogrod thanks for reviewing. I'm going to merge this so it's included in the next stable version. We'll be on alert to see if it breaks apps for some users. If that's the case, I'm afraid we'd need to revert. Thanks.

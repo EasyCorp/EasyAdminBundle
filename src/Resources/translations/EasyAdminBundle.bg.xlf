@@ -117,7 +117,7 @@
                 <source>user.exit_impersonation</source>
                 <target>Изход от представянето</target>
             </trans-unit>
-			
+
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
@@ -184,6 +184,20 @@
             <trans-unit id="exception.undefined_entity">
                 <source>exception.undefined_entity</source>
                 <target>Приложението не е конфигурирано правилно за този вид елементи.</target>
+            </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Потребителско има</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Парола</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Вход</target>
             </trans-unit>
         </body>
     </file>

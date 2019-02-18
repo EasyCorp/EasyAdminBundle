@@ -147,6 +147,20 @@
                 <source>errors</source>
                 <target>Chyba|Chyby</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Heslo</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Přihlásit</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

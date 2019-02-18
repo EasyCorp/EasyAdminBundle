@@ -135,6 +135,20 @@
                 <source>errors</source>
                 <target>Eroare|Erori</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Utilizator</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Parolă</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Autentifică-te</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

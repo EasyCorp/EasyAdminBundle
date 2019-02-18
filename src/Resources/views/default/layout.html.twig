@@ -44,6 +44,7 @@
             );
         </script>
 
+        {% block wrapper_wrapper %}
         <div class="wrapper">
         {% block wrapper %}
             <header class="main-header">
@@ -175,6 +176,7 @@
             </div>
         {% endblock wrapper %}
         </div>
+        {% endblock wrapper_wrapper %}
 
         {% block body_javascript %}{% endblock body_javascript %}
 

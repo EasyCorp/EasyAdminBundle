@@ -177,6 +177,20 @@
                 <source>exception.undefined_entity</source>
                 <target>La aplicación no está configurada correctamente para este tipo de elementos.</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Nombre de usuario</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Contraseña</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Iniciar sesión</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

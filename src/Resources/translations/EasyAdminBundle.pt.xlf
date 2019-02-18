@@ -61,7 +61,7 @@
                 <source>paginator.results</source>
                 <target><![CDATA[{0} Sem resultados|{1} <strong>1</strong> resultado|]1,Inf] <strong>%count%</strong> resultados]]></target>
             </trans-unit>
-            
+
             <!-- labels -->
             <trans-unit id="label.true">
                 <source>label.true</source>
@@ -176,6 +176,20 @@
             <trans-unit id="exception.undefined_entity">
                 <source>exception.undefined_entity</source>
                 <target>A aplicação não está configurada corretamente para esse tipo de itens.</target>
+            </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Usuário</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Senha</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Entrar</target>
             </trans-unit>
         </body>
     </file>

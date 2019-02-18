@@ -173,6 +173,20 @@
                 <source>exception.undefined_entity</source>
                 <target>Uygulama bu tür öğeler için doğru şekilde yapılandırılmamış.</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Kullanıcı adı</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Şifre</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Giriş yap</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

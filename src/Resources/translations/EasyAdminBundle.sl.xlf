@@ -173,6 +173,20 @@
                 <source>exception.undefined_entity</source>
                 <target>Aplikacija ni ustrezno nastavljena za take elemente.</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>uporabniško ime</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Geslo</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Prijava</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

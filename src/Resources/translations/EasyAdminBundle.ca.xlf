@@ -135,6 +135,20 @@
                 <source>errors</source>
                 <target>Error|Errors</target>
             </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Nom d'usuari</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Contrasenya</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Iniciar sessió</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

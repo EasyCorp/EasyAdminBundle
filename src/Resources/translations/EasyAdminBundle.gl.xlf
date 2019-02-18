@@ -151,7 +151,7 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} existe outro elemento que non se mostra neste listado|]1,Inf] existen outros %count% elementos que non se mostran neste listado]]></target>
             </trans-unit>
-            
+
             <!-- exceptions -->
             <trans-unit id="exception.entity_not_found">
                 <source>exception.entity_not_found</source>
@@ -172,6 +172,20 @@
             <trans-unit id="exception.undefined_entity">
                 <source>exception.undefined_entity</source>
                 <target>A aplicación non está configurada correctamente para este tipo de elementos.</target>
+            </trans-unit>
+
+            <!-- Login page -->
+            <trans-unit id="login.username">
+                <source>login.username</source>
+                <target>Username</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="login.sign_in">
+                <source>login.sign_in</source>
+                <target>Sign in</target>
             </trans-unit>
         </body>
     </file>

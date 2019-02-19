@@ -57,6 +57,10 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%results%</strong> öğeden <strong>%start%</strong> - <strong>%end%</strong> arası]]></target>
             </trans-unit>
+            <trans-unit id="paginator.results">
+                <source>paginator.results</source>
+                <target><![CDATA[{0} Sonuç yok|{1} <strong>1</strong> sonuç|]1,Inf] <strong>%count%</strong> sonuç]]></target>
+            </trans-unit>
 
             <!-- labels -->
             <trans-unit id="label.true">
@@ -109,6 +113,10 @@
                 <source>user.signout</source>
                 <target>Çıkış</target>
             </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Canlandırma modundan çık</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="toggle_navigation">
@@ -146,6 +154,10 @@
             <trans-unit id="form.are_you_sure">
                 <source>form.are_you_sure</source>
                 <target>Formdaki değişiklikleri kaydetmediniz.</target>
+            </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>Bir geçersiz girdi|%count% geçersiz girdi</target>
             </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>

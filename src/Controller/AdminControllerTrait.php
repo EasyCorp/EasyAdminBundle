@@ -103,11 +103,11 @@ trait AdminControllerTrait
 
         $action = $request->query->get('action', 'list');
         if (!$request->query->has('sortField')) {
-            $sortField = $this->entity[$action]['sort']['field'] ?? $this->entity['primary_key_field_name'];
+            $sortField = $this->entity[$action]['sort']['field'] ?? $this->config['default_sort_field'] ?? $this->entity['primary_key_field_name'];
             $request->query->set('sortField', $sortField);
         }
         if (!$request->query->has('sortDirection')) {
-            $sortDirection = $this->entity[$action]['sort']['direction'] ?? 'DESC';
+            $sortDirection = $this->entity[$action]['sort']['direction'] ?? $this->config['default_sort_direction'] ?? 'DESC';
             $request->query->set('sortDirection', $sortDirection);
         }
 

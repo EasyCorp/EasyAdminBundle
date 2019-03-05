@@ -87,6 +87,16 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('messages')
                     ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
                 ->end()
+
+                ->scalarNode('default_sort_field')
+                    ->info('List/Search views will be sorted by default by this field.')
+                ->end()
+
+                ->enumNode('default_sort_direction')
+                    ->defaultValue('DESC')
+                    ->values(['ASC','DESC'])
+                    ->info('List/Search views will be sorted by default by this direction.')
+                ->end()
             ->end()
         ;
     }

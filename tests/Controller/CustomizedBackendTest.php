@@ -379,7 +379,7 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestEditView('Product', '1');
 
-        $this->assertSame('Custom help message', \trim($crawler->filter('select#product_categories_autocomplete + .help-block')->text()), 'This fixes issue #1441');
+        $this->assertSame('Custom help message', \trim($crawler->filter('select#product_categories_autocomplete + small.form-text.text-muted')->text()), 'This fixes issue #1441');
     }
 
     public function testNewViewPageTitle()

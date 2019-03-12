@@ -47,14 +47,6 @@
     padding-left: 5px;
 }
 
-.form-widget .help-block {
-    color: var(--text-muted);
-    display: inline-block;
-    font-size: var(--font-size-sm);
-    margin-bottom: 0;
-    margin-top: 4px;
-}
-
 .form-widget input.form-control,
 .form-widget textarea.form-control,
 .form-widget select.form-control {
@@ -379,7 +371,7 @@ fieldset .legend-help {
 }
 
 // Form errors
-.has-error .help-block, .has-error .control-label, .has-error .radio,
+.has-error .control-label, .has-error .radio,
 .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline,
 .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label,
 .has-error.checkbox-inline label {

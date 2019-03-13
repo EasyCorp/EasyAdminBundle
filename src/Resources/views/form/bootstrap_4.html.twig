@@ -62,7 +62,7 @@
 
 {% block form_widget_simple -%}
     {% if type is not defined or type not in ['file', 'hidden'] %}
-        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+        {%- set attr = attr|merge({class: (attr.class|default(''))|trim}) -%}
     {% endif %}
     {%- if type is defined and (type == 'range' or type == 'color') %}
         {# Attribute "required" is not supported #}
@@ -84,7 +84,7 @@
 {%- endblock time_widget %}
 
 {% block choice_widget_collapsed -%}
-    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    {%- set attr = attr|merge({class: (attr.class|default(''))|trim}) -%}
     {{- parent() -}}
 
     {% if form.parent.vars.allow_delete|default(false) %}

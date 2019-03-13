@@ -57,6 +57,10 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> из <strong>%results%</strong>]]></target>
             </trans-unit>
+            <trans-unit id="paginator.results">
+                <source>paginator.results</source>
+                <target><![CDATA[<strong>%count%</strong> результат|<strong>%count%</strong> результата|<strong>%count%</strong> результатов]]></target>
+            </trans-unit>
 
             <!-- labels -->
             <trans-unit id="label.true">

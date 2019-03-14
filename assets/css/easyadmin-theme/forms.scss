@@ -59,9 +59,9 @@
 .form-widget textarea.form-control,
 .form-widget select.form-control {
     border: 0;
-    padding: 3px 7px 5px;
+    padding: 0.375rem 0.75rem;
     box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
-    height: 30px;
+    height: 38px;
     max-width: 350px;
     white-space: nowrap;
     word-break: keep-all;

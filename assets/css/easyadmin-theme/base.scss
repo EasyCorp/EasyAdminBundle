@@ -349,8 +349,8 @@ body.show .form-control {
     border: var(--border-width) var(--border-style) var(--border-color);
     box-shadow: none;
     height: auto;
-    min-height: 30px;
-    padding: 4px 7px 5px;
+    min-height: 38px;
+    padding: 0.375rem 0.75rem;
 }
 
 body.show .field-integer .form-widget,

@@ -186,13 +186,13 @@ The rest of the available methods are specific for each action:
     {
         // Creates the Doctrine query builder used to look for items according to the
         // user's query. Override it to filter the elements displayed in the search listing
-        protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null);
+        protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null, $dqlFilter = null);
 
         // Performs the actual database query to look for the items according to the
         // user's query (using the query builder created with the previous method).
         // You can override this method to filter the results before sending them to
         // the template
-        protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null);
+        protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null, $dqlFilter = null);
     }
 
 **Delete** action:

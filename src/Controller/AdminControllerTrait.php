@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\CspNonceGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
@@ -985,6 +986,13 @@ trait AdminControllerTrait
      */
     protected function renderTemplate($actionName, $templatePath, array $parameters = [])
     {
+        $nonceHandler = $this->get('easyadmin.csp_nonce_handler');
+        if ($nonceHandler->hasGenerator()) {
+            $nonceGenerator = $nonceHandler->getGenerator();
+            $parameters['csp_script_nonce'] = $nonceGenerator->getScriptNonce();
+            $parameters['csp_style_nonce'] = $nonceGenerator->getStyleNonce();
+        }
+
         return $this->render($templatePath, $parameters);
     }
 }

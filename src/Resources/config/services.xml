@@ -133,11 +133,15 @@
             <tag name="container.service_subscriber" />
         </service>
 
+        <service id="easyadmin.csp_nonce_handler" class="EasyCorp\Bundle\EasyAdminBundle\Services\NonceHandler" public="true" autowire="true">
+        </service>
+
         <!-- aliases needed for the service locator of the AbstractAdminController -->
         <service id="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" alias="easyadmin.config.manager" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" alias="easyadmin.query_builder" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" alias="easyadmin.paginator" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete" alias="easyadmin.autocomplete" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker" alias="easyadmin.security.authorization_checker" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Services\NonceHandler" alias="easyadmin.csp_nonce_handler" />
     </services>
 </container>

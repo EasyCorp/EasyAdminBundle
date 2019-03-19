@@ -18,3 +18,5 @@ services:
         resource: '../../AppTestBundle/{Admin,Controller}'
 
     EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController: ~
+    EasyCorp\Bundle\EasyAdminBundle\Services\NonceHandler:
+        public: true

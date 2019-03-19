@@ -77,7 +77,7 @@
 {% block body_javascript %}
     {{ parent() }}
 
-    <script type="text/javascript" {% if csp_script_nonce %} nonce="{{ csp_script_nonce }}" {% endif %}>
+    <script type="text/javascript"{% if csp_script_nonce is defined %} nonce="{{ csp_script_nonce }}" {% endif %}>
         $(function() {
             $('a.action-delete').on('click', function(e) {
                 e.preventDefault();

@@ -51,7 +51,7 @@ EasyAdminBundle to use your CspNonceGenerator:
 .. code-block:: yaml
 
     # config/services.yaml
-    EasyCorp\Bundle\EasyAdminBundle\CspNonceGeneratorInterface: '@App\Services\CspNonceGenerator'
+    EasyCorp\Bundle\EasyAdminBundle\Services\CspNonceGeneratorInterface: '@App\Services\CspNonceGenerator'
 
 .. _`NelmioSecurityBundle`: https://github.com/nelmio/NelmioSecurityBundle#nonce-for-inline-script-handling
 .. _`service alias`: https://symfony.com/doc/current/service_container/autowiring.html#using-aliases-to-enable-autowiring

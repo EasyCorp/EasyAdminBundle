@@ -259,7 +259,7 @@
 {% block body_javascript %}
     {{ parent() }}
 
-    <script type="text/javascript">
+    <script type="text/javascript" {% if csp_script_nonce %} nonce="{{ csp_script_nonce }}" {% endif %}>
         $(function() {
             const toggles = document.querySelectorAll('.checkbox-switch input[type="checkbox"]');
             for (i = 0; i < toggles.length; i++) {
@@ -396,7 +396,7 @@
     </script>
 
     {% if 'search' == app.request.get('action') %}
-        <script type="text/javascript">
+        <script type="text/javascript" {% if csp_script_nonce %} nonce="{{ csp_script_nonce }}" {% endif %}>
             const _search_query = "{{ app.request.get('query')|default('')|e('js') }}";
             // the original query is prepended to allow matching exact phrases in addition to single words
             $('#main').find('table tbody td:not(.actions)').highlight($.merge([_search_query], _search_query.split(' ')));

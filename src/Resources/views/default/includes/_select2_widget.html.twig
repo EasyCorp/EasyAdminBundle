@@ -6,7 +6,7 @@
 %}
 
 <script src="{{ asset('bundles/easyadmin/select2/i18n/' ~ _select2_locale ~ '.js') }}"></script>
-<script type="text/javascript">
+<script type="text/javascript" {% if csp_script_nonce %} nonce="{{ csp_script_nonce }}" {% endif %}>
   $(function() {
     // Select2 widget is only enabled for the <select> elements which
     // explicitly ask for it

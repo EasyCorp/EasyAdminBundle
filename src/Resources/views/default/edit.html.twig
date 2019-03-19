@@ -39,7 +39,7 @@
 {% block body_javascript %}
     {{ parent() }}
 
-    <script type="text/javascript">
+    <script type="text/javascript" {% if csp_script_nonce %} nonce="{{ csp_script_nonce }}" {% endif %}>
         $(function() {
             $('.edit-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
 

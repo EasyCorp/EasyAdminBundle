@@ -13,7 +13,7 @@
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>
-                <target>%entity_name% (#%entity_id%)</target>
+                <target>Modifica %entity_name% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="list.page_title">
                 <source>list.page_title</source>
@@ -27,7 +27,7 @@
             <!-- 'search' view -->
             <trans-unit id="search.no_results">
                 <source>search.no_results</source>
-                <target>Nessun risultato</target>
+                <target>Nessun risultato trovato.</target>
             </trans-unit>
 
             <!-- 'list' view -->
@@ -57,6 +57,10 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> di <strong>%results%</strong>]]></target>
             </trans-unit>
+            <trans-unit id="paginator.results">
+                <source>paginator.results</source>
+                <target><![CDATA[{0} Nessun risultato|{1} <strong>1</strong> risultato|]1,Inf] <strong>%count%</strong> risultati]]></target>
+            </trans-unit>
 
             <!-- labels -->
             <trans-unit id="label.true">
@@ -77,7 +81,7 @@
             </trans-unit>
             <trans-unit id="label.nullable_field">
                 <source>label.nullable_field</source>
-                <target>Lasciare vuoto</target>
+                <target>Lascia vuoto</target>
             </trans-unit>
             <trans-unit id="label.object">
                 <source>label.object</source>
@@ -109,11 +113,15 @@
                 <source>user.signout</source>
                 <target>Esci</target>
             </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Esci dall'impersonazione</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
                 <source>delete_modal.title</source>
-                <target>Eliminare questo elemento?</target>
+                <target>Vuoi eliminare questo elemento?</target>
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
@@ -147,9 +155,13 @@
                 <source>form.are_you_sure</source>
                 <target>Non hai salvato le modifiche apportate su questo modulo.</target>
             </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>Un campo non è valido|%count% campi non sono validi</target>
+            </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
-                <target><![CDATA[{1} è presente un altro elemento non mostrato in questo elenco|]1,Inf] %count% sono presenti altri elementi non mostrati in questo elenco]]></target>
+                <target><![CDATA[{1} è presente un altro elemento non mostrato in questo elenco|]1,Inf] sono presenti altri %count% elementi non mostrati in questo elenco]]></target>
             </trans-unit>
 
             <!-- Exceptions -->

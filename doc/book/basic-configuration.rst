@@ -16,7 +16,7 @@ routes of the bundle. Change its value to meet your own requirements:
 
     # config/routes/easy_admin.yaml
     easy_admin_bundle:
-        resource: '@EasyAdminBundle/Controller/AdminController.php'
+        resource: '@EasyAdminBundle/Controller/EasyAdminController.php'
         prefix: /_secret_backend  # <-- change this value
         type: annotation
 

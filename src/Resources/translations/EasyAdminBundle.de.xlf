@@ -163,6 +163,28 @@
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} Ein Element ist in der Liste nicht angezeigt. |]1,Inf] %count% Elemente sind in der Liste nicht angezeigt]]></target>
             </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Dieses Element ist nicht mehr verfügbar.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Dieses Element kann nicht gelöscht werden, weil andere Elemente darauf angewiesen sind.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>Die gewünschte Aktion kann kann mit diesem Element nicht ausgeführt werden.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>Die Anwendung ist nicht richtig konfiguriert.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>Die Anwendung ist für diese Art von Elementen nicht richtig konfiguriert.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

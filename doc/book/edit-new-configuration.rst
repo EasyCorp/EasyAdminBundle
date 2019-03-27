@@ -409,6 +409,13 @@ tens of options suited for each form type:
 Read the `Symfony Form types`_  reference to learn about all the available
 options, their usage and allowed values.
 
+.. note::
+
+    Symfony makes Doctrine relations nullable by default. Instead of adding the
+    ``type_options: { required: true }`` option to all those fields, it's simpler
+    to add ``@ORM\JoinColumn(nullable=false)`` to the property that defines the
+    relation in the entity class.
+
 Formatting Dates and Numbers
 ----------------------------
 

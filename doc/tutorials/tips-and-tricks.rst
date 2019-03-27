@@ -63,26 +63,9 @@ EasyAdmin uses the same locale as the underlying Symfony application, so the
 backend would be displayed in French too. How could you define a different
 language for the backend?
 
-You just need to get the ``translator`` service and execute the ``setLocale()``
-method befor executing the code of EasyAdmin. The easiest way to do that is to
-create a custom admin controller and override the ``initialize()`` method
-(as explained in :doc:`../book/complex-dynamic-backends`):
-
-.. code-block:: php
-
-    // src/Controller/AdminController.php
-    namespace App\Controller;
-
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
-
-    class AdminController extends BaseAdminController
-    {
-        protected function initialize(Request $request)
-        {
-            $this->get('translator')->setLocale('en');
-            parent::initialize($request);
-        }
-    }
+You must create an event listener or subscriber that sets the request locale
+before the translation service retrieves it, as explained in the following
+Smyfony Docs article: `How to Work with the User's Locale`_.
 
 Don't Apply Global Doctrine Filters in the Backend
 --------------------------------------------------
@@ -165,4 +148,5 @@ The solution work as follows:
    parent template (``{{ parent() }}``).
 
 .. _`Doctrine caching drivers`: https://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
+.. _`How to Work with the User's Locale`: https://symfony.com/doc/current/translation/locale.html
 .. _`Doctrine filters`: https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/filters.html

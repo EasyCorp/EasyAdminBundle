@@ -170,7 +170,21 @@
             <div class="form-widget">
                 <a href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-secondary btn-sm">
                     <i class="fa fa-fw fa-plus"></i>
-                    <span class="btn-label">{{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}</span>
+                    <span class="btn-label">
+                        {%- if form|length == 0 -%}
+                            {{
+                                easyadmin.field.label_add_new_item
+                                | default('action.add_new_item')
+                                | trans({}, 'EasyAdminBundle')
+                            }}
+                        {%- else -%}
+                            {{
+                                easyadmin.field.label_add_another_item
+                                | default('action.add_another_item')
+                                | trans({}, 'EasyAdminBundle')
+                            }}
+                        {%- endif -%}
+                    </span>
                 </a>
             </div>
         </div>

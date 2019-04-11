@@ -356,6 +356,7 @@
 
     {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
         actions: _entity_actions,
+        entity_config: easyadmin.entity,
         request_parameters: _request_parameters,
         translation_domain: _translation_domain,
         trans_parameters: _trans_parameters,

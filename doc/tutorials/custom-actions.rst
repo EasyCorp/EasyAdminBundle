@@ -195,6 +195,43 @@ Similarly to method based actions, you can configure any option for these
 actions (icons, labels, etc.) and you can also leverage the action inheritance
 mechanism.
 
+Custom Template on Actions
+--------------------------
+
+Sometimes you want to customize text or visibility of an custom action depending
+on the entity. You can use ``template`` in action method like you can do in fields.
+
+Imagine you want to show ``Restock`` action only on items with a stock less than
+10. Just use a custom template for this case:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                show:
+                    actions:
+                        - { name: 'restock', template: 'admin/publish_action.html.twig' }
+            # ...
+
+And then you can customize your ``Restock`` action using your own template (all
+other actions like ``edit`` or ``delete`` will stay untouched):
+
+.. code-block:: twig
+
+    {# templates/admin/publish_action.html.twig #}
+
+    {% if item.stock < 10 %}
+        {# this will trigger action's default behaviour, if "stock" is less than 10 #}
+        {% include '@EasyAdmin/default/action.html.twig' %}
+    {% else %}
+        {# don't show this action, if stock is more than 9 #}
+    {% endif %}
+
+Make sure you have configured other parameters for your custom action too like in
+the sections before.
+
 .. _custom-batch-actions:
 
 Batch Actions

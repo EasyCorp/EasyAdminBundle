@@ -17,7 +17,6 @@ class ActionTemplateTest extends AbstractTestCase
     {
         // List is sorted DESC by "action_template" configuration, to ensure Child Categories first
         $crawler = $this->requestListView();
-        file_put_contents('/home/tfreitag/Projects/opensource/EasyAdminBundle/test.html', $crawler->html());
 
         $this->assertCount(15, $crawler->filter('table .actions a:contains("Parent")'));
         $this->assertCount(0, $crawler->filter('table .actions:contains("No Parent")'));

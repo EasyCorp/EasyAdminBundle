@@ -216,7 +216,7 @@ Imagine you want to show ``Restock`` action only on items with a stock less than
             # ...
 
 And then you can customize your ``Restock`` action using your own template (all
-other actions like ``edit`` or ``delete`` will stay untouched):
+other actions like ``list``, ``edit`` or ``delete`` will stay untouched):
 
 .. code-block:: twig
 

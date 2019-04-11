@@ -212,7 +212,7 @@ Imagine you want to show ``Restock`` action only on items with a stock less than
             Product:
                 show:
                     actions:
-                        - { name: 'restock', template: 'admin/publish_action.html.twig' }
+                        - { name: 'restock', template: 'admin/restock_action.html.twig' }
             # ...
 
 And then you can customize your ``Restock`` action using your own template (all
@@ -220,7 +220,7 @@ other actions like ``edit`` or ``delete`` will stay untouched):
 
 .. code-block:: twig
 
-    {# templates/admin/publish_action.html.twig #}
+    {# templates/admin/restock_action.html.twig #}
 
     {% if item.stock < 10 %}
         {# this will trigger action's default behaviour, if "stock" is less than 10 #}

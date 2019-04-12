@@ -71,6 +71,7 @@ class TemplateConfigPass implements ConfigPassInterface
         $backendConfig = $this->processEntityTemplates($backendConfig);
         $backendConfig = $this->processDefaultTemplates($backendConfig);
         $backendConfig = $this->processFieldTemplates($backendConfig);
+        $backendConfig = $this->processActionTemplates($backendConfig);
 
         $this->existingTemplates = [];
 
@@ -202,6 +203,29 @@ class TemplateConfigPass implements ConfigPassInterface
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * Sets the default action template for every action, if it is not already set.
+     *
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function processActionTemplates(array $backendConfig)
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (['list', 'show', 'edit', 'new'] as $viewName) {
+                foreach ($entityConfig[$viewName]['actions'] as $actionName => $actionConfig) {
+                    if (null === $actionConfig['template']) {
+                        $templateName = $backendConfig['design']['templates']['action'];
+                        $backendConfig['entities'][$entityName][$viewName]['actions'][$actionName]['template'] = $templateName;
+                    }
+                }
+            }
         }
 
         return $backendConfig;

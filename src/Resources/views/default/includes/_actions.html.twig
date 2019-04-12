@@ -7,7 +7,7 @@
         {% set action_href = path(action.name, request_parameters|merge({ action: action.name, id: item_id })) %}
     {% endif %}
 
-    {{ include(action.template|default(entity_config.templates.action), {
+    {{ include(action.template, {
         action: action,
         action_href: action_href,
         is_dropdown: is_dropdown|default(false),

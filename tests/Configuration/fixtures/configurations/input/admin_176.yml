@@ -1,0 +1,13 @@
+# TEST
+# 'template' in actions "edit" and "delete" should have the default template.
+# 'template' in action "custom" should have a custom template.
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            actions: ['edit', 'delete']
+            list:
+                actions:
+                    - { name: 'custom', template: 'admin/custom.html.twig' }

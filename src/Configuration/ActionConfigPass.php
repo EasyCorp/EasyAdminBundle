@@ -26,6 +26,8 @@ class ActionConfigPass implements ConfigPassInterface
         'icon' => null,
         // the value of the HTML 'target' attribute add to the links of the actions (e.g. '_blank')
         'target' => '_self',
+        // the value of the template. Will be set in the TemplateConfigPass, if value will stay null.
+        'template' => null,
     ];
 
     public function process(array $backendConfig)

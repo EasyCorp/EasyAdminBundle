@@ -224,7 +224,7 @@ other actions like ``list``, ``edit`` or ``delete`` will stay untouched):
 
     {% if item.stock < 10 %}
         {# this will trigger action's default behaviour, if "stock" is less than 10 #}
-        {% include '@EasyAdmin/default/action.html.twig' %}
+        {{ include('@EasyAdmin/default/action.html.twig') }}
     {% else %}
         {# don't show this action, if stock is more than 9 #}
     {% endif %}

@@ -42,7 +42,7 @@
             {{ form_errors(form) }}
 
             {% if easyadmin.field.help|default('') != '' %}
-                <span class="help-block"><i class="fa fa-info-circle"></i> {{ easyadmin.field.help|trans(domain = easyadmin.entity.translation_domain)|raw }}</span>
+                <span class="help-block"><i class="fa fa-info-circle"></i> {{ easyadmin.field.help|trans(domain = form.vars.translation_domain)|raw }}</span>
             {% endif %}
         </div>
     </div>

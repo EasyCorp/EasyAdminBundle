@@ -5,7 +5,7 @@
             <!-- generic actions displayed on buttons and links -->
             <trans-unit id="action.new">
                 <source>action.new</source>
-                <target>%entity_name% جديد</target>
+                <target>%entity_label% جديد</target>
             </trans-unit>
             <trans-unit id="action.show">
                 <source>action.show</source>

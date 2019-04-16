@@ -5,19 +5,19 @@
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
-                <target>Új %entity_name% létrehozása</target>
+                <target>Új %entity_label% létrehozása</target>
             </trans-unit>
             <trans-unit id="show.page_title">
                 <source>show.page_title</source>
-                <target>%entity_name% megtekintése - (#%entity_id%)</target>
+                <target>%entity_label% megtekintése - (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>
-                <target>%entity_name% szerkesztése - (#%entity_id%)</target>
+                <target>%entity_label% szerkesztése - (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="list.page_title">
                 <source>list.page_title</source>
-                <target>%entity_name%</target>
+                <target>%entity_label%</target>
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>

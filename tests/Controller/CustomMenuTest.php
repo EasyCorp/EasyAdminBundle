@@ -78,13 +78,13 @@ class CustomMenuTest extends AbstractTestCase
         $crawler = $this->getBackendHomepage();
 
         $this->assertSame(
-            'fa fa-shopping-basket',
+            'fa fa-fw fa-shopping-basket',
             $crawler->filter('.sidebar-menu li:contains("Products") i')->attr('class'),
             'First level menu item with custom icon'
         );
 
         $this->assertSame(
-            'fa fa-folder-open',
+            'fa fa-fw fa-folder-open',
             $crawler->filter('.sidebar-menu li:contains("Images") i')->attr('class'),
             'First level menu item with default icon'
         );
@@ -96,7 +96,7 @@ class CustomMenuTest extends AbstractTestCase
         );
 
         $this->assertSame(
-            'fa fa-th-list',
+            'fa fa-fw fa-th-list',
             $crawler->filter('.sidebar-menu .treeview-menu li:contains("List Products") i')->attr('class'),
             'Second level menu item with custom icon'
         );

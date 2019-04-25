@@ -36,7 +36,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
                 'The first tab of the form is displayed correctly.'
             );
             $this->assertContains(
-                'fa fa-pencil',
+                'fa fa-fw fa-pencil',
                 $crawler->filter('ul.nav-tabs li')->eq(0)->filter('i')->attr('class'),
                 'The first tab displays the configured icon.'
             );
@@ -76,7 +76,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
                 \trim($crawler->filter('form .field-group')->eq(1)->filter('fieldset legend')->text())
             );
             $this->assertSame(
-                'fa fa-pencil',
+                'fa fa-fw fa-pencil',
                 $crawler->filter('form .field-group')->eq(1)->filter('fieldset legend i')->attr('class')
             );
             $this->assertSame(
@@ -129,7 +129,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
                 \trim($crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section h2')->text())
             );
             $this->assertSame(
-                'fa fa-warning',
+                'fa fa-fw fa-warning',
                 $crawler->filter('form .field-group')->eq(2)->filter('fieldset .form-section i')->attr('class')
             );
             $this->assertSame(
@@ -180,7 +180,7 @@ class AdvancedFormLayoutTest extends AbstractTestCase
                 \trim($crawler->filter('form .field-group')->eq(5)->filter('fieldset legend')->text())
             );
             $this->assertSame(
-                'fa fa-paperclip',
+                'fa fa-fw fa-paperclip',
                 $crawler->filter('form .field-group')->eq(5)->filter('fieldset legend i')->attr('class')
             );
             $this->assertSame(

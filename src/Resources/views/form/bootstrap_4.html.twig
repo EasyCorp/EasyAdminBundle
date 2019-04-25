@@ -48,7 +48,7 @@
         <div class="field-collection-item-row">
             <div class="field-collection-item-action">
                 <a href="#" onclick="{{ remove_item_javascript|raw }}; return false;" class="text-danger" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
-                    <i class="fa fa-window-close"></i>
+                    <i class="fa fa-fw fa-window-close"></i>
                 </a>
             </div>
             <div class="field-collection-item-widget">
@@ -105,7 +105,7 @@
 
         <div class="text-right field-collection-item-action">
             <a href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
-                <i class="fa fa-remove"></i>
+                <i class="fa fa-fw fa-remove"></i>
                 {{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}
             </a>
         </div>
@@ -169,7 +169,7 @@
         <div class="form-group field-collection-action">
             <div class="form-widget">
                 <a href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-secondary btn-sm">
-                    <i class="fa fa-plus"></i>
+                    <i class="fa fa-fw fa-plus"></i>
                     <span class="btn-label">{{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}</span>
                 </a>
             </div>
@@ -251,7 +251,7 @@
                 'zip': 'fa-file-archive-o'
             } %}
             <a class="easyadmin-vich-file-name" href="{{ asset(download_uri) }}">
-                <i class="fa {{ extension_icons[file_extension] ?? 'fa-file-o' }}"></i>
+                <i class="fa fa-fw {{ extension_icons[file_extension] ?? 'fa-file-o' }}"></i>
                 {{ download_title }}
             </a>
         {% endif %}
@@ -266,7 +266,7 @@
         <div class="easyadmin-vich-file-actions">
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
-                <i class="fa fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
+                <i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
                 <span class="btn-label">{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}</span>
             </div>
 
@@ -313,7 +313,7 @@
         <div class="easyadmin-vich-image-actions">
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
-                <i class="fa fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
+                <i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
                 <span class="btn-label">{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}</span>
             </div>
 
@@ -376,7 +376,7 @@
                             <li class="nav-item">
                                 <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
                                     {% if tab_config.icon|default(false) %}
-                                        <i class="fa fa-{{ tab_config.icon }}"></i>
+                                        <i class="fa fa-fw fa-{{ tab_config.icon }}"></i>
                                     {% endif %}
                                     {{ tab_config['label']|trans(domain = _translation_domain) }}
                                     {% if tab_config.errors > 0 %}
@@ -418,7 +418,7 @@
                 {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
                     <legend class="{{ group_config.icon|default(false) ? 'with-icon' }}">
                         {% if group_config.icon|default(false) %}
-                            <i class="fa fa-{{ group_config.icon }}"></i>
+                            <i class="fa fa-fw fa-{{ group_config.icon }}"></i>
                         {% endif %}
                         {{ group_config.label|trans(domain = _translation_domain)|raw }}
                     </legend>
@@ -470,7 +470,7 @@
     {% set _translation_domain = easyadmin.entity.translation_domain %}
     <div class="form-section {{ easyadmin.field.icon|default(false) == false and easyadmin.field.label|default(false) == false ? 'form-section-empty' }} {{ easyadmin.field.css_class|default('') }}">
         <h2>
-            {% if easyadmin.field.icon|default(false) %}<i class="fa fa-{{ easyadmin.field.icon }}"></i>{% endif %}
+            {% if easyadmin.field.icon|default(false) %}<i class="fa fa-fw fa-{{ easyadmin.field.icon }}"></i>{% endif %}
             <span>{% if easyadmin.field.label|default(false) %}{{ easyadmin.field.label|default('')|trans(domain = _translation_domain)|raw }}{% endif %}</span>
         </h2>
 
@@ -489,7 +489,7 @@
     <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(_trans_parameters, _translation_domain) }}</button>
     {% for action in batch_actions %}
         <button type="submit" class="btn {{ action.css_class|default('btn-secondary') }}" title="{{ action.title|default('') is empty ? '' : action.title|trans(_trans_parameters) }}" name="{{ form.name.vars.full_name }}" value="{{ action.name }}">
-            {%- if action.icon %}<i class="fa fa-{{ action.icon }}"></i> {% endif -%}
+            {%- if action.icon %}<i class="fa fa-fw fa-{{ action.icon }}"></i> {% endif -%}
             {%- if action.label is defined and not action.label is empty -%}
                 {{ action.label|trans }}
             {%- endif -%}

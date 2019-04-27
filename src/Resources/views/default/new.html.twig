@@ -10,10 +10,10 @@
 {% block body_class 'new new-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
-{% filter spaceless %}
-    {% set _default_title = 'new.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
-    {{ _entity_config.new.title is defined ? _entity_config.new.title|trans(_trans_parameters) : _default_title }}
-{% endfilter %}
+    {% apply spaceless %}
+        {% set _default_title = 'new.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
+        {{ _entity_config.new.title is defined ? _entity_config.new.title|trans(_trans_parameters) : _default_title }}
+    {% endapply %}
 {% endblock %}
 
 {% block content_footer_wrapper '' %}

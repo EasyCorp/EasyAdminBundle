@@ -185,7 +185,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
         $this->assertSame('ID', \trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
-        $this->assertSame('fa fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+        $this->assertSame('fa fa-fw fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
     public function testListViewColumnSortingResetsPaginator()
@@ -570,7 +570,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
         $this->assertSame('ID', \trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
-        $this->assertSame('fa fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+        $this->assertSame('fa fa-fw fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
     public function testSearchViewColumnSortingResetsPaginator()

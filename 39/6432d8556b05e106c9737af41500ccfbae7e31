@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-04-25T17:43:13Z
+
+@fancyweb thanks for fixing this issue! Have you double checked that this change doesn't affect to non-SVG images? Thanks.
+
+---------------------------------------------------------------------------
+
+by fancyweb at 2019-04-28T08:49:05Z
+
+When I made this patch, I checked that the behavior still worked as expected for PNG files in both Firefox and Chrome.

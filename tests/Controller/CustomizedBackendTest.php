@@ -77,7 +77,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertSame('New Category', \trim($crawler->filter('.global-actions a.action-new')->text()));
         $this->assertSame('custom_class_new action-new', $crawler->filter('.global-actions a.action-new')->attr('class'));
-        $this->assertSame('fa fa-plus-circle', $crawler->filter('.global-actions a.action-new i')->attr('class'));
+        $this->assertSame('fa fa-fw fa-plus-circle', $crawler->filter('.global-actions a.action-new i')->attr('class'));
         $this->assertStringStartsWith('/admin/?action=new&entity=Category&view=list&sortField=id&sortDirection=DESC&page=1', $crawler->filter('.global-actions a.action-new')->attr('href'));
     }
 
@@ -124,7 +124,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
         $this->assertSame('ID', \trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
-        $this->assertSame('fa fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+        $this->assertSame('fa fa-fw fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
     public function testListViewTableContents()
@@ -522,7 +522,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
         $this->assertSame('Label', \trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by "Label" column (which is the "name" property).');
-        $this->assertSame('fa fa-arrow-up', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+        $this->assertSame('fa fa-fw fa-arrow-up', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
     }
 
     public function testSearchViewTableContents()

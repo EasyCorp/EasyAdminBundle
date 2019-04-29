@@ -55,7 +55,11 @@
             </trans-unit>
             <trans-unit id="paginator.counter">
                 <source>paginator.counter</source>
-                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>]]></target>
+                <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> iš <strong>%results%</strong>]]></target>
+            </trans-unit>
+            <trans-unit id="paginator.results">
+                <source>paginator.results</source>
+                <target><![CDATA[{0} Nėra rezultatų|{1} <strong>1</strong> rezultatas|]1,Inf] <strong>%count%</strong> rezultatai]]></target>
             </trans-unit>
 
             <!-- labels -->
@@ -177,15 +181,15 @@
             <!-- Login page -->
             <trans-unit id="login.username">
                 <source>login.username</source>
-                <target>Username</target>
+                <target>Vartotojo vardas</target>
             </trans-unit>
             <trans-unit id="login.password">
                 <source>login.password</source>
-                <target>Password</target>
+                <target>Slaptažodis</target>
             </trans-unit>
             <trans-unit id="login.sign_in">
                 <source>login.sign_in</source>
-                <target>Sign in</target>
+                <target>Prisijungti</target>
             </trans-unit>
         </body>
     </file>

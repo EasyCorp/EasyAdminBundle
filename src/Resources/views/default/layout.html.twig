@@ -11,15 +11,15 @@
 
         {% block head_stylesheets %}
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
-
-            <style>
-                :root { --color-primary: {{ easyadmin_config('design.brand_color') }}; }
-            </style>
         {% endblock %}
 
         {% for css_asset in easyadmin_config('design.assets.css') %}
             <link rel="stylesheet" href="{{ asset(css_asset) }}">
         {% endfor %}
+
+        <style>
+            :root { --color-primary: {{ easyadmin_config('design.brand_color') }}; }
+        </style>
 
         {% block head_favicon %}
             {% set favicon = easyadmin_config('design.assets.favicon') %}
@@ -51,7 +51,7 @@
                 {% block header %}
                     <nav class="navbar" role="navigation">
                         <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
-                            <i class="fa fa-bars"></i>
+                            <i class="fa fa-fw fa-bars"></i>
                         </button>
 
                         <div id="header-logo">
@@ -98,7 +98,7 @@
                             {% if easyadmin_config('user.display_avatar') %}
                                 {% set _avatar_image_path = easyadmin_read_property(app.user, easyadmin_config('user.avatar_property_path')) %}
                                 {% if null == _avatar_image_path %}
-                                    <i class="fa {{ app.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
+                                    <i class="fa fa-fw {{ app.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
                                 {% else %}
                                     <img class="user-avatar" src="{{ _avatar_image_path }}" />
                                 {% endif %}

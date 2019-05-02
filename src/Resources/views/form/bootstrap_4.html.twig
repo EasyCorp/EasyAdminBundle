@@ -375,15 +375,15 @@
                         {% for tab_name, tab_config in easyadmin_form_tabs %}
                             <li class="nav-item">
                                 <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
-                                    {% if tab_config.icon|default(false) %}
+                                    {%- if tab_config.icon|default(false) -%}
                                         <i class="fa fa-fw fa-{{ tab_config.icon }}"></i>
-                                    {% endif %}
+                                    {%- endif -%}
                                     {{ tab_config['label']|trans(domain = _translation_domain) }}
-                                    {% if tab_config.errors > 0 %}
+                                    {%- if tab_config.errors > 0 -%}
                                         <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'EasyAdminBundle') }}">
-                                            {{ tab_config.errors }}
+                                            {{- tab_config.errors -}}
                                         </span>
-                                    {% endif %}
+                                    {%- endif -%}
                                 </a>
                             </li>
                         {% endfor %}

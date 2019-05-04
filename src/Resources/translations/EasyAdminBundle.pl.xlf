@@ -155,6 +155,10 @@
                 <source>form.are_you_sure</source>
                 <target>Nie zapisano zmian wprowadzonych w tym formularzu.</target>
             </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>Wystąpił jeden błąd|Ilość błędów: %count%</target>
+            </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} pozostała jedna pozycja nie wyświetlona na tym listingu|{2,3,4} pozostały %count% pozycje nie wyświetlone na tym listingu|[5,21] pozostało %count% pozycji nie wyświetlonych na tym listingu|[22,Inf[ liczba pozycji nie wyświetlonych na tym listingu: %count%]]></target>

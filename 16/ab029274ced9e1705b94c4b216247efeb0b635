@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-05-04T08:27:43Z
+
+I'm going to merge this ... but please, no more changes related to white spaces unless they fix a real issue. Sometimes, when using `<a href="..."> ... </a>` you may have to control white spaces or you'll see some minor issue with underlines.
+
+But most of the times, white spaces don't have any effect on the design displayed to end users. That's why we don't care about the generated HTML formatting. Thanks for understanding!

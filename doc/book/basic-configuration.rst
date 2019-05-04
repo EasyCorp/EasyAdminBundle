@@ -75,6 +75,22 @@ how to protect the backend URLs.
 When accessing a protected backend, EasyAdmin displays the name of user who is
 logged in the application. Otherwise it displays *"Anonymous User"*.
 
+In addition if you activate a logout route in your SecurityController, EasyAdmin displays a link to logout inside
+the base template under the Admin section:
+
+.. code-block:: yaml
+
+    # config/packages/security.yaml
+    #...
+    firewalls:
+        main:
+            anonymous: true
+            logout: true
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+    #...
+
 Configuring the Logged In User Information
 ------------------------------------------
 

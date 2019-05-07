@@ -1,0 +1,53 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2019-04-25T11:22:33Z
+
+We should wait for `apply` tag instead.
+https://github.com/twigphp/Twig/pull/2977
+
+---------------------------------------------------------------------------
+
+by Dev-Int at 2019-04-25T12:22:53Z
+
+I think it was since `twig/twig:^2.9` ?
+I retry with `apply` tag
+
+> edit:
+`Unexpected "apply" tag (expecting closing tag for the "block" tag defined near line xx)`
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2019-04-27T09:05:48Z
+
+I agree with @yceruto about using the `apply` tag instead. This will also require to update the version constraint to `^2.9` in the `composer.json` file (merging should be delayed until there is a stable tag for that version in the Twig repository though).
+
+---------------------------------------------------------------------------
+
+by Dev-Int at 2019-04-27T12:40:10Z
+
+What a pity for my first contribution....
+Thanks for your help @xabbuh , @yceruto .
+I close this PR until @xabbuh suggest:
+
+> I agree with @yceruto about using the `apply` tag instead. This will also require to update the version constraint to `^2.9` in the `composer.json` file (merging should be delayed until there is a stable tag for that version in the Twig repository though).
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2019-04-27T13:38:04Z
+
+@Dev-Int You can reopen your PR nonetheless and already make these changes. My comment about the merge was more directed to us maintainers to be careful when to press the button. :) I am sorry it that was confusing.
+
+---------------------------------------------------------------------------
+
+by Dev-Int at 2019-04-27T15:18:25Z
+
+Ok @xabbuh . My English is not always on top.
+I make the changes... and wait :p
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-05-01T14:04:44Z
+
+Twig 2.9 has been released.
+I've rebuilt the Travis jobs.
+We might need a patch for `1.x` as well.

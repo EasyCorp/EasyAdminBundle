@@ -5,19 +5,19 @@
             <!-- page titles -->
             <trans-unit id="new.page_title">
                 <source>new.page_title</source>
-                <target>Maak nieuw(e) %entity_name%</target>
+                <target>Maak nieuw(e) %entity_label%</target>
             </trans-unit>
             <trans-unit id="show.page_title">
                 <source>show.page_title</source>
-                <target>%entity_name% (#%entity_id%)</target>
+                <target>%entity_label% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>
-                <target>%entity_name% (#%entity_id%)</target>
+                <target>%entity_label% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="list.page_title">
                 <source>list.page_title</source>
-                <target>%entity_name%</target>
+                <target>%entity_label%</target>
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>

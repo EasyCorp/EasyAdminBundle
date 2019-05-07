@@ -402,25 +402,25 @@
 {% endblock %}
 
 {% block vich_file_widget %}
-{% spaceless %}
-    <div class="easyadmin-vich-file">
-        {% if download_uri|default('') is not empty %}
-            {% set download_title = download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') %}
-            <a href="{{ asset(download_uri) }}">{{ download_title }}</a>
-        {% endif %}
-
-        <div class="row">
-            {% if form.delete is defined %}
-            <div class="col-sm-3 col-md-2">
-                {{ form_row(form.delete, { label: 'form.label.delete' }) }}
-            </div>
+    {% apply spaceless %}
+        <div class="easyadmin-vich-file">
+            {% if download_uri|default('') is not empty %}
+                {% set download_title = download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') %}
+                <a href="{{ asset(download_uri) }}">{{ download_title }}</a>
             {% endif %}
-            <div class="{{ form.delete is defined ? 'col-sm-9 col-md-10' : 'col-sm-12' }}">
-                {{ form_widget(form.file) }}
+
+            <div class="row">
+                {% if form.delete is defined %}
+                <div class="col-sm-3 col-md-2">
+                    {{ form_row(form.delete, { label: 'form.label.delete' }) }}
+                </div>
+                {% endif %}
+                <div class="{{ form.delete is defined ? 'col-sm-9 col-md-10' : 'col-sm-12' }}">
+                    {{ form_widget(form.file) }}
+                </div>
             </div>
         </div>
-    </div>
-{% endspaceless %}
+    {% endapply %}
 {% endblock %}
 
 {% block vich_image_row %}
@@ -429,32 +429,32 @@
 {% endblock %}
 
 {% block vich_image_widget %}
-{% spaceless %}
-    <div class="easyadmin-vich-image">
-        {{ form_widget(form.file) }}
-        {% if form.delete is defined %}
-            {{ form_row(form.delete, { label: 'form.label.delete' }) }}
-        {% endif %}
-
-        {% if image_uri|default('') is not empty %}
-            {% if download_uri|default('') is empty %}
-                <div class="easyadmin-thumbnail">
-                    <img style="cursor: initial" src="{{ asset(image_uri) }}">
-                </div>
-            {% else %}
-                {% set _lightbox_id = 'easyadmin-lightbox-' ~ id %}
-
-                <a href="#" class="easyadmin-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
-                    <img src="{{ asset(download_uri) }}">
-                </a>
-
-                <div id="{{ _lightbox_id }}" class="easyadmin-lightbox">
-                    <img src="{{ asset(download_uri) }}">
-                </div>
+    {% apply spaceless %}
+        <div class="easyadmin-vich-image">
+            {{ form_widget(form.file) }}
+            {% if form.delete is defined %}
+                {{ form_row(form.delete, { label: 'form.label.delete' }) }}
             {% endif %}
-        {% endif %}
-    </div>
-{% endspaceless %}
+
+            {% if image_uri|default('') is not empty %}
+                {% if download_uri|default('') is empty %}
+                    <div class="easyadmin-thumbnail">
+                        <img style="cursor: initial" src="{{ asset(image_uri) }}">
+                    </div>
+                {% else %}
+                    {% set _lightbox_id = 'easyadmin-lightbox-' ~ id %}
+
+                    <a href="#" class="easyadmin-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
+                        <img src="{{ asset(download_uri) }}">
+                    </a>
+
+                    <div id="{{ _lightbox_id }}" class="easyadmin-lightbox">
+                        <img src="{{ asset(download_uri) }}">
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endapply %}
 {% endblock %}
 
 {% block easyadmin_rest %}

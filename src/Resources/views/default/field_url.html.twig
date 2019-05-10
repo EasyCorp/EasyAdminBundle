@@ -1,5 +1,17 @@
 {% if view == 'show' %}
-    <a target="_blank" href="{{ value }}">{{ value }}</a>
+    <a
+        target="_blank"
+        href="{{ value }}"
+    >
+        {{- field_options.type_options.label|default(value) -}}
+    </a>
 {% else %}
-    <a target="_blank" href="{{ value }}">{{ value|replace({ 'https://': '', 'http://': '' })|easyadmin_truncate }}</a>
+    <a
+        target="_blank"
+        href="{{ value }}"
+    >
+        {{- field_options.type_options.label|default(
+            value|replace({ 'https://': '', 'http://': '' })|easyadmin_truncate
+        ) -}}
+    </a>
 {% endif %}

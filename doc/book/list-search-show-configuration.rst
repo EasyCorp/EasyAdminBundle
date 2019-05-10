@@ -631,6 +631,22 @@ new browser tab:
                         # ...
         # ...
 
+There is possibility to define `label` type option which will result in
+displaying links with proper label.
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                class: App\Entity\User
+                list:
+                    fields:
+                        - { property: 'blogUrl', type: 'url', type_options: { label: 'URL' } }
+                        # ...
+        # ...
+
 Telephone Data Type
 ~~~~~~~~~~~~~~~~~~~
 

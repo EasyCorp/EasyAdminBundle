@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class TypeOptionsTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'type_options']);
-    }
+    protected static $options = ['environment' => 'type_options'];
 
     public function testNewViewTypeOptions()
     {

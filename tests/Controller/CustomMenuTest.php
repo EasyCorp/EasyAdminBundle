@@ -6,23 +6,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomMenuTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'custom_menu']);
-    }
+    protected static $options = ['environment' => 'custom_menu'];
 
     public function testCustomBackendHomepage()
     {
-        $this->client->request('GET', '/admin/');
+        static::$client->request('GET', '/admin/');
 
         $this->assertSame(
             '/admin/?action=list&entity=Category&menuIndex=0&submenuIndex=3',
-            $this->client->getResponse()->headers->get('location')
+            static::$client->getResponse()->headers->get('location')
         );
 
-        $crawler = $this->client->followRedirect();
+        $crawler = static::$client->followRedirect();
 
         $this->assertSame(
             'Products',
@@ -38,7 +33,7 @@ class CustomMenuTest extends AbstractTestCase
     public function testBackendHomepageConfig()
     {
         $this->getBackendHomepage();
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertArraySubset([
             'route' => 'easyadmin',
@@ -49,7 +44,7 @@ class CustomMenuTest extends AbstractTestCase
     public function testDefaultMenuItem()
     {
         $this->getBackendHomepage();
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertArraySubset([
             'label' => 'Categories',
@@ -233,7 +228,7 @@ class CustomMenuTest extends AbstractTestCase
         $expectedTypesSubMenu = ['entity', 'entity', 'divider', 'entity', 'link'];
 
         $this->getBackendHomepage();
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
         $menuConfig = $backendConfig['design']['menu'];
 
         foreach ($menuConfig as $i => $itemConfig) {
@@ -265,11 +260,11 @@ class CustomMenuTest extends AbstractTestCase
         // 1. visit the homepage and click on the menu entry with custom parameters
         $crawler = $this->getBackendHomepage();
         $link = $crawler->filter('.sidebar-menu li:contains("Purchases") a')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 2. click on the 'Edit' link of the first item
         $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should contain the custom query string param
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');

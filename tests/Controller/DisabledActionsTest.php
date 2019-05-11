@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class DisabledActionsTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'disabled_actions']);
-    }
+    protected static $options = ['environment' => 'disabled_actions'];
 
     public function testAssociationLinksInListView()
     {
@@ -46,7 +41,7 @@ class DisabledActionsTest extends AbstractTestCase
 
         $this->assertContains(
             'The requested &quot;show&quot; action is not allowed for the &quot;User&quot; entity.',
-            $this->client->getResponse()->getContent()
+            static::$client->getResponse()->getContent()
         );
     }
 
@@ -67,9 +62,9 @@ class DisabledActionsTest extends AbstractTestCase
         $form = $crawler->selectButton('Save changes')->form([
             \strtolower($entityName).'[name]' => 'New Category Name',
         ]);
-        $this->client->submit($form);
+        static::$client->submit($form);
 
-        $this->assertContains($expectedRedirectionLocation, $this->client->getResponse()->headers->get('location'));
+        $this->assertContains($expectedRedirectionLocation, static::$client->getResponse()->headers->get('location'));
     }
 
     public function provideRedirections()

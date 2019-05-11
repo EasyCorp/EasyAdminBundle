@@ -14,7 +14,8 @@ use Symfony\Component\DomCrawler\Crawler;
 abstract class AbstractTestCase extends WebTestCase
 {
     /** @var Client */
-    protected $client;
+    protected static $client;
+    protected static $options = [];
 
     protected function setUp()
     {
@@ -24,7 +25,7 @@ abstract class AbstractTestCase extends WebTestCase
 
     protected function initClient(array $options = [])
     {
-        $this->client = static::createClient($options);
+        static::$client = static::createClient($options + static::$options);
     }
 
     /**
@@ -52,7 +53,7 @@ abstract class AbstractTestCase extends WebTestCase
      */
     protected function getBackendPage(array $queryParameters)
     {
-        return $this->client->request('GET', '/admin/?'.\http_build_query($queryParameters, '', '&'));
+        return static::$client->request('GET', '/admin/?'.\http_build_query($queryParameters, '', '&'));
     }
 
     /**

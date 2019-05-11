@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class DqlFilterTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'dql_filter']);
-    }
+    protected static $options = ['environment' => 'dql_filter'];
 
     public function testListDqlFilter()
     {

@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class ActionOverrideTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'action_override']);
-    }
+    protected static $options = ['environment' => 'action_override'];
 
     public function testListViewActions()
     {

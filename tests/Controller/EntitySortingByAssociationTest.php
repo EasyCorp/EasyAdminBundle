@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class EntitySortingByAssociationTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'entity_sorting_by_association']);
-    }
+    protected static $options = ['environment' => 'entity_sorting_by_association'];
 
     public function testListViewSorting()
     {

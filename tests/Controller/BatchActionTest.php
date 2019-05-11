@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class BatchActionTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'batch_action']);
-    }
+    protected static $options = ['environment' => 'batch_action'];
 
     public function testBatchActionsForm()
     {

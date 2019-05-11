@@ -7,21 +7,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class DefaultBackendTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'default_backend']);
-    }
+    protected static $options = ['environment' => 'default_backend'];
 
     public function testBackendHomepageRedirection()
     {
-        $this->client->request('GET', '/admin/');
+        static::$client->request('GET', '/admin/');
 
-        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(302, static::$client->getResponse()->getStatusCode());
         $this->assertSame(
             '/admin/?action=list&entity=Category',
-            $this->client->getResponse()->getTargetUrl(),
+            static::$client->getResponse()->getTargetUrl(),
             'The backend homepage redirects to the "list" view of the first configured entity ("Category").'
         );
     }
@@ -37,7 +32,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
         $this->assertFalse($backendConfig['design']['rtl'], 'RTL is disabled by default.');
 
         $this->assertNotContains('bootstrap-rtl.min.css', $crawler->filter('head')->text());
@@ -105,7 +100,7 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $this->getBackendHomepage();
 
-        $this->assertContains('--color-primary: hsl(230, 55%, 60%);', $this->client->getResponse()->getContent(), 'The HTML content includes the value of the default brand color.');
+        $this->assertContains('--color-primary: hsl(230, 55%, 60%);', static::$client->getResponse()->getContent(), 'The HTML content includes the value of the default brand color.');
     }
 
     public function testListViewTitle()
@@ -193,14 +188,14 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         // Click on the 'Next' link in the paginator
-        $crawler = $this->client->click($crawler->selectLink('Next')->link());
-        $this->assertSame('id', $this->client->getRequest()->query->get('sortField'));
-        $this->assertSame(2, $this->client->getRequest()->query->getInt('page'));
+        $crawler = static::$client->click($crawler->selectLink('Next')->link());
+        $this->assertSame('id', static::$client->getRequest()->query->get('sortField'));
+        $this->assertSame(2, static::$client->getRequest()->query->getInt('page'));
 
         // 2. Click on the 'Name' table column to reorder the listing
-        $this->client->click($crawler->filter('thead')->selectLink('Name')->link());
-        $this->assertSame('name', $this->client->getRequest()->query->get('sortField'));
-        $this->assertSame(1, $this->client->getRequest()->query->getInt('page'), 'When the listing contents are reordered, the pagination is reset to the first page.');
+        static::$client->click($crawler->filter('thead')->selectLink('Name')->link());
+        $this->assertSame('name', static::$client->getRequest()->query->get('sortField'));
+        $this->assertSame(1, static::$client->getRequest()->query->getInt('page'), 'When the listing contents are reordered, the pagination is reset to the first page.');
     }
 
     public function testListViewTableContents()
@@ -306,7 +301,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         // 2. click on the 'Edit' link of the first item
         $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
@@ -392,7 +387,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         // 2. click on the 'Edit' link of the first item
         $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
@@ -405,13 +400,13 @@ class DefaultBackendTest extends AbstractTestCase
     public function testEditViewEntityModification()
     {
         $crawler = $this->requestEditView();
-        $this->client->followRedirects();
+        static::$client->followRedirects();
 
         $categoryName = \sprintf('Modified Category %s', \md5(\mt_rand()));
         $form = $crawler->selectButton('Save changes')->form([
             'category[name]' => $categoryName,
         ]);
-        $crawler = $this->client->submit($form);
+        $crawler = static::$client->submit($form);
 
         $this->assertContains(
             $categoryName,
@@ -423,12 +418,12 @@ class DefaultBackendTest extends AbstractTestCase
     public function testEntityModificationViaAjax()
     {
         /* @var EntityManager */
-        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        $em = static::$client->getContainer()->get('doctrine')->getManager();
         $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertTrue($product->isEnabled(), 'Initially the product is enabled.');
 
         $queryParameters = ['action' => 'edit', 'view' => 'list', 'entity' => 'Product', 'id' => '1', 'property' => 'enabled', 'newValue' => 'false'];
-        $this->client->request('GET', '/admin/?'.\http_build_query($queryParameters), [], [], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        static::$client->request('GET', '/admin/?'.\http_build_query($queryParameters), [], [], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
         $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertFalse($product->isEnabled(), 'After editing it via Ajax, the product is not enabled.');
@@ -437,10 +432,10 @@ class DefaultBackendTest extends AbstractTestCase
     public function testWrongEntityModificationViaAjax()
     {
         $queryParameters = ['action' => 'edit', 'view' => 'list', 'entity' => 'Product', 'id' => '1', 'property' => 'this_property_does_not_exist', 'newValue' => 'false'];
-        $this->client->request('GET', '/admin/?'.\http_build_query($queryParameters), [], [], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        static::$client->request('GET', '/admin/?'.\http_build_query($queryParameters), [], [], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
-        $this->assertSame(500, $this->client->getResponse()->getStatusCode(), 'Trying to modify a non-existent property via Ajax returns a 500 error');
-        $this->assertContains('The type of the &quot;this_property_does_not_exist&quot; property is not &quot;toggle&quot;', $this->client->getResponse()->getContent());
+        $this->assertSame(500, static::$client->getResponse()->getStatusCode(), 'Trying to modify a non-existent property via Ajax returns a 500 error');
+        $this->assertContains('The type of the &quot;this_property_does_not_exist&quot; property is not &quot;toggle&quot;', static::$client->getResponse()->getContent());
     }
 
     public function testNewViewTitle()
@@ -508,7 +503,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         // 2. click on the 'New' link to browse the 'new' view
         $link = $crawler->filter('.global-actions a:contains("Add Category")')->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
@@ -521,13 +516,13 @@ class DefaultBackendTest extends AbstractTestCase
     public function testNewViewEntityCreation()
     {
         $crawler = $this->requestNewView();
-        $this->client->followRedirects();
+        static::$client->followRedirects();
 
         $categoryName = \sprintf('The New Category %s', \md5(\mt_rand()));
         $form = $crawler->selectButton('Save changes')->form([
             'category[name]' => $categoryName,
         ]);
-        $crawler = $this->client->submit($form);
+        $crawler = static::$client->submit($form);
 
         $this->assertContains($categoryName, $crawler->filter('#main table tr')->eq(1)->text(), 'The newly created category is displayed in the first data row of the "list" table.');
     }
@@ -549,8 +544,8 @@ class DefaultBackendTest extends AbstractTestCase
                 'query' => $emptyQuery,
             ]);
 
-            $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-            $this->assertSame('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC', $this->client->getResponse()->headers->get('location'), 'Empty queries redirect back to the list view.');
+            $this->assertSame(302, static::$client->getResponse()->getStatusCode());
+            $this->assertSame('/admin/?action=list&entity=Category&sortField=id&sortDirection=DESC', static::$client->getResponse()->headers->get('location'), 'Empty queries redirect back to the list view.');
         }
     }
 
@@ -578,14 +573,14 @@ class DefaultBackendTest extends AbstractTestCase
         $crawler = $this->requestSearchView();
 
         // Click on the 'Next' link in the paginator
-        $crawler = $this->client->click($crawler->selectLink('Next')->link());
-        $this->assertSame('id', $this->client->getRequest()->query->get('sortField'));
-        $this->assertSame(2, $this->client->getRequest()->query->getInt('page'));
+        $crawler = static::$client->click($crawler->selectLink('Next')->link());
+        $this->assertSame('id', static::$client->getRequest()->query->get('sortField'));
+        $this->assertSame(2, static::$client->getRequest()->query->getInt('page'));
 
         // 2. Click on the 'Name' table column to reorder the search results
-        $this->client->click($crawler->filter('thead')->selectLink('Name')->link());
-        $this->assertSame('name', $this->client->getRequest()->query->get('sortField'));
-        $this->assertSame(1, $this->client->getRequest()->query->getInt('page'), 'When the search results are reordered, the pagination is reset to the first page.');
+        static::$client->click($crawler->filter('thead')->selectLink('Name')->link());
+        $this->assertSame('name', static::$client->getRequest()->query->get('sortField'));
+        $this->assertSame(1, static::$client->getRequest()->query->getInt('page'), 'When the search results are reordered, the pagination is reset to the first page.');
     }
 
     public function testSearchViewTableContents()
@@ -631,7 +626,7 @@ class DefaultBackendTest extends AbstractTestCase
 
         // 2. click on the 'Edit' action of the first result
         $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to listing")')->attr('href');
@@ -648,14 +643,14 @@ class DefaultBackendTest extends AbstractTestCase
         }
 
         /* @var EntityManager */
-        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        $em = static::$client->getContainer()->get('doctrine')->getManager();
         $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertNotNull($product, 'Initially the product exists.');
 
         $crawler = $this->requestEditView('Product', '1');
-        $this->client->followRedirects();
+        static::$client->followRedirects();
         $form = $crawler->filter('#delete_form_submit')->form();
-        $this->client->submit($form);
+        static::$client->submit($form);
 
         $product = $em->getRepository('AppTestBundle\Entity\FunctionalTests\Product')->find(1);
         $this->assertNull($product, 'After removing it via the delete form, the product no longer exists.');
@@ -665,20 +660,20 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $queryParameters = ['action' => 'delete', 'entity' => 'Product', 'id' => '1'];
         // Sending a 'DELETE' HTTP request is not enough (the delete form includes a CSRF token)
-        $this->client->request('DELETE', '/admin/?'.\http_build_query($queryParameters));
+        static::$client->request('DELETE', '/admin/?'.\http_build_query($queryParameters));
 
-        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', $this->client->getResponse()->getContent());
+        $this->assertSame(302, static::$client->getResponse()->getStatusCode());
+        $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', static::$client->getResponse()->getContent());
     }
 
     public function testEntityDeletionRequiresDeleteHttpMethod()
     {
         $queryParameters = ['action' => 'delete', 'entity' => 'Product', 'id' => '1'];
         // 'POST' HTTP method is wrong for deleting entities ('DELETE' method is required)
-        $this->client->request('POST', '/admin/?'.\http_build_query($queryParameters));
+        static::$client->request('POST', '/admin/?'.\http_build_query($queryParameters));
 
-        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', $this->client->getResponse()->getContent());
+        $this->assertSame(302, static::$client->getResponse()->getStatusCode());
+        $this->assertContains('Redirecting to /admin/?action=list&amp;entity=Product', static::$client->getResponse()->getContent());
     }
 
     public function testEntityDeletionForm()

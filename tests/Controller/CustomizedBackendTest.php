@@ -6,20 +6,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomizedBackendTest extends AbstractTestCase
 {
-    /**
-     * @group legacy
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'customized_backend']);
-    }
+    protected static $options = ['environment' => 'customized_backend'];
 
     public function testUserMenuForLoggedUsers()
     {
-        $this->client->followRedirects();
-        $crawler = $this->client->request('GET', '/admin', [], [], [
+        static::$client->followRedirects();
+        $crawler = static::$client->request('GET', '/admin', [], [], [
             'PHP_AUTH_USER' => 'admin',
             'PHP_AUTH_PW' => 'pa$$word',
         ]);
@@ -237,7 +229,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         // 2. click on the 'Show' link of the first item
         $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to Category listing")')->attr('href');
@@ -268,11 +260,11 @@ class CustomizedBackendTest extends AbstractTestCase
 
         // 2. click on the 'Show' link of the first item
         $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. click on the 'Edit' button
         $link = $crawler->filter('.form-actions a:contains("Modify Category")')->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 4. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('.form-actions a:contains("Return to listing")')->attr('href');
@@ -358,7 +350,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         // 2. click on the 'Edit' link of the first item
         $link = $crawler->filter('td.actions a:contains("Edit")')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('.form-actions a:contains("Return to listing")')->attr('href');
@@ -450,7 +442,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         // 2. click on the 'New' link to browse the 'new' view
         $link = $crawler->filter('.global-actions a:contains("New Category")')->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should point to the exact same previous 'list' page
         $refererUrl = $crawler->filter('.form-actions a:contains("Return to listing")')->attr('href');
@@ -462,21 +454,21 @@ class CustomizedBackendTest extends AbstractTestCase
 
     public function testNewCustomFormOptions()
     {
-        $this->client->enableProfiler();
+        static::$client->enableProfiler();
 
         $crawler = $this->requestNewView();
-        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(200, static::$client->getResponse()->getStatusCode());
 
         // test 'novalidate' attribute
         $this->assertSame('novalidate', $crawler->filter('#new-category-form')->first()->attr('novalidate'));
 
         $form = $crawler->selectButton('Save changes')->form();
         $form->remove('form[name]');
-        $this->client->submit($form);
-        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        static::$client->submit($form);
+        $this->assertSame(200, static::$client->getResponse()->getStatusCode());
 
         // test validation groups
-        $profile = $this->client->getProfile();
+        $profile = static::$client->getProfile();
         $formData = $profile->getCollector('form')->getData();
         $categoryFields = $formData['forms']['category']['children'];
         $this->assertSame($categoryFields['name']['errors'][0]['message'], 'This value should not be null.');
@@ -570,7 +562,7 @@ class CustomizedBackendTest extends AbstractTestCase
 
         // 2. click on the 'Show' action of the first result
         $link = $crawler->filter('td.actions a:contains("Show")')->eq(0)->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         // 3. the 'referer' parameter should point to the previous specific 'search' view page
         $refererUrl = $crawler->filter('.form-actions a:contains("Back to Category listing")')->attr('href');

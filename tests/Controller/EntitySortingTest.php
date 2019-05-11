@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class EntitySortingTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        // parent::setUp();
-
-        $this->initClient(['environment' => 'entity_sorting']);
-    }
+    protected static $options = ['environment' => 'entity_sorting'];
 
     public function testMainMenuSorting()
     {
@@ -26,7 +21,7 @@ class EntitySortingTest extends AbstractTestCase
 
         // click on any menu item to sort contents differently
         $link = $crawler->filter('.sidebar-menu a:contains("Product 2")')->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
 
         $this->assertNotContains('sorted', $crawler->filter('th:contains("Name")')->attr('class'));
         $this->assertContains('sorted', $crawler->filter('th:contains("Price")')->attr('class'));
@@ -43,7 +38,7 @@ class EntitySortingTest extends AbstractTestCase
 
         // click on any other table column to sort contents differently
         $link = $crawler->filter('th:contains("Price") a')->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
         $this->assertNotContains('sorted', $crawler->filter('th:contains("Name")')->attr('class'));
         $this->assertContains('sorted', $crawler->filter('th:contains("Price")')->attr('class'));
         $this->assertContains('fa-arrow-down', $crawler->filter('th:contains("Price") i')->attr('class'));
@@ -59,7 +54,7 @@ class EntitySortingTest extends AbstractTestCase
 
         // click on any other table column to sort contents differently
         $link = $crawler->filter('th:contains("Name") a')->link();
-        $crawler = $this->client->click($link);
+        $crawler = static::$client->click($link);
         $this->assertNotContains('sorted', $crawler->filter('th:contains("Created at")')->attr('class'));
         $this->assertContains('sorted', $crawler->filter('th:contains("Name")')->attr('class'));
         $this->assertContains('fa-arrow-down', $crawler->filter('th:contains("Name") i')->attr('class'));

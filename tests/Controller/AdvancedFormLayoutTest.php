@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class AdvancedFormLayoutTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'advanced_form_layout']);
-    }
+    protected static $options = ['environment' => 'advanced_form_layout'];
 
     /**
      * @group legacy

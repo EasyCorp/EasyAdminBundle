@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -129,7 +130,11 @@ trait AdminControllerTrait
         $subject = $arguments['paginator'] ?? $arguments['entity'];
         $event = new GenericEvent($subject, $arguments);
 
-        $this->get('event_dispatcher')->dispatch($eventName, $event);
+        if (Kernel::VERSION_ID >= 40300) {
+            $this->get('event_dispatcher')->dispatch($event, $eventName);
+        } else {
+            $this->get('event_dispatcher')->dispatch($eventName, $event);
+        }
     }
 
     /**

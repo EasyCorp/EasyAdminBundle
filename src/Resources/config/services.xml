@@ -55,9 +55,6 @@
         <service id="easyadmin.listener.exception" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener" public="true">
             <argument type="service" id="twig" />
             <argument>%easyadmin.config%</argument>
-            <argument type="string">easyadmin.listener.exception:showExceptionPageAction</argument>
-            <argument type="service" id="logger" on-invalid="null" />
-            <tag name="monolog.logger" channel="request" />
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="-64" />
         </service>
 

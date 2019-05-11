@@ -4,31 +4,29 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\EventListener\ExceptionListener as BaseExceptionListener;
+use Twig\Environment;
 
 /**
  * This listener allows to display customized error pages in the production
  * environment.
  *
+ * @internal
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
-class ExceptionListener extends BaseExceptionListener
+class ExceptionListener
 {
     private $twig;
     private $easyAdminConfig;
     private $currentEntityName;
 
-    public function __construct(\Twig_Environment $twig, array $easyAdminConfig, $controller, LoggerInterface $logger = null)
+    public function __construct(Environment $twig, array $easyAdminConfig)
     {
         $this->twig = $twig;
         $this->easyAdminConfig = $easyAdminConfig;
-
-        parent::__construct($controller, $logger);
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)
@@ -40,7 +38,7 @@ class ExceptionListener extends BaseExceptionListener
 
         $this->currentEntityName = $event->getRequest()->query->get('entity');
 
-        parent::onKernelException($event);
+        $event->setResponse($this->showExceptionPageAction(FlattenException::create($exception)));
     }
 
     public function showExceptionPageAction(FlattenException $exception)
@@ -57,16 +55,5 @@ class ExceptionListener extends BaseExceptionListener
             'exception' => $exception,
             'layout_template_path' => $exceptionLayoutTemplatePath,
         ]), $exception->getStatusCode());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function duplicateRequest(\Exception $exception, Request $request)
-    {
-        $request = parent::duplicateRequest($exception, $request);
-        $request->attributes->set('exception', FlattenException::create($exception));
-
-        return $request;
     }
 }

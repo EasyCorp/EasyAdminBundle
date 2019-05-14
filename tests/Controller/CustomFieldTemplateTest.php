@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomFieldTemplateTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'custom_field_template']);
-    }
+    protected static $options = ['environment' => 'custom_field_template'];
 
     /**
      * @group legacy

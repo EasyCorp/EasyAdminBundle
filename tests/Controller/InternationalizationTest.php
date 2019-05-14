@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class InternationalizationTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'internationalization']);
-    }
+    protected static $options = ['environment' => 'internationalization'];
 
     public function testLanguageDefinedByLayout()
     {

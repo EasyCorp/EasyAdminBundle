@@ -9,7 +9,7 @@ class SplitConfigurationTest extends AbstractTestCase
     public function testConfigurationInDifferentFiles()
     {
         $this->initClient(['environment' => 'split_configuration']);
-        $backendConfig = $this->client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
+        $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertSame(['Category', 'Product'], \array_keys($backendConfig['entities']));
 

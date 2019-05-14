@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class ReadOnlyBackendTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'read_only_backend']);
-    }
+    protected static $options = ['environment' => 'read_only_backend'];
 
     public function testListViewContainsNoDisabledActions()
     {
@@ -41,15 +36,15 @@ class ReadOnlyBackendTest extends AbstractTestCase
     {
         $this->requestEditView();
 
-        $this->assertSame(403, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('The requested &quot;edit&quot; action is not allowed for the &quot;Category&quot; entity. Solution: remove the &quot;edit&quot; action from the &quot;disabled_actions&quot; option, which can be configured globally for the entire backend or locally for the &quot;Category&quot; entity.', $this->client->getResponse()->getContent());
+        $this->assertSame(403, static::$client->getResponse()->getStatusCode());
+        $this->assertContains('The requested &quot;edit&quot; action is not allowed for the &quot;Category&quot; entity. Solution: remove the &quot;edit&quot; action from the &quot;disabled_actions&quot; option, which can be configured globally for the entire backend or locally for the &quot;Category&quot; entity.', static::$client->getResponse()->getContent());
     }
 
     public function testNewActionIsDisabled()
     {
         $this->requestNewView();
 
-        $this->assertSame(403, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('The requested &quot;new&quot; action is not allowed for the &quot;Category&quot; entity. Solution: remove the &quot;new&quot; action from the &quot;disabled_actions&quot; option, which can be configured globally for the entire backend or locally for the &quot;Category&quot; entity.', $this->client->getResponse()->getContent());
+        $this->assertSame(403, static::$client->getResponse()->getStatusCode());
+        $this->assertContains('The requested &quot;new&quot; action is not allowed for the &quot;Category&quot; entity. Solution: remove the &quot;new&quot; action from the &quot;disabled_actions&quot; option, which can be configured globally for the entire backend or locally for the &quot;Category&quot; entity.', static::$client->getResponse()->getContent());
     }
 }

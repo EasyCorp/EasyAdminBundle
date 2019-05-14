@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomTranslationDomainTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'custom_translation_domain']);
-    }
+    protected static $options = ['environment' => 'custom_translation_domain'];
 
     public function testListView()
     {

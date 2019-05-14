@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class EmptyActionLabelsTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'empty_action_labels']);
-    }
+    protected static $options = ['environment' => 'empty_action_labels'];
 
     public function testBuiltInActionLabels()
     {

@@ -6,12 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class RawFieldTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'raw_field']);
-    }
+    protected static $options = ['environment' => 'raw_field'];
 
     public function testListViewRawField()
     {

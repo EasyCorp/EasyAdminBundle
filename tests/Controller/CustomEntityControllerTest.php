@@ -6,22 +6,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class CustomEntityControllerTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'custom_entity_controller']);
-    }
+    protected static $options = ['environment' => 'custom_entity_controller'];
 
     public function testListAction()
     {
         $this->requestListView();
-        $this->assertContains('Overridden list action.', $this->client->getResponse()->getContent());
+        $this->assertContains('Overridden list action.', static::$client->getResponse()->getContent());
     }
 
     public function testShowAction()
     {
         $this->requestShowView();
-        $this->assertContains('Overridden show action.', $this->client->getResponse()->getContent());
+        $this->assertContains('Overridden show action.', static::$client->getResponse()->getContent());
     }
 }

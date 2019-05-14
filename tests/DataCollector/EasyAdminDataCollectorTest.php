@@ -6,26 +6,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class EasyAdminDataCollectorTest extends AbstractTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->initClient(['environment' => 'default_backend']);
-    }
+    protected static $options = ['environment' => 'default_backend'];
 
     public function testCollectorIsEnabled()
     {
-        $this->client->enableProfiler();
+        static::$client->enableProfiler();
         $this->requestListView();
 
-        $this->assertNotNull($this->client->getProfile()->getCollector('easyadmin'));
+        $this->assertNotNull(static::$client->getProfile()->getCollector('easyadmin'));
     }
 
     public function testCollectorInformationForListView()
     {
-        $this->client->enableProfiler();
+        static::$client->enableProfiler();
         $this->requestListView();
-        $collector = $this->client->getProfile()->getCollector('easyadmin');
+        $collector = static::$client->getProfile()->getCollector('easyadmin');
 
         $this->assertSame(5, $collector->getNumEntities());
 
@@ -47,9 +42,9 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
 
     public function testCollectorInformationForEditView()
     {
-        $this->client->enableProfiler();
+        static::$client->enableProfiler();
         $this->requestEditView();
-        $collector = $this->client->getProfile()->getCollector('easyadmin');
+        $collector = static::$client->getProfile()->getCollector('easyadmin');
 
         $this->assertSame(5, $collector->getNumEntities());
 
@@ -71,9 +66,9 @@ class EasyAdminDataCollectorTest extends AbstractTestCase
 
     public function testCollectorReset()
     {
-        $this->client->enableProfiler();
+        static::$client->enableProfiler();
         $this->requestListView();
-        $collector = $this->client->getProfile()->getCollector('easyadmin');
+        $collector = static::$client->getProfile()->getCollector('easyadmin');
 
         $this->assertSame(5, $collector->getNumEntities());
         $collector->reset();

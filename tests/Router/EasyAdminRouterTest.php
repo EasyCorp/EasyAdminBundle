@@ -11,6 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
  */
 final class EasyAdminRouterTest extends AbstractTestCase
 {
+    protected static $options = ['environment' => 'default_backend'];
+
     /**
      * @var EasyAdminRouter
      */
@@ -20,9 +22,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->initClient(['environment' => 'default_backend']);
-
-        $this->router = $this->client->getContainer()->get('easyadmin.router');
+        $this->router = static::$client->getContainer()->get('easyadmin.router');
     }
 
     /**

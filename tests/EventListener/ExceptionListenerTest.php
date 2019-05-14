@@ -42,7 +42,7 @@ class ExceptionListenerTest extends TestCase
         $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
         $twig = $this->getTwig();
 
-        $listener = new ExceptionListener($twig, [], 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($twig, []);
         $listener->onKernelException($event);
     }
 
@@ -64,7 +64,7 @@ class ExceptionListenerTest extends TestCase
         $event = $this->getEventExceptionThatShouldNotBeCalled($exception);
         $twig = $this->getTwig();
 
-        $listener = new ExceptionListener($twig, [], 'easyadmin.listener.exception:showExceptionPageAction');
+        $listener = new ExceptionListener($twig, []);
         $listener->onKernelException($event);
     }
 }

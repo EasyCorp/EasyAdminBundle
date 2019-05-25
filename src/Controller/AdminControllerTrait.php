@@ -407,9 +407,9 @@ trait AdminControllerTrait
             $actionName = $batchForm->get('name')->getData();
             $actionIds = $batchForm->get('ids')->getData();
 
-            $methodResult = $this->executeDynamicMethod($actionName.'<EntityName>BatchAction', [$actionIds, $batchForm]);
-            if ($methodResult instanceof Response) {
-                return $methodResult;
+            $batchActionResult = $this->executeDynamicMethod($actionName.'<EntityName>BatchAction', [$actionIds, $batchForm]);
+            if ($batchActionResult instanceof Response) {
+                return $batchActionResult;
             }
         }
 

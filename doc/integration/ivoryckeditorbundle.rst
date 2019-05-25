@@ -34,6 +34,17 @@ thanks to the `FOSCKEditorBundle`_:
 
     $ php bin/console assets:install --symlink
 
+Finally, add the ``ckeditor_widget.html.twig`` form theme to your Twig
+configuration so the ``<textarea>`` elements used by the editor are properly
+designed:
+
+.. code-block:: yaml
+
+    # config/packages/twig.yaml
+    twig:
+        form_themes:
+            - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
 Using the Rich Text Editor
 --------------------------
 

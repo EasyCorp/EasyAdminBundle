@@ -398,7 +398,7 @@ trait AdminControllerTrait
     /**
      * The method that is executed when the user performs a 'batch' action to any entity.
      */
-    protected function batchAction(): RedirectResponse
+    protected function batchAction(): Response
     {
         $batchForm = $this->createBatchForm($this->entity['name']);
         $batchForm->handleRequest($this->request);
@@ -407,7 +407,10 @@ trait AdminControllerTrait
             $actionName = $batchForm->get('name')->getData();
             $actionIds = $batchForm->get('ids')->getData();
 
-            $this->executeDynamicMethod($actionName.'<EntityName>BatchAction', [$actionIds, $batchForm]);
+            $methodResult = $this->executeDynamicMethod($actionName.'<EntityName>BatchAction', [$actionIds, $batchForm]);
+            if ($methodResult instanceof Response) {
+                return $methodResult;
+            }
         }
 
         return $this->redirectToReferrer();

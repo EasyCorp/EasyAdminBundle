@@ -413,7 +413,7 @@
 {% endblock easyadmin_widget %}
 
 {% block easyadmin_widget_groups %}
-    {% for group_name, group_config in easyadmin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
+    {% for group_name, group_config in easyadmin_form_groups|filter(group_config => not group_config.form_tab or group_config.form_tab == tab_name) %}
         <div class="field-group col-{{ group_config.columns|default('12') }} {{ group_config.css_class|default('') }}">
             <fieldset>
                 {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
@@ -430,7 +430,7 @@
                 {% endif %}
 
                 <div class="row">
-                    {% for field in form if 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name %}
+                    {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name) %}
                         {% if not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name %}
                             <div class="col-{{ field.vars.easyadmin.field.columns|default('12') }} {{ field.vars.easyadmin.field.css_class|default('') }}">
                                 {{ form_row(field) }}
@@ -441,7 +441,7 @@
             </fieldset>
         </div>
     {% else %}
-        {% for field in form if 'hidden' not in field.vars.block_prefixes and (not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name) %}
+        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name)) %}
             <div class="col-{{ field.vars.easyadmin.field.columns|default('12') }} {{ field.vars.easyadmin.field.css_class|default('') }}">
                 {{ form_row(field) }}
             </div>

@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2019-05-27T15:08:32Z
+
+I can't reproduce this failure on my local environment https://travis-ci.org/EasyCorp/EasyAdminBundle/jobs/537814407#L620 :/
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-05-27T18:03:49Z
+
+I can't reproduce the error either, so I'm going to merge this right away. I'm not worried about the 4.1 to 4.2 bump because if you are in 4.1, you can run 4.2 without doing anything special. Thanks Yonel.

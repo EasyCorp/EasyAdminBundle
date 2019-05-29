@@ -69,7 +69,7 @@ Now you can define the ``restockAction()`` method in your own controller:
 
             // change the properties of the given entity and save the changes
             $id = $this->request->query->get('id');
-            $entity = $this->em->getRepository('Product::class')->find($id);
+            $entity = $this->em->getRepository(Product::class)->find($id);
             $entity->setStock(100 + $entity->getStock());
             $this->em->flush();
 
@@ -169,7 +169,7 @@ would look as follows:
         {
             // change the properties of the given entity and save the changes
             $em = $this->getDoctrine()->getManager();
-            $repository = $this->getDoctrine()->getRepository('Product::class');
+            $repository = $this->getDoctrine()->getRepository(Product::class);
 
             $id = $request->query->get('id');
             $entity = $repository->find($id);
@@ -179,14 +179,14 @@ would look as follows:
             // redirect to the 'list' view of the given entity ...
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'list',
-                'entity' => $this->request->query->get('entity'),
+                'entity' => $request->query->get('entity'),
             ));
 
             // ... or redirect to the 'edit' view of the given entity item
             return $this->redirectToRoute('easyadmin', array(
                 'action' => 'edit',
                 'id' => $id,
-                'entity' => $this->request->query->get('entity'),
+                'entity' => $request->query->get('entity'),
             ));
         }
     }

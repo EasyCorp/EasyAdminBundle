@@ -188,7 +188,7 @@
 
         {{ include('@EasyAdmin/default/includes/_delete_form.html.twig', {
             view: 'list',
-            referer: referer|url_encode,
+            referer: referer,
             delete_form: delete_form_template,
             _translation_domain: _entity_config.translation_domain,
             _trans_parameters: _trans_parameters,

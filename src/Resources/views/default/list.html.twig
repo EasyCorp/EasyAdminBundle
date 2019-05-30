@@ -291,7 +291,7 @@
         <script type="text/javascript">
             const _search_query = "{{ app.request.get('query')|default('')|e('js') }}";
             // the original query is prepended to allow matching exact phrases in addition to single words
-            $('#main').find('table tbody').highlight($.merge([_search_query], _search_query.split(' ')));
+            $('#main').find('table tbody td:not(.actions)').highlight($.merge([_search_query], _search_query.split(' ')));
         </script>
     {% endif %}
 {% endblock %}

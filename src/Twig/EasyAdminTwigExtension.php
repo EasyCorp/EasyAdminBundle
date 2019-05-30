@@ -67,6 +67,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $filters = [
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
+            new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParams']),
         ];
 
         if (Kernel::VERSION_ID >= 40200) {
@@ -383,6 +384,19 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         return $value;
+    }
+
+    public function getFormHiddenParams(array $params, string $prefix): iterable
+    {
+        foreach ($params as $key => $value) {
+            $key = $prefix.'['.$key.']';
+
+            if (\is_array($value)) {
+                yield from $this->getFormHiddenParams($value, $key);
+            } else {
+                yield $key => $value;
+            }
+        }
     }
 
     /**

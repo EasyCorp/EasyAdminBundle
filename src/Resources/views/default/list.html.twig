@@ -12,6 +12,7 @@
     sortField: app.request.get('sortField'),
     sortDirection: app.request.get('sortDirection'),
     page: app.request.get('page', 1),
+    filters: app.request.get('filters', []),
     referer: null
 }) %}
 
@@ -23,6 +24,7 @@
 
 {% set _request_parameters = _request_parameters|merge({ referer: path('easyadmin', _request_parameters)|url_encode }) %}
 {% set _has_batch_actions = batch_form is defined and batch_form.vars.batch_actions|length > 0 %}
+{% set _has_filters = _entity_config.list.filters|default(false) %}
 
 {% block body_id 'easyadmin-list-' ~ _entity_config.name %}
 {% block body_class 'list list-' ~ _entity_config.name|lower %}
@@ -63,6 +65,9 @@
                         {% endif %}
                         <input type="hidden" name="menuIndex" value="{{ _request_parameters.menuIndex }}">
                         <input type="hidden" name="submenuIndex" value="{{ _request_parameters.submenuIndex }}">
+                        {% for name, value in _request_parameters.filters|easyadmin_form_hidden_params('filters') %}
+                        <input type="hidden" name="{{ name }}" value="{{ value }}">
+                        {% endfor %}
                         <div class="form-group">
                             <div class="form-widget">
                                 <input class="form-control" type="search" name="query" value="{{ app.request.get('query')|default('') }}" placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters) }}">
@@ -72,6 +77,22 @@
                 </form>
             </div>
         {% endblock search_action %}
+    {% endif %}
+
+    {% if _has_filters %}
+        {% set _applied_filters = app.request.attributes.get('easyadmin').filters.applied|default(false) %}
+        {% block filters_action %}
+            <div class="btn-group">
+                <a href="{{ path('easyadmin', _request_parameters|merge({ action: 'filters', referer_action: app.request.get('action') })) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters" data-modal="#modal-filters">
+                    <i class="fa fa-filter fa-fw"></i> {{ 'label.filters'|trans(_trans_parameters, 'EasyAdminBundle') }}{% if _applied_filters %} ({{ _applied_filters|length }}){% endif %}
+                </a>
+                {% if _applied_filters %}
+                    <a href="{{ path('easyadmin', _request_parameters|merge({ filters: null })) }}" class="btn btn-secondary text-primary">
+                        <i class="fa fa-close"></i>
+                    </a>
+                {% endif %}
+            </div>
+        {% endblock filters_action %}
     {% endif %}
 
     {% if easyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
@@ -99,6 +120,9 @@
 {% block content_header %}
     {{ parent() }}
     {{ block('batch_actions') }}
+    {% if _has_filters %}
+        {{ include('@EasyAdmin/default/includes/_filters_modal.html.twig') }}
+    {% endif %}
 {% endblock content_header %}
 
 {% block main %}
@@ -255,6 +279,18 @@
                         deleteForm.trigger('submit');
                     });
             });
+
+            {% if _has_filters %}
+            $('.action-filters').on('click', function(e) {
+                let $a = $(this);
+                e.preventDefault();
+                $.get($a.attr('href'), function (response) {
+                    let $modal = $($a.attr('data-modal'));
+                    $modal.find('.modal-body').html(response);
+                    $modal.modal({backdrop: true, keyboard: true});
+                });
+            });
+            {% endif %}
 
             {% if _has_batch_actions %}
             const titleContent = $('.content-header-title > .title').html();

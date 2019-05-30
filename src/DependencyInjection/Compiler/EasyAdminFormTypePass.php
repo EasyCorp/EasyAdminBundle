@@ -55,7 +55,9 @@ class EasyAdminFormTypePass implements CompilerPassInterface
             }
         }
 
-        $container->getDefinition('easyadmin.form.type')->replaceArgument(1, \iterator_to_array($configurators));
+        $configurators = \iterator_to_array($configurators);
+        $container->getDefinition('easyadmin.form.type')->replaceArgument(1, $configurators);
+        $container->getDefinition('easyadmin.form.type.filters')->replaceArgument(1, $configurators);
     }
 
     private function ivoryCkEditorHasDefaultConfiguration(ContainerBuilder $container): bool

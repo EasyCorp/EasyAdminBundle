@@ -2,7 +2,15 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\BooleanFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\ComparisonFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\DateFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\EntityFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\Guess\TypeGuess;
 use Symfony\Component\Form\Guess\ValueGuess;
@@ -59,6 +67,50 @@ class PropertyConfigPass implements ConfigPassInterface
         'virtual' => true,
     ];
 
+    private static $defaultFilterType = [
+        'text' => [
+            'type' => TextFilter::class,
+            'type_options' => [],
+        ],
+        'string' => [
+            'type' => TextFilter::class,
+            'type_options' => [],
+        ],
+        'boolean' => [
+            'type' => BooleanFilter::class,
+            'type_options' => [],
+        ],
+        'decimal' => [
+            'type' => ComparisonFilter::class,
+            'type_options' => [
+                'value_type' => NumberType::class,
+            ],
+        ],
+        'integer' => [
+            'type' => ComparisonFilter::class,
+            'type_options' => [
+                'value_type' => IntegerType::class,
+            ],
+        ],
+        'date' => [
+            'type' => DateFilter::class,
+            'type_options' => [],
+        ],
+        'datetime' => [
+            'type' => ComparisonFilter::class,
+            'type_options' => [
+                'value_type' => DateTimeType::class,
+                'value_type_options' => [
+                    'widget' => 'single_text',
+                ],
+            ],
+        ],
+        'association' => [
+            'type' => EntityFilter::class,
+            'type_options' => [],
+        ],
+    ];
+
     private $formRegistry;
 
     public function __construct(FormRegistryInterface $formRegistry)
@@ -70,6 +122,7 @@ class PropertyConfigPass implements ConfigPassInterface
     {
         $backendConfig = $this->processMetadataConfig($backendConfig);
         $backendConfig = $this->processFieldConfig($backendConfig);
+        $backendConfig = $this->processFilterConfig($backendConfig);
 
         return $backendConfig;
     }
@@ -207,6 +260,35 @@ class PropertyConfigPass implements ConfigPassInterface
 
                     $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $normalizedConfig;
                 }
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    private function processFilterConfig(array $backendConfig): array
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach ($entityConfig['list']['filters'] ?? [] as $name => $metadata) {
+                $userDefinedConfig = $metadata;
+
+                // add default metadata
+                $metadata += ['type_options' => []];
+                if (\array_key_exists($name, $entityConfig['properties'])) {
+                    $metadata += $entityConfig['properties'][$name];
+                }
+
+                if (!isset($metadata['type'])) {
+                    throw new \RuntimeException(\sprintf('Required "type" option for filter "%s" is missing in "%s" entity config.', $name, $entityName));
+                }
+
+                if (!isset($userDefinedConfig['type']) && isset(self::$defaultFilterType[$metadata['type']])) {
+                    $default = self::$defaultFilterType[$metadata['type']];
+                    $metadata['type'] = $default['type'];
+                    $metadata['type_options'] += $default['type_options'] + ['translation_domain' => 'EasyAdminBundle'];
+                }
+
+                $backendConfig['entities'][$entityName]['list']['filters'][$name] = $metadata;
             }
         }
 

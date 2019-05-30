@@ -95,6 +95,66 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Getter method does not exist for this field or the property is not public</target>
             </trans-unit>
+            <trans-unit id="label.equal_to">
+                <source>label.equal_to</source>
+                <target>Equal to</target>
+            </trans-unit>
+            <trans-unit id="label.not_equal_to">
+                <source>label.not_equal_to</source>
+                <target>Not equal to</target>
+            </trans-unit>
+            <trans-unit id="label.greater_than">
+                <source>label.greater_than</source>
+                <target>Greater than</target>
+            </trans-unit>
+            <trans-unit id="label.greater_than_or_equal_to">
+                <source>label.greater_than_or_equal_to</source>
+                <target>Greater than or equal to</target>
+            </trans-unit>
+            <trans-unit id="label.less_than">
+                <source>label.less_than</source>
+                <target>Less than</target>
+            </trans-unit>
+            <trans-unit id="label.less_than_or_equal_to">
+                <source>label.less_than_or_equal_to</source>
+                <target>Less than or equal to</target>
+            </trans-unit>
+            <trans-unit id="label.contains">
+                <source>label.contains</source>
+                <target>Contains</target>
+            </trans-unit>
+            <trans-unit id="label.not_contains">
+                <source>label.not_contains</source>
+                <target>Not contains</target>
+            </trans-unit>
+            <trans-unit id="label.starts_with">
+                <source>label.starts_with</source>
+                <target>Starts with</target>
+            </trans-unit>
+            <trans-unit id="label.ends_with">
+                <source>label.ends_with</source>
+                <target>Ends with</target>
+            </trans-unit>
+            <trans-unit id="label.exactly">
+                <source>label.exactly</source>
+                <target>Exactly</target>
+            </trans-unit>
+            <trans-unit id="label.filters">
+                <source>label.filters</source>
+                <target>Filters</target>
+            </trans-unit>
+            <trans-unit id="label.filters.clear">
+                <source>label.filters.clear</source>
+                <target>Clear</target>
+            </trans-unit>
+            <trans-unit id="label.filters.done">
+                <source>label.filters.done</source>
+                <target>Done</target>
+            </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>None</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

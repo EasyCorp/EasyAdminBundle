@@ -57,6 +57,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         $backendConfig = $this->normalizeFormConfig($backendConfig);
         $backendConfig = $this->normalizeControllerConfig($backendConfig);
         $backendConfig = $this->normalizeTranslationConfig($backendConfig);
+        $backendConfig = $this->normalizeFilterConfig($backendConfig);
 
         return $backendConfig;
     }
@@ -398,6 +399,33 @@ class NormalizerConfigPass implements ConfigPassInterface
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;
+        }
+
+        return $backendConfig;
+    }
+
+    private function normalizeFilterConfig(array $backendConfig): array
+    {
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            $filtersConfig = [];
+
+            foreach ($entityConfig['list']['filters'] ?? [] as $i => $filterConfig) {
+                if (!\is_string($filterConfig) && !\is_array($filterConfig)) {
+                    throw new \RuntimeException(\sprintf('One of the filters defined by the "list" view of the "%s" entity contains an invalid value (filter config can only be a YAML string or hash).', $entityName));
+                }
+
+                if (\is_string($filterConfig)) {
+                    $filterConfig = ['property' => $filterConfig];
+                }
+
+                if (null === $filterName = $filterConfig['property']) {
+                    throw new \RuntimeException(\sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
+                }
+
+                $filtersConfig[$filterName] = $filterConfig;
+            }
+
+            $backendConfig['entities'][$entityName]['list']['filters'] = $filtersConfig;
         }
 
         return $backendConfig;

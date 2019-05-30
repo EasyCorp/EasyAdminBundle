@@ -10,6 +10,12 @@
             <tag name="form.type" alias="easyadmin" />
         </service>
 
+        <service id="easyadmin.form.type.filters" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFiltersFormType">
+            <argument type="service" id="easyadmin.config.manager"/>
+            <argument type="collection" /> <!-- type configurators -->
+            <tag name="form.type" alias="easyadmin_filters" />
+        </service>
+
         <service id="easyadmin.form.type.autocomplete" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType">
             <argument type="service" id="easyadmin.config.manager"/>
             <tag name="form.type" alias="easyadmin_autocomplete" />
@@ -85,6 +91,15 @@
         </service>
 
         <!-- Type Configurators -->
+
+        <!-- Filter Configurators -->
+
+        <service id="easyadmin.form.filter.configurator.entity" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityFilterConfigurator">
+            <tag name="easyadmin.form.type.configurator" />
+        </service>
+
+        <!-- Filter Configurators -->
 
         <service id="easyadmin.form.guesser.missing_doctrine_orm_type_guesser" public="true"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Guesser\MissingDoctrineOrmTypeGuesser">

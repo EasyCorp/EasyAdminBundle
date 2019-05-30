@@ -11,6 +11,7 @@ import 'bootstrap/js/src/tab.js';
 import 'bootstrap/js/src/tooltip.js';
 import 'bootstrap/js/src/popover.js';
 import 'bootstrap/js/src/dropdown.js';
+import 'bootstrap/js/src/collapse.js';
 
 import './adminlte.js';
 import 'jquery.are-you-sure';
@@ -21,6 +22,7 @@ import 'select2';
 window.addEventListener('load', function() {
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="dropdown"]').dropdown();
+    $('.collapse').collapse();
     createNullableControls();
     createAutoCompleteFields();
     $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);

@@ -430,7 +430,7 @@ trait AdminControllerTrait
             ->createQueryBuilder()
             ->delete()
             ->from($class, 'entity')
-            ->where(sprintf('entity.%s IN (:ids)', $this->entity['primary_key_field_name']))
+            ->where(\sprintf('entity.%s IN (:ids)', $this->entity['primary_key_field_name']))
             ->setParameter('ids', $ids)
             ->getQuery()
             ->execute()

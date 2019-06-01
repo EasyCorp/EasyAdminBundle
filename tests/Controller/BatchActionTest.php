@@ -14,8 +14,8 @@ class BatchActionTest extends AbstractTestCase
 
         $this->assertSame('Delete', $crawler->filter('form[name="batch_form"] button[value="delete"]')->text());
 
-        $this->assertSame('Custom batch action', trim($crawler->filter('form[name="batch_form"] button[value="custom_batch_action"]')->text()));
-        $this->assertSame('fa fa-fw fa-custom-icon', trim($crawler->filter('form[name="batch_form"] button[value="custom_batch_action"] i')->attr('class')));
+        $this->assertSame('Custom batch action', \trim($crawler->filter('form[name="batch_form"] button[value="custom_batch_action"]')->text()));
+        $this->assertSame('fa fa-fw fa-custom-icon', \trim($crawler->filter('form[name="batch_form"] button[value="custom_batch_action"] i')->attr('class')));
     }
 
     public function testBatchActionsCheckboxes()

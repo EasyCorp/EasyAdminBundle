@@ -97,7 +97,7 @@ class ActionConfigPass implements ConfigPassInterface
                 $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
             }
 
-            if (!array_key_exists('collapse_actions', $entityConfig['list'])) {
+            if (!\array_key_exists('collapse_actions', $entityConfig['list'])) {
                 $backendConfig['entities'][$entityName]['list']['collapse_actions'] = $backendConfig['list']['collapse_actions'];
             }
         }
@@ -359,7 +359,7 @@ class ActionConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($entityConfig['list']['batch_actions'] as $actionName => $actionConfig) {
                 if ('method' !== $actionConfig['type']) {
-                    throw new \InvalidArgumentException(sprintf('Batch actions only support "method" type, "%s" given.', $actionConfig['type']));
+                    throw new \InvalidArgumentException(\sprintf('Batch actions only support "method" type, "%s" given.', $actionConfig['type']));
                 }
 
                 // 'name' value is used as the class method name or the Symfony route name

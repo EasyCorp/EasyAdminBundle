@@ -115,23 +115,29 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $hiddenParameters = [
-            'action' => 'search',
-            'entity' => 'Category',
-            'sortField' => 'id',
-            'sortDirection' => 'DESC',
-        ];
+        $this->assertSame('search', $crawler->filter('.action-search input[type="hidden"][name="action"]')->attr('value'));
+        $this->assertSame('Category', $crawler->filter('.action-search input[type="hidden"][name="entity"]')->attr('value'));
 
-        $this->assertSame('Search', \trim($crawler->filter('.form-action-search input[type="search"]')->attr('placeholder')));
-        $this->assertContains('form-action-search', $crawler->filter('.global-actions > div')->first()->attr('class'));
+        // the search form doesn't include sort config unless it's explicitly included in the
+        // request URI because the user click on some column to sort results
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortField"]'));
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortDirection"]'));
+    }
 
-        $i = 0;
-        foreach ($hiddenParameters as $name => $value) {
-            $this->assertSame($name, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('name'));
-            $this->assertSame($value, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('value'));
+    public function testListViewSearchActionWithExplicitSorting()
+    {
+        // 1. visit the 'list' view page
+        $crawler = $this->requestListView();
 
-            ++$i;
-        }
+        // 2. click on any column to sort results explicitly
+        $link = $crawler->filter('.datagrid thead a:contains("Name")')->link();
+        $crawler = static::$client->click($link);
+
+        // 3. the search form must contain the explicit sortField and sortDirection
+        $this->assertSame('search', $crawler->filter('.action-search input[type="hidden"][name="action"]')->attr('value'));
+        $this->assertSame('Category', $crawler->filter('.action-search input[type="hidden"][name="entity"]')->attr('value'));
+        $this->assertSame('name', $crawler->filter('.action-search input[type="hidden"][name="sortField"]')->attr('value'));
+        $this->assertSame('DESC', $crawler->filter('.action-search input[type="hidden"][name="sortDirection"]')->attr('value'));
     }
 
     public function testListViewNewAction()

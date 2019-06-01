@@ -9,8 +9,8 @@
     entity: _entity_config.name,
     menuIndex: app.request.get('menuIndex'),
     submenuIndex: app.request.get('submenuIndex'),
-    sortField: app.request.get('sortField', ''),
-    sortDirection: app.request.get('sortDirection', 'DESC'),
+    sortField: app.request.get('sortField'),
+    sortDirection: app.request.get('sortDirection'),
     page: app.request.get('page', 1),
     referer: null
 }) %}
@@ -18,8 +18,6 @@
 {% if 'search' == app.request.get('action') %}
     {% set _request_parameters = _request_parameters|merge({
         query: app.request.get('query')|default(''),
-        sortField: app.request.get('sortField') ?? _entity_config.search.sort.field ?? '',
-        sortDirection: app.request.get('sortDirection') ?? _entity_config.search.sort.direction ?? 'DESC',
     }) %}
 {% endif %}
 
@@ -51,8 +49,18 @@
                     {% block search_form %}
                         <input type="hidden" name="action" value="search">
                         <input type="hidden" name="entity" value="{{ _request_parameters.entity }}">
-                        <input type="hidden" name="sortField" value="{{ _request_parameters.sortField ?? _entity_config.search.sort.field ?? '' }}">
-                        <input type="hidden" name="sortDirection" value="{{ _request_parameters.sortDirection ?? _entity_config.search.sort.direction ?? 'DESC' }}">
+                        {# if the Request query doesn't define 'sortField' and 'sortDirection', we add them in the
+                           controller (but they don't appear in the request URI). When users click on a column to
+                           sort results, 'sortField' and 'sortDirection' are added to the Request query and they
+                            appear in the request URI too. So, checking if 'sortField' and 'sortDirection' is the
+                            only way to differentiate between sorting made by user and sorting made by us. We only
+                            need to persist the sorting if it's explicitly made by the user. #}
+                        {% if 'sortField' in app.request.uri %}
+                            <input type="hidden" name="sortField" value="{{ _request_parameters.sortField }}">
+                        {% endif %}
+                        {% if 'sortDirection' in app.request.uri %}
+                            <input type="hidden" name="sortDirection" value="{{ _request_parameters.sortDirection }}">
+                        {% endif %}
                         <input type="hidden" name="menuIndex" value="{{ _request_parameters.menuIndex }}">
                         <input type="hidden" name="submenuIndex" value="{{ _request_parameters.submenuIndex }}">
                         <div class="form-group">

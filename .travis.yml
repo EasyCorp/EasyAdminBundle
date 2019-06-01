@@ -16,11 +16,8 @@ matrix:
     fast_finish: true
     include:
         # Minimum supported dependencies with the latest and oldest PHP version
-
-        # 7.3 is disabled because of this error in Doctrine's In UnitOfWork.php line 2664:
-        # "continue" targeting switch is equivalent to "break". Did you mean to use "continue 2"?
-        #- php: 7.3
-        #  env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+        - php: 7.3
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
 
         - php: 7.2
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"

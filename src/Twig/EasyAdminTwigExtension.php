@@ -392,10 +392,10 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function transchoice($message, $count, array $arguments = [], $domain = null, $locale = null)
     {
         if (null === $this->translator) {
-            return strtr($message, $arguments);
+            return \strtr($message, $arguments);
         }
 
-        return $this->translator->trans($message, array_merge(['%count%' => $count], $arguments), $domain, $locale);
+        return $this->translator->trans($message, \array_merge(['%count%' => $count], $arguments), $domain, $locale);
     }
 
     /**

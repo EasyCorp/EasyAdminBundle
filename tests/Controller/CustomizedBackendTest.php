@@ -115,7 +115,6 @@ class CustomizedBackendTest extends AbstractTestCase
         // request URI because the user click on some column to sort results
         $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortField"]'));
         $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortDirection"]'));
-
     }
 
     public function testListViewTableContents()

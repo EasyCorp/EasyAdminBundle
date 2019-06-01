@@ -6,7 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Sets the right controller to be executed when entities define custom

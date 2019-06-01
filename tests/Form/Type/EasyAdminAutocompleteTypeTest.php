@@ -6,7 +6,6 @@ use AppTestBundle\Entity\UnitTests\Category;
 use Doctrine\Common\Collections\ArrayCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Form\PreloadedExtension;

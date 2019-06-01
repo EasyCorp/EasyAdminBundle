@@ -195,14 +195,15 @@ Similarly to method based actions, you can configure any option for these
 actions (icons, labels, etc.) and you can also leverage the action inheritance
 mechanism.
 
-Custom Template on Actions
---------------------------
+Custom Templates for Actions
+----------------------------
 
-Sometimes you want to customize text or visibility of an custom action depending
-on the entity. You can use ``template`` in action method like you can do in fields.
+The link to the action is rendered using a default template
+(``@EasyAdmin/default/action.html.twig``) which displays the icon and label of
+the action according to its configuration.
 
-Imagine you want to show ``Restock`` action only on items with a stock less than
-10. Just use a custom template for this case:
+If you prefer to use your own template to render that link, define the
+``template`` option in the action configuration:
 
 .. code-block:: yaml
 
@@ -215,22 +216,20 @@ Imagine you want to show ``Restock`` action only on items with a stock less than
                         - { name: 'restock', template: 'admin/restock_action.html.twig' }
             # ...
 
-And then you can customize your ``Restock`` action using your own template (all
-other actions like ``list``, ``edit`` or ``delete`` will stay untouched):
+This option is not only useful to customize the action link, but to display it
+or hide it depending on some conditions. For example, if you only want to
+display the ``Restock`` action when the stock of the item is less than ``10``,
+create this template for the action:
 
 .. code-block:: twig
 
     {# templates/admin/restock_action.html.twig #}
 
+    {# if the stock is low, include the default action template to render the
+       action link. Otherwise, don't include the template so the link is not displayed #}
     {% if item.stock < 10 %}
-        {# this will trigger action's default behaviour, if "stock" is less than 10 #}
         {{ include('@EasyAdmin/default/action.html.twig') }}
-    {% else %}
-        {# don't show this action, if stock is more than 9 #}
     {% endif %}
-
-Make sure you have configured other parameters for your custom action too like in
-the sections before.
 
 .. _custom-batch-actions:
 

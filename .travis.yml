@@ -18,9 +18,9 @@ matrix:
     include:
           # Minimum supported dependencies with the latest and oldest PHP version
         - php: 7.3
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="3"
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="649"
         - php: 7.2
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="3"
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="649"
 
           # Test the latest stable release
         - php: 7.2

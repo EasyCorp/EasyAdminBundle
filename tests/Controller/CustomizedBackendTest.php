@@ -44,23 +44,16 @@ class CustomizedBackendTest extends AbstractTestCase
     {
         $crawler = $this->requestListView();
 
-        $hiddenParameters = [
-            'action' => 'search',
-            'entity' => 'Category',
-            'sortField' => 'name',
-            'sortDirection' => 'ASC',
-        ];
-
         $this->assertSame('Look for Categories', \trim($crawler->filter('.form-action-search [type="search"]')->attr('placeholder')));
         $this->assertContains('custom_class_search', $crawler->filter('.action-search')->attr('class'));
 
-        $i = 0;
-        foreach ($hiddenParameters as $name => $value) {
-            $this->assertSame($name, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('name'));
-            $this->assertSame($value, $crawler->filter('.action-search input[type=hidden]')->eq($i)->attr('value'));
+        $this->assertSame('search', $crawler->filter('.action-search input[type="hidden"][name="action"]')->attr('value'));
+        $this->assertSame('Category', $crawler->filter('.action-search input[type="hidden"][name="entity"]')->attr('value'));
 
-            ++$i;
-        }
+        // the search form doesn't include sort config unless it's explicitly included in the
+        // request URI because the user click on some column to sort results
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortField"]'));
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortDirection"]'));
     }
 
     public function testListViewNewAction()
@@ -117,6 +110,12 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
         $this->assertSame('ID', \trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by ID column.');
         $this->assertSame('fa fa-fw fa-arrow-down', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+
+        // the search form doesn't include sort config unless it's explicitly included in the
+        // request URI because the user click on some column to sort results
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortField"]'));
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortDirection"]'));
+
     }
 
     public function testListViewTableContents()
@@ -515,6 +514,11 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertCount(1, $crawler->filter('.table thead th[class*="sorted"]'), 'Table is sorted only by one column.');
         $this->assertSame('Label', \trim($crawler->filter('.table thead th[class*="sorted"]')->text()), 'By default, table is soreted by "Label" column (which is the "name" property).');
         $this->assertSame('fa fa-fw fa-arrow-up', $crawler->filter('.table thead th[class*="sorted"] i')->attr('class'), 'The column used to sort results shows the right icon.');
+
+        // the search form doesn't include sort config unless it's explicitly included in the
+        // request URI because the user click on some column to sort results
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortField"]'));
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortDirection"]'));
     }
 
     public function testSearchViewTableContents()
@@ -585,6 +589,11 @@ class CustomizedBackendTest extends AbstractTestCase
 
         $this->assertSame('user9', \trim($crawler->filter('.table tbody tr td.association')->eq(0)->text()));
         $this->assertContains('sorted', $crawler->filter('.table th.association')->eq(0)->attr('class'));
+
+        // the search form doesn't include sort config unless it's explicitly included in the
+        // request URI because the user click on some column to sort results
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortField"]'));
+        $this->assertCount(0, $crawler->filter('.action-search input[type="hidden"][name="sortDirection"]'));
     }
 
     public function testListViewVirtualFields()

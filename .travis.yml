@@ -38,7 +38,7 @@ matrix:
         - php: nightly
 
 before_install:
-    - phpenv config-rm xdebug.ini
+    - phpenv config-rm xdebug.ini || echo "Xdebug is not available (xdebug.ini was not removed)"
     - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
     - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 

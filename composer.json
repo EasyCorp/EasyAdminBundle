@@ -15,7 +15,7 @@
         "php": "^7.1.3",
         "doctrine/common": "^2.8",
         "doctrine/doctrine-bundle": "^1.8",
-        "doctrine/orm": "^2.6",
+        "doctrine/orm": "^2.6,>=2.6.3",
         "doctrine/persistence": "^1.0",
         "pagerfanta/pagerfanta": "~1.0,>=1.0.1|~2.0",
         "symfony/asset": "^4.2",

@@ -8,7 +8,6 @@ cache:
 env:
     global:
         - CHECK_PHP_SYNTAX="false"
-        - COVERAGE="false"
         - PHPUNIT_FLAGS="-v"
         - SYMFONY_PHPUNIT_DIR="$HOME/symfony-bridge/.phpunit"
         # needed to avoid some hard to fix deprecations
@@ -18,29 +17,27 @@ matrix:
     fast_finish: true
     include:
           # Minimum supported dependencies with the latest and oldest PHP version
+        - php: 7.3
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="3"
         - php: 7.2
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="2"
-        - php: 7.1
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="2"
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="3"
 
           # Test the latest stable release
-        - php: 7.1
         - php: 7.2
-          #env: CHECK_PHP_SYNTAX="true"
+        - php: 7.3
+          env: CHECK_PHP_SYNTAX="true"
 
           # Latest commit to master
-        - php: 7.2
+        - php: nightly
           env: STABILITY="dev"
-
-        - php: 7.3
 
     allow_failures:
           # Dev-master is allowed to fail.
         - env: STABILITY="dev"
-        - php: 7.3
+        - php: nightly
 
 before_install:
-    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
+    - phpenv config-rm xdebug.ini
     - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
     - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
@@ -58,7 +55,6 @@ script:
     # this checks that the Twig template files contain no syntax errors
     - ./tests/bin/console lint:twig "src" "tests"
     # this checks that the XLIFF translations contain no syntax errors
-    # disabled because of this issue: https://github.com/symfony/symfony/issues/27564
-    # - ./tests/bin/console lint:xliff "src/Resources/translations"
+    - ./tests/bin/console lint:xliff "src/Resources/translations"
     # this checks that the YAML config files contain no syntax errors
     - ./tests/bin/console lint:yaml "tests"

@@ -31,9 +31,49 @@
         $(function() {
             $('.new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
 
+            // forms with tabs require some special treatment for errors. The problem
+            // is when the field with errors is included in a tab not currently visible.
+            // Browser shows this error "An invalid form control with name='...' is not focusable."
+            // So, the user clicks on Submit button, the form is not submitted and the error
+            // is not displayed. This JavaScript code ensures that each tab shows a badge with
+            // the number of errors in it.
+            const entityForm = document.querySelector('form.new-form');
+            const formSubmitButton = entityForm.querySelector('button[type="submit"]');
+            formSubmitButton.addEventListener('click', function() {
+                const formTabPanes = entityForm.querySelectorAll('.tab-pane');
+                if (0 === formTabPanes.length) {
+                    return;
+                }
+
+                formTabPanes.forEach(function (tabPane, tabIndex) {
+                    let tabPaneNumErrors = 0;
+                    tabPane.querySelectorAll('input').forEach(function (input) {
+                        if (!input.validity.valid) {
+                            tabPaneNumErrors++;
+                        }
+                    });
+
+                    let navTabItem = entityForm.querySelector('.nav-item:nth-child(' + (tabIndex + 1) + ') a');
+                    let existingErrorBadge = navTabItem.querySelector('span.badge.badge-danger');
+                    if (null !== existingErrorBadge) {
+                        navTabItem.removeChild(existingErrorBadge);
+                    }
+
+                    if (tabPaneNumErrors > 0) {
+                        let newErrorBadge = document.createElement('span');
+                        newErrorBadge.classList.add('badge', 'badge-danger');
+                        newErrorBadge.title = 'form.tab.error_badge_title';
+                        newErrorBadge.textContent = tabPaneNumErrors;
+
+                        navTabItem.appendChild(newErrorBadge);
+                    }
+
+                    tabPaneHasErrors = 0;
+                });
+            });
+
             // prevent multiple form submissions to avoid creating duplicated entities
-            const form = document.querySelector('form.new-form');
-            form.addEventListener('submit', function() {
+            entityForm.addEventListener('submit', function() {
                 // this timeout is needed to include the disabled button into the submitted form
                 setTimeout(function() {
                     const submitButtons = form.querySelectorAll('[type="submit"]');

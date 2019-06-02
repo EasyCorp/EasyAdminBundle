@@ -47,7 +47,7 @@ class FormViewTest extends AbstractTestCase
         $this->assertSame('Section Label 1', \trim($crawler->filter('form fieldset .form-section h2')->eq(0)->text()));
 
         $this->assertCount(1, $crawler->filter('form fieldset #product_name'));
-        $this->assertSame('Edit Help', \trim($crawler->filter('form fieldset input + .help-block')->eq(0)->text()));
+        $this->assertSame('Edit Help', \trim($crawler->filter('form fieldset input + .form-help')->eq(0)->text()));
 
         $this->assertCount(2, $crawler->filter('form fieldset .form-section'));
         $this->assertCount(1, $crawler->filter('form fieldset #product_description'));

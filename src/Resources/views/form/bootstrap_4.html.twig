@@ -131,7 +131,7 @@
             {% endif %}
 
             {% if easyadmin.field.help|default(form.vars.help) != '' %}
-                <span class="help-block">{{ easyadmin.field.help|default(form.vars.help)|trans(domain = form.vars.translation_domain)|raw }}</span>
+                <small class="form-help">{{ easyadmin.field.help|default(form.vars.help)|trans(domain = form.vars.translation_domain)|raw }}</small>
             {% endif %}
 
             {{- form_errors(form) -}}

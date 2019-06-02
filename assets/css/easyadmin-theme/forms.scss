@@ -47,7 +47,7 @@
     padding-left: 5px;
 }
 
-.form-widget .help-block {
+.form-widget .form-help {
     color: var(--text-muted);
     display: inline-block;
     font-size: var(--font-size-sm);
@@ -379,7 +379,7 @@ fieldset .legend-help {
 }
 
 // Form errors
-.has-error .help-block, .has-error .control-label, .has-error .radio,
+.has-error .form-help, .has-error .control-label, .has-error .radio,
 .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline,
 .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label,
 .has-error.checkbox-inline label {

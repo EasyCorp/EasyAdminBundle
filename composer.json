@@ -20,6 +20,7 @@
         "pagerfanta/pagerfanta": "~1.0,>=1.0.1|~2.0",
         "symfony/asset": "^4.2",
         "symfony/cache": "^4.2",
+        "symfony/cache-contracts": "^1.1",
         "symfony/config": "^4.2",
         "symfony/dependency-injection": "^4.2",
         "symfony/doctrine-bridge": "^4.2",

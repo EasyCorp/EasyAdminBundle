@@ -3,8 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 final class ConfigManager
 {
@@ -20,7 +20,7 @@ final class ConfigManager
     /** @var ConfigPassInterface[] */
     private $configPasses;
 
-    public function __construct(array $originalBackendConfig, bool $debug, PropertyAccessorInterface $propertyAccessor, CacheItemPoolInterface $cache)
+    public function __construct(array $originalBackendConfig, bool $debug, PropertyAccessorInterface $propertyAccessor, CacheInterface $cache)
     {
         $this->originalBackendConfig = $originalBackendConfig;
         $this->debug = $debug;
@@ -117,16 +117,8 @@ final class ConfigManager
             return $this->backendConfig = $this->doProcessConfig($this->originalBackendConfig);
         }
 
-        $cachedBackendConfig = $this->cache->getItem(self::CACHE_KEY);
-
-        if ($cachedBackendConfig->isHit()) {
-            return $this->backendConfig = $cachedBackendConfig->get();
-        }
-
-        $backendConfig = $this->doProcessConfig($this->originalBackendConfig);
-        $cachedBackendConfig->set($backendConfig);
-        $this->cache->save($cachedBackendConfig);
-
-        return $this->backendConfig = $backendConfig;
+        return $this->backendConfig = $this->cache->get(self::CACHE_KEY, function() {
+            return $this->doProcessConfig($this->originalBackendConfig);
+        });
     }
 }

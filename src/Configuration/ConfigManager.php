@@ -117,7 +117,7 @@ final class ConfigManager
             return $this->backendConfig = $this->doProcessConfig($this->originalBackendConfig);
         }
 
-        return $this->backendConfig = $this->cache->get(self::CACHE_KEY, function() {
+        return $this->backendConfig = $this->cache->get(self::CACHE_KEY, function () {
             return $this->doProcessConfig($this->originalBackendConfig);
         });
     }

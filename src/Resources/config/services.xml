@@ -4,11 +4,15 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="cache.easyadmin" parent="cache.system" public="false">
+            <tag name="cache.pool" />
+        </service>
+
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument>%easyadmin.config%</argument>
             <argument>%kernel.debug%</argument>
             <argument type="service" id="property_accessor" />
-            <argument type="service" id="Psr\Cache\CacheItemPoolInterface" />
+            <argument type="service" id="cache.easyadmin" />
         </service>
 
         <service id="easyadmin.query_builder" class="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" public="true">

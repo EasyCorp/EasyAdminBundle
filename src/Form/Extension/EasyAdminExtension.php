@@ -46,6 +46,7 @@ class EasyAdminExtension extends AbstractTypeExtension
             $entity = $easyadmin['entity'];
             $action = $easyadmin['view'];
             $fields = $entity[$action]['fields'] ?? [];
+            $filters = $easyadmin['filters'] ?? [];
             $view->vars['easyadmin'] = [
                 'entity' => $entity,
                 'view' => $action,
@@ -53,6 +54,7 @@ class EasyAdminExtension extends AbstractTypeExtension
                 'field' => null,
                 'form_group' => $form->getConfig()->getAttribute('easyadmin_form_group'),
                 'form_tab' => $form->getConfig()->getAttribute('easyadmin_form_tab'),
+                'filters' => $filters,
             ];
 
             /*

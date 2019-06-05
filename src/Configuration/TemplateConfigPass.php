@@ -23,6 +23,7 @@ class TemplateConfigPass implements ConfigPassInterface
         'new' => '@EasyAdmin/default/new.html.twig',
         'show' => '@EasyAdmin/default/show.html.twig',
         'action' => '@EasyAdmin/default/action.html.twig',
+        'filters' => '@EasyAdmin/default/filters.html.twig',
         'exception' => '@EasyAdmin/default/exception.html.twig',
         'flash_messages' => '@EasyAdmin/default/flash_messages.html.twig',
         'paginator' => '@EasyAdmin/default/paginator.html.twig',

@@ -1,0 +1,44 @@
+<div id="modal-filters" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa fa-filter fa-fw"></i> {{ 'label.filters'|trans(domain = 'EasyAdminBundle') }}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                {# The filters form will be loaded via AJAX for better performance #}
+                {# See @EasyAdmin/default/filters.html.twig template #}
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-secondary" id="modal-clear-button" formtarget="_self">
+                    <i class="fa fa-close fa-fw"></i> {{ 'label.filters.clear'|trans(domain = 'EasyAdminBundle') }}
+                </button>
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="modal-done-button" formtarget="_self">
+                    <i class="fa fa-check fa-fw"></i> {{ 'label.filters.done'|trans(domain = 'EasyAdminBundle') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $(document)
+            .off('click', '#modal-clear-button')
+            .on('click', '#modal-clear-button', function () {
+                let $modal = $(this).closest('.modal');
+                $modal.find('.filter-checkbox:checked').prop('checked', false).trigger('change');
+                $modal.find('.filter-checkbox:not(:checked)').closest('.filter-field').remove();
+                $modal.find('form').trigger('submit');
+            })
+            .off('click', '#modal-done-button')
+            .on('click', '#modal-done-button', function () {
+                let $modal = $(this).closest('.modal');
+                $modal.find('.filter-checkbox:not(:checked)').closest('.filter-field').remove();
+                $modal.find('form').trigger('submit');
+            })
+    })
+</script>

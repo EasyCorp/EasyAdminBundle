@@ -10,7 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -438,6 +440,84 @@ trait AdminControllerTrait
     }
 
     /**
+     * The method that is executed when the user open the filters modal on an entity.
+     *
+     * @return Response
+     */
+    protected function filtersAction()
+    {
+        $filtersForm = $this->createFiltersForm($this->entity['name']);
+        $filtersForm->handleRequest($this->request);
+
+        $easyadmin = $this->request->attributes->get('easyadmin');
+        $easyadmin['filters']['applied'] = \array_keys($this->request->get('filters', []));
+        $this->request->attributes->set('easyadmin', $easyadmin);
+
+        $parameters = [
+            'filters_form' => $filtersForm->createView(),
+            'referer_action' => $this->request->get('referer_action', 'list'),
+        ];
+
+        return $this->executeDynamicMethod('render<EntityName>Template', ['filters', $this->entity['templates']['filters'], $parameters]);
+    }
+
+    /**
+     * The method that apply all configured filter to the list QueryBuilder.
+     */
+    protected function filterQueryBuilder(QueryBuilder $queryBuilder): void
+    {
+        if (!$requestData = $this->request->get('filters')) {
+            // Don't create the filters form if there is no filter applied
+            return;
+        }
+
+        /** @var Form $filtersForm */
+        $filtersForm = $this->createFiltersForm($this->entity['name']);
+        $filtersForm->handleRequest($this->request);
+
+        if (!$filtersForm->isSubmitted()) {
+            return;
+        }
+
+        $appliedFilters = [];
+        foreach ($filtersForm as $filterForm) {
+            $name = $filterForm->getName();
+            if (!isset($requestData[$name])) {
+                // this filter is not applied
+                continue;
+            }
+
+            // resolve the filter object related to this form field
+            $resolvedFormType = $filterForm->getConfig()->getType();
+            $filter = $resolvedFormType->getInnerType();
+            while (!$filter instanceof FilterInterface) {
+                if (null === $resolvedFormType = $resolvedFormType->getParent()) {
+                    throw new \RuntimeException(\sprintf('Filter type "%s" must to implement "%s".', \get_class($filterForm->getConfig()->getType()->getInnerType()), FilterInterface::class));
+                }
+
+                $filter = $resolvedFormType->getInnerType();
+            }
+
+            $metadata = $this->entity['list']['filters'][$name] ?? [];
+            if (false !== $filter->filter($queryBuilder, $filterForm, $metadata)) {
+                $appliedFilters[] = $name;
+            }
+        }
+
+        $easyadmin = $this->request->attributes->get('easyadmin');
+        $easyadmin['filters']['applied'] = $appliedFilters;
+        $this->request->attributes->set('easyadmin', $easyadmin);
+    }
+
+    protected function createFiltersForm(string $entityName): FormInterface
+    {
+        return $this->get('form.factory')->createNamed('filters', EasyAdminFiltersFormType::class, null, [
+            'method' => 'GET',
+            'entity' => $entityName,
+        ]);
+    }
+
+    /**
      * It updates the value of some property of some entity to the new given value.
      *
      * @param mixed  $entity   The instance of the entity to modify
@@ -534,6 +614,8 @@ trait AdminControllerTrait
 
         $queryBuilder = $this->executeDynamicMethod('create<EntityName>ListQueryBuilder', [$entityClass, $sortDirection, $sortField, $dqlFilter]);
 
+        $this->filterQueryBuilder($queryBuilder);
+
         $this->dispatch(EasyAdminEvents::POST_LIST_QUERY_BUILDER, [
             'query_builder' => $queryBuilder,
             'sort_field' => $sortField,
@@ -580,6 +662,8 @@ trait AdminControllerTrait
         }
 
         $queryBuilder = $this->executeDynamicMethod('create<EntityName>SearchQueryBuilder', [$entityClass, $searchQuery, $searchableFields, $sortField, $sortDirection, $dqlFilter]);
+
+        $this->filterQueryBuilder($queryBuilder);
 
         $this->dispatch(EasyAdminEvents::POST_SEARCH_QUERY_BUILDER, [
             'query_builder' => $queryBuilder,

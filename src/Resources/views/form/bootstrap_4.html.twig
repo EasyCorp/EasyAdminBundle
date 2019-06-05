@@ -498,3 +498,49 @@
         </button>
     {% endfor %}
 {% endblock easyadmin_batch_widget %}
+
+{# EasyAdminFilters form type #}
+{% block easyadmin_filters_widget %}
+    {% set _translation_domain = easyadmin.entity.translation_domain %}
+    {% set applied_filters = easyadmin.filters.applied|default([]) %}
+
+    <div class="accordion long" id="filter-accordion">
+        {% for field in form %}
+            <div class="filter-field {% if not loop.last %}border-bottom{% endif %} py-1 px-3">
+                <div id="heading{{ loop.index }}">
+                    <h5 class="mb-0">
+                        <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                            {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = _translation_domain) }}
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="heading{{ loop.index }}" data-parent="#filter-accordion">
+                    <div class="form-widget my-2">
+                        {{ form_widget(field) }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        $(function () {
+            $(document).on('change', '.filter-checkbox', function () {
+                let $cb = $(this);
+                if (($cb.prop('checked') && $cb.next().attr('aria-expanded') === 'false') || (!$cb.prop('checked') && $cb.next().attr('aria-expanded') === 'true')) {
+                    $cb.next().click();
+                }
+            });
+            $(document).on('change', 'form#{{ form.vars.id }}', function (e) {
+                if ($(e.target).hasClass('filter-checkbox')) {
+                    return;
+                }
+                let $cb = $(e.target).closest('.filter-field').find('.filter-checkbox');
+                if (!$cb.prop('checked')) {
+                    $cb.prop('checked', true);
+                }
+            });
+        })
+    </script>
+    {{ include('@EasyAdmin/default/includes/_select2_widget.html.twig') }}
+{% endblock easyadmin_filters_widget %}

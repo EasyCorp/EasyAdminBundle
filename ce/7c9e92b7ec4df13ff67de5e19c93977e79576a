@@ -1,0 +1,151 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-05-30T18:39:46Z
+
+Wow!! 😮  I'm speechless! What a great contribution 😱 It's beyond amazing ... it's mind-blowing. It's such an honor to have as a contributor of this project 🙇🙇🙇
+
+I'm going to review this as fast as possible and I will work in the docs and any other thing you want. Thanks.
+
+---------------------------------------------------------------------------
+
+by ktrzos at 2019-05-30T19:07:37Z
+
+Well done!
+https://i.giphy.com/media/bKBM7H63PIykM/giphy.webp
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-01T03:53:24Z
+
+Update:
+ * Now `EasyAdminFiltersFormType` adds support for "configurators" (just like we already have for new/edit form fields)
+ * The signature of the `filter()` method in `EasyAdminFilterInterface` has been changed to pass the `$form` filter instance instead of its `$form->getData()` only. It'll allow us get full access to all other filters and their data, as well as get control over the form configuration e.g. `$form->getConfig()->getOptions()`.
+ * In case you only need to transform the sent data of some current filter type (e.g. see `EasyAdminTextFilter` and `EasyAdminDateFilter`) use the `getParent()` method and you don't need to implement the `EasyAdminFilterInterface` (but, instead some of the parent form types must to implement it) That'll improve the form themes customization too, keeping the parent block prefix for general customization (which you lose when use the `extends` way).
+
+Description updated with latest changes.
+
+Next stop:
+ * Add some text translations
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-01T15:11:40Z
+
+Text translations updated.
+
+@javiereguiluz this is ready for your review, after your suggestions, I will start working on the tests, thank you!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-03T17:50:09Z
+
+I've been testing this in a real app ... it's even more impressive than I have imagined. It's great and works perfectly. I'm impressed.
+
+My only minor concerns are:
+
+* Search looks incompatible with filters. When I make a search, if I click on "filters", the search disappears ... and viceversa, if I filter results and get lots of them, if I try to search on them, the filters disappear. Is this intended? I imagine in real apps filtering results and getting lots of them ... so the extra utility of searching those filtering results may be useful.
+* The date filter displays the usual `<select>` based date selector:
+![image](https://user-images.githubusercontent.com/73419/58822764-88a02d00-8638-11e9-83de-396aa4958b10.png)
+  Could we use the native browser date selector instead? Or would it be impossible to use that in all kinds of apps for some reason? I know the native datepicker is not great yet, but I guess browsers will keep improving them and they will make JS-based datepickers obsolete some day.
+ * Once this is merged, I'd like to make some minor design tweaks ... but they will be very minor because current design and UX is great.
+
+Thanks again for this amazing feature!
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-03T18:47:24Z
+
+> Could we use the native browser date selector instead?
+
+Done.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-03T18:55:09Z
+
+> Search looks incompatible with filters. When I make a search, if I click on "filters", the search disappears ... and viceversa, if I filter results and get lots of them, if I try to search on them, the filters disappear. Is this intended? I imagine in real apps filtering results and getting lots of them ... so the extra utility of searching those filtering results may be useful.
+
+You're right, the search action is interpreted as a new action that saves the basic parameters (entity, sortField, sortDirection, menuIndex and submenuIndex) all other parameters are automatically ignored.
+
+Unless we save the filters applied in the session, I don't know how to keep them applied for the search action.
+
+Maybe we should reconsider integrating the search action into the list action.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-04T11:03:22Z
+
+> You're right, the search action is interpreted as a new action that saves the basic parameters (entity, sortField, sortDirection, menuIndex and submenuIndex) all other parameters are automatically ignored.
+
+I haven't looked into full detail yet ... but I have two comments:
+
+1) Isn't filtering a kind of search? If I filter the list to show only the published posts, I'm actually searching for published posts. Could it be possible to make this more associated with search instead of list? <-- Maybe this doesn't make any sense. It's just a comment.
+2) With the current behavior which appends the filters to the URL query string ... couldn't we add them to a `<input type="hidden">` field in the search form like we do with the other information?
+
+Thanks.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-04T17:36:49Z
+
+Some minor comments:
+
+1) When I use the filter that allows to select "equal to / not equal to" and a `<select>` with the values of some entities, I think the "not equal to" should take into account `null` values too. E.g. I was looking for articles not written by some person ... but some articles have `null` as author ... so, if I look for "articles not written by Jane Doe" I think that "articles with null author" should appear too. Do you agree?
+
+2) This is a very minor thing. I know that in `Form` namespace, our classes include `EasyAdmin` as part of their names ... but we don't do the same for the rest of the code. Don't you think it's a bit redundant? For example, `EasyAdminComparisonFilter` could be `ComparisonFilter`:
+
+![image](https://user-images.githubusercontent.com/73419/58900509-953b8880-86ff-11e9-9110-32b146b49b74.png)
+
+3) Another minor comment just for your consideration: should the `Type` classes be moved from `Form/Filter/` to `Form/Type/` ?
+
+![image](https://user-images.githubusercontent.com/73419/58900721-fd8a6a00-86ff-11e9-8b4e-655c56593fc5.png)
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-04T18:19:00Z
+
+@javiereguiluz I've fixed all issues related to the search action, check it out!!
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-04T18:37:42Z
+
+> 1. When I use the filter that allows to select "equal to / not equal to" and a `<select>` with the values of some entities, I think the "not equal to" should take into account null values too. E.g. I was looking for articles not written by some person ... but some articles have null as author ... so, if I look for "articles not written by Jane Doe" I think that "articles with null author" should appear too. Do you agree?
+
+Shouldn't we add a `None` option instead and filter by `null` directly if want? I'm not sure that mixing a `null` criterion is a good idea, some might expect only the selected values. Anyways, it's about default behavior, anyone can modify it at their convenience.
+
+> 2. This is a very minor thing. I know that in Form namespace, our classes include EasyAdmin as part of their names ... but we don't do the same for the rest of the code. Don't you think it's a bit redundant? For example, EasyAdminComparisonFilter could be ComparisonFilter.
+
+I think we can remove the prefix, yes.
+
+> 3. Another minor comment just for your consideration: should the Type classes be moved from Form/Filter/ to Form/Type/ ?
+
+Sure, I'll make the changes right now.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-04T20:04:35Z
+
+Update:
+
+ * Added `None` option to M2O filter (by default) as well as the posibility to compare with `null` values, also you've the same posibility for M2M/O2M association but without the `None` option, just leave it empty.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-04T20:37:29Z
+
+> 1. When I use the filter that allows to select "equal to / not equal to" and a `<select>` with the values of some entities, I think the "not equal to" should take into account null values too. E.g. I was looking for articles not written by some person ... but some articles have null as author ... so, if I look for "articles not written by Jane Doe" I think that "articles with null author" should appear too. Do you agree?
+
+Oh, now I understand what you said, you're absolutely right, fixed already!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-05T15:00:29Z
+
+I'm speechless again ... this is simply perfect!!  I can't find anything to improve or anything missing here. If you consider it finished too, I can merge it and then start working on tests, docs and some minor UI tweaks. Thanks a lot!
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-05T15:27:15Z
+
+Thanks Javier, it's ready on my side.

@@ -4,13 +4,14 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\BooleanFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\ComparisonFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\DateFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\DateTimeFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\Guess\TypeGuess;
 use Symfony\Component\Form\Guess\ValueGuess;
@@ -93,17 +94,26 @@ class PropertyConfigPass implements ConfigPassInterface
             ],
         ],
         'date' => [
-            'type' => DateFilter::class,
-            'type_options' => [],
-        ],
-        'datetime' => [
-            'type' => ComparisonFilter::class,
+            'type' => DateTimeFilter::class,
             'type_options' => [
-                'value_type' => DateTimeType::class,
+                'value_type' => DateType::class,
                 'value_type_options' => [
                     'widget' => 'single_text',
                 ],
             ],
+        ],
+        'time' => [
+            'type' => DateTimeFilter::class,
+            'type_options' => [
+                'value_type' => TimeType::class,
+                'value_type_options' => [
+                    'widget' => 'single_text',
+                ],
+            ],
+        ],
+        'datetime' => [
+            'type' => DateTimeFilter::class,
+            'type_options' => [],
         ],
         'association' => [
             'type' => EntityFilter::class,

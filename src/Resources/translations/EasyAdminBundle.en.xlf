@@ -147,9 +147,9 @@
                 <source>label.filters.clear</source>
                 <target>Clear</target>
             </trans-unit>
-            <trans-unit id="label.filters.done">
-                <source>label.filters.done</source>
-                <target>Done</target>
+            <trans-unit id="label.filters.apply">
+                <source>label.filters.apply</source>
+                <target>Apply</target>
             </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>

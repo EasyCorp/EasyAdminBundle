@@ -504,43 +504,49 @@
     {% set _translation_domain = easyadmin.entity.translation_domain %}
     {% set applied_filters = easyadmin.filters.applied|default([]) %}
 
-    <div class="accordion long" id="filter-accordion">
-        {% for field in form %}
-            <div class="filter-field {% if not loop.last %}border-bottom{% endif %} py-1 px-3">
-                <div id="heading{{ loop.index }}">
-                    <h5 class="mb-0">
-                        <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
-                            {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = _translation_domain) }}
-                        </button>
-                    </h5>
-                </div>
-                <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="heading{{ loop.index }}" data-parent="#filter-accordion">
-                    <div class="form-widget my-2">
-                        {{ form_widget(field) }}
-                    </div>
+    {% for field in form %}
+        <div class="filter-field {% if not loop.last %}border-bottom{% endif %} py-1 px-3 {% if loop.last %}pb-2{% endif %}">
+            <div class="filter-heading" id="filter-heading-{{ loop.index }}">
+                <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
+                <a data-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="false" aria-controls="filter-content-{{ loop.index }}">
+                    {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = _translation_domain) }}
+                </a>
+            </div>
+            <div id="filter-content-{{ loop.index }}" class="filter-content collapse {% if field.vars.name in applied_filters %}show{% endif %}" aria-labelledby="filter-heading-{{ loop.index }}">
+                <div class="form-widget my-2">
+                    {{ form_widget(field) }}
                 </div>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    {% endfor %}
+
     <script>
-        $(function () {
-            $(document).on('change', '.filter-checkbox', function () {
-                let $cb = $(this);
-                if (($cb.prop('checked') && $cb.next().attr('aria-expanded') === 'false') || (!$cb.prop('checked') && $cb.next().attr('aria-expanded') === 'true')) {
-                    $cb.next().click();
+        document.querySelectorAll('.filter-checkbox').forEach(filterCheckbox => {
+            filterCheckbox.addEventListener('change', function () {
+                const filterToggleLink = filterCheckbox.nextElementSibling;
+                const filterExpandedAttribute = filterCheckbox.nextElementSibling.getAttribute('aria-expanded');
+
+                if ((filterCheckbox.checked && 'false' === filterExpandedAttribute) || (!filterCheckbox.checked && 'true' === filterExpandedAttribute)) {
+                    filterToggleLink.click();
                 }
             });
-            $(document).on('change', 'form#{{ form.vars.id }}', function (e) {
-                if ($(e.target).hasClass('filter-checkbox')) {
-                    return;
-                }
-                let $cb = $(e.target).closest('.filter-field').find('.filter-checkbox');
-                if (!$cb.prop('checked')) {
-                    $cb.prop('checked', true);
-                }
-            });
-        })
+        });
+
+        // we can't use -> "document.querySelector('form#filters').addEventListener('change', ...);"
+        // because it doesn't work with Select2 elements changes
+        // TODO: when using the native datepicker, 'change' isn't fired (either in plain JavaScript
+        // or jQuery) unless you input the entire date + time information
+        $(document).on('change', 'form#{{ form.vars.id }}', function (event) {
+            if (event.target.classList.contains('filter-checkbox')) {
+                return;
+            }
+
+            let filterCheckbox = event.target.closest('.filter-field').querySelector('.filter-checkbox');
+            if (!filterCheckbox.checked) {
+                filterCheckbox.setAttribute('checked', true);
+            }
+        });
     </script>
+
     {{ include('@EasyAdmin/default/includes/_select2_widget.html.twig') }}
 {% endblock easyadmin_filters_widget %}

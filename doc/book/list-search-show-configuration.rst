@@ -495,20 +495,28 @@ parameters, their values override this ``sort`` option. This happens for example
 when defining a different sorting in a custom menu and when clicking on the
 listings columns to reorder the displayed contents.
 
-Filtering Entities
-------------------
+Filtering Results
+-----------------
 
-A common need for backends is to filter the entities included in listings (for
-example: don't display expired offers, display only clients that spend more than
-a given amount, etc.) You can achieve this with the features explained later in
-this chapter to modify the behavior of the ``list``, ``search`` and ``show`` views.
+There are two ways of filtering the results displayed in the ``list`` and
+``search`` views:
 
-However, for simple filters it's more convenient to use the ``dql_filter`` option,
-which defines the conditions passed to the ``WHERE`` clause of the Doctrine query
-used to get the entities displayed in the ``list`` and ``search`` views.
+* **Static filters**: the results are filtered before displaying them. The user
+  can't control (and it's not aware of) the filtering. They are defined with the
+  ``dql_filter``.
+* **Dynamic filters**: they are rendered as a list of form controls in the
+  list/search pages and the user can use them to refine the results displayed.
+  They are defined with the ``filters`` option.
 
-The following example manages the same ``User`` entity in two different ways using
-a basic filter to differentiate each type of user:
+Static Filters (``dql_filter`` Option)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``dql_filter`` option lets you define the conditions passed to the ``WHERE``
+clause of the Doctrine query used to get the entities displayed in the ``list``
+and ``search`` views.
+
+The following example manages the same ``User`` entity in two different ways
+using a static filter to differentiate each type of user:
 
 .. code-block:: yaml
 
@@ -523,24 +531,11 @@ a basic filter to differentiate each type of user:
                 class: App\Entity\User
                 list:
                     dql_filter: 'entity.budget <= 100000'
+                    # you can also use container parameters inside the filters
+                    # dql_filter: 'entity.budget <= %customers.budget_threshold%'
 
 The Doctrine DQL expression defined in the ``dql_filter`` option must always use
 ``entity`` as the name of the entity, regardless of your actual entity name.
-
-Since this is a regular YAML configuration file, you can also include container
-parameters inside the filter to use different values depending on the environment
-or even dynamic values:
-
-.. code-block:: yaml
-
-    # config/packages/easy_admin.yaml
-    easy_admin:
-        entities:
-            VipCustomers:
-                class: App\Entity\User
-                list:
-                    dql_filter: 'entity.budget > %customers.budget_threshold%'
-            # ...
 
 The value of the ``dql_filter`` can combine several conditions (in fact, you can
 put anything that is considered valid as a ``WHERE`` clause in a Doctrine query):
@@ -563,8 +558,8 @@ put anything that is considered valid as a ``WHERE`` clause in a Doctrine query)
 
 .. note::
 
-    By default the ``dql_filter`` option from the ``list`` view is also used in the
-    ``search`` view. If you prefer to apply different filters, define the
+    By default the ``dql_filter`` option from the ``list`` view is also used in
+    the ``search`` view. If you prefer to apply different filters, define the
     ``dql_filter`` option explicitly for the ``search`` view:
 
     .. code-block:: yaml
@@ -587,6 +582,149 @@ put anything that is considered valid as a ``WHERE`` clause in a Doctrine query)
 
     Combine the ``dql_filter`` option with a custom menu (as explained in the next
     chapters) to improve the navigation of the backend.
+
+Dynamic Filters (``filters`` Option)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``filters`` option defines the list of fields the user can use to refine the
+list/search results. EasyAdmin can guess the appropriate filter depending on the
+field data type, so in most application, you only need to list the fields:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Users:
+                class: App\Entity\User
+                list:
+                    filters: ['country', 'status', 'signupDate', 'numPurchases']
+
+Built-in Dynamic Filters
+........................
+
+EasyAdmin provides filters for the most common needs:
+
+* ``BooleanFilter``: applied by default to boolean fields. It's rendered as two
+  radiobuttons labeled "Yes" and "No".
+* ``DateFilter``: applied by default to date/time/datetime fields. It's
+  rendered as a ``<select>`` list with the condition (before/after/etc.) and a
+  browser native datepicker to pick the date/time.
+* ``ComparisonFilter``: applied by default to numeric fields. It's rendered as
+  a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
+  ``<input>`` to define the comparison value.
+* ``TextFilter``: applied by default to string/text fields. It's rendered as a
+  ``<select>`` list with the condition (equal/not equal/etc.) and an ``<input>``
+  to define the comparison value.
+* ``EntityFilter``: applied to fields with Doctrine associations (all kinds
+  supported). It's rendered as a ``<select>`` list with the condition (equal/not
+  equal/etc.) and another ``<select>`` list to choose the comparison value.
+
+Although you won't need to do this because EasyAdmin autoselects the best filter
+type for each field, you can define the filter type explicitly:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Users:
+                class: App\Entity\User
+                list:
+                    filters:
+                        - property: 'numPurchases'
+                          type: 'EasyCorp\Bundle\EasyAdminBundle\Form\Filter\ComparisonFilter'
+
+Custom Dynamic Filters
+......................
+
+If your needs are more specific, you can create your own dynamic filters. A
+filter is a PHP class that extends from ``Symfony\Component\Form\AbstractType``
+and implements ``EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterInterface``.
+This interface defines only one method:
+
+.. code-block:: php
+
+    /**
+     * $queryBuilder The query builder used in the list action. It's passed to all applied filters
+     * $form         The form related to this filter. Use $form->getParent() to access to all filters and their values
+     * $metadata     The filter configuration and some extra info related to the entity field if it matches. It's empty
+     *               if the filter was created directly in a custom controller (overriding createFiltersForm() method).
+     *
+     * @return void|false Returns false if the filter wasn't applied
+     */
+    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata);
+
+To make things simpler, you can extend from the abstract
+``EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Filter`` class. Consider this
+example which creates a custom date filter with some special values::
+
+    // src/Form/Filter/DateCalendarFilter.php
+    class DateCalendarFilter extends EasyAdminFilter
+    {
+        public function configureOptions(OptionsResolver $resolver)
+        {
+            $resolver->setDefaults([
+                'choices' => [
+                    'Today' => 'today',
+                    'This month' => 'this_month',
+                    // ...
+                ],
+            ]);
+        }
+
+        public function getParent()
+        {
+            return ChoiceType::class;
+        }
+
+        public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
+        {
+            if ('today' === $form->getData()) {
+                // use $metadata['property'] to make this query generic
+                $queryBuilder->andWhere('entity.date = :today')
+                    ->setParameter('today', (new \DateTime('today'))->format('Y-m-d'));
+            }
+
+            // ...
+        }
+    }
+
+After creating the filter PHP class, update the backend config to associate the
+new filter to the field which will use it:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Users:
+                class: App\Entity\User
+                list:
+                    filters:
+                        - property: 'signupDate'
+                          type: 'App\Form\Filter\DateCalendarFilter'
+                          # optionally you can pass options to the filter class
+                          # type_options: {}
+
+If the options passed to the filter are dynamic, you can't define them in the
+YAML config file. Instead, :ref:`create a custom controller <overriding-the-entity-controller>`
+for your entity and override the ``createFiltersForm()`` method::
+
+    class ProductController extends EasyAdminController
+    {
+        // ...
+
+        protected function createFiltersForm(string $entityName): FormInterface
+        {
+            $form = parent::createFiltersForm($entityName);
+            $form->add('friends', SpecialFriendsFilter::class, [
+                // here you can pass the dynamic options to the filter
+            ]);
+
+            return $form;
+        }
+    }
 
 Property Types Defined by EasyAdmin
 -----------------------------------

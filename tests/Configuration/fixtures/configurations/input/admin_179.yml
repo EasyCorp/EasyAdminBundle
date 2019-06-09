@@ -8,4 +8,4 @@ easy_admin:
             class: AppTestBundle\Entity\UnitTests\Category
             list:
                 filters:
-                    - { property: 'id', type: 'comparison' }
+                    - { property: 'id', type: 'numeric' }

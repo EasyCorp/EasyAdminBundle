@@ -619,17 +619,17 @@ can define the filter type explicitly:
 
 These are the built-in types:
 
-* ``bolean``: applied by default to boolean fields. It's rendered as two
+* ``boolean``: applied by default to boolean fields. It's rendered as two
   radiobuttons labeled "Yes" and "No".
-* ``comparison``: applied by default to numeric fields. It's rendered as
-  a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
-  ``<input>`` to define the comparison value.
 * ``date``: applied by default to date/time/datetime fields. It's
   rendered as a ``<select>`` list with the condition (before/after/etc.) and a
   browser native datepicker to pick the date/time.
 * ``entity``: applied to fields with Doctrine associations (all kinds
   supported). It's rendered as a ``<select>`` list with the condition (equal/not
   equal/etc.) and another ``<select>`` list to choose the comparison value.
+* ``numeric``: applied by default to numeric fields. It's rendered as
+  a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
+  ``<input>`` to define the comparison value.
 * ``text``: applied by default to string/text fields. It's rendered as a
   ``<select>`` list with the condition (equal/not equal/etc.) and an ``<input>``
   to define the comparison value.

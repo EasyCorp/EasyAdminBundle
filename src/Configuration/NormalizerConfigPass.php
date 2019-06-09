@@ -45,9 +45,9 @@ class NormalizerConfigPass implements ConfigPassInterface
 
     private $filterClassesMap = [
         'boolean' => BooleanFilter::class,
-        'comparison' => ComparisonFilter::class,
         'date' => DateFilter::class,
         'entity' => EntityFilter::class,
+        'numeric' => ComparisonFilter::class,
         'text' => TextFilter::class,
     ];
 

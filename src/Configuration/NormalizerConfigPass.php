@@ -440,6 +440,10 @@ class NormalizerConfigPass implements ConfigPassInterface
                     $filterConfig['type'] = $this->filterClassesMap[$filterConfig['type']];
                 }
 
+                if (isset($filterConfig['type']) && !class_exists($filterConfig['type'])) {
+                    throw new \InvalidArgumentException(\sprintf('The "%s" class defined as the type of the "%s" filter in the "list" view of the "%s" entity does not exist.', $filterConfig['type'], $filterConfig['property'], $entityName));
+                }
+
                 $filtersConfig[$filterName] = $filterConfig;
             }
 

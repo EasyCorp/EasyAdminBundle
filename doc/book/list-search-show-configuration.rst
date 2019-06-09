@@ -603,25 +603,9 @@ field data type, so in most application, you only need to list the fields:
 Built-in Dynamic Filters
 ........................
 
-EasyAdmin provides filters for the most common needs:
-
-* ``BooleanFilter``: applied by default to boolean fields. It's rendered as two
-  radiobuttons labeled "Yes" and "No".
-* ``DateFilter``: applied by default to date/time/datetime fields. It's
-  rendered as a ``<select>`` list with the condition (before/after/etc.) and a
-  browser native datepicker to pick the date/time.
-* ``ComparisonFilter``: applied by default to numeric fields. It's rendered as
-  a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
-  ``<input>`` to define the comparison value.
-* ``TextFilter``: applied by default to string/text fields. It's rendered as a
-  ``<select>`` list with the condition (equal/not equal/etc.) and an ``<input>``
-  to define the comparison value.
-* ``EntityFilter``: applied to fields with Doctrine associations (all kinds
-  supported). It's rendered as a ``<select>`` list with the condition (equal/not
-  equal/etc.) and another ``<select>`` list to choose the comparison value.
-
-Although you won't need to do this because EasyAdmin autoselects the best filter
-type for each field, you can define the filter type explicitly:
+EasyAdmin provides filters for the most common needs. Although you won't need to
+do this because EasyAdmin autoselects the best filter type for each field, you
+can define the filter type explicitly:
 
 .. code-block:: yaml
 
@@ -631,9 +615,24 @@ type for each field, you can define the filter type explicitly:
             Users:
                 class: App\Entity\User
                 list:
-                    filters:
-                        - property: 'numPurchases'
-                          type: 'EasyCorp\Bundle\EasyAdminBundle\Form\Filter\ComparisonFilter'
+                    filters: [{ property: 'numPurchases', type: 'comparison' }]
+
+These are the built-in types:
+
+* ``bolean``: applied by default to boolean fields. It's rendered as two
+  radiobuttons labeled "Yes" and "No".
+* ``comparison``: applied by default to numeric fields. It's rendered as
+  a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
+  ``<input>`` to define the comparison value.
+* ``date``: applied by default to date/time/datetime fields. It's
+  rendered as a ``<select>`` list with the condition (before/after/etc.) and a
+  browser native datepicker to pick the date/time.
+* ``entity``: applied to fields with Doctrine associations (all kinds
+  supported). It's rendered as a ``<select>`` list with the condition (equal/not
+  equal/etc.) and another ``<select>`` list to choose the comparison value.
+* ``text``: applied by default to string/text fields. It's rendered as a
+  ``<select>`` list with the condition (equal/not equal/etc.) and an ``<input>``
+  to define the comparison value.
 
 Custom Dynamic Filters
 ......................
@@ -660,7 +659,7 @@ To make things simpler, you can extend from the abstract
 example which creates a custom date filter with some special values::
 
     // src/Form/Filter/DateCalendarFilter.php
-    class DateCalendarFilter extends EasyAdminFilter
+    class DateCalendarFilter extends Filter
     {
         public function configureOptions(OptionsResolver $resolver)
         {

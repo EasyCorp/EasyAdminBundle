@@ -2,6 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\BooleanFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\ComparisonFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\DateFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\EntityFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\TextFilter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -36,6 +41,14 @@ class NormalizerConfigPass implements ConfigPassInterface
             'fields' => [],
             'form_options' => [],
         ],
+    ];
+
+    private $filterClassesMap = [
+        'boolean' => BooleanFilter::class,
+        'comparison' => ComparisonFilter::class,
+        'date' => DateFilter::class,
+        'entity' => EntityFilter::class,
+        'text' => TextFilter::class,
     ];
 
     /** @var ContainerInterface */
@@ -420,6 +433,11 @@ class NormalizerConfigPass implements ConfigPassInterface
 
                 if (null === $filterName = $filterConfig['property']) {
                     throw new \RuntimeException(\sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
+                }
+
+                // allow to use shortcuts (e.g. 'boolean', 'text') instead of FQCN for filter 'type' option
+                if (isset($filterConfig['type']) && \in_array($filterConfig['type'], array_keys($this->filterClassesMap))) {
+                    $filterConfig['type'] = $this->filterClassesMap[$filterConfig['type']];
                 }
 
                 $filtersConfig[$filterName] = $filterConfig;

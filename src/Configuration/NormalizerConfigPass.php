@@ -424,15 +424,15 @@ class NormalizerConfigPass implements ConfigPassInterface
 
             foreach ($entityConfig['list']['filters'] ?? [] as $i => $filterConfig) {
                 if (!\is_string($filterConfig) && !\is_array($filterConfig)) {
-                    throw new \RuntimeException(\sprintf('One of the filters defined by the "list" view of the "%s" entity contains an invalid value (filter config can only be a YAML string or hash).', $entityName));
+                    throw new \InvalidArgumentException(\sprintf('One of the filters defined by the "list" view of the "%s" entity contains an invalid value (filter config can only be a YAML string or hash).', $entityName));
                 }
 
                 if (\is_string($filterConfig)) {
                     $filterConfig = ['property' => $filterConfig];
                 }
 
-                if (null === $filterName = $filterConfig['property']) {
-                    throw new \RuntimeException(\sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
+                if (null === $filterName = $filterConfig['property'] ?? null) {
+                    throw new \InvalidArgumentException(\sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
                 }
 
                 // allow to use shortcuts (e.g. 'boolean', 'text') instead of FQCN for filter 'type' option

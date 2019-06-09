@@ -1,0 +1,8 @@
+# TEST
+# a default empty 'filters' config is created when filters are not defined explicitly
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category

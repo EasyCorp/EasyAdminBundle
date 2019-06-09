@@ -1,0 +1,10 @@
+# TEST
+# the items of 'filters' config are transformed into arrays if they are strings
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                filters: ['id']

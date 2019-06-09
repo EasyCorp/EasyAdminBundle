@@ -435,6 +435,10 @@ class NormalizerConfigPass implements ConfigPassInterface
                     throw new \InvalidArgumentException(\sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
                 }
 
+                if(!isset($filterConfig['type_options'])) {
+                    $filterConfig['type_options'] = [];
+                }
+
                 // allow to use shortcuts (e.g. 'boolean', 'text') instead of FQCN for filter 'type' option
                 if (isset($filterConfig['type']) && \in_array($filterConfig['type'], \array_keys($this->filterClassesMap))) {
                     $filterConfig['type'] = $this->filterClassesMap[$filterConfig['type']];
@@ -442,6 +446,12 @@ class NormalizerConfigPass implements ConfigPassInterface
 
                 if (isset($filterConfig['type']) && !\class_exists($filterConfig['type'])) {
                     throw new \InvalidArgumentException(\sprintf('The "%s" class defined as the type of the "%s" filter in the "list" view of the "%s" entity does not exist.', $filterConfig['type'], $filterConfig['property'], $entityName));
+                }
+
+                // change the name of the option from 'type' to 'class' to ease further internal config processing
+                if (isset($filterConfig['type'])) {
+                    $filterConfig['class'] = $filterConfig['type'];
+                    unset($filterConfig['type']);
                 }
 
                 $filtersConfig[$filterName] = $filterConfig;

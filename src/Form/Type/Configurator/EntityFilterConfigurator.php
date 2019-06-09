@@ -41,6 +41,6 @@ class EntityFilterConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata): bool
     {
-        return EntityFilter::class === $metadata['type'] && 'association' === $metadata['dataType'] ?? null;
+        return (EntityFilter::class === $metadata['class']) && ('association' === $metadata['dataType'] ?? null);
     }
 }

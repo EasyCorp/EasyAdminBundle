@@ -1,0 +1,17 @@
+# TEST
+# items in the 'filters' option must define their 'type' explicitly when it cannot
+# be guessed from their data type
+
+# EXCEPTION
+expected_exception:
+    class: \InvalidArgumentException
+    message_string: 'The "id" filter defined in the "list" view of the "Category" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it using the "this-type-does-not-exist" data type of the associated property.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                # the 'dataType' is configured explicitly to force an unknown data type
+                filters: [{ property: 'id', dataType: 'this-type-does-not-exist' }]

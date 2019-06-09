@@ -435,7 +435,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                     throw new \InvalidArgumentException(\sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
                 }
 
-                if(!isset($filterConfig['type_options'])) {
+                if (!isset($filterConfig['type_options'])) {
                     $filterConfig['type_options'] = [];
                 }
 

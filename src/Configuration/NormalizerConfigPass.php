@@ -436,11 +436,11 @@ class NormalizerConfigPass implements ConfigPassInterface
                 }
 
                 // allow to use shortcuts (e.g. 'boolean', 'text') instead of FQCN for filter 'type' option
-                if (isset($filterConfig['type']) && \in_array($filterConfig['type'], array_keys($this->filterClassesMap))) {
+                if (isset($filterConfig['type']) && \in_array($filterConfig['type'], \array_keys($this->filterClassesMap))) {
                     $filterConfig['type'] = $this->filterClassesMap[$filterConfig['type']];
                 }
 
-                if (isset($filterConfig['type']) && !class_exists($filterConfig['type'])) {
+                if (isset($filterConfig['type']) && !\class_exists($filterConfig['type'])) {
                     throw new \InvalidArgumentException(\sprintf('The "%s" class defined as the type of the "%s" filter in the "list" view of the "%s" entity does not exist.', $filterConfig['type'], $filterConfig['property'], $entityName));
                 }
 

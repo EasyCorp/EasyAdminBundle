@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\BooleanFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\ComparisonFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\DateFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\EntityFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\TextFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\BooleanFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\ComparisonFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\DateFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\EntityFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\TextFilterType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -44,11 +44,11 @@ class NormalizerConfigPass implements ConfigPassInterface
     ];
 
     private $filterClassesMap = [
-        'boolean' => BooleanFilter::class,
-        'date' => DateFilter::class,
-        'entity' => EntityFilter::class,
-        'numeric' => ComparisonFilter::class,
-        'text' => TextFilter::class,
+        'boolean' => BooleanFilterType::class,
+        'date' => DateFilterType::class,
+        'entity' => EntityFilterType::class,
+        'numeric' => ComparisonFilterType::class,
+        'text' => TextFilterType::class,
     ];
 
     /** @var ContainerInterface */

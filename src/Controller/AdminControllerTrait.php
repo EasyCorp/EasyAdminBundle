@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;

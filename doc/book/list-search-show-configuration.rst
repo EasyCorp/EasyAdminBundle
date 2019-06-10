@@ -615,7 +615,7 @@ can define the filter type explicitly:
             Users:
                 class: App\Entity\User
                 list:
-                    filters: [{ property: 'numPurchases', type: 'comparison' }]
+                    filters: [{ property: 'numPurchases', type: 'numeric' }]
 
 These are the built-in types:
 
@@ -638,9 +638,9 @@ Custom Dynamic Filters
 ......................
 
 If your needs are more specific, you can create your own dynamic filters. A
-filter is a PHP class that extends from ``Symfony\Component\Form\AbstractType``
-and implements ``EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterInterface``.
-This interface defines only one method:
+filter is a `Symfony Form Type`_ that implements
+``EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterInterface``. This interface
+defines only one method:
 
 .. code-block:: php
 
@@ -1161,6 +1161,7 @@ template. The value of ``template`` can be any valid Twig template path.
 .. _`PHP format specifiers`: http://php.net/manual/en/function.sprintf.php
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
+.. _`Symfony Form Type`: https://symfony.com/doc/current/forms.html
 
 -----
 

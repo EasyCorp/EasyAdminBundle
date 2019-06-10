@@ -1,11 +1,11 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-trait FilterTrait
+trait FilterTypeTrait
 {
     protected static $uniqueAliasId = 0;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr;
@@ -15,9 +15,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class EntityFilter extends Filter
+class EntityFilterType extends FilterType
 {
-    use FilterTrait;
+    use FilterTypeTrait;
 
     /**
      * {@inheritdoc}
@@ -67,7 +67,7 @@ class EntityFilter extends Filter
      */
     public function getParent(): string
     {
-        return ComparisonFilter::class;
+        return ComparisonFilterType::class;
     }
 
     /**

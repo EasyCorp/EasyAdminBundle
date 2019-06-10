@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\BooleanFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\ComparisonFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\DateFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\EntityFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\TextFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\BooleanFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\ComparisonFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\DateFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\EntityFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\TextFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -68,36 +68,20 @@ class PropertyConfigPass implements ConfigPassInterface
     ];
 
     private static $defaultFilterConfigPerType = [
-        'text' => [
-            'type' => TextFilter::class,
-            'type_options' => [],
-        ],
-        'string' => [
-            'type' => TextFilter::class,
+        'association' => [
+            'type' => EntityFilterType::class,
             'type_options' => [],
         ],
         'boolean' => [
-            'type' => BooleanFilter::class,
+            'type' => BooleanFilterType::class,
             'type_options' => [],
         ],
-        'decimal' => [
-            'type' => ComparisonFilter::class,
-            'type_options' => [
-                'value_type' => NumberType::class,
-            ],
-        ],
-        'integer' => [
-            'type' => ComparisonFilter::class,
-            'type_options' => [
-                'value_type' => IntegerType::class,
-            ],
-        ],
         'date' => [
-            'type' => DateFilter::class,
+            'type' => DateFilterType::class,
             'type_options' => [],
         ],
         'datetime' => [
-            'type' => ComparisonFilter::class,
+            'type' => ComparisonFilterType::class,
             'type_options' => [
                 'value_type' => DateTimeType::class,
                 'value_type_options' => [
@@ -105,8 +89,24 @@ class PropertyConfigPass implements ConfigPassInterface
                 ],
             ],
         ],
-        'association' => [
-            'type' => EntityFilter::class,
+        'decimal' => [
+            'type' => ComparisonFilterType::class,
+            'type_options' => [
+                'value_type' => NumberType::class,
+            ],
+        ],
+        'integer' => [
+            'type' => ComparisonFilterType::class,
+            'type_options' => [
+                'value_type' => IntegerType::class,
+            ],
+        ],
+        'string' => [
+            'type' => TextFilterType::class,
+            'type_options' => [],
+        ],
+        'text' => [
+            'type' => TextFilterType::class,
             'type_options' => [],
         ],
     ];

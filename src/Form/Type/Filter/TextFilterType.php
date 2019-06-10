@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonLikeType;
 use Symfony\Component\Form\AbstractType;
@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class TextFilter extends AbstractType
+class TextFilterType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -55,6 +55,6 @@ class TextFilter extends AbstractType
      */
     public function getParent()
     {
-        return ComparisonFilter::class;
+        return ComparisonFilterType::class;
     }
 }

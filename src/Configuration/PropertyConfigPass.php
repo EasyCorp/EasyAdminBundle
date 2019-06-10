@@ -284,7 +284,11 @@ class PropertyConfigPass implements ConfigPassInterface
                 if (!isset($originalFilterConfig['type']) && isset(self::$defaultFilterConfigPerType[$propertyDataType])) {
                     $defaultFilterConfig = self::$defaultFilterConfigPerType[$propertyDataType];
                     $filterConfig['type'] = $defaultFilterConfig['type'];
-                    $filterConfig['type_options'] += $defaultFilterConfig['type_options'] + ['translation_domain' => 'EasyAdminBundle'];
+                    $filterConfig['type_options'] += $defaultFilterConfig['type_options'];
+                }
+
+                if (!isset($filterConfig['type_options']['translation_domain'])) {
+                    $filterConfig['type_options']['translation_domain'] = 'EasyAdminBundle';
                 }
 
                 if (!\class_exists($filterConfig['type'])) {

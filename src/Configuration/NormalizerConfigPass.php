@@ -440,7 +440,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                 }
 
                 // the 'type' filter option allows to use shortcuts (e.g. 'boolean', 'text') instead of the form type FQCN
-                if (isset($filterConfig['type']) && array_key_exists($filterConfig['type'], $this->filterClassesMap)) {
+                if (isset($filterConfig['type']) && \array_key_exists($filterConfig['type'], $this->filterClassesMap)) {
                     $filterConfig['type'] = $this->filterClassesMap[$filterConfig['type']];
                 }
 

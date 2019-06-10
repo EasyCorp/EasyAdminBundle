@@ -17,6 +17,16 @@ class FiltersTest extends AbstractTestCase
         $this->assertCount(0, $crawler->filter('.global-actions .action-filters-reset'));
     }
 
+    public function testAppliedFiltersButton()
+    {
+        $crawler = self::$client->request('GET', '/admin/?action%3Flist=&entity=Product&filters%5Bprice%5D%5Bcmp%5D=%3E&filters%5Bprice%5D%5Bvalue%5D=3.14');
+
+        $this->assertCount(1, $crawler->filter('.global-actions .action-filters'));
+        $this->assertCount(1, $crawler->filter('.global-actions .action-filters-button'));
+        $this->assertContains('Filters (1)', $crawler->filter('.global-actions .action-filters-button')->text());
+        $this->assertCount(1, $crawler->filter('.global-actions .action-filters-reset'));
+    }
+
     public function testFilterAction()
     {
         $crawler = $this->getBackendPage([

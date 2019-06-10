@@ -281,6 +281,20 @@
             });
 
             {% if _has_filters %}
+            // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
+            // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
+            // That's why we can't use just 'innerHTML'. See https://stackoverflow.com/a/47614491/2804294
+            var setInnerHTML = function(element, htmlContent) {
+                element.innerHTML = htmlContent;
+                Array.from(element.querySelectorAll('script')).forEach( oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes)
+                        .forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            };
+
             document.querySelector('.action-filters').addEventListener('click', function(event) {
                 event.preventDefault();
 
@@ -292,7 +306,7 @@
                 filterModalBody.innerHTML = '<div class="fa-3x px-3 py-3 text-muted text-center"><i class="fas fa-circle-notch fa-spin"></i></div>';
 
                 $.get(filterButton.getAttribute('href'), function (response) {
-                    filterModalBody.innerHTML = response;
+                    setInnerHTML(filterModalBody, response);
                 });
             });
             {% endif %}

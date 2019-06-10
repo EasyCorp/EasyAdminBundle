@@ -69,35 +69,35 @@ class PropertyConfigPass implements ConfigPassInterface
 
     private static $defaultFilterConfigPerType = [
         'text' => [
-            'class' => TextFilter::class,
+            'type' => TextFilter::class,
             'type_options' => [],
         ],
         'string' => [
-            'class' => TextFilter::class,
+            'type' => TextFilter::class,
             'type_options' => [],
         ],
         'boolean' => [
-            'class' => BooleanFilter::class,
+            'type' => BooleanFilter::class,
             'type_options' => [],
         ],
         'decimal' => [
-            'class' => ComparisonFilter::class,
+            'type' => ComparisonFilter::class,
             'type_options' => [
                 'value_type' => NumberType::class,
             ],
         ],
         'integer' => [
-            'class' => ComparisonFilter::class,
+            'type' => ComparisonFilter::class,
             'type_options' => [
                 'value_type' => IntegerType::class,
             ],
         ],
         'date' => [
-            'class' => DateFilter::class,
+            'type' => DateFilter::class,
             'type_options' => [],
         ],
         'datetime' => [
-            'class' => ComparisonFilter::class,
+            'type' => ComparisonFilter::class,
             'type_options' => [
                 'value_type' => DateTimeType::class,
                 'value_type_options' => [
@@ -106,7 +106,7 @@ class PropertyConfigPass implements ConfigPassInterface
             ],
         ],
         'association' => [
-            'class' => EntityFilter::class,
+            'type' => EntityFilter::class,
             'type_options' => [],
         ],
     ];
@@ -276,17 +276,18 @@ class PropertyConfigPass implements ConfigPassInterface
                     throw new \InvalidArgumentException(\sprintf('The "%s" filter configured in the "list" view of the "%s" entity refers to a property called "%s" which is not defined in that entity.', $propertyName, $entityName, $propertyName));
                 }
 
-                // add default filterConfig
+                // if the original filter didn't define the 'type' option, it will now
+                // be defined thanks to the 'type' value added by Doctrine's metadata
                 $filterConfig += $entityConfig['properties'][$propertyName];
-                $propertyDataType = $filterConfig['dataType'];
+                $propertyDataType = $filterConfig['type'];
 
-                if (!isset($originalFilterConfig['class']) && isset(self::$defaultFilterConfigPerType[$propertyDataType])) {
+                if (!isset($originalFilterConfig['type']) && isset(self::$defaultFilterConfigPerType[$propertyDataType])) {
                     $defaultFilterConfig = self::$defaultFilterConfigPerType[$propertyDataType];
-                    $filterConfig['class'] = $defaultFilterConfig['class'];
+                    $filterConfig['type'] = $defaultFilterConfig['type'];
                     $filterConfig['type_options'] += $defaultFilterConfig['type_options'] + ['translation_domain' => 'EasyAdminBundle'];
                 }
 
-                if (!isset($filterConfig['class'])) {
+                if (!\class_exists($filterConfig['type'])) {
                     throw new \InvalidArgumentException(\sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it using the "%s" data type of the associated property.', $propertyName, $entityName, $filterConfig['dataType']));
                 }
 

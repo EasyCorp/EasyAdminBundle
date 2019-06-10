@@ -292,7 +292,7 @@ class PropertyConfigPass implements ConfigPassInterface
                 }
 
                 if (!\class_exists($filterConfig['type'])) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it using the "%s" data type of the associated property.', $propertyName, $entityName, $filterConfig['dataType']));
+                    throw new \InvalidArgumentException(\sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it using the "%s" data type of the associated property.', $propertyName, $entityName, $propertyDataType));
                 }
 
                 $backendConfig['entities'][$entityName]['list']['filters'][$propertyName] = $filterConfig;

@@ -95,6 +95,12 @@ class PropertyConfigPass implements ConfigPassInterface
                 'value_type' => NumberType::class,
             ],
         ],
+        'float' => [
+            'type' => ComparisonFilterType::class,
+            'type_options' => [
+                'value_type' => NumberType::class,
+            ],
+        ],
         'integer' => [
             'type' => ComparisonFilterType::class,
             'type_options' => [

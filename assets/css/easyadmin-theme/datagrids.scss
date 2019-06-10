@@ -149,13 +149,13 @@ table.datagrid {
   border-bottom: 0;
   padding: 15px;
 }
-.action-filters i {
+.action-filters-button i {
   color: var(--text-color-light);
 }
-.action-filters.action-filters-applied i {
+.action-filters-button.action-filters-applied i {
   color: var(--color-primary);
 }
-.action-filters span {
+.action-filters-button span {
   font-weight: 600;
 }
 .action-filters-reset i {

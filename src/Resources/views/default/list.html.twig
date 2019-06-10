@@ -82,8 +82,8 @@
     {% if _has_filters %}
         {% set _applied_filters = app.request.attributes.get('easyadmin').filters.applied|default(false) %}
         {% block filters_action %}
-            <div class="btn-group">
-                <a href="{{ path('easyadmin', _request_parameters|merge({ action: 'filters', referer_action: app.request.get('action') })) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters {{ _applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+            <div class="btn-group action-filters">
+                <a href="{{ path('easyadmin', _request_parameters|merge({ action: 'filters', referer_action: app.request.get('action') })) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ _applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
                     <i class="fa fa-filter fa-fw"></i> {{ 'label.filters'|trans(_trans_parameters, 'EasyAdminBundle') }}{% if _applied_filters %} <span class="text-primary">({{ _applied_filters|length }})</span>{% endif %}
                 </a>
                 {% if _applied_filters %}
@@ -295,7 +295,7 @@
                 });
             };
 
-            document.querySelector('.action-filters').addEventListener('click', function(event) {
+            document.querySelector('.action-filters-button').addEventListener('click', function(event) {
                 event.preventDefault();
 
                 let filterButton = event.target;

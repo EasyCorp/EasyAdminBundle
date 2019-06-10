@@ -245,6 +245,13 @@ class DefaultBackendTest extends AbstractTestCase
         $this->assertNotContains('&lt;ul&gt;', \trim($crawler->filter('#main table td.string')->first()->text()), 'HTML tags are removed by default in the "list" view.');
     }
 
+    public function testListViewHasNoFilters()
+    {
+        $crawler = $this->requestListView('Product');
+
+        $this->assertCount(0, $crawler->filter('.global-actions .action-filters'));
+    }
+
     public function testShowViewPageTitle()
     {
         $crawler = $this->requestShowView();

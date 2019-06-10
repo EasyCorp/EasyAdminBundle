@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormConfigInterface;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class EntityFilterConfigurator implements TypeConfiguratorInterface
+class EntityFilterTypeConfigurator implements TypeConfiguratorInterface
 {
     /**
      * {@inheritdoc}

@@ -1,0 +1,16 @@
+# TEST
+# items in the 'filters' option must define the 'property' option (when they
+# are not strings, in which case the string is considered the property name)
+
+# EXCEPTION
+expected_exception:
+    class: \InvalidArgumentException
+    message_string: 'One of the filters defined by the "list" view of the "Category" entity does not define its property name, which is the only mandatory option for filters.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                filters: [{ type: 'boolean' }]

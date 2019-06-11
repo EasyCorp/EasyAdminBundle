@@ -3,13 +3,13 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\EntityFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\EntityFilterType;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class EntityFilterConfigurator implements TypeConfiguratorInterface
+class EntityFilterTypeConfigurator implements TypeConfiguratorInterface
 {
     /**
      * {@inheritdoc}
@@ -41,6 +41,6 @@ class EntityFilterConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata): bool
     {
-        return EntityFilter::class === $metadata['type'] && 'association' === $metadata['dataType'] ?? null;
+        return (EntityFilterType::class === $type) && ('association' === $metadata['dataType'] ?? null);
     }
 }

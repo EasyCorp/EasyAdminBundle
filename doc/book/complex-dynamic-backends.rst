@@ -385,6 +385,8 @@ Instead of overriding the ``createNewEntity()`` method and check for the
         }
     }
 
+.. _overriding-the-entity-controller:
+
 Customization Based on Entity Controllers
 -----------------------------------------
 

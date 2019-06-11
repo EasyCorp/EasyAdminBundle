@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\FormInterface;

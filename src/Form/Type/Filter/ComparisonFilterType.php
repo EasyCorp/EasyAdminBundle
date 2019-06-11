@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonEqualType;
@@ -12,9 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class ComparisonFilter extends Filter
+class ComparisonFilterType extends FilterType
 {
-    use FilterTrait;
+    use FilterTypeTrait;
 
     /**
      * {@inheritdoc}

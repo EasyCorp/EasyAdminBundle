@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class DateFilter extends AbstractType
+class DateFilterType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -49,6 +49,6 @@ class DateFilter extends AbstractType
      */
     public function getParent()
     {
-        return ComparisonFilter::class;
+        return ComparisonFilterType::class;
     }
 }

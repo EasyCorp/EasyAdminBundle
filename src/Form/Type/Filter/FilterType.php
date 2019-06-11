@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
 
 use Symfony\Component\Form\AbstractType;
 
@@ -9,6 +9,6 @@ use Symfony\Component\Form\AbstractType;
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-abstract class Filter extends AbstractType implements FilterInterface
+abstract class FilterType extends AbstractType implements FilterInterface
 {
 }

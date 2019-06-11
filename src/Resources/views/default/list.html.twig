@@ -82,12 +82,12 @@
     {% if _has_filters %}
         {% set _applied_filters = app.request.attributes.get('easyadmin').filters.applied|default(false) %}
         {% block filters_action %}
-            <div class="btn-group">
-                <a href="{{ path('easyadmin', _request_parameters|merge({ action: 'filters', referer_action: app.request.get('action') })) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters" data-modal="#modal-filters">
-                    <i class="fa fa-filter fa-fw"></i> {{ 'label.filters'|trans(_trans_parameters, 'EasyAdminBundle') }}{% if _applied_filters %} ({{ _applied_filters|length }}){% endif %}
+            <div class="btn-group action-filters">
+                <a href="{{ path('easyadmin', _request_parameters|merge({ action: 'filters', referer_action: app.request.get('action') })) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ _applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+                    <i class="fa fa-filter fa-fw"></i> {{ 'label.filters'|trans(_trans_parameters, 'EasyAdminBundle') }}{% if _applied_filters %} <span class="text-primary">({{ _applied_filters|length }})</span>{% endif %}
                 </a>
                 {% if _applied_filters %}
-                    <a href="{{ path('easyadmin', _request_parameters|merge({ filters: null })) }}" class="btn btn-secondary text-primary">
+                    <a href="{{ path('easyadmin', _request_parameters|merge({ filters: null })) }}" class="btn btn-secondary action-filters-reset">
                         <i class="fa fa-close"></i>
                     </a>
                 {% endif %}
@@ -281,14 +281,34 @@
             });
 
             {% if _has_filters %}
-            $('.action-filters').on('click', function(e) {
-                let $a = $(this);
-                e.preventDefault();
-                $.get($a.attr('href'), function (response) {
-                    let $modal = $($a.attr('data-modal'));
-                    $modal.find('.modal-body').html(response);
-                    $modal.modal({backdrop: true, keyboard: true});
+            // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
+            // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
+            // That's why we can't use just 'innerHTML'. See https://stackoverflow.com/a/47614491/2804294
+            var setInnerHTML = function(element, htmlContent) {
+                element.innerHTML = htmlContent;
+                Array.from(element.querySelectorAll('script')).forEach( oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes)
+                        .forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
                 });
+            };
+
+            document.querySelector('.action-filters-button').addEventListener('click', function(event) {
+                let filterButton = event.currentTarget;
+                let filterModal = document.querySelector(filterButton.dataset.modal);
+                let filterModalBody = filterModal.querySelector('.modal-body');
+
+                $(filterModal).modal({ backdrop: true, keyboard: true });
+                filterModalBody.innerHTML = '<div class="fa-3x px-3 py-3 text-muted text-center"><i class="fas fa-circle-notch fa-spin"></i></div>';
+
+                $.get(filterButton.getAttribute('href'), function (response) {
+                    setInnerHTML(filterModalBody, response);
+                });
+
+                event.preventDefault();
+                event.stopPropagation();
             });
             {% endif %}
 

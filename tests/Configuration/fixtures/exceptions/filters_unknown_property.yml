@@ -1,0 +1,15 @@
+# TEST
+# items in the 'filters' option must refer to a valid property of the related entity
+
+# EXCEPTION
+expected_exception:
+    class: \InvalidArgumentException
+    message_string: 'The "this-property-does-not-exist" filter configured in the "list" view of the "Category" entity refers to a property called "this-property-does-not-exist" which is not defined in that entity.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                filters: ['this-property-does-not-exist']

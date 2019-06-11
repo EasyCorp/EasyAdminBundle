@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\BooleanFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\ComparisonFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\DateFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\EntityFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\TextFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\BooleanFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\ComparisonFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\DateFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\EntityFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\TextFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -67,37 +67,21 @@ class PropertyConfigPass implements ConfigPassInterface
         'virtual' => true,
     ];
 
-    private static $defaultFilterType = [
-        'text' => [
-            'type' => TextFilter::class,
-            'type_options' => [],
-        ],
-        'string' => [
-            'type' => TextFilter::class,
+    private static $defaultFilterConfigPerType = [
+        'association' => [
+            'type' => EntityFilterType::class,
             'type_options' => [],
         ],
         'boolean' => [
-            'type' => BooleanFilter::class,
+            'type' => BooleanFilterType::class,
             'type_options' => [],
         ],
-        'decimal' => [
-            'type' => ComparisonFilter::class,
-            'type_options' => [
-                'value_type' => NumberType::class,
-            ],
-        ],
-        'integer' => [
-            'type' => ComparisonFilter::class,
-            'type_options' => [
-                'value_type' => IntegerType::class,
-            ],
-        ],
         'date' => [
-            'type' => DateFilter::class,
+            'type' => DateFilterType::class,
             'type_options' => [],
         ],
         'datetime' => [
-            'type' => ComparisonFilter::class,
+            'type' => ComparisonFilterType::class,
             'type_options' => [
                 'value_type' => DateTimeType::class,
                 'value_type_options' => [
@@ -105,8 +89,30 @@ class PropertyConfigPass implements ConfigPassInterface
                 ],
             ],
         ],
-        'association' => [
-            'type' => EntityFilter::class,
+        'decimal' => [
+            'type' => ComparisonFilterType::class,
+            'type_options' => [
+                'value_type' => NumberType::class,
+            ],
+        ],
+        'float' => [
+            'type' => ComparisonFilterType::class,
+            'type_options' => [
+                'value_type' => NumberType::class,
+            ],
+        ],
+        'integer' => [
+            'type' => ComparisonFilterType::class,
+            'type_options' => [
+                'value_type' => IntegerType::class,
+            ],
+        ],
+        'string' => [
+            'type' => TextFilterType::class,
+            'type_options' => [],
+        ],
+        'text' => [
+            'type' => TextFilterType::class,
             'type_options' => [],
         ],
     ];
@@ -269,26 +275,33 @@ class PropertyConfigPass implements ConfigPassInterface
     private function processFilterConfig(array $backendConfig): array
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach ($entityConfig['list']['filters'] ?? [] as $name => $metadata) {
-                $userDefinedConfig = $metadata;
+            foreach ($entityConfig['list']['filters'] ?? [] as $propertyName => $filterConfig) {
+                $originalFilterConfig = $filterConfig;
 
-                // add default metadata
-                $metadata += ['type_options' => []];
-                if (\array_key_exists($name, $entityConfig['properties'])) {
-                    $metadata += $entityConfig['properties'][$name];
+                if (!\array_key_exists($propertyName, $entityConfig['properties'])) {
+                    throw new \InvalidArgumentException(\sprintf('The "%s" filter configured in the "list" view of the "%s" entity refers to a property called "%s" which is not defined in that entity.', $propertyName, $entityName, $propertyName));
                 }
 
-                if (!isset($metadata['type'])) {
-                    throw new \RuntimeException(\sprintf('Required "type" option for filter "%s" is missing in "%s" entity config.', $name, $entityName));
+                // if the original filter didn't define the 'type' option, it will now
+                // be defined thanks to the 'type' value added by Doctrine's metadata
+                $filterConfig += $entityConfig['properties'][$propertyName];
+                $propertyDataType = $filterConfig['type'];
+
+                if (!isset($originalFilterConfig['type']) && isset(self::$defaultFilterConfigPerType[$propertyDataType])) {
+                    $defaultFilterConfig = self::$defaultFilterConfigPerType[$propertyDataType];
+                    $filterConfig['type'] = $defaultFilterConfig['type'];
+                    $filterConfig['type_options'] += $defaultFilterConfig['type_options'];
                 }
 
-                if (!isset($userDefinedConfig['type']) && isset(self::$defaultFilterType[$metadata['type']])) {
-                    $default = self::$defaultFilterType[$metadata['type']];
-                    $metadata['type'] = $default['type'];
-                    $metadata['type_options'] += $default['type_options'] + ['translation_domain' => 'EasyAdminBundle'];
+                if (!isset($filterConfig['type_options']['translation_domain'])) {
+                    $filterConfig['type_options']['translation_domain'] = 'EasyAdminBundle';
                 }
 
-                $backendConfig['entities'][$entityName]['list']['filters'][$name] = $metadata;
+                if (!\class_exists($filterConfig['type'])) {
+                    throw new \InvalidArgumentException(\sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it using the "%s" data type of the associated property.', $propertyName, $entityName, $propertyDataType));
+                }
+
+                $backendConfig['entities'][$entityName]['list']['filters'][$propertyName] = $filterConfig;
             }
         }
 

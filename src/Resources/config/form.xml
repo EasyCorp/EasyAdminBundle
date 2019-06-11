@@ -95,7 +95,7 @@
         <!-- Filter Configurators -->
 
         <service id="easyadmin.form.filter.configurator.entity" public="false"
-                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityFilterConfigurator">
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityFilterTypeConfigurator">
             <tag name="easyadmin.form.type.configurator" />
         </service>
 

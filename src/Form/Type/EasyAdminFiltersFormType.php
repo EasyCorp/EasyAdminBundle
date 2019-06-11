@@ -32,17 +32,17 @@ class EasyAdminFiltersFormType extends AbstractType
     {
         $entityConfig = $this->configManager->getEntityConfig($options['entity']);
 
-        foreach ($entityConfig['list']['filters'] as $name => $metadata) {
-            $formFieldOptions = $metadata['type_options'];
+        foreach ($entityConfig['list']['filters'] as $propertyName => $filterConfig) {
+            $formFieldOptions = $filterConfig['type_options'];
 
             // Configure options using the list of registered type configurators:
             foreach ($this->configurators as $configurator) {
-                if ($configurator->supports($metadata['type'], $formFieldOptions, $metadata)) {
-                    $formFieldOptions = $configurator->configure($name, $formFieldOptions, $metadata, $builder);
+                if ($configurator->supports($filterConfig['type'], $formFieldOptions, $filterConfig)) {
+                    $formFieldOptions = $configurator->configure($propertyName, $formFieldOptions, $filterConfig, $builder);
                 }
             }
 
-            $builder->add($name, $metadata['type'], $formFieldOptions);
+            $builder->add($propertyName, $filterConfig['type'], $formFieldOptions);
         }
     }
 

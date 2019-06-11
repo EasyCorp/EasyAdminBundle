@@ -129,3 +129,56 @@ table.datagrid {
 .datagrid .no-results:hover {
     background: transparent;
 }
+
+#modal-filters .modal-dialog {
+  max-width: 400px;
+}
+#modal-filters .modal-content {
+  background: var(--white);
+}
+#modal-filters .modal-header {
+  background: var(--gray-50);
+  border-bottom-color: var(--gray-300);
+  padding: 10px 15px;
+}
+#modal-filters .modal-title {
+  color: var(--gray-700);
+  font-size: var(--font-size-base);
+}
+#modal-filters .modal-body {
+  border-bottom: 0;
+  padding: 15px;
+}
+.action-filters-button i {
+  color: var(--text-color-light);
+}
+.action-filters-button.action-filters-applied i {
+  color: var(--color-primary);
+}
+.action-filters-button span {
+  font-weight: 600;
+}
+.action-filters-reset i {
+  color: var(--text-color-light);
+}
+.filter-heading {
+  align-items: center;
+  display: flex;
+  padding: 4px 0;
+}
+.filter-heading a {
+  color: var(--link-color);
+  cursor: pointer;
+  flex: 1;
+  margin-left: 7px;
+}
+.filter-content {
+  margin-left: 15px;
+}
+.filter-content .form-group,
+.filter-content .form-widget-compound .form-group {
+  padding-right: 5px;
+}
+.filter-content .form-group:last-of-type {
+  padding-bottom: 0;
+}

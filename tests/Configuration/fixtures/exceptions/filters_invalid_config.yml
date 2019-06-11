@@ -1,0 +1,15 @@
+# TEST
+# items in the 'filters' option can only be strings or arrays
+
+# EXCEPTION
+expected_exception:
+    class: \InvalidArgumentException
+    message_string: 'One of the filters defined by the "list" view of the "Category" entity contains an invalid value (filter config can only be a YAML string or hash).'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                filters: [7]

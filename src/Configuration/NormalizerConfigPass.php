@@ -2,6 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\BooleanFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\ComparisonFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\DateFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\EntityFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\TextFilterType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -36,6 +41,14 @@ class NormalizerConfigPass implements ConfigPassInterface
             'fields' => [],
             'form_options' => [],
         ],
+    ];
+
+    private $filterClassesMap = [
+        'boolean' => BooleanFilterType::class,
+        'date' => DateFilterType::class,
+        'entity' => EntityFilterType::class,
+        'numeric' => ComparisonFilterType::class,
+        'text' => TextFilterType::class,
     ];
 
     /** @var ContainerInterface */
@@ -411,15 +424,28 @@ class NormalizerConfigPass implements ConfigPassInterface
 
             foreach ($entityConfig['list']['filters'] ?? [] as $i => $filterConfig) {
                 if (!\is_string($filterConfig) && !\is_array($filterConfig)) {
-                    throw new \RuntimeException(\sprintf('One of the filters defined by the "list" view of the "%s" entity contains an invalid value (filter config can only be a YAML string or hash).', $entityName));
+                    throw new \InvalidArgumentException(\sprintf('One of the filters defined by the "list" view of the "%s" entity contains an invalid value (filter config can only be a YAML string or hash).', $entityName));
                 }
 
                 if (\is_string($filterConfig)) {
                     $filterConfig = ['property' => $filterConfig];
                 }
 
-                if (null === $filterName = $filterConfig['property']) {
-                    throw new \RuntimeException(\sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
+                if (null === $filterName = $filterConfig['property'] ?? null) {
+                    throw new \InvalidArgumentException(\sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
+                }
+
+                if (!isset($filterConfig['type_options'])) {
+                    $filterConfig['type_options'] = [];
+                }
+
+                // the 'type' filter option allows to use shortcuts (e.g. 'boolean', 'text') instead of the form type FQCN
+                if (isset($filterConfig['type']) && \array_key_exists($filterConfig['type'], $this->filterClassesMap)) {
+                    $filterConfig['type'] = $this->filterClassesMap[$filterConfig['type']];
+                }
+
+                if (isset($filterConfig['type']) && !\class_exists($filterConfig['type'])) {
+                    throw new \InvalidArgumentException(\sprintf('The "%s" class defined as the type of the "%s" filter in the "list" view of the "%s" entity does not exist.', $filterConfig['type'], $filterConfig['property'], $entityName));
                 }
 
                 $filtersConfig[$filterName] = $filterConfig;

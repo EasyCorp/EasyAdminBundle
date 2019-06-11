@@ -1,0 +1,9 @@
+imports:
+    - { resource: config.yml }
+
+easy_admin:
+    entities:
+        Product:
+            class: AppTestBundle\Entity\FunctionalTests\Product
+            list:
+                filters: ['name', 'price', 'createdAt', 'categories']

@@ -1,0 +1,15 @@
+# TEST
+# the 'type' option of the 'filters' item must be a valid PHP class
+
+# EXCEPTION
+expected_exception:
+    class: \InvalidArgumentException
+    message_string: 'The "This\Class\Does\Not\Exist" class defined as the type of the "id" filter in the "list" view of the "Category" entity does not exist.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                filters: [{ property: 'id', type: 'This\Class\Does\Not\Exist' }]

@@ -77,3 +77,7 @@ a.btn.disabled, fieldset:disabled a.btn {
 .btn > .btn-label + i {
     margin-left: 4px;
 }
+
+.btn-group-sm > .btn, .btn-sm {
+    padding: 3px 7px;
+}

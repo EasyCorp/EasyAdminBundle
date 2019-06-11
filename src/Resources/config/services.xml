@@ -74,7 +74,8 @@
         </service>
 
         <service id="easyadmin.configuration.normalizer_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass" public="false">
-            <argument id="service_container" type="service" />
+            <argument type="service" id="service_container" />
+            <argument type="service" id="easyadmin.filter.registry" />
             <tag name="easyadmin.config_pass" priority="90" />
         </service>
 
@@ -98,6 +99,7 @@
 
         <service id="easyadmin.configuration.property_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass" public="false">
             <argument type="service" id="form.registry" />
+            <argument type="service" id="easyadmin.filter.registry" />
             <tag name="easyadmin.config_pass" priority="40" />
         </service>
 

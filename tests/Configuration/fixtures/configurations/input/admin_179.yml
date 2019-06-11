@@ -8,4 +8,5 @@ easy_admin:
             class: AppTestBundle\Entity\UnitTests\Category
             list:
                 filters:
-                    - { property: 'id', type: 'numeric' }
+                    - property: 'id'
+                      type: 'integer'

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use PHPUnit\Framework\TestCase;
 
 class NormalizerConfigPassTest extends TestCase
@@ -22,7 +23,7 @@ class NormalizerConfigPassTest extends TestCase
             ],
         ]];
 
-        $configPass = new NormalizerConfigPass($this->getServiceContainer());
+        $configPass = new NormalizerConfigPass($this->getServiceContainer(), $this->getFilterRegistry());
         $configPass->process($backendConfig);
     }
 
@@ -43,7 +44,7 @@ class NormalizerConfigPassTest extends TestCase
             ],
         ]];
 
-        $configPass = new NormalizerConfigPass($this->getServiceContainer());
+        $configPass = new NormalizerConfigPass($this->getServiceContainer(), $this->getFilterRegistry());
         $configPass->process($backendConfig);
     }
 
@@ -52,5 +53,14 @@ class NormalizerConfigPassTest extends TestCase
         return $this->getMockBuilder('Symfony\Component\DependencyInjection\Container')
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    private function getFilterRegistry()
+    {
+        $filterRegistry = $this->getMockBuilder(FilterRegistry::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        return $filterRegistry;
     }
 }

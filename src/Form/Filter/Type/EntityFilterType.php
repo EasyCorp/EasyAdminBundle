@@ -1,11 +1,11 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonEqualType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,24 +24,24 @@ class EntityFilterType extends FilterType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $multiple = $builder->get('value')->getOption('multiple');
+
         $builder->addModelTransformer(new CallbackTransformer(
             static function ($data) { return $data; },
-            static function ($data) use ($builder) {
-                $multiple = $builder->get('value')->getOption('multiple');
-
-                switch ($data['cmp']) {
-                    case ComparisonEqualType::EQ:
-                        if (null === $data['value'] || (\is_iterable($data['value']) && 0 === \count($data['value']))) {
-                            $data['cmp'] = 'IS NULL';
+            static function ($data) use ($multiple) {
+                switch ($data['comparison']) {
+                    case ComparisonType::EQ:
+                        if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
+                            $data['comparison'] = 'IS NULL';
                         } else {
-                            $data['cmp'] = $multiple ? 'IN' : '=';
+                            $data['comparison'] = $multiple ? 'IN' : '=';
                         }
                         break;
-                    case ComparisonEqualType::NEQ:
-                        if (null === $data['value'] || (\is_iterable($data['value']) && 0 === \count($data['value']))) {
-                            $data['cmp'] = 'IS NOT NULL';
+                    case ComparisonType::NEQ:
+                        if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
+                            $data['comparison'] = 'IS NOT NULL';
                         } else {
-                            $data['cmp'] = $multiple ? 'NOT IN' : '!=';
+                            $data['comparison'] = $multiple ? 'NOT IN' : '!=';
                         }
                         break;
                 }
@@ -57,7 +57,7 @@ class EntityFilterType extends FilterType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'cmp_type_options' => ['scalar' => false],
+            'comparison_type_options' => ['type' => 'entity'],
             'value_type' => EntityType::class,
         ]);
     }
@@ -78,6 +78,7 @@ class EntityFilterType extends FilterType
         $alias = \current($queryBuilder->getRootAliases());
         $property = $metadata['property'];
         $paramName = static::createAlias($property);
+        $multiple = $form->get('value')->getConfig()->getOption('multiple');
         $data = $form->getData();
 
         if ('association' === $metadata['dataType'] && $metadata['associationType'] & ClassMetadata::TO_MANY) {
@@ -85,22 +86,22 @@ class EntityFilterType extends FilterType
             $queryBuilder->leftJoin(\sprintf('%s.%s', $alias, $property), $assocAlias);
 
             if (0 === \count($data['value'])) {
-                $queryBuilder->andWhere(\sprintf('%s %s', $assocAlias, $data['cmp']));
+                $queryBuilder->andWhere(\sprintf('%s %s', $assocAlias, $data['comparison']));
             } else {
                 $orX = new Expr\Orx();
-                $orX->add(\sprintf('%s %s (:%s)', $assocAlias, $data['cmp'], $paramName));
-                if ('NOT IN' === $data['cmp']) {
+                $orX->add(\sprintf('%s %s (:%s)', $assocAlias, $data['comparison'], $paramName));
+                if ('NOT IN' === $data['comparison']) {
                     $orX->add(\sprintf('%s IS NULL', $assocAlias));
                 }
                 $queryBuilder->andWhere($orX)
                     ->setParameter($paramName, $data['value']);
             }
-        } elseif (null === $data['value']) {
-            $queryBuilder->andWhere(\sprintf('%s.%s %s', $alias, $property, $data['cmp']));
+        } elseif (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
+            $queryBuilder->andWhere(\sprintf('%s.%s %s', $alias, $property, $data['comparison']));
         } else {
             $orX = new Expr\Orx();
-            $orX->add(\sprintf('%s.%s %s (:%s)', $alias, $property, $data['cmp'], $paramName));
-            if (ComparisonEqualType::NEQ === $data['cmp']) {
+            $orX->add(\sprintf('%s.%s %s (:%s)', $alias, $property, $data['comparison'], $paramName));
+            if (ComparisonType::NEQ === $data['comparison']) {
                 $orX->add(\sprintf('%s.%s IS NULL', $alias, $property));
             }
             $queryBuilder->andWhere($orX)

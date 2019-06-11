@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

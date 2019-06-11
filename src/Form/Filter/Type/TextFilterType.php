@@ -1,10 +1,11 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonLikeType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,6 +14,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TextFilterType extends AbstractType
 {
+    private $valueType;
+
+    public function __construct(string $valueType = null)
+    {
+        $this->valueType = $valueType ?: TextType::class;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -21,19 +29,17 @@ class TextFilterType extends AbstractType
         $builder->addModelTransformer(new CallbackTransformer(
             static function ($data) { return $data; },
             static function ($data) {
-                switch ($data['cmp']) {
-                    case ComparisonLikeType::STARTS_WITH:
-                        $data['cmp'] = ComparisonLikeType::CONTAINS;
+                switch ($data['comparison']) {
+                    case ComparisonType::STARTS_WITH:
+                        $data['comparison'] = ComparisonType::CONTAINS;
                         $data['value'] .= '%';
                         break;
-                    case ComparisonLikeType::ENDS_WITH:
-                        $data['cmp'] = ComparisonLikeType::CONTAINS;
+                    case ComparisonType::ENDS_WITH:
+                        $data['comparison'] = ComparisonType::CONTAINS;
                         $data['value'] = '%'.$data['value'];
                         break;
-                    case ComparisonLikeType::EXACTLY:
-                        // no-op
-                        break;
-                    default:
+                    case ComparisonType::CONTAINS:
+                    case ComparisonType::NOT_CONTAINS:
                         $data['value'] = '%'.$data['value'].'%';
                 }
 
@@ -47,7 +53,10 @@ class TextFilterType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault('cmp_type', ComparisonLikeType::class);
+        $resolver->setDefaults([
+            'comparison_type_options' => ['type' => 'text'],
+            'value_type' => $this->valueType,
+        ]);
     }
 
     /**

@@ -19,7 +19,7 @@ class FiltersTest extends AbstractTestCase
 
     public function testAppliedFiltersButton()
     {
-        $crawler = self::$client->request('GET', '/admin/?action%3Flist=&entity=Product&filters%5Bprice%5D%5Bcmp%5D=%3E&filters%5Bprice%5D%5Bvalue%5D=3.14');
+        $crawler = self::$client->request('GET', '/admin/?action%3Flist=&entity=Product&filters%5Bprice%5D%5Bcomparison%5D=%3E&filters%5Bprice%5D%5Bvalue%5D=3.14');
 
         $this->assertCount(1, $crawler->filter('.global-actions .action-filters'));
         $this->assertCount(1, $crawler->filter('.global-actions .action-filters-button'));
@@ -37,11 +37,11 @@ class FiltersTest extends AbstractTestCase
             'sortField' => 'id',
             'sortDirection' => 'ASC',
             'filters[name][value]' => 'lorem',
-            'filters[price][cmp]' => '>',
+            'filters[price][comparison]' => '>',
             'filters[price][value]' => '3.14',
-            'filters[createdAt][cmp]' => '<=',
+            'filters[createdAt][comparison]' => '<=',
             'filters[createdAt][value]' => '2019-06-10T10:30:00',
-            'filters[categories][cmp]' => '!=',
+            'filters[categories][comparison]' => '!=',
             'filters[categories][value][]' => '1',
         ]);
 
@@ -55,13 +55,13 @@ class FiltersTest extends AbstractTestCase
 
         $this->assertSame('lorem', $crawler->filter('#filters input#filters_name_value')->attr('value'));
 
-        $this->assertSame('Greater than', $crawler->filter('#filters select#filters_price_cmp option[selected="selected"]')->text());
+        $this->assertSame('Is greater than', $crawler->filter('#filters select#filters_price_comparison option[selected="selected"]')->text());
         $this->assertSame('3.14', $crawler->filter('#filters input#filters_price_value')->attr('value'));
 
-        $this->assertSame('Less than or equal to', $crawler->filter('#filters select#filters_createdAt_cmp option[selected="selected"]')->text());
+        $this->assertSame('Is before or same', $crawler->filter('#filters select#filters_createdAt_comparison option[selected="selected"]')->text());
         $this->assertSame('2019-06-10T10:30:00', $crawler->filter('#filters input#filters_createdAt_value')->attr('value'));
 
-        $this->assertSame('Not equal to', $crawler->filter('#filters select#filters_categories_cmp option[selected="selected"]')->text());
+        $this->assertSame('Is not same', $crawler->filter('#filters select#filters_categories_comparison option[selected="selected"]')->text());
         $this->assertSame('1', $crawler->filter('#filters select#filters_categories_value option[selected="selected"]')->attr('value'));
     }
 }

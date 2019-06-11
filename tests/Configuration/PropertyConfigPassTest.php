@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\DependencyInjection\Compiler;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\PropertyConfigPass;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\Form\Guess\TypeGuess;
@@ -37,7 +38,7 @@ class PropertyConfigPassTest extends TestCase
             ],
         ]];
 
-        $configPass = new PropertyConfigPass($this->getFormRegistry());
+        $configPass = new PropertyConfigPass($this->getFormRegistry(), $this->getFilterRegistry());
         $backendConfig = $configPass->process($backendConfig);
 
         $relationsFormConfig = $backendConfig['entities']['TestEntity']['edit']['fields']['relations'];
@@ -82,7 +83,7 @@ class PropertyConfigPassTest extends TestCase
             ],
         ]];
 
-        $configPass = new PropertyConfigPass($this->getFormRegistry());
+        $configPass = new PropertyConfigPass($this->getFormRegistry(), $this->getFilterRegistry());
         $backendConfig = $configPass->process($backendConfig);
 
         $relationsFormConfig = $backendConfig['entities']['TestEntity']['edit']['fields']['relations'];
@@ -127,7 +128,7 @@ class PropertyConfigPassTest extends TestCase
             ],
         ]];
 
-        $configPass = new PropertyConfigPass($this->getFormRegistry());
+        $configPass = new PropertyConfigPass($this->getFormRegistry(), $this->getFilterRegistry());
         $backendConfig = $configPass->process($backendConfig);
 
         $relationsFormConfig = $backendConfig['entities']['TestEntity']['edit']['fields']['relations'];
@@ -169,5 +170,14 @@ class PropertyConfigPassTest extends TestCase
         $formRegistry->method('getTypeGuesser')->willReturn($doctrineTypeGuesser);
 
         return $formRegistry;
+    }
+
+    private function getFilterRegistry()
+    {
+        $filterRegistry = $this->getMockBuilder(FilterRegistry::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        return $filterRegistry;
     }
 }

@@ -2,15 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\BooleanFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\ComparisonFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\DateFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\EntityFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\TextFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\Guess\TypeGuess;
 use Symfony\Component\Form\Guess\ValueGuess;
@@ -67,61 +60,13 @@ class PropertyConfigPass implements ConfigPassInterface
         'virtual' => true,
     ];
 
-    private static $defaultFilterConfigPerType = [
-        'association' => [
-            'type' => EntityFilterType::class,
-            'type_options' => [],
-        ],
-        'boolean' => [
-            'type' => BooleanFilterType::class,
-            'type_options' => [],
-        ],
-        'date' => [
-            'type' => DateFilterType::class,
-            'type_options' => [],
-        ],
-        'datetime' => [
-            'type' => ComparisonFilterType::class,
-            'type_options' => [
-                'value_type' => DateTimeType::class,
-                'value_type_options' => [
-                    'widget' => 'single_text',
-                ],
-            ],
-        ],
-        'decimal' => [
-            'type' => ComparisonFilterType::class,
-            'type_options' => [
-                'value_type' => NumberType::class,
-            ],
-        ],
-        'float' => [
-            'type' => ComparisonFilterType::class,
-            'type_options' => [
-                'value_type' => NumberType::class,
-            ],
-        ],
-        'integer' => [
-            'type' => ComparisonFilterType::class,
-            'type_options' => [
-                'value_type' => IntegerType::class,
-            ],
-        ],
-        'string' => [
-            'type' => TextFilterType::class,
-            'type_options' => [],
-        ],
-        'text' => [
-            'type' => TextFilterType::class,
-            'type_options' => [],
-        ],
-    ];
-
     private $formRegistry;
+    private $filterRegistry;
 
-    public function __construct(FormRegistryInterface $formRegistry)
+    public function __construct(FormRegistryInterface $formRegistry, FilterRegistry $filterRegistry)
     {
         $this->formRegistry = $formRegistry;
+        $this->filterRegistry = $filterRegistry;
     }
 
     public function process(array $backendConfig)
@@ -285,20 +230,23 @@ class PropertyConfigPass implements ConfigPassInterface
                 // if the original filter didn't define the 'type' option, it will now
                 // be defined thanks to the 'type' value added by Doctrine's metadata
                 $filterConfig += $entityConfig['properties'][$propertyName];
-                $propertyDataType = $filterConfig['type'];
 
-                if (!isset($originalFilterConfig['type']) && isset(self::$defaultFilterConfigPerType[$propertyDataType])) {
-                    $defaultFilterConfig = self::$defaultFilterConfigPerType[$propertyDataType];
-                    $filterConfig['type'] = $defaultFilterConfig['type'];
-                    $filterConfig['type_options'] += $defaultFilterConfig['type_options'];
+                if (!isset($originalFilterConfig['type'])) {
+                    $typeGuess = $this->filterRegistry->getTypeGuesser()
+                        ->guessType($entityConfig['class'], $propertyName);
+
+                    if (null !== $typeGuess) {
+                        $filterConfig['type'] = $typeGuess->getType();
+                        $filterConfig['type_options'] = \array_replace_recursive($typeGuess->getOptions(), $filterConfig['type_options']);
+                    }
                 }
 
                 if (!isset($filterConfig['type_options']['translation_domain'])) {
                     $filterConfig['type_options']['translation_domain'] = 'EasyAdminBundle';
                 }
 
-                if (!\class_exists($filterConfig['type'])) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it using the "%s" data type of the associated property.', $propertyName, $entityName, $propertyDataType));
+                if (!isset($filterConfig['type'])) {
+                    throw new \InvalidArgumentException(\sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it using the "%s" data type of the associated property.', $propertyName, $entityName, $filterConfig['type']));
                 }
 
                 $backendConfig['entities'][$entityName]['list']['filters'][$propertyName] = $filterConfig;

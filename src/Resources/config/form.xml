@@ -92,14 +92,89 @@
 
         <!-- Type Configurators -->
 
-        <!-- Filter Configurators -->
+        <service id="easyadmin.filter.registry" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry">
+            <argument type="collection" /> <!-- filter types map -->
+            <argument type="iterator" /> <!-- filter types guessers -->
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry" alias="easyadmin.filter.registry" />
 
-        <service id="easyadmin.form.filter.configurator.entity" public="false"
-                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityFilterTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" />
+        <service id="easyadmin.filter.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension">
+            <argument /><!-- All services with tag "easyadmin.filter.type" are stored in a service locator -->
+            <argument type="collection" />
+            <argument type="iterator" />
         </service>
 
-        <!-- Filter Configurators -->
+        <service id="easyadmin.filter.type.comparison" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType">
+            <tag name="easyadmin.filter.type" alias="comparison" />
+        </service>
+
+        <service id="easyadmin.filter.type.integer" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType">
+            <argument type="string">Symfony\Component\Form\Extension\Core\Type\IntegerType</argument>
+            <tag name="easyadmin.filter.type" alias="integer" />
+        </service>
+
+        <service id="easyadmin.filter.type.float" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType">
+            <argument type="string">Symfony\Component\Form\Extension\Core\Type\NumberType</argument>
+            <tag name="easyadmin.filter.type" alias="float" />
+        </service>
+
+        <service id="easyadmin.filter.type.decimal" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType">
+            <argument type="string">Symfony\Component\Form\Extension\Core\Type\NumberType</argument>
+            <argument type="collection">
+                <argument key="input">string</argument>
+            </argument>
+            <tag name="easyadmin.filter.type" alias="decimal" />
+        </service>
+
+        <service id="easyadmin.filter.type.boolean" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType">
+            <tag name="easyadmin.filter.type" alias="boolean" />
+        </service>
+
+        <service id="easyadmin.filter.type.text" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\TextFilterType">
+            <tag name="easyadmin.filter.type" alias="text" />
+        </service>
+
+        <service id="easyadmin.filter.type.textarea" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\TextFilterType">
+            <argument type="string">Symfony\Component\Form\Extension\Core\Type\TextareaType</argument>
+            <tag name="easyadmin.filter.type" alias="textarea" />
+        </service>
+
+        <service id="easyadmin.filter.type.array" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ArrayFilterType">
+            <tag name="easyadmin.filter.type" alias="array" />
+        </service>
+
+        <service id="easyadmin.filter.type.datetime" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\DateTimeFilterType">
+            <tag name="easyadmin.filter.type" alias="datetime" />
+        </service>
+
+        <service id="easyadmin.filter.type.date" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\DateTimeFilterType">
+            <argument type="string">Symfony\Component\Form\Extension\Core\Type\DateType</argument>
+            <tag name="easyadmin.filter.type" alias="date" />
+        </service>
+
+        <service id="easyadmin.filter.type.time" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\DateTimeFilterType">
+            <argument type="string">Symfony\Component\Form\Extension\Core\Type\TimeType</argument>
+            <tag name="easyadmin.filter.type" alias="time" />
+        </service>
+
+        <service id="easyadmin.filter.type.dateinterval" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType">
+            <argument type="string">Symfony\Component\Form\Extension\Core\Type\DateIntervalType</argument>
+            <argument type="collection" />
+            <argument type="string" />
+            <argument type="collection">
+                <argument key="type">datetime</argument>
+            </argument>
+            <tag name="easyadmin.filter.type" alias="dateinterval" />
+        </service>
+
+        <service id="easyadmin.filter.type.entity" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType">
+            <tag name="easyadmin.filter.type" alias="entity" />
+        </service>
+
+        <service id="easyadmin.filter.type_guesser.doctrine" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Guesser\DoctrineOrmFilterTypeGuesser">
+            <argument type="service" id="doctrine" />
+            <tag name="easyadmin.filter.type_guesser" />
+        </service>
 
         <service id="easyadmin.form.guesser.missing_doctrine_orm_type_guesser" public="true"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Guesser\MissingDoctrineOrmTypeGuesser">

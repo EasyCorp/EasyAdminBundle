@@ -508,7 +508,7 @@
         <div class="filter-field {% if not loop.last %}border-bottom{% endif %} py-1 px-3 {% if loop.last %}pb-2{% endif %}">
             <div class="filter-heading" id="filter-heading-{{ loop.index }}">
                 <input type="checkbox" class="filter-checkbox" {% if field.vars.name in applied_filters %}checked{% endif %}>
-                <a data-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="false" aria-controls="filter-content-{{ loop.index }}">
+                <a data-toggle="collapse" href="#filter-content-{{ loop.index }}" aria-expanded="{{ field.vars.name in applied_filters ? 'true' : 'false' }}" aria-controls="filter-content-{{ loop.index }}">
                     {{ field.vars.label|default(field.vars.name|humanize)|trans(domain = _translation_domain) }}
                 </a>
             </div>
@@ -543,7 +543,7 @@
 
             let filterCheckbox = event.target.closest('.filter-field').querySelector('.filter-checkbox');
             if (!filterCheckbox.checked) {
-                filterCheckbox.setAttribute('checked', true);
+                filterCheckbox.checked = true;
             }
         });
     </script>

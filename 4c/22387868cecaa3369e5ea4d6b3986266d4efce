@@ -1,0 +1,192 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-08T14:51:37Z
+
+About design, I like the one proposed by @yceruto but there were some things I didn't like it.
+
+First, all filters together looks confusing to me and I tested new ideas. I tried with a design similar to Apple Notification Center, where each filter was displayed in its own box. Something like this:
+
+![filter-idea](https://user-images.githubusercontent.com/73419/59148716-ba384000-8a0c-11e9-99ff-0077a8a6f41b.png)
+
+I didn't like it ... so I tried to implement the same filters as Stripe Dashboard:
+
+![stripe-filter](https://user-images.githubusercontent.com/73419/59148723-c6bc9880-8a0c-11e9-8ab3-997f6a44e555.gif)
+
+I had a prototype based on tippy.js tooltip library ... but it didn't look right with our design (it looks great in Stripe though).
+
+-----
+
+So, after several tests and proof of concepts, I went back to the original design by @yceruto ... but I did some minor tweaks.
+
+This is how the "Filters" button look when no filters are applied:
+
+![image](https://user-images.githubusercontent.com/73419/59148748-23b84e80-8a0d-11e9-961b-ec50ac645ad4.png)
+
+This is the button with some filters applied:
+
+![image](https://user-images.githubusercontent.com/73419/59148755-2adf5c80-8a0d-11e9-9430-7185e2116e98.png)
+
+This is how the filter modal window looks initially with filters collapsed:
+
+![image](https://user-images.githubusercontent.com/73419/59148738-0be0ca80-8a0d-11e9-974c-80b3d6bedbe4.png)
+
+And with all filters revealed:
+
+![image](https://user-images.githubusercontent.com/73419/59148742-14390580-8a0d-11e9-8253-5d17cd8bd6d8.png)
+
+An important change: instad of being an accordion where you can only see one filter at once ... filters are now independent and can be toggled separately. Also, to improve UX, applied filters are now always displayed "revealed" by default, so you can see both that the filter is applied and its contents:
+
+![filter-toggle](https://user-images.githubusercontent.com/73419/59148799-7265e880-8a0d-11e9-8fea-31d96107145c.gif)
+
+A final minor detail: we now display a spinner in case the AJAX loading takes some perceptible time:
+
+![filter-loading](https://user-images.githubusercontent.com/73419/59148805-8578b880-8a0d-11e9-8cab-2f2eeaa0ec81.gif)
+
+-----
+
+This PR also tries to use as much standard JavaScript as possible instead of jQuery. I think that jQuery is great and the code is very readable and concise ... but modern JavaScript is great too, so let's use it.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-08T15:17:34Z
+
+Please, check it out https://github.com/EasyCorp/EasyAdminBundle/pull/2750 before adding tests and docs, thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-08T16:59:35Z
+
+I'm going to continue working on tests and docs ... and then I'll update them when the idea of #2750 is implemented. Thanks.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-09T18:28:03Z
+
+Although tests are passing, locally I see an error in my app:
+
+```
+Symfony\Component\OptionsResolver\Exception\MissingOptionsException:
+The required option "class" is missing.
+
+  at vendor/symfony/options-resolver/OptionsResolver.php:763
+  at Symfony\Component\OptionsResolver\OptionsResolver->resolve(array('label' => false))
+     (vendor/symfony/form/ResolvedFormType.php:95)
+  at Symfony\Component\Form\ResolvedFormType->createBuilder(object(FormFactory), 'value', array('label' => false))
+     (vendor/symfony/form/Extension/DataCollector/Proxy/ResolvedTypeDataCollectorProxy.php:74)
+  at Symfony\Component\Form\Extension\DataCollector\Proxy\ResolvedTypeDataCollectorProxy->createBuilder(object(FormFactory), 'value', array('label' => false))
+     (vendor/symfony/form/FormFactory.php:76)
+  at Symfony\Component\Form\FormFactory->createNamedBuilder('value', object(ResolvedTypeDataCollectorProxy), null, array('label' => false))
+     (vendor/symfony/form/FormBuilder.php:94)
+  at Symfony\Component\Form\FormBuilder->create('value', 'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType', array('label' => false))
+     (vendor/symfony/form/FormBuilder.php:244)
+  at Symfony\Component\Form\FormBuilder->resolveChildren()
+     (vendor/symfony/form/FormBuilder.php:195)
+  at Symfony\Component\Form\FormBuilder->getForm()
+     (vendor/symfony/form/FormBuilder.php:201)
+  at Symfony\Component\Form\FormBuilder->getForm()
+     (vendor/symfony/form/FormFactory.php:38)
+  at Symfony\Component\Form\FormFactory->createNamed('filters', 'EasyCorp\\Bundle\\EasyAdminBundle\\Form\\Type\\EasyAdminFiltersFormType', null, array('method' => 'GET', 'entity' => '...'))
+     (easy-admin-bundle/src/Controller/AdminControllerTrait.php:516)
+  at EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController->createFiltersForm('...')
+     (easy-admin-bundle/src/Controller/AdminControllerTrait.php:449)
+  at EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController->filtersAction()
+     (easy-admin-bundle/src/Controller/AdminControllerTrait.php:849)
+  at EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController->executeDynamicMethod('filters&lt;EntityName&gt;Action')
+     (easy-admin-bundle/src/Controller/AdminControllerTrait.php:73)
+  at EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController->indexAction(object(Request))
+     (src/Controller/AdminController.php:37)
+  at App\Controller\AdminController->indexAction(object(Request))
+     (vendor/symfony/http-kernel/HttpKernel.php:150)
+  at Symfony\Component\HttpKernel\HttpKernel->handleRaw(object(Request), 1)
+     (vendor/symfony/http-kernel/HttpKernel.php:67)
+  at Symfony\Component\HttpKernel\HttpKernel->handle(object(Request), 1, true)
+     (vendor/symfony/http-kernel/Kernel.php:198)
+  at Symfony\Component\HttpKernel\Kernel->handle(object(Request))
+     (public/index.php:41)
+```
+
+This is related to a change I made in fdbe56285c033f75e31aa86ae79f931421adca4b ... we let the user use `type` to define the filter class ... but we use `class` internally because "type" is a bit generic and this stores the FQCN, so `class` looks easier to understand.
+
+@yceruto can you please help me find the error I made? Thanks!
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-09T18:54:40Z
+
+Look at `EntityFilterConfigurator`.
+
+The filter is a form type, so `type` is still a valid option name for me.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-09T23:07:02Z
+
+One thing that I'd like (as before) is to mark (if it's not already checked) the checkbox once any input/select change is made, this would be intuitive and would improve UX.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-10T10:12:55Z
+
+@javiereguiluz have you planned to move all the jQuery code to vanilla JavaScript?
+
+Currently there are issues and workaround not related to the main target. If it is not possible at this time (at least not in a clear and easy way) I would suggest going back to the jQuery version, this is still relevant and greatly simplifies the current code. Later, in another PR, we can research and analyze this migration, case by case. Thanks!!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-10T11:54:32Z
+
+@yceruto thanks! You were right. I've reverted te `type -> class` change, so it's `type` again ... but then, I propose to suffix the filter type classes with `Type` and move them under `Form\Type\Filter` namespace. Would you agree with that? Thanks.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-10T13:45:26Z
+
+> @yceruto thanks! You were right. I've reverted te type -> class change, so it's type again ... but then, I propose to suffix the filter type classes with Type and move them under Form\Type\Filter namespace. Would you agree with that? Thanks.
+
+That's perfect!!
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-10T13:58:17Z
+
+The `EntityFilterConfigurator` should be named `EntityFilterTypeConfigurator` instead?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-10T18:24:49Z
+
+@yceruto I consider this PR finished now.
+
+About your concerns regarding jQuery -> JS transform ... I'm afraid the error was what you also found: scripts in innerHTML don't get executed ... but I found a workaround. I think that the new JS code works the same as the previous code, but please verify that. Thanks!
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-10T18:40:47Z
+
+I still see this issue related to the filter button https://github.com/EasyCorp/EasyAdminBundle/pull/2751#discussion_r291855239 (it's related to event delegation)
+
+When you apply the filters and want to add more, by clicking on the icon or the text that shows the number of filters applied, then the modal does not open.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-10T18:50:20Z
+
+In fact, even if no filter is applied, we can not open the modal by clicking on the filter icon.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-10T18:54:01Z
+
+Here is a trick for vanilla JS https://gomakethings.com/listening-for-click-events-with-vanilla-javascript/
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-11T06:47:17Z
+
+I now understand the problem ... I think it's fixed by 8fa07fc.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-11T12:57:49Z
+
+Yonel, thanks a lot for fixing those issues! Let's merge this.

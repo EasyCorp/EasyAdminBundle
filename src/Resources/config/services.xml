@@ -8,10 +8,17 @@
             <tag name="cache.pool" />
         </service>
 
+        <service id="easyadmin.property_accessor" class="Symfony\Component\PropertyAccess\PropertyAccessor">
+            <argument>false</argument>
+            <argument>false</argument>
+            <argument type="service" id="cache.property_access" on-invalid="ignore" />
+            <argument>false</argument>
+        </service>
+
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument>%easyadmin.config%</argument>
             <argument>%kernel.debug%</argument>
-            <argument type="service" id="property_accessor" />
+            <argument type="service" id="easyadmin.property_accessor" />
             <argument type="service" id="cache.easyadmin" />
         </service>
 
@@ -27,7 +34,7 @@
         <service id="easyadmin.autocomplete" class="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete" public="true">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="easyadmin.finder" />
-            <argument type="service" id="property_accessor" />
+            <argument type="service" id="easyadmin.property_accessor" />
         </service>
 
         <service id="easyadmin.paginator" class="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" public="true">
@@ -36,13 +43,13 @@
         <service id="easyadmin.router" class="EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter" public="true">
             <argument id="easyadmin.config.manager" type="service" />
             <argument id="router" type="service" />
-            <argument id="property_accessor" type="service" />
+            <argument id="easyadmin.property_accessor" type="service" />
             <argument id="request_stack" type="service" on-invalid="null" />
         </service>
 
         <service id="easyadmin.twig.extension" class="EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.config.manager" />
-            <argument type="service" id="property_accessor" />
+            <argument type="service" id="easyadmin.property_accessor" />
             <argument type="service" id="easyadmin.router" />
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
@@ -113,8 +120,6 @@
         <service id="easyadmin.configuration.default_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\DefaultConfigPass" public="false">
             <tag name="easyadmin.config_pass" priority="10" />
         </service>
-
-        <service id="easyadmin.property_accessor" alias="property_accessor" public="true" />
 
         <service id="EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController" class="EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController" public="true" autowire="true">
             <tag name="container.service_subscriber" />

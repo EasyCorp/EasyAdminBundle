@@ -296,9 +296,7 @@
             };
 
             document.querySelector('.action-filters-button').addEventListener('click', function(event) {
-                event.preventDefault();
-
-                let filterButton = event.target;
+                let filterButton = event.currentTarget;
                 let filterModal = document.querySelector(filterButton.dataset.modal);
                 let filterModalBody = filterModal.querySelector('.modal-body');
 
@@ -308,6 +306,9 @@
                 $.get(filterButton.getAttribute('href'), function (response) {
                     setInnerHTML(filterModalBody, response);
                 });
+
+                event.preventDefault();
+                event.stopPropagation();
             });
             {% endif %}
 

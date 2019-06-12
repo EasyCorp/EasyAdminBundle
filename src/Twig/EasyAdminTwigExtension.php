@@ -466,7 +466,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         // Compatibility with Symfony versions before 4.3
-        if (!class_exists(Countries::class)) {
+        if (!\class_exists(Countries::class)) {
             return Intl::getRegionBundle()->getCountryName($countryCode) ?? '';
         }
 

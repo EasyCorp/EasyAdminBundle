@@ -1,0 +1,6 @@
+{% if field_options.with_flag ?? true %}
+    <img class="country-flag" src="{{ asset('bundles/easyadmin/images/flags/' ~ value ~ '.png') }}">
+{% endif %}
+{% if field_options.with_name ?? true %}
+    {{ value|easyadmin_country }}
+{% endif %}

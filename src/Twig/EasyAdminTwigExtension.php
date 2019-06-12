@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Intl\Intl;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -65,6 +66,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getFilters()
     {
         $filters = [
+            new TwigFilter('easyadmin_country', [$this, 'getCountryName']),
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
             new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParams']),
@@ -200,6 +202,10 @@ class EasyAdminTwigExtension extends AbstractExtension
 
         if ('association' === $fieldType) {
             $parameters = $this->addAssociationFieldParameters($parameters);
+        }
+
+        if ('country' === $fieldType) {
+            $parameters['value'] = null !== $parameters['value'] ? \strtoupper($parameters['value']) : null;
         }
 
         // when a virtual field doesn't define it's type, consider it a string
@@ -449,5 +455,14 @@ class EasyAdminTwigExtension extends AbstractExtension
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public function getCountryName(?string $countryCode): string
+    {
+        if (null === $countryCode) {
+            return '';
+        }
+
+        return Intl::getRegionBundle()->getCountryName($countryCode) ?? '';
     }
 }

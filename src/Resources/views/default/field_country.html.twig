@@ -1,0 +1,9 @@
+{% if field_options.with_flag ?? true and country_name is not null %}
+    <img class="country-flag" alt="{{ country_name }}" src="{{ asset('bundles/easyadmin/images/flags/' ~ value ~ '.png') }}">
+{% endif %}
+{% if field_options.with_name ?? true %}
+    {{ country_name ?? '' }}
+{% endif %}
+{% if country_name is null %}
+    {{ include(entity_config.templates.label_null) }}
+{% endif %}

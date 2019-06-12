@@ -116,6 +116,12 @@ table.datagrid {
   text-align: center;
 }
 
+.datagrid td.country .country-flag {
+  margin-right: 2px;
+  max-height: 18px;
+  vertical-align: text-top;
+}
+
 .datagrid .highlight {
     border-radius: var(--border-radius);
     background: var(--highlight-bg);

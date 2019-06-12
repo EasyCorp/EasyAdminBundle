@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Intl\Countries;
+use Symfony\Component\Intl\Exception\MissingResourceException;
+use Symfony\Component\Intl\Intl;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -200,6 +203,11 @@ class EasyAdminTwigExtension extends AbstractExtension
 
         if ('association' === $fieldType) {
             $parameters = $this->addAssociationFieldParameters($parameters);
+        }
+
+        if ('country' === $fieldType) {
+            $parameters['value'] = null !== $parameters['value'] ? \strtoupper($parameters['value']) : null;
+            $parameters['country_name'] = $this->getCountryName($parameters['value']);
         }
 
         // when a virtual field doesn't define it's type, consider it a string
@@ -447,6 +455,24 @@ class EasyAdminTwigExtension extends AbstractExtension
         try {
             return $this->propertyAccessor->getValue($objectOrArray, $propertyPath);
         } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    private function getCountryName(?string $countryCode): ?string
+    {
+        if (null === $countryCode) {
+            return null;
+        }
+
+        // Compatibility with Symfony versions before 4.3
+        if (!\class_exists(Countries::class)) {
+            return Intl::getRegionBundle()->getCountryName($countryCode) ?? null;
+        }
+
+        try {
+            return Countries::getName($countryCode);
+        } catch (MissingResourceException $e) {
             return null;
         }
     }

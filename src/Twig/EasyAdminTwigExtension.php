@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Intl\Countries;
+use Symfony\Component\Intl\Exception\MissingResourceException;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
@@ -463,6 +465,15 @@ class EasyAdminTwigExtension extends AbstractExtension
             return '';
         }
 
-        return Intl::getRegionBundle()->getCountryName($countryCode) ?? '';
+        // Compatibility with Symfony versions before 4.3
+        if (!class_exists(Countries::class)) {
+            return Intl::getRegionBundle()->getCountryName($countryCode) ?? '';
+        }
+
+        try {
+            return Countries::getName($countryCode);
+        } catch (MissingResourceException $e) {
+            return '';
+        }
     }
 }

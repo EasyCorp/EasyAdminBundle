@@ -1,6 +1,7 @@
+{% set country_name = value|easyadmin_country %}
 {% if field_options.with_flag ?? true %}
-    <img class="country-flag" src="{{ asset('bundles/easyadmin/images/flags/' ~ value ~ '.png') }}">
+    <img class="country-flag" alt="{{ country_name }}" src="{{ asset('bundles/easyadmin/images/flags/' ~ value ~ '.png') }}">
 {% endif %}
 {% if field_options.with_name ?? true %}
-    {{ value|easyadmin_country }}
+    {{ country_name }}
 {% endif %}

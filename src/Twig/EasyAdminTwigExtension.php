@@ -210,6 +210,16 @@ class EasyAdminTwigExtension extends AbstractExtension
             $parameters['country_name'] = $this->getCountryName($parameters['value']);
         }
 
+        if ('avatar' === $fieldType) {
+            $parameters['image_height'] = $fieldMetadata['height'];
+
+            if ($fieldMetadata['is_image_url'] ?? false) {
+                $parameters['image_url'] = $parameters['value'];
+            } else {
+                $parameters['image_url'] = null === $parameters['value'] ? null : \sprintf('https://www.gravatar.com/avatar/%s?s=%d&d=mp', \md5($parameters['value']), $parameters['image_height']);
+            }
+        }
+
         // when a virtual field doesn't define it's type, consider it a string
         if (true === $fieldMetadata['virtual'] && null === $parameters['field_options']['dataType']) {
             $parameters['value'] = (string) $parameters['value'];

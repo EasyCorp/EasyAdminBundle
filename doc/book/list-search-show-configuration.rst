@@ -274,9 +274,9 @@ These are the options that you can define for each field:
     ``boolean``, ``date``, ``datetime``, ``datetimetz``, ``decimal``, ``float``,
     ``guid``, ``integer``, ``json_array``, ``object``, ``simple_array``,
     ``smallint``, ``string``, ``text``, ``time``.
-  * Any of the custom EasyAdmin types: ``country``` ``email``, ``file``,
-    ``image``, ``raw``, ``tel``, ``toggle``, ``url`` (they are explained later
-    in this chapter).
+  * Any of the custom EasyAdmin types: ``avatar``, ``country``` ``email``,
+    ``file``, ``image``, ``raw``, ``tel``, ``toggle``, ``url`` (they are
+    explained later in this chapter).
 
 The fields of the ``list`` and ``search`` views define another option:
 
@@ -731,6 +731,58 @@ Property Types Defined by EasyAdmin
 
 In addition to the Doctrine data types, properties can use any of the following
 data types defined by EasyAdmin.
+
+Avatar Data Type
+~~~~~~~~~~~~~~~~
+
+It displays user avatars as rounded images without borders or shadows. By
+default it considers the given value as the email passed to the Gravatar.com
+service to get the avatar image URL:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                class: App\Entity\User
+                list:
+                    fields:
+                        - { property: 'email', type: 'avatar' }
+                        # ...
+
+If your avatar property stores the absolute image URL (or if it's a *getter*
+method which generates it dynamically) set the ``is_image_url`` option to
+``true`` to use that image URL directly:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                class: App\Entity\User
+                list:
+                    fields:
+                        - { property: 'twitterAvatarUrl', type: 'avatar', is_image_url: 'true' }
+
+The default size of the avatar image should be correct for most applications,
+but you can control it with the ``height`` option:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                class: App\Entity\User
+                list:
+                    fields:
+                        # you can use any numeric value (which is considered the image height in pixels)
+                        - { property: 'email', type: 'avatar', height: 128 }
+
+                        # you can also use these special values: 'sm' (small), 'md' (medium), 'lg' (large), 'xl' (extra large)
+                        - { property: 'email', type: 'avatar', height: 'sm' }
 
 Country Data Type
 ~~~~~~~~~~~~~~~~~

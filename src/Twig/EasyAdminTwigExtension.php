@@ -216,7 +216,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             if ($fieldMetadata['is_image_url'] ?? false) {
                 $parameters['image_url'] = $parameters['value'];
             } else {
-                $parameters['image_url'] = null === $parameters['value'] ? null : sprintf('https://www.gravatar.com/avatar/%s?s=128&d=mp', md5($parameters['value']));
+                $parameters['image_url'] = null === $parameters['value'] ? null : \sprintf('https://www.gravatar.com/avatar/%s?s=128&d=mp', \md5($parameters['value']));
             }
         }
 

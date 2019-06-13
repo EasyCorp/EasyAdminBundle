@@ -389,6 +389,12 @@ body.show .field-text .form-widget .form-control {
     min-height: 60px;
 }
 
+body.show .field-avatar .image-avatar {
+    border-radius: 50%;
+    border: 0;
+    box-shadow: none;
+}
+
 // Flash messages
 #flash-messages {
     @media(min-width: 992px) {

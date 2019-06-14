@@ -266,16 +266,16 @@ class PropertyConfigPass implements ConfigPassInterface
                             $normalizedConfig['label'] = false;
                         }
 
-                        if (isset($normalizedConfig['size'])) {
-                            $imageHeight = $normalizedConfig['size'];
-                            $semanticSizes = ['sm' => 18, 'md' => 24, 'lg' => 48, 'xl' => 96];
-                            if (!\is_numeric($imageHeight) && !\array_key_exists($imageHeight, $semanticSizes)) {
-                                throw new \InvalidArgumentException(\sprintf('The "%s" property in the "%s" view of the "%s" entity defines an invalid value for the avatar "size" option. It must be either a numeric value (which represents the image height in pixels) or one of these semantic sizes: "%s".', $normalizedConfig['fieldName'], $view, $entityName, \implode(', ', \array_keys($semanticSizes))));
+                        if (isset($normalizedConfig['height'])) {
+                            $imageHeight = $normalizedConfig['height'];
+                            $semanticHeights = ['sm' => 18, 'md' => 24, 'lg' => 48, 'xl' => 96];
+                            if (!\is_numeric($imageHeight) && !\array_key_exists($imageHeight, $semanticHeights)) {
+                                throw new \InvalidArgumentException(\sprintf('The "%s" property in the "%s" view of the "%s" entity defines an invalid value for the avatar "height" option. It must be either a numeric value (which represents the image height in pixels) or one of these semantic heights: "%s".', $normalizedConfig['fieldName'], $view, $entityName, \implode(', ', \array_keys($semanticHeights))));
                             }
 
-                            $normalizedConfig['size'] = \is_numeric($imageHeight) ? $imageHeight : $semanticSizes[$imageHeight];
+                            $normalizedConfig['height'] = \is_numeric($imageHeight) ? $imageHeight : $semanticHeights[$imageHeight];
                         } else {
-                            $normalizedConfig['size'] = 'show' === $view ? 48 : 24;
+                            $normalizedConfig['height'] = 'show' === $view ? 48 : 24;
                         }
                     }
 

@@ -211,7 +211,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         if ('avatar' === $fieldType) {
-            $parameters['image_height'] = $fieldMetadata['size'];
+            $parameters['image_height'] = $fieldMetadata['height'];
 
             if ($fieldMetadata['is_image_url'] ?? false) {
                 $parameters['image_url'] = $parameters['value'];

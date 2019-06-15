@@ -4,6 +4,7 @@
     "@symfony/webpack-encore": "^0.21",
     "bootstrap": "^4.1.0",
     "bootstrap-rtl": "^3.3.4",
+    "codemirror": "^5.47.0",
     "cssnano": "^4.1.7",
     "featherlight": "^1.7.13",
     "jquery": "^3.3.1",

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Util;
 
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
@@ -59,6 +60,9 @@ final class FormTypeHelper
         'button' => ButtonType::class,
         'checkbox' => CheckboxType::class,
         'choice' => ChoiceType::class,
+        // allow using underscore and dashes to improve DX
+        'code-editor' => CodeEditorType::class,
+        'code_editor' => CodeEditorType::class,
         'collection' => CollectionType::class,
         'color' => ColorType::class,
         'country' => CountryType::class,

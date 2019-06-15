@@ -468,3 +468,8 @@ form .invalid-feedback > .d-block + .d-block {
     text-align: right;
     top: 0;
 }
+
+// EasyAdminCodeType
+.field-easyadmin_code_editor .form-widget {
+    flex-basis: 65%;
+}

@@ -36,44 +36,44 @@ class ComparisonType extends AbstractType
                 switch ($options['type']) {
                     case 'numeric':
                         $choices = [
-                            'label.is_equal_to' => self::EQ,
-                            'label.is_not_equal_to' => self::NEQ,
-                            'label.is_greater_than' => self::GT,
-                            'label.is_greater_than_or_equal_to' => self::GTE,
-                            'label.is_less_than' => self::LT,
-                            'label.is_less_than_or_equal_to' => self::LTE,
+                            'filter.label.is_equal_to' => self::EQ,
+                            'filter.label.is_not_equal_to' => self::NEQ,
+                            'filter.label.is_greater_than' => self::GT,
+                            'filter.label.is_greater_than_or_equal_to' => self::GTE,
+                            'filter.label.is_less_than' => self::LT,
+                            'filter.label.is_less_than_or_equal_to' => self::LTE,
                         ];
                         break;
                     case 'text':
                         $choices = [
-                            'label.contains' => self::CONTAINS,
-                            'label.not_contains' => self::NOT_CONTAINS,
-                            'label.starts_with' => self::STARTS_WITH,
-                            'label.ends_with' => self::ENDS_WITH,
-                            'label.exactly' => self::EQ,
-                            'label.not_exactly' => self::NEQ,
+                            'filter.label.contains' => self::CONTAINS,
+                            'filter.label.not_contains' => self::NOT_CONTAINS,
+                            'filter.label.starts_with' => self::STARTS_WITH,
+                            'filter.label.ends_with' => self::ENDS_WITH,
+                            'filter.label.exactly' => self::EQ,
+                            'filter.label.not_exactly' => self::NEQ,
                         ];
                         break;
                     case 'datetime':
                         $choices = [
-                            'label.is_same' => self::EQ,
-                            'label.is_not_same' => self::NEQ,
-                            'label.is_after' => self::GT,
-                            'label.is_after_or_same' => self::GTE,
-                            'label.is_before' => self::LT,
-                            'label.is_before_or_same' => self::LTE,
+                            'filter.label.is_same' => self::EQ,
+                            'filter.label.is_not_same' => self::NEQ,
+                            'filter.label.is_after' => self::GT,
+                            'filter.label.is_after_or_same' => self::GTE,
+                            'filter.label.is_before' => self::LT,
+                            'filter.label.is_before_or_same' => self::LTE,
                         ];
                         break;
                     case 'array':
                         $choices = [
-                            'label.is_same' => self::CONTAINS,
-                            'label.is_not_same' => self::NOT_CONTAINS,
+                            'filter.label.contains' => self::CONTAINS,
+                            'filter.label.not_contains' => self::NOT_CONTAINS,
                         ];
                         break;
                     case 'entity':
                         $choices = [
-                            'label.is_same' => self::EQ,
-                            'label.is_not_same' => self::NEQ,
+                            'filter.label.is_same' => self::EQ,
+                            'filter.label.is_not_same' => self::NEQ,
                         ];
                         break;
                 }
@@ -83,7 +83,7 @@ class ComparisonType extends AbstractType
             'translation_domain' => 'EasyAdminBundle',
         ]);
         $resolver->setAllowedTypes('type', 'string');
-        $resolver->setAllowedValues('type', ['numeric', 'text', 'datetime', 'array', 'entity']);
+        $resolver->setAllowedValues('type', ['array', 'datetime', 'entity', 'numeric', 'text']);
     }
 
     /**

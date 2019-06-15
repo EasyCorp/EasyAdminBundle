@@ -25,17 +25,21 @@ use Symfony\Component\Form\Guess\TypeGuess;
  */
 class DoctrineOrmFilterTypeGuesser extends DoctrineOrmTypeGuesser
 {
+    private static $defaultOptions = [
+        'translation_domain' => 'EasyAdminBundle',
+    ];
+
     /**
      * {@inheritdoc}
      */
     public function guessType($class, $property)
     {
-        if (!$ret = $this->getMetadata($class)) {
+        if (!$doctrineEntityMetadata = $this->getMetadata($class)) {
             return null;
         }
 
         /** @var ClassMetadataInfo $metadata */
-        [$metadata, $name] = $ret;
+        [$metadata, $name] = $doctrineEntityMetadata;
 
         if ($metadata->hasAssociation($property)) {
             $multiple = $metadata->isCollectionValuedAssociation($property);
@@ -50,49 +54,63 @@ class DoctrineOrmFilterTypeGuesser extends DoctrineOrmTypeGuesser
                 $options['value_type_options']['placeholder'] = 'label.form.empty_value';
             }
 
-            return new TypeGuess(EntityFilterType::class, $options, Guess::HIGH_CONFIDENCE);
+            return new TypeGuess(EntityFilterType::class, self::$defaultOptions + $options, Guess::HIGH_CONFIDENCE);
         }
 
         switch ($metadata->getTypeOfField($property)) {
-            case Type::TARRAY:
-            case Type::SIMPLE_ARRAY:
             case Type::JSON_ARRAY:
-                return new TypeGuess(ArrayFilterType::class, [], Guess::MEDIUM_CONFIDENCE);
+            case Type::SIMPLE_ARRAY:
+            case Type::TARRAY:
+                return new TypeGuess(ArrayFilterType::class, self::$defaultOptions + [], Guess::MEDIUM_CONFIDENCE);
+
             case Type::JSON:
-                return new TypeGuess(TextFilterType::class, ['value_type' => TextareaType::class], Guess::MEDIUM_CONFIDENCE);
+                return new TypeGuess(TextFilterType::class, self::$defaultOptions + ['value_type' => TextareaType::class], Guess::MEDIUM_CONFIDENCE);
+
             case Type::BOOLEAN:
-                return new TypeGuess(BooleanFilterType::class, [], Guess::HIGH_CONFIDENCE);
+                return new TypeGuess(BooleanFilterType::class, self::$defaultOptions + [], Guess::HIGH_CONFIDENCE);
+
             case Type::DATETIME:
             case Type::DATETIMETZ:
-                return new TypeGuess(DateTimeFilterType::class, [], Guess::HIGH_CONFIDENCE);
+                return new TypeGuess(DateTimeFilterType::class, self::$defaultOptions + [], Guess::HIGH_CONFIDENCE);
+
             case Type::DATETIME_IMMUTABLE:
             case Type::DATETIMETZ_IMMUTABLE:
-                return new TypeGuess(DateTimeFilterType::class, ['value_type_options' => ['input' => 'datetime_immutable']], Guess::HIGH_CONFIDENCE);
+                return new TypeGuess(DateTimeFilterType::class, self::$defaultOptions + ['value_type_options' => ['input' => 'datetime_immutable']], Guess::HIGH_CONFIDENCE);
+
             case Type::DATEINTERVAL:
-                return new TypeGuess(ComparisonFilterType::class, ['value_type' => DateIntervalType::class, 'comparison_type_options' => ['type' => 'datetime']], Guess::HIGH_CONFIDENCE);
+                return new TypeGuess(ComparisonFilterType::class, self::$defaultOptions + ['value_type' => DateIntervalType::class, 'comparison_type_options' => ['type' => 'datetime']], Guess::HIGH_CONFIDENCE);
+
             case Type::DATE:
-                return new TypeGuess(DateTimeFilterType::class, ['value_type' => DateType::class], Guess::HIGH_CONFIDENCE);
+                return new TypeGuess(DateTimeFilterType::class, self::$defaultOptions + ['value_type' => DateType::class], Guess::HIGH_CONFIDENCE);
+
             case Type::DATE_IMMUTABLE:
-                return new TypeGuess(DateTimeFilterType::class, ['value_type' => DateType::class, 'value_type_options' => ['input' => 'datetime_immutable']], Guess::HIGH_CONFIDENCE);
+                return new TypeGuess(DateTimeFilterType::class, self::$defaultOptions + ['value_type' => DateType::class, 'value_type_options' => ['input' => 'datetime_immutable']], Guess::HIGH_CONFIDENCE);
+
             case Type::TIME:
-                return new TypeGuess(DateTimeFilterType::class, ['value_type' => TimeType::class], Guess::HIGH_CONFIDENCE);
+                return new TypeGuess(DateTimeFilterType::class, self::$defaultOptions + ['value_type' => TimeType::class], Guess::HIGH_CONFIDENCE);
+
             case Type::TIME_IMMUTABLE:
-                return new TypeGuess(DateTimeFilterType::class, ['value_type' => TimeType::class, 'value_type_options' => ['input' => 'datetime_immutable']], Guess::HIGH_CONFIDENCE);
+                return new TypeGuess(DateTimeFilterType::class, self::$defaultOptions + ['value_type' => TimeType::class, 'value_type_options' => ['input' => 'datetime_immutable']], Guess::HIGH_CONFIDENCE);
+
             case Type::DECIMAL:
-                return new TypeGuess(ComparisonFilterType::class, ['value_type' => NumberType::class, 'value_type_options' => ['input' => 'string']], Guess::MEDIUM_CONFIDENCE);
+                return new TypeGuess(ComparisonFilterType::class, self::$defaultOptions + ['value_type' => NumberType::class, 'value_type_options' => ['input' => 'string']], Guess::MEDIUM_CONFIDENCE);
+
             case Type::FLOAT:
-                return new TypeGuess(ComparisonFilterType::class, ['value_type' => NumberType::class], Guess::MEDIUM_CONFIDENCE);
-            case Type::INTEGER:
+                return new TypeGuess(ComparisonFilterType::class, self::$defaultOptions + ['value_type' => NumberType::class], Guess::MEDIUM_CONFIDENCE);
+
             case Type::BIGINT:
+            case Type::INTEGER:
             case Type::SMALLINT:
-                return new TypeGuess(ComparisonFilterType::class, ['value_type' => IntegerType::class], Guess::MEDIUM_CONFIDENCE);
-            case Type::STRING:
+                return new TypeGuess(ComparisonFilterType::class, self::$defaultOptions + ['value_type' => IntegerType::class], Guess::MEDIUM_CONFIDENCE);
+
             case Type::GUID:
-                return new TypeGuess(TextFilterType::class, [], Guess::MEDIUM_CONFIDENCE);
-            case Type::TEXT:
-            case Type::OBJECT:
+            case Type::STRING:
+                return new TypeGuess(TextFilterType::class, self::$defaultOptions + [], Guess::MEDIUM_CONFIDENCE);
+
             case Type::BLOB:
-                return new TypeGuess(TextFilterType::class, ['value_type' => TextareaType::class], Guess::MEDIUM_CONFIDENCE);
+            case Type::OBJECT:
+            case Type::TEXT:
+                return new TypeGuess(TextFilterType::class, self::$defaultOptions + ['value_type' => TextareaType::class], Guess::MEDIUM_CONFIDENCE);
         }
 
         return null;

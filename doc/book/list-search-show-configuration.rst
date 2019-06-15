@@ -604,9 +604,10 @@ field data type, so in most application, you only need to list the fields:
 Built-in Dynamic Filters
 ........................
 
-EasyAdmin provides filters for the most common needs. Although you won't need to
-do this because EasyAdmin autoselects the best filter type for each field, you
-can define the filter type explicitly:
+EasyAdmin provides ready-to-use filters for the most common needs (dates,
+numeric values, collections, etc.). The type of filter is automatically selected
+based on the data type of the property, but you can also define the filter type
+explicitly:
 
 .. code-block:: yaml
 
@@ -616,12 +617,19 @@ can define the filter type explicitly:
             Users:
                 class: App\Entity\User
                 list:
+                    # there is no need to define the 'type' because EasyAdmin can guess it
                     filters: [{ property: 'numPurchases', type: 'integer' }]
 
 These are the built-in types:
 
+* ``array``: applied by default to array fields. It's rendered as a ``<select>`` list
+  with the condition (equal/not equal) and another ``<select>`` tags input to introduce
+  the comparison value.
 * ``boolean``: applied by default to boolean fields. It's rendered as two
   radio buttons labeled "Yes" and "No".
+* ``dateinterval``: applied by default to date interval fields. It's rendered as a ``<select>``
+  list with the condition (before/after/etc.) and another ``<select>`` list to choose
+  the comparison value.
 * ``datetime``, ``date`` or ``time``: applied by default to datetime, date or time
   fields respectively. It's rendered as a ``<select>`` list with the condition
   (before/after/etc.) and a browser native datepicker to pick the date/time.
@@ -634,12 +642,6 @@ These are the built-in types:
 * ``text`` or ``textarea``: applied by default to string/text fields. It's rendered as a
   ``<select>`` list with the condition (contains/not contains/etc.) and an ``<input>`` or
   ``<textarea>`` to define the comparison value.
-* ``array``: applied by default to array fields. It's rendered as a ``<select>`` list
-  with the condition (equal/not equal) and another ``<select>`` tags input to introduce
-  the comparison value.
-* ``dateinterval``: applied by default to date interval fields. It's rendered as a ``<select>``
-  list with the condition (before/after/etc.) and another ``<select>`` list to choose
-  the comparison value.
 
 Custom Dynamic Filters
 ......................

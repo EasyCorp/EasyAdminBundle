@@ -251,17 +251,13 @@ class PropertyConfigPass implements ConfigPassInterface
                 $filterConfig += $entityConfig['properties'][$propertyName];
 
                 if (!isset($originalFilterConfig['type'])) {
-                    $typeGuess = $this->filterRegistry->getTypeGuesser()
+                    $guessedType = $this->filterRegistry->getTypeGuesser()
                         ->guessType($entityConfig['class'], $propertyName);
 
-                    if (null !== $typeGuess) {
-                        $filterConfig['type'] = $typeGuess->getType();
-                        $filterConfig['type_options'] = \array_replace_recursive($typeGuess->getOptions(), $filterConfig['type_options']);
+                    if (null !== $guessedType) {
+                        $filterConfig['type'] = $guessedType->getType();
+                        $filterConfig['type_options'] = \array_replace_recursive($guessedType->getOptions(), $filterConfig['type_options']);
                     }
-                }
-
-                if (!isset($filterConfig['type_options']['translation_domain'])) {
-                    $filterConfig['type_options']['translation_domain'] = 'EasyAdminBundle';
                 }
 
                 if (!isset($filterConfig['type'])) {

@@ -84,7 +84,7 @@
         {% block filters_action %}
             <div class="btn-group action-filters">
                 <a href="{{ path('easyadmin', _request_parameters|merge({ action: 'filters', referer_action: app.request.get('action') })) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ _applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
-                    <i class="fa fa-filter fa-fw"></i> {{ 'label.filters'|trans(_trans_parameters, 'EasyAdminBundle') }}{% if _applied_filters %} <span class="text-primary">({{ _applied_filters|length }})</span>{% endif %}
+                    <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(_trans_parameters, 'EasyAdminBundle') }}{% if _applied_filters %} <span class="text-primary">({{ _applied_filters|length }})</span>{% endif %}
                 </a>
                 {% if _applied_filters %}
                     <a href="{{ path('easyadmin', _request_parameters|merge({ filters: null })) }}" class="btn btn-secondary action-filters-reset">

@@ -1,0 +1,52 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-13T14:48:20Z
+
+Update:
+ * All default DBAL types have a filter type, except `binary`.
+ * If the user doesn't give the filter type and its options, then they are guessed thanks to `DoctrineOrmFilterTypeGuesser`.
+ * Some bugs have been fixed in the meantime.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-13T18:39:06Z
+
+**Last Update:**
+Now you can register an alias (shortcut or short name) for your custom filter type (optional!!):
+```yaml
+services:
+    App\Form\Filter\BlogPostStatus:
+        tags: [{ name: 'easyadmin.filter.type', alias: 'blogpost_status' }]
+```
+This is an example for a `string` field whose default filter type is` TextFilterType`:
+```yaml
+easy_admin:
+    entities:
+        Category:
+            class: App\Entity\BlogPost
+            list:
+                filters:
+                    - property: 'status'
+                      type: 'blogpost_status'
+```
+In addition, there is a shortcut for each built-in filter type: boolean, text, textarea, integer, decimal, float, date, time, datetime, dateinterval and array.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-13T18:58:08Z
+
+@javiereguiluz this is finished in my side, ready for review.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-14T06:40:33Z
+
+Thanks a lot for your great work here. I'm going to review this as soon as I can. Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-15T10:02:19Z
+
+I've reviewed this ... and I can't really add anything ... just clap 👏 with admiration at Yonel's work! Thanks!!
+
+I'm going to merge this "as is" and then I'll open a minor PR with very minor tweaks for some things.

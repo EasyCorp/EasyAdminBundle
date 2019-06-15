@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-15T11:11:22Z
+
+Minor comment: I changed the filter labels to lowercase ... because the uppercase `I` is always problematic: `Is` can look like `ls`  Stripe does the same in their dashboard, so that's always reassuring.
+
+### Before
+
+![image](https://user-images.githubusercontent.com/73419/59550767-02a4b000-8f6f-11e9-924d-b7570d76858b.png)
+
+### After
+
+![image](https://user-images.githubusercontent.com/73419/59550768-06383700-8f6f-11e9-8220-256aba8d61e4.png)

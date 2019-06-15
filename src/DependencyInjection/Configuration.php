@@ -220,7 +220,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('paginator')->info('Used to render the paginator in the list page')->end()
                                 ->scalarNode('field_array')->info('Used to render array field types')->end()
                                 ->scalarNode('field_association')->info('Used to render fields that store Doctrine associations')->end()
-                                ->scalarNode('field_avatar')->info('Used to render fields as the avatar images associated to their values')->end()
+                                ->scalarNode('field_avatar')->info('Used to render fields related to user avatar images')->end()
                                 ->scalarNode('field_bigint')->info('Used to render bigint field types')->end()
                                 ->scalarNode('field_boolean')->info('Used to render boolean field types')->end()
                                 ->scalarNode('field_country')->info('Used to render the country names and/or flags')->end()

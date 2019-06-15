@@ -10,10 +10,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\FilterInterface;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -474,10 +474,12 @@ trait AdminControllerTrait
         /** @var Form $filtersForm */
         $filtersForm = $this->createFiltersForm($this->entity['name']);
         $filtersForm->handleRequest($this->request);
-
         if (!$filtersForm->isSubmitted()) {
             return;
         }
+
+        /** @var FilterRegistry $filterRegistry */
+        $filterRegistry = $this->get('easyadmin.filter.registry');
 
         $appliedFilters = [];
         foreach ($filtersForm as $filterForm) {
@@ -487,19 +489,11 @@ trait AdminControllerTrait
                 continue;
             }
 
-            // resolve the filter object related to this form field
-            $resolvedFormType = $filterForm->getConfig()->getType();
-            $filter = $resolvedFormType->getInnerType();
-            while (!$filter instanceof FilterInterface) {
-                if (null === $resolvedFormType = $resolvedFormType->getParent()) {
-                    throw new \RuntimeException(\sprintf('Filter type "%s" must to implement "%s".', \get_class($filterForm->getConfig()->getType()->getInnerType()), FilterInterface::class));
-                }
-
-                $filter = $resolvedFormType->getInnerType();
-            }
+            // resolve the filter type related to this form field
+            $filterType = $filterRegistry->resolveType($filterForm);
 
             $metadata = $this->entity['list']['filters'][$name] ?? [];
-            if (false !== $filter->filter($queryBuilder, $filterForm, $metadata)) {
+            if (false !== $filterType->filter($queryBuilder, $filterForm, $metadata)) {
                 $appliedFilters[] = $name;
             }
         }

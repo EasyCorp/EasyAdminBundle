@@ -616,24 +616,30 @@ can define the filter type explicitly:
             Users:
                 class: App\Entity\User
                 list:
-                    filters: [{ property: 'numPurchases', type: 'numeric' }]
+                    filters: [{ property: 'numPurchases', type: 'integer' }]
 
 These are the built-in types:
 
 * ``boolean``: applied by default to boolean fields. It's rendered as two
-  radiobuttons labeled "Yes" and "No".
-* ``date``: applied by default to date/time/datetime fields. It's
-  rendered as a ``<select>`` list with the condition (before/after/etc.) and a
-  browser native datepicker to pick the date/time.
+  radio buttons labeled "Yes" and "No".
+* ``datetime``, ``date`` or ``time``: applied by default to datetime, date or time
+  fields respectively. It's rendered as a ``<select>`` list with the condition
+  (before/after/etc.) and a browser native datepicker to pick the date/time.
 * ``entity``: applied to fields with Doctrine associations (all kinds
   supported). It's rendered as a ``<select>`` list with the condition (equal/not
   equal/etc.) and another ``<select>`` list to choose the comparison value.
-* ``numeric``: applied by default to numeric fields. It's rendered as
-  a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
+* ``integer``, ``decimal`` or ``float``: applied by default to numeric fields.
+  It's rendered as a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
   ``<input>`` to define the comparison value.
-* ``text``: applied by default to string/text fields. It's rendered as a
-  ``<select>`` list with the condition (equal/not equal/etc.) and an ``<input>``
-  to define the comparison value.
+* ``text`` or ``textarea``: applied by default to string/text fields. It's rendered as a
+  ``<select>`` list with the condition (contains/not contains/etc.) and an ``<input>`` or
+  ``<textarea>`` to define the comparison value.
+* ``array``: applied by default to array fields. It's rendered as a ``<select>`` list
+  with the condition (equal/not equal) and another ``<select>`` tags input to introduce
+  the comparison value.
+* ``dateinterval``: applied by default to date interval fields. It's rendered as a ``<select>``
+  list with the condition (before/after/etc.) and another ``<select>`` list to choose
+  the comparison value.
 
 Custom Dynamic Filters
 ......................
@@ -659,8 +665,8 @@ To make things simpler, you can extend from the abstract
 ``EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Filter`` class. Consider this
 example which creates a custom date filter with some special values::
 
-    // src/Form/Filter/DateCalendarFilter.php
-    class DateCalendarFilter extends Filter
+    // src/Form/Filter/DateCalendarFilterType.php
+    class DateCalendarFilterType extends FilterType
     {
         public function configureOptions(OptionsResolver $resolver)
         {
@@ -703,7 +709,7 @@ new filter to the field which will use it:
                 list:
                     filters:
                         - property: 'signupDate'
-                          type: 'App\Form\Filter\DateCalendarFilter'
+                          type: 'App\Form\Filter\DateCalendarFilterType'
                           # optionally you can pass options to the filter class
                           # type_options: {}
 
@@ -718,7 +724,7 @@ for your entity and override the ``createFiltersForm()`` method::
         protected function createFiltersForm(string $entityName): FormInterface
         {
             $form = parent::createFiltersForm($entityName);
-            $form->add('friends', SpecialFriendsFilter::class, [
+            $form->add('date', DateCalendarFilterType::class, [
                 // here you can pass the dynamic options to the filter
             ]);
 

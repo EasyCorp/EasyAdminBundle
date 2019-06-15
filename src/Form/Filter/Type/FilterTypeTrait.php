@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>

@@ -2,11 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\BooleanFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\ComparisonFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\DateFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\EntityFilterType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Filter\TextFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -43,20 +39,13 @@ class NormalizerConfigPass implements ConfigPassInterface
         ],
     ];
 
-    private $filterClassesMap = [
-        'boolean' => BooleanFilterType::class,
-        'date' => DateFilterType::class,
-        'entity' => EntityFilterType::class,
-        'numeric' => ComparisonFilterType::class,
-        'text' => TextFilterType::class,
-    ];
-
-    /** @var ContainerInterface */
     private $container;
+    private $filterRegistry;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, FilterRegistry $filterRegistry)
     {
         $this->container = $container;
+        $this->filterRegistry = $filterRegistry;
     }
 
     public function process(array $backendConfig)
@@ -439,13 +428,13 @@ class NormalizerConfigPass implements ConfigPassInterface
                     $filterConfig['type_options'] = [];
                 }
 
-                // the 'type' filter option allows to use shortcuts (e.g. 'boolean', 'text') instead of the form type FQCN
-                if (isset($filterConfig['type']) && \array_key_exists($filterConfig['type'], $this->filterClassesMap)) {
-                    $filterConfig['type'] = $this->filterClassesMap[$filterConfig['type']];
-                }
-
-                if (isset($filterConfig['type']) && !\class_exists($filterConfig['type'])) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" class defined as the type of the "%s" filter in the "list" view of the "%s" entity does not exist.', $filterConfig['type'], $filterConfig['property'], $entityName));
+                if (isset($filterConfig['type'])) {
+                    if ($this->filterRegistry->hasType($filterConfig['type'])) {
+                        // the 'type' filter option allows to use shortcuts (e.g. 'boolean', 'text') instead of the form type FQCN
+                        $filterConfig['type'] = $this->filterRegistry->getType($filterConfig['type']);
+                    } elseif (!\class_exists($filterConfig['type'])) {
+                        throw new \InvalidArgumentException(\sprintf('The "%s" class defined as the type of the "%s" filter in the "list" view of the "%s" entity does not exist.', $filterConfig['type'], $filterConfig['property'], $entityName));
+                    }
                 }
 
                 $filtersConfig[$filterName] = $filterConfig;

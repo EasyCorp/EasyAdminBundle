@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle;
 
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminConfigPass;
 use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\EasyAdminFormTypePass;
+use EasyCorp\Bundle\EasyAdminBundle\DependencyInjection\Compiler\FilterTypePass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -18,6 +19,7 @@ class EasyAdminBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new EasyAdminFormTypePass(), PassConfig::TYPE_BEFORE_REMOVING);
+        $container->addCompilerPass(new FilterTypePass());
         $container->addCompilerPass(new EasyAdminConfigPass());
     }
 }

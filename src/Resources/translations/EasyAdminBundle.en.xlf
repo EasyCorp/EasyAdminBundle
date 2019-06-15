@@ -95,29 +95,29 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Getter method does not exist for this field or the property is not public</target>
             </trans-unit>
-            <trans-unit id="label.equal_to">
-                <source>label.equal_to</source>
-                <target>Equal to</target>
+            <trans-unit id="label.is_equal_to">
+                <source>label.is_equal_to</source>
+                <target>Is equal to</target>
             </trans-unit>
-            <trans-unit id="label.not_equal_to">
-                <source>label.not_equal_to</source>
-                <target>Not equal to</target>
+            <trans-unit id="label.is_not_equal_to">
+                <source>label.is_not_equal_to</source>
+                <target>Is not equal to</target>
             </trans-unit>
-            <trans-unit id="label.greater_than">
-                <source>label.greater_than</source>
-                <target>Greater than</target>
+            <trans-unit id="label.is_greater_than">
+                <source>label.is_greater_than</source>
+                <target>Is greater than</target>
             </trans-unit>
-            <trans-unit id="label.greater_than_or_equal_to">
-                <source>label.greater_than_or_equal_to</source>
-                <target>Greater than or equal to</target>
+            <trans-unit id="label.is_greater_than_or_equal_to">
+                <source>label.is_greater_than_or_equal_to</source>
+                <target>Is greater than or equal to</target>
             </trans-unit>
-            <trans-unit id="label.less_than">
-                <source>label.less_than</source>
-                <target>Less than</target>
+            <trans-unit id="label.is_less_than">
+                <source>label.is_less_than</source>
+                <target>Is less than</target>
             </trans-unit>
-            <trans-unit id="label.less_than_or_equal_to">
-                <source>label.less_than_or_equal_to</source>
-                <target>Less than or equal to</target>
+            <trans-unit id="label.is_less_than_or_equal_to">
+                <source>label.is_less_than_or_equal_to</source>
+                <target>Is less than or equal to</target>
             </trans-unit>
             <trans-unit id="label.contains">
                 <source>label.contains</source>
@@ -138,6 +138,34 @@
             <trans-unit id="label.exactly">
                 <source>label.exactly</source>
                 <target>Exactly</target>
+            </trans-unit>
+            <trans-unit id="label.not_exactly">
+                <source>label.not_exactly</source>
+                <target>Not exactly</target>
+            </trans-unit>
+            <trans-unit id="label.is_same">
+                <source>label.is_same</source>
+                <target>Is same</target>
+            </trans-unit>
+            <trans-unit id="label.is_not_same">
+                <source>label.is_not_same</source>
+                <target>Is not same</target>
+            </trans-unit>
+            <trans-unit id="label.is_after">
+                <source>label.is_after</source>
+                <target>Is after</target>
+            </trans-unit>
+            <trans-unit id="label.is_after_or_same">
+                <source>label.is_after_or_same</source>
+                <target>Is after or same</target>
+            </trans-unit>
+            <trans-unit id="label.is_before">
+                <source>label.is_before</source>
+                <target>Is before</target>
+            </trans-unit>
+            <trans-unit id="label.is_before_or_same">
+                <source>label.is_before_or_same</source>
+                <target>Is before or same</target>
             </trans-unit>
             <trans-unit id="label.filters">
                 <source>label.filters</source>

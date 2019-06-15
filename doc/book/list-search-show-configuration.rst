@@ -274,8 +274,9 @@ These are the options that you can define for each field:
     ``boolean``, ``date``, ``datetime``, ``datetimetz``, ``decimal``, ``float``,
     ``guid``, ``integer``, ``json_array``, ``object``, ``simple_array``,
     ``smallint``, ``string``, ``text``, ``time``.
-  * Any of the custom EasyAdmin types: ``email``, ``file``, ``image``, ``raw``,
-    ``tel``, ``toggle``, ``url`` (they are explained later in this chapter).
+  * Any of the custom EasyAdmin types: ``country``` ``email``, ``file``,
+    ``image``, ``raw``, ``tel``, ``toggle``, ``url`` (they are explained later
+    in this chapter).
 
 The fields of the ``list`` and ``search`` views define another option:
 
@@ -731,6 +732,33 @@ Property Types Defined by EasyAdmin
 In addition to the Doctrine data types, properties can use any of the following
 data types defined by EasyAdmin.
 
+Country Data Type
+~~~~~~~~~~~~~~~~~
+
+It displays the full name and/or flag of the given country code. This code must
+be the two letter code defined in the `ISO 3166-1 alpha-2`_ standard, which is
+the same used by Symfony's `CountryType`_:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                class: App\Entity\User
+                list:
+                    fields:
+                        # by default it displays the country name and flag
+                        - { property: 'country', type: 'country' }
+
+                        # display only the country flag
+                        - { property: 'country', type: 'country', with_name: false }
+
+                        # display only the country name
+                        - { property: 'country', type: 'country', with_flag: false }
+                        # ...
+        # ...
+
 Email Data Type
 ~~~~~~~~~~~~~~~
 
@@ -1162,6 +1190,8 @@ template. The value of ``template`` can be any valid Twig template path.
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
 .. _`Symfony Form Type`: https://symfony.com/doc/current/forms.html
+.. _`ISO 3166-1 alpha-2`: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+.. _`CountryType`: https://symfony.com/doc/current/reference/forms/types/country.html
 
 -----
 

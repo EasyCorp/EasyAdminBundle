@@ -222,6 +222,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('field_association')->info('Used to render fields that store Doctrine associations')->end()
                                 ->scalarNode('field_bigint')->info('Used to render bigint field types')->end()
                                 ->scalarNode('field_boolean')->info('Used to render boolean field types')->end()
+                                ->scalarNode('field_country')->info('Used to render the country names and/or flags')->end()
                                 ->scalarNode('field_date')->info('Used to render date and date_immutable field types')->end()
                                 ->scalarNode('field_datetime')->info('Used to render datetime and datetime_immutable field types')->end()
                                 ->scalarNode('field_datetimetz')->info('Used to render datetimetz field types')->end()

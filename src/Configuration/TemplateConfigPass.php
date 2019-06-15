@@ -31,6 +31,7 @@ class TemplateConfigPass implements ConfigPassInterface
         'field_association' => '@EasyAdmin/default/field_association.html.twig',
         'field_bigint' => '@EasyAdmin/default/field_bigint.html.twig',
         'field_boolean' => '@EasyAdmin/default/field_boolean.html.twig',
+        'field_country' => '@EasyAdmin/default/field_country.html.twig',
         'field_date' => '@EasyAdmin/default/field_date.html.twig',
         'field_dateinterval' => '@EasyAdmin/default/field_dateinterval.html.twig',
         'field_datetime' => '@EasyAdmin/default/field_datetime.html.twig',

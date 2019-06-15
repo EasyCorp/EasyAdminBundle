@@ -25,6 +25,13 @@ Encore
         pattern: /\.js$/
     })
 
+    // copy flag images for country type
+    .copyFiles({
+        from: './assets/images/flags/',
+        to: 'images/flags/[path][name].[ext]',
+        pattern: /\.png$/
+    })
+
     .addEntry('app', './assets/js/app.js')
     .addEntry('app-rtl', './assets/js/app-rtl.js')
     .addEntry('bootstrap-all', './assets/js/bootstrap-all.js')

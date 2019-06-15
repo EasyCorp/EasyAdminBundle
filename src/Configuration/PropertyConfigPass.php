@@ -260,6 +260,25 @@ class PropertyConfigPass implements ConfigPassInterface
                         }
                     }
 
+                    if ('avatar' === $normalizedConfig['dataType'] && \in_array($view, ['list', 'search', 'show'])) {
+                        // if the user didn't define a label explicitly, hide it but only in 'list' and 'search'
+                        if (null === $normalizedConfig['label'] && \in_array($view, ['list', 'search'])) {
+                            $normalizedConfig['label'] = false;
+                        }
+
+                        if (isset($normalizedConfig['height'])) {
+                            $imageHeight = $normalizedConfig['height'];
+                            $semanticHeights = ['sm' => 18, 'md' => 24, 'lg' => 48, 'xl' => 96];
+                            if (!\is_numeric($imageHeight) && !\array_key_exists($imageHeight, $semanticHeights)) {
+                                throw new \InvalidArgumentException(\sprintf('The "%s" property in the "%s" view of the "%s" entity defines an invalid value for the avatar "height" option. It must be either a numeric value (which represents the image height in pixels) or one of these semantic heights: "%s".', $normalizedConfig['fieldName'], $view, $entityName, \implode(', ', \array_keys($semanticHeights))));
+                            }
+
+                            $normalizedConfig['height'] = \is_numeric($imageHeight) ? $imageHeight : $semanticHeights[$imageHeight];
+                        } else {
+                            $normalizedConfig['height'] = 'show' === $view ? 48 : 24;
+                        }
+                    }
+
                     if (null === $normalizedConfig['format']) {
                         $normalizedConfig['format'] = $this->getFieldFormat($normalizedConfig['type'], $backendConfig);
                     }

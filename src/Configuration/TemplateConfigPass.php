@@ -29,6 +29,7 @@ class TemplateConfigPass implements ConfigPassInterface
         'paginator' => '@EasyAdmin/default/paginator.html.twig',
         'field_array' => '@EasyAdmin/default/field_array.html.twig',
         'field_association' => '@EasyAdmin/default/field_association.html.twig',
+        'field_avatar' => '@EasyAdmin/default/field_avatar.html.twig',
         'field_bigint' => '@EasyAdmin/default/field_bigint.html.twig',
         'field_boolean' => '@EasyAdmin/default/field_boolean.html.twig',
         'field_country' => '@EasyAdmin/default/field_country.html.twig',

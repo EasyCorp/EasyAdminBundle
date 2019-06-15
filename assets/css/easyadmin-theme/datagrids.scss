@@ -116,6 +116,12 @@ table.datagrid {
   text-align: center;
 }
 
+.datagrid td.avatar .image-avatar {
+  border-radius: 50%;
+  border: 0;
+  box-shadow: none;
+}
+
 .datagrid td.country .country-flag {
   margin-right: 2px;
   max-height: 18px;

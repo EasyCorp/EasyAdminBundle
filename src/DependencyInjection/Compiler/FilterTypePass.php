@@ -23,6 +23,14 @@ final class FilterTypePass implements CompilerPassInterface
     {
         // type guessers
         $guessers = $this->findAndSortTaggedServices('easyadmin.filter.type_guesser', $container);
+        // the filter type guesser created by the user (in the app side) becomes
+        // a form type guesser too due to autoconfiguration, and that can cause
+        // issues in new/edit forms, so we need to exclude the filter type guesser
+        // from the form type guessers group
+        foreach ($guessers as $guesser) {
+            $container->getDefinition((string) $guesser)
+                ->clearTag('form.type_guesser');
+        }
         // types Map
         $typesMap = [];
         $servicesMap = [];

@@ -425,15 +425,18 @@ form .invalid-feedback > .d-block + .d-block {
 
 // this element should use 'display: flex', but that doesn't work with
 // the CSS trick used to customize the <input type="file" /> fields.
-.easyadmin-vich-image-actions,
-.easyadmin-vich-file-actions {
-    overflow: hidden;
-}
 
 .easyadmin-vich-image-actions > div,
 .easyadmin-vich-file-actions > div {
     float: left;
     margin-right: 4px;
+}
+
+.easyadmin-vich-image-actions:after,
+.easyadmin-vich-file-actions:after {
+    clear: left;
+    content: "";
+    display: block;
 }
 
 .easyadmin-vich-image-actions .field-checkbox,

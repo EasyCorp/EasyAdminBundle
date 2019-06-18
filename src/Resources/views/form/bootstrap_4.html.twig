@@ -112,6 +112,15 @@
     {% endif %}
 {%- endblock %}
 
+{% block file_widget -%}
+    {% if vich|default(false) %}
+        {%- set type = type|default('file') -%}
+        {{- block('form_widget_simple') -}}
+    {% else %}
+        {{- parent() -}}
+    {% endif %}
+{%- endblock %}
+
 {# Rows #}
 
 {% block form_row -%}
@@ -268,7 +277,7 @@
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
                 <i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
-                <span class="btn-label">{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}</span>
+                {{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }, vich: true}) }}
             </div>
 
             {% if form.delete is defined %}
@@ -315,7 +324,7 @@
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
                 <i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
-                <span class="btn-label">{{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }}) }}</span>
+                {{ form_widget(form.file, { 'attr': { 'onchange': file_upload_js }, vich: true}) }}
             </div>
 
             {% if form.delete is defined %}

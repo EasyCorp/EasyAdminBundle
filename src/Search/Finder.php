@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
-use Pagerfanta\Pagerfanta;
-
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -31,12 +29,12 @@ class Finder
      * @param string $sortField
      * @param string $sortDirection
      *
-     * @return Pagerfanta
+     * @return Paginator
      */
     public function findByAllProperties(array $entityConfig, $searchQuery, $page = 1, $maxResults = self::MAX_RESULTS, $sortField = null, $sortDirection = null)
     {
         $queryBuilder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField, $sortDirection);
 
-        return $this->paginator->createOrmPaginator($queryBuilder, $page, $maxResults);
+        return new Paginator($queryBuilder, $page, $maxResults);
     }
 }

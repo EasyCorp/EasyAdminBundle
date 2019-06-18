@@ -32,8 +32,8 @@
 {% block content_title %}
     {% apply spaceless %}
         {% if 'search' == app.request.get('action') %}
-            {% set _default_title = 'search.page_title'|transchoice(paginator.nbResults, {}, 'EasyAdminBundle') %}
-            {{ (_entity_config.search.title is defined ? _entity_config.search.title|transchoice(paginator.nbResults) : _default_title)|raw }}
+            {% set _default_title = 'search.page_title'|transchoice(paginator.numResults, {}, 'EasyAdminBundle') %}
+            {{ (_entity_config.search.title is defined ? _entity_config.search.title|transchoice(paginator.numResults) : _default_title)|raw }}
         {% else %}
             {% set _default_title = 'list.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
             {{ (_entity_config.list.title is defined ? _entity_config.list.title|trans(_trans_parameters) : _default_title)|raw }}
@@ -166,7 +166,7 @@
 
         <tbody>
         {% block table_body %}
-            {% for item in paginator.currentPageResults %}
+            {% for item in paginator.results %}
                 {% if not easyadmin_is_granted(_entity_config.list.item_permission, item) %}
                     {% set _number_of_hidden_results = _number_of_hidden_results + 1 %}
                 {% else %}
@@ -228,7 +228,7 @@
     </table>
 
     {% block delete_form %}
-        {% set referer = paginator.currentPage == paginator.nbPages and 1 != paginator.currentPage and 1 == paginator.currentPageResults|length
+        {% set referer = paginator.currentPage == paginator.lastPage and 1 != paginator.currentPage and 1 == paginator.results|length
             ? path('easyadmin', app.request.query|merge({ page: app.request.query.get('page') - 1 }))
             : app.request.requestUri
         %}

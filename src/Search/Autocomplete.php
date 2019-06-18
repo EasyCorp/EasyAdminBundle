@@ -50,7 +50,7 @@ class Autocomplete
         $paginator = $this->finder->findByAllProperties($backendConfig['entities'][$entity], $query, $page, $backendConfig['show']['max_results']);
 
         return [
-            'results' => $this->processResults($paginator->getCurrentPageResults(), $backendConfig['entities'][$entity]),
+            'results' => $this->processResults($paginator->getResults(), $backendConfig['entities'][$entity]),
             'has_next_page' => $paginator->hasNextPage(),
         ];
     }

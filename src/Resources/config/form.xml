@@ -43,10 +43,6 @@
             <tag name="form.type_extension" alias="form" extended-type="Symfony\Component\Form\Extension\Core\Type\FormType" />
         </service>
 
-        <service id="easyadmin.form.type_guesser_chain" class="Symfony\Component\Form\FormTypeGuesserChain" public="false">
-            <argument type="collection" /> <!-- type guessers -->
-        </service>
-
         <!-- Type Configurators -->
 
         <service id="easyadmin.form.type.configurator.textarea" public="false"

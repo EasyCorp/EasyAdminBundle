@@ -232,7 +232,7 @@ class ViewConfigPass implements ConfigPassInterface
         }
 
         if (\in_array($fieldType, ['bigint', 'integer', 'smallint', 'decimal', 'float'])) {
-            return isset($backendConfig['formats']['number']) ? $backendConfig['formats']['number'] : null;
+            return $backendConfig['formats']['number'] ?? null;
         }
     }
 
@@ -254,7 +254,7 @@ class ViewConfigPass implements ConfigPassInterface
             'show' => [],
         ];
 
-        return isset($excludedFieldNames[$view]) ? $excludedFieldNames[$view] : [];
+        return $excludedFieldNames[$view] ?? [];
     }
 
     /**
@@ -274,7 +274,7 @@ class ViewConfigPass implements ConfigPassInterface
             'show' => [],
         ];
 
-        return isset($excludedFieldTypes[$view]) ? $excludedFieldTypes[$view] : [];
+        return $excludedFieldTypes[$view] ?? [];
     }
 
     /**
@@ -291,7 +291,7 @@ class ViewConfigPass implements ConfigPassInterface
             'list' => 7,
         ];
 
-        return isset($maxNumberFields[$view]) ? $maxNumberFields[$view] : PHP_INT_MAX;
+        return $maxNumberFields[$view] ?? PHP_INT_MAX;
     }
 
     /**
@@ -309,7 +309,7 @@ class ViewConfigPass implements ConfigPassInterface
         $filteredFields = [];
 
         foreach ($fields as $name => $metadata) {
-            if (!\in_array($name, $excludedFieldNames) && !\in_array($metadata['type'], $excludedFieldTypes)) {
+            if (!\in_array($name, $excludedFieldNames, true) && !\in_array($metadata['type'], $excludedFieldTypes, true)) {
                 $filteredFields[$name] = $fields[$name];
             }
         }

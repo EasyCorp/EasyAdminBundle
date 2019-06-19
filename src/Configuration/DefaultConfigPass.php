@@ -101,7 +101,7 @@ class DefaultConfigPass implements ConfigPassInterface
             $backendHomepage['params'] = ['action' => 'list', 'entity' => $defaultEntityName];
 
             // if the default entity defines a custom sorting, use it
-            $defaultEntityConfig = isset($backendConfig['entities'][$defaultEntityName]) ? $backendConfig['entities'][$defaultEntityName] : [];
+            $defaultEntityConfig = $backendConfig['entities'][$defaultEntityName] ?? [];
             if (isset($defaultEntityConfig['list']['sort'])) {
                 $backendHomepage['params'] = \array_merge($backendHomepage['params'], [
                     'sortField' => $defaultEntityConfig['list']['sort']['field'],

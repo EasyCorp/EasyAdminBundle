@@ -5,8 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\FormRegistryInterface;
-use Symfony\Component\Form\Guess\TypeGuess;
-use Symfony\Component\Form\Guess\ValueGuess;
+use Symfony\Component\Form\FormTypeGuesserInterface;
 
 /**
  * Processes the entity fields to complete their configuration and to treat
@@ -90,11 +89,14 @@ class PropertyConfigPass implements ConfigPassInterface
      */
     private function processMetadataConfig(array $backendConfig)
     {
+        /** @var FormTypeGuesserInterface $typeGuesser */
+        $typeGuesser = $this->formRegistry->getTypeGuesser();
+
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             $properties = [];
             foreach ($entityConfig['properties'] as $propertyName => $propertyMetadata) {
-                $typeGuess = $this->getFormTypeGuessOfProperty($entityConfig['class'], $propertyName);
-                $requiredGuess = $this->getFormRequiredGuessOfProperty($entityConfig['class'], $propertyName);
+                $typeGuess = $typeGuesser->guessType($entityConfig['class'], $propertyName);
+                $requiredGuess = $typeGuesser->guessRequired($entityConfig['class'], $propertyName);
 
                 $guessedType = null !== $typeGuess
                     ? FormTypeHelper::getTypeName($typeGuess->getType())
@@ -121,7 +123,7 @@ class PropertyConfigPass implements ConfigPassInterface
 
                 // 'boolean' properties are displayed by default as toggleable
                 // flip switches (if the 'edit' action is enabled for the entity)
-                if ('boolean' === $properties[$propertyName]['dataType'] && !\in_array('edit', $entityConfig['disabled_actions'])) {
+                if ('boolean' === $properties[$propertyName]['dataType'] && !\in_array('edit', $entityConfig['disabled_actions'], true)) {
                     $properties[$propertyName]['dataType'] = 'toggle';
                 }
             }
@@ -179,9 +181,7 @@ class PropertyConfigPass implements ConfigPassInterface
                     // for the field, use it as 'fieldType'. Otherwise, use the guessed
                     // form type of the property data type.
                     if (\in_array($view, ['edit', 'new'])) {
-                        $normalizedConfig['fieldType'] = isset($originalFieldConfig['type'])
-                            ? $originalFieldConfig['type']
-                            : $normalizedConfig['fieldType'];
+                        $normalizedConfig['fieldType'] = $originalFieldConfig['type'] ?? $normalizedConfig['fieldType'];
 
                         if (null === $normalizedConfig['fieldType']) {
                             // this is a virtual field which doesn't exist as a property of
@@ -200,7 +200,7 @@ class PropertyConfigPass implements ConfigPassInterface
                         // conditions:
                         //   1) the end-user hasn't configured the field type explicitly
                         //   2) the 'edit' action is enabled for the 'list' view of this entity
-                        if (!isset($originalFieldConfig['type']) && !\in_array('edit', $entityConfig['disabled_actions'])) {
+                        if (!isset($originalFieldConfig['type']) && !\in_array('edit', $entityConfig['disabled_actions'], true)) {
                             $normalizedConfig['dataType'] = 'toggle';
                         }
                     }
@@ -293,7 +293,7 @@ class PropertyConfigPass implements ConfigPassInterface
         ) {
             $resolvedFormOptions = \array_merge(
                 \array_intersect_key($resolvedFormOptions, ['required' => null]),
-                isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : []
+                $userDefinedConfig['type_options'] ?? []
             );
         }
         // if the user has defined the "type" or "type_options"
@@ -309,37 +309,11 @@ class PropertyConfigPass implements ConfigPassInterface
         ) {
             $resolvedFormOptions = \array_merge(
                 $resolvedFormOptions,
-                isset($userDefinedConfig['type_options']) ? $userDefinedConfig['type_options'] : []
+                $userDefinedConfig['type_options'] ?? []
             );
         }
 
         return $resolvedFormOptions;
-    }
-
-    /**
-     * Guesses what Form Type a property of a class has.
-     *
-     * @param string $class
-     * @param string $property
-     *
-     * @return TypeGuess|null
-     */
-    private function getFormTypeGuessOfProperty($class, $property)
-    {
-        return $this->formRegistry->getTypeGuesser()->guessType($class, $property);
-    }
-
-    /**
-     * Guesses if a property of a class should be a required field in a Form.
-     *
-     * @param string $class
-     * @param string $property
-     *
-     * @return ValueGuess|null
-     */
-    private function getFormRequiredGuessOfProperty($class, $property)
-    {
-        return $this->formRegistry->getTypeGuesser()->guessRequired($class, $property);
     }
 
     /**
@@ -362,7 +336,7 @@ class PropertyConfigPass implements ConfigPassInterface
         }
 
         if (\in_array($fieldType, ['bigint', 'integer', 'smallint', 'decimal', 'float'])) {
-            return isset($backendConfig['formats']['number']) ? $backendConfig['formats']['number'] : null;
+            return $backendConfig['formats']['number'] ?? null;
         }
     }
 }

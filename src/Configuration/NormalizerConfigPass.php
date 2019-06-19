@@ -470,7 +470,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         // merge the config of each field individually
         $mergedFields = [];
         foreach ($parentFields as $parentFieldName => $parentFieldConfig) {
-            if (isset($parentFieldConfig['property']) && \in_array($parentFieldConfig['property'], $removedFieldNames)) {
+            if (isset($parentFieldConfig['property']) && \in_array($parentFieldConfig['property'], $removedFieldNames, true)) {
                 continue;
             }
 

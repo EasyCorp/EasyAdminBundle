@@ -76,7 +76,7 @@
             entityForm.addEventListener('submit', function() {
                 // this timeout is needed to include the disabled button into the submitted form
                 setTimeout(function() {
-                    const submitButtons = form.querySelectorAll('[type="submit"]');
+                    const submitButtons = entityForm.querySelectorAll('[type="submit"]');
                     submitButtons.forEach(function(button) {
                         button.setAttribute('disabled', 'disabled');
                     });

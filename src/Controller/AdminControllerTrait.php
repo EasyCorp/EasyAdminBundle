@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\CspNonceGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;

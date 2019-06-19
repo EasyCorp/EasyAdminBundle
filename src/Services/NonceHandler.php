@@ -14,7 +14,7 @@ final class NonceHandler
 
     public function hasGenerator(): bool
     {
-        return $this->generator !== null;
+        return null !== $this->generator;
     }
 
     public function getGenerator(): CspNonceGeneratorInterface

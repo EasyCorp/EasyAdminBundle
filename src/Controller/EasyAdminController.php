@@ -3,13 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use EasyCorp\Bundle\EasyAdminBundle\CspNonceGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Services\NonceHandler;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
+use EasyCorp\Bundle\EasyAdminBundle\Services\NonceHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -34,7 +33,7 @@ class EasyAdminController extends AbstractController
             'easyadmin.filter.registry' => FilterRegistry::class,
             'easyadmin.security.authorization_checker' => AuthorizationChecker::class,
             'event_dispatcher' => EventDispatcherInterface::class,
-            'easyadmin.csp_nonce_handler' => NonceHandler::class
+            'easyadmin.csp_nonce_handler' => NonceHandler::class,
         ]);
     }
 }

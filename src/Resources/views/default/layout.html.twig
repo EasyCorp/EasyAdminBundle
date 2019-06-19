@@ -20,7 +20,7 @@
         {% endblock head_custom_stylesheets %}
 
         {% if easyadmin_config('design.brand_color') != 'hsl(230, 55%, 60%)' %}
-        <style{% if csp_style_nonce is defined and csp_style_nonce is not empty %} nonce="{{ csp_style_nonce }}" {% endif %}>
+        <style{% if csp_style_nonce|default('') is not empty %} nonce="{{ csp_style_nonce }}" {% endif %}>
             :root { --color-primary: {{ easyadmin_config('design.brand_color') }}; }
         </style>
         {% endif %}
@@ -42,7 +42,7 @@
 
     {% block body %}
     <body id="{% block body_id %}{% endblock %}" class="easyadmin {% block body_class %}{% endblock %}">
-        <script{% if csp_script_nonce is defined and csp_script_nonce is not empty %} nonce="{{ csp_script_nonce }}" {% endif %}>
+        <script{% if csp_script_nonce|default('') is not empty %} nonce="{{ csp_script_nonce }}" {% endif %}>
             document.body.classList.add(
                 'easyadmin-content-width-' + (localStorage.getItem('easyadmin/content/width') || 'normal'),
                 'easyadmin-sidebar-width-' + (localStorage.getItem('easyadmin/sidebar/width') || 'normal')

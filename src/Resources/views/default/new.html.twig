@@ -27,7 +27,7 @@
 {% block body_javascript %}
     {{ parent() }}
 
-    <script type="text/javascript"{% if csp_script_nonce is defined and csp_script_nonce is not empty %} nonce="{{ csp_script_nonce }}" {% endif %}>
+    <script type="text/javascript"{% if csp_script_nonce|default('') is not empty %} nonce="{{ csp_script_nonce }}" {% endif %}>
         $(function() {
             $('.new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
 

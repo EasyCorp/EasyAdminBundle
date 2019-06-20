@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-20T10:32:38Z
+
+For developers and people used to things like spreadsheets, it'd be OK to use `=`, `>=`, `!=`, etc.  But for most people, they are too confusing
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-20T11:46:39Z
+
+Thanks for this contribution. Sadly I can see failing test and I'm not sure how to fix it: https://travis-ci.org/EasyCorp/EasyAdminBundle/jobs/548136242#L588 Any ideas? Thanks.
+
+---------------------------------------------------------------------------
+
+by fancyweb at 2019-06-20T12:52:02Z
+
+A `target` tag was not properly closed 😢 My bad !

@@ -199,6 +199,92 @@
                 <source>login.sign_in</source>
                 <target>Connectez-vous</target>
             </trans-unit>
+
+            <!-- filters -->
+            <trans-unit id="filter.title">
+                <source>filter.title</source>
+                <target>Filtres</target>
+            </trans-unit>
+            <trans-unit id="filter.button.clear">
+                <source>filter.button.clear</source>
+                <target>Effacer</target>
+            </trans-unit>
+            <trans-unit id="filter.button.apply">
+                <source>filter.button.apply</source>
+                <target>Appliquer</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_equal_to">
+                <source>filter.label.is_equal_to</source>
+                <target>est égal(e) à</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_equal_to">
+                <source>filter.label.is_not_equal_to</source>
+                <target>est différent(e) de</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than">
+                <source>filter.label.is_greater_than</source>
+                <target>est supérieur(e) à</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than_or_equal_to">
+                <source>filter.label.is_greater_than_or_equal_to</source>
+                <target>est supérieur(e) ou égal(e) à</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than">
+                <source>filter.label.is_less_than</source>
+                <target>est inférieur(e) à</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than_or_equal_to">
+                <source>filter.label.is_less_than_or_equal_to</source>
+                <target>est inférieur(e) ou égal(e) à</target>
+            </trans-unit>
+            <trans-unit id="filter.label.contains">
+                <source>filter.label.contains</source>
+                <target>contient</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_contains">
+                <source>filter.label.not_contains</source>
+                <target>ne contient pas</target>
+            </trans-unit>
+            <trans-unit id="filter.label.starts_with">
+                <source>filter.label.starts_with</source>
+                <target>commence par</target>
+            </trans-unit>
+            <trans-unit id="filter.label.ends_with">
+                <source>filter.label.ends_with</source>
+                <target>finit par</target>
+            </trans-unit>
+            <trans-unit id="filter.label.exactly">
+                <source>filter.label.exactly</source>
+                <target>est strictement égal(e) à</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_exactly">
+                <source>filter.label.not_exactly</source>
+                <target>est strictement différent(e) de</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_same">
+                <source>filter.label.is_same</source>
+                <target>est le</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_same">
+                <source>filter.label.is_not_same</source>
+                <target>n'est pas le</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after">
+                <source>filter.label.is_after</source>
+                <target>est postérieure à</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after_or_same">
+                <source>filter.label.is_after_or_same</source>
+                <target>est postérieure à ou est le</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before">
+                <source>filter.label.is_before</source>
+                <target>est antérieure à</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before_or_same">
+                <source>filter.label.is_before_or_same</source>
+                <target>est antérieure à ou est le</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

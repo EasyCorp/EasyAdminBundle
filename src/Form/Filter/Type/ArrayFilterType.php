@@ -24,16 +24,19 @@ class ArrayFilterType extends FilterType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('value', $options['value_type'], $options['value_type_options'] + [
-            'label' => false,
-            'choice_loader' => new DynamicChoiceLoader(),
-        ]);
+        $defaultOptions = ['label' => false];
+        if (!isset($options['value_type_options']['choices']) || [] === $options['value_type_options']['choices']) {
+            $defaultOptions += ['choice_loader' => new DynamicChoiceLoader()];
+        }
+        $builder->add('value', $options['value_type'], $options['value_type_options'] + $defaultOptions);
 
         $builder->addModelTransformer(new CallbackTransformer(
             static function ($data) { return $data; },
             static function ($data) {
-                if ([] === $data['value']) {
+                if (null === $data['value'] || [] === $data['value']) {
                     $data['comparison'] = ComparisonType::CONTAINS === $data['comparison'] ? 'IS NULL' : 'IS NOT NULL';
+                } else {
+                    $data['value'] = (array) $data['value'];
                 }
 
                 return $data;
@@ -74,15 +77,15 @@ class ArrayFilterType extends FilterType
     {
         $alias = \current($queryBuilder->getRootAliases());
         $property = $metadata['property'];
-        $paramName = static::createAlias($property);
         $useQuotes = 'simple_array' !== $metadata['dataType'];
         $data = $form->getData();
 
-        if ([] === $data['value']) {
+        if (null === $data['value'] || [] === $data['value']) {
             $queryBuilder->andWhere(\sprintf('%s.%s %s', $alias, $property, $data['comparison']));
         } else {
             $orX = new Expr\Orx();
             foreach ($data['value'] as $value) {
+                $paramName = static::createAlias($property);
                 $orX->add(\sprintf('%s.%s %s :%s', $alias, $property, $data['comparison'], $paramName));
                 $queryBuilder->setParameter($paramName, $useQuotes ? '%"'.$value.'"%' : '%'.$value.'%');
             }

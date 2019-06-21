@@ -9,12 +9,22 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 
 class ArrayFilterTypeTest extends FilterTypeTest
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // reset counter (only for test purpose)
+        $m = new \ReflectionProperty(ArrayFilterType::class, 'uniqueAliasId');
+        $m->setAccessible(true);
+        $m->setValue(0);
+    }
+
     /**
      * @dataProvider getDataProvider
      */
-    public function testSubmit($submittedData, $data)
+    public function testSubmit($submittedData, $data, array $options = [])
     {
-        $form = $this->factory->create(ArrayFilterType::class);
+        $form = $this->factory->create(ArrayFilterType::class, null, $options);
         $form->submit($submittedData);
 
         $this->assertSame($data, $form->getData());
@@ -26,7 +36,7 @@ class ArrayFilterTypeTest extends FilterTypeTest
     /**
      * @dataProvider getDataProvider
      */
-    public function testFilter($submittedData, $data, $paramName)
+    public function testFilter($submittedData, $data, array $options = [])
     {
         $qb = $this->getMockBuilder(QueryBuilder::class)
             ->disableOriginalConstructor()
@@ -36,7 +46,7 @@ class ArrayFilterTypeTest extends FilterTypeTest
             ->method('getRootAliases')
             ->willReturn(['o'])
         ;
-        if ([] === $data['value']) {
+        if (null === $data['value'] || [] === $data['value']) {
             $qb->expects($this->once())
                 ->method('andWhere')
                 ->with(\sprintf('o.foo %s', $data['comparison']))
@@ -44,7 +54,7 @@ class ArrayFilterTypeTest extends FilterTypeTest
             ;
         } else {
             $orX = new Expr\Orx();
-            $orX->add(\sprintf('o.foo %s :%s', $data['comparison'], $paramName));
+            $orX->add(\sprintf('o.foo %s :foo_1', $data['comparison']));
             if (ComparisonType::NOT_CONTAINS === $data['comparison']) {
                 $orX->add('o.foo IS NULL');
             }
@@ -55,11 +65,11 @@ class ArrayFilterTypeTest extends FilterTypeTest
             ;
             $qb->expects($this->once())
                 ->method('setParameter')
-                ->with($paramName, '%"'.$data['value'][0].'"%')
+                ->with('foo_1', '%"'.$data['value'][0].'"%')
             ;
         }
 
-        $form = $this->factory->create(ArrayFilterType::class);
+        $form = $this->factory->create(ArrayFilterType::class, null, $options);
         $form->submit($submittedData);
 
         $filter = $this->filterRegistry->resolveType($form);
@@ -73,19 +83,47 @@ class ArrayFilterTypeTest extends FilterTypeTest
         yield [
             ['comparison' => ComparisonType::CONTAINS, 'value' => ['bar']],
             ['comparison' => 'like', 'value' => ['bar']],
-            'foo_1',
         ];
 
         yield [
             ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['bar']],
             ['comparison' => 'not like', 'value' => ['bar']],
-            'foo_2',
         ];
 
         yield [
             ['comparison' => ComparisonType::CONTAINS, 'value' => []],
             ['comparison' => 'IS NULL', 'value' => []],
-            'foo_3',
+        ];
+
+        yield [
+            ['comparison' => ComparisonType::CONTAINS, 'value' => null],
+            ['comparison' => 'IS NULL', 'value' => null],
+            [
+                'value_type_options' => [
+                    'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
+                ],
+            ],
+        ];
+
+        yield [
+            ['comparison' => ComparisonType::CONTAINS, 'value' => 'b'],
+            ['comparison' => 'like', 'value' => ['b']],
+            [
+                'value_type_options' => [
+                    'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
+                ],
+            ],
+        ];
+
+        yield [
+            ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['c']],
+            ['comparison' => 'not like', 'value' => ['c']],
+            [
+                'value_type_options' => [
+                    'multiple' => true,
+                    'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
+                ],
+            ],
         ];
     }
 }

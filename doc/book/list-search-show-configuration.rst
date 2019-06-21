@@ -589,7 +589,7 @@ Dynamic Filters (``filters`` Option)
 
 The ``filters`` option defines the list of fields the user can use to refine the
 list/search results. EasyAdmin can guess the appropriate filter depending on the
-field data type, so in most application, you only need to list the fields:
+field data type, so in most applications, you only need to list the fields:
 
 .. code-block:: yaml
 

@@ -34,9 +34,20 @@ body.page-login {
     flex: 100%;
     padding-left: 0;
 }
+.login-wrapper .form-widget-with-icon {
+    align-items: baseline;
+    display: flex;
+    flex-direction: row;
+}
+.login-wrapper .form-widget-with-icon i {
+    color: var(--gray-500);
+    font-size: 18px;
+    margin-right: 10px;
+}
 .login-wrapper .form-widget input {
     font-size: var(--font-size-lg);
     height: 38px;
+    line-height: 38px;
 }
 
 .page-blank .content-wrapper {

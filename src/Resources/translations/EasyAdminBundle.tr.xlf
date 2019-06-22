@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Özelliğin getter methodu tanımlanmamış veya özellik public değil</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Boş</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">
@@ -198,6 +202,92 @@
             <trans-unit id="login.sign_in">
                 <source>login.sign_in</source>
                 <target>Giriş yap</target>
+            </trans-unit>
+            
+            <!-- filters -->
+            <trans-unit id="filter.title">
+                <source>filter.title</source>
+                <target>Filtreler</target>
+            </trans-unit>
+            <trans-unit id="filter.button.clear">
+                <source>filter.button.clear</source>
+                <target>Temizle</target>
+            </trans-unit>
+            <trans-unit id="filter.button.apply">
+                <source>filter.button.apply</source>
+                <target>Uygula</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_equal_to">
+                <source>filter.label.is_equal_to</source>
+                <target>Eşittir</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_equal_to">
+                <source>filter.label.is_not_equal_to</source>
+                <target>Eşit değildir</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than">
+                <source>filter.label.is_greater_than</source>
+                <target>Büyüktür</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than_or_equal_to">
+                <source>filter.label.is_greater_than_or_equal_to</source>
+                <target>Büyüktür veya eşittir</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than">
+                <source>filter.label.is_less_than</source>
+                <target>Küçüktür</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than_or_equal_to">
+                <source>filter.label.is_less_than_or_equal_to</source>
+                <target>Küçüktür veya eşittir</target>
+            </trans-unit>
+            <trans-unit id="filter.label.contains">
+                <source>filter.label.contains</source>
+                <target>Metin şunları içeriyor</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_contains">
+                <source>filter.label.not_contains</source>
+                <target>Metin şunları içermiyor</target>
+            </trans-unit>
+            <trans-unit id="filter.label.starts_with">
+                <source>filter.label.starts_with</source>
+                <target>Metin şununla başlıyor</target>
+            </trans-unit>
+            <trans-unit id="filter.label.ends_with">
+                <source>filter.label.ends_with</source>
+                <target>Metin şununla bitiyor</target>
+            </trans-unit>
+            <trans-unit id="filter.label.exactly">
+                <source>filter.label.exactly</source>
+                <target>Metin aynı</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_exactly">
+                <source>filter.label.not_exactly</source>
+                <target>Metin aynı değil</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_same">
+                <source>filter.label.is_same</source>
+                <target>Aynı</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_same">
+                <source>filter.label.is_not_same</source>
+                <target>Aynı değil</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after">
+                <source>filter.label.is_after</source>
+                <target>Tarihinden sonra</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after_or_same">
+                <source>filter.label.is_after_or_same</source>
+                <target>Tarihi ve sonrası</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before">
+                <source>filter.label.is_before</source>
+                <target>Tarihinden önce</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before_or_same">
+                <source>filter.label.is_before_or_same</source>
+                <target>Tarihi ve öncesi</target>
             </trans-unit>
         </body>
     </file>

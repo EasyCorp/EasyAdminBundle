@@ -9,6 +9,7 @@ table.datagrid {
   background: var(--form-bg);
 }
 .datagrid thead th {
+  border: 0;
   padding: 0;
 }
 .datagrid thead a, .datagrid thead span {

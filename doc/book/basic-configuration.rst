@@ -80,10 +80,10 @@ displays a link to logout from the backend.
 Configuring the Logged In User Information
 ------------------------------------------
 
-The information of the logged in user is displayed by default in all pages. The
-user name is the string conversion of the ``app.user`` object of the Twig
-template and the avatar is a generic user icon. If you want to hide any of this
-information, use these config options:
+By default, all pages display the details of the logged in user. The user name
+is the result of calling to the ``__toString()`` method on the current user
+object. The user avatar is a generic avatar icon. If you want to hide any of
+this information, use these config options:
 
 .. code-block:: yaml
 
@@ -94,17 +94,22 @@ information, use these config options:
             display_avatar: false
         # ...
 
-You can also change how the user name and avatar are obtained with these other
+If you store the user name and their avatar URL in other properties/methods of
+the user object, define the ``name_property_path`` and ``avatar_property_path``
 options. Their values are any valid `PropertyAccess component`_ expression,
-which is applied to the ``app.user`` object of the Twig template:
+which is applied to the user object:
 
 .. code-block:: yaml
 
     # config/packages/easy_admin.yaml
     easy_admin:
         user:
-            # this will look for getFullName(), isFullName(), ..., and 'fullName' property
+            # this method/property must return the string representation of the user
+            # (Symfony will look for getFullName(), isFullName(), ..., and 'fullName' property)
             name_property_path: 'fullName'
+
+            # this method/property must return the absolute URL of the user avatar image
+            # (Symfony will look for getGravatar(), isGravatar(), ..., and 'gravatar' property)
             avatar_property_path: 'gravatar'
         # ...
 

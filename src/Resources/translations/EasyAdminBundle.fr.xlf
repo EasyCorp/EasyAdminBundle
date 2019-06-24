@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Aucun accesseur n'existe pour cette propriété ou celle-ci n'est pas publique.</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Aucun(e)</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

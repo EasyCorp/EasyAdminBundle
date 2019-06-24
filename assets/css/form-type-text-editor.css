@@ -1,0 +1,19 @@
+@import '~trix/dist/trix.css';
+
+.easyadmin-text-editor-wrapper {
+    background: var(--white);
+    border: 0;
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
+    padding: 7px;
+}
+trix-toolbar {
+    margin-bottom: 10px;
+}
+trix-toolbar .trix-button-group {
+    margin-bottom: 0;
+}
+trix-editor {
+    border: 0;
+    padding: 3px;
+}

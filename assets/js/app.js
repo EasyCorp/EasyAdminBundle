@@ -29,6 +29,7 @@ window.addEventListener('load', function() {
     createContentResizer();
     createNavigationToggler();
     createCodeEditorFields();
+    createTextEditorFields();
 });
 
 function createNullableControls() {
@@ -158,4 +159,24 @@ function createCodeEditorFields()
 
     document.querySelector('head').appendChild(codeEditorCss);
     document.querySelector('body').appendChild(codeEditorJs);
+}
+
+// Text editor fields require extra JavaScript dependencies, which are loaded
+// dynamically only when there are code editor fields in the page
+function createTextEditorFields()
+{
+    const textEditorElements = document.querySelectorAll('trix-editor');
+    if (textEditorElements.length === 0) {
+        return;
+    }
+
+    const textEditorJs = document.createElement('script');
+    textEditorJs.setAttribute('src', textEditorElements[0].dataset.jsUrl);
+
+    const textEditorCss = document.createElement('link');
+    textEditorCss.setAttribute('rel', 'stylesheet');
+    textEditorCss.setAttribute('href', textEditorElements[0].dataset.cssUrl);
+
+    document.querySelector('head').appendChild(textEditorCss);
+    document.querySelector('body').appendChild(textEditorJs);
 }

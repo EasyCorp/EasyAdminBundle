@@ -31,6 +31,14 @@
       "js": [
         "./form-type-code-editor.js"
       ]
+    },
+    "form-type-text-editor": {
+      "css": [
+        "./form-type-text-editor.css"
+      ],
+      "js": [
+        "./form-type-text-editor.js"
+      ]
     }
   }
 }

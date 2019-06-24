@@ -487,6 +487,14 @@
     {% endif %}
 {% endblock easyadmin_code_editor_widget %}
 
+{# EasyAdmin's TextEditor form type #}
+{% block easyadmin_text_editor_widget %}
+    <input id="{{ id }}" value="{{ data }}" type="hidden" name="{{ name }}">
+    <div class="easyadmin-text-editor-wrapper">
+        <trix-editor input="{{ id }}" data-js-url="{{ asset("bundles/easyadmin/form-type-text-editor.js") }}" data-css-url="{{ asset("bundles/easyadmin/form-type-text-editor.css") }}"></trix-editor>
+    </div>
+{% endblock easyadmin_text_editor_widget %}
+
 {# EasyAdminSection form type #}
 {% block easyadmin_section_row %}
     {% set _translation_domain = easyadmin.entity.translation_domain %}

@@ -4,7 +4,7 @@
 # EXCEPTION
 expected_exception:
     class: \InvalidArgumentException
-    message_string: 'The "this-property-does-not-exist" filter configured in the "list" view of the "Category" entity refers to a property called "this-property-does-not-exist" which is not defined in that entity.'
+    message_string: 'The "this-property-does-not-exist" filter configured in the "list" view of the "Category" entity refers to a property called "this-property-does-not-exist" which is not defined in that entity. Set the "mapped" option to false if it is not intended to be a mapped property.'
 
 # CONFIGURATION
 easy_admin:

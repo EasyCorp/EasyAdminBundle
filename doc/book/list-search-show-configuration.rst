@@ -715,6 +715,26 @@ new filter to the field which will use it:
                           # optionally you can pass options to the filter class
                           # type_options: {}
 
+.. tip::
+
+    When configuring filters to entities, all filters are validated. Any filter
+    properties that do not exist on the entity class will cause an exception to be
+    thrown.
+
+    In cases where you need extra filters in the form that will not be mapped to
+    the underlying entity class, you need to set the ``mapped`` option to ``false``::
+
+        # config/packages/easy_admin.yaml
+        easy_admin:
+            entities:
+                Users:
+                    class: App\Entity\User
+                    list:
+                        filters:
+                            - property: 'unmapped'
+                              type: 'App\Form\Filter\CustomFilterType'
+                              mapped: false
+
 If the options passed to the filter are dynamic, you can't define them in the
 YAML config file. Instead, :ref:`create a custom controller <overriding-the-entity-controller>`
 for your entity and override the ``createFiltersForm()`` method::

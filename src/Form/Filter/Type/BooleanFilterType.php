@@ -2,9 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -17,7 +15,7 @@ class BooleanFilterType extends FilterType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'choices' => [
@@ -33,22 +31,8 @@ class BooleanFilterType extends FilterType
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getParent(): string
     {
         return ChoiceType::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
-    {
-        $alias = \current($queryBuilder->getRootAliases());
-        $property = $metadata['property'];
-        $paramName = static::createAlias($property);
-        $value = $form->getData();
-
-        $queryBuilder->andWhere(\sprintf('%s.%s = :%s', $alias, $property, $paramName))
-            ->setParameter($paramName, $value);
     }
 }

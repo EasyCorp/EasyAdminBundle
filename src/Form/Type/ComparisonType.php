@@ -70,6 +70,7 @@ class ComparisonType extends AbstractType
                             'filter.label.not_contains' => self::NOT_CONTAINS,
                         ];
                         break;
+                    case 'choice':
                     case 'entity':
                         $choices = [
                             'filter.label.is_same' => self::EQ,
@@ -83,7 +84,7 @@ class ComparisonType extends AbstractType
             'translation_domain' => 'EasyAdminBundle',
         ]);
         $resolver->setAllowedTypes('type', 'string');
-        $resolver->setAllowedValues('type', ['array', 'datetime', 'entity', 'numeric', 'text']);
+        $resolver->setAllowedValues('type', ['array', 'datetime', 'choice', 'entity', 'numeric', 'text']);
     }
 
     /**

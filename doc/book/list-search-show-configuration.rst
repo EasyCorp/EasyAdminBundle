@@ -715,26 +715,6 @@ new filter to the field which will use it:
                           # optionally you can pass options to the filter class
                           # type_options: {}
 
-.. tip::
-
-    When configuring filters to entities, all filters are validated. Any filter
-    properties that do not exist on the entity class will cause an exception to be
-    thrown.
-
-    In cases where you need extra filters in the form that will not be mapped to
-    the underlying entity class, you need to set the ``mapped`` option to ``false``::
-
-        # config/packages/easy_admin.yaml
-        easy_admin:
-            entities:
-                Users:
-                    class: App\Entity\User
-                    list:
-                        filters:
-                            - property: 'unmapped'
-                              type: 'App\Form\Filter\CustomFilterType'
-                              mapped: false
-
 If the options passed to the filter are dynamic, you can't define them in the
 YAML config file. Instead, :ref:`create a custom controller <overriding-the-entity-controller>`
 for your entity and override the ``createFiltersForm()`` method::
@@ -751,6 +731,42 @@ for your entity and override the ``createFiltersForm()`` method::
             ]);
 
             return $form;
+        }
+    }
+
+By default, each filter must be associated with a property of the entity.
+However, sometimes you need to filter by the property of a related entity
+(e.g. to filter orders by the country of the order customer). In those cases,
+set the ``mapped`` option to ``false`` in the filter or you'll see an exception:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Users:
+                class: App\Entity\Order
+                list:
+                    filters:
+                        # 'country' doesn't exist as a property of 'Order' so it's
+                        # defined as 'not mapped' to avoid errors
+                        - property: 'country'
+                          type: 'App\Form\Filter\CustomerCountryFilterType'
+                          mapped: false
+
+In the custom filter class, you can now add the query related to the associated
+entity::
+
+    // App\Form\Filter\CustomerCountryFilterType
+    // ...
+
+    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
+    {
+        if (null !== $form->getData()) {
+            $queryBuilder
+                ->leftJoin('entity.customer', 'customer')
+                ->andWhere('customer.country = :country')
+                ->setParameter('country', $form->getData());
         }
     }
 

@@ -257,7 +257,7 @@ class PropertyConfigPass implements ConfigPassInterface
                         }
                     }
                 } elseif ($filterConfig['mapped'] ?? true) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" filter configured in the "list" view of the "%s" entity refers to a property called "%s" which is not defined in that entity. Set the "mapped" option to false if it is not intended to be a mapped property.', $propertyName, $entityName, $propertyName));
+                    throw new \InvalidArgumentException(\sprintf('The "%s" filter configured in the "list" view of the "%s" entity refers to a property called "%s" which is not defined in that entity. Set the "mapped" option to false if you are defining a filter that is not related to a property of that entity (this is needed for example when filtering by a property of a different entity which is related via a Doctrine association).', $propertyName, $entityName, $propertyName));
                 }
 
                 if (!isset($filterConfig['type'])) {

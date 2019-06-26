@@ -242,26 +242,26 @@ class PropertyConfigPass implements ConfigPassInterface
             foreach ($entityConfig['list']['filters'] ?? [] as $propertyName => $filterConfig) {
                 $originalFilterConfig = $filterConfig;
 
-                if (!\array_key_exists($propertyName, $entityConfig['properties'])) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" filter configured in the "list" view of the "%s" entity refers to a property called "%s" which is not defined in that entity.', $propertyName, $entityName, $propertyName));
-                }
+                if (\array_key_exists($propertyName, $entityConfig['properties'])) {
+                    // if the original filter didn't define the 'type' option, it will now
+                    // be defined thanks to the 'type' value added by Doctrine's metadata
+                    $filterConfig += $entityConfig['properties'][$propertyName];
 
-                // if the original filter didn't define the 'type' option, it will now
-                // be defined thanks to the 'type' value added by Doctrine's metadata
-                $filterConfig += $entityConfig['properties'][$propertyName];
+                    if (!isset($originalFilterConfig['type'])) {
+                        $guessedType = $this->filterRegistry->getTypeGuesser()
+                            ->guessType($entityConfig['class'], $propertyName);
 
-                if (!isset($originalFilterConfig['type'])) {
-                    $guessedType = $this->filterRegistry->getTypeGuesser()
-                        ->guessType($entityConfig['class'], $propertyName);
-
-                    if (null !== $guessedType) {
-                        $filterConfig['type'] = $guessedType->getType();
-                        $filterConfig['type_options'] = \array_replace_recursive($guessedType->getOptions(), $filterConfig['type_options']);
+                        if (null !== $guessedType) {
+                            $filterConfig['type'] = $guessedType->getType();
+                            $filterConfig['type_options'] = \array_replace_recursive($guessedType->getOptions(), $filterConfig['type_options']);
+                        }
                     }
+                } elseif ($filterConfig['mapped'] ?? true) {
+                    throw new \InvalidArgumentException(\sprintf('The "%s" filter configured in the "list" view of the "%s" entity refers to a property called "%s" which is not defined in that entity. Set the "mapped" option to false if it is not intended to be a mapped property.', $propertyName, $entityName, $propertyName));
                 }
 
                 if (!isset($filterConfig['type'])) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it using the "%s" data type of the associated property.', $propertyName, $entityName, $filterConfig['type']));
+                    throw new \InvalidArgumentException(\sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it.', $propertyName, $entityName));
                 }
 
                 $backendConfig['entities'][$entityName]['list']['filters'][$propertyName] = $filterConfig;

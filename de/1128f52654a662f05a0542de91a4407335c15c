@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-17T01:03:19Z
+
+> EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminCodeType
+> EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EasyAdminCodeTypeConfigurator
+
+About the names, shouldn't we remove the prefix `EasyAdmin`?
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-17T15:55:38Z
+
+Yonel, thanks a lot for your contribution. Thanks to your commit I could finally understood how to create custom form types. As a way to thank you for this, I decided to entirely reword the official Symfony Docs article about creating custom form types. See https://github.com/symfony/symfony-docs/pull/11765
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-23T11:34:50Z
+
+I made some changes, specially in the way the CSS and JS files needed by CodeEditorType are loaded dynamically. Please, review it. Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-23T13:51:59Z
+
+I've tried another way of loading the assets. Would it be acceptable? Is there a standard way of loading JS/CSS assets conditionally in Symfony form types? Thanks.

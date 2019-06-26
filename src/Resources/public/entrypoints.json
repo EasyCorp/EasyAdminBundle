@@ -23,6 +23,14 @@
       "js": [
         "./bootstrap-all.js"
       ]
+    },
+    "form-type-code-editor": {
+      "css": [
+        "./form-type-code-editor.css"
+      ],
+      "js": [
+        "./form-type-code-editor.js"
+      ]
     }
   }
 }

@@ -11,7 +11,16 @@ trix-toolbar {
     margin-bottom: 10px;
 }
 trix-toolbar .trix-button-group {
+    border-color: var(--gray-500);
     margin-bottom: 0;
+    border-width: 1px 1px 2px;
+}
+trix-toolbar .trix-button {
+    border: 0;
+    color: var(--gray-500);
+}
+trix-toolbar .trix-button.trix-active {
+    color: var(--gray-700);
 }
 trix-editor {
     border: 0;

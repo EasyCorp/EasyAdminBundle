@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Getter bestaat niet voor dit veld of de eigenschap is niet public</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Geen</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">
@@ -112,6 +116,10 @@
             <trans-unit id="user.signout">
                 <source>user.signout</source>
                 <target>Uitloggen</target>
+            </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Verlaat verpersoonlijking</target>
             </trans-unit>
 
             <!-- misc. elements -->
@@ -151,6 +159,36 @@
                 <source>form.are_you_sure</source>
                 <target>Je hebt de wijzigingen op dit formulier nog niet opgeslagen.</target>
             </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>Een ongeldige input|%count% ongeldige inputs</target>
+            </trans-unit>
+            <trans-unit id="show.remaining_items">
+                <source>show.remaining_items</source>
+                <target><![CDATA[{1} er is een ander item dat niet getoond wordt in dit overzicht|]1,Inf] %count% andere items worden niet getoond in dit overzicht]]></target>
+            </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Het item is niet langer beschikbaar.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Dit item kan niet verwijderd worden omdat andere items ervan afhankelijk zijn.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>De gevraagde actie kan niet worden uitgevoerd op dit item.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>De applicatie is niet juist geconfigureerd.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>De applicatie is niet juist geconfigureerd voor dit type items.</target>
+            </trans-unit>
 
             <!-- Login page -->
             <trans-unit id="login.username">
@@ -164,6 +202,92 @@
             <trans-unit id="login.sign_in">
                 <source>login.sign_in</source>
                 <target>Inloggen</target>
+            </trans-unit>
+
+            <!-- filters -->
+            <trans-unit id="filter.title">
+                <source>filter.title</source>
+                <target>Filters</target>
+            </trans-unit>
+            <trans-unit id="filter.button.clear">
+                <source>filter.button.clear</source>
+                <target>Wis filters</target>
+            </trans-unit>
+            <trans-unit id="filter.button.apply">
+                <source>filter.button.apply</source>
+                <target>Toepassen</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_equal_to">
+                <source>filter.label.is_equal_to</source>
+                <target>is gelijk aan</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_equal_to">
+                <source>filter.label.is_not_equal_to</source>
+                <target>is niet gelijk aan</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than">
+                <source>filter.label.is_greater_than</source>
+                <target>is groter dan</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than_or_equal_to">
+                <source>filter.label.is_greater_than_or_equal_to</source>
+                <target>is groter dan of gelijk aan</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than">
+                <source>filter.label.is_less_than</source>
+                <target>is minder dan</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than_or_equal_to">
+                <source>filter.label.is_less_than_or_equal_to</source>
+                <target>is minder dan of gelijk aan</target>
+            </trans-unit>
+            <trans-unit id="filter.label.contains">
+                <source>filter.label.contains</source>
+                <target>bevat</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_contains">
+                <source>filter.label.not_contains</source>
+                <target>bevat niet</target>
+            </trans-unit>
+            <trans-unit id="filter.label.starts_with">
+                <source>filter.label.starts_with</source>
+                <target>start met</target>
+            </trans-unit>
+            <trans-unit id="filter.label.ends_with">
+                <source>filter.label.ends_with</source>
+                <target>eindigt met</target>
+            </trans-unit>
+            <trans-unit id="filter.label.exactly">
+                <source>filter.label.exactly</source>
+                <target>exact</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_exactly">
+                <source>filter.label.not_exactly</source>
+                <target>niet exact</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_same">
+                <source>filter.label.is_same</source>
+                <target>is hetzelfde</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_same">
+                <source>filter.label.is_not_same</source>
+                <target>is niet hetzelfde</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after">
+                <source>filter.label.is_after</source>
+                <target>is na</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after_or_same">
+                <source>filter.label.is_after_or_same</source>
+                <target>is na of gelijk aan</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before">
+                <source>filter.label.is_before</source>
+                <target>is voor</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before_or_same">
+                <source>filter.label.is_before_or_same</source>
+                <target>is voor of gelijk aan</target>
             </trans-unit>
         </body>
     </file>

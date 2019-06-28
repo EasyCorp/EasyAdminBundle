@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-26T16:49:32Z
+
+maybe we can add some useful shortcuts to the config through a configurator:
+```yaml
+easy_admin:
+    entities:
+        BlogPost:
+            # ...
+            list:
+                filters:
+                    - property: 'status'
+                      type: choice
+                      expanded: false # true for radio or checkbox list depending of `multiple` value
+                      multiple: false # true for multiple selection
+                      choices:
+                          'Draf': 'DRAFT'
+                          'Pending': 'PENDING'
+                          'Published': 'PUBLISHED'
+```
+WDYT? and for advanced options use the nested alternative.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-06-26T18:15:58Z
+
+Yes, I like the idea of exposing "expanded" and "multiple" options.
+
+By the way, I love this feature! Literally today I created my own basic ChoiceFitlerType for the backend of a project, so I'd love to delete my own class in favor of this one. Thanks.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-06-26T18:38:52Z
+
+Ready!

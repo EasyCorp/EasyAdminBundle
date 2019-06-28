@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\TextEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -92,6 +93,9 @@ final class FormTypeHelper
         'submit' => SubmitType::class,
         'tel' => TelType::class,
         'textarea' => TextareaType::class,
+        // allow using underscore and dashes to improve DX
+        'text-editor' => TextEditorType::class,
+        'text_editor' => TextEditorType::class,
         'text' => TextType::class,
         'time' => TimeType::class,
         'time_immutable' => TimeType::class,

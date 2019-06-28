@@ -384,8 +384,8 @@ These are the options that you can define for each field:
   done internally by the bundle). The allowed values are:
 
   * Any of the `Symfony Form types`_.
-  * Any of the custom EasyAdmin form types: ``code_editor``, ``easyadmin_autocomplete``
-    (they are explained later in this chapter).
+  * Any of the custom EasyAdmin form types: ``code_editor``, ``text_editor``,
+    ``easyadmin_autocomplete`` (they are explained later in this chapter).
 * ``type_options`` (optional), a hash with the options passed to the Symfony
   Form type used to render the field.
 
@@ -604,6 +604,33 @@ This type defines the following configuration options:
                         - { property: 'codeSample', type: 'code_editor', language: 'php', height: 600, tab_size: 2 }
                         # ...
         # ...
+
+.. _form-type-text-editor:
+
+Text Editor
+-----------
+
+It displays a JavaScript-based WYSIWYG text editor based on the popular
+`Trix editor`_. You don't need to install any external dependencies because
+EasyAdmin includes them dynamically when needed. The result of editing the
+contents is stored as HTML in the given property:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            ExamQuestion:
+                class: App\Entity\BlogPost
+                form:
+                    fields:
+                        - { property: 'content', type: 'text_editor' }
+                        # ...
+        # ...
+
+This field does not define any configuration option. It has been designed to
+provide the most commonly needed formatted options. If this doesn't fit your
+needs, you can :doc:`integrate the popular CKEditor text editor with EasyAdmin </integration/ivoryckeditorbundle>`.
 
 .. _edit-new-advanced-form-design:
 
@@ -970,6 +997,7 @@ and override only the ``content_title`` Twig block:
 .. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
 .. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks
 .. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
+.. _`Trix editor`: https://trix-editor.org/
 
 -----
 

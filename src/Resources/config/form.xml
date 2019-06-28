@@ -50,6 +50,11 @@
             <tag name="easyadmin.form.type.configurator" priority="50" />
         </service>
 
+        <service id="easyadmin.filter.type.configurator.choice"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\Configurator\ChoiceFilterTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="0" />
+        </service>
+
         <service id="easyadmin.form.type.configurator.textarea" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TextareaTypeConfigurator">
             <tag name="easyadmin.form.type.configurator" priority="40" />
@@ -153,6 +158,10 @@
                 <argument key="input">string</argument>
             </argument>
             <tag name="easyadmin.filter.type" alias="decimal" />
+        </service>
+
+        <service id="easyadmin.filter.type.choice" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ChoiceFilterType">
+            <tag name="easyadmin.filter.type" alias="choice" />
         </service>
 
         <service id="easyadmin.filter.type.entity" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType">

@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type;
 
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Parameter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -13,50 +13,25 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class ComparisonFilterTypeTest extends FilterTypeTest
 {
+    protected const FILTER_TYPE = ComparisonFilterType::class;
+
     /**
      * @dataProvider getDataProvider
      */
-    public function testSubmit($submittedData, $data, $options)
+    public function testSubmitAndFilter($submittedData, $data, $options, string $dql, array $params)
     {
-        $form = $this->factory->create(ComparisonFilterType::class, null, $options);
+        $form = $this->factory->create(static::FILTER_TYPE, null, $options);
         $form->submit($submittedData);
-
         $this->assertEquals($data, $form->getData());
         $this->assertEquals($data, $form->getViewData());
         $this->assertEmpty($form->getExtraData());
         $this->assertTrue($form->isSynchronized());
-    }
-
-    /**
-     * @dataProvider getDataProvider
-     */
-    public function testFilter($submittedData, $data, $options)
-    {
-        $qb = $this->getMockBuilder(QueryBuilder::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $qb->expects($this->once())
-            ->method('getRootAliases')
-            ->willReturn(['o'])
-        ;
-        $qb->expects($this->once())
-            ->method('andWhere')
-            ->with(\sprintf('o.foo %s :foo_1', $data['comparison']))
-            ->willReturn($qb)
-        ;
-        $qb->expects($this->once())
-            ->method('setParameter')
-            ->with('foo_1', $data['value'])
-        ;
-
-        $form = $this->factory->create(ComparisonFilterType::class, null, $options);
-        $form->submit($submittedData);
 
         $filter = $this->filterRegistry->resolveType($form);
-        $this->assertSame(ComparisonFilterType::class, \get_class($filter));
-
-        $filter->filter($qb, $form, ['property' => 'foo']);
+        $filter->filter($this->qb, $form, ['property' => 'foo']);
+        $this->assertSame(static::FILTER_TYPE, \get_class($filter));
+        $this->assertSame($dql, $this->qb->getDQL());
+        $this->assertEquals($params, $this->qb->getParameters()->toArray());
     }
 
     public function getDataProvider(): iterable
@@ -65,18 +40,24 @@ class ComparisonFilterTypeTest extends FilterTypeTest
             ['comparison' => ComparisonType::LT, 'value' => '23'],
             ['comparison' => '<', 'value' => 23],
             ['value_type' => IntegerType::class],
+            'SELECT o FROM Object o WHERE o.foo < :foo_1',
+            [new Parameter('foo_1', 23, 'integer')],
         ];
 
         yield [
             ['comparison' => ComparisonType::EQ, 'value' => '23.23'],
             ['comparison' => '=', 'value' => 23.23],
             ['value_type' => NumberType::class],
+            'SELECT o FROM Object o WHERE o.foo = :foo_1',
+            [new Parameter('foo_1', 23.23, \PDO::PARAM_STR)],
         ];
 
         yield [
             ['comparison' => ComparisonType::EQ, 'value' => ['years' => '1', 'months' => '2', 'days' => '3']],
             ['comparison' => '=', 'value' => new \DateInterval('P1Y2M3D')],
             ['value_type' => DateIntervalType::class],
+            'SELECT o FROM Object o WHERE o.foo = :foo_1',
+            [new Parameter('foo_1', new \DateInterval('P1Y2M3D'), 'dateinterval')],
         ];
 
         yield [
@@ -88,6 +69,8 @@ class ComparisonFilterTypeTest extends FilterTypeTest
                     'choices' => ['ONE' => 1, 'TWO' => 2, 'THREE' => 3],
                 ],
             ],
+            'SELECT o FROM Object o WHERE o.foo >= :foo_1',
+            [new Parameter('foo_1', 2, 'integer')],
         ];
 
         yield [
@@ -97,6 +80,8 @@ class ComparisonFilterTypeTest extends FilterTypeTest
                 'comparison_type_options' => ['type' => 'entity'],
                 'value_type' => ColorType::class,
             ],
+            'SELECT o FROM Object o WHERE o.foo = :foo_1',
+            [new Parameter('foo_1', '#e66465', \PDO::PARAM_STR)],
         ];
     }
 }

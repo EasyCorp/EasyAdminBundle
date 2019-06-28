@@ -2,80 +2,31 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type;
 
-use Doctrine\ORM\Query\Expr;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Parameter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ArrayFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 
 class ArrayFilterTypeTest extends FilterTypeTest
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // reset counter (only for test purpose)
-        $m = new \ReflectionProperty(ArrayFilterType::class, 'uniqueAliasId');
-        $m->setAccessible(true);
-        $m->setValue(0);
-    }
+    protected const FILTER_TYPE = ArrayFilterType::class;
 
     /**
      * @dataProvider getDataProvider
      */
-    public function testSubmit($submittedData, $data, array $options = [])
+    public function testSubmitAndFilter($submittedData, $data, array $options, string $dql, array $params)
     {
-        $form = $this->factory->create(ArrayFilterType::class, null, $options);
+        $form = $this->factory->create(static::FILTER_TYPE, null, $options);
         $form->submit($submittedData);
-
         $this->assertSame($data, $form->getData());
         $this->assertSame($submittedData, $form->getViewData());
         $this->assertEmpty($form->getExtraData());
         $this->assertTrue($form->isSynchronized());
-    }
-
-    /**
-     * @dataProvider getDataProvider
-     */
-    public function testFilter($submittedData, $data, array $options = [])
-    {
-        $qb = $this->getMockBuilder(QueryBuilder::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $qb->expects($this->once())
-            ->method('getRootAliases')
-            ->willReturn(['o'])
-        ;
-        if (null === $data['value'] || [] === $data['value']) {
-            $qb->expects($this->once())
-                ->method('andWhere')
-                ->with(\sprintf('o.foo %s', $data['comparison']))
-                ->willReturn($qb)
-            ;
-        } else {
-            $orX = new Expr\Orx();
-            $orX->add(\sprintf('o.foo %s :foo_1', $data['comparison']));
-            if (ComparisonType::NOT_CONTAINS === $data['comparison']) {
-                $orX->add('o.foo IS NULL');
-            }
-            $qb->expects($this->once())
-                ->method('andWhere')
-                ->with($orX)
-                ->willReturn($qb)
-            ;
-            $qb->expects($this->once())
-                ->method('setParameter')
-                ->with('foo_1', '%"'.$data['value'][0].'"%')
-            ;
-        }
-
-        $form = $this->factory->create(ArrayFilterType::class, null, $options);
-        $form->submit($submittedData);
 
         $filter = $this->filterRegistry->resolveType($form);
-        $this->assertSame(ArrayFilterType::class, \get_class($filter));
-
-        $filter->filter($qb, $form, ['property' => 'foo', 'dataType' => 'array']);
+        $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'array']);
+        $this->assertSame(static::FILTER_TYPE, \get_class($filter));
+        $this->assertSame($dql, $this->qb->getDQL());
+        $this->assertEquals($params, $this->qb->getParameters()->toArray());
     }
 
     public function getDataProvider(): iterable
@@ -83,16 +34,28 @@ class ArrayFilterTypeTest extends FilterTypeTest
         yield [
             ['comparison' => ComparisonType::CONTAINS, 'value' => ['bar']],
             ['comparison' => 'like', 'value' => ['bar']],
+            [],
+            'SELECT o FROM Object o WHERE o.foo like :foo_1',
+            [new Parameter('foo_1', '%"bar"%', \PDO::PARAM_STR)],
         ];
 
         yield [
-            ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['bar']],
-            ['comparison' => 'not like', 'value' => ['bar']],
+            ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['foo', 'bar']],
+            ['comparison' => 'not like', 'value' => ['foo', 'bar']],
+            [],
+            'SELECT o FROM Object o WHERE o.foo not like :foo_1 OR o.foo not like :foo_2 OR o.foo IS NULL',
+            [
+                new Parameter('foo_1', '%"foo"%', \PDO::PARAM_STR),
+                new Parameter('foo_2', '%"bar"%', \PDO::PARAM_STR),
+            ],
         ];
 
         yield [
             ['comparison' => ComparisonType::CONTAINS, 'value' => []],
             ['comparison' => 'IS NULL', 'value' => []],
+            [],
+            'SELECT o FROM Object o WHERE o.foo IS NULL',
+            [],
         ];
 
         yield [
@@ -103,6 +66,8 @@ class ArrayFilterTypeTest extends FilterTypeTest
                     'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
                 ],
             ],
+            'SELECT o FROM Object o WHERE o.foo IS NULL',
+            [],
         ];
 
         yield [
@@ -113,16 +78,23 @@ class ArrayFilterTypeTest extends FilterTypeTest
                     'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
                 ],
             ],
+            'SELECT o FROM Object o WHERE o.foo like :foo_1',
+            [new Parameter('foo_1', '%"b"%', \PDO::PARAM_STR)],
         ];
 
         yield [
-            ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['c']],
-            ['comparison' => 'not like', 'value' => ['c']],
+            ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['a', 'c']],
+            ['comparison' => 'not like', 'value' => ['a', 'c']],
             [
                 'value_type_options' => [
                     'multiple' => true,
                     'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
                 ],
+            ],
+            'SELECT o FROM Object o WHERE o.foo not like :foo_1 OR o.foo not like :foo_2 OR o.foo IS NULL',
+            [
+                new Parameter('foo_1', '%"a"%', \PDO::PARAM_STR),
+                new Parameter('foo_2', '%"c"%', \PDO::PARAM_STR),
             ],
         ];
     }

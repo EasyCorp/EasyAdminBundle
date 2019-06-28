@@ -25,7 +25,7 @@ class DateTimeFilterType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->get('value')->addModelTransformer(new CallbackTransformer(
             static function ($data) { return $data; },
@@ -48,7 +48,7 @@ class DateTimeFilterType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'comparison_type_options' => ['type' => 'datetime'],
@@ -62,7 +62,7 @@ class DateTimeFilterType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getParent(): string
     {
         return ComparisonFilterType::class;
     }

@@ -32,7 +32,7 @@ class ComparisonFilterType extends FilterType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('comparison', $options['comparison_type'], $options['comparison_type_options']);
         $builder->add('value', FormTypeHelper::getTypeClass($options['value_type']), $options['value_type_options'] + [
@@ -43,7 +43,7 @@ class ComparisonFilterType extends FilterType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('value_type');
         if (null !== $this->valueType) {

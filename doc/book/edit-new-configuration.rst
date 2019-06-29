@@ -372,7 +372,8 @@ These are the options that you can define for each field:
   label of the collection items is hidden by default. If you want to display it,
   set the ``entry_options.label`` option to ``true``:
   ``- { property: '...', type: 'collection', type_options: { entry_options: { label: true } }``
-* ``help`` (optional): the help message displayed below the form field.
+* ``help`` (optional): the help message displayed below the form field. You can
+  also define this value via the ``type_options: { help: '...' }`` option.
 * ``css_class`` (optional): the CSS class applied to the parent HTML element
   that contains the entire form field. For example, when using the default
   Bootstrap form theme, this value is applied to the ``<div>`` element which

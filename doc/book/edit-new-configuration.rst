@@ -360,7 +360,8 @@ These are the options that you can define for each field:
   form field. The default label is the "humanized" version of the property name
   (e.g. ``published`` is displayed as ``Published`` and ``dateOfBirth`` as
   ``Date of birth``).
-* ``help`` (optional): the help message displayed below the form field.
+* ``help`` (optional): the help message displayed below the form field. You can
+  also define this value via the ``type_options: { help: '...' }`` option.
 * ``css_class`` (optional): the CSS class applied to the parent HTML element
   that contains the entire form field. For example, when using the default
   Bootstrap form theme, this value is applied to the ``<div>`` element which

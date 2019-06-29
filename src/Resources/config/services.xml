@@ -47,6 +47,7 @@
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <argument type="service" id="translator" on-invalid="null" />
+            <argument type="service" id="security.authorization_checker" on-invalid="null" />
             <tag name="twig.extension" />
         </service>
 

@@ -108,6 +108,9 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['rel'] = (string) $itemConfig['rel'];
             }
 
+            // normalize 'permission' option, which allows to set the security permission needed to see the menu item
+            $itemConfig['permission'] = $itemConfig['permission'] ?? null;
+
             $menuConfig[$i] = $itemConfig;
         }
 

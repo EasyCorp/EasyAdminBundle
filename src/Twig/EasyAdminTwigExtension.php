@@ -10,6 +10,9 @@ use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Exception\MissingResourceException;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -31,8 +34,9 @@ class EasyAdminTwigExtension extends AbstractExtension
     private $logoutUrlGenerator;
     /** @var TranslatorInterface|null */
     private $translator;
+    private $authorizationChecker;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
@@ -40,6 +44,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $this->debug = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->translator = $translator;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -59,6 +64,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFunction('easyadmin_get_actions_for_*_item', [$this, 'getActionsForItem']),
             new TwigFunction('easyadmin_logout_path', [$this, 'getLogoutPath']),
             new TwigFunction('easyadmin_read_property', [$this, 'readProperty']),
+            new TwigFunction('easyadmin_is_granted', [$this, 'isGranted']),
         ];
     }
 
@@ -466,6 +472,23 @@ class EasyAdminTwigExtension extends AbstractExtension
             return $this->propertyAccessor->getValue($objectOrArray, $propertyPath);
         } catch (\Exception $e) {
             return null;
+        }
+    }
+
+    public function isGranted($permissions, $subject = null): bool
+    {
+        // this check is needed for performance reasons because most of the times permissions
+        // won't be set, so this function must return as early as possible in those cases
+        if (empty($permissions)) {
+            return true;
+        }
+
+        try {
+            return $this->authorizationChecker->isGranted($permissions, $subject);
+        } catch (AuthenticationCredentialsNotFoundException $e) {
+            // this exception happens when there's no security configured in the application
+            // that's a valid scenario for EasyAdmin, where security is not required (although very common)
+            return true;
         }
     }
 

@@ -40,23 +40,27 @@
     {% block main_menu %}
         {% for item in _menu_items %}
             {% block menu_item %}
-                {% set is_selected_menu = app.request.query.get('menuIndex')|default(-1) == loop.index0 %}
+                {% set is_selected_menu = app.request.query.get('menuIndex')|default(-1) == item.menu_index %}
                 {% set is_selected_submenu = is_selected_menu and app.request.query.get('submenuIndex')|default(-1) != -1 %}
-                <li class="{{ item.type == 'divider' ? 'header' }} {{ item.children is not empty ? 'treeview' }} {{ is_selected_menu ? 'active' }} {{ is_selected_submenu ? 'submenu-active' }}">
+                {% if easyadmin_is_granted(item.permission) %}
+                    <li class="{{ item.type == 'divider' ? 'header' }} {{ item.children is not empty ? 'treeview' }} {{ is_selected_menu ? 'active' }} {{ is_selected_submenu ? 'submenu-active' }}">
                     {{ helper.render_menu_item(item, _translation_domain) }}
 
                     {% if item.children|default([]) is not empty %}
                         <ul class="treeview-menu">
                             {% for subitem in item.children %}
                                 {% block menu_subitem %}
-                                    <li class="{{ subitem.type == 'divider' ? 'header' }} {{ is_selected_menu and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
-                                        {{ helper.render_menu_item(subitem, _translation_domain) }}
-                                    </li>
+                                    {% if easyadmin_is_granted(subitem.permission) %}
+                                        <li class="{{ subitem.type == 'divider' ? 'header' }} {{ is_selected_menu and app.request.query.get('submenuIndex')|default(-1) == subitem.submenu_index ? 'active' }}">
+                                            {{ helper.render_menu_item(subitem, _translation_domain) }}
+                                        </li>
+                                    {% endif %}
                                 {% endblock menu_subitem %}
                             {% endfor %}
                         </ul>
                     {% endif %}
                 </li>
+                {% endif %}
             {% endblock menu_item %}
         {% endfor %}
     {% endblock main_menu %}

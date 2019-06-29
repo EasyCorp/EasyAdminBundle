@@ -1,0 +1,20 @@
+# TEST
+# the 'permission' option for menu items is properly parsed
+
+# CONFIGURATION
+easy_admin:
+    design:
+        menu:
+            -   label: 'Products'
+                permission: 'ROLE_PERMISSION_1'
+                children:
+                    - { entity: 'Product' }
+                    - { entity: 'Product', label: 'Add Product', params: { action: 'new' }, permission: 'ROLE_PERMISSION_2' }
+                    - { label: 'Additional Items' }
+                    - { label: 'Absolute URL', url: 'https://github.com/javiereguiluz/EasyAdminBundle', permission: 'ROLE_PERMISSION_3' }
+            - { label: 'Categories', entity: 'Category' }
+            - { label: 'About EasyAdmin', permission: ['ROLE_PERMISSION_4', 'ROLE_PERMISSION_5'] }
+
+    entities:
+        - AppTestBundle\Entity\UnitTests\Category
+        - AppTestBundle\Entity\UnitTests\Product

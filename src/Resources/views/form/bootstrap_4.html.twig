@@ -401,7 +401,7 @@
                     </ul>
                     <div class="tab-content">
                         {% for tab_name, tab_config in easyadmin_form_tabs %}
-                            <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %}">
+                            <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %} {{ tab_config['css_class']|default('') }}">
                                 {% if tab_config['help']|default(false) %}
                                     <div class="content-header-help tab-help">
                                         {{ tab_config['help']|trans(domain = _translation_domain)|raw }}

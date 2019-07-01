@@ -39,6 +39,14 @@
                 parentDiv.data('count', ++numItems)
             }
 
+            var counterForRegenerateId = 0;
+
+            $(parentDiv.children('div.form-group')).each(function (i, item) {
+                $('input', item)[0].name = $('input', item)[0].name.replace(/(.+)\[(\d+)\]/, '$1[' + counterForRegenerateId + ']');
+                $('input', item)[0].id = $('input', item)[0].id.replace(/(.+)_(\d+)/, '$1_' + counterForRegenerateId);
+                counterForRegenerateId++;
+            });
+
             if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
                 $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
             }

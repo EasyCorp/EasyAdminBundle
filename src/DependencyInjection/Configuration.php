@@ -287,6 +287,10 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(15)
                             ->info('The maximum number of items to show on listing and search pages.')
                         ->end()
+                        ->scalarNode('item_permission')
+                            ->defaultNull()
+                            ->info('The permission or array of permissions that the user must have to see the list items')
+                        ->end()
                     ->end()
                 ->end()
 

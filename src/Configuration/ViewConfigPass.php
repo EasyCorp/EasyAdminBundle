@@ -24,9 +24,9 @@ class ViewConfigPass implements ConfigPassInterface
 
     private function processViewConfig(array $backendConfig)
     {
-        // process the 'help' message that each view can define to display it under the page title
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
+                // process the 'help' message that each view can define to display it under the page title
                 // isset() cannot be used because the value can be 'null' (used to remove the inherited help message)
                 if (\array_key_exists('help', $backendConfig['entities'][$entityName][$view])) {
                     continue;
@@ -34,6 +34,10 @@ class ViewConfigPass implements ConfigPassInterface
 
                 $backendConfig['entities'][$entityName][$view]['help'] = $entityConfig['help'] ?? null;
             }
+
+            // process the 'item_permission' option (for the moment only available in the 'list' view)
+            $itemPermission = $entityConfig['list']['item_permission'] ?? $backendConfig['list']['item_permission'] ?? null;
+            $backendConfig['entities'][$entityName]['list']['item_permission'] = empty($itemPermission) ? null : $itemPermission;
         }
 
         return $backendConfig;

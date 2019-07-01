@@ -293,6 +293,12 @@
                 <source>filter.label.is_before_or_same</source>
                 <target>is before or same</target>
             </trans-unit>
+
+            <!-- security -->
+            <trans-unit id="security.list.hidden_results">
+                <source>security.list.hidden_results</source>
+                <target>Some results can't be displayed because you don't have enough permissions</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -191,6 +191,92 @@
                 <source>login.sign_in</source>
                 <target>Войти</target>
             </trans-unit>
+
+            <!-- filters -->
+            <trans-unit id="filter.title">
+                <source>filter.title</source>
+                <target>Фильтры</target>
+            </trans-unit>
+            <trans-unit id="filter.button.clear">
+                <source>filter.button.clear</source>
+                <target>Очистить</target>
+            </trans-unit>
+            <trans-unit id="filter.button.apply">
+                <source>filter.button.apply</source>
+                <target>Применить</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_equal_to">
+                <source>filter.label.is_equal_to</source>
+                <target>равно</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_equal_to">
+                <source>filter.label.is_not_equal_to</source>
+                <target>не равно</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than">
+                <source>filter.label.is_greater_than</source>
+                <target>больше чем</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than_or_equal_to">
+                <source>filter.label.is_greater_than_or_equal_to</source>
+                <target>больше чем или равно</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than">
+                <source>filter.label.is_less_than</source>
+                <target>меньше чем</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than_or_equal_to">
+                <source>filter.label.is_less_than_or_equal_to</source>
+                <target>меньше чем или равно</target>
+            </trans-unit>
+            <trans-unit id="filter.label.contains">
+                <source>filter.label.contains</source>
+                <target>содержит</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_contains">
+                <source>filter.label.not_contains</source>
+                <target>не содержит</target>
+            </trans-unit>
+            <trans-unit id="filter.label.starts_with">
+                <source>filter.label.starts_with</source>
+                <target>начинается с</target>
+            </trans-unit>
+            <trans-unit id="filter.label.ends_with">
+                <source>filter.label.ends_with</source>
+                <target>заканчивается на</target>
+            </trans-unit>
+            <trans-unit id="filter.label.exactly">
+                <source>filter.label.exactly</source>
+                <target>точно</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_exactly">
+                <source>filter.label.not_exactly</source>
+                <target>не точно</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_same">
+                <source>filter.label.is_same</source>
+                <target>так же</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_same">
+                <source>filter.label.is_not_same</source>
+                <target>не так же</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after">
+                <source>filter.label.is_after</source>
+                <target>после</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after_or_same">
+                <source>filter.label.is_after_or_same</source>
+                <target>после или же</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before">
+                <source>filter.label.is_before</source>
+                <target>до</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before_or_same">
+                <source>filter.label.is_before_or_same</source>
+                <target>до или же</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

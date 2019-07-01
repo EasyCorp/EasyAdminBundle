@@ -53,6 +53,7 @@ class ComparisonFilterType extends FilterType
             'comparison_type' => $this->comparisonType,
             'comparison_type_options' => $this->comparisonTypeOptions,
             'value_type_options' => $this->valueTypeOptions,
+            'error_bubbling' => false,
         ]);
         $resolver->setAllowedTypes('comparison_type', 'string');
         $resolver->setAllowedTypes('comparison_type_options', 'array');

@@ -578,3 +578,24 @@
 
     {{ include('@EasyAdmin/default/includes/_select2_widget.html.twig') }}
 {% endblock easyadmin_filters_widget %}
+
+{% block easyadmin_numeric_filter_widget %}
+    <div class="form-widget-compound">
+        {{ form_row(form.comparison) }}
+        {{ form_row(form.value) }}
+        <div id="wrapper_{{ form.value2.vars.id }}" {% if form.comparison.vars.value != 'between' %}style="display: none"{% endif %}>
+            {{ form_row(form.value2) }}
+        </div>
+        <script>
+            document.querySelector('#{{ form.comparison.vars.id }}').addEventListener('change', function(event) {
+                const input = document.querySelector('#wrapper_{{ form.value2.vars.id }}');
+                input.style.display = event.currentTarget.value === 'between' ? '' : 'none';
+            });
+        </script>
+    </div>
+    {{- form_errors(form) -}}
+{% endblock  easyadmin_numeric_filter_widget %}
+
+{% block easyadmin_datetime_filter_widget %}
+    {{ block('easyadmin_numeric_filter_widget') }}
+{% endblock  easyadmin_datetime_filter_widget %}

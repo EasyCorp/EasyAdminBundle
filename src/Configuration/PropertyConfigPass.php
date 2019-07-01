@@ -197,7 +197,7 @@ class PropertyConfigPass implements ConfigPassInterface
                         // Consider both of them equivalent and copy the 'type_options.help' into 'help'
                         // to ease further processing of config
                         if (isset($fieldConfig['help']) && isset($normalizedConfig['type_options']['help'])) {
-                            throw new \RuntimeException(sprintf('The "%s" property in the "%s" view of the "%s" entity defines a help message using both the "help: ..." option from EasyAdmin and the "type_options: { help: ... }" option from Symfony Forms. These two options are equivalent, but you can only define one of them at the same time. Remove one of these two help messages.', $normalizedConfig['property'], $view, $entityName));
+                            throw new \RuntimeException(\sprintf('The "%s" property in the "%s" view of the "%s" entity defines a help message using both the "help: ..." option from EasyAdmin and the "type_options: { help: ... }" option from Symfony Forms. These two options are equivalent, but you can only define one of them at the same time. Remove one of these two help messages.', $normalizedConfig['property'], $view, $entityName));
                         }
 
                         if (isset($normalizedConfig['type_options']['help']) && !isset($fieldConfig['help'])) {

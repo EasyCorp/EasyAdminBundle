@@ -162,6 +162,33 @@ and use any of the `valid link types`_:
     menu item links to an external URL and doesn't define its ``rel`` option,
     the ``rel="noreferrer"`` attribute is added automatically.
 
+Permissions
+~~~~~~~~~~~
+
+By default, all backend users can see all menu items. If some of them should be
+restricted for certain kind of users, use the ``permission`` option. The value
+of this option is either a string or array which defines the
+`Symfony security roles`_ that the user must have to see those menu items:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        design:
+            menu:
+                # no permission defined, so all users can see this menu item
+                - { entity: 'Product' }
+
+                # only users with the ROLE_SUPER_ADMIN role will see this menu item
+                - { entity: 'User', permission: 'ROLE_SUPER_ADMIN' }
+
+                # when defining multiple roles, the user must have at least one of them
+                # or all of them, depending on the configuration of your Symfony application
+                # by default: user must have at least one of the roles
+                # see https://symfony.com/doc/current/security/access_control.html#access-enforcement
+                - { entity: 'Category', permission: ['ROLE_BETA', 'ROLE_ADMIN'] }
+        # ...
+
 Changing the Backend Index Page
 -------------------------------
 
@@ -314,16 +341,17 @@ advanced menus with two-level submenus and all kind of items:
                   icon: 'users'
                   children:
                     - { label: 'New Invoice', icon: 'file-new', route: 'createInvoice' }
-                    - { label: 'Invoices', icon: 'file-list', entity: 'Invoice' }
+                    - { label: 'Invoices', icon: 'file-list', entity: 'Invoice', permission: 'ROLE_ACCOUNTANT' }
                     - { label: 'Payments Received', entity: 'Payment', params: { sortField: 'paidAt' } }
                 - label: 'About'
                   children:
                     - { label: 'Help', route: 'help_index' }
                     - { label: 'Docs', url: 'http://example.com/external-docs' }
-                    - { label: '%app.version%' }
-
-.. _`valid link types`: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
+                    - { label: '%app.version%', permission: 'ROLE_ADMIN' }
 
 -----
 
 Next chapter: :doc:`complex-dynamic-backends`
+
+.. _`valid link types`: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
+.. _`Symfony security roles`: https://symfony.com/doc/current/security.html#roles

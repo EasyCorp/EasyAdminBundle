@@ -31,6 +31,7 @@
         </service>
 
         <service id="easyadmin.paginator" class="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" public="true">
+            <deprecated>The "%service_id%" service is deprecated. Instead of this service, pagination is now managed by an instance of the EasyCorp\Bundle\EasyAdminBundle\Search\QueryPaginator value object.</deprecated>
         </service>
 
         <service id="easyadmin.router" class="EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter" public="true">

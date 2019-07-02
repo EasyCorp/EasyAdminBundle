@@ -29,12 +29,12 @@ class Finder
      * @param string $sortField
      * @param string $sortDirection
      *
-     * @return Paginator
+     * @return QueryPaginator
      */
     public function findByAllProperties(array $entityConfig, $searchQuery, $page = 1, $maxResults = self::MAX_RESULTS, $sortField = null, $sortDirection = null)
     {
         $queryBuilder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField, $sortDirection);
 
-        return new Paginator($queryBuilder, $page, $maxResults);
+        return new QueryPaginator($queryBuilder, $page, $maxResults);
     }
 }

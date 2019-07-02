@@ -478,7 +478,7 @@
 
 {# EasyAdmin's CodeEditor form type #}
 {% block easyadmin_code_editor_widget %}
-    <textarea id="{{ id }}" name="{{ name }}" data-easyadmin-code-editor data-language="{{ language }}" data-tab-size="{{ tabSize }}" data-indent-with-tabs="{{ indentWithTabs ? 'true' : 'false' }}" data-js-url="{{ asset("bundles/easyadmin/form-type-code-editor.js") }}" data-css-url="{{ asset("bundles/easyadmin/form-type-code-editor.css") }}">{{ data }}</textarea>
+    <textarea id="{{ id }}" name="{{ full_name }}" data-easyadmin-code-editor data-language="{{ language }}" data-tab-size="{{ tabSize }}" data-indent-with-tabs="{{ indentWithTabs ? 'true' : 'false' }}" data-js-url="{{ asset("bundles/easyadmin/form-type-code-editor.js") }}" data-css-url="{{ asset("bundles/easyadmin/form-type-code-editor.css") }}">{{ data }}</textarea>
 
     {% if height is not null %}
         <style type="text/css">
@@ -489,7 +489,7 @@
 
 {# EasyAdmin's TextEditor form type #}
 {% block easyadmin_text_editor_widget %}
-    <input id="{{ id }}" value="{{ data }}" type="hidden" name="{{ name }}">
+    <input id="{{ id }}" value="{{ data }}" type="hidden" name="{{ full_name }}">
     <div class="easyadmin-text-editor-wrapper">
         <trix-editor input="{{ id }}" data-js-url="{{ asset("bundles/easyadmin/form-type-text-editor.js") }}" data-css-url="{{ asset("bundles/easyadmin/form-type-text-editor.css") }}"></trix-editor>
     </div>

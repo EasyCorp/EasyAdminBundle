@@ -229,6 +229,10 @@
                 <source>filter.label.is_less_than_or_equal_to</source>
                 <target>es menor o igual que</target>
             </trans-unit>
+            <trans-unit id="filter.label.is_between">
+                <source>filter.label.is_between</source>
+                <target>está entre</target>
+            </trans-unit>
             <trans-unit id="filter.label.contains">
                 <source>filter.label.contains</source>
                 <target>contiene</target>

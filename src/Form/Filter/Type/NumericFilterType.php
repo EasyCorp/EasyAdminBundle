@@ -7,9 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Exception\TransformationFailedException;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,15 +15,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class DateTimeFilterType extends FilterType
+class NumericFilterType extends FilterType
 {
     use FilterTypeTrait;
 
     private $valueType;
+    private $valueTypeOptions;
 
-    public function __construct(string $valueType = null)
+    public function __construct(string $valueType = null, array $valueTypeOptions = [])
     {
-        $this->valueType = $valueType ?: DateTimeType::class;
+        $this->valueType = $valueType ?: NumberType::class;
+        $this->valueTypeOptions = $valueTypeOptions;
     }
 
     /**
@@ -39,31 +39,15 @@ class DateTimeFilterType extends FilterType
 
         $builder->addModelTransformer(new CallbackTransformer(
             static function ($data) { return $data; },
-            static function ($data) use ($options) {
+            static function ($data) {
                 if (ComparisonType::BETWEEN === $data['comparison']) {
                     if (null === $data['value'] || '' === $data['value'] || null === $data['value2'] || '' === $data['value2']) {
                         throw new TransformationFailedException('Two values must be provided when "BETWEEN" comparison is selected.');
                     }
 
-                    // make sure end datetime is greater than start datetime
+                    // make sure value 2 is greater than value 1
                     if ($data['value'] > $data['value2']) {
                         [$data['value'], $data['value2']] = [$data['value2'], $data['value']];
-                    }
-
-                    if (DateType::class === $options['value_type']) {
-                        $data['value2'] = $data['value2']->format('Y-m-d');
-                    } elseif (TimeType::class === $options['value_type']) {
-                        $data['value2'] = $data['value2']->format('H:i:s');
-                    }
-                }
-
-                if ($data['value'] instanceof \DateTime) {
-                    if (DateType::class === $options['value_type']) {
-                        // sqlite: Don't include time format for date comparison
-                        $data['value'] = $data['value']->format('Y-m-d');
-                    } elseif (TimeType::class === $options['value_type']) {
-                        // sqlite: Don't include date format for time comparison
-                        $data['value'] = $data['value']->format('H:i:s');
                     }
                 }
 
@@ -78,11 +62,8 @@ class DateTimeFilterType extends FilterType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'comparison_type_options' => ['type' => 'datetime'],
             'value_type' => $this->valueType,
-            'value_type_options' => [
-                'widget' => 'single_text',
-            ],
+            'value_type_options' => $this->valueTypeOptions,
         ]);
     }
 
@@ -91,7 +72,7 @@ class DateTimeFilterType extends FilterType
      */
     public function getBlockPrefix(): string
     {
-        return 'easyadmin_datetime_filter';
+        return 'easyadmin_numeric_filter';
     }
 
     /**

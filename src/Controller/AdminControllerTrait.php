@@ -489,6 +489,12 @@ trait AdminControllerTrait
                 continue;
             }
 
+            // if the form filter is not valid then
+            // we should not apply the filter
+            if (!$filterForm->isValid()) {
+                continue;
+            }
+
             // resolve the filter type related to this form field
             $filterType = $filterRegistry->resolveType($filterForm);
 

@@ -18,6 +18,7 @@ class ComparisonType extends AbstractType
     public const GTE = '>=';
     public const LT = '<';
     public const LTE = '<=';
+    public const BETWEEN = 'between';
     public const CONTAINS = 'like';
     public const NOT_CONTAINS = 'not like';
     public const STARTS_WITH = 'like*';
@@ -42,6 +43,7 @@ class ComparisonType extends AbstractType
                             'filter.label.is_greater_than_or_equal_to' => self::GTE,
                             'filter.label.is_less_than' => self::LT,
                             'filter.label.is_less_than_or_equal_to' => self::LTE,
+                            'filter.label.is_between' => self::BETWEEN,
                         ];
                         break;
                     case 'text':
@@ -62,6 +64,7 @@ class ComparisonType extends AbstractType
                             'filter.label.is_after_or_same' => self::GTE,
                             'filter.label.is_before' => self::LT,
                             'filter.label.is_before_or_same' => self::LTE,
+                            'filter.label.is_between' => self::BETWEEN,
                         ];
                         break;
                     case 'array':

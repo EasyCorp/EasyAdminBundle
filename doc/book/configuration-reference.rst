@@ -7,6 +7,7 @@ config key:
 
 * `site_name`_
 * `formats`_
+* `translation_domain`_
 
 * `date`_
 * `time`_
@@ -135,6 +136,43 @@ in http://php.net/sprintf. Example:
         formats:
             number: '%0.2f'
         # ...
+
+translation_domain
+------------------
+
+(**default value**: ``'messages'``, **type**: string)
+
+By default, all the interface elements are translated using the ``messages``
+translation domain (which is also the default Symfony behavior). If you use a
+another `Symfony translation domain`_, set its name using this option:
+
+.. code-block:: yaml
+
+    easy_admin:
+        # The backend will now use the translations defined under the 'admin' domain
+        # (e.g. <your-project>/translations/admin.en.xlf)
+        translation_domain: 'admin'
+        # ...
+
+This option can also be set per entity, which overrides the value of the global
+option:
+
+.. code-block:: yaml
+
+    easy_admin:
+        # all entities will use 'admin' as the domain ...
+        translation_domain: 'admin'
+        entities:
+            Product:
+                # ... except this entity, which uses a different domain
+                translation_domain: 'marketing_product'
+        # ...
+
+The drawback of defining custom translation domains per entity is that some
+elements (such as the main menu) will be untranslated unless you duplicate the
+translations in all the different domains used by the backend. That's why you
+are strongly encouraged to either keep using the default ``messages`` domain or
+define just one custom domain for the entire backend.
 
 disabled_actions
 ----------------
@@ -560,3 +598,4 @@ entities
 Defines the list of entities managed by the bundle.
 
 .. _`PropertyAccess component`: https://symfony.com/components/PropertyAccess
+.. _`Symfony translation domain`: https://symfony.com/doc/current/components/translation.html#using-message-domains

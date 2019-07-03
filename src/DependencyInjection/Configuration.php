@@ -85,7 +85,7 @@ class Configuration implements ConfigurationInterface
                         ->thenInvalid('The translation_domain option cannot be an empty string (use false to disable translations).')
                     ->end()
                     ->defaultValue('messages')
-                    ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
+                    ->info('The translation domain used to translate the main menu and the labels, titles and help messages of all entities.')
                 ->end()
             ->end()
         ;

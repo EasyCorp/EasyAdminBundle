@@ -50,12 +50,14 @@ class DoctrineOrmFilterTypeGuesser extends DoctrineOrmTypeGuesser
                 'multiple' => $multiple,
                 'attr' => ['data-widget' => 'select2'],
             ]];
-            // If all join columns are not nullable, the placeholder does not
-            // need to be displayed since an empty filter value would always
-            // returns no result.
-            if ($metadata->isSingleValuedAssociation($property) && \count($mapping['joinColumns']) !== \count(\array_filter($mapping['joinColumns'], function (array $joinColumnMapping): bool {
+
+            // don't show the 'empty value' placeholder when all join columns are required,
+            // because an empty filter value would always returns no result
+            $numberOfRequiredJoinColumns = \count(\array_filter($mapping['joinColumns'], function (array $joinColumnMapping): bool {
                 return false === $joinColumnMapping['nullable'] ?? false;
-            }))) {
+            }));
+            $someJoinColumnsAreNullable = \count($mapping['joinColumns']) !== $numberOfRequiredJoinColumns;
+            if ($metadata->isSingleValuedAssociation($property) && $someJoinColumnsAreNullable) {
                 $options['value_type_options']['placeholder'] = 'label.form.empty_value';
             }
 

@@ -54,7 +54,7 @@ class DoctrineOrmFilterTypeGuesser extends DoctrineOrmTypeGuesser
             // don't show the 'empty value' placeholder when all join columns are required,
             // because an empty filter value would always returns no result
             $numberOfRequiredJoinColumns = \count(\array_filter($mapping['joinColumns'], function (array $joinColumnMapping): bool {
-                return false === $joinColumnMapping['nullable'] ?? false;
+                return false === ($joinColumnMapping['nullable'] ?? false);
             }));
             $someJoinColumnsAreNullable = \count($mapping['joinColumns']) !== $numberOfRequiredJoinColumns;
             if ($metadata->isSingleValuedAssociation($property) && $someJoinColumnsAreNullable) {

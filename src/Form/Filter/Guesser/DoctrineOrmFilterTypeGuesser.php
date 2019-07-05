@@ -51,14 +51,16 @@ class DoctrineOrmFilterTypeGuesser extends DoctrineOrmTypeGuesser
                 'attr' => ['data-widget' => 'select2'],
             ]];
 
-            // don't show the 'empty value' placeholder when all join columns are required,
-            // because an empty filter value would always returns no result
-            $numberOfRequiredJoinColumns = \count(\array_filter($mapping['joinColumns'], function (array $joinColumnMapping): bool {
-                return false === ($joinColumnMapping['nullable'] ?? false);
-            }));
-            $someJoinColumnsAreNullable = \count($mapping['joinColumns']) !== $numberOfRequiredJoinColumns;
-            if ($metadata->isSingleValuedAssociation($property) && $someJoinColumnsAreNullable) {
-                $options['value_type_options']['placeholder'] = 'label.form.empty_value';
+            if ($metadata->isSingleValuedAssociation($property)) {
+                // don't show the 'empty value' placeholder when all join columns are required,
+                // because an empty filter value would always returns no result
+                $numberOfRequiredJoinColumns = \count(\array_filter($mapping['joinColumns'], function (array $joinColumnMapping): bool {
+                    return false === ($joinColumnMapping['nullable'] ?? false);
+                }));
+                $someJoinColumnsAreNullable = \count($mapping['joinColumns']) !== $numberOfRequiredJoinColumns;
+                if ($someJoinColumnsAreNullable) {
+                    $options['value_type_options']['placeholder'] = 'label.form.empty_value';
+                }
             }
 
             return new TypeGuess(EntityFilterType::class, self::$defaultOptions + $options, Guess::HIGH_CONFIDENCE);

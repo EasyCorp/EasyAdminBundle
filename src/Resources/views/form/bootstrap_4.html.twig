@@ -47,7 +47,7 @@
 
         <div class="field-collection-item-row">
             <div class="field-collection-item-action">
-                <a href="#" onclick="{{ remove_item_javascript|raw }}; return false;" class="text-danger" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
+                <a id="easyadmin-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}; return false;" class="text-danger" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
                     <i class="fa fa-fw fa-window-close"></i>
                 </a>
             </div>
@@ -104,7 +104,7 @@
         {% endset %}
 
         <div class="text-right field-collection-item-action">
-            <a href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
+            <a id="easyadmin-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
                 <i class="fa fa-fw fa-remove"></i>
                 {{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}
             </a>
@@ -177,7 +177,7 @@
 
         <div class="form-group field-collection-action">
             <div class="form-widget">
-                <a href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-secondary btn-sm">
+                <a id="easyadmin-add-collection-item-{{ form.vars.id }}" href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-secondary btn-sm">
                     <i class="fa fa-fw fa-plus"></i>
                     <span class="btn-label">{{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}</span>
                 </a>

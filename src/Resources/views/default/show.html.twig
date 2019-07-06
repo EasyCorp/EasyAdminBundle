@@ -21,7 +21,8 @@
 {% block main %}
     <div class="form-horizontal">
         {% block show_fields %}
-            {% for field, metadata in fields %}
+            {% set _fields_visible_by_user = fields|filter((metadata, field) => easyadmin_is_granted(metadata.permission)) %}
+            {% for field, metadata in _fields_visible_by_user %}
                 {% block show_field %}
                     <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
                         <label class="control-label">

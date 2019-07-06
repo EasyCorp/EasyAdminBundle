@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Custom form type that deals with some of the logic used to render the
@@ -24,18 +25,20 @@ class EasyAdminFormType extends AbstractType
 {
     /** @var ConfigManager */
     private $configManager;
-
     /** @var TypeConfiguratorInterface[] */
     private $configurators;
+    /** @var AuthorizationCheckerInterface */
+    private $authorizationChecker;
 
     /**
      * @param ConfigManager               $configManager
      * @param TypeConfiguratorInterface[] $configurators
      */
-    public function __construct(ConfigManager $configManager, array $configurators = [])
+    public function __construct(ConfigManager $configManager, array $configurators = [], AuthorizationCheckerInterface $authorizationChecker = null)
     {
         $this->configManager = $configManager;
         $this->configurators = $configurators;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -104,7 +107,9 @@ class EasyAdminFormType extends AbstractType
             $formField->setAttribute('easyadmin_form_tab', $currentFormTab);
             $formField->setAttribute('easyadmin_form_group', $currentFormGroup);
 
-            $builder->add($formField);
+            if ($this->authorizationChecker->isGranted($metadata['permission'], $entity)) {
+                $builder->add($formField);
+            }
         }
 
         $builder->setAttribute('easyadmin_form_tabs', $formTabs);

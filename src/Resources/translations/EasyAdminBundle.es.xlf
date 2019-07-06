@@ -177,6 +177,10 @@
                 <source>exception.undefined_entity</source>
                 <target>La aplicación no está configurada correctamente para este tipo de elementos.</target>
             </trans-unit>
+            <trans-unit id="exception.no_permission">
+                <source>exception.no_permission</source>
+                <target>No tienes suficientes permisos para hacer esto.</target>
+            </trans-unit>
 
             <!-- Login page -->
             <trans-unit id="login.username">

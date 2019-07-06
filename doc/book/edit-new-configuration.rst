@@ -378,6 +378,9 @@ These are the options that you can define for each field:
   that contains the entire form field. For example, when using the default
   Bootstrap form theme, this value is applied to the ``<div>`` element which
   wraps the label, the widget and the error messages of the field.
+* ``permission`` (optional): a string or array defining the role or roles the
+  current user must have to see this form field. It's explained later in the
+  :ref:`Security permissions <edit-new-security>` section.
 * ``type`` (optional): the Symfony Form type used to render this field. In
   addition to its fully qualified class name (e.g.
   ``Symfony\Component\Form\Extension\Core\Type\EmailType``), you can also use
@@ -992,6 +995,69 @@ and override only the ``content_title`` Twig block:
         {# ... customize the content title ... #}
     {% endblock %}
 
+.. _edit-new-security:
+
+Security and Permissions
+------------------------
+
+The ``permission`` option of each property allows to hide the associated form
+field depending on the current user roles:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                edit:
+                    fields:
+                        # all users will see the first three form fields
+                        - name
+                        - price
+                        - stock
+
+                        # only users with this role will see this form field
+                        - { property: 'taxRate', permission: 'ROLE_ADMIN' }
+
+                        # this form field will only be displayed for users with one of these roles
+                        # (or all of them, depending on your Symfony app configuration)
+                        # (see https://symfony.com/doc/current/security/access_control.html#access-enforcement)
+                        - { property: 'comission', permission: ['ROLE_SALES', 'ROLE_ADMIN'] }
+        # ...
+
+You can also restrict which items can users create and/or edit with the
+``item_permission`` option. The role or roles defined in that option are passed
+to the ``is_granted($roles, $item)`` function to decide if the current user can
+create/edit the given item:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        edit:
+            # optionally you can define a global permission applied to all entities
+            # each entity can later override this by defining their own item_permission option
+            item_permission: 'ROLE_ADMIN'
+
+        entities:
+            Product:
+                edit:
+                    # set this option to an empty string or array to unset the global permission for this entity
+                    item_permission: ''
+            Employees:
+                edit:
+                    # this completely overrides the global option (both options are not merged)
+                    item_permission: ['ROLE_SUPER_ADMIN', 'ROLE_HUMAN_RESOURCES']
+        # ...
+
+If the user doesn't have permission they will see an appropriate error message
+(and you'll see a detailed error message in the application logs).
+
+.. tip::
+
+    Combine the ``item_permission`` option with custom `Symfony security voters`_
+    to better decide if the current user can see any given item.
+
 .. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
 .. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
@@ -999,6 +1065,7 @@ and override only the ``content_title`` Twig block:
 .. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks
 .. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
 .. _`Trix editor`: https://trix-editor.org/
+.. _`Symfony security voters`: https://symfony.com/doc/current/security/voters.html
 
 -----
 

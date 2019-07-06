@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete;
 use EasyCorp\Bundle\EasyAdminBundle\Search\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -29,6 +30,7 @@ class EasyAdminController extends AbstractController
             'easyadmin.query_builder' => QueryBuilder::class,
             'easyadmin.property_accessor' => PropertyAccessorInterface::class,
             'easyadmin.filter.registry' => FilterRegistry::class,
+            'easyadmin.security.authorization_checker' => AuthorizationChecker::class,
             'event_dispatcher' => EventDispatcherInterface::class,
         ];
     }

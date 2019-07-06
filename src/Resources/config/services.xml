@@ -47,8 +47,12 @@
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <argument type="service" id="translator" on-invalid="null" />
-            <argument type="service" id="security.authorization_checker" on-invalid="null" />
+            <argument type="service" id="easyadmin.security.authorization_checker" />
             <tag name="twig.extension" />
+        </service>
+
+        <service id="easyadmin.security.authorization_checker" class="EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker" public="true">
+            <argument type="service" id="security.authorization_checker" on-invalid="null" />
         </service>
 
         <service id="easyadmin.listener.controller" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener" public="true">
@@ -128,5 +132,6 @@
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" alias="easyadmin.query_builder" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" alias="easyadmin.paginator" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete" alias="easyadmin.autocomplete" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker" alias="easyadmin.security.authorization_checker" />
     </services>
 </container>

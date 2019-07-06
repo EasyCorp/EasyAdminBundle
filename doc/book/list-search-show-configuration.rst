@@ -265,6 +265,9 @@ These are the options that you can define for each field:
   encloses the field contents. In the ``list`` and ``search`` views, this class
   is also applied to the ``<th>`` header of the column associated with this field.
   For example, to align the contents of some column to the right, use ``css_class: text-right``
+* ``permission`` (optional): a string or array defining the role or roles the
+  current user must have to see this field. It's explained later in the
+  :ref:`Security permissions <list-search-show-security>` section.
 * ``template`` (optional): the name of the custom template used to render the
   contents of the field. This option is fully explained later in this chapter.
 * ``type`` (optional): the type of data stored in the property, which affects
@@ -1281,17 +1284,15 @@ template. The value of ``template`` can be any valid Twig template path.
     Add an empty ``{{ dump() }}`` call in your custom templates to know which
     variables are passed to them by EasyAdmin.
 
+.. _list-search-show-security:
+
 Security and Permissions
 ------------------------
 
-.. note::
-
-    In the current EasyAdmin version, security permissions are only available in
-    the ``list`` view, but they will be added to the other view too.
-
 There are several options to hide part of the information displayed in the
-``list`` view depending on the current user roles. First, you can show/hide the
-entire column associated to a field with the ``permission`` option:
+list/search/show views depending on the current user roles. First, you can
+show/hide the entire column associated to a field with the ``permission``
+option:
 
 .. code-block:: yaml
 
@@ -1315,10 +1316,10 @@ entire column associated to a field with the ``permission`` option:
                         - { property: 'comission', permission: ['ROLE_SALES', 'ROLE_ADMIN'] }
         # ...
 
-You can also restrict which items can users see in the listings thanks to the
-``item_permission`` option. The role or roles defined in that option are passed
-to the ``is_granted($roles, $item)`` function to decide if the current user can
-see each of the list items:
+You can also restrict which items can users see in the "list/search" listings
+and the "show" view thanks to the ``item_permission`` option. The role or roles
+defined in that option are passed to the ``is_granted($roles, $item)`` function
+to decide if the current user can see the given item:
 
 .. code-block:: yaml
 
@@ -1340,9 +1341,14 @@ see each of the list items:
                     item_permission: ['ROLE_SUPER_ADMIN', 'ROLE_HUMAN_RESOURCES']
         # ...
 
-To avoid confusion and pagination errors, if the user doesn't have permission to
-see some items, an empty row will be displayed at the bottom of the list with a
-message explaining that they don't have enough permissions to see all items:
+In the "show" view, if the user doesn't have permission they will see an
+appropriate error message (and you'll see a detailed error message in the
+application logs).
+
+In the "list/search" views, to avoid confusion and pagination errors, if the
+user doesn't have permission to see some items, an empty row will be displayed
+at the bottom of the list with a message explaining that they don't have enough
+permissions to see some items:
 
 .. image:: ../images/easyadmin-list-hidden-results.png
    :alt: List view with some results hidden because user does not have enough permissions

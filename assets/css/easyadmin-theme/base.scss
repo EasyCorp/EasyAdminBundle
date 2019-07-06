@@ -307,20 +307,25 @@ form .content-footer {
     justify-content: space-between;
 }
 
-.pager .btn {
-    display: inline-block;
+.pager ul {
+    margin-bottom: 0;
 }
-.pager .btn + .btn {
-    margin-left: -2px;
-}
-.pager .btn:first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+.pager .page-item:first-child {
     transform: translateX(1px);
 }
-.pager .btn:last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+.pager .page-item {
+    position: relative;
+    z-index: 1;
+}
+.pager .page-item:hover {
+    z-index: 2;
+}
+.pager .page-item.disabled {
+    cursor: not-allowed;
+    z-index: 0;
+}
+.pager .page-item i {
+    vertical-align: middle;
 }
 
 /* Modal for delete action */

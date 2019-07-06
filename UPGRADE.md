@@ -18,6 +18,11 @@ Upgrade to 2.2.2
   entire Bootstrap framework, you should stop including them because they no
   longer exist.
 
+* The HTML structure of the paginator has been updated to match the official
+  Bootstrap pagination component. This change only affects you if you have
+  defined custom CSS styles for the pagination of the backend. Even in that
+  case, most CSS classes have been maintained, so the changes should be minimal.
+
 Upgrade to 2.0.0
 ----------------
 

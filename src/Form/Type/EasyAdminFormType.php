@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -92,6 +93,14 @@ class EasyAdminFormType extends AbstractType
 
                 continue;
             }
+
+	        // choice field type can define a choice_loader which have to be null or instance of
+	        // ChoiceLoaderInterface. So we need to instanciate it at some point.
+	        if (\in_array($formFieldType, ['choice', ChoiceType::class])) {
+		        if (isset($formFieldOptions['choice_loader'])) {
+			        $formFieldOptions['choice_loader'] = new $formFieldOptions['choice_loader']();
+		        }
+	        }
 
             // 'section' is a 'fake' form field used to create the design elements of the
             // complex form layouts: define it as unmapped and non-required

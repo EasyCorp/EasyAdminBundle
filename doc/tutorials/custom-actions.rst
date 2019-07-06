@@ -53,7 +53,7 @@ Now you can define the ``restockAction()`` method in your own controller:
     // src/Controller/AdminController.php
     namespace App\Controller;
 
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController as BaseAdminController;
     // ...
 
     class AdminController extends BaseAdminController

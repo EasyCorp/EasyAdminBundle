@@ -5,15 +5,24 @@ This document describes the backwards incompatible changes introduced by each
 EasyAdminBundle version and the needed changes to be made before upgrading to
 the next version.
 
-Upgrade to 2.0.0 (XX/XXX/201X)
-------------------------------
+Upgrade to 2.2.2
+----------------
 
- * The route used to generate every backend URL is now called `easyadmin` instead
-   of `admin`. This change has been introduce to prevent collisions with your
-   existing backend routes, where is common to use the `admin` route name.
+* The Bootstrap CSS/JavaScript contents are no longer divided into two files,
+  one with the code used by EasyAdmin and the other one with the rest of
+  Bootstrap contents. Now, there is only one file for the entire CSS and another
+  one for the entire JavaScript.
 
-   In order to upgrade, you just need to replace `admin` by `easyadmin` in all
-   `path()`, `generateUrl()` and `redirectToRoute()` calls.
+  Most users don't have to do anything about this change. However, if you loaded
+  `bootstrap-all.css/.js` in your backend explicitly to have access to the
+  entire Bootstrap framework, you should stop including them because they no
+  longer exist.
+
+Upgrade to 2.0.0
+----------------
+
+ * Read the `UPGRADE-2.0.md` document at the root of this repository to learn
+   how to upgrade your application from EasyAdmin 1.x to 2.x.
 
 Upgrade to 1.16.4 (22/January/2017)
 -----------------------------------

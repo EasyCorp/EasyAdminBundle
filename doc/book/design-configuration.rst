@@ -149,14 +149,14 @@ locale of the application is ``ar`` (Arabic), ``fa`` (Persian) or ``he``
 Loading the Entire Bootstrap Framework
 --------------------------------------
 
-In EasyAdmin versions prior to 2.2.1, the backend didn't load the entire CSS and
+In EasyAdmin versions prior to 2.2.2, the backend didn't load the entire CSS and
 JavaScript code from Bootstrap but only the parts that used it. This was made to
 improve performance and required loading some separate files called
 ``bootstrap-all.css`` and ``bootstrap-all.js`` when you needed to use some
 Bootstrap feature not included by default.
 
 Given that the performance gain was minimal, this idea was abandoned and,
-starting from EasyAdmin 2.2.1 the entire Boostrap CSS and JavaScript code is
+starting from EasyAdmin 2.2.2 the entire Boostrap CSS and JavaScript code is
 loaded by default in all pages.
 
 Customizing the Backend Design

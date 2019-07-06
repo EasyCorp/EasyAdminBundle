@@ -1281,6 +1281,77 @@ template. The value of ``template`` can be any valid Twig template path.
     Add an empty ``{{ dump() }}`` call in your custom templates to know which
     variables are passed to them by EasyAdmin.
 
+Security and Permissions
+------------------------
+
+.. note::
+
+    In the current EasyAdmin version, security permissions are only available in
+    the ``list`` view, but they will be added to the other view too.
+
+There are several options to hide part of the information displayed in the
+``list`` view depending on the current user roles. First, you can show/hide the
+entire column associated to a field with the ``permission`` option:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            Product:
+                list:
+                    fields:
+                        # all users will see the first three columns
+                        - name
+                        - price
+                        - stock
+
+                        # only users with this role will see this column
+                        - { property: 'sales', permission: 'ROLE_ADMIN' }
+
+                        # this column will only be displayed for users with one of these roles
+                        # (or all of them, depending on your Symfony app configuration)
+                        # (see https://symfony.com/doc/current/security/access_control.html#access-enforcement)
+                        - { property: 'comission', permission: ['ROLE_SALES', 'ROLE_ADMIN'] }
+        # ...
+
+You can also restrict which items can users see in the listings thanks to the
+``item_permission`` option. The role or roles defined in that option are passed
+to the ``is_granted($roles, $item)`` function to decide if the current user can
+see each of the list items:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        list:
+            # optionally you can define a global permission applied to all entities
+            # each entity can later override this by defining their own item_permission option
+            item_permission: 'ROLE_ADMIN'
+
+        entities:
+            Product:
+                list:
+                    # set this option to an empty string or array to unset the global permission for this entity
+                    item_permission: ''
+            Employees:
+                list:
+                    # this completely overrides the global option (both options are not merged)
+                    item_permission: ['ROLE_SUPER_ADMIN', 'ROLE_HUMAN_RESOURCES']
+        # ...
+
+To avoid confusion and pagination errors, if the user doesn't have permission to
+see some items, an empty row will be displayed at the bottom of the list with a
+message explaining that they don't have enough permissions to see all items:
+
+.. image:: ../images/easyadmin-list-hidden-results.png
+   :alt: List view with some results hidden because user does not have enough permissions
+
+.. tip::
+
+    Combine the ``item_permission`` option with custom `Symfony security voters`_
+    to better decide if the current user can see any given item.
+
 .. _`date configuration options`: http://php.net/manual/en/function.date.php
 .. _`PHP format specifiers`: http://php.net/manual/en/function.sprintf.php
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
@@ -1288,6 +1359,7 @@ template. The value of ``template`` can be any valid Twig template path.
 .. _`Symfony Form Type`: https://symfony.com/doc/current/forms.html
 .. _`ISO 3166-1 alpha-2`: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 .. _`CountryType`: https://symfony.com/doc/current/reference/forms/types/country.html
+.. _`Symfony security voters`: https://symfony.com/doc/current/security/voters.html
 
 -----
 

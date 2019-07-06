@@ -40,6 +40,8 @@ class PropertyConfigPass implements ConfigPassInterface
         'type_options' => [],
         // the name of the group where this form field is displayed (used only for complex form layouts)
         'form_group' => null,
+        // the role or set of roles a user must have to see this property
+        'permission' => null,
     ];
 
     private $defaultVirtualFieldMetadata = [

@@ -1,0 +1,41 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-07-04T18:09:55Z
+
+After reading your comments, I've decided to redesign the feature. Now it looks like this:
+
+![image](https://user-images.githubusercontent.com/73419/60683311-6bf55000-9e97-11e9-8c39-a992b793ae3d.png)
+
+I think it's a good balance between security and utility:
+
+* We only display the "hidden results" message once, no matter how many results you can't see.
+* We don't tell you how many results you can't see.
+* The message is always displayed at the end of the listing, to not bother much.
+* Thanks to this message, the user can (hopefully) understand why the number of results don't match exactly.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-07-04T18:29:10Z
+
+It's a little better now, but it still has the security problem:
+> You could search by some term or filter by some field/value, discovering the values ​​of the hidden row.
+
+If the message "hidden results" appears, it means that the hidden rows have that value.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-07-04T18:44:18Z
+
+What you said is right ... but how could we do it otherwise? I think it's fair to tell the user that there is more information that they can't see because of permissions. Also, we're talking about backends here, so people can complaint/ask to their workmates about this.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-07-05T18:25:11Z
+
+I've redesigned the feature again 🙄  It now looks like this:
+
+![easyadmin-list-hidden-results](https://user-images.githubusercontent.com/73419/60739538-96f8a600-9f62-11e9-836b-0d9b3e0c84d5.png)
+
+About the feature, even some concerns from Yonel are true, I think generally speaking is OK. This will be used in a backend with restricted control where only the employees of the same company will use and see the information. I think it's OK to hide some results ... and to tell the user that some information is hidden.
+
+I'd like to merge this feature "as is" ... and reconsider some decisions with the feedback from users. I hope all of you understand this decision 🙏  Thanks!

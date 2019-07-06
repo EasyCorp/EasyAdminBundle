@@ -139,6 +139,22 @@ $modal-md: 500px;
 $modal-sm: 300px;
 $zindex-modal-backdrop: 1040;
 
+$pagination-padding-y: 4px;
+$pagination-padding-x: 10px;
+$pagination-color: var(--color-text);
+$pagination-line-height: 1.6;
+$pagination-bg: var(--white);
+$pagination-border-width: var(--border-width);
+$pagination-border-color: var(--gray-400);
+$pagination-focus-box-shadow: none;
+$pagination-focus-outline: 0;
+$pagination-hover-color: var(--color-text);
+$pagination-hover-bg: var(--white);
+$pagination-hover-border-color: var(--gray-500);
+$pagination-disabled-color: var(--text-muted);
+$pagination-disabled-bg: var(--white);
+$pagination-disabled-border-color: transparent;
+
 $btn-transition: all .08s ease-in;
 $btn-font-weight: 400;
 $btn-padding-y: 4px;

@@ -1,1 +1,1 @@
-<time datetime="{{ value|date('c') }}" title="{{ value|date('r') }}">{{ value|date(field_options.format) }}</time>
+<time datetime="{{ value|date('c') }}" title="{{ value|date('r') }}">{{ formatted_value is defined ? formatted_value : value|date(field_options.format) }}</time>

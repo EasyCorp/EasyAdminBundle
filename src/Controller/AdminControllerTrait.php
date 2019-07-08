@@ -15,6 +15,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -227,6 +229,8 @@ trait AdminControllerTrait
 
         $editForm->handleRequest($this->request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->processUploadedFiles($editForm);
+
             $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity]);
             $this->executeDynamicMethod('update<EntityName>Entity', [$entity, $editForm]);
             $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity]);
@@ -298,6 +302,8 @@ trait AdminControllerTrait
 
         $newForm->handleRequest($this->request);
         if ($newForm->isSubmitted() && $newForm->isValid()) {
+            $this->processUploadedFiles($newForm);
+
             $this->dispatch(EasyAdminEvents::PRE_PERSIST, ['entity' => $entity]);
             $this->executeDynamicMethod('persist<EntityName>Entity', [$entity, $newForm]);
             $this->dispatch(EasyAdminEvents::POST_PERSIST, ['entity' => $entity]);
@@ -526,6 +532,50 @@ trait AdminControllerTrait
             'method' => 'GET',
             'entity' => $entityName,
         ]);
+    }
+
+    /**
+     * Process all uploaded files in the current form if available.
+     */
+    protected function processUploadedFiles(FormInterface $form): void
+    {
+        /** @var FormInterface $child */
+        foreach ($form as $child) {
+            $config = $child->getConfig();
+
+            if (!$config->getType()->getInnerType() instanceof FileUploadType) {
+                if ($config->getCompound()) {
+                    $this->processUploadedFiles($child);
+                }
+
+                continue;
+            }
+
+            /** @var FileUploadState $state */
+            $state = $config->getAttribute('state');
+
+            if (!$state->isModified()) {
+                continue;
+            }
+
+            $uploadDelete = $config->getOption('upload_delete');
+
+            if ($state->hasCurrentFiles() && ($state->isDelete() || (!$state->isAddAllowed() && $state->hasUploadedFiles()))) {
+                foreach ($state->getCurrentFiles() as $file) {
+                    $uploadDelete($file);
+                }
+                $state->setCurrentFiles([]);
+            }
+
+            $filePaths = (array) $child->getData();
+            $uploadDir = $config->getOption('upload_dir');
+            $uploadNew = $config->getOption('upload_new');
+
+            foreach ($state->getUploadedFiles() as $index => $file) {
+                $fileName = \mb_substr($filePaths[$index], \mb_strlen($uploadDir));
+                $uploadNew($file, $uploadDir, $fileName);
+            }
+        }
     }
 
     /**

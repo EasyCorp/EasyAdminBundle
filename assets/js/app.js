@@ -20,6 +20,7 @@ window.addEventListener('load', function() {
     createNavigationToggler();
     createCodeEditorFields();
     createTextEditorFields();
+    createFileUploadFields();
 });
 
 function createNullableControls() {
@@ -169,4 +170,51 @@ function createTextEditorFields()
 
     document.querySelector('head').appendChild(textEditorCss);
     document.querySelector('body').appendChild(textEditorJs);
+}
+
+function createFileUploadFields()
+{
+    const fileUploadFields = document.querySelectorAll('.easyadmin-fileupload');
+    if (fileUploadFields.length === 0) {
+        return;
+    }
+
+    function fileSize(bytes) {
+        const size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+        const factor = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+
+        return parseInt(bytes / (1024 ** factor)) + size[factor];
+    }
+
+    $(document).on('change', '.easyadmin-fileupload input[type=file].custom-file-input', function () {
+        if (this.files.length === 0) {
+            return;
+        }
+
+
+        let filename = '';
+        if (this.files.length === 1) {
+            filename = this.files[0].name;
+        } else {
+            filename = this.files.length + ' ' + $(this).data('files-label');
+        }
+        let bytes = 0;
+        for (let i = 0; i < this.files.length; i++) {
+            bytes += this.files[i].size;
+        }
+
+        const container = $(this).closest('.easyadmin-fileupload');
+        container.find('.custom-file-label').text(filename);
+        container.find('.input-group-text').text(fileSize(bytes)).show();
+        container.find('.easyadmin-fileupload-delete-btn').show();
+    });
+
+    $(document).on('click', '.easyadmin-fileupload .easyadmin-fileupload-delete-btn', function () {
+        const container = $(this).closest('.easyadmin-fileupload');
+        container.find('input').val('').removeAttr('title');
+        container.find('.custom-file-label').text('');
+        container.find('.input-group-text').text('').hide();
+        container.find('.fileupload-list').hide();
+        $(this).hide();
+    });
 }

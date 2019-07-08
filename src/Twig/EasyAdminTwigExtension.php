@@ -75,6 +75,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
             new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParams']),
+            new TwigFilter('easyadmin_filesize', [$this, 'fileSize']),
         ];
 
         if (Kernel::VERSION_ID >= 40200) {
@@ -82,6 +83,14 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         return $filters;
+    }
+
+    public function fileSize(int $bytes): string
+    {
+        $size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+        $factor = (int) \floor(\log($bytes) / \log(1024));
+
+        return (int) ($bytes / (1024 ** $factor)).@$size[$factor];
     }
 
     /**

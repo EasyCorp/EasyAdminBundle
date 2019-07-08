@@ -75,5 +75,18 @@ easy_admin:
                     - { property: 'id' }
                     - { property: 'name', permission: 'ROLE_BETA' }
                     - { property: 'parent', permission: 'ROLE_UNKNOWN_PERMISSION' }
-
-        #- AppTestBundle\Entity\FunctionalTests\Product
+            show:
+                fields:
+                    - { property: 'id' }
+                    - { property: 'name', permission: 'ROLE_BETA' }
+                    - { property: 'parent', permission: 'ROLE_UNKNOWN_PERMISSION' }
+            edit:
+                fields:
+                    - { property: 'id' }
+                    - { property: 'name', permission: 'ROLE_BETA' }
+                    - { property: 'parent', permission: 'ROLE_UNKNOWN_PERMISSION' }
+            new:
+                fields:
+                    - { property: 'id' }
+                    - { property: 'name', permission: 'ROLE_BETA' }
+                    - { property: 'parent', permission: 'ROLE_UNKNOWN_PERMISSION' }

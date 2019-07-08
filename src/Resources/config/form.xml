@@ -7,6 +7,7 @@
         <service id="easyadmin.form.type" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="collection" /> <!-- type configurators -->
+            <argument type="service" id="easyadmin.security.authorization_checker" />
             <tag name="form.type" alias="easyadmin" />
         </service>
 

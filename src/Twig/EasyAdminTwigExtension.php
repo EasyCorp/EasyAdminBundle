@@ -11,8 +11,6 @@ use Symfony\Component\Intl\Exception\MissingResourceException;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -477,19 +475,7 @@ class EasyAdminTwigExtension extends AbstractExtension
 
     public function isGranted($permissions, $subject = null): bool
     {
-        // this check is needed for performance reasons because most of the times permissions
-        // won't be set, so this function must return as early as possible in those cases
-        if (empty($permissions)) {
-            return true;
-        }
-
-        try {
-            return $this->authorizationChecker->isGranted($permissions, $subject);
-        } catch (AuthenticationCredentialsNotFoundException $e) {
-            // this exception happens when there's no security configured in the application
-            // that's a valid scenario for EasyAdmin, where security is not required (although very common)
-            return true;
-        }
+        return $this->authorizationChecker->isGranted($permissions, $subject);
     }
 
     private function getCountryName(?string $countryCode): ?string

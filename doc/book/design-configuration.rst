@@ -42,6 +42,13 @@ backend interface:
             # if the color includes a '%', you must double it to escape it in the YAML file
             brand_color: 'hsl(0, 100%%, 50%%);'
 
+.. seealso::
+
+    This option is useful when the only design change you want to make is to
+    update the main color of the interface. However, if you start changing more
+    design elements, it's better to unset this option and use CSS variables as
+    explained :ref:`in this section <customizing-the-backend-design>`.
+
 Adding Custom Web Assets
 ------------------------
 
@@ -158,6 +165,8 @@ Bootstrap feature not included by default.
 Given that the performance gain was minimal, this idea was abandoned and,
 starting from EasyAdmin 2.2.2 the entire Boostrap CSS and JavaScript code is
 loaded by default in all pages.
+
+.. _customizing-the-backend-design:
 
 Customizing the Backend Design
 ------------------------------

@@ -100,7 +100,11 @@ class DefaultBackendTest extends AbstractTestCase
     {
         $this->getBackendHomepage();
 
-        $this->assertContains('--color-primary: hsl(230, 55%, 60%);', static::$client->getResponse()->getContent(), 'The HTML content includes the value of the default brand color.');
+        // if users define the design.brand_color option, define the --color-primary CSS variable in the
+        // HTML layout to override any other values of the same variable. Otherwise, don't define the
+        // variable in the layout because it's already defined in variables.css and that's simpler to
+        // override for designers.
+        $this->assertNotContains('--color-primary: hsl(230, 55%, 60%);', static::$client->getResponse()->getContent(), 'The --color-primary CSS variable is not hardcoded in the HTML when its value is undefined or the default one.');
     }
 
     public function testListViewTitle()

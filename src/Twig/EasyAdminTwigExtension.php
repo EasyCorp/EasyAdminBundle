@@ -234,14 +234,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         if ('datetime' === $fieldType) {
-            $previousLocale = locale_get_default();
-            setlocale(LC_TIME, 'es_ES');
-            // transform the PHP date() format into the strftime() format:
-            // https://www.php.net/manual/en/function.date.php
-            // https://www.php.net/manual/en/function.strftime.php
-            $i18nformat = str_replace(['F', 'j', 'Y', 'H', 'i'], ['%B', '%e', '%G', '%H', '%M'], $fieldMetadata['format']);
-            $parameters['formatted_value'] = strftime($i18nformat, $parameters['value']->getTimestamp());
-            setlocale(LC_TIME, $previousLocale);
+            $parameters['formatted_value'] = \IntlDateFormatter::formatObject($parameters['value'], $fieldMetadata['i18n_format'], 'es_ES');
         }
 
         // when a virtual field doesn't define it's type, consider it a string

@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\NoPermissionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
@@ -68,6 +69,16 @@ trait AdminControllerTrait
         $action = $request->query->get('action', 'list');
         if (!$this->isActionAllowed($action)) {
             throw new ForbiddenActionException(['action' => $action, 'entity_name' => $this->entity['name']]);
+        }
+
+        if (\in_array($action, ['show', 'edit', 'new'])) {
+            $id = $this->request->query->get('id');
+            $entity = $this->request->attributes->get('easyadmin')['item'];
+            $requiredPermission = $this->entity[$action]['item_permission'];
+            $userHasPermission = $this->get('easyadmin.security.authorization_checker')->isGranted($requiredPermission, $entity);
+            if (false === $userHasPermission) {
+                throw new NoPermissionException(['action' => $action, 'entity_name' => $this->entity['name'], 'entity_id' => $id]);
+            }
         }
 
         return $this->executeDynamicMethod($action.'<EntityName>Action');
@@ -486,6 +497,12 @@ trait AdminControllerTrait
             $name = $filterForm->getName();
             if (!isset($requestData[$name])) {
                 // this filter is not applied
+                continue;
+            }
+
+            // if the form filter is not valid then
+            // we should not apply the filter
+            if (!$filterForm->isValid()) {
                 continue;
             }
 

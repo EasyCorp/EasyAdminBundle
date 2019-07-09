@@ -1,0 +1,18 @@
+easy_admin:
+    design:
+        menu:
+            - label: 'Products'
+              permission: 'ROLE_PERMISSION_1'
+              children:
+                  - label: 'Product'
+                    permission: null
+                  - label: 'Add Product'
+                    permission: 'ROLE_PERMISSION_2'
+                  - label: 'Additional Items'
+                    permission: null
+                  - label: 'Absolute URL'
+                    permission: 'ROLE_PERMISSION_3'
+            - label: 'Categories'
+              permission: null
+            - label: 'About EasyAdmin'
+              permission: ['ROLE_PERMISSION_4', 'ROLE_PERMISSION_5']

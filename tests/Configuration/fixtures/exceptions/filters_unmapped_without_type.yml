@@ -1,0 +1,15 @@
+# TEST
+# items in the 'filters' option must define the 'type' option when they are unmapped
+
+# EXCEPTION
+expected_exception:
+    class: \InvalidArgumentException
+    message_string: 'The "foo" filter defined in the "list" view of the "Category" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                filters: [{ property: 'foo', mapped: false }]

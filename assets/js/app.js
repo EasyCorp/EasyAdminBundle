@@ -3,15 +3,7 @@ require('../css/app.scss');
 
 global.$ = global.jQuery = require('jquery');
 
-// Imports only the Bootstrap JS components used by default in the backend.
-// If you develop features that need other Bootstrap components, check out the
-// bootstrap-all.js file that provides the rest of the Bootstrap JS plugins
-import 'bootstrap/js/src/modal.js';
-import 'bootstrap/js/src/tab.js';
-import 'bootstrap/js/src/tooltip.js';
-import 'bootstrap/js/src/popover.js';
-import 'bootstrap/js/src/dropdown.js';
-import 'bootstrap/js/src/collapse.js';
+import 'bootstrap/js/src/index.js';
 
 import './adminlte.js';
 import 'jquery.are-you-sure';
@@ -28,6 +20,8 @@ window.addEventListener('load', function() {
     $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);
     createContentResizer();
     createNavigationToggler();
+    createCodeEditorFields();
+    createTextEditorFields();
 });
 
 function createNullableControls() {
@@ -137,4 +131,44 @@ function createNavigationToggler() {
             modalBackdrop = null;
         }
     });
+}
+
+// Code editor fields require extra JavaScript dependencies, which are loaded
+// dynamically only when there are code editor fields in the page
+function createCodeEditorFields()
+{
+    const codeEditorElements = document.querySelectorAll('[data-easyadmin-code-editor]');
+    if (codeEditorElements.length === 0) {
+        return;
+    }
+
+    const codeEditorJs = document.createElement('script');
+    codeEditorJs.setAttribute('src', codeEditorElements[0].dataset.jsUrl);
+
+    const codeEditorCss = document.createElement('link');
+    codeEditorCss.setAttribute('rel', 'stylesheet');
+    codeEditorCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl);
+
+    document.querySelector('head').appendChild(codeEditorCss);
+    document.querySelector('body').appendChild(codeEditorJs);
+}
+
+// Text editor fields require extra JavaScript dependencies, which are loaded
+// dynamically only when there are code editor fields in the page
+function createTextEditorFields()
+{
+    const textEditorElements = document.querySelectorAll('trix-editor');
+    if (textEditorElements.length === 0) {
+        return;
+    }
+
+    const textEditorJs = document.createElement('script');
+    textEditorJs.setAttribute('src', textEditorElements[0].dataset.jsUrl);
+
+    const textEditorCss = document.createElement('link');
+    textEditorCss.setAttribute('rel', 'stylesheet');
+    textEditorCss.setAttribute('href', textEditorElements[0].dataset.cssUrl);
+
+    document.querySelector('head').appendChild(textEditorCss);
+    document.querySelector('body').appendChild(textEditorJs);
 }

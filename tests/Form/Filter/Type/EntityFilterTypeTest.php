@@ -6,8 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Query\Expr;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\Tools\SchemaTool;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
@@ -17,6 +16,8 @@ use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity;
 
 class EntityFilterTypeTest extends FilterTypeTest
 {
+    protected const FILTER_TYPE = EntityFilterType::class;
+
     /** @var EntityManager */
     private $em;
     /** @var ManagerRegistry */
@@ -28,11 +29,6 @@ class EntityFilterTypeTest extends FilterTypeTest
         $this->emRegistry = $this->createRegistryMock('default', $this->em);
 
         parent::setUp();
-
-        // reset counter (only for test purpose)
-        $m = new \ReflectionProperty(EntityFilterType::class, 'uniqueAliasId');
-        $m->setAccessible(true);
-        $m->setValue(0);
 
         $schemaTool = new SchemaTool($this->em);
         $classes = [
@@ -61,121 +57,45 @@ class EntityFilterTypeTest extends FilterTypeTest
     /**
      * @dataProvider getDataProviderToOneAssoc
      */
-    public function testSubmit($submittedData, $data, array $options)
+    public function testSubmitAndFilterToOneAssociationType($submittedData, $data, array $options, string $dql, array $params)
     {
         $entity1 = new SingleIntIdEntity(1, 'Foo');
         $entity2 = new SingleIntIdEntity(2, 'Bar');
         $this->persist([$entity1, $entity2]);
 
-        $form = $this->factory->create(EntityFilterType::class, null, $options);
+        $form = $this->factory->create(static::FILTER_TYPE, null, $options);
         $form->submit($submittedData);
-
         $this->assertEquals($data, $form->getData());
         $this->assertEmpty($form->getExtraData());
         $this->assertTrue($form->isSynchronized());
-    }
-
-    /**
-     * @dataProvider getDataProviderToOneAssoc
-     */
-    public function testFilterToOneAssociationType($submittedData, $data, array $options)
-    {
-        $entity1 = new SingleIntIdEntity(1, 'Foo');
-        $entity2 = new SingleIntIdEntity(2, 'Bar');
-        $this->persist([$entity1, $entity2]);
-
-        $qb = $this->getMockBuilder(QueryBuilder::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $qb->expects($this->once())
-            ->method('getRootAliases')
-            ->willReturn(['o'])
-        ;
-        if (null === $data['value'] || ($options['value_type_options']['multiple'] && 0 === \count($data['value']))) {
-            $qb->expects($this->once())
-                ->method('andWhere')
-                ->with(\sprintf('o.foo %s', $data['comparison']))
-                ->willReturn($qb)
-            ;
-        } else {
-            $orX = new Expr\Orx();
-            $orX->add(\sprintf('o.foo %s (:foo_1)', $data['comparison']));
-            if (ComparisonType::NEQ === $data['comparison']) {
-                $orX->add('o.foo IS NULL');
-            }
-            $qb->expects($this->once())
-                ->method('andWhere')
-                ->with($orX)
-                ->willReturn($qb)
-            ;
-            $qb->expects($this->once())
-                ->method('setParameter')
-                ->with('foo_1', $data['value'])
-            ;
-        }
-
-        $form = $this->factory->create(EntityFilterType::class, null, $options);
-        $form->submit($submittedData);
 
         $filter = $this->filterRegistry->resolveType($form);
-        $this->assertSame(EntityFilterType::class, \get_class($filter));
-
-        $filter->filter($qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_ONE]);
+        $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_ONE]);
+        $this->assertSame(static::FILTER_TYPE, \get_class($filter));
+        $this->assertSame($dql, $this->qb->getDQL());
+        $this->assertEquals($params, $this->qb->getParameters()->toArray());
     }
 
     /**
      * @dataProvider getDataProviderToManyAssoc
      */
-    public function testFilterToManyAssociationType($submittedData, $data, array $options)
+    public function testFilterToManyAssociationType($submittedData, $data, array $options, string $dql, array $params)
     {
         $entity1 = new SingleIntIdEntity(1, 'Foo');
         $entity2 = new SingleIntIdEntity(2, 'Bar');
         $this->persist([$entity1, $entity2]);
 
-        $qb = $this->getMockBuilder(QueryBuilder::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $qb->expects($this->once())
-            ->method('getRootAliases')
-            ->willReturn(['o'])
-        ;
-        $qb->expects($this->once())
-            ->method('leftJoin')
-            ->with('o.foo', 'foo_2')
-            ->willReturn($qb)
-        ;
-        if (0 === \count($data['value'])) {
-            $qb->expects($this->once())
-                ->method('andWhere')
-                ->with(\sprintf('foo_2 %s', $data['comparison']))
-                ->willReturn($qb)
-            ;
-        } else {
-            $orX = new Expr\Orx();
-            $orX->add(\sprintf('foo_2 %s (:foo_1)', $data['comparison']));
-            if ('NOT IN' === $data['comparison']) {
-                $orX->add('foo_2 IS NULL');
-            }
-            $qb->expects($this->once())
-                ->method('andWhere')
-                ->with($orX)
-                ->willReturn($qb)
-            ;
-            $qb->expects($this->once())
-                ->method('setParameter')
-                ->with('foo_1', $data['value'])
-            ;
-        }
-
-        $form = $this->factory->create(EntityFilterType::class, null, $options);
+        $form = $this->factory->create(static::FILTER_TYPE, null, $options);
         $form->submit($submittedData);
+        $this->assertEquals($data, $form->getData());
+        $this->assertEmpty($form->getExtraData());
+        $this->assertTrue($form->isSynchronized());
 
         $filter = $this->filterRegistry->resolveType($form);
-        $this->assertSame(EntityFilterType::class, \get_class($filter));
-
-        $filter->filter($qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_MANY]);
+        $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_MANY]);
+        $this->assertSame(static::FILTER_TYPE, \get_class($filter));
+        $this->assertSame($dql, $this->qb->getDQL());
+        $this->assertEquals($params, $this->qb->getParameters()->toArray());
     }
 
     public function getDataProviderToOneAssoc(): iterable
@@ -193,6 +113,8 @@ class EntityFilterTypeTest extends FilterTypeTest
                     'multiple' => false,
                 ],
             ],
+            'SELECT o FROM Object o WHERE o.foo = (:foo_1)',
+            [new Parameter('foo_1', $entity2, \PDO::PARAM_STR)],
         ];
 
         yield [
@@ -205,6 +127,8 @@ class EntityFilterTypeTest extends FilterTypeTest
                     'multiple' => false,
                 ],
             ],
+            'SELECT o FROM Object o WHERE o.foo != (:foo_1) OR o.foo IS NULL',
+            [new Parameter('foo_1', $entity1, \PDO::PARAM_STR)],
         ];
 
         yield [
@@ -217,6 +141,8 @@ class EntityFilterTypeTest extends FilterTypeTest
                     'multiple' => false,
                 ],
             ],
+            'SELECT o FROM Object o WHERE o.foo IS NULL',
+            [],
         ];
 
         yield [
@@ -229,6 +155,8 @@ class EntityFilterTypeTest extends FilterTypeTest
                     'multiple' => true,
                 ],
             ],
+            'SELECT o FROM Object o WHERE o.foo IS NULL',
+            [],
         ];
     }
 
@@ -247,6 +175,8 @@ class EntityFilterTypeTest extends FilterTypeTest
                     'multiple' => true,
                 ],
             ],
+            'SELECT o FROM Object o LEFT JOIN o.foo foo_2 WHERE foo_2 IS NULL',
+            [],
         ];
 
         yield [
@@ -259,6 +189,8 @@ class EntityFilterTypeTest extends FilterTypeTest
                     'multiple' => true,
                 ],
             ],
+            'SELECT o FROM Object o LEFT JOIN o.foo foo_2 WHERE foo_2 IN (:foo_1)',
+            [new Parameter('foo_1', new ArrayCollection([$entity1, $entity2]), \PDO::PARAM_STR)],
         ];
 
         yield [
@@ -271,6 +203,8 @@ class EntityFilterTypeTest extends FilterTypeTest
                     'multiple' => true,
                 ],
             ],
+            'SELECT o FROM Object o LEFT JOIN o.foo foo_2 WHERE foo_2 NOT IN (:foo_1) OR foo_2 IS NULL',
+            [new Parameter('foo_1', new ArrayCollection([$entity1, $entity2]), \PDO::PARAM_STR)],
         ];
     }
 

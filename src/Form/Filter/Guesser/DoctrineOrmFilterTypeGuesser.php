@@ -9,12 +9,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\DateTimeFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\TextFilterType;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Guess\Guess;
@@ -50,8 +50,17 @@ class DoctrineOrmFilterTypeGuesser extends DoctrineOrmTypeGuesser
                 'multiple' => $multiple,
                 'attr' => ['data-widget' => 'select2'],
             ]];
+
             if ($metadata->isSingleValuedAssociation($property)) {
-                $options['value_type_options']['placeholder'] = 'label.form.empty_value';
+                // don't show the 'empty value' placeholder when all join columns are required,
+                // because an empty filter value would always returns no result
+                $numberOfRequiredJoinColumns = \count(\array_filter($mapping['joinColumns'], function (array $joinColumnMapping): bool {
+                    return false === ($joinColumnMapping['nullable'] ?? false);
+                }));
+                $someJoinColumnsAreNullable = \count($mapping['joinColumns']) !== $numberOfRequiredJoinColumns;
+                if ($someJoinColumnsAreNullable) {
+                    $options['value_type_options']['placeholder'] = 'label.form.empty_value';
+                }
             }
 
             return new TypeGuess(EntityFilterType::class, self::$defaultOptions + $options, Guess::HIGH_CONFIDENCE);
@@ -93,15 +102,15 @@ class DoctrineOrmFilterTypeGuesser extends DoctrineOrmTypeGuesser
                 return new TypeGuess(DateTimeFilterType::class, self::$defaultOptions + ['value_type' => TimeType::class, 'value_type_options' => ['input' => 'datetime_immutable']], Guess::HIGH_CONFIDENCE);
 
             case Type::DECIMAL:
-                return new TypeGuess(ComparisonFilterType::class, self::$defaultOptions + ['value_type' => NumberType::class, 'value_type_options' => ['input' => 'string']], Guess::MEDIUM_CONFIDENCE);
+                return new TypeGuess(NumericFilterType::class, self::$defaultOptions + ['value_type_options' => ['input' => 'string']], Guess::MEDIUM_CONFIDENCE);
 
             case Type::FLOAT:
-                return new TypeGuess(ComparisonFilterType::class, self::$defaultOptions + ['value_type' => NumberType::class], Guess::MEDIUM_CONFIDENCE);
+                return new TypeGuess(NumericFilterType::class, self::$defaultOptions, Guess::MEDIUM_CONFIDENCE);
 
             case Type::BIGINT:
             case Type::INTEGER:
             case Type::SMALLINT:
-                return new TypeGuess(ComparisonFilterType::class, self::$defaultOptions + ['value_type' => IntegerType::class], Guess::MEDIUM_CONFIDENCE);
+                return new TypeGuess(NumericFilterType::class, self::$defaultOptions + ['value_type' => IntegerType::class], Guess::MEDIUM_CONFIDENCE);
 
             case Type::GUID:
             case Type::STRING:

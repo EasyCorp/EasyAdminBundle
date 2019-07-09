@@ -1,0 +1,18 @@
+easy_admin:
+    edit:
+        item_permission: 'ROLE_PERMISSION_1'
+
+    entities:
+        Category:
+            edit:
+                item_permission: null
+                fields:
+                    id:
+                        permission: ['ROLE_PERMISSION_3', 'ROLE_PERMISSION_4']
+
+        Product:
+            edit:
+                item_permission: 'ROLE_PERMISSION_2'
+                fields:
+                    id:
+                        permission: null

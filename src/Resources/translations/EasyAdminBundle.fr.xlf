@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Aucun accesseur n'existe pour cette propriété ou celle-ci n'est pas publique.</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Aucun(e)</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">
@@ -263,11 +267,11 @@
             </trans-unit>
             <trans-unit id="filter.label.is_same">
                 <source>filter.label.is_same</source>
-                <target>est le</target>
+                <target>est</target>
             </trans-unit>
             <trans-unit id="filter.label.is_not_same">
                 <source>filter.label.is_not_same</source>
-                <target>n'est pas le</target>
+                <target>n'est pas</target>
             </trans-unit>
             <trans-unit id="filter.label.is_after">
                 <source>filter.label.is_after</source>

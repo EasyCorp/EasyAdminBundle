@@ -51,9 +51,9 @@ abstract class AbstractTestCase extends WebTestCase
      *
      * @return Crawler
      */
-    protected function getBackendPage(array $queryParameters)
+    protected function getBackendPage(array $queryParameters, array $serverParameters = [])
     {
-        return static::$client->request('GET', '/admin/?'.\http_build_query($queryParameters, '', '&'));
+        return static::$client->request('GET', '/admin/?'.\http_build_query($queryParameters, '', '&'), [], [], $serverParameters);
     }
 
     /**
@@ -120,6 +120,80 @@ abstract class AbstractTestCase extends WebTestCase
             'action' => 'edit',
             'entity' => $entityName,
             'id' => $entityId,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestListViewAsLoggedUser($entityName = 'Category', string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'list',
+            'entity' => $entityName,
+            'view' => 'list',
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestShowViewAsLoggedUser($entityName = 'Category', $entityId = 200, string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'show',
+            'entity' => $entityName,
+            'id' => $entityId,
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestSearchViewAsLoggedUser($searchQuery = 'cat', $entityName = 'Category', string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'search',
+            'entity' => $entityName,
+            'query' => $searchQuery,
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestNewViewAsLoggedUser($entityName = 'Category', string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'new',
+            'entity' => $entityName,
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
+        ]);
+    }
+
+    /**
+     * @return Crawler
+     */
+    protected function requestEditViewAsLoggedUser($entityName = 'Category', $entityId = '200', string $username = 'admin', string $password = 'pa$$word')
+    {
+        return $this->getBackendPage([
+            'action' => 'edit',
+            'entity' => $entityName,
+            'id' => $entityId,
+        ], [
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
         ]);
     }
 }

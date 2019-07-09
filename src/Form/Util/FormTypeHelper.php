@@ -2,11 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Util;
 
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\TextEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -59,6 +61,9 @@ final class FormTypeHelper
         'button' => ButtonType::class,
         'checkbox' => CheckboxType::class,
         'choice' => ChoiceType::class,
+        // allow using underscore and dashes to improve DX
+        'code-editor' => CodeEditorType::class,
+        'code_editor' => CodeEditorType::class,
         'collection' => CollectionType::class,
         'color' => ColorType::class,
         'country' => CountryType::class,
@@ -88,6 +93,9 @@ final class FormTypeHelper
         'submit' => SubmitType::class,
         'tel' => TelType::class,
         'textarea' => TextareaType::class,
+        // allow using underscore and dashes to improve DX
+        'text-editor' => TextEditorType::class,
+        'text_editor' => TextEditorType::class,
         'text' => TextType::class,
         'time' => TimeType::class,
         'time_immutable' => TimeType::class,

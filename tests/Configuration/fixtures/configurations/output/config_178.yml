@@ -3,4 +3,4 @@ easy_admin:
         Category:
             class: AppTestBundle\Entity\UnitTests\Category
             list:
-                filters: { 'id': { property: 'id', type: 'EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType' } }
+                filters: { 'id': { property: 'id', type: 'EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType' } }

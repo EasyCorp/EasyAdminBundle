@@ -126,6 +126,8 @@
 {% endblock content_header %}
 
 {% block main %}
+    {% set _fields_visible_by_user = fields|filter((metadata, field) => easyadmin_is_granted(metadata.permission)) %}
+    {% set _number_of_hidden_results = 0 %}
     {% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity_config.name) %}
 
     <table class="table datagrid">
@@ -136,7 +138,7 @@
                     <th width="1px"><span><input type="checkbox" class="form-batch-checkbox-all"></span></th>
                 {% endif %}
 
-                {% for field, metadata in fields %}
+                {% for field, metadata in _fields_visible_by_user %}
                     {% set isSortingField = (metadata.property == app.request.get('sortField')) or ('association' == metadata.type and app.request.get('sortField') starts with metadata.property ~ '.') %}
                     {% set nextSortDirection = isSortingField ? (app.request.get('sortDirection') == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
                     {% set _column_label = metadata.label|trans(_trans_parameters) %}
@@ -165,50 +167,62 @@
         <tbody>
         {% block table_body %}
             {% for item in paginator.currentPageResults %}
-                {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
-                {% set _item_id = '' ~ attribute(item, _entity_config.primary_key_field_name) %}
-                <tr data-id="{{ _item_id }}">
-                    {% if _has_batch_actions %}
-                        <td><input type="checkbox" class="form-batch-checkbox" value="{{ _item_id }}"></td>
-                    {% endif %}
+                {% if not easyadmin_is_granted(_entity_config.list.item_permission, item) %}
+                    {% set _number_of_hidden_results = _number_of_hidden_results + 1 %}
+                {% else %}
+                    {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
+                    {% set _item_id = '' ~ attribute(item, _entity_config.primary_key_field_name) %}
+                    <tr data-id="{{ _item_id }}">
+                        {% if _has_batch_actions %}
+                            <td><input type="checkbox" class="form-batch-checkbox" value="{{ _item_id }}"></td>
+                        {% endif %}
 
-                    {% for field, metadata in fields %}
-                        {% set isSortingField = metadata.property == app.request.get('sortField') %}
-                        {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters)  %}
+                        {% for field, metadata in _fields_visible_by_user %}
+                            {% set isSortingField = metadata.property == app.request.get('sortField') %}
+                            {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters)  %}
 
-                        <td class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ easyadmin_config('design.rtl') ? 'dir="rtl"' }}>
-                            {{ easyadmin_render_field_for_list_view(_entity_config.name, item, metadata) }}
-                        </td>
-                    {% endfor %}
+                            <td class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ easyadmin_config('design.rtl') ? 'dir="rtl"' }}>
+                                {{ easyadmin_render_field_for_list_view(_entity_config.name, item, metadata) }}
+                            </td>
+                        {% endfor %}
 
-                    {% if _list_item_actions|length > 0 %}
-                        {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') %}
-                        <td class="actions">
-                        {% block item_actions %}
-                            {% set _actions_template = _entity_config.list.collapse_actions
-                                ? '@EasyAdmin/default/includes/_actions_dropdown.html.twig'
-                                : '@EasyAdmin/default/includes/_actions.html.twig'
-                            %}
-                            {{ include(_actions_template, {
-                                actions: _list_item_actions,
-                                entity_config: _entity_config,
-                                request_parameters: _request_parameters,
-                                translation_domain: _entity_config.translation_domain,
-                                trans_parameters: _trans_parameters,
-                                item_id: _item_id,
-                                item: item
-                            }, with_context = false) }}
-                        {% endblock item_actions %}
-                        </td>
-                    {% endif %}
-                </tr>
+                        {% if _list_item_actions|length > 0 %}
+                            {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') %}
+                            <td class="actions">
+                                {% block item_actions %}
+                                    {% set _actions_template = _entity_config.list.collapse_actions
+                                        ? '@EasyAdmin/default/includes/_actions_dropdown.html.twig'
+                                        : '@EasyAdmin/default/includes/_actions.html.twig'
+                                    %}
+                                    {{ include(_actions_template, {
+                                        actions: _list_item_actions,
+                                        entity_config: _entity_config,
+                                        request_parameters: _request_parameters,
+                                        translation_domain: _entity_config.translation_domain,
+                                        trans_parameters: _trans_parameters,
+                                        item_id: _item_id,
+                                        item: item
+                                    }, with_context = false) }}
+                                {% endblock item_actions %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endif %}
             {% else %}
                 <tr>
-                    <td class="no-results" colspan="{{ _list_item_actions|length > 0 ? fields|length + 1 : fields|length }}">
+                    <td class="no-results" colspan="{{ _fields_visible_by_user|length + 1 }}">
                         {{ 'search.no_results'|trans(_trans_parameters, 'EasyAdminBundle') }}
                     </td>
                 </tr>
             {% endfor %}
+
+            {% if _number_of_hidden_results > 0 %}
+                <tr class="datagrid-row-empty">
+                    <td class="text-center" colspan="{{ _fields_visible_by_user|length + 1 }}">
+                        <span class="datagrid-row-empty-message"><i class="fa fa-lock mr-1"></i> {{ 'security.list.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
+                    </td>
+                </tr>
+            {% endif %}
         {% endblock table_body %}
         </tbody>
     </table>

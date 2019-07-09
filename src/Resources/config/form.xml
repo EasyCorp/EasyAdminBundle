@@ -7,6 +7,7 @@
         <service id="easyadmin.form.type" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="collection" /> <!-- type configurators -->
+            <argument type="service" id="easyadmin.security.authorization_checker" />
             <tag name="form.type" alias="easyadmin" />
         </service>
 
@@ -44,6 +45,16 @@
         </service>
 
         <!-- Type Configurators -->
+
+        <service id="easyadmin.form.type.configurator.code_editor" public="false"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CodeEditorTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="50" />
+        </service>
+
+        <service id="easyadmin.filter.type.configurator.choice"
+                 class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\Configurator\ChoiceFilterTypeConfigurator">
+            <tag name="easyadmin.form.type.configurator" priority="0" />
+        </service>
 
         <service id="easyadmin.form.type.configurator.textarea" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TextareaTypeConfigurator">
@@ -142,7 +153,7 @@
             <tag name="easyadmin.filter.type" alias="datetime" />
         </service>
 
-        <service id="easyadmin.filter.type.decimal" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType">
+        <service id="easyadmin.filter.type.decimal" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType">
             <argument type="string">Symfony\Component\Form\Extension\Core\Type\NumberType</argument>
             <argument type="collection">
                 <argument key="input">string</argument>
@@ -150,16 +161,19 @@
             <tag name="easyadmin.filter.type" alias="decimal" />
         </service>
 
+        <service id="easyadmin.filter.type.choice" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ChoiceFilterType">
+            <tag name="easyadmin.filter.type" alias="choice" />
+        </service>
+
         <service id="easyadmin.filter.type.entity" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType">
             <tag name="easyadmin.filter.type" alias="entity" />
         </service>
 
-        <service id="easyadmin.filter.type.float" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType">
-            <argument type="string">Symfony\Component\Form\Extension\Core\Type\NumberType</argument>
+        <service id="easyadmin.filter.type.float" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType">
             <tag name="easyadmin.filter.type" alias="float" />
         </service>
 
-        <service id="easyadmin.filter.type.integer" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ComparisonFilterType">
+        <service id="easyadmin.filter.type.integer" class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType">
             <argument type="string">Symfony\Component\Form\Extension\Core\Type\IntegerType</argument>
             <tag name="easyadmin.filter.type" alias="integer" />
         </service>

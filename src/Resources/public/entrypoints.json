@@ -16,12 +16,20 @@
         "./app-rtl.js"
       ]
     },
-    "bootstrap-all": {
+    "form-type-code-editor": {
       "css": [
-        "./bootstrap-all.css"
+        "./form-type-code-editor.css"
       ],
       "js": [
-        "./bootstrap-all.js"
+        "./form-type-code-editor.js"
+      ]
+    },
+    "form-type-text-editor": {
+      "css": [
+        "./form-type-text-editor.css"
+      ],
+      "js": [
+        "./form-type-text-editor.js"
       ]
     }
   }

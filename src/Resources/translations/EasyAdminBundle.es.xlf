@@ -177,6 +177,10 @@
                 <source>exception.undefined_entity</source>
                 <target>La aplicación no está configurada correctamente para este tipo de elementos.</target>
             </trans-unit>
+            <trans-unit id="exception.no_permission">
+                <source>exception.no_permission</source>
+                <target>No tienes suficientes permisos para hacer esto.</target>
+            </trans-unit>
 
             <!-- Login page -->
             <trans-unit id="login.username">
@@ -229,6 +233,10 @@
                 <source>filter.label.is_less_than_or_equal_to</source>
                 <target>es menor o igual que</target>
             </trans-unit>
+            <trans-unit id="filter.label.is_between">
+                <source>filter.label.is_between</source>
+                <target>está entre</target>
+            </trans-unit>
             <trans-unit id="filter.label.contains">
                 <source>filter.label.contains</source>
                 <target>contiene</target>
@@ -276,6 +284,12 @@
             <trans-unit id="filter.label.is_before_or_same">
                 <source>filter.label.is_before_or_same</source>
                 <target>es anterior o igual a</target>
+            </trans-unit>
+
+            <!-- security -->
+            <trans-unit id="security.list.hidden_results">
+                <source>security.list.hidden_results</source>
+                <target>Algunos resultados no se pueden mostrar porque no tienes suficientes permisos</target>
             </trans-unit>
         </body>
     </file>

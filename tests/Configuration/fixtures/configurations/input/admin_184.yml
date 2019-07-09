@@ -1,0 +1,21 @@
+# TEST
+# the 'permission' option for 'new' view is properly parsed
+
+# CONFIGURATION
+easy_admin:
+    new:
+        item_permission: 'ROLE_PERMISSION_1'
+
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            new:
+                item_permission: ''
+                fields:
+                    - { property: 'id', permission: ['ROLE_PERMISSION_3', 'ROLE_PERMISSION_4'] }
+
+        Product:
+            class: AppTestBundle\Entity\UnitTests\Product
+            new:
+                item_permission: 'ROLE_PERMISSION_2'
+                fields: ['id']

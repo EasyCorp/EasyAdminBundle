@@ -10,6 +10,7 @@ use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Exception\MissingResourceException;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -31,8 +32,9 @@ class EasyAdminTwigExtension extends AbstractExtension
     private $logoutUrlGenerator;
     /** @var TranslatorInterface|null */
     private $translator;
+    private $authorizationChecker;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
@@ -40,6 +42,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $this->debug = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->translator = $translator;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -59,6 +62,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFunction('easyadmin_get_actions_for_*_item', [$this, 'getActionsForItem']),
             new TwigFunction('easyadmin_logout_path', [$this, 'getLogoutPath']),
             new TwigFunction('easyadmin_read_property', [$this, 'readProperty']),
+            new TwigFunction('easyadmin_is_granted', [$this, 'isGranted']),
         ];
     }
 
@@ -467,6 +471,11 @@ class EasyAdminTwigExtension extends AbstractExtension
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public function isGranted($permissions, $subject = null): bool
+    {
+        return $this->authorizationChecker->isGranted($permissions, $subject);
     }
 
     private function getCountryName(?string $countryCode): ?string

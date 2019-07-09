@@ -1,0 +1,21 @@
+# TEST
+# the 'permission' option for 'edit' view is properly parsed
+
+# CONFIGURATION
+easy_admin:
+    edit:
+        item_permission: 'ROLE_PERMISSION_1'
+
+    entities:
+        Category:
+            class: AppTestBundle\Entity\UnitTests\Category
+            edit:
+                item_permission: ''
+                fields:
+                    - { property: 'id', permission: ['ROLE_PERMISSION_3', 'ROLE_PERMISSION_4'] }
+
+        Product:
+            class: AppTestBundle\Entity\UnitTests\Product
+            edit:
+                item_permission: 'ROLE_PERMISSION_2'
+                fields: ['id']

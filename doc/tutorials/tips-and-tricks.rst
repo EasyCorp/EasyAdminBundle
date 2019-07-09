@@ -112,40 +112,33 @@ Defining Dynamic Actions per Item
 ---------------------------------
 
 By default, in the ``list`` view all items display the same actions. If you need
-to show/hide actions dynamically per item, you can do that in a custom template.
+to show/hide actions dynamically per item, you can do that in a custom template
+configured in the ``template`` option of the action.
+
 Consider a backend that displays the ``Delete`` action only for items that haven't
-been published yet (their ``status`` property is ``PUBLISHED``):
+been published yet (their ``status`` property is not ``PUBLISHED``):
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        # ...
+        entities:
+            Product:
+                list:
+                    actions:
+                        - { name: 'delete', template: 'admin/product/action_delete.html.twig' }
+
+You can give any name to this action template and store it anywhere in your
+application. Then, add the needed code to display actions dynamically according
+to your needs:
 
 .. code-block:: twig
 
-    {# templates/bundles/EasyAdminBundle/default/list.html.twig #}
-    {% extends '@!EasyAdmin/default/list.html.twig' %}
-
-    {% block item_actions %}
-        {% set filtered_actions = {} %}
-        {% for action_name, action_config in _list_item_actions %}
-            {% if action_name == 'delete' and item.status|default(false) == 'PUBLISHED' %}
-                {# remove the 'delete' action from published items #}
-            {% else %}
-                {% set filtered_actions = filtered_actions|merge([action_config]) %}
-            {% endif %}
-        {% endfor %}
-
-        {% set _list_item_actions = filtered_actions %}
-
-        {{ parent() }}
-    {% endblock item_actions %}
-
-The solution work as follows:
-
-1. The backend defines a new ``list.html.twig`` template to override the
-   ``item_actions`` block, which is the one that displays the actions for each item.
-2. The default template defines the ``_list_item_actions`` variable to store the
-   actions to display for any given item. The custom template just needs to filter
-   these actions according to some rules.
-3. Finally, override the original ``_list_item_actions`` variable with the filtered
-   list of actions and execute the original code for this Twig block in the
-   parent template (``{{ parent() }}``).
+    {# templates/admin/product/action_delete.html.twig #}
+    {% if item.status != 'PUBLISHED' %}
+        {{ include('@EasyAdmin/default/action.html.twig') }}
+    {% endif %}
 
 .. _`Doctrine caching drivers`: https://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
 .. _`How to Work with the User's Locale`: https://symfony.com/doc/current/translation/locale.html

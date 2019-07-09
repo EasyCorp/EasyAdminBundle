@@ -22,7 +22,7 @@ class ArrayFilterType extends FilterType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $defaultOptions = ['label' => false];
         if (!isset($options['value_type_options']['choices']) || [] === $options['value_type_options']['choices']) {
@@ -47,7 +47,7 @@ class ArrayFilterType extends FilterType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'comparison_type_options' => ['type' => 'array'],
@@ -65,7 +65,7 @@ class ArrayFilterType extends FilterType
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getParent(): string
     {
         return ComparisonFilterType::class;
     }

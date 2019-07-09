@@ -7,8 +7,6 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\CallbackTransformer;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,38 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class EntityFilterType extends FilterType
 {
     use FilterTypeTrait;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $multiple = $builder->get('value')->getOption('multiple');
-
-        $builder->addModelTransformer(new CallbackTransformer(
-            static function ($data) { return $data; },
-            static function ($data) use ($multiple) {
-                switch ($data['comparison']) {
-                    case ComparisonType::EQ:
-                        if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
-                            $data['comparison'] = 'IS NULL';
-                        } else {
-                            $data['comparison'] = $multiple ? 'IN' : '=';
-                        }
-                        break;
-                    case ComparisonType::NEQ:
-                        if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
-                            $data['comparison'] = 'IS NOT NULL';
-                        } else {
-                            $data['comparison'] = $multiple ? 'NOT IN' : '!=';
-                        }
-                        break;
-                }
-
-                return $data;
-            }
-        ));
-    }
 
     /**
      * {@inheritdoc}
@@ -67,7 +33,7 @@ class EntityFilterType extends FilterType
      */
     public function getParent(): string
     {
-        return ComparisonFilterType::class;
+        return ChoiceFilterType::class;
     }
 
     /**

@@ -149,25 +149,15 @@ locale of the application is ``ar`` (Arabic), ``fa`` (Persian) or ``he``
 Loading the Entire Bootstrap Framework
 --------------------------------------
 
-In order to improve performance, the backend doesn't load the entire CSS and
-JavaScript code from Bootstrap but only the parts that uses it. If you create
-custom backends, you may need to load the missing Bootstrap parts.
+In EasyAdmin versions prior to 2.2.2, the backend didn't load the entire CSS and
+JavaScript code from Bootstrap but only the parts that used it. This was made to
+improve performance and required loading some separate files called
+``bootstrap-all.css`` and ``bootstrap-all.js`` when you needed to use some
+Bootstrap feature not included by default.
 
-Instead of downloading and including the entire Bootstrap yourself, you can use
-the ``bootstrap-all.css`` and ``bootstrap-all.js`` files provided by EasyAdmin
-which contains all the Bootstrap parts not included by default by the backend:
-
-.. code-block:: yaml
-
-    easy_admin:
-        # ...
-        design:
-            assets:
-                css:
-                    # ...
-                    - 'bundles/easyadmin/bootstrap-all.css'
-                js:
-                    - 'bundles/easyadmin/bootstrap-all.js'
+Given that the performance gain was minimal, this idea was abandoned and,
+starting from EasyAdmin 2.2.2 the entire Boostrap CSS and JavaScript code is
+loaded by default in all pages.
 
 Customizing the Backend Design
 ------------------------------

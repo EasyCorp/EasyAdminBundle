@@ -123,7 +123,8 @@ table.datagrid {
   box-shadow: none;
 }
 
-.datagrid td.country .country-flag {
+.datagrid td.country .country-flag,
+.field-country .country-flag {
   margin-right: 2px;
   max-height: 18px;
   vertical-align: text-top;

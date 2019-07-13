@@ -560,7 +560,7 @@ change this value (globally or per entity):
         # ...
 
 Code Editor
------------
+~~~~~~~~~~~
 
 It displays a JavaScript-based editor for source code. It provides advanced
 features such as code highlighting and smart indenting.
@@ -612,7 +612,7 @@ This type defines the following configuration options:
 .. _form-type-text-editor:
 
 Text Editor
------------
+~~~~~~~~~~~
 
 It displays a JavaScript-based WYSIWYG text editor based on the popular
 `Trix editor`_. You don't need to install any external dependencies because

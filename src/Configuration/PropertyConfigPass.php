@@ -42,6 +42,8 @@ class PropertyConfigPass implements ConfigPassInterface
         'form_group' => null,
         // the role or set of roles a user must have to see this property
         'permission' => null,
+        'prepend_html' => null,
+        'append_html' => null,
     ];
 
     private $defaultVirtualFieldMetadata = [
@@ -205,6 +207,26 @@ class PropertyConfigPass implements ConfigPassInterface
                         if (isset($normalizedConfig['type_options']['help']) && !isset($fieldConfig['help'])) {
                             $normalizedConfig['help'] = $normalizedConfig['type_options']['help'];
                         }
+
+                        // process the 'prepend' and 'append' icons and contents that later
+                        // are displayed as Bootstrap 'input groups'
+                        $prependHtml = '';
+                        if ($fieldConfig['prepend_icon'] ?? false) {
+                            $prependHtml .= \sprintf('<i class="fa fa-fw fa-%s"></i>', $fieldConfig['prepend_icon']);
+                        }
+                        if ($fieldConfig['prepend_content'] ?? false) {
+                            $prependHtml .= \sprintf('<span>%s</span>', $fieldConfig['prepend_content']);
+                        }
+                        $normalizedConfig['prepend_html'] = empty($prependHtml) ? null : $prependHtml;
+
+                        $appendHtml = '';
+                        if ($fieldConfig['append_icon'] ?? false) {
+                            $appendHtml .= \sprintf('<i class="fa fa-fw fa-%s"></i>', $fieldConfig['append_icon']);
+                        }
+                        if ($fieldConfig['append_content'] ?? false) {
+                            $appendHtml .= \sprintf('<span>%s</span>', $fieldConfig['append_content']);
+                        }
+                        $normalizedConfig['append_html'] = empty($appendHtml) ? null : $appendHtml;
                     }
 
                     // special case for the 'list' view: 'boolean' properties are displayed

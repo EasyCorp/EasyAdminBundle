@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2019-07-12T18:56:39Z
+
+Could you please check if the same thing happens in other forms, e.g. new/edit forms and fix it globally? Thanks!
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-07-13T07:55:55Z
+
+Yes, you are right ... but we already have custom styles for checkbox/radiobuttons in the rest of the app. Only the filters were missing some tweaks. Thanks.

@@ -412,4 +412,20 @@ body.show .field-avatar .image-avatar {
 .alert {
     box-shadow: var(--box-shadow-lg);
     margin-bottom: 15px;
+    padding-right: 48px;
+    position: relative;
+}
+.alert .alert-close {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    line-height:1;
+    opacity: 0.5;
+    padding: 0 3px;
+    position: absolute;
+    right: 13px;
+    top: 9px;
 }

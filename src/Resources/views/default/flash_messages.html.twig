@@ -6,6 +6,8 @@
             {% for label, messages in _flash_messages %}
                 {% for message in messages %}
                     <div class="alert alert-{{ label }}">
+                        <button type="button" class="alert-close" onclick="this.closest('div').style.display='none'">&times;</button>
+
                         {{ message|trans|striptags }}
                     </div>
                 {% endfor %}

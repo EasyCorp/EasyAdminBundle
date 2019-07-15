@@ -13,8 +13,6 @@ import 'select2';
 
 window.addEventListener('load', function() {
     $('[data-toggle="popover"]').popover();
-    $('[data-toggle="dropdown"]').dropdown();
-    $('.collapse').collapse();
     createNullableControls();
     createAutoCompleteFields();
     $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);

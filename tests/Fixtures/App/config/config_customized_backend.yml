@@ -116,9 +116,9 @@ easy_admin:
                 actions:
                     - { name: 'list', label: 'Return to listing', icon: 'list' }
                 fields:
-                    - { property: 'id', css_class: 'custom_class_id' }
-                    - { property: 'name', label: 'Label', css_class: 'custom_class_name' }
-                    - { property: 'parent', label: 'Parent Category Label', css_class: 'custom_class_parent' }
+                    - { property: 'id', css_class: 'custom_class_id', prepend_content: '<b>foo</b>', append_content: '<span>bar</span>' }
+                    - { property: 'name', label: 'Label', css_class: 'custom_class_name', prepend_icon: 'foo', append_icon: 'bar' }
+                    - { property: 'parent', label: 'Parent Category Label', css_class: 'custom_class_parent', prepend_content: '<b>foo</b>', append_content: '<span>bar</span>', prepend_icon: 'foo', append_icon: 'bar' }
             edit:
                 help:  'Help message overridden for the edit view of categories'
                 title: 'Modify %%entity_name%% (%%entity_id%%) details'

@@ -623,4 +623,16 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertSame('2005-10-18', \trim($crawler->filter('#main table tr')->eq(1)->filter('td.date_immutable')->text()));
         $this->assertSame('16:27:36', \trim($crawler->filter('#main table tr')->eq(1)->filter('td.time_immutable')->text()));
     }
+
+    public function testInputGroups()
+    {
+        $crawler = $this->requestNewView();
+
+        $this->assertSame('<span><b>foo</b></span>', $crawler->filter('form#new-category-form .form-group')->eq(0)->filter('.input-group-prepend .input-group-text')->html());
+        $this->assertSame('<span><span>bar</span></span>', $crawler->filter('form#new-category-form .form-group')->eq(0)->filter('.input-group-append .input-group-text')->html());
+        $this->assertSame('<i class="fa fa-fw fa-foo"></i>', $crawler->filter('form#new-category-form .form-group')->eq(1)->filter('.input-group-prepend .input-group-text')->html());
+        $this->assertSame('<i class="fa fa-fw fa-bar"></i>', $crawler->filter('form#new-category-form .form-group')->eq(1)->filter('.input-group-append .input-group-text')->html());
+        $this->assertSame('<i class="fa fa-fw fa-foo"></i><span><b>foo</b></span>', $crawler->filter('form#new-category-form .form-group')->eq(2)->filter('.input-group-prepend .input-group-text')->html());
+        $this->assertSame('<i class="fa fa-fw fa-bar"></i><span><span>bar</span></span>', $crawler->filter('form#new-category-form .form-group')->eq(2)->filter('.input-group-append .input-group-text')->html());
+    }
 }

@@ -233,8 +233,19 @@ class EasyAdminTwigExtension extends AbstractExtension
             }
         }
 
-        if ('datetime' === $fieldType) {
-            $parameters['formatted_value'] = \IntlDateFormatter::formatObject($parameters['value'], $fieldMetadata['i18n_format'], 'es_ES');
+        if (\in_array($fieldType, ['date', 'datetime', 'time'])) {
+            $defaultIntlFormats = ['none', 'short', 'medium', 'long', 'full'];
+
+            $parameters['is_localized'] = false;
+            if (isset($fieldMetadata['intl_format'])) {
+                $parameters['is_localized'] = true;
+                $lowerCaseIntlFormat = strtolower($fieldMetadata['intl_format']);
+                $isDefaultFormat = \in_array($lowerCaseIntlFormat, $defaultIntlFormats);
+
+                $parameters['intl_date_format'] = $isDefaultFormat ? $lowerCaseIntlFormat : 'long';
+                $parameters['intl_time_format'] = $isDefaultFormat ? $lowerCaseIntlFormat : 'long';
+                $parameters['intl_format'] = $isDefaultFormat ? null : $fieldMetadata['intl_format'];
+            }
         }
 
         // when a virtual field doesn't define it's type, consider it a string

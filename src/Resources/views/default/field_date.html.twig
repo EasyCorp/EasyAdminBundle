@@ -1,1 +1,7 @@
-<time datetime="{{ value|date('c') }}" title="{{ value|date('r') }}">{{ value|date(field_options.format) }}</time>
+{% if is_localized %}
+    {% set formatted_value = value|localizeddate(intl_date_format, 'none', app.request.locale, null, intl_format) %}
+{% else %}
+    {% set formatted_value = value|date(field_options.format) %}
+{% endif %}
+
+<time datetime="{{ value|date('c') }}" title="{{ value|date('r') }}">{{ formatted_value }}</time>

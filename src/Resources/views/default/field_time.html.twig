@@ -1,1 +1,7 @@
+{% if is_localized %}
+    {% set formatted_value = value|localizeddate('none', intl_time_format, app.request.locale, null, intl_format) %}
+{% else %}
+    {% set formatted_value = value|date(field_options.format) %}
+{% endif %}
+
 <time>{{ value|date(field_options.format) }}</time>

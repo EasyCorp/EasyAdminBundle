@@ -12,28 +12,36 @@ use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 class QueryPaginator
 {
     private const PAGE_SIZE = 15;
+    private $queryBuilder;
     private $currentPage;
     private $pageSize;
     private $results;
     private $numResults;
 
-    public function __construct(DoctrineQueryBuilder $queryBuilder, int $currentPage = 1, int $pageSize = self::PAGE_SIZE)
+    public function __construct(DoctrineQueryBuilder $queryBuilder, int $pageSize = self::PAGE_SIZE)
     {
-        $this->currentPage = max(1, $currentPage);
+        $this->queryBuilder = $queryBuilder;
         $this->pageSize = $pageSize;
-        $firstResult = ($this->currentPage - 1) * $pageSize;
+    }
 
-        $query = $queryBuilder
+    public function paginate(int $page = 1): self
+    {
+        $this->currentPage = max(1, $page);
+        $firstResult = ($this->currentPage - 1) * $this->pageSize;
+
+        $query = $this->queryBuilder
             ->setFirstResult($firstResult)
-            ->setMaxResults($pageSize)
+            ->setMaxResults($this->pageSize)
             ->getQuery();
 
-        if (0 === \count($queryBuilder->getDQLPart('join'))) {
+        if (0 === \count($this->queryBuilder->getDQLPart('join'))) {
             $query->setHint(CountWalker::HINT_DISTINCT, false);
         }
 
         $paginator = new DoctrinePaginator($query, true);
-        $paginator->setUseOutputWalkers(false);
+
+        $useOutputWalkers = \count($this->queryBuilder->getDQLPart('having') ?: []) > 0;
+        $paginator->setUseOutputWalkers($useOutputWalkers);
 
         $this->results = $paginator->getIterator();
         $this->numResults = $paginator->count();

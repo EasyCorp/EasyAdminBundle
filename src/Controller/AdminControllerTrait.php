@@ -15,7 +15,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Search\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Search\QueryPaginator;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -634,7 +633,7 @@ trait AdminControllerTrait
             'sort_direction' => $sortDirection,
         ]);
 
-        return new QueryPaginator($queryBuilder, $page, $maxPerPage);
+        return (new QueryPaginator($queryBuilder, $maxPerPage))->paginate($page);
     }
 
     /**
@@ -683,7 +682,7 @@ trait AdminControllerTrait
             'searchable_fields' => $searchableFields,
         ]);
 
-        return new QueryPaginator($queryBuilder, $page, $maxPerPage);
+        return (new QueryPaginator($queryBuilder, $maxPerPage))->paginate($page);
     }
 
     /**

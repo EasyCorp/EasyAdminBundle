@@ -35,6 +35,6 @@ class Finder
     {
         $queryBuilder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField, $sortDirection);
 
-        return new QueryPaginator($queryBuilder, $page, $maxResults);
+        return (new QueryPaginator($queryBuilder, $maxResults))->paginate($page);
     }
 }

@@ -24,6 +24,6 @@ class Paginator
     {
         @trigger_error(sprintf('The "%s" method is deprecated. Use "new %s()" instead to create the paginator.', __METHOD__, __CLASS__), E_USER_DEPRECATED);
 
-        return new QueryPaginator($queryBuilder, $page, $maxPerPage);
+        return (new QueryPaginator($queryBuilder, $maxPerPage))->paginate($page);
     }
 }

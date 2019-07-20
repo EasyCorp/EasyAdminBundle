@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-07-16T18:31:04Z
+
+I still need to test this feature myself. I'll do it soon and will share some comments. However, one thing I'd like to have is [this feature](https://github.com/symfony/symfony/pull/32564) which has been proposed to Symfony.
+
+I want to allow renaming files if needed and want to give lots of flexibility ... but without the complexity of creating "namer services". So, if the proposal is rejected by Symfony, I'd like to still add it in this bundle. Thanks.
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-07-16T18:49:22Z
+
+Hi Javier, I'm working on this right now :) that's how it looks so far:
+
+![fileuploadtype2](https://user-images.githubusercontent.com/2028198/61320462-75f04a80-a7d7-11e9-8cf5-00112343fff8.png)
+
+Yes, there is currently an option in this PR to customize the filename, it is called `upload_filename`, but definitely a filename pattern like that will make it easier, allowing you to configure it directly in YAML config. So the `upload_filename` option would be useful for advanced usage. :+1:
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-07-17T06:01:16Z
+
+@javiereguiluz I've added the filename pattern feature, this is ready for review!

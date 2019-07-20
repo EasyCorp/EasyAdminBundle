@@ -26,7 +26,7 @@ class QueryPaginator
 
     public function paginate(int $page = 1): self
     {
-        $this->currentPage = max(1, $page);
+        $this->currentPage = \max(1, $page);
         $firstResult = ($this->currentPage - 1) * $this->pageSize;
 
         $query = $this->queryBuilder
@@ -56,7 +56,7 @@ class QueryPaginator
 
     public function getLastPage(): int
     {
-        return (int) ceil($this->numResults / $this->pageSize);
+        return (int) \ceil($this->numResults / $this->pageSize);
     }
 
     public function getPageSize(): int
@@ -71,7 +71,7 @@ class QueryPaginator
 
     public function getPreviousPage(): int
     {
-        return max(1, $this->currentPage - 1);
+        return \max(1, $this->currentPage - 1);
     }
 
     public function hasNextPage(): bool
@@ -81,7 +81,7 @@ class QueryPaginator
 
     public function getNextPage(): int
     {
-        return min($this->getLastPage(), $this->currentPage + 1);
+        return \min($this->getLastPage(), $this->currentPage + 1);
     }
 
     public function hasToPaginate(): bool
@@ -104,7 +104,7 @@ class QueryPaginator
      */
     public function getCurrentPageResults(): ?\Traversable
     {
-        @trigger_error(sprintf('The "%s" method is deprecated. Use "getResults()" instead.', __METHOD__), E_USER_DEPRECATED);
+        @\trigger_error(\sprintf('The "%s" method is deprecated. Use "getResults()" instead.', __METHOD__), E_USER_DEPRECATED);
 
         return $this->getResults();
     }
@@ -114,7 +114,7 @@ class QueryPaginator
      */
     public function getNbPages(): int
     {
-        @trigger_error(sprintf('The "%s" method is deprecated. Use "getLastPage()" instead.', __METHOD__), E_USER_DEPRECATED);
+        @\trigger_error(\sprintf('The "%s" method is deprecated. Use "getLastPage()" instead.', __METHOD__), E_USER_DEPRECATED);
 
         return $this->getLastPage();
     }
@@ -124,7 +124,7 @@ class QueryPaginator
      */
     public function getNbResults(): int
     {
-        @trigger_error(sprintf('The "%s" method is deprecated. Use "getNumResults()" instead.', __METHOD__), E_USER_DEPRECATED);
+        @\trigger_error(\sprintf('The "%s" method is deprecated. Use "getNumResults()" instead.', __METHOD__), E_USER_DEPRECATED);
 
         return $this->getNumResults();
     }

@@ -7,6 +7,7 @@ use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 
 /**
  * @deprecated Use EasyCorp\Bundle\EasyAdminBundle\Search\QueryPaginator
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class Paginator
@@ -22,7 +23,7 @@ class Paginator
      */
     public function createOrmPaginator($queryBuilder, $page = 1, $maxPerPage = self::PAGE_SIZE)
     {
-        @trigger_error(sprintf('The "%s" method is deprecated. Use "new %s()" instead to create the paginator.', __METHOD__, __CLASS__), E_USER_DEPRECATED);
+        @\trigger_error(\sprintf('The "%s" method is deprecated. Use "new %s()" instead to create the paginator.', __METHOD__, __CLASS__), E_USER_DEPRECATED);
 
         return (new QueryPaginator($queryBuilder, $maxPerPage))->paginate($page);
     }

@@ -57,7 +57,13 @@ class EasyAdminFormType extends AbstractType
 
         foreach ($entityProperties as $name => $metadata) {
             $formFieldOptions = $metadata['type_options'];
-
+            // Entity names with dots are indicate an embedded doctrine entity.
+            // Dots are not allowed in field names (the reason for this lies in the details of the HTML
+            // specification). However, you can override the "property_path" option to customize the used property path
+            if (false !== \strpos($name, '.')) {
+                $formFieldOptions['property_path'] = $name;
+                $name = \str_replace('.', '_', $name);
+            }
             // Configure options using the list of registered type configurators:
             foreach ($this->configurators as $configurator) {
                 if ($configurator->supports($metadata['fieldType'], $formFieldOptions, $metadata)) {

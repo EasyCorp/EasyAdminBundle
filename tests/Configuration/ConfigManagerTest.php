@@ -21,7 +21,7 @@ class ConfigManagerTest extends TestCase
     public function testLoadConfig($backendConfigFilePath, $expectedConfigFilePath)
     {
         $backendConfig = $this->loadConfig($backendConfigFilePath);
-        $expectedConfig = Yaml::parse(\file_get_contents($expectedConfigFilePath));
+        $expectedConfig = Yaml::parse(file_get_contents($expectedConfigFilePath));
 
         $this->assertArraySubset($expectedConfig['easy_admin'], $backendConfig);
     }
@@ -32,7 +32,7 @@ class ConfigManagerTest extends TestCase
      */
     public function testBackendExceptions($backendConfigFilePath)
     {
-        $backendConfig = Yaml::parse(\file_get_contents($backendConfigFilePath));
+        $backendConfig = Yaml::parse(file_get_contents($backendConfigFilePath));
         if (isset($backendConfig['expected_exception']['class'])) {
             $this->expectException($backendConfig['expected_exception']['class']);
             if (isset($backendConfig['expected_exception']['message_string'])) {
@@ -49,20 +49,20 @@ class ConfigManagerTest extends TestCase
 
     public function provideConfigFilePaths()
     {
-        $inputs = \glob(__DIR__.'/fixtures/configurations/input/admin_*.yml');
-        $outputs = \glob(__DIR__.'/fixtures/configurations/output/config_*.yml');
+        $inputs = glob(__DIR__.'/fixtures/configurations/input/admin_*.yml');
+        $outputs = glob(__DIR__.'/fixtures/configurations/output/config_*.yml');
 
-        return \array_map(null, $inputs, $outputs);
+        return array_map(null, $inputs, $outputs);
     }
 
     public function provideConfigExceptionFilePaths()
     {
         // glob() returns an array of strings and fixtures require an array of arrays
-        return \array_map(
+        return array_map(
             function ($filePath) {
                 return [$filePath];
             },
-            \glob(__DIR__.'/fixtures/exceptions/*.yml')
+            glob(__DIR__.'/fixtures/exceptions/*.yml')
         );
     }
 
@@ -77,7 +77,7 @@ class ConfigManagerTest extends TestCase
      */
     private function loadConfig($backendConfigFilePath)
     {
-        $configuration = Yaml::parse(\file_get_contents($backendConfigFilePath));
+        $configuration = Yaml::parse(file_get_contents($backendConfigFilePath));
 
         // to get the processed config, boot a special Symfony kernel to load
         // the backend config dynamically
@@ -95,7 +95,7 @@ class ConfigManagerTest extends TestCase
      */
     private static function deleteDirectory($dir)
     {
-        if (!\is_dir($dir)) {
+        if (!is_dir($dir)) {
             return;
         }
 
@@ -105,9 +105,9 @@ class ConfigManagerTest extends TestCase
         );
 
         foreach ($files as $fileinfo) {
-            $fileinfo->isDir() ? \rmdir($fileinfo->getRealPath()) : \unlink($fileinfo->getRealPath());
+            $fileinfo->isDir() ? rmdir($fileinfo->getRealPath()) : unlink($fileinfo->getRealPath());
         }
 
-        \rmdir($dir);
+        rmdir($dir);
     }
 }

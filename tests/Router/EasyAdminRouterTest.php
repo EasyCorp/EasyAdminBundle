@@ -35,7 +35,7 @@ final class EasyAdminRouterTest extends AbstractTestCase
         $this->assertContains('entity='.$expectEntity, $url);
         $this->assertContains('action='.$action, $url);
 
-        foreach (\array_merge($parameters, $expectParameters) as $key => $value) {
+        foreach (array_merge($parameters, $expectParameters) as $key => $value) {
             $this->assertContains($key.'='.$value, $url);
         }
     }

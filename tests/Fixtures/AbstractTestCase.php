@@ -39,11 +39,11 @@ abstract class AbstractTestCase extends WebTestCase
         $originalDbPath = $buildDir.'/original_test.db';
         $targetDbPath = $buildDir.'/test.db';
 
-        if (!\file_exists($originalDbPath)) {
-            throw new \RuntimeException(\sprintf("The fixtures file used for the tests (%s) doesn't exist. This means that the execution of the bootstrap.php script that generates that file failed. Open %s/bootstrap.php and replace `NullOutput as ConsoleOutput` by `ConsoleOutput` to see the actual errors in the console.", $originalDbPath, \realpath(__DIR__.'/..')));
+        if (!file_exists($originalDbPath)) {
+            throw new \RuntimeException(sprintf("The fixtures file used for the tests (%s) doesn't exist. This means that the execution of the bootstrap.php script that generates that file failed. Open %s/bootstrap.php and replace `NullOutput as ConsoleOutput` by `ConsoleOutput` to see the actual errors in the console.", $originalDbPath, realpath(__DIR__.'/..')));
         }
 
-        \copy($originalDbPath, $targetDbPath);
+        copy($originalDbPath, $targetDbPath);
     }
 
     /**
@@ -53,7 +53,7 @@ abstract class AbstractTestCase extends WebTestCase
      */
     protected function getBackendPage(array $queryParameters, array $serverParameters = [])
     {
-        return static::$client->request('GET', '/admin/?'.\http_build_query($queryParameters, '', '&'), [], [], $serverParameters);
+        return static::$client->request('GET', '/admin/?'.http_build_query($queryParameters, '', '&'), [], [], $serverParameters);
     }
 
     /**

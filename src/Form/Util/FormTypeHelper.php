@@ -141,10 +141,10 @@ final class FormTypeHelper
     {
         // needed to avoid collisions between immutable and non-immutable date types,
         // which are mapped to the same Symfony Form type classes
-        $filteredNameToClassMap = \array_filter(self::$nameToClassMap, function ($typeName) {
+        $filteredNameToClassMap = array_filter(self::$nameToClassMap, function ($typeName) {
             return !\in_array($typeName, ['datetime_immutable', 'date_immutable', 'time_immutable']);
         }, ARRAY_FILTER_USE_KEY);
-        $classToNameMap = \array_flip($filteredNameToClassMap);
+        $classToNameMap = array_flip($filteredNameToClassMap);
 
         return $classToNameMap[$typeFqcn] ?? $typeFqcn;
     }

@@ -11,7 +11,7 @@ class SplitConfigurationTest extends AbstractTestCase
         $this->initClient(['environment' => 'split_configuration']);
         $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
-        $this->assertSame(['Category', 'Product'], \array_keys($backendConfig['entities']));
+        $this->assertSame(['Category', 'Product'], array_keys($backendConfig['entities']));
 
         $this->assertSame('Categories', $backendConfig['entities']['Category']['label']);
 

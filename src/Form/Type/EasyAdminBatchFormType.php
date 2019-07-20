@@ -33,7 +33,7 @@ class EasyAdminBatchFormType extends AbstractType
 
         $builder->get('ids')->addModelTransformer(new CallbackTransformer(
             function ($value) { return $value; },
-            function ($value) { return \explode(',', $value); }
+            function ($value) { return explode(',', $value); }
         ));
     }
 
@@ -46,7 +46,7 @@ class EasyAdminBatchFormType extends AbstractType
         $disabledActions = $entityConfig['disabled_actions'];
         $batchActions = $entityConfig['list']['batch_actions'];
 
-        $view->vars['batch_actions'] = \array_filter($batchActions, function ($batchAction) use ($disabledActions) {
+        $view->vars['batch_actions'] = array_filter($batchActions, function ($batchAction) use ($disabledActions) {
             return !\in_array($batchAction['name'], $disabledActions, true);
         });
     }

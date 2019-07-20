@@ -38,7 +38,7 @@ class FilterRegistry
     public function getType(string $name): string
     {
         if (!$this->hasType($name)) {
-            throw new InvalidArgumentException(\sprintf('The filter name "%s" is not registered.', $name));
+            throw new InvalidArgumentException(sprintf('The filter name "%s" is not registered.', $name));
         }
 
         return $this->typesMap[$name];
@@ -72,7 +72,7 @@ class FilterRegistry
 
         while (!$filterType instanceof FilterInterface) {
             if (null === $resolvedFormType = $resolvedFormType->getParent()) {
-                throw new RuntimeException(\sprintf('Filter type "%s" must implement "%s".', \get_class($form->getConfig()->getType()->getInnerType()), FilterInterface::class));
+                throw new RuntimeException(sprintf('Filter type "%s" must implement "%s".', \get_class($form->getConfig()->getType()->getInnerType()), FilterInterface::class));
             }
 
             $filterType = $resolvedFormType->getInnerType();

@@ -20,13 +20,13 @@ class AutocompleteTest extends AbstractTestCase
         ];
 
         // remove empty parameters to force the autocomplete error
-        $queryParameters = \array_filter($queryParameters);
+        $queryParameters = array_filter($queryParameters);
 
         $this->getBackendPage($queryParameters);
 
         $this->assertSame(
             ['results' => []],
-            \json_decode(static::$client->getResponse()->getContent(), true)
+            json_decode(static::$client->getResponse()->getContent(), true)
         );
     }
 
@@ -39,8 +39,8 @@ class AutocompleteTest extends AbstractTestCase
         ]);
 
         // the results are the first 10 parent categories
-        $response = \json_decode(static::$client->getResponse()->getContent(), true);
-        foreach (\range(1, 10) as $i) {
+        $response = json_decode(static::$client->getResponse()->getContent(), true);
+        foreach (range(1, 10) as $i) {
             $this->assertSame($i, $response['results'][$i - 1]['id']);
             $this->assertSame('Parent Category #'.$i, $response['results'][$i - 1]['text']);
         }
@@ -54,7 +54,7 @@ class AutocompleteTest extends AbstractTestCase
             'query' => 21,
         ]);
 
-        $response = \json_decode(static::$client->getResponse()->getContent(), true);
+        $response = json_decode(static::$client->getResponse()->getContent(), true);
         $this->assertSame(
             [
                 ['id' => 21, 'text' => 'Parent Category #21'],

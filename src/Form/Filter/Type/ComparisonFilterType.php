@@ -66,12 +66,12 @@ class ComparisonFilterType extends FilterType
      */
     public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
     {
-        $alias = \current($queryBuilder->getRootAliases());
+        $alias = current($queryBuilder->getRootAliases());
         $property = $metadata['property'];
         $paramName = static::createAlias($property);
         $data = $form->getData();
 
-        $queryBuilder->andWhere(\sprintf('%s.%s %s :%s', $alias, $property, $data['comparison'], $paramName))
+        $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $data['comparison'], $paramName))
             ->setParameter($paramName, $data['value']);
     }
 }

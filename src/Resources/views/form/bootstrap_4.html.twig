@@ -617,3 +617,65 @@
 {% block easyadmin_datetime_filter_widget %}
     {{ block('easyadmin_numeric_filter_widget') }}
 {% endblock  easyadmin_datetime_filter_widget %}
+
+{% block easyadmin_fileupload_widget %}
+    <div class="easyadmin-fileupload">
+        <div class="input-group">
+            {% set placeholder = null %}
+            {% set title = null %}
+            {% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
+            {% if currentFiles %}
+                {% if multiple %}
+                    {% set placeholder = currentFiles|length ~ ' ' ~ filesLabel %}
+                {% else %}
+                    {% set placeholder = (currentFiles|first).filename %}
+                    {% set title = (currentFiles|first).mTime|date %}
+                {% endif %}
+            {% endif %}
+            {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel }) }) }}
+            <div class="input-group-append">
+                <span class="input-group-text" {% if currentFiles is empty %}style="display: none"{% endif %}>
+                    {%- if currentFiles -%}
+                        {% if multiple %}
+                            {{ (currentFiles|reduce((carry, file) => carry + file.size))|easyadmin_filesize }}
+                        {% else %}
+                            {{ (currentFiles|first).size|easyadmin_filesize }}
+                        {% endif %}
+                    {%- endif -%}
+                </span>
+                {% if allow_delete %}
+                    <label class="btn easyadmin-fileupload-delete-btn" {% if currentFiles is empty %}style="display: none"{% endif %} for="{{ form.delete.vars.id }}">
+                        <i class="fa fa-trash-o"></i>
+                    </label>
+                {% endif %}
+                <label class="btn" for="{{ form.file.vars.id }}">
+                    <i class="fa fa-folder-open-o"></i>
+                </label>
+            </div>
+        </div>
+        {% if multiple and currentFiles %}
+            <div class="form-control fileupload-list">
+                <table class="fileupload-table">
+                    <tbody>
+                    {% for file in currentFiles %}
+                        <tr>
+                            <td>
+                                {% if download_path %}<a href="{{ asset(download_path ~ file.filename) }}">{% endif %}
+                                    <span title="{{ file.mTime|date }}">
+                                        <i class="fa fa-file-o"></i> {{ file.filename }}
+                                    </span>
+                                {% if download_path %}</a>{% endif %}
+                            </td>
+                            <td class="text-right file-size">{{ file.size|easyadmin_filesize }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        {% if allow_delete %}
+            <div style="display: none">{{ form_widget(form.delete, { label: false }) }}</div>
+        {% endif %}
+    </div>
+    {{ form_errors(form.file) }}
+{% endblock %}

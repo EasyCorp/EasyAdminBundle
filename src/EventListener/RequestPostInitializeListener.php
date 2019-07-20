@@ -65,7 +65,7 @@ class RequestPostInitializeListener
         $this->request->attributes->set('easyadmin', array(
             'entity' => $entity = $event->getArgument('entity'),
             'view' => $this->request->query->get('action', 'list'),
-            'item' => ($id = $this->request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
+            'item' => (null !== $id = $this->request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
         ));
     }
 

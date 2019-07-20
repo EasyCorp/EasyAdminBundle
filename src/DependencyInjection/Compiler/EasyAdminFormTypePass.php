@@ -26,7 +26,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         foreach ($container->findTaggedServiceIds('easyadmin.form.type.configurator') as $id => $tags) {
             $configuratorClass = new \ReflectionClass($container->getDefinition($id)->getClass());
             if (!$configuratorClass->implementsInterface(TypeConfiguratorInterface::class)) {
-                throw new \InvalidArgumentException(\sprintf('Service "%s" must implement interface "%s".', $id, TypeConfiguratorInterface::class));
+                throw new \InvalidArgumentException(sprintf('Service "%s" must implement interface "%s".', $id, TypeConfiguratorInterface::class));
             }
 
             if ('easyadmin.form.type.configurator.ivory_ckeditor' === $id && $this->ivoryCkEditorHasDefaultConfiguration($container)) {
@@ -45,7 +45,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
             }
         }
 
-        $configurators = \iterator_to_array($configurators);
+        $configurators = iterator_to_array($configurators);
         $container->getDefinition('easyadmin.form.type')->replaceArgument(1, $configurators);
         $container->getDefinition('easyadmin.form.type.filters')->replaceArgument(1, $configurators);
     }

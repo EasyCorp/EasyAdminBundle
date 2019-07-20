@@ -28,11 +28,11 @@ class MetadataConfigPass implements ConfigPassInterface
             try {
                 $em = $this->doctrine->getManagerForClass($entityConfig['class']);
             } catch (\ReflectionException $e) {
-                throw new InvalidTypeException(\sprintf('The configured class "%s" for the path "easy_admin.entities.%s" does not exist. Did you forget to create the entity class or to define its namespace?', $entityConfig['class'], $entityName));
+                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "easy_admin.entities.%s" does not exist. Did you forget to create the entity class or to define its namespace?', $entityConfig['class'], $entityName));
             }
 
             if (null === $em) {
-                throw new InvalidTypeException(\sprintf('The configured class "%s" for the path "easy_admin.entities.%s" is no mapped entity.', $entityConfig['class'], $entityName));
+                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "easy_admin.entities.%s" is no mapped entity.', $entityConfig['class'], $entityName));
             }
 
             $entityMetadata = $em->getMetadataFactory()->getMetadataFor($entityConfig['class']);
@@ -62,7 +62,7 @@ class MetadataConfigPass implements ConfigPassInterface
         $entityPropertiesMetadata = [];
 
         if ($entityMetadata->isIdentifierComposite) {
-            throw new \RuntimeException(\sprintf("The '%s' entity isn't valid because it contains a composite primary key.", $entityMetadata->name));
+            throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it contains a composite primary key.", $entityMetadata->name));
         }
 
         // introspect regular entity fields
@@ -72,7 +72,7 @@ class MetadataConfigPass implements ConfigPassInterface
 
         // introspect fields for entity associations
         foreach ($entityMetadata->associationMappings as $fieldName => $associationMetadata) {
-            $entityPropertiesMetadata[$fieldName] = \array_merge($associationMetadata, [
+            $entityPropertiesMetadata[$fieldName] = array_merge($associationMetadata, [
                 'type' => 'association',
                 'associationType' => $associationMetadata['type'],
             ]);

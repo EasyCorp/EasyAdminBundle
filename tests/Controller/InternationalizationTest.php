@@ -12,6 +12,6 @@ class InternationalizationTest extends AbstractTestCase
     {
         $crawler = $this->getBackendHomepage();
 
-        $this->assertSame('fr', \trim($crawler->filter('html')->attr('lang')));
+        $this->assertSame('fr', trim($crawler->filter('html')->attr('lang')));
     }
 }

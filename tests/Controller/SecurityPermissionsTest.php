@@ -13,8 +13,8 @@ class SecurityPermissionsTest extends AbstractTestCase
         $crawler = $this->requestListView();
 
         $this->assertCount(2, $crawler->filter('table.datagrid thead th'));
-        $this->assertSame('ID', \trim($crawler->filter('table.datagrid thead th')->eq(0)->text()));
-        $this->assertSame('Actions', \trim($crawler->filter('table.datagrid thead th')->eq(1)->text()));
+        $this->assertSame('ID', trim($crawler->filter('table.datagrid thead th')->eq(0)->text()));
+        $this->assertSame('Actions', trim($crawler->filter('table.datagrid thead th')->eq(1)->text()));
     }
 
     public function testListViewAsLoggedUser()
@@ -23,9 +23,9 @@ class SecurityPermissionsTest extends AbstractTestCase
 
         $this->assertCount(3, $crawler->filter('table.datagrid thead th'));
 
-        $this->assertSame('ID', \trim($crawler->filter('table.datagrid thead th')->eq(0)->text()));
-        $this->assertSame('Name', \trim($crawler->filter('table.datagrid thead th')->eq(1)->text()));
-        $this->assertSame('Actions', \trim($crawler->filter('table.datagrid thead th')->eq(2)->text()));
+        $this->assertSame('ID', trim($crawler->filter('table.datagrid thead th')->eq(0)->text()));
+        $this->assertSame('Name', trim($crawler->filter('table.datagrid thead th')->eq(1)->text()));
+        $this->assertSame('Actions', trim($crawler->filter('table.datagrid thead th')->eq(2)->text()));
     }
 
     public function testShowViewAsAnonymousUser()
@@ -33,7 +33,7 @@ class SecurityPermissionsTest extends AbstractTestCase
         $crawler = $this->requestShowView();
 
         $this->assertCount(1, $crawler->filter('.content-body .form-group'));
-        $this->assertSame('ID', \trim($crawler->filter('.content-body .form-group .control-label')->eq(0)->text()));
+        $this->assertSame('ID', trim($crawler->filter('.content-body .form-group .control-label')->eq(0)->text()));
     }
 
     public function testShowViewAsLoggedUser()
@@ -42,8 +42,8 @@ class SecurityPermissionsTest extends AbstractTestCase
 
         $this->assertCount(2, $crawler->filter('.content-body .form-group'));
 
-        $this->assertSame('ID', \trim($crawler->filter('.content-body .form-group .control-label')->eq(0)->text()));
-        $this->assertSame('Name', \trim($crawler->filter('.content-body .form-group .control-label')->eq(1)->text()));
+        $this->assertSame('ID', trim($crawler->filter('.content-body .form-group .control-label')->eq(0)->text()));
+        $this->assertSame('Name', trim($crawler->filter('.content-body .form-group .control-label')->eq(1)->text()));
     }
 
     public function testNewViewAsAnonymousUser()
@@ -51,7 +51,7 @@ class SecurityPermissionsTest extends AbstractTestCase
         $crawler = $this->requestNewView();
 
         $this->assertCount(1, $crawler->filter('.content-body form .form-group'));
-        $this->assertSame('ID', \trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(0)->text()));
+        $this->assertSame('ID', trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(0)->text()));
     }
 
     public function testNewViewAsLoggedUser()
@@ -60,8 +60,8 @@ class SecurityPermissionsTest extends AbstractTestCase
 
         $this->assertCount(2, $crawler->filter('.content-body form .form-group'));
 
-        $this->assertSame('ID', \trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(0)->text()));
-        $this->assertSame('Name', \trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(1)->text()));
+        $this->assertSame('ID', trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(0)->text()));
+        $this->assertSame('Name', trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(1)->text()));
     }
 
     public function testEditViewAsAnonymousUser()
@@ -69,7 +69,7 @@ class SecurityPermissionsTest extends AbstractTestCase
         $crawler = $this->requestEditView();
 
         $this->assertCount(1, $crawler->filter('.content-body form .form-group'));
-        $this->assertSame('ID', \trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(0)->text()));
+        $this->assertSame('ID', trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(0)->text()));
     }
 
     public function testEditViewAsLoggedUser()
@@ -78,7 +78,7 @@ class SecurityPermissionsTest extends AbstractTestCase
 
         $this->assertCount(2, $crawler->filter('.content-body form .form-group'));
 
-        $this->assertSame('ID', \trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(0)->text()));
-        $this->assertSame('Name', \trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(1)->text()));
+        $this->assertSame('ID', trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(0)->text()));
+        $this->assertSame('Name', trim($crawler->filter('.content-body form .form-group .form-control-label')->eq(1)->text()));
     }
 }

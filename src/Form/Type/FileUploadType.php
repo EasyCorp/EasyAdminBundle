@@ -86,7 +86,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         };
 
         $uploadDelete = static function (File $file) {
-            \unlink($file->getPathname());
+            unlink($file->getPathname());
         };
 
         $uploadFilename = static function (UploadedFile $file): string {
@@ -94,7 +94,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         };
 
         $downloadPath = function (Options $options) {
-            return \mb_substr($options['upload_dir'], \mb_strlen($this->projectDir.'/public/'));
+            return mb_substr($options['upload_dir'], mb_strlen($this->projectDir.'/public/'));
         };
 
         $allowAdd = static function (Options $options) {
@@ -134,16 +134,16 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $resolver->setAllowedTypes('allow_delete', 'bool');
 
         $resolver->setNormalizer('upload_dir', function (Options $options, string $value): string {
-            if (DIRECTORY_SEPARATOR !== \mb_substr($value, -1)) {
-                $value .= DIRECTORY_SEPARATOR;
+            if (\DIRECTORY_SEPARATOR !== mb_substr($value, -1)) {
+                $value .= \DIRECTORY_SEPARATOR;
             }
 
-            if (0 !== \mb_strpos($value, DIRECTORY_SEPARATOR)) {
+            if (0 !== mb_strpos($value, \DIRECTORY_SEPARATOR)) {
                 $value = $this->projectDir.'/'.$value;
             }
 
-            if ('' !== $value && (!\is_dir($value) || !\is_writable($value))) {
-                throw new InvalidArgumentException(\sprintf('Invalid upload directory "%s" it does not exist or is not writable.', $value));
+            if ('' !== $value && (!is_dir($value) || !is_writable($value))) {
+                throw new InvalidArgumentException(sprintf('Invalid upload directory "%s" it does not exist or is not writable.', $value));
             }
 
             return $value;
@@ -154,27 +154,27 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             }
 
             $generateUuid4 = static function () {
-                return \sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-                    \random_int(0, 0xffff), \random_int(0, 0xffff),
-                    \random_int(0, 0xffff),
-                    \random_int(0, 0x0fff) | 0x4000,
-                    \random_int(0, 0x3fff) | 0x8000,
-                    \random_int(0, 0xffff), \random_int(0, 0xffff), \random_int(0, 0xffff)
+                return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+                    random_int(0, 0xffff), random_int(0, 0xffff),
+                    random_int(0, 0xffff),
+                    random_int(0, 0x0fff) | 0x4000,
+                    random_int(0, 0x3fff) | 0x8000,
+                    random_int(0, 0xffff), random_int(0, 0xffff), random_int(0, 0xffff)
                 );
             };
 
             return static function (UploadedFile $file) use ($value, $generateUuid4) {
-                return \strtr($value, [
-                    '[contenthash]' => \sha1_file($file->getRealPath()),
-                    '[day]' => \date('d'),
+                return strtr($value, [
+                    '[contenthash]' => sha1_file($file->getRealPath()),
+                    '[day]' => date('d'),
                     '[extension]' => $file->guessClientExtension(),
-                    '[month]' => \date('m'),
-                    '[name]' => \pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
-                    '[randomhash]' => \bin2hex(\random_bytes(20)),
-                    '[slug]' => \transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', \pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)),
-                    '[timestamp]' => \time(),
+                    '[month]' => date('m'),
+                    '[name]' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                    '[randomhash]' => bin2hex(random_bytes(20)),
+                    '[slug]' => transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)),
+                    '[timestamp]' => time(),
                     '[uuid]' => $generateUuid4(),
-                    '[year]' => \date('Y'),
+                    '[year]' => date('Y'),
                 ]);
             };
         });
@@ -201,7 +201,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     public function mapDataToForms($currentFiles, $forms): void
     {
         /** @var FormInterface $fileForm */
-        $fileForm = \current(\iterator_to_array($forms));
+        $fileForm = current(iterator_to_array($forms));
         $fileForm->setData($currentFiles);
     }
 
@@ -211,7 +211,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     public function mapFormsToData($forms, &$currentFiles): void
     {
         /** @var FormInterface[] $children */
-        $children = \iterator_to_array($forms);
+        $children = iterator_to_array($forms);
         $uploadedFiles = $children['file']->getData();
 
         /** @var FileUploadState $state */
@@ -225,7 +225,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         }
 
         if ($state->isAddAllowed() && !$state->isDelete()) {
-            $currentFiles = \array_merge($currentFiles, $uploadedFiles);
+            $currentFiles = array_merge($currentFiles, $uploadedFiles);
         } else {
             $currentFiles = $uploadedFiles;
         }

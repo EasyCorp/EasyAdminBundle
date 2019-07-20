@@ -40,7 +40,7 @@ class StringToFileTransformer implements DataTransformerInterface
             throw new TransformationFailedException('Expected an array or null.');
         }
 
-        return \array_map([$this, 'doTransform'], $value);
+        return array_map([$this, 'doTransform'], $value);
     }
 
     /**
@@ -60,7 +60,7 @@ class StringToFileTransformer implements DataTransformerInterface
             throw new TransformationFailedException('Expected an array or null.');
         }
 
-        return \array_map([$this, 'doReverseTransform'], $value);
+        return array_map([$this, 'doReverseTransform'], $value);
     }
 
     private function doTransform($value): ?File

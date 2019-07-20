@@ -128,7 +128,7 @@ class NormalizerConfigPass implements ConfigPassInterface
             }
 
             foreach (['edit', 'form', 'list', 'new', 'search', 'show'] as $view) {
-                $entityConfig[$view] = \array_replace_recursive(
+                $entityConfig[$view] = array_replace_recursive(
                     $this->defaultViewConfig[$view],
                     $entityConfig[$view] ?? []
                 );
@@ -174,7 +174,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                 $fields = [];
                 foreach ($entityConfig[$view]['fields'] as $i => $field) {
                     if (!\is_string($field) && !\is_array($field)) {
-                        throw new \RuntimeException(\sprintf('The values of the "fields" option for the "%s" view of the "%s" entity can only be strings or arrays.', $view, $entityConfig['class']));
+                        throw new \RuntimeException(sprintf('The values of the "fields" option for the "%s" view of the "%s" entity can only be strings or arrays.', $view, $entityConfig['class']));
                     }
 
                     if (\is_string($field)) {
@@ -184,7 +184,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                         // Config format #1: field is an array that defines one or more
                         // options. Check that either 'property' or 'type' option is set
                         if (!\array_key_exists('property', $field) && !\array_key_exists('type', $field)) {
-                            throw new \RuntimeException(\sprintf('One of the values of the "fields" option for the "%s" view of the "%s" entity does not define neither of the mandatory options ("property" or "type").', $view, $entityConfig['class']));
+                            throw new \RuntimeException(sprintf('One of the values of the "fields" option for the "%s" view of the "%s" entity does not define neither of the mandatory options ("property" or "type").', $view, $entityConfig['class']));
                         }
 
                         $fieldConfig = $field;
@@ -242,7 +242,7 @@ class NormalizerConfigPass implements ConfigPassInterface
 
                     if ($isFormDesignElement && 'tab' === $fieldConfig['type']) {
                         if ($fieldNumber > 1) {
-                            $backendConfig['entities'][$entityName][$view]['fields'] = \array_merge(
+                            $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
                                 ['_easyadmin_form_design_element_forced_first_tab' => ['type' => 'tab']],
                                 $backendConfig['entities'][$entityName][$view]['fields']
                             );
@@ -265,14 +265,14 @@ class NormalizerConfigPass implements ConfigPassInterface
                     } elseif ($isFormDesignElement && 'group' === $fieldConfig['type']) {
                         if ($isTheFirstGroupElement && -1 === $previousTabFieldNumber && $fieldNumber > 1) {
                             // if no tab is used, insert the group at the beginning of the array
-                            $backendConfig['entities'][$entityName][$view]['fields'] = \array_merge(
+                            $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
                                 ['_easyadmin_form_design_element_forced_first_group' => ['type' => 'group']],
                                 $backendConfig['entities'][$entityName][$view]['fields']
                             );
                             break;
                         } elseif ($isTheFirstGroupElement && $previousTabFieldNumber >= 0 && $fieldNumber > $previousTabFieldNumber + 1) {
                             // if tabs are used, we insert the group after the previous tab field into the array
-                            $backendConfig['entities'][$entityName][$view]['fields'] = \array_merge(
+                            $backendConfig['entities'][$entityName][$view]['fields'] = array_merge(
                                 \array_slice($backendConfig['entities'][$entityName][$view]['fields'], 0, $previousTabFieldNumber, true),
                                 ['_easyadmin_form_design_element_forced_group_'.$fieldNumber => ['type' => 'group']],
                                 \array_slice($backendConfig['entities'][$entityName][$view]['fields'], $previousTabFieldNumber, null, true)
@@ -331,7 +331,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                 }
 
                 if (!\is_array($backendConfig['entities'][$entityName][$view]['actions'])) {
-                    throw new \InvalidArgumentException(\sprintf('The "actions" configuration for the "%s" view of the "%s" entity must be an array (a string was provided).', $view, $entityName));
+                    throw new \InvalidArgumentException(sprintf('The "actions" configuration for the "%s" view of the "%s" entity must be an array (a string was provided).', $view, $entityName));
                 }
             }
         }
@@ -354,7 +354,7 @@ class NormalizerConfigPass implements ConfigPassInterface
             }
 
             if (!\is_array($backendConfig['entities'][$entityName]['list']['batch_actions'])) {
-                throw new \InvalidArgumentException(\sprintf('The "batch_actions" configuration for the "list" view of the "%s" entity must be an array (a string was provided).', $entityName));
+                throw new \InvalidArgumentException(sprintf('The "batch_actions" configuration for the "list" view of the "%s" entity must be an array (a string was provided).', $entityName));
             }
         }
 
@@ -376,10 +376,10 @@ class NormalizerConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             if (isset($entityConfig['controller'])) {
-                $controller = \trim($entityConfig['controller']);
+                $controller = trim($entityConfig['controller']);
 
-                if (!$this->container->has($controller) && !\class_exists($controller)) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" value defined in the "controller" option of the "%s" entity is not a valid controller. For a regular controller, set its FQCN as the value; for a controller defined as service, set its service name as the value.', $controller, $entityName));
+                if (!$this->container->has($controller) && !class_exists($controller)) {
+                    throw new \InvalidArgumentException(sprintf('The "%s" value defined in the "controller" option of the "%s" entity is not a valid controller. For a regular controller, set its FQCN as the value; for a controller defined as service, set its service name as the value.', $controller, $entityName));
                 }
 
                 $backendConfig['entities'][$entityName]['controller'] = $controller;
@@ -397,7 +397,7 @@ class NormalizerConfigPass implements ConfigPassInterface
             }
 
             if ('' === $entityConfig['translation_domain']) {
-                throw new \InvalidArgumentException(\sprintf('The value defined in the "translation_domain" option of the "%s" entity is not a valid translation domain name (use false to disable translations).', $entityName));
+                throw new \InvalidArgumentException(sprintf('The value defined in the "translation_domain" option of the "%s" entity is not a valid translation domain name (use false to disable translations).', $entityName));
             }
 
             $backendConfig['entities'][$entityName] = $entityConfig;
@@ -413,7 +413,7 @@ class NormalizerConfigPass implements ConfigPassInterface
 
             foreach ($entityConfig['list']['filters'] ?? [] as $i => $filterConfig) {
                 if (!\is_string($filterConfig) && !\is_array($filterConfig)) {
-                    throw new \InvalidArgumentException(\sprintf('One of the filters defined by the "list" view of the "%s" entity contains an invalid value (filter config can only be a YAML string or hash).', $entityName));
+                    throw new \InvalidArgumentException(sprintf('One of the filters defined by the "list" view of the "%s" entity contains an invalid value (filter config can only be a YAML string or hash).', $entityName));
                 }
 
                 if (\is_string($filterConfig)) {
@@ -421,7 +421,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                 }
 
                 if (null === $filterName = $filterConfig['property'] ?? null) {
-                    throw new \InvalidArgumentException(\sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
+                    throw new \InvalidArgumentException(sprintf('One of the filters defined by the "list" view of the "%s" entity does not define its property name, which is the only mandatory option for filters.', $entityName));
                 }
 
                 if (!isset($filterConfig['type_options'])) {
@@ -432,8 +432,8 @@ class NormalizerConfigPass implements ConfigPassInterface
                     if ($this->filterRegistry->hasType($filterConfig['type'])) {
                         // the 'type' filter option allows to use shortcuts (e.g. 'boolean', 'text') instead of the form type FQCN
                         $filterConfig['type'] = $this->filterRegistry->getType($filterConfig['type']);
-                    } elseif (!\class_exists($filterConfig['type'])) {
-                        throw new \InvalidArgumentException(\sprintf('The "%s" class defined as the type of the "%s" filter in the "list" view of the "%s" entity does not exist.', $filterConfig['type'], $filterConfig['property'], $entityName));
+                    } elseif (!class_exists($filterConfig['type'])) {
+                        throw new \InvalidArgumentException(sprintf('The "%s" class defined as the type of the "%s" filter in the "list" view of the "%s" entity does not exist.', $filterConfig['type'], $filterConfig['property'], $entityName));
                     }
                 }
 
@@ -465,7 +465,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         $removedFieldNames = $this->getRemovedFieldNames($childFields);
 
         // first, perform a recursive replace to merge both configs
-        $mergedConfig = \array_replace_recursive($parentConfig, $childConfig);
+        $mergedConfig = array_replace_recursive($parentConfig, $childConfig);
 
         // merge the config of each field individually
         $mergedFields = [];
@@ -481,13 +481,13 @@ class NormalizerConfigPass implements ConfigPassInterface
             }
 
             $childFieldConfig = $this->findFieldConfigByProperty($childFields, $parentFieldConfig['property']) ?: [];
-            $mergedFields[$parentFieldName] = \array_replace_recursive($parentFieldConfig, $childFieldConfig);
+            $mergedFields[$parentFieldName] = array_replace_recursive($parentFieldConfig, $childFieldConfig);
         }
 
         // add back the fields that are defined in child config but not in parent config
         foreach ($childFields as $childFieldName => $childFieldConfig) {
             $isFormDesignElement = !isset($childFieldConfig['property']);
-            $isNotRemovedField = isset($childFieldConfig['property']) && 0 !== \strpos($childFieldConfig['property'], '-');
+            $isNotRemovedField = isset($childFieldConfig['property']) && 0 !== strpos($childFieldConfig['property'], '-');
             $isNotAlreadyIncluded = isset($childFieldConfig['property']) && !\array_key_exists($childFieldConfig['property'], $mergedFields);
 
             if ($isFormDesignElement || ($isNotRemovedField && $isNotAlreadyIncluded)) {
@@ -514,8 +514,8 @@ class NormalizerConfigPass implements ConfigPassInterface
     {
         $removedFieldNames = [];
         foreach ($fieldsConfig as $fieldConfig) {
-            if (isset($fieldConfig['property']) && 0 === \strpos($fieldConfig['property'], '-')) {
-                $removedFieldNames[] = \mb_substr($fieldConfig['property'], 1);
+            if (isset($fieldConfig['property']) && 0 === strpos($fieldConfig['property'], '-')) {
+                $removedFieldNames[] = mb_substr($fieldConfig['property'], 1);
             }
         }
 

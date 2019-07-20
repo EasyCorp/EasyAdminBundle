@@ -130,7 +130,7 @@ class MenuConfigPass implements ConfigPassInterface
                 $entityName = $itemConfig['entity'];
 
                 if (!\array_key_exists($entityName, $backendConfig['entities'])) {
-                    throw new \RuntimeException(\sprintf('The "%s" entity included in the "menu" option is not managed by EasyAdmin. The menu can only include any of these entities: %s.', $entityName, \implode(', ', \array_keys($backendConfig['entities']))));
+                    throw new \RuntimeException(sprintf('The "%s" entity included in the "menu" option is not managed by EasyAdmin. The menu can only include any of these entities: %s.', $entityName, implode(', ', array_keys($backendConfig['entities']))));
                 }
 
                 if (!isset($itemConfig['label'])) {
@@ -147,7 +147,7 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['type'] = 'link';
 
                 if (!isset($itemConfig['label'])) {
-                    throw new \RuntimeException(\sprintf('The configuration of the menu item with "url = %s" must define the "label" option.', $itemConfig['url']));
+                    throw new \RuntimeException(sprintf('The configuration of the menu item with "url = %s" must define the "label" option.', $itemConfig['url']));
                 }
             }
 
@@ -156,7 +156,7 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['type'] = 'route';
 
                 if (!isset($itemConfig['label'])) {
-                    throw new \RuntimeException(\sprintf('The configuration of the menu item with "route = %s" must define the "label" option.', $itemConfig['route']));
+                    throw new \RuntimeException(sprintf('The configuration of the menu item with "route = %s" must define the "label" option.', $itemConfig['route']));
                 }
 
                 if (!isset($itemConfig['params'])) {
@@ -175,7 +175,7 @@ class MenuConfigPass implements ConfigPassInterface
                     $itemConfig['type'] = 'empty';
                 }
             } else {
-                throw new \RuntimeException(\sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.', $i));
+                throw new \RuntimeException(sprintf('The configuration of the menu item in the position %d (being 0 the first item) must define at least one of these options: entity, url, route, label.', $i));
             }
 
             $menuConfig[$i] = $itemConfig;

@@ -119,7 +119,7 @@ class EasyAdminExtension extends Extension
 
         // if config format #3 is used, ensure that it defines the 'class' option
         if (!isset($entityConfig['class'])) {
-            throw new \RuntimeException(\sprintf('The "%s" entity must define its associated Doctrine entity class using the "class" option.', $entityName));
+            throw new \RuntimeException(sprintf('The "%s" entity must define its associated Doctrine entity class using the "class" option.', $entityName));
         }
 
         return $entityConfig;
@@ -144,9 +144,9 @@ class EasyAdminExtension extends Extension
     private function getUniqueEntityName($entityName, array $entityConfig, array $existingEntityNames)
     {
         // the shortcut config syntax doesn't require to give entities a name
-        if (\is_numeric($entityName)) {
-            $entityClassParts = \explode('\\', $entityConfig['class']);
-            $entityName = \end($entityClassParts);
+        if (is_numeric($entityName)) {
+            $entityClassParts = explode('\\', $entityConfig['class']);
+            $entityName = end($entityClassParts);
         }
 
         $i = 2;
@@ -160,7 +160,7 @@ class EasyAdminExtension extends Extension
         // make sure that the entity name is valid as a PHP method name
         // (this is required to allow extending the backend with a custom controller)
         if (!$this->isValidMethodName($entityName)) {
-            throw new \InvalidArgumentException(\sprintf('The name of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $entityName));
+            throw new \InvalidArgumentException(sprintf('The name of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $entityName));
         }
 
         return $entityName;
@@ -171,6 +171,6 @@ class EasyAdminExtension extends Extension
      */
     private function isValidMethodName(string $name): bool
     {
-        return 0 !== \preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
+        return 0 !== preg_match('/^-?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
     }
 }

@@ -14,8 +14,8 @@ class DataTransferObjectTest extends AbstractTestCase
         $this->assertSame(200, static::$client->getResponse()->getStatusCode());
 
         $form = $crawler->filter('#main form')->eq(0);
-        $this->assertSame('new', \trim($form->attr('data-view')));
-        $this->assertSame('Product', \trim($form->attr('data-entity')));
+        $this->assertSame('new', trim($form->attr('data-view')));
+        $this->assertSame('Product', trim($form->attr('data-entity')));
         $this->assertEmpty($form->attr('data-entity-id'));
 
         $form = $crawler->selectButton('Save changes')->form();
@@ -39,8 +39,8 @@ class DataTransferObjectTest extends AbstractTestCase
         $this->assertSame(200, static::$client->getResponse()->getStatusCode());
 
         $form = $crawler->filter('#main form')->eq(0);
-        $this->assertSame('edit', \trim($form->attr('data-view')));
-        $this->assertSame('Product', \trim($form->attr('data-entity')));
+        $this->assertSame('edit', trim($form->attr('data-view')));
+        $this->assertSame('Product', trim($form->attr('data-entity')));
         $this->assertEmpty($form->attr('data-entity-id'));
 
         $form = $crawler->selectButton('Save changes')->form();

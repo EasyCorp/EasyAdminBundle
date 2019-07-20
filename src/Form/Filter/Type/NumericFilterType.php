@@ -88,19 +88,19 @@ class NumericFilterType extends FilterType
      */
     public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
     {
-        $alias = \current($queryBuilder->getRootAliases());
+        $alias = current($queryBuilder->getRootAliases());
         $property = $metadata['property'];
         $data = $form->getData();
 
         if (ComparisonType::BETWEEN === $data['comparison']) {
             $paramName1 = static::createAlias($property);
             $paramName2 = static::createAlias($property);
-            $queryBuilder->andWhere(\sprintf('%s.%s BETWEEN :%s and :%s', $alias, $property, $paramName1, $paramName2))
+            $queryBuilder->andWhere(sprintf('%s.%s BETWEEN :%s and :%s', $alias, $property, $paramName1, $paramName2))
                 ->setParameter($paramName1, $data['value'])
                 ->setParameter($paramName2, $data['value2']);
         } else {
             $paramName = static::createAlias($property);
-            $queryBuilder->andWhere(\sprintf('%s.%s %s :%s', $alias, $property, $data['comparison'], $paramName))
+            $queryBuilder->andWhere(sprintf('%s.%s %s :%s', $alias, $property, $data['comparison'], $paramName))
                 ->setParameter($paramName, $data['value']);
         }
     }

@@ -118,6 +118,15 @@
         {{- block('form_widget_simple') -}}
     {% else %}
         {{- parent() -}}
+
+        <script>
+            document.querySelector('#{{ id }}').addEventListener('change', function() {
+                const fileName = this.value.replace('C:\\fakepath\\', '');
+                const customInputFileLabel = document.querySelector('#{{ id }} ~ .custom-file-label');
+                customInputFileLabel.classList.add('selected');
+                customInputFileLabel.innerHTML = fileName;
+            });
+        </script>
     {% endif %}
 {%- endblock %}
 

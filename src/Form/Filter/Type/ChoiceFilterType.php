@@ -88,19 +88,19 @@ class ChoiceFilterType extends FilterType
      */
     public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
     {
-        $alias = \current($queryBuilder->getRootAliases());
+        $alias = current($queryBuilder->getRootAliases());
         $property = $metadata['property'];
         $paramName = static::createAlias($property);
         $multiple = $form->get('value')->getConfig()->getOption('multiple');
         $data = $form->getData();
 
         if (null === $data['value'] || ($multiple && 0 === \count($data['value']))) {
-            $queryBuilder->andWhere(\sprintf('%s.%s %s', $alias, $property, $data['comparison']));
+            $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $data['comparison']));
         } else {
             $orX = new Expr\Orx();
-            $orX->add(\sprintf('%s.%s %s (:%s)', $alias, $property, $data['comparison'], $paramName));
+            $orX->add(sprintf('%s.%s %s (:%s)', $alias, $property, $data['comparison'], $paramName));
             if (ComparisonType::NEQ === $data['comparison']) {
-                $orX->add(\sprintf('%s.%s IS NULL', $alias, $property));
+                $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
             }
             $queryBuilder->andWhere($orX)
                 ->setParameter($paramName, $data['value']);

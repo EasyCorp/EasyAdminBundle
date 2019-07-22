@@ -406,7 +406,78 @@ form .invalid-feedback > .d-block + .d-block {
     margin-top: 5px;
 }
 
-// Image/file uploads
+//fileupload widgets
+.easyadmin-fileupload {
+    max-width: 350px;
+
+    .custom-file {
+        height: 30px;
+    }
+    .custom-file + .input-group-append .btn {
+        margin: 0;
+        margin-top: 1px;
+        margin-left: 1px;
+        height: 28px;
+    }
+
+    .custom-file-input {
+        cursor: pointer;
+    }
+
+    .custom-file-label {
+        height: 30px;
+        margin: 0 !important;
+        text-align: left !important;
+        padding: 3px 40px 3px 7px;
+        border-right: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .custom-file-label::after {
+        display: none;
+    }
+
+    .input-group-text {
+        padding: 7px;
+        color: #4e566d;
+        position: absolute;
+        right: 70px;
+        z-index: 3;
+        border: none;
+        background-color: white;
+        height: 28px;
+        margin-top: 1px;
+    }
+
+    .fileupload-list {
+        height: auto;
+        margin-top: 7px;
+        padding: 0;
+
+        .fileupload-table {
+            width: 100%;
+        }
+        .fileupload-table td {
+            padding: 3px 7px;
+            border-radius: 3px;
+        }
+        .fileupload-table td:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 300px;
+        }
+        .fileupload-table tr:nth-child(odd) td {
+            background-color: #f5f7ff;
+        }
+        .fileupload-table td.file-size {
+            color: #4e566d;
+        }
+    }
+}
+
+// Image/file vich uploads
 .easyadmin-vich-image img {
     box-shadow: 0 0 0 4px var(--white), 0px 0px 4px 3px var(--gray-600);
     margin: 6px 4px 12px;

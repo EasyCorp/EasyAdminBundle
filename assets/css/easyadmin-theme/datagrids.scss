@@ -123,7 +123,8 @@ table.datagrid {
   box-shadow: none;
 }
 
-.datagrid td.country .country-flag {
+.datagrid td.country .country-flag,
+.field-country .country-flag {
   margin-right: 2px;
   max-height: 18px;
   vertical-align: text-top;
@@ -208,4 +209,14 @@ table.datagrid {
 }
 .filter-content .form-group:last-of-type {
   padding-bottom: 0;
+}
+// needed to hide the visual marker in the labels of required fields
+.filter-content .form-group label.required:after {
+    content: none;
+}
+.filter-content .field-choice .form-check + .form-check {
+    margin-top: 4px;
+}
+.filter-content .field-choice .form-check-label {
+    margin-top: 0;
 }

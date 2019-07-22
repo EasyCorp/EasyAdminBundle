@@ -17,7 +17,7 @@ trait FilterTypeTrait
      */
     protected static function createAlias(string $name): string
     {
-        return \str_replace('.', '_', $name).'_'.++static::$uniqueAliasId;
+        return str_replace('.', '_', $name).'_'.++static::$uniqueAliasId;
     }
 
     /**
@@ -25,12 +25,12 @@ trait FilterTypeTrait
      */
     public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
     {
-        $alias = \current($queryBuilder->getRootAliases());
+        $alias = current($queryBuilder->getRootAliases());
         $property = $metadata['property'];
         $paramName = static::createAlias($property);
         $value = $form->getData();
 
-        $queryBuilder->andWhere(\sprintf('%s.%s = :%s', $alias, $property, $paramName))
+        $queryBuilder->andWhere(sprintf('%s.%s = :%s', $alias, $property, $paramName))
             ->setParameter($paramName, $value);
     }
 }

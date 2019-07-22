@@ -1206,8 +1206,6 @@ must use a special syntax inside ``extends`` to avoid an infinite loop:
         {# ... #}
     {% endblock %}
 
-.. _overriding-the-default-templates-by-configuration:
-
 Using your Own Templates to Display the list/search/show Views
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

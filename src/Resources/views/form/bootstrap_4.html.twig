@@ -128,7 +128,25 @@
     <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
         {{- form_label(form) -}}
         <div class="form-widget">
-            {{- form_widget(form) -}}
+            {% set has_prepend_html = easyadmin.field.prepend_html|default(null) is not null %}
+            {% set has_append_html = easyadmin.field.append_html|default(null) is not null %}
+            {% set has_input_groups = has_prepend_html or has_append_html %}
+
+            {% if has_input_groups %}<div class="input-group">{% endif %}
+                {% if has_prepend_html %}
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">{{ easyadmin.field.prepend_html|raw }}</span>
+                    </div>
+                {% endif %}
+
+                {{- form_widget(form) -}}
+
+                {% if has_append_html %}
+                    <div class="input-group-append">
+                        <span class="input-group-text">{{ easyadmin.field.append_html|raw }}</span>
+                    </div>
+                {% endif %}
+            {% if has_input_groups %}</div>{% endif %}
 
             {% if _field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and easyadmin.field.nullable|default(false) %}
                 <div class="nullable-control">
@@ -347,7 +365,7 @@
 
 {% block item_actions %}
     {% set _translation_domain = easyadmin.entity.translation_domain %}
-    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
+    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans(domain = _translation_domain), '%entity_label%': easyadmin.entity.label|trans(domain = _translation_domain) } %}
 
     {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
     <button type="submit" class="btn btn-primary action-save">
@@ -513,7 +531,7 @@
 {# EasyAdminBatch form type #}
 {% block easyadmin_batch_widget %}
     {% set _translation_domain = easyadmin.entity.translation_domain %}
-    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans, '%entity_label%': easyadmin.entity.label|trans } %}
+    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans(domain = _translation_domain), '%entity_label%': easyadmin.entity.label|trans(domain = _translation_domain) } %}
 
     {{ form_widget(form.ids) }}
     <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(_trans_parameters, _translation_domain) }}</button>
@@ -521,7 +539,7 @@
         <button type="submit" class="btn {{ action.css_class|default('btn-secondary') }}" title="{{ action.title|default('') is empty ? '' : action.title|trans(_trans_parameters) }}" name="{{ form.name.vars.full_name }}" value="{{ action.name }}">
             {%- if action.icon %}<i class="fa fa-fw fa-{{ action.icon }}"></i> {% endif -%}
             {%- if action.label is defined and not action.label is empty -%}
-                {{ action.label|trans }}
+                {{ action.label|trans(_trans_parameters, _translation_domain) }}
             {%- endif -%}
         </button>
     {% endfor %}
@@ -599,3 +617,65 @@
 {% block easyadmin_datetime_filter_widget %}
     {{ block('easyadmin_numeric_filter_widget') }}
 {% endblock  easyadmin_datetime_filter_widget %}
+
+{% block easyadmin_fileupload_widget %}
+    <div class="easyadmin-fileupload">
+        <div class="input-group">
+            {% set placeholder = null %}
+            {% set title = null %}
+            {% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
+            {% if currentFiles %}
+                {% if multiple %}
+                    {% set placeholder = currentFiles|length ~ ' ' ~ filesLabel %}
+                {% else %}
+                    {% set placeholder = (currentFiles|first).filename %}
+                    {% set title = (currentFiles|first).mTime|date %}
+                {% endif %}
+            {% endif %}
+            {{ form_widget(form.file, { attr: form.file.vars.attr|merge({ placeholder: placeholder, title: title, 'data-files-label': filesLabel }) }) }}
+            <div class="input-group-append">
+                <span class="input-group-text" {% if currentFiles is empty %}style="display: none"{% endif %}>
+                    {%- if currentFiles -%}
+                        {% if multiple %}
+                            {{ (currentFiles|reduce((carry, file) => carry + file.size))|easyadmin_filesize }}
+                        {% else %}
+                            {{ (currentFiles|first).size|easyadmin_filesize }}
+                        {% endif %}
+                    {%- endif -%}
+                </span>
+                {% if allow_delete %}
+                    <label class="btn easyadmin-fileupload-delete-btn" {% if currentFiles is empty %}style="display: none"{% endif %} for="{{ form.delete.vars.id }}">
+                        <i class="fa fa-trash-o"></i>
+                    </label>
+                {% endif %}
+                <label class="btn" for="{{ form.file.vars.id }}">
+                    <i class="fa fa-folder-open-o"></i>
+                </label>
+            </div>
+        </div>
+        {% if multiple and currentFiles %}
+            <div class="form-control fileupload-list">
+                <table class="fileupload-table">
+                    <tbody>
+                    {% for file in currentFiles %}
+                        <tr>
+                            <td>
+                                {% if download_path %}<a href="{{ asset(download_path ~ file.filename) }}">{% endif %}
+                                    <span title="{{ file.mTime|date }}">
+                                        <i class="fa fa-file-o"></i> {{ file.filename }}
+                                    </span>
+                                {% if download_path %}</a>{% endif %}
+                            </td>
+                            <td class="text-right file-size">{{ file.size|easyadmin_filesize }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        {% if allow_delete %}
+            <div style="display: none">{{ form_widget(form.delete, { label: false }) }}</div>
+        {% endif %}
+    </div>
+    {{ form_errors(form.file) }}
+{% endblock %}

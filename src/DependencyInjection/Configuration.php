@@ -141,10 +141,10 @@ class Configuration implements ConfigurationInterface
                             ->validate()
                                 // if present, remove the trailing ';' to avoid CSS issues
                                 ->ifTrue(function ($v) {
-                                    return ';' === \trim($v)[-1];
+                                    return ';' === trim($v)[-1];
                                 })
                                 ->then(function ($v) {
-                                    return \trim(\mb_substr(\trim($v), 0, -1));
+                                    return trim(mb_substr(trim($v), 0, -1));
                                 })
                             ->end()
                         ->end()
@@ -186,7 +186,7 @@ class Configuration implements ConfigurationInterface
                                                 'jpg' => 'image/jpeg',
                                                 'jpeg' => 'image/jpeg',
                                             ];
-                                            if (!isset($v['mime_type']) && isset($mimeTypes[$ext = \pathinfo($v['path'], PATHINFO_EXTENSION)])) {
+                                            if (!isset($v['mime_type']) && isset($mimeTypes[$ext = pathinfo($v['path'], PATHINFO_EXTENSION)])) {
                                                 $v['mime_type'] = $mimeTypes[$ext];
                                             } elseif (!isset($v['mime_type'])) {
                                                 $v['mime_type'] = null;
@@ -379,7 +379,7 @@ class Configuration implements ConfigurationInterface
     private function getRootNode(TreeBuilder $treeBuilder, $name)
     {
         // BC layer for symfony/config 4.1 and older
-        if (!\method_exists($treeBuilder, 'getRootNode')) {
+        if (!method_exists($treeBuilder, 'getRootNode')) {
             return $treeBuilder->root($name);
         }
 

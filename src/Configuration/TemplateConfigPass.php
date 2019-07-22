@@ -109,7 +109,7 @@ class TemplateConfigPass implements ConfigPassInterface
                 $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
 
                 if (null === $templatePath) {
-                    throw new \RuntimeException(\sprintf('None of the templates defined for the "%s" fragment of the "%s" entity exists (templates defined: %s).', $templateName, $entityName, \implode(', ', $candidateTemplates)));
+                    throw new \RuntimeException(sprintf('None of the templates defined for the "%s" fragment of the "%s" entity exists (templates defined: %s).', $templateName, $entityName, implode(', ', $candidateTemplates)));
                 }
 
                 $entityConfig['templates'][$templateName] = $templatePath;
@@ -157,7 +157,7 @@ class TemplateConfigPass implements ConfigPassInterface
             $templatePath = $this->findFirstExistingTemplate($candidateTemplates);
 
             if (null === $templatePath) {
-                throw new \RuntimeException(\sprintf('None of the templates defined for the global "%s" template of the backend exists (templates defined: %s).', $templateName, \implode(', ', $candidateTemplates)));
+                throw new \RuntimeException(sprintf('None of the templates defined for the global "%s" template of the backend exists (templates defined: %s).', $templateName, implode(', ', $candidateTemplates)));
             }
 
             $backendConfig['design']['templates'][$templateName] = $templatePath;
@@ -186,8 +186,8 @@ class TemplateConfigPass implements ConfigPassInterface
 
                     // needed to add support for immutable datetime/date/time fields
                     // (which are rendered using the same templates as their non immutable counterparts)
-                    if ('_immutable' === \mb_substr($fieldMetadata['dataType'], -10)) {
-                        $fieldTemplateName = 'field_'.\mb_substr($fieldMetadata['dataType'], 0, -10);
+                    if ('_immutable' === mb_substr($fieldMetadata['dataType'], -10)) {
+                        $fieldTemplateName = 'field_'.mb_substr($fieldMetadata['dataType'], 0, -10);
                     } else {
                         $fieldTemplateName = 'field_'.$fieldMetadata['dataType'];
                     }
@@ -246,15 +246,15 @@ class TemplateConfigPass implements ConfigPassInterface
             }
 
             // template name normalization code taken from FilesystemLoader::normalizeName()
-            $templatePath = \preg_replace('#/{2,}#', '/', \str_replace('\\', '/', $templatePath));
+            $templatePath = preg_replace('#/{2,}#', '/', str_replace('\\', '/', $templatePath));
             $namespace = FilesystemLoader::MAIN_NAMESPACE;
 
             if (isset($templatePath[0]) && '@' === $templatePath[0]) {
-                if (false === $pos = \strpos($templatePath, '/')) {
-                    throw new \LogicException(\sprintf('Malformed namespaced template name "%s" (expecting "@namespace/template_name").', $templatePath));
+                if (false === $pos = strpos($templatePath, '/')) {
+                    throw new \LogicException(sprintf('Malformed namespaced template name "%s" (expecting "@namespace/template_name").', $templatePath));
                 }
 
-                $namespace = \substr($templatePath, 1, $pos - 1);
+                $namespace = substr($templatePath, 1, $pos - 1);
             }
 
             if (!isset($this->existingTemplates[$namespace])) {
@@ -265,12 +265,12 @@ class TemplateConfigPass implements ConfigPassInterface
                     foreach ($finder as $templateFile) {
                         $template = $templateFile->getRelativePathname();
 
-                        if ('\\' === DIRECTORY_SEPARATOR) {
-                            $template = \str_replace('\\', '/', $template);
+                        if ('\\' === \DIRECTORY_SEPARATOR) {
+                            $template = str_replace('\\', '/', $template);
                         }
 
                         if (FilesystemLoader::MAIN_NAMESPACE !== $namespace) {
-                            $template = \sprintf('@%s/%s', $namespace, $template);
+                            $template = sprintf('@%s/%s', $namespace, $template);
                         }
                         $this->existingTemplates[$namespace][$template] = true;
                     }

@@ -42,8 +42,8 @@ final class FilterTypePass implements CompilerPassInterface
             $servicesMap[$priority][$serviceId] = new Reference($serviceId);
         }
         if ($typesMap) {
-            \krsort($typesMap);
-            $typesMap = \array_merge(...$typesMap);
+            krsort($typesMap);
+            $typesMap = array_merge(...$typesMap);
         }
         $container->getDefinition('easyadmin.filter.registry')
             ->replaceArgument(0, $typesMap)
@@ -51,12 +51,12 @@ final class FilterTypePass implements CompilerPassInterface
 
         // add extension to the 'form.registry' service to resolve filter form types by service id
         if ($servicesMap) {
-            \krsort($servicesMap);
-            $servicesMap = \array_merge(...$servicesMap);
+            krsort($servicesMap);
+            $servicesMap = array_merge(...$servicesMap);
         }
         $container->getDefinition('easyadmin.filter.extension')
             ->replaceArgument(0, ServiceLocatorTagPass::register($container, $servicesMap));
         $formRegistry = $container->getDefinition('form.registry');
-        $formRegistry->replaceArgument(0, \array_merge([new Reference('easyadmin.filter.extension')], $formRegistry->getArgument(0)));
+        $formRegistry->replaceArgument(0, array_merge([new Reference('easyadmin.filter.extension')], $formRegistry->getArgument(0)));
     }
 }

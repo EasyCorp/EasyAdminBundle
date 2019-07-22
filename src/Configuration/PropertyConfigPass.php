@@ -42,6 +42,8 @@ class PropertyConfigPass implements ConfigPassInterface
         'form_group' => null,
         // the role or set of roles a user must have to see this property
         'permission' => null,
+        'prepend_html' => null,
+        'append_html' => null,
     ];
 
     private $defaultVirtualFieldMetadata = [
@@ -112,7 +114,7 @@ class PropertyConfigPass implements ConfigPassInterface
                     $guessedTypeOptions['required'] = $requiredGuess->getValue();
                 }
 
-                $properties[$propertyName] = \array_replace(
+                $properties[$propertyName] = array_replace(
                     $this->defaultEntityFieldConfig,
                     $propertyMetadata,
                     [
@@ -153,20 +155,20 @@ class PropertyConfigPass implements ConfigPassInterface
                     $originalFieldConfig = $originalViewConfig['fields'][$fieldName] ?? null;
 
                     if (\array_key_exists($fieldName, $entityConfig['properties'])) {
-                        $fieldMetadata = \array_merge(
+                        $fieldMetadata = array_merge(
                             $entityConfig['properties'][$fieldName],
                             ['virtual' => false]
                         );
                     } else {
                         // this is a virtual field which doesn't exist as a property of
                         // the related entity. That's why Doctrine can't provide metadata for it
-                        $fieldMetadata = \array_merge(
+                        $fieldMetadata = array_merge(
                             $this->defaultVirtualFieldMetadata,
                             ['columnName' => $fieldName, 'fieldName' => $fieldName]
                         );
                     }
 
-                    $normalizedConfig = \array_replace_recursive(
+                    $normalizedConfig = array_replace_recursive(
                         $this->defaultEntityFieldConfig,
                         $fieldMetadata,
                         $fieldConfig
@@ -199,12 +201,32 @@ class PropertyConfigPass implements ConfigPassInterface
                         // Consider both of them equivalent and copy the 'type_options.help' into 'help'
                         // to ease further processing of config
                         if (isset($fieldConfig['help']) && isset($normalizedConfig['type_options']['help'])) {
-                            throw new \RuntimeException(\sprintf('The "%s" property in the "%s" view of the "%s" entity defines a help message using both the "help: ..." option from EasyAdmin and the "type_options: { help: ... }" option from Symfony Forms. These two options are equivalent, but you can only define one of them at the same time. Remove one of these two help messages.', $normalizedConfig['property'], $view, $entityName));
+                            throw new \RuntimeException(sprintf('The "%s" property in the "%s" view of the "%s" entity defines a help message using both the "help: ..." option from EasyAdmin and the "type_options: { help: ... }" option from Symfony Forms. These two options are equivalent, but you can only define one of them at the same time. Remove one of these two help messages.', $normalizedConfig['property'], $view, $entityName));
                         }
 
                         if (isset($normalizedConfig['type_options']['help']) && !isset($fieldConfig['help'])) {
                             $normalizedConfig['help'] = $normalizedConfig['type_options']['help'];
                         }
+
+                        // process the 'prepend' and 'append' icons and contents that later
+                        // are displayed as Bootstrap 'input groups'
+                        $prependHtml = '';
+                        if ($fieldConfig['prepend_icon'] ?? false) {
+                            $prependHtml .= sprintf('<i class="fa fa-fw fa-%s"></i>', $fieldConfig['prepend_icon']);
+                        }
+                        if ($fieldConfig['prepend_content'] ?? false) {
+                            $prependHtml .= sprintf('<span>%s</span>', $fieldConfig['prepend_content']);
+                        }
+                        $normalizedConfig['prepend_html'] = empty($prependHtml) ? null : $prependHtml;
+
+                        $appendHtml = '';
+                        if ($fieldConfig['append_icon'] ?? false) {
+                            $appendHtml .= sprintf('<i class="fa fa-fw fa-%s"></i>', $fieldConfig['append_icon']);
+                        }
+                        if ($fieldConfig['append_content'] ?? false) {
+                            $appendHtml .= sprintf('<span>%s</span>', $fieldConfig['append_content']);
+                        }
+                        $normalizedConfig['append_html'] = empty($appendHtml) ? null : $appendHtml;
                     }
 
                     // special case for the 'list' view: 'boolean' properties are displayed
@@ -227,11 +249,11 @@ class PropertyConfigPass implements ConfigPassInterface
                         if (isset($normalizedConfig['height'])) {
                             $imageHeight = $normalizedConfig['height'];
                             $semanticHeights = ['sm' => 18, 'md' => 24, 'lg' => 48, 'xl' => 96];
-                            if (!\is_numeric($imageHeight) && !\array_key_exists($imageHeight, $semanticHeights)) {
-                                throw new \InvalidArgumentException(\sprintf('The "%s" property in the "%s" view of the "%s" entity defines an invalid value for the avatar "height" option. It must be either a numeric value (which represents the image height in pixels) or one of these semantic heights: "%s".', $normalizedConfig['fieldName'], $view, $entityName, \implode(', ', \array_keys($semanticHeights))));
+                            if (!is_numeric($imageHeight) && !\array_key_exists($imageHeight, $semanticHeights)) {
+                                throw new \InvalidArgumentException(sprintf('The "%s" property in the "%s" view of the "%s" entity defines an invalid value for the avatar "height" option. It must be either a numeric value (which represents the image height in pixels) or one of these semantic heights: "%s".', $normalizedConfig['fieldName'], $view, $entityName, implode(', ', array_keys($semanticHeights))));
                             }
 
-                            $normalizedConfig['height'] = \is_numeric($imageHeight) ? $imageHeight : $semanticHeights[$imageHeight];
+                            $normalizedConfig['height'] = is_numeric($imageHeight) ? $imageHeight : $semanticHeights[$imageHeight];
                         } else {
                             $normalizedConfig['height'] = 'show' === $view ? 48 : 24;
                         }
@@ -266,15 +288,15 @@ class PropertyConfigPass implements ConfigPassInterface
 
                         if (null !== $guessedType) {
                             $filterConfig['type'] = $guessedType->getType();
-                            $filterConfig['type_options'] = \array_replace_recursive($guessedType->getOptions(), $filterConfig['type_options']);
+                            $filterConfig['type_options'] = array_replace_recursive($guessedType->getOptions(), $filterConfig['type_options']);
                         }
                     }
                 } elseif ($filterConfig['mapped'] ?? true) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" filter configured in the "list" view of the "%s" entity refers to a property called "%s" which is not defined in that entity. Set the "mapped" option to false if you are defining a filter that is not related to a property of that entity (this is needed for example when filtering by a property of a different entity which is related via a Doctrine association).', $propertyName, $entityName, $propertyName));
+                    throw new \InvalidArgumentException(sprintf('The "%s" filter configured in the "list" view of the "%s" entity refers to a property called "%s" which is not defined in that entity. Set the "mapped" option to false if you are defining a filter that is not related to a property of that entity (this is needed for example when filtering by a property of a different entity which is related via a Doctrine association).', $propertyName, $entityName, $propertyName));
                 }
 
                 if (!isset($filterConfig['type'])) {
-                    throw new \InvalidArgumentException(\sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it.', $propertyName, $entityName));
+                    throw new \InvalidArgumentException(sprintf('The "%s" filter defined in the "list" view of the "%s" entity must define its own "type" explicitly because EasyAdmin cannot autoconfigure it.', $propertyName, $entityName));
                 }
 
                 $backendConfig['entities'][$entityName]['list']['filters'][$propertyName] = $filterConfig;
@@ -285,7 +307,7 @@ class PropertyConfigPass implements ConfigPassInterface
     }
 
     /**
-     * Resolves from type options of field
+     * Resolves from type options of field.
      *
      * @param array $mergedConfig
      * @param array $guessedConfig
@@ -304,8 +326,8 @@ class PropertyConfigPass implements ConfigPassInterface
             isset($userDefinedConfig['type'], $guessedConfig['fieldType'])
             && $userDefinedConfig['type'] !== $guessedConfig['fieldType']
         ) {
-            $resolvedFormOptions = \array_merge(
-                \array_intersect_key($resolvedFormOptions, ['required' => null]),
+            $resolvedFormOptions = array_merge(
+                array_intersect_key($resolvedFormOptions, ['required' => null]),
                 $userDefinedConfig['type_options'] ?? []
             );
         }
@@ -320,7 +342,7 @@ class PropertyConfigPass implements ConfigPassInterface
                 !isset($userDefinedConfig['type']) && isset($userDefinedConfig['type_options'])
             )
         ) {
-            $resolvedFormOptions = \array_merge(
+            $resolvedFormOptions = array_merge(
                 $resolvedFormOptions,
                 $userDefinedConfig['type_options'] ?? []
             );
@@ -343,7 +365,7 @@ class PropertyConfigPass implements ConfigPassInterface
         if (\in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'])) {
             // make 'datetimetz' use the same format as 'datetime'
             $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
-            $fieldType = ('_immutable' === \mb_substr($fieldType, -10)) ? \mb_substr($fieldType, 0, -10) : $fieldType;
+            $fieldType = ('_immutable' === mb_substr($fieldType, -10)) ? mb_substr($fieldType, 0, -10) : $fieldType;
 
             return $backendConfig['formats'][$fieldType];
         }

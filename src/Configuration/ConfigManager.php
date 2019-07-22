@@ -45,7 +45,7 @@ final class ConfigManager
         }
 
         // turns 'design.menu' into '[design][menu]', the format required by PropertyAccess
-        $propertyPath = '['.\str_replace('.', '][', $propertyPath).']';
+        $propertyPath = '['.str_replace('.', '][', $propertyPath).']';
 
         return $this->propertyAccessor->getValue($this->backendConfig, $propertyPath);
     }

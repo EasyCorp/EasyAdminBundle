@@ -210,7 +210,7 @@ class EntityFilterTypeTest extends FilterTypeTest
 
     protected function getExtensions()
     {
-        return \array_merge(parent::getExtensions(), [
+        return array_merge(parent::getExtensions(), [
             new DoctrineOrmExtension($this->emRegistry),
         ]);
     }

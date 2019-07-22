@@ -128,21 +128,21 @@ class EasyAdminDataCollector extends DataCollector
      */
     public function dump($variable)
     {
-        if (\class_exists(HtmlDumper::class)) {
+        if (class_exists(HtmlDumper::class)) {
             $cloner = new VarCloner();
             $dumper = new HtmlDumper();
 
-            $dumper->dump($cloner->cloneVar($variable), $output = \fopen('php://memory', 'r+b'));
-            if (false !== $dumpedData = \stream_get_contents($output, -1, 0)) {
+            $dumper->dump($cloner->cloneVar($variable), $output = fopen('php://memory', 'r+b'));
+            if (false !== $dumpedData = stream_get_contents($output, -1, 0)) {
                 return $dumpedData;
             }
         }
 
-        if (\class_exists(Yaml::class)) {
-            return \sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
+        if (class_exists(Yaml::class)) {
+            return sprintf('<pre class="sf-dump">%s</pre>', Yaml::dump((array) $variable, 1024));
         }
 
-        return \sprintf('<pre class="sf-dump">%s</pre>', \var_export($variable, true));
+        return sprintf('<pre class="sf-dump">%s</pre>', var_export($variable, true));
     }
 
     /**

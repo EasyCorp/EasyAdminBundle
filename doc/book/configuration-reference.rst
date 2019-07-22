@@ -240,7 +240,7 @@ visual design of the backend.
 brand_color
 ~~~~~~~~~~~
 
-(**default value**: ``'#E67E22'``, **type**: string, **values**: any valid CSS
+(**default value**: ``'hsl(230, 55%, 60%)'``, **type**: string, **values**: any valid CSS
 expression to define a color)
 
 This is the color used to highlight important elements of the backend, such as
@@ -255,6 +255,13 @@ to create a backend that matches your branding perfectly. Example:
             # any valid CSS color syntax can be used
             # brand_color: 'rgba(59, 89, 152, 0.5)'
         # ...
+
+.. seealso::
+
+    This option is useful when the only design change you want to make is to
+    update the main color of the interface. However, if you start changing more
+    design elements, it's better to unset this option and use CSS variables as
+    explained :ref:`in this section <customizing-the-backend-design>`.
 
 form_theme
 ~~~~~~~~~~

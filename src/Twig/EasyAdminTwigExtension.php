@@ -75,6 +75,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
             new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParams']),
+            new TwigFilter('easyadmin_filesize', [$this, 'fileSize']),
         ];
 
         if (Kernel::VERSION_ID >= 40200) {
@@ -82,6 +83,14 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         return $filters;
+    }
+
+    public function fileSize(int $bytes): string
+    {
+        $size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+        $factor = (int) floor(log($bytes) / log(1024));
+
+        return (int) ($bytes / (1024 ** $factor)).@$size[$factor];
     }
 
     /**
@@ -143,7 +152,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function renderEntityField(Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
         $entityConfiguration = $this->configManager->getEntityConfig($entityName);
-        $hasCustomTemplate = 0 !== \strpos($fieldMetadata['template'], '@EasyAdmin/');
+        $hasCustomTemplate = 0 !== strpos($fieldMetadata['template'], '@EasyAdmin/');
         $templateParameters = [];
 
         try {
@@ -210,7 +219,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         if ('country' === $fieldType) {
-            $parameters['value'] = null !== $parameters['value'] ? \strtoupper($parameters['value']) : null;
+            $parameters['value'] = null !== $parameters['value'] ? strtoupper($parameters['value']) : null;
             $parameters['country_name'] = $this->getCountryName($parameters['value']);
         }
 
@@ -220,7 +229,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             if ($fieldMetadata['is_image_url'] ?? false) {
                 $parameters['image_url'] = $parameters['value'];
             } else {
-                $parameters['image_url'] = null === $parameters['value'] ? null : \sprintf('https://www.gravatar.com/avatar/%s?s=%d&d=mp', \md5($parameters['value']), $parameters['image_height']);
+                $parameters['image_url'] = null === $parameters['value'] ? null : sprintf('https://www.gravatar.com/avatar/%s?s=%d&d=mp', md5($parameters['value']), $parameters['image_height']);
             }
         }
 
@@ -235,13 +244,13 @@ class EasyAdminTwigExtension extends AbstractExtension
     private function addImageFieldParameters(array $templateParameters)
     {
         // add the base path only to images that are not absolute URLs (http or https) or protocol-relative URLs (//)
-        if (null !== $templateParameters['value'] && 0 === \preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+        if (null !== $templateParameters['value'] && 0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
             $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
-                ? \rtrim($templateParameters['field_options']['base_path'], '/').'/'.\ltrim($templateParameters['value'], '/')
-                : '/'.\ltrim($templateParameters['value'], '/');
+                ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
+                : '/'.ltrim($templateParameters['value'], '/');
         }
 
-        $templateParameters['uuid'] = \md5($templateParameters['value']);
+        $templateParameters['uuid'] = md5($templateParameters['value']);
 
         return $templateParameters;
     }
@@ -249,13 +258,13 @@ class EasyAdminTwigExtension extends AbstractExtension
     private function addFileFieldParameters(array $templateParameters)
     {
         // add the base path only to files that are not absolute URLs (http or https) or protocol-relative URLs (//)
-        if (null !== $templateParameters['value'] && 0 === \preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+        if (null !== $templateParameters['value'] && 0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
             $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
-                ? \rtrim($templateParameters['field_options']['base_path'], '/').'/'.\ltrim($templateParameters['value'], '/')
-                : '/'.\ltrim($templateParameters['value'], '/');
+                ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
+                : '/'.ltrim($templateParameters['value'], '/');
         }
 
-        $templateParameters['filename'] = $templateParameters['field_options']['filename'] ?? \basename($templateParameters['value']);
+        $templateParameters['filename'] = $templateParameters['field_options']['filename'] ?? basename($templateParameters['value']);
 
         return $templateParameters;
     }
@@ -278,10 +287,10 @@ class EasyAdminTwigExtension extends AbstractExtension
             }
 
             // get the string representation of the associated *-to-one entity
-            if (\method_exists($templateParameters['value'], '__toString')) {
+            if (method_exists($templateParameters['value'], '__toString')) {
                 $templateParameters['value'] = (string) $templateParameters['value'];
             } elseif (null !== $primaryKeyValue) {
-                $templateParameters['value'] = \sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
+                $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
             } else {
                 $templateParameters['value'] = null;
             }
@@ -370,7 +379,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         ];
         $excludedActions = $actionsExcludedForItems[$view];
 
-        return \array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
+        return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
             return !\in_array($action['name'], $excludedActions) && !\in_array($action['name'], $disabledActions);
         });
     }
@@ -392,17 +401,17 @@ class EasyAdminTwigExtension extends AbstractExtension
             $value = '';
         }
 
-        if (\mb_strlen($value, $env->getCharset()) > $length) {
+        if (mb_strlen($value, $env->getCharset()) > $length) {
             if ($preserve) {
                 // If breakpoint is on the last word, return the value without separator.
-                if (false === ($breakpoint = \mb_strpos($value, ' ', $length, $env->getCharset()))) {
+                if (false === ($breakpoint = mb_strpos($value, ' ', $length, $env->getCharset()))) {
                     return $value;
                 }
 
                 $length = $breakpoint;
             }
 
-            return \rtrim(\mb_substr($value, 0, $length, $env->getCharset())).$separator;
+            return rtrim(mb_substr($value, 0, $length, $env->getCharset())).$separator;
         }
 
         return $value;
@@ -428,10 +437,10 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function transchoice($message, $count, array $arguments = [], $domain = null, $locale = null)
     {
         if (null === $this->translator) {
-            return \strtr($message, $arguments);
+            return strtr($message, $arguments);
         }
 
-        return $this->translator->trans($message, \array_merge(['%count%' => $count], $arguments), $domain, $locale);
+        return $this->translator->trans($message, array_merge(['%count%' => $count], $arguments), $domain, $locale);
     }
 
     /**
@@ -485,7 +494,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         // Compatibility with Symfony versions before 4.3
-        if (!\class_exists(Countries::class)) {
+        if (!class_exists(Countries::class)) {
             return Intl::getRegionBundle()->getCountryName($countryCode) ?? null;
         }
 

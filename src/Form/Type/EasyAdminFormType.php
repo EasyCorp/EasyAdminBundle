@@ -58,6 +58,14 @@ class EasyAdminFormType extends AbstractType
         foreach ($entityProperties as $name => $metadata) {
             $formFieldOptions = $metadata['type_options'];
 
+            // the names of embedded Doctrine entities contain dots, which are not allowed
+            // in HTML element names. In those cases, fix the name but also update the
+            // 'property_path' option to keep the original field name
+            if (false !== strpos($name, '.')) {
+                $formFieldOptions['property_path'] = $name;
+                $name = str_replace('.', '_', $name);
+            }
+
             // Configure options using the list of registered type configurators:
             foreach ($this->configurators as $configurator) {
                 if ($configurator->supports($metadata['fieldType'], $formFieldOptions, $metadata)) {
@@ -98,7 +106,7 @@ class EasyAdminFormType extends AbstractType
 
             // 'section' is a 'fake' form field used to create the design elements of the
             // complex form layouts: define it as unmapped and non-required
-            if (0 === \strpos($metadata['property'], '_easyadmin_form_design_element_')) {
+            if (0 === strpos($metadata['property'], '_easyadmin_form_design_element_')) {
                 $formFieldOptions['mapped'] = false;
                 $formFieldOptions['required'] = false;
             }
@@ -167,8 +175,8 @@ class EasyAdminFormType extends AbstractType
     private function getAttributesNormalizer()
     {
         return function (Options $options, $value) {
-            return \array_replace([
-                'id' => \sprintf('%s-%s-form', $options['view'], \mb_strtolower($options['entity'])),
+            return array_replace([
+                'id' => sprintf('%s-%s-form', $options['view'], mb_strtolower($options['entity'])),
             ], $value);
         };
     }

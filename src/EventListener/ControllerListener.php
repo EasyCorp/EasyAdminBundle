@@ -68,7 +68,7 @@ class ControllerListener
         $newController = $this->resolver->getController($request);
 
         if (false === $newController) {
-            throw new NotFoundHttpException(\sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" entity in your EasyAdmin backend.', $request->getPathInfo(), $entityName));
+            throw new NotFoundHttpException(sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" entity in your EasyAdmin backend.', $request->getPathInfo(), $entityName));
         }
 
         $event->setController($newController);

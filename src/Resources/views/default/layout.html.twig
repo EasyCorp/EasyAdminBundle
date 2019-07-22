@@ -17,9 +17,11 @@
             <link rel="stylesheet" href="{{ asset(css_asset) }}">
         {% endfor %}
 
+        {% if easyadmin_config('design.brand_color') != 'hsl(230, 55%, 60%)' %}
         <style>
             :root { --color-primary: {{ easyadmin_config('design.brand_color') }}; }
         </style>
+        {% endif %}
 
         {% block head_favicon %}
             {% set favicon = easyadmin_config('design.assets.favicon') %}

@@ -182,8 +182,18 @@ trait AdminControllerTrait
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->entity['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'), $this->entity['list']['dql_filter']);
 
         $this->dispatch(EasyAdminEvents::POST_LIST, ['paginator' => $paginator]);
+        
+        $paginator2 = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $paginator->getNbResults(), $this->request->query->get('sortField'), $this->request->query->get('sortDirection'), $this->entity['list']['dql_filter']);
+        $query = $paginator2->getAdapter()->getQuery();
+        $query->setDQL(str_replace('SELECT entity','SELECT entity.'.$this->entity['primary_key_field_name'],$query->getDQL()));
+        $result_query=$query->execute();
+        $allids = [];
+        foreach ($result_query as $i) {
+            $allids[]=$i[$this->entity['primary_key_field_name']] ;
+        }
 
         $parameters = [
+            'allids'=>$allids,
             'paginator' => $paginator,
             'fields' => $fields,
             'batch_form' => $this->createBatchForm($this->entity['name'])->createView(),

@@ -135,7 +135,8 @@
         {% block table_head %}
             <tr>
                 {% if _has_batch_actions %}
-                    <th width="1px"><span><input type="checkbox" class="form-batch-checkbox-all"></span></th>
+                    {# <th width="1px"><span><input type="checkbox" class="form-batch-checkbox-all"></span></th> #}
+                    <th width="1px"><span><input type="checkbox" value="{{ allids|json_encode|raw }}" class="allids"></span></th>
                 {% endif %}
 
                 {% for field, metadata in _fields_visible_by_user %}
@@ -360,6 +361,30 @@
                 }
 
                 $input.val(ids.join(','));
+                $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
+            });
+            $(document).on('change', '.allids', function () {
+                const $content = $(this).closest('.content');
+                let $input = $content.find(':hidden#batch_form_ids');
+                let ids = [];
+                const ar_id = JSON.parse($(this).val());            
+
+                if ($(this).prop('checked')) {
+                    for (var id in ar_id) {
+                        id = ar_id[id];
+                        ids.push(id);
+                        $input.val(ids.join(','));
+                    }
+                }
+                if (0 === ids.length) {
+                    $content.find('.global-actions').show();
+                    $content.find('.batch-actions').hide();
+                    $content.find('table').removeClass('table-batch');
+                } else {
+                    $content.find('.batch-actions').show();
+                    $content.find('.global-actions').hide();
+                    $content.find('table').addClass('table-batch');
+                }               
                 $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
             });
             {% endif %}

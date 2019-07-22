@@ -388,8 +388,9 @@ These are the options that you can define for each field:
   done internally by the bundle). The allowed values are:
 
   * Any of the `Symfony Form types`_.
-  * Any of the custom EasyAdmin form types: ``code_editor``, ``text_editor``,
-    ``easyadmin_autocomplete`` (they are explained later in this chapter).
+  * Any of the custom EasyAdmin form types: ``code_editor``, ``file_upload``,
+    ``text_editor``, ``easyadmin_autocomplete`` (they are explained later in
+    this chapter).
 * ``type_options`` (optional), a hash with the options passed to the Symfony
   Form type used to render the field.
 
@@ -608,6 +609,77 @@ This type defines the following configuration options:
                         - { property: 'codeSample', type: 'code_editor', language: 'php', height: 600, tab_size: 2 }
                         # ...
         # ...
+
+File Upload
+~~~~~~~~~~~
+
+It displays an advanced file upload widget which supports single and multiple
+uploads, deleting files, etc.
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            User:
+                class: App\Entity\User
+                form:
+                    fields:
+                        - { property: 'photo', type: 'file_upload' }
+                        # ...
+        # ...
+
+This type defines the following configuration options:
+
+* ``upload_dir``: (optional; default ``public/uploads/files/``) a string with
+  the path to the directory where the files are uploaded. If the value doesn't
+  start with a directory separator (e.g. ``/var/sites/uploads``), it's considered
+  relative to the ``kernel.project_dir`` value;
+* ``download_path``: (optional) a PHP callable that returns the relative path
+  where assets can be downloaded. For example, if ``upload_dir`` is ``public/contracts/``,
+  this option would be ``contracts/`` and the public asset URL would be
+  ``https://example.com/contracts/filename.extension``. Overriding this option is
+  useful in complex scenarios such as when uploading files to a cloud service which
+  creates special URLs to access to assets;
+* ``upload_filename``: (optional; by default the original name is used) if defined,
+  this string is the pattern used to rename the uploaded file. You can also pass a
+  PHP callable to use some logic to generate the new file name. Example of a
+  file name pattern: ``[year]/[month]/[day]/[slug]-[contenthash].[extension]``.
+  The available placeholders in the pattern are:
+
+  * ``[contenthash]``, the SHA1 hash of the entire file contents;
+  * ``[day]``, the current day of the month with leading zeros (e.g. ``07``);
+  * ``[extension]``, the guessed extension for the uploaded file (it can be
+    different from the original file extension);
+  * ``[month]``, the current month number with leading zeros (e.g. March = ``03``);
+  * ``[name]``, the original file name without the extension;
+  * ``[randomhash]``, an alphanumeric random string;
+  * ``[slug]``, the slug of the original file name (i.e. the name is lower cased
+    and any non-ASCII letter or number is removed);
+  * ``[timestamp]``, the current timestamp;
+  * ``[uuid]``, a random UUID v4 value;
+  * ``[year]``, the current year with 4 digits (e.g. ``2020``).
+
+* ``allow_add``: (optional, default = ``true``) a boolean value which is only
+  used when the ``multiple`` option is ``true``. If set to ``false``, when you
+  upload new files, all the previous files are deleted. If set to ``true``, the
+  new files are added to the list of previously uploded files;
+* ``allow_delete``: (optional, default ``true``) a boolean value indicating if
+  uploaded files can be deleted directly in the edit/new form;
+* ``multiple``: (optional, default ``false``) a boolean value indicating if
+  it's allowed to upload more than one file;
+* ``upload_new``: (optional) a PHP callable used to move the uploaded file/s to
+  its final destination. By default it's just ``$file->move($uploadDir, $fileName)``.
+  It's useful in complex scenarios such as moving the files to some cloud service;
+* ``upload_delete``: (optional) a PHP callable to delete the uploaded file/s.
+  By default it's just ``unlink($file->getPathname())``. It's useful in complex
+  scenarios such as performing some tasks before/after deleting files or when you
+  also need to delete the file from other locations (e.g. cloud services).
+
+This form type uses a `form data transformer`_ to manage the file resource to
+file path conversion. This means that only the file path/s is/are stored in the
+entity property and not the entire file/s contents. In other words, your file
+upload property should be a varchar/string/text property and not a binary blob.
 
 .. _form-type-text-editor:
 
@@ -1064,6 +1136,7 @@ If the user doesn't have permission they will see an appropriate error message
 .. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
 .. _`Trix editor`: https://trix-editor.org/
 .. _`Symfony security voters`: https://symfony.com/doc/current/security/voters.html
+.. _`form data transformer`: https://symfony.com/doc/current/form/data_transformers.html
 
 -----
 

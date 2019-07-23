@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-07-22T18:46:00Z
+
+Instead of the text label `Browse` (in English and not easily translatable), the latest design just displays the `open folder` icon, which is also what we use in the custom UploadFileType added recently:
+
+![image](https://user-images.githubusercontent.com/73419/61656720-b06b5300-acc1-11e9-9ad9-b63d5c3cc5dc.png)

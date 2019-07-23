@@ -70,7 +70,8 @@
 
 .form-widget input.form-control:focus,
 .form-widget textarea.form-control:focus,
-.form-widget select.form-control:focus {
+.form-widget select.form-control:focus,
+.form-widget .custom-file-input:focus ~ .custom-file-label {
     box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(6, 122, 184, .2), 0 0 0 2px rgba(6, 122, 184, .25), 0 1px 1px rgba(0, 0, 0, .08);
     outline: 0;
 }
@@ -114,6 +115,30 @@
 .field-checkbox .form-check-input {
     margin: 0;
     position: static;
+}
+
+// in Bootstrap custom file widgets, the label is used to simulate the file input
+.field-file .custom-file, .field-file .custom-file-input {
+    height: 30px;
+}
+.field-file .custom-file label.custom-file-label {
+    height: 30px;
+    margin: 0;
+    max-width: 350px;
+    overflow: hidden;
+    padding: 3px 7px 5px;
+    text-align: left;
+}
+.field-file .custom-file label.custom-file-label:after {
+    color: var(--text-color);
+    content: "\f07c";
+    display: inline-block;
+    font-family: "Font Awesome 5 Free";
+    font-size: 17px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 8px;
+    vertical-align: middle;
 }
 
 // Date-time widgets

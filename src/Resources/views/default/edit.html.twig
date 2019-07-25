@@ -57,6 +57,8 @@
                     return;
                 }
 
+                let firstNavTabItemWithError = null;
+
                 formTabPanes.forEach(function (tabPane, tabIndex) {
                     let tabPaneNumErrors = 0;
                     tabPane.querySelectorAll('input').forEach(function (input) {
@@ -78,10 +80,16 @@
                         newErrorBadge.textContent = tabPaneNumErrors;
 
                         navTabItem.appendChild(newErrorBadge);
-                    }
 
-                    tabPaneNumErrors = 0;
+                        if (null === firstNavTabItemWithError) {
+                            firstNavTabItemWithError = navTabItem;
+                        }
+                    }
                 });
+
+                if (firstNavTabItemWithError) {
+                    firstNavTabItemWithError.click();
+                }
             });
 
             $('a.action-delete').on('click', function(e) {

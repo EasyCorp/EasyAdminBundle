@@ -14,9 +14,10 @@ import 'codemirror/mode/twig/twig';
 import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/yaml-frontmatter/yaml-frontmatter';
 import 'codemirror/mode/yaml/yaml';
+import 'codemirror/addon/display/autorefresh';
 
 document.querySelectorAll('[data-easyadmin-code-editor]').forEach(function(codeBlock) {
-    CodeMirror.fromTextArea(codeBlock, {
+    const editor = CodeMirror.fromTextArea(codeBlock, {
         autocapitalize: false,
         autocorrect: false,
         indentWithTabs: codeBlock.dataset.indentWithTabs,
@@ -27,5 +28,10 @@ document.querySelectorAll('[data-easyadmin-code-editor]').forEach(function(codeB
         spellcheck: false,
         tabSize: codeBlock.dataset.tabSize,
         theme: 'default',
+        autoRefresh: true,
     });
+
+    if (codeBlock.required) {
+        editor.on('change', editor.save);
+    }
 });

@@ -59,7 +59,7 @@
 
                 formTabPanes.forEach(function (tabPane, tabIndex) {
                     let tabPaneNumErrors = 0;
-                    tabPane.querySelectorAll('input').forEach(function (input) {
+                    tabPane.querySelectorAll('input,select,textarea').forEach(function (input) {
                         if (!input.validity.valid) {
                             tabPaneNumErrors++;
                         }

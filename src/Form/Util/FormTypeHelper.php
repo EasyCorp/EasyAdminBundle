@@ -77,7 +77,9 @@ final class FormTypeHelper
         'email' => EmailType::class,
         'entity' => EntityType::class,
         'file' => FileType::class,
-        'fileupload' => FileUploadType::class,
+        // allow using underscore and dashes to improve DX
+        'file-upload' => FileUploadType::class,
+        'file_upload' => FileUploadType::class,
         'form' => FormType::class,
         'hidden' => HiddenType::class,
         'integer' => IntegerType::class,

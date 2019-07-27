@@ -15,11 +15,16 @@ use Symfony\Component\Form\FormTypeGuesserInterface;
  */
 class PropertyConfigPass implements ConfigPassInterface
 {
+    private const DATETIME_TYPES = ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'];
+    private const NUMERIC_TYPES = ['bigint', 'integer', 'smallint', 'decimal', 'float'];
+
     private $defaultEntityFieldConfig = [
         // CSS class or classes applied to form field or list/show property
         'css_class' => '',
         // date/time/datetime/number format applied to form field value
         'format' => null,
+        // whether the date/time/datetime/number value stored in this property is localized/translated or not
+        'is_localized' => false,
         // form field help message
         'help' => null,
         // form field label (if 'null', autogenerate it; if 'false', hide it)
@@ -76,6 +81,7 @@ class PropertyConfigPass implements ConfigPassInterface
     {
         $backendConfig = $this->processMetadataConfig($backendConfig);
         $backendConfig = $this->processFieldConfig($backendConfig);
+        $backendConfig = $this->processDateTimeNumberFormatConfig($backendConfig);
         $backendConfig = $this->processFilterConfig($backendConfig);
 
         return $backendConfig;
@@ -259,11 +265,73 @@ class PropertyConfigPass implements ConfigPassInterface
                         }
                     }
 
-                    if (null === $normalizedConfig['format']) {
-                        $normalizedConfig['format'] = $this->getFieldFormat($normalizedConfig['type'], $backendConfig);
+                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $normalizedConfig;
+                }
+            }
+        }
+
+        return $backendConfig;
+    }
+
+    /**
+     * Processes the configuration about formatting date/time/number properties.
+     * This is not trivial because the formatting can be simple or internationalized.
+     */
+    private function processDateTimeNumberFormatConfig(array $backendConfig)
+    {
+        $validNumericFormats = ['decimal', 'percent', 'scientific', 'spellout', 'ordinal', 'duration'];
+
+        // check first the validity of the global formats
+        if (isset($backendConfig['formats']['intl_number']) && !\in_array($backendConfig['formats']['intl_number'], $validNumericFormats)) {
+            throw new \InvalidArgumentException(sprintf('The value of the "easy_admin.formats.intl_number" option is not valid. These are the allowed values: %s', implode(', ', $validNumericFormats)));
+        }
+
+
+        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+            foreach (['list', 'search', 'show'] as $view) {
+                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
+                    $isDateTimeProperty = \in_array($fieldConfig['type'], self::DATETIME_TYPES);
+                    $isNumericProperty = \in_array($fieldConfig['type'], self::NUMERIC_TYPES);
+                    if (!$isDateTimeProperty && !$isNumericProperty) {
+                        continue;
                     }
 
-                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $normalizedConfig;
+                    // needed to avoid formating the 'id' primary key as a number
+                    if ($entityConfig['primary_key_field_name'] === $fieldName) {
+                        continue;
+                    }
+
+                    // intl_* options have priority over non-intl options
+                    if (isset($fieldConfig['intl_format'])) {
+                        $fieldConfig['is_localized'] = true;
+                        $fieldConfig['format'] = $fieldConfig['intl_format'];
+                        unset($fieldConfig['intl_format']);
+                    } elseif (isset($fieldConfig['format'])) {
+                        $fieldConfig['is_localized'] = false;
+                    } elseif(null !== $globalFormat = $this->globalIntlFormatAppliedToField($fieldConfig['type'], $backendConfig)) {
+                        $fieldConfig['is_localized'] = true;
+                        $fieldConfig['format'] = $globalFormat;
+                    } else {
+                        $fieldConfig['is_localized'] = false;
+                        $fieldConfig['format'] = $this->getDefaultFieldFormat($fieldConfig['type'], $backendConfig);
+                    }
+
+                    if ($isDateTimeProperty) {
+                        $predefinedDateTimeIntlFormats = ['none', 'short', 'medium', 'long', 'full'];
+                        $lowerCaseIntlFormat = strtolower($fieldConfig['format']);
+                        $isPredefinedFormat = \in_array($lowerCaseIntlFormat, $predefinedDateTimeIntlFormats);
+
+                        // this is needed later in the Twig templates that render the localized date/time
+                        $fieldConfig['intl_date_format'] = $isPredefinedFormat ? $lowerCaseIntlFormat : 'long';
+                        $fieldConfig['intl_time_format'] = $isPredefinedFormat ? $lowerCaseIntlFormat : 'long';
+                        $fieldConfig['format'] = $isPredefinedFormat ? null : $fieldConfig['format'];
+                    }
+
+                    if ($isNumericProperty && !\in_array($fieldConfig['format'], $validNumericFormats)) {
+                        throw new \InvalidArgumentException(sprintf('The value of the "intl_format" option in the "%s" property of the "%s" entity is not valid. These are the allowed values: %s', $fieldName, $entityName, implode(', ', $validNumericFormats)));
+                    }
+
+                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
                 }
             }
         }
@@ -351,27 +419,55 @@ class PropertyConfigPass implements ConfigPassInterface
         return $resolvedFormOptions;
     }
 
+    private function globalIntlFormatAppliedToField(string $fieldType, array $backendConfig): ?string
+    {
+        $fieldType = $this->getCanonicalFieldType($fieldType);
+
+        if ('date' === $fieldType && isset($backendConfig['formats']['intl_date'])) {
+            return $backendConfig['formats']['intl_date'];
+        } elseif ('time' === $fieldType && isset($backendConfig['formats']['intl_time'])) {
+            return $backendConfig['formats']['intl_time'];
+        } elseif ('datetime' === $fieldType && isset($backendConfig['formats']['intl_time'])) {
+            return $backendConfig['formats']['intl_datetime'];
+        } elseif (\in_array($fieldType, self::NUMERIC_TYPES) && isset($backendConfig['formats']['intl_number'])) {
+            return $backendConfig['formats']['intl_number'];
+        }
+
+        return null;
+    }
+
     /**
      * Returns the date/time/datetime/number format for the given field
      * according to its type and the default formats defined for the backend.
      *
-     * @param string $fieldType
-     * @param array  $backendConfig
-     *
      * @return string The format that should be applied to the field value
      */
-    private function getFieldFormat($fieldType, array $backendConfig)
+    private function getDefaultFieldFormat(string $fieldType, array $backendConfig): ?string
     {
-        if (\in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'])) {
-            // make 'datetimetz' use the same format as 'datetime'
-            $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
-            $fieldType = ('_immutable' === mb_substr($fieldType, -10)) ? mb_substr($fieldType, 0, -10) : $fieldType;
-
-            return $backendConfig['formats'][$fieldType];
+        if (\in_array($fieldType, self::DATETIME_TYPES)) {
+            return $backendConfig['formats'][$this->getCanonicalFieldType($fieldType)] ?? null;
         }
 
-        if (\in_array($fieldType, ['bigint', 'integer', 'smallint', 'decimal', 'float'])) {
+        if (\in_array($fieldType, self::NUMERIC_TYPES)) {
             return $backendConfig['formats']['number'] ?? null;
         }
+    }
+
+    /**
+     * Useful for example to simplify the processing of datetime-like properties
+     * (e.g. process the config of 'datetime', 'datetimetz' and 'datetime_immutable'
+     * in the same way)
+     */
+    private function getCanonicalFieldType(string $fieldType): string
+    {
+        if ('datetimetz' === $fieldType) {
+            return 'datetime';
+        }
+
+        if ('_immutable' === \mb_substr($fieldType, -10)) {
+            return \mb_substr($fieldType, 0, -10);
+        }
+
+        return $fieldType;
     }
 }

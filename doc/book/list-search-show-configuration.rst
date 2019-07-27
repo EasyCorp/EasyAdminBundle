@@ -304,17 +304,17 @@ Formatting Dates and Numbers
 Customizing Date and Time Properties
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, these are the formats applied to date and time properties (read the
-`date configuration options`_ in the PHP manual if you don't understand the
-meaning of these formats):
+By default, the following `PHP date/time formats`_ are applied to date/time
+properties before displaying them:
 
 * ``date``: ``Y-m-d``
 * ``time``:  ``H:i:s``
 * ``datetime``: ``F j, Y H:i``
 
-These default formats can be overridden in two ways: globally for all entities
+You can override these default formats in two ways: globally for all entities
 and locally for each entity property. The global ``formats`` option sets the
-formats for all entities and their properties:
+formats for all entities and their properties (you can use any of the
+`PHP date/time formats`_):
 
 .. code-block:: yaml
 
@@ -327,12 +327,8 @@ formats for all entities and their properties:
         entities:
             # ...
 
-The values of the ``date``, ``time`` and ``datetime`` options are passed to the
-``format()`` method of the ``DateTime`` class, so you can use any of the
-`date configuration options`_ defined by PHP.
-
-Date/time formatting can also be defined in each property configuration using
-the ``format`` option. This local option always overrides the global format:
+Each property can also define the ``format`` option to define its own date/time
+formatting, which overrides any default or global formatting:
 
 .. code-block:: yaml
 
@@ -345,7 +341,32 @@ the ``format`` option. This local option always overrides the global format:
                     fields:
                         - { property: 'dateOfBirth', format: 'j/n/Y' }
                         # ...
-        # ...
+
+The main drawback of these options is that date/times are formatted for the
+English locale. If you want to display date/time properties translated into the
+locale of your application, use the ``intl_*`` options instead:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        formats:
+            int_date:     'd/m/Y'
+            int_time:     'short'
+            int_datetime: 'EE yyyy-LLL-dd (HH:mm)'
+        entities:
+            Customer:
+                class: App\Entity\Customer
+                list:
+                    fields:
+                        - { property: 'dateOfBirth', int_format: 'EEEE, d MMMM yyyy' }
+                        # ...
+
+The possible values of the ``intl_*`` properties are:
+
+* ``'none'``, ``' short'``, ``'medium'``, ``'long'``, and ``'full'``, which
+  correspond to the PHP `IntlDateFormatter predefined constants`_;
+* Any valid `ICU date and time patterns`_.
 
 Customizing Numeric Properties
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -355,7 +376,8 @@ Numeric properties (``bigint``, ``integer``, ``smallint``, ``decimal``,
 application. This formatting can be overridden globally for all entities or
 locally for each property.
 
-The global ``formats`` option applies the same formatting for all entities:
+The global ``formats`` option applies the same formatting for all entities
+(the value of this option is any of the `PHP format specifiers`_):
 
 .. code-block:: yaml
 
@@ -366,9 +388,6 @@ The global ``formats`` option applies the same formatting for all entities:
             number: '%.2f'
         entities:
             # ...
-
-In this case, the value of the ``number`` option is passed to the ``sprintf()``
-function, so you can use any of the `PHP format specifiers`_.
 
 Numeric properties can also define their formatting using the ``format``
 option. This local option always overrides the global format:
@@ -385,7 +404,29 @@ option. This local option always overrides the global format:
                         - { property: 'serialNumber', format: '%010s' }
                         - { property: 'margin', format: '%01.2f' }
                         # ...
-        # ...
+
+Similar to date/time properties, numeric properties also define some ``intl_*``
+options which format the numbers using PHP's NumberFormatter class:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        formats:
+            # ...
+            intl_number: 'decimal'
+        entities:
+            Product:
+                class: App\Entity\Product
+                list:
+                    fields:
+                        - { property: 'serialNumber', intl_format: 'scientific' }
+                        - { property: 'margin', intl_format: 'percent' }
+                        # ...
+
+The possible values of the ``intl_*`` properties are: ``'decimal'``,
+``'percent'``, ``'scientific'``, ``'spellout'``, ``'ordinal'``, and
+``'duration'`` which correspond to the PHP `NumberFormatter predefined constants`_;
 
 Virtual Properties
 ------------------
@@ -1356,7 +1397,7 @@ permissions to see some items:
     Combine the ``item_permission`` option with custom `Symfony security voters`_
     to better decide if the current user can see any given item.
 
-.. _`date configuration options`: http://php.net/manual/en/function.date.php
+.. _`PHP date/time formats`: http://php.net/manual/en/function.date.php
 .. _`PHP format specifiers`: http://php.net/manual/en/function.sprintf.php
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
@@ -1364,6 +1405,9 @@ permissions to see some items:
 .. _`ISO 3166-1 alpha-2`: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 .. _`CountryType`: https://symfony.com/doc/current/reference/forms/types/country.html
 .. _`Symfony security voters`: https://symfony.com/doc/current/security/voters.html
+.. _`IntlDateFormatter predefined constants`: https://www.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants
+.. _`NumberFormatter predefined constants`: https://www.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants
+.. _`ICU date and time patterns`: http://userguide.icu-project.org/formatparse/datetime
 
 -----
 

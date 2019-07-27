@@ -206,6 +206,10 @@ class EasyAdminTwigExtension extends AbstractExtension
             $parameters['is_accessible'] = false;
         }
 
+        if ($fieldName === $parameters['entity_config']['primary_key_field_name']) {
+            return $parameters;
+        }
+
         if ('image' === $fieldType) {
             $parameters = $this->addImageFieldParameters($parameters);
         }
@@ -230,21 +234,6 @@ class EasyAdminTwigExtension extends AbstractExtension
                 $parameters['image_url'] = $parameters['value'];
             } else {
                 $parameters['image_url'] = null === $parameters['value'] ? null : sprintf('https://www.gravatar.com/avatar/%s?s=%d&d=mp', md5($parameters['value']), $parameters['image_height']);
-            }
-        }
-
-        if (\in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'])) {
-            $defaultIntlFormats = ['none', 'short', 'medium', 'long', 'full'];
-
-            $parameters['is_localized'] = false;
-            if (isset($fieldMetadata['intl_format'])) {
-                $parameters['is_localized'] = true;
-                $lowerCaseIntlFormat = strtolower($fieldMetadata['intl_format']);
-                $isDefaultFormat = \in_array($lowerCaseIntlFormat, $defaultIntlFormats);
-
-                $parameters['intl_date_format'] = $isDefaultFormat ? $lowerCaseIntlFormat : 'long';
-                $parameters['intl_time_format'] = $isDefaultFormat ? $lowerCaseIntlFormat : 'long';
-                $parameters['intl_format'] = $isDefaultFormat ? null : $fieldMetadata['intl_format'];
             }
         }
 

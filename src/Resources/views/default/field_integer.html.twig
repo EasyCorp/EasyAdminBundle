@@ -1,4 +1,6 @@
-{% if field_options.format %}
+{% if field_options.is_localized %}
+    {{ value|localizednumber(field_options.format) }}
+{% elseif field_options.format %}
     {{ field_options.format|format(value) }}
 {% else %}
     {{ value|number_format }}

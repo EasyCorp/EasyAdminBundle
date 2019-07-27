@@ -40,7 +40,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         unset($options['upload_dir'], $options['upload_new'], $options['upload_delete'], $options['upload_filename'], $options['download_path'], $options['allow_add'], $options['allow_delete'], $options['compound']);
 
         $builder->add('file', FileType::class, $options);
-        $builder->add('delete', CheckboxType::class);
+        $builder->add('delete', CheckboxType::class, ['required' => false]);
 
         $builder->setDataMapper($this);
         $builder->setAttribute('state', new FileUploadState($allowAdd));

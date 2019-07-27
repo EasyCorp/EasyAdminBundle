@@ -438,10 +438,8 @@ form .invalid-feedback > .d-block + .d-block {
     .custom-file {
         height: 30px;
     }
-    .custom-file + .input-group-append .btn {
-        margin: 0;
-        margin-top: 1px;
-        margin-left: 1px;
+    .input-group-append .btn {
+        margin: 1px 0 0 1px;
         height: 28px;
     }
 

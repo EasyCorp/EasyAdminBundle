@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by yceruto at 2019-07-25T20:56:52Z
+
+The last commit resolves the initialization issue when the element is not yet visible. This happens when your code editor belongs to a secondary tab: https://codemirror.net/doc/manual.html#addon_autorefresh

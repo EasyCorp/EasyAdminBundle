@@ -4,6 +4,10 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!-- enable the Twig Intl extension unconditionally so the 'intl_format' option
+             works without relying on the app's config/packages/twig_extensions.yaml config -->
+        <service id="Twig\Extensions\IntlExtension" autowire="true" autoconfigure="true" public="false"/>
+
         <service id="cache.easyadmin" parent="cache.system" public="false">
             <tag name="cache.pool" />
         </service>

@@ -233,7 +233,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             }
         }
 
-        if (\in_array($fieldType, ['date', 'datetime', 'time'])) {
+        if (\in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'])) {
             $defaultIntlFormats = ['none', 'short', 'medium', 'long', 'full'];
 
             $parameters['is_localized'] = false;

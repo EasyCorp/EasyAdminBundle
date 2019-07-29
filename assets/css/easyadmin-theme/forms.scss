@@ -500,6 +500,11 @@ form .invalid-feedback > .d-block + .d-block {
     }
 }
 
+.has-error .easyadmin-fileupload .input-group {
+    border: 1px solid var(--color-danger);
+    border-radius: var(--border-radius);
+}
+
 // Image/file vich uploads
 .easyadmin-vich-image img {
     box-shadow: 0 0 0 4px var(--white), 0px 0px 4px 3px var(--gray-600);
@@ -563,7 +568,25 @@ form .invalid-feedback > .d-block + .d-block {
     top: 0;
 }
 
+.field-vich_image.has-error,
+.field-vich_file.has-error {
+    .btn.input-file-container {
+        border: 1px solid var(--color-danger);
+    }
+}
+
 // EasyAdminCodeType
-.field-easyadmin_code_editor .form-widget {
-    flex-basis: 65%;
+.field-easyadmin_code_editor {
+    .form-widget {
+        flex-basis: 65%;
+    }
+
+    &.has-error .CodeMirror {
+        border: 1px solid var(--color-danger);
+    }
+}
+
+// EasyAdminTextType
+.field-easyadmin_text_editor.has-error .easyadmin-text-editor-wrapper {
+    border: 1px solid var(--color-danger);
 }

@@ -43,14 +43,34 @@
         $(function() {
             $('.edit-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'EasyAdminBundle')|e('js') }}' });
 
+            const entityForm = document.querySelector('form.edit-form');
+            const formSubmitButton = entityForm.querySelector('button[type="submit"]');
+            const inputFieldsSelector = 'input,select,textarea';
+
+            // Adding visual feedback for invalid fields: any ".form-group" with invalid fields
+            // receives "has-error" class. The class is removed on click on the ".form-group"
+            // itself to support custom/complex fields.
+            formSubmitButton.addEventListener('click', function() {
+                entityForm.querySelectorAll(inputFieldsSelector).forEach(function (input) {
+                    if (!input.validity.valid) {
+                        const formGroup = input.closest('div.form-group');
+
+                        formGroup.classList.add('has-error');
+
+                        formGroup.addEventListener('click', function onFormGroupClick() {
+                            formGroup.classList.remove('has-error');
+                            formGroup.removeEventListener('click', onFormGroupClick);
+                        });
+                    }
+                });
+            });
+
             // forms with tabs require some special treatment for errors. The problem
             // is when the field with errors is included in a tab not currently visible.
             // Browser shows this error "An invalid form control with name='...' is not focusable."
             // So, the user clicks on Submit button, the form is not submitted and the error
             // is not displayed. This JavaScript code ensures that each tab shows a badge with
             // the number of errors in it.
-            const entityForm = document.querySelector('form.edit-form');
-            const formSubmitButton = entityForm.querySelector('button[type="submit"]');
             formSubmitButton.addEventListener('click', function() {
                 const formTabPanes = entityForm.querySelectorAll('.tab-pane');
                 if (0 === formTabPanes.length) {
@@ -61,7 +81,7 @@
 
                 formTabPanes.forEach(function (tabPane, tabIndex) {
                     let tabPaneNumErrors = 0;
-                    tabPane.querySelectorAll('input,select,textarea').forEach(function (input) {
+                    tabPane.querySelectorAll(inputFieldsSelector).forEach(function (input) {
                         if (!input.validity.valid) {
                             tabPaneNumErrors++;
                         }

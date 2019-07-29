@@ -1,0 +1,28 @@
+---------------------------------------------------------------------------
+
+by liarco at 2019-07-27T20:05:23Z
+
+If you wish you can use this demo project to test the feature:
+
+- clone https://github.com/liarco/easy-admin-issues/
+- edit **composer.json** to point to a local repository containing this PR
+- run **./init.sh** to initialize database and fixtures
+- run the server and open `/admin`
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-07-28T21:06:28Z
+
+> I don't know how I'm supposed to compile the assets to complete this PR... is it ok to just run the following commands?
+
+Execute the `yarn encore production` script or `yarn build` to compile the CSS and JavaScript assets into `src/Resources/public/`. If there are any changes, commit and push them.
+
+---------------------------------------------------------------------------
+
+by liarco at 2019-07-28T21:38:47Z
+
+> Execute the `yarn encore production` script or `yarn build` to compile the CSS and JavaScript assets into `src/Resources/public/`. If there are any changes, commit and push them.
+
+...ok, the `yarn.lock` file was was a pretty obvious hint, but I totally missed it.
+
+Thank you! :)

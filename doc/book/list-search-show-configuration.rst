@@ -344,7 +344,13 @@ formatting, which overrides any default or global formatting:
 
 The main drawback of these options is that date/times are formatted for the
 English locale. If you want to display date/time properties translated into the
-locale of your application, use the ``intl_*`` options instead:
+locale of your application, use the ``intl_*`` options instead.
+
+The possible values of the ``intl_*`` properties are:
+
+* ``'none'``, ``' short'``, ``'medium'``, ``'long'``, and ``'full'``, which
+  correspond to the PHP `IntlDateFormatter predefined constants`_;
+* Any valid `ICU date and time patterns`_.
 
 .. code-block:: yaml
 
@@ -353,20 +359,24 @@ locale of your application, use the ``intl_*`` options instead:
         formats:
             int_date:     'd/m/Y'
             int_time:     'short'
+            # if a custom pattern is provided, it's applied to the entire date + time
             int_datetime: 'EE yyyy-LLL-dd (HH:mm)'
+            # if only a predefined constant is provided, the same is applied to date and time
+            int_datetime: 'long'
+            # if an array is passed, they must be predefined constants for [date, time]
+            int_datetime: ['long', 'none']
         entities:
             Customer:
                 class: App\Entity\Customer
                 list:
                     fields:
-                        - { property: 'dateOfBirth', int_format: 'EEEE, d MMMM yyyy' }
+                        - { property: 'dateOfBirth', int_format: 'short' }
+                        # datetime properties can define a single pattern and predefined constant
+                        # in addition to a [date, time] array of formats
+                        - { property: 'createdAt', int_format: 'EEEE, d MMMM yyyy' }
+                        - { property: 'createdAt', int_format: 'full' }
+                        - { property: 'createdAt', int_format: ['long', 'short'] }
                         # ...
-
-The possible values of the ``intl_*`` properties are:
-
-* ``'none'``, ``' short'``, ``'medium'``, ``'long'``, and ``'full'``, which
-  correspond to the PHP `IntlDateFormatter predefined constants`_;
-* Any valid `ICU date and time patterns`_.
 
 Customizing Numeric Properties
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

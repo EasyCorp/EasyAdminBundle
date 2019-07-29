@@ -223,28 +223,22 @@ fieldset .form-group .nullable-control label {
     padding-left: 0;
 }
 
-.field-collection-item-row {
-    display: flex;
-    flex-direction: row;
+.field-collection-item-row .form-control {
+    display: inline-flex;
 }
-
-.field-collection-item-row .field-collection-item-action {
-    flex: 0 0 35px;
+.form-group.field-collection-action {
+    mmargin-top: -12px;
+    padding-top: 0;
 }
-
-.field-collection-item-row .field-collection-item-widget {
-    flex: 1;
-}
-
-.field-collection-item-action .fa {
+.field-collection-item-action {
     font-size: 21px;
+    font-weight: bold;
     margin-left: 4px;
-    margin-top: 4px;
+    position: relative;
+    top: 2px;
 }
-
-.field-collection-action .btn {
-    margin-left: -5px;
-    padding: 4px 10px;
+.form-widget-compound > div > .form-group:last-child {
+    padding-bottom: 5px;
 }
 
 // Form tabs

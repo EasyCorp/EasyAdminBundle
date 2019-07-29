@@ -46,14 +46,11 @@
         {% endset %}
 
         <div class="field-collection-item-row">
-            <div class="field-collection-item-action">
-                <a id="easyadmin-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}; return false;" class="text-danger" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
-                    <i class="fa fa-fw fa-window-close"></i>
-                </a>
-            </div>
-            <div class="field-collection-item-widget">
-                {{ parent() }}
-            </div>
+            {{ parent() }}
+
+            <a class="field-collection-item-action" id="easyadmin-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}; return false;" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
+                &times;
+            </a>
         </div>
     {% else %}
         {{ parent() }}
@@ -203,12 +200,10 @@
         {% endset %}
 
         <div class="form-group field-collection-action">
-            <div class="form-widget">
-                <a id="easyadmin-add-collection-item-{{ form.vars.id }}" href="#" onclick="{{ js_add_item|raw }}; return false;" class="btn btn-secondary btn-sm">
-                    <i class="fa fa-fw fa-plus"></i>
-                    <span class="btn-label">{{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}</span>
-                </a>
-            </div>
+            <a id="easyadmin-add-collection-item-{{ form.vars.id }}" href="#" onclick="{{ js_add_item|raw }}; return false;">
+                <i class="fa fa-plus pr-1"></i>
+                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
+            </a>
         </div>
     {% endif %}
 {% endblock collection_row %}

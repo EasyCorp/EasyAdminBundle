@@ -127,10 +127,6 @@
                 <source>action.add_new_item</source>
                 <target>Új elem létrehozása</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Újabb elem hozzáadása</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Elem eltávolítása</target>

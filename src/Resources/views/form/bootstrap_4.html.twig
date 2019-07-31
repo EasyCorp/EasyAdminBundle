@@ -202,7 +202,7 @@
         <div class="form-group field-collection-action">
             <a id="easyadmin-add-collection-item-{{ form.vars.id }}" href="#" onclick="{{ js_add_item|raw }}; return false;">
                 <i class="fa fa-plus pr-1"></i>
-                {{ (form|length == 0 ? 'action.add_new_item' : 'action.add_another_item')|trans({}, 'EasyAdminBundle') }}
+                {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
             </a>
         </div>
     {% endif %}

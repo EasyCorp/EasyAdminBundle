@@ -139,10 +139,6 @@
                 <source>action.add_new_item</source>
                 <target>Voeg een item toe</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Voeg nog een item toe</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Verwijder dit item</target>

@@ -521,7 +521,7 @@
 {% block easyadmin_text_editor_widget %}
     {{ form_widget(form, { attr: attr|merge({ 'style': 'display: none' }) }) }}
     <div class="easyadmin-text-editor-wrapper">
-        <trix-editor input="{{ id }}" data-js-url="{{ asset("bundles/easyadmin/form-type-text-editor.js") }}" data-css-url="{{ asset("bundles/easyadmin/form-type-text-editor.css") }}"></trix-editor>
+        <trix-editor input="{{ id }}" class="trix-content" data-js-url="{{ asset("bundles/easyadmin/form-type-text-editor.js") }}" data-css-url="{{ asset("bundles/easyadmin/form-type-text-editor.css") }}"></trix-editor>
     </div>
 {% endblock easyadmin_text_editor_widget %}
 

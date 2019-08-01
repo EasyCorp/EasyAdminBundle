@@ -139,10 +139,6 @@
                 <source>action.add_new_item</source>
                 <target>Yeni öğe ekle</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Başka bir öğe ekle</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Öğeyi Sil</target>
@@ -203,7 +199,7 @@
                 <source>login.sign_in</source>
                 <target>Giriş yap</target>
             </trans-unit>
-            
+
             <!-- filters -->
             <trans-unit id="filter.title">
                 <source>filter.title</source>

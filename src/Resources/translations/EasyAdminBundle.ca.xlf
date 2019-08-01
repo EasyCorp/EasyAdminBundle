@@ -119,10 +119,6 @@
                 <source>action.add_new_item</source>
                 <target>Afegir un element</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Afegir un altre element</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Eliminar aquest element</target>

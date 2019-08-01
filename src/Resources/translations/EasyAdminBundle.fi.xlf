@@ -127,10 +127,6 @@
                 <source>action.add_new_item</source>
                 <target>Luo uusi rivi</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Luo toinen rivi</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Poista rivi</target>

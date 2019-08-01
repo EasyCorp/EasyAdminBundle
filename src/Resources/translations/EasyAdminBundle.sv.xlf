@@ -131,10 +131,6 @@
                 <source>action.add_new_item</source>
                 <target>Lägg till nytt objekt</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Lägg till en till</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Ta bort objekt</target>

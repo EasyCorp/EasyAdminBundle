@@ -119,10 +119,6 @@
                 <source>action.add_new_item</source>
                 <target>Adaugă un item nou</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Adaugă încă un item</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Șterge un item</target>

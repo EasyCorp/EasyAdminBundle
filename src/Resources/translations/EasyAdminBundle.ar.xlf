@@ -123,10 +123,6 @@
                 <source>action.add_new_item</source>
                 <target>إضافة عنصر جديد</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                    <target>إضافة عنصر آخر</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>حذف العنصر</target>

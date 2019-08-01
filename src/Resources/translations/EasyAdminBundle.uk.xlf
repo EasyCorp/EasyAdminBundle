@@ -127,10 +127,6 @@
                 <source>action.add_new_item</source>
                 <target>Додати новий елемент</target>
             </trans-unit>
-            <trans-unit id="action.add_another_item">
-                <source>action.add_another_item</source>
-                <target>Додати інший елемент</target>
-            </trans-unit>
             <trans-unit id="action.remove_item">
                 <source>action.remove_item</source>
                 <target>Видалити елемент</target>

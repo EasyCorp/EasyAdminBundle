@@ -3,7 +3,7 @@ require('../css/app.scss');
 
 global.$ = global.jQuery = require('jquery');
 
-import 'bootstrap/js/src/index.js';
+import 'bootstrap';
 
 import './adminlte.js';
 import 'jquery.are-you-sure';

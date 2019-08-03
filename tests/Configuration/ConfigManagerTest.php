@@ -19,7 +19,7 @@ class ConfigManagerTest extends TestCase
      * @dataProvider provideConfigFilePaths
      */
     public function testLoadConfig($backendConfigFilePath, $expectedConfigFilePath)
-    {$this->markTestSkipped();
+    {
         $backendConfig = $this->loadConfig($backendConfigFilePath);
         $expectedConfig = Yaml::parse(file_get_contents($expectedConfigFilePath));
 

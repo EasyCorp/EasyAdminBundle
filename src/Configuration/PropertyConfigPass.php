@@ -309,7 +309,7 @@ class PropertyConfigPass implements ConfigPassInterface
                         unset($fieldConfig['intl_format']);
                     } elseif (isset($fieldConfig['format'])) {
                         $fieldConfig['is_localized'] = false;
-                    } elseif(null !== $globalFormat = $this->globalIntlFormatAppliedToField($fieldConfig['type'], $backendConfig)) {
+                    } elseif (null !== $globalFormat = $this->globalIntlFormatAppliedToField($fieldConfig['type'], $backendConfig)) {
                         $fieldConfig['is_localized'] = true;
                         $fieldConfig['format'] = $globalFormat;
                     } else {
@@ -475,7 +475,7 @@ class PropertyConfigPass implements ConfigPassInterface
     /**
      * Useful for example to simplify the processing of datetime-like properties
      * (e.g. process the config of 'datetime', 'datetimetz' and 'datetime_immutable'
-     * in the same way)
+     * in the same way).
      */
     private function getCanonicalFieldType(string $fieldType): string
     {
@@ -483,8 +483,8 @@ class PropertyConfigPass implements ConfigPassInterface
             return 'datetime';
         }
 
-        if ('_immutable' === \mb_substr($fieldType, -10)) {
-            return \mb_substr($fieldType, 0, -10);
+        if ('_immutable' === mb_substr($fieldType, -10)) {
+            return mb_substr($fieldType, 0, -10);
         }
 
         return $fieldType;

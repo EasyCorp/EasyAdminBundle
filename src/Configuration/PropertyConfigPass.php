@@ -15,7 +15,9 @@ use Symfony\Component\Form\FormTypeGuesserInterface;
  */
 class PropertyConfigPass implements ConfigPassInterface
 {
-    private const DATETIME_TYPES = ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'];
+    private const DATE_TYPES = ['date', 'date_immutable'];
+    private const DATETIME_TYPES = ['datetime', 'datetime_immutable', 'datetimetz'];
+    private const TIME_TYPES = ['time', 'time_immutable'];
     private const NUMERIC_TYPES = ['bigint', 'integer', 'smallint', 'decimal', 'float'];
 
     private $defaultEntityFieldConfig = [
@@ -282,23 +284,34 @@ class PropertyConfigPass implements ConfigPassInterface
         $validNumericFormats = ['decimal', 'percent', 'scientific', 'spellout', 'ordinal', 'duration'];
 
         // check first the validity of the global formats
-        if (isset($backendConfig['formats']['intl_number']) && !\in_array($backendConfig['formats']['intl_number'], $validNumericFormats)) {
-            throw new \InvalidArgumentException(sprintf('The value of the "easy_admin.formats.intl_number" option is not valid. These are the allowed values: %s', implode(', ', $validNumericFormats)));
+        foreach (['date', 'datetime', 'time', 'number'] as $optionName) {
+            if (isset($backendConfig['formats'][$optionName]) && isset($backendConfig['formats']['intl_'.$optionName])) {
+                throw new \InvalidArgumentException(sprintf('The "easy_admin.formats.%s" and "easy_admin.formats.intl_%s" options can\'t be defiend at the same time. Remove one of them.', $optionName, $optionName));
+            }
         }
-
 
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['list', 'search', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
+                    $isDateProperty = \in_array($fieldConfig['type'], self::DATE_TYPES);
                     $isDateTimeProperty = \in_array($fieldConfig['type'], self::DATETIME_TYPES);
+                    $isTimeProperty = \in_array($fieldConfig['type'], self::TIME_TYPES);
                     $isNumericProperty = \in_array($fieldConfig['type'], self::NUMERIC_TYPES);
-                    if (!$isDateTimeProperty && !$isNumericProperty) {
+                    if (!$isDateProperty && !$isDateTimeProperty && !$isTimeProperty && !$isNumericProperty) {
                         continue;
                     }
 
                     // needed to avoid formating the 'id' primary key as a number
                     if ($entityConfig['primary_key_field_name'] === $fieldName) {
                         continue;
+                    }
+
+                    if (isset($fieldConfig['intl_format']) && isset($fieldConfig['format'])) {
+                        throw new \InvalidArgumentException(sprintf('Properties can only define either the "intl_format" or the "format" option, but not both at the same time. Remove one of them in the "%s" property of the "%s" view of the "%s" entity.', $fieldName, $view, $entityName));
+                    }
+
+                    if ($isNumericProperty && isset($fieldConfig['intl_format']) && !\in_array($fieldConfig['intl_format'], $validNumericFormats)) {
+                        throw new \InvalidArgumentException(sprintf('The value of the "intl_format" option in the "%s" property of the "%s" entity in the "%s" view is not valid. These are the allowed values: %s', $fieldName, $entityName, $view, implode(', ', $validNumericFormats)));
                     }
 
                     // intl_* options have priority over non-intl options
@@ -316,7 +329,7 @@ class PropertyConfigPass implements ConfigPassInterface
                         $fieldConfig['format'] = $this->getDefaultFieldFormat($fieldConfig['type'], $backendConfig);
                     }
 
-                    if ($isDateTimeProperty) {
+                    if ($isDateProperty || $isTimeProperty) {
                         $predefinedDateTimeIntlFormats = ['none', 'short', 'medium', 'long', 'full'];
                         $lowerCaseIntlFormat = strtolower($fieldConfig['format']);
                         $isPredefinedFormat = \in_array($lowerCaseIntlFormat, $predefinedDateTimeIntlFormats);
@@ -327,8 +340,23 @@ class PropertyConfigPass implements ConfigPassInterface
                         $fieldConfig['format'] = $isPredefinedFormat ? null : $fieldConfig['format'];
                     }
 
-                    if ($isNumericProperty && !\in_array($fieldConfig['format'], $validNumericFormats)) {
-                        throw new \InvalidArgumentException(sprintf('The value of the "intl_format" option in the "%s" property of the "%s" entity is not valid. These are the allowed values: %s', $fieldName, $entityName, implode(', ', $validNumericFormats)));
+                    if ($isDateTimeProperty) {
+                        // to simplify processing, always turn the datetime format into a [date, time] array
+                        // this cannot be done in the main Configuration class because of its complex validation rules
+                        if (\is_string($fieldConfig['format'])) {
+                            $fieldConfig['format'] = [$fieldConfig['format'], $fieldConfig['format']];
+                        }
+
+                        $predefinedDateTimeIntlFormats = ['none', 'short', 'medium', 'long', 'full'];
+                        $lowerCaseDateIntlFormat = strtolower($fieldConfig['format'][0]);
+                        $lowerCaseTimeIntlFormat = strtolower($fieldConfig['format'][1]);
+                        $isPredefinedDateFormat = \in_array($lowerCaseDateIntlFormat, $predefinedDateTimeIntlFormats);
+                        $isPredefinedTimeFormat = \in_array($lowerCaseTimeIntlFormat, $predefinedDateTimeIntlFormats);
+
+                        // this is needed later in the Twig templates that render the localized date/time
+                        $fieldConfig['intl_date_format'] = $isPredefinedDateFormat ? $lowerCaseDateIntlFormat : 'long';
+                        $fieldConfig['intl_time_format'] = $isPredefinedTimeFormat ? $lowerCaseTimeIntlFormat : 'long';
+                        $fieldConfig['format'] = $isPredefinedDateFormat ? null : $fieldConfig['format'][0];
                     }
 
                     $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
@@ -419,7 +447,10 @@ class PropertyConfigPass implements ConfigPassInterface
         return $resolvedFormOptions;
     }
 
-    private function globalIntlFormatAppliedToField(string $fieldType, array $backendConfig): ?string
+    /**
+     * @return string|array|null
+     */
+    private function globalIntlFormatAppliedToField(string $fieldType, array $backendConfig)
     {
         $fieldType = $this->getCanonicalFieldType($fieldType);
 
@@ -427,7 +458,7 @@ class PropertyConfigPass implements ConfigPassInterface
             return $backendConfig['formats']['intl_date'];
         } elseif ('time' === $fieldType && isset($backendConfig['formats']['intl_time'])) {
             return $backendConfig['formats']['intl_time'];
-        } elseif ('datetime' === $fieldType && isset($backendConfig['formats']['intl_time'])) {
+        } elseif ('datetime' === $fieldType && isset($backendConfig['formats']['intl_datetime'])) {
             return $backendConfig['formats']['intl_datetime'];
         } elseif (\in_array($fieldType, self::NUMERIC_TYPES) && isset($backendConfig['formats']['intl_number'])) {
             return $backendConfig['formats']['intl_number'];
@@ -444,7 +475,7 @@ class PropertyConfigPass implements ConfigPassInterface
      */
     private function getDefaultFieldFormat(string $fieldType, array $backendConfig): ?string
     {
-        if (\in_array($fieldType, self::DATETIME_TYPES)) {
+        if (\in_array($fieldType, self::DATE_TYPES) || \in_array($fieldType, self::DATETIME_TYPES) || \in_array($fieldType, self::TIME_TYPES)) {
             return $backendConfig['formats'][$this->getCanonicalFieldType($fieldType)] ?? null;
         }
 

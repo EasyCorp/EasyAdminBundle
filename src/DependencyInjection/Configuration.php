@@ -64,10 +64,26 @@ class Configuration implements ConfigurationInterface
                             ->info('The PHP date/time format applied to "datetime", "datetimetz" and "datetime_immutable" field types.')
                             ->example('l, F jS Y / h:i (see http://php.net/date)')
                         ->end()
-                        ->scalarNode('intl_datetime')
+                        ->variableNode('intl_datetime')
                             ->defaultNull()
                             ->info('The intl date format applied to "datetime", "datetimetz" and "datetime_immutable" field types.')
                             ->example('https://symfony.com/doc/master/bundles/EasyAdminBundle/book/list-search-show-configuration.html#formatting-dates-and-numbers')
+                            ->validate()
+                                ->ifTrue(function ($v) {
+                                    $isArrayOfTwoStrings = is_array($v) && 2 === \count($v) && is_string($v[0]) && is_string($v[1]);
+
+                                    return !is_string($v) && !$isArrayOfTwoStrings;
+                                })
+                                ->thenInvalid('The intl_datetime option must be a string or an array with two string elements.')
+                            ->end()
+                            ->validate()
+                                ->ifTrue(function ($v) {
+                                    $validPredefinedFormats = ['none', 'short', 'medium', 'long', 'full'];
+
+                                    return is_array($v) && (!\in_array($v[0], $validPredefinedFormats) || !\in_array($v[1], $validPredefinedFormats));
+                                })
+                                ->thenInvalid('When the intl_datetime option is defined as an array, their two values must be one of the predefined datetime formats ("none", "short", "medium", "long", "full"). If you want to use a custom datetime pattern, define this option as a string.')
+                            ->end()
                         ->end()
                         ->scalarNode('number')
                             ->info('The sprintf-compatible format applied to numeric values.')

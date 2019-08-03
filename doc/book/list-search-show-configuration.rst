@@ -370,12 +370,12 @@ The possible values of the ``intl_*`` properties are:
                 class: App\Entity\Customer
                 list:
                     fields:
-                        - { property: 'dateOfBirth', int_format: 'short' }
+                        - { property: 'dateOfBirth', intl_format: 'short' }
                         # datetime properties can define a single pattern and predefined constant
                         # in addition to a [date, time] array of formats
-                        - { property: 'createdAt', int_format: 'EEEE, d MMMM yyyy' }
-                        - { property: 'createdAt', int_format: 'full' }
-                        - { property: 'createdAt', int_format: ['long', 'short'] }
+                        - { property: 'createdAt', intl_format: 'EEEE, d MMMM yyyy' }
+                        - { property: 'createdAt', intl_format: 'full' }
+                        - { property: 'createdAt', intl_format: ['long', 'short'] }
                         # ...
 
 Customizing Numeric Properties

@@ -283,13 +283,6 @@ class PropertyConfigPass implements ConfigPassInterface
     {
         $validNumericFormats = ['decimal', 'percent', 'scientific', 'spellout', 'ordinal', 'duration'];
 
-        // check first the validity of the global formats
-        foreach (['date', 'datetime', 'time', 'number'] as $optionName) {
-            if (isset($backendConfig['formats'][$optionName]) && isset($backendConfig['formats']['intl_'.$optionName])) {
-                throw new \InvalidArgumentException(sprintf('The "easy_admin.formats.%s" and "easy_admin.formats.intl_%s" options can\'t be defiend at the same time. Remove one of them.', $optionName, $optionName));
-            }
-        }
-
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['list', 'search', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
@@ -301,17 +294,12 @@ class PropertyConfigPass implements ConfigPassInterface
                         continue;
                     }
 
-                    // needed to avoid formating the 'id' primary key as a number
-                    if ($entityConfig['primary_key_field_name'] === $fieldName) {
-                        continue;
-                    }
-
                     if (isset($fieldConfig['intl_format']) && isset($fieldConfig['format'])) {
                         throw new \InvalidArgumentException(sprintf('Properties can only define either the "intl_format" or the "format" option, but not both at the same time. Remove one of them in the "%s" property of the "%s" view of the "%s" entity.', $fieldName, $view, $entityName));
                     }
 
                     if ($isNumericProperty && isset($fieldConfig['intl_format']) && !\in_array($fieldConfig['intl_format'], $validNumericFormats)) {
-                        throw new \InvalidArgumentException(sprintf('The value of the "intl_format" option in the "%s" property of the "%s" entity in the "%s" view is not valid. These are the allowed values: %s', $fieldName, $entityName, $view, implode(', ', $validNumericFormats)));
+                        throw new \InvalidArgumentException(sprintf('The value of the "intl_format" option of the "%s" property in the "%s" view of the "%s" entity is not valid. These are the allowed values: %s.', $fieldName, $view, $entityName, implode(', ', $validNumericFormats)));
                     }
 
                     // intl_* options have priority over non-intl options

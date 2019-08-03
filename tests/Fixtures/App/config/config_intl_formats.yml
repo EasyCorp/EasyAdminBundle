@@ -1,0 +1,26 @@
+imports:
+    - { resource: config.yml }
+
+framework:
+    # This file overrides the EasyAdmin controller
+    router: { resource: "%kernel.root_dir%/config/routing_override.yml" }
+    translator:      ~
+    default_locale:  'es'
+
+easy_admin:
+    formats:
+        intl_date: 'long'
+        intl_time: 'HH:mm'
+        intl_datetime: ['long', 'none']
+        intl_number: 'spellout'
+    entities:
+        Product:
+            class: AppTestBundle\Entity\FunctionalTests\Product
+            list:
+                fields:
+                    - { property: 'createdAt' }
+                    - { property: 'price', intl_format: 'scientific' }
+            show:
+                fields:
+                    - { property: 'createdAt', intl_format: 'MMMM yyyy' }
+                    - { property: 'price' }

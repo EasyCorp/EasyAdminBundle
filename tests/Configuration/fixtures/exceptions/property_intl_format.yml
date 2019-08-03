@@ -1,0 +1,16 @@
+# TEST
+# properties can't define "intl_format" and "format" at the same time
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'Properties can only define either the "intl_format" or the "format" option, but not both at the same time. Remove one of them in the "id" property of the "list" view of the "TestEntity" entity.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    - { property: 'id', format: 'foo', intl_format: 'bar' }

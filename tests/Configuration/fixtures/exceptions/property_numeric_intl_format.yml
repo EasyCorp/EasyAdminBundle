@@ -1,0 +1,16 @@
+# TEST
+# numeric properties that define "intl_format" must use one of the predefined formats
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'The value of the "intl_format" option of the "id" property in the "list" view of the "TestEntity" entity is not valid. These are the allowed values: decimal, percent, scientific, spellout, ordinal, duration.'
+
+# CONFIGURATION
+easy_admin:
+    entities:
+        TestEntity:
+            class: AppTestBundle\Entity\UnitTests\Category
+            list:
+                fields:
+                    - { property: 'id', intl_format: 'foobar' }

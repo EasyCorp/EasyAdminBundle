@@ -79,7 +79,7 @@
 
                 let firstNavTabItemWithError = null;
 
-                formTabPanes.forEach(function (tabPane, tabIndex) {
+                formTabPanes.forEach(function (tabPane) {
                     let tabPaneNumErrors = 0;
                     tabPane.querySelectorAll(inputFieldsSelector).forEach(function (input) {
                         if (!input.validity.valid) {
@@ -87,7 +87,7 @@
                         }
                     });
 
-                    let navTabItem = entityForm.querySelector('.nav-item:nth-child(' + (tabIndex + 1) + ') a');
+                    let navTabItem = entityForm.querySelector('.nav-item a[href="#' + tabPane.id + '"]');
                     let existingErrorBadge = navTabItem.querySelector('span.badge.badge-danger');
                     if (null !== existingErrorBadge) {
                         navTabItem.removeChild(existingErrorBadge);

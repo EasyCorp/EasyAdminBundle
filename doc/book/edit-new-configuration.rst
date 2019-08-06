@@ -675,6 +675,10 @@ This type defines the following configuration options:
   By default it's just ``unlink($file->getPathname())``. It's useful in complex
   scenarios such as performing some tasks before/after deleting files or when you
   also need to delete the file from other locations (e.g. cloud services).
+* ``upload_validate``: (optional) a PHP callable used to validate the uploaded files
+  before moving them to their final destination. By default it checks duplicated
+  files and renames them. It's useful in complex scenarios such as validating
+  files that will be moved to some cloud service.
 
 This form type uses a `form data transformer`_ to manage the file resource to
 file path conversion. This means that only the file path/s is/are stored in the

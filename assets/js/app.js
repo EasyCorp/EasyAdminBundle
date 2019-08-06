@@ -174,11 +174,6 @@ function createTextEditorFields()
 
 function createFileUploadFields()
 {
-    const fileUploadFields = document.querySelectorAll('.easyadmin-fileupload');
-    if (fileUploadFields.length === 0) {
-        return;
-    }
-
     function fileSize(bytes) {
         const size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
         const factor = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));

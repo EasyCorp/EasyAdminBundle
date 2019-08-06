@@ -14,12 +14,14 @@ class StringToFileTransformer implements DataTransformerInterface
 {
     private $uploadDir;
     private $uploadFilename;
+    private $uploadValidate;
     private $multiple;
 
-    public function __construct(string $uploadDir, callable $uploadFilename, bool $multiple)
+    public function __construct(string $uploadDir, callable $uploadFilename, callable $uploadValidate, bool $multiple)
     {
         $this->uploadDir = $uploadDir;
         $this->uploadFilename = $uploadFilename;
+        $this->uploadValidate = $uploadValidate;
         $this->multiple = $multiple;
     }
 
@@ -88,10 +90,12 @@ class StringToFileTransformer implements DataTransformerInterface
 
         if ($value instanceof UploadedFile) {
             if (!$value->isValid()) {
-                return null;
+                throw new TransformationFailedException($value->getErrorMessage());
             }
 
-            return $this->uploadDir.($this->uploadFilename)($value);
+            $filename = $this->uploadDir.($this->uploadFilename)($value);
+
+            return ($this->uploadValidate)($filename);
         }
 
         if ($value instanceof File) {

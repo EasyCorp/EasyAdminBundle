@@ -121,6 +121,12 @@
                         $('#delete-form').trigger('submit');
                     });
             });
+            
+            if ($('.invalid-feedback').length) {
+                $('html, body').animate({
+                    scrollTop: $($('.invalid-feedback:first')).offset().top
+                }, 1000);
+            }
         });
     </script>
 

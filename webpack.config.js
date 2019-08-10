@@ -12,10 +12,6 @@ Encore
     .disableSingleRuntimeChunk()
     .autoProvidejQuery()
 
-    // needed to avoid this bug: https://github.com/symfony/webpack-encore/issues/436
-    .configureCssLoader(options => { options.minimize = false; })
-    .enablePostCssLoader()
-
     // copy select2 i18n files
     .copyFiles({
         from: './node_modules/select2/dist/js/i18n/',

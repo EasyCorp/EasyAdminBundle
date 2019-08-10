@@ -1,0 +1,167 @@
+---------------------------------------------------------------------------
+
+by Tersoal at 2019-08-03T22:45:37Z
+
+First, @liarco thank you so much for your detailed PR. It's a great job.
+
+About your question: I think so. I was afraid of making PR because I'm newbie in it and testing frontend is harder than backend. I wanted to test the change exactly to be sure that nothing crashes. That said, I think the import change is needed because crashes all js, from collection to filters, and It solves multiple recent issues. Bootstrap itself points out that way of importing library with webpack.
+
+I don't know easyadmin in depth but it has a lot of features and they must be tested in some way. @javiereguiluz said that in his projects all works properly, but my fresh instalation crashes, and I don't know why it works for him and this must be tested carefully. I can test some features in my project, but it's simple by now and I use some features only.
+
+I wish to help in any way I can.
+
+---------------------------------------------------------------------------
+
+by liarco at 2019-08-03T23:46:47Z
+
+@Tersoal, you are very welcome.
+
+I agree with you. At the same time I also confirm that **all of my projects work out-of-the-box** with Chrome, Firefox, Safari and Opera so it's probably something related to Edge specifically.
+Anyway bare imports seem to be the right syntax for Bootstrap so it worths testing it (imho).
+
+### Little update
+If you look at the `package.json` from Bootstrap, `main` points to `dist/js/bootstrap` (that's what is used with bare imports). I think this is the key: they may have compiled the code including some polyfills that we are missing. Importing directly from the source works on browsers that do not need those polyfills.
+
+To avoid using the compiled version we must provide a webpack (babel?) configuration that matches the one used by bootstrap, but I don't know if it's worth since the bare import adds just 4kb to the final `app.js` and should not have side-effects.
+
+I'm gonna give it a try to spot glitches on the browsers I use (I don't own a Windows machine), if you can do the same on Edge it can help.
+
+In the mean while we can wait Javier to tell us how we can help any further.
+
+---------------------------------------------------------------------------
+
+by Tersoal at 2019-08-03T23:59:30Z
+
+Important note: I always develop in Chrome first and my project (in development now) crushes in Chrome.
+
+I think the problem is the compilation of easyadmin v2.2.2 and that this problem of bootstrap import is visible in fresh installations and olders have js cached in browser or the like.
+
+I develop in Linux and I don't have Edge, but I have it installed in my android phone and I can test whatever is nedded. But I keep going: it's a problem in bootstrap import and it concern to all browsers.
+
+I will try to record video to show the problem. I have never done it but I think it will be useful. If you know the best way to do it, advises will be very welcome.
+
+---------------------------------------------------------------------------
+
+by liarco at 2019-08-04T00:43:12Z
+
+### Edit
+@Tersoal, maybe we can troubleshoot this issue on [Slack (symfony)](https://symfony.com/slack) and then report here to avoid too much noise. You can send me a private message if you wish, **Liarco** is my nickname there.
+
+### Update
+**We got it!** The Chrome version was outdated due to a failure on DEB repository, so the browser didn't support newer JS features. This may confirm my assumptions in https://github.com/EasyCorp/EasyAdminBundle/pull/2880#issuecomment-517962316.
+
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-08-04T10:07:59Z
+
+@liarco thanks a lot for working on this and explaining things in so much detail! About the question you asked in the first comment, there's no reason at all to not update Webpack Encore. We can use any version we want 👍
+
+---------------------------------------------------------------------------
+
+by Tersoal at 2019-08-04T10:20:05Z
+
+Thank you so much @liarco for your help and sorry @javiereguiluz because it was my chrome version problem.
+
+Al least we have been able to fix the problem and find incompatibility with older browsers.
+
+---------------------------------------------------------------------------
+
+by liarco at 2019-08-04T10:39:26Z
+
+It's a pleasure!
+
+I'm gonna test this as much as I can, it would be great if someone could test it better on Edge (maybe @maximumsnowy can help).
+
+---------------------------------------------------------------------------
+
+by maximumsnowy at 2019-08-06T18:24:30Z
+
+I'd be happy to test it, but I'm quite new at git(hub) so can you give me instructions for how to test a PR?
+
+---------------------------------------------------------------------------
+
+by liarco at 2019-08-07T01:56:47Z
+
+@maximumsnowy don't worry!
+
+Here is how I do it: _(it may seem a lot of work but it's really easy)_
+
+### Requirements
+
+- any unix (bash?) terminal (it can be Linux, macOS, or bash on Windows)
+- a Symfony project using EasyAdminBundle (you can also use a copy of any project of yours)
+- git
+- composer
+
+### Suggested folder structure
+```
+PR-test-folder
+|_ your-symfony-project
+   |_ ...symfony files...
+|_ easyadmin-dev (this folder will be created by git)
+   |_ ...easyadmin files...
+```
+
+### Clone dev version of EasyAdminBundle
+Open a terminal and run
+```bash
+cd /path/to/PR-test-folder
+# Clone the repo (this command will clone the master branch to a folder named "easyadmin-dev")
+git clone git@github.com:EasyCorp/EasyAdminBundle.git easyadmin-dev
+cd easyadmin-dev
+# Download this PR (#2880) creating a new branch named "pr-2880"
+git fetch origin pull/2880/head:pr-2880
+# Update your local version of EasyAdmin to the new branch
+git checkout pr-2880
+```
+
+Now your folder contains the code from this PR.
+
+### Update your project to use the local version of EasyAdmin
+Open the `composer.json` from `/path/to/your-symfony-project` and update it to use a custom repository for the EasyAdminBundle package.
+If your folder structure is the same as above you can copy the code below, otherwise update the repository "url" to match your folder structure _(I think that absolute paths should be fine too)_.
+
+```json
+{
+    "type": "project",
+    [...]
+    "repositories": [{
+        "type": "path",
+        "url": "../easyadmin-dev"
+    }],
+    "require": {
+        [...]
+        "easycorp/easyadmin-bundle": "*@dev"
+    },
+}
+```
+
+This configuration tells composer to create a symlink to your local version of EasyAdminBundle instead of downloading it from the official repository.
+
+Now run
+```bash
+composer update
+```
+to update your dependencies.
+
+### Why a local copy?
+You can also tell composer to use my fork repository without creating a local copy, but I think that a local copy is better because you can change the code and try stuff on the fly.
+
+### Conclusion
+If you don't get any error, your project should now be using your custom version of EasyAdminBundle and you can test it as you would normally do.
+
+---------------------------------------------------------------------------
+
+by maximumsnowy at 2019-08-07T20:20:56Z
+
+@liarco Thank you for your help. It works now in classic Edge on my end.
+
+---------------------------------------------------------------------------
+
+by liarco at 2019-08-08T01:14:11Z
+
+> @liarco Thank you for your help. It works now in classic Edge on my end.
+
+You're welcome! I'm really happy to hear this!
+
+I've tested this PR with my browsers on macOS and couldn't find any broken feature. This is good sign.

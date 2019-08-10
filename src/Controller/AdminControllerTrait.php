@@ -444,16 +444,16 @@ trait AdminControllerTrait
     protected function deleteBatchAction(array $ids): void
     {
         $class = $this->entity['class'];
+        $primaryKey = $this->entity['primary_key_field_name'];
 
-        $this->getDoctrine()->getManagerForClass($class)
-            ->createQueryBuilder()
-            ->delete()
-            ->from($class, 'entity')
-            ->where(sprintf('entity.%s IN (:ids)', $this->entity['primary_key_field_name']))
-            ->setParameter('ids', $ids)
-            ->getQuery()
-            ->execute()
-        ;
+        $entities = $this->em->getRepository($class)
+            ->findBy([$primaryKey => $ids]);
+
+        foreach ($entities as $entity) {
+            $this->em->remove($entity);
+        }
+
+        $this->em->flush();
     }
 
     /**

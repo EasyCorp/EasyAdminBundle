@@ -1,0 +1,34 @@
+---------------------------------------------------------------------------
+
+by liarco at 2019-08-06T17:48:50Z
+
+Hi @yceruto, this is great!
+
+I have 2 questions:
+
+1. does it work with "single" file-upload fields? _(e.g. filenames conflicting between two different objects of the same entity)_ or with "multiple" ones only?
+2. what do you think about using something like `document_X.pdf` instead of `document(X).pdf`? This would provide cleaner URLs and avoid special characters that might be unsupported by some systems
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-08-06T18:14:12Z
+
+@liarco very good 2 questions, I'll make the necessary changes to resolve them. Thanks!
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-08-06T18:36:02Z
+
+*Update*
+
+ * This new solution now works for both single and multiple field types (`filenames conflicting between two different objects of the same entity`).
+ * It is based on the `file_exists()` function instead of the filename stored in the database.
+ * I changed the filename format to `name_X.ext` as suggested correctly by @liarco
+
+---------------------------------------------------------------------------
+
+by yceruto at 2019-08-06T21:13:24Z
+
+*Update*
+
+ * Since `file_exists` is a filesystem-based function, I choose to create a dedicated option `upload_validate` to decouple this operation, just as we did with other operations.

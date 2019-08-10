@@ -36,15 +36,16 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     {
         $uploadDir = $options['upload_dir'];
         $uploadFilename = $options['upload_filename'];
+        $uploadValidate = $options['upload_validate'];
         $allowAdd = $options['allow_add'];
-        unset($options['upload_dir'], $options['upload_new'], $options['upload_delete'], $options['upload_filename'], $options['download_path'], $options['allow_add'], $options['allow_delete'], $options['compound']);
+        unset($options['upload_dir'], $options['upload_new'], $options['upload_delete'], $options['upload_filename'], $options['upload_validate'], $options['download_path'], $options['allow_add'], $options['allow_delete'], $options['compound']);
 
         $builder->add('file', FileType::class, $options);
         $builder->add('delete', CheckboxType::class, ['required' => false]);
 
         $builder->setDataMapper($this);
         $builder->setAttribute('state', new FileUploadState($allowAdd));
-        $builder->addModelTransformer(new StringToFileTransformer($uploadDir, $uploadFilename, $options['multiple']));
+        $builder->addModelTransformer(new StringToFileTransformer($uploadDir, $uploadFilename, $uploadValidate, $options['multiple']));
     }
 
     /**
@@ -93,6 +94,20 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             return $file->getClientOriginalName();
         };
 
+        $uploadValidate = static function (string $filename): string {
+            if (!file_exists($filename)) {
+                return $filename;
+            }
+
+            $index = 1;
+            $pathInfo = pathinfo($filename);
+            while (file_exists($filename = sprintf('%s/%s_%d.%s', $pathInfo['dirname'], $pathInfo['filename'], $index, $pathInfo['extension']))) {
+                ++$index;
+            }
+
+            return $filename;
+        };
+
         $downloadPath = function (Options $options) {
             return mb_substr($options['upload_dir'], mb_strlen($this->projectDir.'/public/'));
         };
@@ -114,6 +129,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             'upload_new' => $uploadNew,
             'upload_delete' => $uploadDelete,
             'upload_filename' => $uploadFilename,
+            'upload_validate' => $uploadValidate,
             'download_path' => $downloadPath,
             'allow_add' => $allowAdd,
             'allow_delete' => true,
@@ -129,6 +145,7 @@ class FileUploadType extends AbstractType implements DataMapperInterface
         $resolver->setAllowedTypes('upload_new', 'callable');
         $resolver->setAllowedTypes('upload_delete', 'callable');
         $resolver->setAllowedTypes('upload_filename', ['string', 'callable']);
+        $resolver->setAllowedTypes('upload_validate', 'callable');
         $resolver->setAllowedTypes('download_path', ['null', 'string']);
         $resolver->setAllowedTypes('allow_add', 'bool');
         $resolver->setAllowedTypes('allow_delete', 'bool');

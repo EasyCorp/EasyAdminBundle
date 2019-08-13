@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Δεν υπάρχει μέθοδος ανάγνωσης (getter) για αυτό το πεδίο ή η ιδιότητα αυτή δεν είναι προσβάσιμη</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Καμία</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

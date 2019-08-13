@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>A getter metódus nem létezik ehhez a mezőhöz vagy a tulajdonság nem publikus.</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Nincs</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

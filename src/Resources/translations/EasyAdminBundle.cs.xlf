@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Getter metoda pro toto pole neexistuje nebo není veřejná (public)</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Prázdné</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

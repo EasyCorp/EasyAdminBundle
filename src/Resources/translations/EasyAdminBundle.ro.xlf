@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Metoda de tip Get nu există pentru acest câmp sau proprietatea nu e publică</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Gol</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

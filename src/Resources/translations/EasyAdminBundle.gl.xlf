@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Este campo non ten ningún método getter ou a propiedade asociada non é publica</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Ningún</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>لا يوجد وصف الوصول لهذه الخاصية أو أنها ليست عامة.</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>لا شيء</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

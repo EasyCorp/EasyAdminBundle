@@ -21,13 +21,13 @@
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>
-                <target><![CDATA[{0} لا توجد اي نتائج |{1} العثور على نتيجة وحيدة|]1,Inf] العثور على <strong>%count%</strong> نتيجة ]]></target>
+                <target><![CDATA[{0} لا توجد أيّ نتائج |{1} العثور على نتيجة وحيدة|{2} العثور على نتيجتين|]10,2] العثور على <strong>%count%</strong> نتائج|]10,Inf] العثور على <strong>%count%</strong> نتيجة ]]></target>
             </trans-unit>
 
             <!-- 'search' view -->
             <trans-unit id="search.no_results">
                 <source>search.no_results</source>
-                <target>لا توجد اي نتائج</target>
+                <target>لا توجد أيّ نتائج</target>
             </trans-unit>
 
             <!-- 'list' view -->
@@ -95,11 +95,11 @@
             <!-- user -->
             <trans-unit id="user.logged_in_as">
                 <source>user.logged_in_as</source>
-                <target>تسجيل الدخول باسم</target>
+                <target>تسجيل الدخول بإسم</target>
             </trans-unit>
             <trans-unit id="user.unnamed">
                 <source>user.unnamed</source>
-                <target>مستخدم بدون اسم</target>
+                <target>مستخدم بدون إسم</target>
             </trans-unit>
             <trans-unit id="user.anonymous">
                 <source>user.anonymous</source>
@@ -113,7 +113,7 @@
             </trans-unit>
             <trans-unit id="delete_modal.content">
                 <source>delete_modal.content</source>
-                <target>هذا الإجراء غير قابل للالغاء.</target>
+                <target>هذا الإجراء غير قابل للإلغاء.</target>
             </trans-unit>
             <trans-unit id="delete_modal.action">
                 <source>delete_modal.action</source>
@@ -133,29 +133,29 @@
             </trans-unit>
             <trans-unit id="errors">
                 <source>errors</source>
-                <target><![CDATA[{1} خطأ|]1,Inf] أخطاء ]]></target>
+                <target><![CDATA[{1} خطأ|{2} خطأن|]2,Inf] أخطاء ]]></target>
             </trans-unit>
             <trans-unit id="form.are_you_sure">
                 <source>form.are_you_sure</source>
-                <target>لم يتم حفظه التغييرات.</target>
+                <target>لم يتّم حفظ التغييرات.</target>
             </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
-                <target><![CDATA[{1} هناك عنصر آخر لم يتم عرضه في هذه القائمة|]1,Inf] عنصر آخر لم يتم عرضه في هذه القائمة %count% ]]></target>
+                <target><![CDATA[{1} هناك عنصر آخر لم يتمّ عرضه في هذه القائمة|{2} هناك عنصران أخران لم يتمّ عرضهما في هذه القائمة|]2,Inf] عناصر أخرى لم يتّم عرضها في هذه القائمة %count% ]]></target>
             </trans-unit>
 
             <!-- Login page -->
             <trans-unit id="login.username">
                 <source>login.username</source>
-                <target>Username</target>
+                <target>إسم المستخدم</target>
             </trans-unit>
             <trans-unit id="login.password">
                 <source>login.password</source>
-                <target>Password</target>
+                <target>كلمة السّر</target>
             </trans-unit>
             <trans-unit id="login.sign_in">
                 <source>login.sign_in</source>
-                <target>Sign in</target>
+                <target>تسجيل الدخول</target>
             </trans-unit>
         </body>
     </file>

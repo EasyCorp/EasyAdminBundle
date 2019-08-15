@@ -1,5 +1,5 @@
 # TEST
-# field desn't define its own file base_path but the parent entity does
+# field doesn't define its own file base_path but the parent entity does
 
 # CONFIGURATION
 easy_admin:

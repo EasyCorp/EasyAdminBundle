@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------
    This file defines the CSS variables used in the backend design.
    Most of the times, overriding some of these variables is all you need to
-   customize the design of your backends. However, beacuse of how Bootstrap 3
+   customize the design of your backends. However, because of how Bootstrap 3
    works, some styles can't be customized with CSS variables and you'll need
    to also customize the Sass variables defined in variables.scss.
  --------------------------------------------------------------------------- */

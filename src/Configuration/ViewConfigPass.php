@@ -225,10 +225,10 @@ class ViewConfigPass implements ConfigPassInterface
      */
     private function getFieldFormat($fieldType, array $backendConfig)
     {
-        if (\in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz'])) {
+        if (\in_array($fieldType, ['date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'datetime', 'datetime_immutable', 'datetimetz', 'datetimetz_immutable'])) {
+            $fieldType = ('_immutable' === mb_substr($fieldType, -10)) ? mb_substr($fieldType, 0, -10) : $fieldType;
             // make 'datetimetz' use the same format as 'datetime'
             $fieldType = ('datetimetz' === $fieldType) ? 'datetime' : $fieldType;
-            $fieldType = ('_immutable' === mb_substr($fieldType, -10)) ? mb_substr($fieldType, 0, -10) : $fieldType;
 
             return $backendConfig['formats'][$fieldType];
         }

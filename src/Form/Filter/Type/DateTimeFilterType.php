@@ -57,7 +57,7 @@ class DateTimeFilterType extends FilterType
                     }
                 }
 
-                if ($data['value'] instanceof \DateTime) {
+                if ($data['value'] instanceof \DateTimeInterface) {
                     if (DateType::class === $options['value_type']) {
                         // sqlite: Don't include time format for date comparison
                         $data['value'] = $data['value']->format('Y-m-d');

@@ -65,7 +65,7 @@ language for the backend?
 
 You must create an event listener or subscriber that sets the request locale
 before the translation service retrieves it, as explained in the following
-Smyfony Docs article: `How to Work with the User's Locale`_.
+Symfony Docs article: `How to Work with the User's Locale`_.
 
 Don't Apply Global Doctrine Filters in the Backend
 --------------------------------------------------

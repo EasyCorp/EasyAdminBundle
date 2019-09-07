@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-08-08T18:25:24Z
+
+@bnbc I'm trying to understand this feature. If you don't configure this option (see https://symfony.com/doc/current/bundles/EasyAdminBundle/book/configuration-reference.html#assets) no assets are included. So, if you don't want anything to be included, you just define an empty `design.assets.js` option, which is the default value too.
+
+So, what's your use case? Maybe you want to add some custom assets ... but only sometimes?
+
+---------------------------------------------------------------------------
+
+by bnbc at 2019-08-11T19:38:57Z
+
+I create my own system of embedded list so i have to load the template without assets js to not load them two times.

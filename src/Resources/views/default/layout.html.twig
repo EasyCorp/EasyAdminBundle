@@ -13,9 +13,11 @@
             <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
         {% endblock %}
 
-        {% for css_asset in easyadmin_config('design.assets.css') %}
-            <link rel="stylesheet" href="{{ asset(css_asset) }}">
-        {% endfor %}
+        {% block head_custom_stylesheets %}
+            {% for css_asset in easyadmin_config('design.assets.css') %}
+                <link rel="stylesheet" href="{{ asset(css_asset) }}">
+            {% endfor %}
+        {% endblock head_custom_stylesheets %}
 
         {% if easyadmin_config('design.brand_color') != 'hsl(230, 55%, 60%)' %}
         <style>
@@ -184,11 +186,11 @@
 
         {% block body_javascript %}{% endblock body_javascript %}
 
-        {% block body_design_assets_js %}
+        {% block body_custom_javascript %}
             {% for js_asset in easyadmin_config('design.assets.js') %}
                 <script src="{{ asset(js_asset) }}"></script>
             {% endfor %}
-        {% endblock body_design_assets_js %}
+        {% endblock body_custom_javascript %}
 
     </body>
     {% endblock body %}

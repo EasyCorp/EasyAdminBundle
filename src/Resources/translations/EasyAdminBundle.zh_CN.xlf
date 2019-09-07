@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>该字段的Getter方法缺失或该字段不是公共属性</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>空</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Немає геттера для цього поля або поле не публічне</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Пусто</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

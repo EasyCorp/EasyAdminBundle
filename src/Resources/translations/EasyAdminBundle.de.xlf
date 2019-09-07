@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Es gibt keine Getter-Methode für diese Eigenschaft oder die Eigenschaft ist nicht public.</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>kein Wert</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

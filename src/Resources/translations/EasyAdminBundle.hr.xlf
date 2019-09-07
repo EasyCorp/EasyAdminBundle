@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Getter metoda ne postoji za ovo polje ili vrijednost svojstva nije javna</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Prazno</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

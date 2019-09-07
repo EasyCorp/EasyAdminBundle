@@ -91,6 +91,11 @@
                 <source>label.inaccessible.explanation</source>
                 <target>متد Getter برای این فیلد موجود نیست و یا Property عمومی تعریف نشده است</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>هیچ</target>
+            </trans-unit>
+
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

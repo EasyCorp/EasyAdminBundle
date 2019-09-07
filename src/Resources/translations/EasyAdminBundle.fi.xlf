@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Arvo ei ole julkinen, tai sille ei ole asetettu get-metodia</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Ei mitään</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

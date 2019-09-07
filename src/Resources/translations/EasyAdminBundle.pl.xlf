@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target><![CDATA[Metoda pobierająca (<i>ang. getter</i>) nie istnieje  dla tego pola lub właściwość (<i>ang. property</i>) nie jest publiczna]]></target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Pusta wartość</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

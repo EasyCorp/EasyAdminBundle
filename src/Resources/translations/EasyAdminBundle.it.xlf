@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Il metodo getter non esiste per questo campo o la proprietà non è pubblica</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Nessun valore</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

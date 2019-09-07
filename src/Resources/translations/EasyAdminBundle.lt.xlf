@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Getter metodas neegzistuoja šiame lauke arba nuosavybė nėra vieša</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Nenurodyta</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

@@ -91,6 +91,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Der findes ingen getter metode for dette felt eller også er det ikke et tilgængeligt felt</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Ingen</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">

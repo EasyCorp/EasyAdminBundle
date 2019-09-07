@@ -95,6 +95,10 @@
                 <source>label.inaccessible.explanation</source>
                 <target>Este campo no tiene un método getter o la propiedad asociada no es pública</target>
             </trans-unit>
+            <trans-unit id="label.form.empty_value">
+                <source>label.form.empty_value</source>
+                <target>Ninguno</target>
+            </trans-unit>
 
             <!-- user -->
             <trans-unit id="user.logged_in_as">
@@ -237,8 +241,8 @@
                 <source>filter.label.contains</source>
                 <target>contiene</target>
             </trans-unit>
-            <trans-unit id="filter.filter.label.not_contains">
-                <source>filter.filter.label.not_contains</source>
+            <trans-unit id="filter.label.not_contains">
+                <source>filter.label.not_contains</source>
                 <target>no contiene</target>
             </trans-unit>
             <trans-unit id="filter.label.starts_with">

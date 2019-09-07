@@ -184,9 +184,12 @@
 
         {% block body_javascript %}{% endblock body_javascript %}
 
-        {% for js_asset in easyadmin_config('design.assets.js') %}
-            <script src="{{ asset(js_asset) }}"></script>
-        {% endfor %}
+        {% block body_design_assets_js %}
+            {% for js_asset in easyadmin_config('design.assets.js') %}
+                <script src="{{ asset(js_asset) }}"></script>
+            {% endfor %}
+        {% endblock body_design_assets_js %}
+
     </body>
     {% endblock body %}
 </html>

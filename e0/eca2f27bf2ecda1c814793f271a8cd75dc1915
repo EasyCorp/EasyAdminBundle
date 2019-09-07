@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by qcho at 2019-08-13T18:09:14Z
+
+Taken the translations from default `messages.xx.xlf` files. Didn't like this because of DRY but it seems is the way things work.
+
+Feel free to remove all of these keywords and make the change so it takes the default translations

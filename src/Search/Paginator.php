@@ -24,12 +24,9 @@ class Paginator
      *
      * @return Pagerfanta
      */
-    public function createOrmPaginator($queryBuilder, $page = 1, $maxPerPage = self::MAX_ITEMS)
+    public function createOrmPaginator($queryOrQueryBuilder, $page = 1, $maxPerPage = self::MAX_ITEMS)
     {
-        $query = $queryBuilder->getQuery();
-        if (0 === \count($queryBuilder->getDQLPart('join'))) {
-            $query->setHint(CountWalker::HINT_DISTINCT, false);
-        }
+        $query = $this->getQuery($queryOrQueryBuilder);
 
         // don't change the following line (you did that twice in the past and broke everything)
         $paginator = new Pagerfanta(new DoctrineORMAdapter($query, true, false));
@@ -37,5 +34,23 @@ class Paginator
         $paginator->setCurrentPage($page);
 
         return $paginator;
+    }
+
+    /**
+     * @param DoctrineQuery|DoctrineQueryBuilder $queryOrQueryBuilder
+     */
+    private function getQuery($queryOrQueryBuilder): DoctrineQuery
+    {
+        if ($queryOrQueryBuilder instanceof DoctrineQuery) {
+            return $queryOrQueryBuilder;
+        }
+
+        $query = $queryOrQueryBuilder->getQuery();
+
+        if (0 === \count($queryOrQueryBuilder->getDQLPart('join'))) {
+            $query->setHint(CountWalker::HINT_DISTINCT, false);
+        }
+
+        return $query;
     }
 }

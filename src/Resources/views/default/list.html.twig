@@ -126,7 +126,7 @@
 {% endblock content_header %}
 
 {% block main %}
-    {% set _fields_visible_by_user = fields|filter((metadata, field) => easyadmin_is_granted(metadata.permission)) %}
+    {% set _fields_visible_by_user = fields|filter((metadata, field) => easyadmin_is_granted(metadata.permission))|slice(0) %}
     {% set _number_of_hidden_results = 0 %}
     {% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity_config.name) %}
 

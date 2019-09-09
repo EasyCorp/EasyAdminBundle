@@ -42,7 +42,7 @@
 
         <service id="easyadmin.twig.extension" class="EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.config.manager" />
-            <argument type="service" id="property_accessor" />
+            <argument type="service" id="easyadmin.render_entity_field_property_accessor" />
             <argument type="service" id="easyadmin.router" />
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
@@ -122,6 +122,7 @@
         </service>
 
         <service id="easyadmin.property_accessor" alias="property_accessor" public="true" />
+        <service id="easyadmin.render_entity_field_property_accessor" alias="property_accessor" public="true" />
 
         <service id="EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController" class="EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController" public="true" autowire="true">
             <tag name="container.service_subscriber" />

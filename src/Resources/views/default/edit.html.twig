@@ -1,4 +1,8 @@
-{% form_theme form with easyadmin_config('design.form_theme') %}
+{% if easyadmin_config('design.form_theme_only') %}
+    {% form_theme form with easyadmin_config('design.form_theme') only %}
+{% else %}
+    {% form_theme form with easyadmin_config('design.form_theme') %}
+{% endif %}
 
 {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
 {% set _entity_id = attribute(entity, _entity_config.primary_key_field_name) %}

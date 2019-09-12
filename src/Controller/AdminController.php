@@ -797,7 +797,7 @@ class AdminController extends Controller
         }
 
         if (!method_exists($this, $methodName)) {
-            throw new \BadMethodCallException(sprintf('The %s method not exists in %s class', $methodName, get_class($this)));
+            throw new \BadMethodCallException(sprintf('The "%s()" method does not exist in the %s class', $methodName, get_class($this)));
         }
 
         return call_user_func_array(array($this, $methodName), $arguments);

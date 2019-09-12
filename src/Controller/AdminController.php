@@ -779,6 +779,8 @@ class AdminController extends Controller
      * @param array  $arguments         The arguments passed to the executed method
      *
      * @return mixed
+     *
+     * @throws \Exception
      */
     protected function executeDynamicMethod($methodNamePattern, array $arguments = array())
     {
@@ -792,6 +794,10 @@ class AdminController extends Controller
         if ($isDeprecatedMethod && isset($arguments[1]) && true !== $arguments[1]) {
             $newMethodName = strtolower(substr($methodName, 3));
             @trigger_error(sprintf('The %s method is deprecated since EasyAdmin 1.x and will be removed in 2.0. Use %s() instead', $methodName, $newMethodName), E_USER_DEPRECATED);
+        }
+
+        if (!method_exists($this, $methodName)) {
+            throw new \BadMethodCallException(sprintf('The %s method not exists in %s class', $methodName, get_class($this)));
         }
 
         return call_user_func_array(array($this, $methodName), $arguments);

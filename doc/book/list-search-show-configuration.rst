@@ -773,6 +773,8 @@ entity::
         }
     }
 
+.. TODO: explain and show an example of compound filter forms
+
 Property Types Defined by EasyAdmin
 -----------------------------------
 

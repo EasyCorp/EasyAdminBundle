@@ -26,8 +26,13 @@ class RtlTest extends AbstractTestCase
         );
 
         $this->assertSame(
-            '/bundles/easyadmin/app-rtl.css',
+            '/bundles/easyadmin/app.rtl.css',
             $crawler->filter('link[rel="stylesheet"]')->eq(1)->attr('href')
+        );
+
+        $this->assertSame(
+            '/bundles/easyadmin/app-custom-rtl.css',
+            $crawler->filter('link[rel="stylesheet"]')->eq(2)->attr('href')
         );
     }
 }

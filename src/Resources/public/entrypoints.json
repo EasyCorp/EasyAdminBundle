@@ -2,23 +2,25 @@
   "entrypoints": {
     "app": {
       "css": [
-        "./app.css"
+        "./app.css",
+        "./app.rtl.css"
       ],
       "js": [
         "./app.js"
       ]
     },
-    "app-rtl": {
+    "app-custom-rtl": {
       "css": [
-        "./app-rtl.css"
+        "./app-custom-rtl.css"
       ],
       "js": [
-        "./app-rtl.js"
+        "./app-custom-rtl.js"
       ]
     },
     "form-type-code-editor": {
       "css": [
-        "./form-type-code-editor.css"
+        "./form-type-code-editor.css",
+        "./form-type-code-editor.rtl.css"
       ],
       "js": [
         "./form-type-code-editor.js"
@@ -26,7 +28,8 @@
     },
     "form-type-text-editor": {
       "css": [
-        "./form-type-text-editor.css"
+        "./form-type-text-editor.css",
+        "./form-type-text-editor.rtl.css"
       ],
       "js": [
         "./form-type-text-editor.js"

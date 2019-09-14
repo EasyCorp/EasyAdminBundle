@@ -148,7 +148,12 @@ function createCodeEditorFields()
     codeEditorCss.setAttribute('rel', 'stylesheet');
     codeEditorCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl);
 
+    const codeEditorRtlCss = document.createElement('link');
+    codeEditorRtlCss.setAttribute('rel', 'stylesheet');
+    codeEditorRtlCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
+
     document.querySelector('head').appendChild(codeEditorCss);
+    document.querySelector('head').appendChild(codeEditorRtlCss);
     document.querySelector('body').appendChild(codeEditorJs);
 }
 
@@ -168,7 +173,12 @@ function createTextEditorFields()
     textEditorCss.setAttribute('rel', 'stylesheet');
     textEditorCss.setAttribute('href', textEditorElements[0].dataset.cssUrl);
 
+    const textEditorRtlCss = document.createElement('link');
+    textEditorRtlCss.setAttribute('rel', 'stylesheet');
+    textEditorRtlCss.setAttribute('href', textEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
+
     document.querySelector('head').appendChild(textEditorCss);
+    document.querySelector('head').appendChild(textEditorRtlCss);
     document.querySelector('body').appendChild(textEditorJs);
 }
 

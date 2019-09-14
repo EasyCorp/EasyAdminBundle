@@ -38,7 +38,7 @@
         "symfony/twig-bundle": "^4.2",
         "symfony/validator": "^4.2",
         "twig/extensions": "^1.5",
-        "twig/twig": "^2.11"
+        "twig/twig": "^2.11,>=2.11.3"
     },
     "require-dev": {
         "doctrine/data-fixtures": "^1.3",

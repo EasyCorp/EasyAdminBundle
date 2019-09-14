@@ -13,6 +13,21 @@ body {
     -moz-osx-font-smoothing: unset;
 }
 
+// Needed because we always add 'fa fa-' to the given icon name, so these
+// styles allow to override that with icon names such as 'symfony fab'
+i.fa, i.fas {
+    font-family: 'Font Awesome 5 Free' !important;
+}
+i.fab {
+    font-family: 'Font Awesome 5 Brands' !important;
+}
+i.far, i.fal {
+    font-family: 'Font Awesome 5 Pro' !important;
+}
+i.fad {
+    font-family: 'Font Awesome 5 Duotone' !important;
+}
+
 /* Layout
    ========================================================================= */
 .main-header { grid-area: header; }

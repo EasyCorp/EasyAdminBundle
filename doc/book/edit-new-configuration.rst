@@ -1022,8 +1022,8 @@ must use a special syntax inside ``extends`` to avoid an infinite loop:
         {# ... #}
     {% endblock %}
 
-Using your Own Templates to Display the list/search/show Views
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using your Own Templates to Display the edit/new Views
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Add the ``templates`` option (globally or only to some entities) to define the
 path of the Twig template used to render each part of the interface:

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|split('_')|first|default('en') }}">
+<html lang="{{ app.request.locale|split('_')|first|default('en') }}" dir="{{ easyadmin_config('design.rtl') ? 'rtl' : 'ltr' }}">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -35,7 +35,8 @@
         {% endblock head_javascript %}
 
         {% if easyadmin_config('design.rtl') %}
-            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app-rtl.css') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.rtl.css') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app-custom-rtl.css') }}">
         {% endif %}
     </head>
 

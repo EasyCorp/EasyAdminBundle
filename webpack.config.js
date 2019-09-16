@@ -1,4 +1,5 @@
 var Encore = require('@symfony/webpack-encore');
+const WebpackRTLPlugin = require('webpack-rtl-plugin');
 
 Encore
     .setOutputPath('./src/Resources/public/')
@@ -28,8 +29,15 @@ Encore
         pattern: /\.png$/
     })
 
+    .addPlugin(new WebpackRTLPlugin({
+        // this regexp matches all files except 'app-custom-rtl.css', which contains
+        // some RTL styles created manually because the plugin doesn't generate them yet
+        test: '^((?!(app-custom-rtl.css)).)*$',
+        diffOnly: true,
+    }))
+
     .addEntry('app', './assets/js/app.js')
-    .addEntry('app-rtl', './assets/js/app-rtl.js')
+    .addEntry('app-custom-rtl', './assets/js/app-custom-rtl.js')
     .addEntry('form-type-code-editor', './assets/js/form-type-code-editor.js')
     .addEntry('form-type-text-editor', './assets/js/form-type-text-editor.js')
 ;

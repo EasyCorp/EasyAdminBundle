@@ -8,6 +8,12 @@
             <tag name="cache.pool" />
         </service>
 
+        <service id="easyadmin.command.make_admin_migration" class="EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand" public="true">
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument>%kernel.project_dir%</argument>
+            <tag name="console.command" command="make:admin:migration" />
+        </service>
+
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument>%easyadmin.config%</argument>
             <argument>%kernel.debug%</argument>

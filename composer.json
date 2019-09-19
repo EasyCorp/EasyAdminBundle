@@ -52,6 +52,9 @@
         "symfony/var-dumper": "^4.2",
         "symfony/yaml": "^4.2"
     },
+    "conflict": {
+        "symfony/http-kernel": ">=5.0"
+    },
     "config": {
         "sort-packages": true
     },

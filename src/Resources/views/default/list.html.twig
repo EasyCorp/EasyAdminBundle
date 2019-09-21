@@ -113,6 +113,12 @@
         <div class="batch-actions" style="display: none">
             {% form_theme batch_form with easyadmin_config('design.form_theme') only %}
             {{ form(batch_form) }}
+
+            {{ include('@EasyAdmin/default/includes/_batch_action_modal.html.twig', {
+                _translation_domain: _entity_config.translation_domain,
+                _trans_parameters: _trans_parameters,
+                _entity_config: _entity_config,
+            }, with_context = false) }}
         </div>
     {% endif %}
 {% endblock batch_actions %}
@@ -361,6 +367,19 @@
 
                 $input.val(ids.join(','));
                 $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
+            });
+
+            $('button[name="batch_form[name]"].ask-confirm-batch-button').on('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                let $button = $(this);
+
+                $('#modal-batch-action').modal({ backdrop : true, keyboard : true })
+                    .off('click', '#modal-batch-action-button')
+                    .on('click', '#modal-batch-action-button', function () {
+                        $button.unbind('click');
+                        $button.trigger('click');
+                    });
             });
             {% endif %}
         });

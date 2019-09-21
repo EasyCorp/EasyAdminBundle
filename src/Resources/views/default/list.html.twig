@@ -111,11 +111,7 @@
 {% block batch_actions %}
     {% if _has_batch_actions %}
         <div class="batch-actions" style="display: none">
-            {% if easyadmin_config('design.form_theme_only') %}
-                {% form_theme batch_form with easyadmin_config('design.form_theme') only %}
-            {% else %}
-                {% form_theme batch_form with easyadmin_config('design.form_theme') %}
-            {% endif %}
+            {% form_theme batch_form with easyadmin_config('design.form_theme') only %}
             {{ form(batch_form) }}
         </div>
     {% endif %}

@@ -5,6 +5,14 @@ This document describes the backwards incompatible changes introduced by each
 EasyAdminBundle version and the needed changes to be made before upgrading to
 the next version.
 
+Upgrade to 2.3.1
+----------------
+
+* The forms now apply the form themes with the `only` keyword, meaning that the
+  application form themes are no longer applied to them. If you need some custom
+  form themes in the backend, use the `form_theme` option to add them.
+  See https://symfony.com/doc/master/bundles/EasyAdminBundle/book/configuration-reference.html#form-theme
+
 Upgrade to 2.2.2
 ----------------
 

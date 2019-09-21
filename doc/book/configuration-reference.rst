@@ -24,7 +24,6 @@ config key:
 
   * `brand_color`_
   * `form_theme`_
-  * `form_theme_only`_
 * `assets`_
 
   * `css`_
@@ -270,31 +269,25 @@ form_theme
 (**default value**: ``'@EasyAdmin/form/bootstrap_4.html.twig'``, **type**: string or array of strings,
 **values**: any valid form theme template path)
 
-The form theme used to render the form fields in the ``edit`` and ``new`` views.
-By default forms use the design created by EasyAdmin, but you can use your own
-form themes and the default Symfony form theme for Bootstrap 4 too:
+The ``edit`` and ``new`` forms use a custom form theme that matches the backend
+design. EasyAdmin also uses a Symfony feature to `disable the global form themes`_
+in those forms so they don't mess with the rest of your application form themes.
+
+You can add your own themes to the backend forms and you can even replace the
+custom theme entirely:
 
 .. code-block:: yaml
 
     easy_admin:
         design:
-            # using your own custom form theme
+            # using only your own custom form theme (disables the default theme)
             form_theme: '@App/custom_form_theme.html.twig'
 
-            # using multiple custom form themes
+            # using only multiple custom form themes (disables the default theme)
             form_theme: ['@App/custom_form_theme.html.twig', '@Acme/form/global_theme.html.twig']
 
             # using EasyAdmin theme and your own custom theme
             form_theme: ['@EasyAdmin/form/bootstrap_4.html.twig', '@App/custom_form_theme.html.twig']
-
-form_theme_only
-~~~~~~~~~~~~~~~
-
-(**default value**: ``false``, **type**: boolean)
-
-If set to ``true``, only the form themes defined for this bundle will be used
-to render the forms. This is especially useful when you don't want your global
-Twig form themes interfering with your admin forms.
 
 assets
 ~~~~~~
@@ -616,3 +609,4 @@ Defines the list of entities managed by the bundle.
 
 .. _`PropertyAccess component`: https://symfony.com/components/PropertyAccess
 .. _`Symfony translation domain`: https://symfony.com/doc/current/components/translation.html#using-message-domains
+.. _`disable the global form themes`: https://symfony.com/doc/current/form/form_themes.html#disabling-global-themes-for-single-forms

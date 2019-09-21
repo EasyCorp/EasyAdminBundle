@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-09-10T18:31:29Z
+
+Just asking: if we add the `only` keyword in our EasyAdmin templates (as explained in https://symfony.com/blog/new-in-symfony-3-4-disable-global-form-themes) would that fix the problem?
+
+---------------------------------------------------------------------------
+
+by tbmatuka at 2019-09-10T18:42:04Z
+
+@javiereguiluz that's exactly what I did, but I wrapped it in an `if` that checks this new config option to avoid a BC break. If someone is actually using global forms in admin (for example ckeditor or something), setting `only` as default would break their admin.
+
+---------------------------------------------------------------------------
+
+by tbmatuka at 2019-09-20T22:44:20Z
+
+@javiereguiluz I rebased my branch and force pushed it. Can you please take a look and merge it if you're OK with everything?

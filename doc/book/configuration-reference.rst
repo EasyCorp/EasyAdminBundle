@@ -24,6 +24,7 @@ config key:
 
   * `brand_color`_
   * `form_theme`_
+  * `form_theme_only`_
 * `assets`_
 
   * `css`_
@@ -270,7 +271,7 @@ form_theme
 **values**: any valid form theme template path)
 
 The form theme used to render the form fields in the ``edit`` and ``new`` views.
-By default forms use the design created by EasyAdmin, buy you can use your own
+By default forms use the design created by EasyAdmin, but you can use your own
 form themes and the default Symfony form theme for Bootstrap 4 too:
 
 .. code-block:: yaml
@@ -285,6 +286,15 @@ form themes and the default Symfony form theme for Bootstrap 4 too:
 
             # using EasyAdmin theme and your own custom theme
             form_theme: ['@EasyAdmin/form/bootstrap_4.html.twig', '@App/custom_form_theme.html.twig']
+
+form_theme_only
+~~~~~~~~~~~~~~~
+
+(**default value**: ``false``, **type**: boolean)
+
+If set to ``true``, only the form themes defined for this bundle will be used
+to render the forms. This is especially useful when you don't want your global
+Twig form themes interfering with your admin forms.
 
 assets
 ~~~~~~

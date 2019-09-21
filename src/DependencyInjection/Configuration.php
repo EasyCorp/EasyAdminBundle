@@ -156,6 +156,12 @@ class Configuration implements ConfigurationInterface
                             ->validate()->castToArray()->end()
                         ->end()
 
+                        ->booleanNode('form_theme_only')
+                            ->defaultValue(false)
+                            ->treatNullLike(false)
+                            ->info('If true, global Twig form themes will not be used.')
+                        ->end()
+
                         ->arrayNode('assets')
                             ->addDefaultsIfNotSet()
                             ->children()

@@ -339,8 +339,9 @@ class EasyAdminTwigExtension extends AbstractExtension
         } catch (\Exception $e) {
             return false;
         }
-        
+
         $isGranted = (!isset($entityConfig[$action]) || !isset($entityConfig[$action]['item_permission']) || $this->isGranted($entityConfig[$action]['item_permission']));
+
         return $this->configManager->isActionEnabled($entityName, $view, $action) && $isGranted;
     }
 

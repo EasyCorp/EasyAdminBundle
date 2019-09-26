@@ -73,7 +73,7 @@ trait AdminControllerTrait
             throw new ForbiddenActionException(['action' => $action, 'entity_name' => $this->entity['name']]);
         }
 
-        if (\in_array($action, ['show', 'edit', 'new'])) {
+        if (\in_array($action, ['list', 'show', 'edit', 'new'])) {
             $id = $this->request->query->get('id');
             $entity = $this->request->attributes->get('easyadmin')['item'];
             $requiredPermission = $this->entity[$action]['item_permission'];

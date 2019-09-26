@@ -89,7 +89,7 @@ class ViewConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
-                    if (!isset($fieldConfig['label']) && 'id' === $fieldConfig['property']) {
+                    if (!isset($fieldConfig['label']) && isset($fieldConfig['property']) && 'id' === $fieldConfig['property']) {
                         // if the field is called 'id' and doesn't define a custom label, use 'ID' as label to
                         // improve the readability of the label, which is usually related to a primary key
                         $fieldConfig['label'] = 'ID';
@@ -97,7 +97,7 @@ class ViewConfigPass implements ConfigPassInterface
                         // if the label is the special value 'false', label must be hidden (use an empty string as the label)
                         $fieldConfig['label'] = '';
                         $fieldConfig['sortable'] = false;
-                    } elseif (null === $fieldConfig['label'] && 0 !== strpos($fieldConfig['property'], '_easyadmin_form_design_element_')) {
+                    } elseif (null === $fieldConfig['label'] && isset($fieldConfig['property']) && 0 !== strpos($fieldConfig['property'], '_easyadmin_form_design_element_')) {
                         // else, generate the label automatically from its name (except if it's a
                         // special element created to render complex forms)
                         $fieldConfig['label'] = $this->humanize($fieldConfig['property']);

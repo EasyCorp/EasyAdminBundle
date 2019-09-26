@@ -26,7 +26,7 @@ class ArrayFilterTypeTest extends FilterTypeTest
         $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'array']);
         $this->assertSame(static::FILTER_TYPE, \get_class($filter));
         $this->assertSame($dql, $this->qb->getDQL());
-        $this->assertEquals($params, $this->qb->getParameters()->toArray());
+        $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
     }
 
     public function getDataProvider(): iterable
@@ -36,7 +36,7 @@ class ArrayFilterTypeTest extends FilterTypeTest
             ['comparison' => 'like', 'value' => ['bar']],
             [],
             'SELECT o FROM Object o WHERE o.foo like :foo_1',
-            [new Parameter('foo_1', '%"bar"%', \PDO::PARAM_STR)],
+            [new Parameter('foo_1', '%"bar"%')],
         ];
 
         yield [
@@ -45,8 +45,8 @@ class ArrayFilterTypeTest extends FilterTypeTest
             [],
             'SELECT o FROM Object o WHERE o.foo not like :foo_1 OR o.foo not like :foo_2 OR o.foo IS NULL',
             [
-                new Parameter('foo_1', '%"foo"%', \PDO::PARAM_STR),
-                new Parameter('foo_2', '%"bar"%', \PDO::PARAM_STR),
+                new Parameter('foo_1', '%"foo"%'),
+                new Parameter('foo_2', '%"bar"%'),
             ],
         ];
 
@@ -79,7 +79,7 @@ class ArrayFilterTypeTest extends FilterTypeTest
                 ],
             ],
             'SELECT o FROM Object o WHERE o.foo like :foo_1',
-            [new Parameter('foo_1', '%"b"%', \PDO::PARAM_STR)],
+            [new Parameter('foo_1', '%"b"%')],
         ];
 
         yield [
@@ -93,8 +93,8 @@ class ArrayFilterTypeTest extends FilterTypeTest
             ],
             'SELECT o FROM Object o WHERE o.foo not like :foo_1 OR o.foo not like :foo_2 OR o.foo IS NULL',
             [
-                new Parameter('foo_1', '%"a"%', \PDO::PARAM_STR),
-                new Parameter('foo_2', '%"c"%', \PDO::PARAM_STR),
+                new Parameter('foo_1', '%"a"%'),
+                new Parameter('foo_2', '%"c"%'),
             ],
         ];
     }

@@ -29,7 +29,7 @@ class DateTimeFilterTypeTest extends FilterTypeTest
             $filter->filter($this->qb, $form, ['property' => 'foo']);
             $this->assertSame(static::FILTER_TYPE, \get_class($filter));
             $this->assertSame($dql, $this->qb->getDQL());
-            $this->assertEquals($params, $this->qb->getParameters()->toArray());
+            $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
         } else {
             $this->assertSame($expectedError, $form->getTransformationFailure()->getMessage());
         }

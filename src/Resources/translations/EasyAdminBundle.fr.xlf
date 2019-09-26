@@ -289,6 +289,12 @@
                 <source>filter.label.is_before_or_same</source>
                 <target>est antérieure à ou est le</target>
             </trans-unit>
+
+            <!-- security -->
+            <trans-unit id="security.list.hidden_results">
+                <source>security.list.hidden_results</source>
+                <target>Certains résultats ne peuvent pas être affichés car vous n'avez pas la permission</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

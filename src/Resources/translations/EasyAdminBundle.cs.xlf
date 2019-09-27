@@ -107,7 +107,7 @@
             </trans-unit>
             <trans-unit id="user.unnamed">
                 <source>user.unnamed</source>
-                <target>Nepojmenovný uživatel</target>
+                <target>Nepojmenovaný uživatel</target>
             </trans-unit>
             <trans-unit id="user.anonymous">
                 <source>user.anonymous</source>

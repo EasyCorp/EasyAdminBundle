@@ -92,14 +92,17 @@ class EasyAdminFormType extends AbstractType
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
             if (\in_array($formFieldType, ['easyadmin_tab', EasyAdminTabType::class])) {
-                // The first tab should be marked as active by default
-                $metadata['active'] = 0 === \count($formTabs);
-                $metadata['errors'] = 0;
-                $currentFormTab = $metadata['fieldName'];
+                // Only do this if allowed.
+                if ($this->authorizationChecker->isGranted($metadata['permission'], $entity)) {
+                    // The first tab should be marked as active by default
+                    $metadata['active'] = 0 === \count($formTabs);
+                    $metadata['errors'] = 0;
+                    $currentFormTab = $metadata['fieldName'];
 
-                // plain arrays are not enough for tabs because they are modified in the
-                // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.
-                $formTabs[$currentFormTab] = new ArrayObject($metadata);
+                    // plain arrays are not enough for tabs because they are modified in the
+                    // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.
+                    $formTabs[$currentFormTab] = new ArrayObject($metadata);
+                }
 
                 continue;
             }

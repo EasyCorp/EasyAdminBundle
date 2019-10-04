@@ -235,7 +235,7 @@ trait AdminControllerTrait
             $this->executeDynamicMethod('update<EntityName>Entity', [$entity, $editForm]);
             $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity]);
 
-            return $this->redirectToReferrer();
+            return $this->executeDynamicMethod('redirectAfterEdit<EntityName>Entity', [$entity]);
         }
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
@@ -308,7 +308,7 @@ trait AdminControllerTrait
             $this->executeDynamicMethod('persist<EntityName>Entity', [$entity, $newForm]);
             $this->dispatch(EasyAdminEvents::POST_PERSIST, ['entity' => $entity]);
 
-            return $this->redirectToReferrer();
+            return $this->executeDynamicMethod('redirectAfterNew<EntityName>Entity', [$entity]);
         }
 
         $this->dispatch(EasyAdminEvents::POST_NEW, [
@@ -912,6 +912,30 @@ trait AdminControllerTrait
         }
 
         return \call_user_func_array([$this, $methodName], $arguments);
+    }
+
+    /**
+     * Redirect after a new entity have been persisted.
+     *
+     * @param mixed $entity
+     *
+     * @return RedirectResponse
+     */
+    protected function redirectAfterNewEntity($entity)
+    {
+        return $this->redirectToReferrer();
+    }
+
+    /**
+     * Redirect after an existing entity have been updated.
+     *
+     * @param mixed $entity
+     *
+     * @return RedirectResponse
+     */
+    protected function redirectAfterEditEntity($entity)
+    {
+        return $this->redirectToReferrer();
     }
 
     /**

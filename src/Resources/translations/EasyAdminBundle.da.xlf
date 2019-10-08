@@ -57,6 +57,10 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> af <strong>%results%</strong>]]></target>
             </trans-unit>
+            <trans-unit id="paginator.results">
+                <source>paginator.results</source>
+                <target><![CDATA[{0} Ingen resultater|{1} <strong>1</strong> resultat|]1,Inf] <strong>%count%</strong> resultater]]></target>
+            </trans-unit>
 
             <!-- labels -->
             <trans-unit id="label.true">
@@ -90,10 +94,6 @@
             <trans-unit id="label.inaccessible.explanation">
                 <source>label.inaccessible.explanation</source>
                 <target>Der findes ingen getter metode for dette felt eller også er det ikke et tilgængeligt felt</target>
-            </trans-unit>
-            <trans-unit id="label.form.empty_value">
-                <source>label.form.empty_value</source>
-                <target>Ingen</target>
             </trans-unit>
 
             <!-- user -->
@@ -151,6 +151,10 @@
                 <source>form.are_you_sure</source>
                 <target>Du har ikke gemt ændringerne til denne form.</target>
             </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>En ugyldig indtastning|%count% ugyldige indtastninger</target>
+            </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} der er et andet emne der ikke vises i denne liste|]1,Inf] der er %count% andre emner der ikke vises i denne liste]]></target>
@@ -177,6 +181,10 @@
                 <source>exception.undefined_entity</source>
                 <target>Applikationen er ikke korrekt konfigureret for denne type emner.</target>
             </trans-unit>
+            <trans-unit id="exception.no_permission">
+                <source>exception.no_permission</source>
+                <target>Du har ikke nok rettigheder til at gøre dette.</target>
+            </trans-unit>
 
             <!-- Login page -->
             <trans-unit id="login.username">
@@ -190,6 +198,102 @@
             <trans-unit id="login.sign_in">
                 <source>login.sign_in</source>
                 <target>Sign in</target>
+            </trans-unit>
+
+            <!-- filters -->
+            <trans-unit id="filter.title">
+                <source>filter.title</source>
+                <target>Filtre</target>
+            </trans-unit>
+            <trans-unit id="filter.button.clear">
+                <source>filter.button.clear</source>
+                <target>Ryd</target>
+            </trans-unit>
+            <trans-unit id="filter.button.apply">
+                <source>filter.button.apply</source>
+                <target>Aktiver</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_equal_to">
+                <source>filter.label.is_equal_to</source>
+                <target>er lig med</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_equal_to">
+                <source>filter.label.is_not_equal_to</source>
+                <target>er ikke lig med</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than">
+                <source>filter.label.is_greater_than</source>
+                <target>er større end</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_greater_than_or_equal_to">
+                <source>filter.label.is_greater_than_or_equal_to</source>
+                <target>er større end eller lig med</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than">
+                <source>filter.label.is_less_than</source>
+                <target>er mindre end</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_less_than_or_equal_to">
+                <source>filter.label.is_less_than_or_equal_to</source>
+                <target>er mindre end eller lig med</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_between">
+                <source>filter.label.is_between</source>
+                <target>er i mellem</target>
+            </trans-unit>
+            <trans-unit id="filter.label.contains">
+                <source>filter.label.contains</source>
+                <target>indeholder</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_contains">
+                <source>filter.label.not_contains</source>
+                <target>indeholder ikke</target>
+            </trans-unit>
+            <trans-unit id="filter.label.starts_with">
+                <source>filter.label.starts_with</source>
+                <target>starter med</target>
+            </trans-unit>
+            <trans-unit id="filter.label.ends_with">
+                <source>filter.label.ends_with</source>
+                <target>slutter med</target>
+            </trans-unit>
+            <trans-unit id="filter.label.exactly">
+                <source>filter.label.exactly</source>
+                <target>præcis</target>
+            </trans-unit>
+            <trans-unit id="filter.label.not_exactly">
+                <source>filter.label.not_exactly</source>
+                <target>ikke præcis</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_same">
+                <source>filter.label.is_same</source>
+                <target>er samme som</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_not_same">
+                <source>filter.label.is_not_same</source>
+                <target>er ikke samme som</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after">
+                <source>filter.label.is_after</source>
+                <target>er efter</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_after_or_same">
+                <source>filter.label.is_after_or_same</source>
+                <target>er efter eller samme som</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before">
+                <source>filter.label.is_before</source>
+                <target>er før</target>
+            </trans-unit>
+            <trans-unit id="filter.label.is_before_or_same">
+                <source>filter.label.is_before_or_same</source>
+                <target>er før eller samme som</target>
+            </trans-unit>
+
+            <!-- security -->
+            <trans-unit id="security.list.hidden_results">
+                <source>security.list.hidden_results</source>
+                <target>Nogle resultater kan ikke vises fordi du ikke har nok rettigheder</target>
             </trans-unit>
         </body>
     </file>

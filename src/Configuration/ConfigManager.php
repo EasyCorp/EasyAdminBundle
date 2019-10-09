@@ -64,7 +64,7 @@ final class ConfigManager
     {
         $backendConfig = $this->getBackendConfig();
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            if ($entityConfig['class'] === $fqcn) {
+            if ($entityConfig['class'] === $fqcn || $entityName === $fqcn) {
                 return $entityConfig;
             }
         }

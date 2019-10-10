@@ -2,10 +2,10 @@
 
 ## Supported Versions
 
-| Version | Supported          |
+| Branch  | Supported          |
 | ------- | ------------------ |
-| 1.x     | :white_check_mark: |
-| 2.x     | :white_check_mark: |
+| 1.x     | No                 |
+| master  | Yes                |
 
 ## Reporting a Vulnerability
 

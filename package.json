@@ -11,7 +11,7 @@
     "node-sass": "^4.9.4",
     "popper.js": "^1.14.5",
     "sass-loader": "^7.1.0",
-    "select2": "4.0.5",
+    "select2": "4.0.10",
     "select2-bootstrap-theme": "^0.1.0-beta.10",
     "trix": "^1.1.1",
     "webpack-rtl-plugin": "^2.0.0"

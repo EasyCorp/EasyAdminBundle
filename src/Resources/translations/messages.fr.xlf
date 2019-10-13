@@ -31,6 +31,10 @@
                 <source>action.cancel</source>
                 <target>Annuler</target>
             </trans-unit>
+            <trans-unit id="action.continue">
+                <source>action.continue</source>
+                <target>Continuer</target>
+            </trans-unit>
             <trans-unit id="action.list">
                 <source>action.list</source>
                 <target>Retour à la liste</target>

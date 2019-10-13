@@ -27,6 +27,10 @@
                 <source>action.save</source>
                 <target>Save changes</target>
             </trans-unit>
+            <trans-unit id="action.continue">
+                <source>action.continue</source>
+                <target>Continue</target>
+            </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>
                 <target>Cancel</target>

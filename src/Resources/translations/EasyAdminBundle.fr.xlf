@@ -137,15 +137,11 @@
             </trans-unit>
             <trans-unit id="batch_action_modal.title">
                 <source>batch_action_modal.title</source>
-                <target>Voulez-vous vraiment modifier les éléments sélectionnés?</target>
+                <target>Vous allez appliquer l'action "%action_name%" à %num_items% élément(s).</target>
             </trans-unit>
             <trans-unit id="batch_action_modal.content">
                 <source>batch_action_modal.content</source>
                 <target>Cette action est irréversible.</target>
-            </trans-unit>
-            <trans-unit id="batch_action_modal.action">
-                <source>batch_action_modal.action</source>
-                <target>Procéder</target>
             </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>

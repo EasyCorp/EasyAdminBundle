@@ -131,6 +131,14 @@
                 <source>delete_modal.action</source>
                 <target>Borrar</target>
             </trans-unit>
+            <trans-unit id="batch_action_modal.title">
+                <source>batch_action_modal.title</source>
+                <target>Se va a aplicar la acción "%action_name%" a %num_items% elemento(s).</target>
+            </trans-unit>
+            <trans-unit id="batch_action_modal.content">
+                <source>batch_action_modal.content</source>
+                <target>Esta acción no se puede deshacer.</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Añadir un elemento</target>

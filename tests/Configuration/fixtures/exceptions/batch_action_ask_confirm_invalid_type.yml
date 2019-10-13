@@ -1,0 +1,15 @@
+# TEST
+# the "ask_confirm" item of the batch actions cannot contain non boolean value
+
+# EXCEPTION
+expected_exception:
+    class: InvalidArgumentException
+    message_string: 'Batch actions only bool or null value for "ask_confirm" type, "string" given.'
+
+# CONFIGURATION
+easy_admin:
+    list:
+        batch_actions:
+            - { name: 'delete', ask_confirm: 'true' }
+    entities:
+        TestEntity: AppTestBundle\Entity\UnitTests\Category

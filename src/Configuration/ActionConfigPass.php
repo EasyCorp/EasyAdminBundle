@@ -28,6 +28,8 @@ class ActionConfigPass implements ConfigPassInterface
         'target' => '_self',
         // the value of the template. Will be set in the TemplateConfigPass, if value will stay null.
         'template' => null,
+        // if a confirmation should be asked before the action is executed. For delet
+        'ask_confirm' => null,
     ];
 
     public function process(array $backendConfig)
@@ -137,8 +139,14 @@ class ActionConfigPass implements ConfigPassInterface
 
         $backendConfig['list']['batch_actions'] = $batchActionsConfig;
         foreach ($backendConfig['list']['batch_actions'] as $actionName => $actionConfig) {
-            if (null === $actionConfig['css_class'] && 'delete' === $actionName) {
-                $backendConfig['list']['batch_actions'][$actionName]['css_class'] = 'btn-danger';
+            if ('delete' === $actionName) {
+                if (null === $actionConfig['css_class']) {
+                    $backendConfig['list']['batch_actions'][$actionName]['css_class'] = 'btn-danger';
+                }
+
+                if (null === $actionConfig['ask_confirm']) {
+                    $backendConfig['list']['batch_actions'][$actionName]['ask_confirm'] = true;
+                }
             }
         }
 
@@ -148,8 +156,14 @@ class ActionConfigPass implements ConfigPassInterface
             $batchActionsConfig = $this->doNormalizeActionsConfig($batchActionsConfig, sprintf('the "list" view of the "%s" entity', $entityName));
 
             foreach ($batchActionsConfig as $actionName => $actionConfig) {
-                if (null === $actionConfig['css_class'] && 'delete' === $actionName) {
-                    $batchActionsConfig[$actionName]['css_class'] = 'btn-danger';
+                if ('delete' === $actionName) {
+                    if (null === $actionConfig['css_class']) {
+                        $batchActionsConfig[$actionName]['css_class'] = 'btn-danger';
+                    }
+
+                    if (null === $actionConfig['ask_confirm']) {
+                        $batchActionsConfig[$actionName]['ask_confirm'] = true;
+                    }
                 }
             }
 
@@ -368,6 +382,10 @@ class ActionConfigPass implements ConfigPassInterface
                 // check that its value complies with the PHP method name rules
                 if (!$this->isValidMethodName($actionName)) {
                     throw new \InvalidArgumentException(sprintf('The name of the "%s" action defined in the "list" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $actionName, $entityName));
+                }
+
+                if (null !== $actionConfig['ask_confirm'] && !is_bool($actionConfig['ask_confirm'])) {
+                    throw new \InvalidArgumentException(sprintf('Batch actions only bool or null value for "ask_confirm" type, "%s" given.', gettype($actionConfig['ask_confirm'])));
                 }
 
                 $backendConfig['entities'][$entityName]['list']['batch_actions'][$actionName] = $actionConfig;

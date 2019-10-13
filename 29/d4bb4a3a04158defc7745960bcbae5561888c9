@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2019-09-25T17:47:54Z
+
+Thanks for this contribution!
+
+I was thinking of this feature as optional, so actions could define an option (e.g. `ask_confirm`) which defaults to `false` (except for the `delete` batch action, which defaults to `true`). If this option is `true`, the modal is displayed.
+
+@fsoedjede I haven't looked at this in detail ... but do you think that adding this option could be possible without complicating things much? Thanks.
+
+---------------------------------------------------------------------------
+
+by fsoedjede at 2019-09-25T18:56:09Z
+
+Thanks for the reply.
+
+I think it's possible.
+When digging into the code, one question comes to me. Should `ask_confirm` be added to the default action config array (see: https://github.com/EasyCorp/EasyAdminBundle/blob/master/src/Configuration/ActionConfigPass.php#L14)?
+For me, it should but that would mean implementing the functionality for each action. Maybe in another PR as this on is excepted to be only about batch actions?
+
+I will make a proposal adding `ask_confirm` to the default action config and if it's not ok, I will made the changes following your guidance.
+
+Edit: I've updated the PR. You can check when you have some time. Thanks

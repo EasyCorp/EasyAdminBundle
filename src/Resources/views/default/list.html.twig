@@ -369,16 +369,26 @@
                 $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
             });
 
-            $('button[name="batch_form[name]"].ask-confirm-batch-button').on('click', function (event) {
+            let modalTitle = $('#batch-action-confirmation-title');
+            const titleContentWithPlaceholders = modalTitle.text();
+            $('button[name="batch_form[name]"].batch-action-requires-confirmation').on('click', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
                 let $button = $(this);
+
+                const actionName = $button.text();
+                const numberOfSelectedItems = $('input[type="checkbox"].form-batch-checkbox:checked').length;
+                modalTitle.text(titleContentWithPlaceholders
+                    .replace('%action_name%', actionName)
+                    .replace('%num_items%', numberOfSelectedItems));
 
                 $('#modal-batch-action').modal({ backdrop : true, keyboard : true })
                     .off('click', '#modal-batch-action-button')
                     .on('click', '#modal-batch-action-button', function () {
                         $button.unbind('click');
                         $button.trigger('click');
+
+                        modalTitle.text(titleContentWithPlaceholders);
                     });
             });
             {% endif %}

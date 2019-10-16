@@ -135,6 +135,14 @@
                 <source>delete_modal.action</source>
                 <target>Verwijder</target>
             </trans-unit>
+            <trans-unit id="batch_action_modal.title">
+                <source>batch_action_modal.title</source>
+                <target>U gaat de "%action_name%" actie toepassen op %num_items% item(s).</target>
+            </trans-unit>
+            <trans-unit id="batch_action_modal.content">
+                <source>batch_action_modal.content</source>
+                <target>U kunt deze actie niet ongedaan maken.</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Voeg een item toe</target>
@@ -184,6 +192,10 @@
             <trans-unit id="exception.undefined_entity">
                 <source>exception.undefined_entity</source>
                 <target>De applicatie is niet juist geconfigureerd voor dit type items.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_permission">
+                <source>exception.no_permission</source>
+                <target>U heeft niet genoeg rechten om dit te doen.</target>
             </trans-unit>
 
             <!-- Login page -->

@@ -24,9 +24,15 @@ unprecedented simplicity.
   * Doctrine ORM entities (Doctrine ODM not supported).
   * Entities with composite keys or using inheritance are not supported.
 
-If your application uses a Symfony version older than 4.1, check out the
-[1.x version of this bundle](https://github.com/EasyCorp/EasyAdminBundle/tree/1.x)
-which is compatible with Symfony 2.x, 3.x and 4.x.
+Versions
+--------
+
+* [1.x version](https://github.com/EasyCorp/EasyAdminBundle/tree/1.x): no longer
+  maintained. Recommended only for legacy projects using a Symfony version prior to 4.1;
+* [2.x version](https://github.com/EasyCorp/EasyAdminBundle/tree/2.x): the current
+  stable version. Recommended for all projects using Symfony 4.1 or newer;
+* [3.x version](https://github.com/EasyCorp/EasyAdminBundle/tree/master): it's
+  still in early development. Don't use it in any project yet.
 
 Demo Application
 ----------------

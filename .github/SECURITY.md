@@ -5,6 +5,7 @@
 | Branch  | Supported          |
 | ------- | ------------------ |
 | 1.x     | No                 |
+| 2.x     | Yes                |
 | master  | Yes                |
 
 ## Reporting a Vulnerability

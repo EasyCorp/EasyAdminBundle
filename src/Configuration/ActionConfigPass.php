@@ -384,8 +384,8 @@ class ActionConfigPass implements ConfigPassInterface
                     throw new \InvalidArgumentException(sprintf('The name of the "%s" action defined in the "list" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $actionName, $entityName));
                 }
 
-                if (null !== $actionConfig['ask_confirm'] && !is_bool($actionConfig['ask_confirm'])) {
-                    throw new \InvalidArgumentException(sprintf('Batch actions only bool or null value for "ask_confirm" type, "%s" given.', gettype($actionConfig['ask_confirm'])));
+                if (null !== $actionConfig['ask_confirm'] && !\is_bool($actionConfig['ask_confirm'])) {
+                    throw new \InvalidArgumentException(sprintf('The value of the "ask_confirm" option in the "%s" batch action of the "%s" entity can only be null or a boolean, "%s" given.', $actionName, $entityName, \gettype($actionConfig['ask_confirm'])));
                 }
 
                 $backendConfig['entities'][$entityName]['list']['batch_actions'][$actionName] = $actionConfig;

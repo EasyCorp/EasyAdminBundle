@@ -48,10 +48,12 @@ designed:
 
 .. code-block:: yaml
 
-    # config/packages/twig.yaml
-    twig:
-        form_themes:
-            - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        design:
+            form_theme:
+                - '@EasyAdmin/form/bootstrap_4.html.twig'
+                - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
 
 Using the Rich Text Editor
 --------------------------

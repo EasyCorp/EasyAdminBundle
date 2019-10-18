@@ -1,8 +1,0 @@
-easy_admin:
-    entities:
-        Category:
-            class: AppTestBundle\Entity\UnitTests\Category
-            list:
-                dql_filter: null
-            search:
-                dql_filter: null

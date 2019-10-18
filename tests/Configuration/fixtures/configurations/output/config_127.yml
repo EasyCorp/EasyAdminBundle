@@ -1,9 +1,0 @@
-easy_admin:
-    edit:
-        actions:
-            delete:
-                name: delete
-                type: method
-                label: action.delete
-                css_class: custom-class
-                icon: custom-icon

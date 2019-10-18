@@ -1,6 +1,0 @@
-easy_admin:
-    entities:
-        Category:
-            class: AppTestBundle\Entity\UnitTests\Category
-            list:
-                filters: { 'id': { property: 'id', type: 'EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType' } }

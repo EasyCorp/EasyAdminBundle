@@ -1,7 +1,0 @@
-easy_admin:
-    edit:
-        actions:
-            list:
-                name: list
-            delete:
-                name: delete

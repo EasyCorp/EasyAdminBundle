@@ -1,8 +1,0 @@
-# TEST
-# disable actions globally
-
-# CONFIGURATION
-easy_admin:
-    disabled_actions: ['action1']
-    entities:
-        Category: AppTestBundle\Entity\UnitTests\Category

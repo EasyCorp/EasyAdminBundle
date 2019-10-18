@@ -1,5 +1,0 @@
-easy_admin:
-    translation_domain: 'custom_global_domain'
-    entities:
-        Category:
-            translation_domain: 'custom_entity_domain'

@@ -1,5 +1,0 @@
-easy_admin:
-    design:
-        form_theme:
-            - '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'
-            - '@EasyAdmin/form/bootstrap_3_layout.html.twig'

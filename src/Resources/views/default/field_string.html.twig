@@ -1,5 +1,0 @@
-{% if view == 'show' %}
-    {{ value|nl2br }}
-{% else %}
-    <span title="{{ value }}">{{ value|striptags|easyadmin_truncate }}</span>
-{% endif %}

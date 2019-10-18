@@ -13,7 +13,7 @@
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>
-                <target>Edit %entity_label% (#%entity_id%)</target>
+                <target>Upravit %entity_label% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="list.page_title">
                 <source>list.page_title</source>

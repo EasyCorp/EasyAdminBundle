@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Intl\Countries;
@@ -33,8 +34,9 @@ class EasyAdminTwigExtension extends AbstractExtension
     /** @var TranslatorInterface|null */
     private $translator;
     private $authorizationChecker;
+    private $applicationContextProvider;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker, ApplicationContextProvider $applicationContextProvider)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
@@ -43,6 +45,19 @@ class EasyAdminTwigExtension extends AbstractExtension
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->translator = $translator;
         $this->authorizationChecker = $authorizationChecker;
+        $this->applicationContextProvider = $applicationContextProvider;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGlobals(): array
+    {
+        return [
+            // this makes the ApplicationContext available in all templates as a short named variable
+            // (the method call is needed to force an ApplicationContext return type that enables IDE autocompletion in templates)
+            'ea' => $this->applicationContextProvider->getContext(),
+        ];
     }
 
     /**

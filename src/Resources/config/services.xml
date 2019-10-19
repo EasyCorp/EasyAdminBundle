@@ -63,6 +63,7 @@
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <argument type="service" id="translator" on-invalid="null" />
             <argument type="service" id="easyadmin.security.authorization_checker" />
+            <argument type="service" id="easyadmin.applicationcontext.provider" />
             <tag name="twig.extension" />
         </service>
 

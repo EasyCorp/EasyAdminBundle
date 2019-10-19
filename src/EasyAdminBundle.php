@@ -14,7 +14,12 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class EasyAdminBundle extends Bundle
 {
-    public const VERSION = '2.3.2-DEV';
+    public const VERSION = '3.0.0-DEV';
+
+    public function boot()
+    {
+        throw new \RuntimeException('You are trying to use EasyAdmin 3 in your project. However, that version is not ready yet to test it in real projects. Instead, use EasyAdmin 2.x, which is the latest stable version.');
+    }
 
     public function build(ContainerBuilder $container)
     {

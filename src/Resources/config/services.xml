@@ -8,6 +8,21 @@
             <tag name="cache.pool" />
         </service>
 
+        <service id="easyadmin.applicationcontext.provider" class="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" public="true">
+            <argument type="service" id="request_stack" />
+        </service>
+
+        <service id="easyadmin.paramconverter.applicationcontext" class="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextParamConverter" public="false">
+            <tag name="request.param_converter" priority="10" converter="pageContext" />
+        </service>
+
+        <service id="EasyCorp\Bundle\EasyAdminBundle\EventListener\ApplicationContextListener" public="false">
+            <argument type="service" id="controller_resolver" />
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="easyadmin.menu.provider" />
+            <tag name="kernel.event_listener" event="kernel.controller" />
+        </service>
+
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument>%easyadmin.config%</argument>
             <argument>%kernel.debug%</argument>

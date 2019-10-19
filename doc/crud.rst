@@ -1,0 +1,282 @@
+CRUD Controllers
+================
+
+.. raw:: html
+
+    <div class="box box--small box--warning">
+        <strong class="title">WARNING:</strong>
+
+        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
+        which hasn't been released as a stable version yet. You are probably
+        using EasyAdmin 2.x in your application, so you can switch to
+        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>.
+    </div>
+
+**CRUD controllers** provide the CRUD operations (create, show, update, delete)
+for Doctrine ORM entities. Each CRUD controller can be associated to one or more
+dashboards.
+
+Technically, these CRUD controllers are regular `Symfony controllers`_ so you can
+do anything you usually do in a controller, such as injecting services and using
+shortcuts like ``$this->render()`` or ``$this->isGranted()``.
+
+CRUD controllers must implement the
+``EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface``,
+which ensures that certain methods are defined in the controller. Instead of implementing
+the interface, you can also extend from the ``AbstractCrudController`` class.
+Run the following command to generate the basic structure of a CRUD controller:
+
+.. code-block:: terminal
+
+    $ php bin/console make:admin:crud
+
+.. _crud-pages:
+
+CRUD Controller Pages
+---------------------
+
+The four main pages of the CRUD controllers are:
+
+* ``index``, displays a list of entities which can be paginated, sorted by
+  column and refined with search queries and filters;
+* ``detail``, displays the contents of a given entity;
+* ``new``, allows to create new entity instances;
+* ``edit``, allows to update any property of a given entity.
+
+These pages are generated with four actions with the same name in the
+``AbstractCrudController`` controller. This controller defines other secondary
+actions (e.g. ``delete`` and ``autocomplete``) which don't match any page.
+
+The default behavior of these actions in the ``AbstractCrudController`` is
+appropriate for most backends, but you can customize it in several ways:
+:doc:`EasyAdmin events </events>`, :ref:`custom EasyAdmin templates <template-customization>`, etc.
+
+Page Names and Constants
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some methods require as argument the name of some CRUD page. You can use any of
+the following strings: ``'index'``, ``'detail'``, ``'edit'`` and ``'new'``. If
+you prefer to use constants for these values, use ``Crud::PAGE_INDEX``,
+``Crud::PAGE_DETAIL``, ``Crud::PAGE_EDIT`` and ``Crud::PAGE_NEW`` (they are
+defined in the ``EasyCorp\Bundle\EasyAdminBundle\Config\Crud`` class).
+
+CRUD Controller Configuration
+-----------------------------
+
+The only mandatory config option of a CRUD controller is the FQCN of the
+Doctrine entity being managed by the controller. This is defined as a public
+static property::
+
+    namespace App\Controller\Admin;
+
+    use App\Entity\Product;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        // this value must be a FQCN (fully-qualified class name) of a Doctrine ORM entity
+        public static $entityFqcn = Product::class;
+
+        // ...
+    }
+
+The rest of CRUD options are configured using the ``configureCrud()`` method::
+
+    namespace App\Controller\Admin;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function configureCrud(Crud $crud): Crud
+        {
+            return $crud
+                ->setEntityLabelInSingular('...')
+                ->setDateFormat('...')
+                // ...
+            ;
+        }
+    }
+
+Entity Options
+~~~~~~~~~~~~~~
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // the labels used to refer to this entity in titles, buttons, etc.
+            ->setEntityLabelInSingular('Product')
+            ->setEntityLabelInPlural('Products')
+
+            // the Symfony Security permission needed to manage the entity
+            // (none by default, so you can manage all instances of the entity)
+            ->setEntityPermission('ROLE_EDITOR')
+        ;
+    }
+
+Title and Help Options
+~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // the visible title at the top of the page and the content of the <title> element
+            // it can include these placeholders: %entity_id%, %entity_label_singular%, %entity_label_plural%
+            ->setPageTitle('index', '%entity_label_plural% listing')
+
+            // the help message displayed to end users (it can contain HTML tags)
+            ->setHelpMessage('edit', '...')
+        ;
+    }
+
+Date, Time and Number Formatting Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // the argument must be either one of these strings: 'short', 'medium', 'long', 'full'
+            // or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+            ->setDateFormat('...')
+            ->setTimeFormat('...')
+
+            // first argument = datetime pattern or date format; second optional argument = time format
+            ->setDateTimeFormat('...', '...')
+
+            ->setDateIntervalFormat('%%y Year(s) %%m Month(s) %%d Day(s)')
+            ->setTimezone('...')
+
+            // used to format numbers before rendering them on templates
+            ->setNumberFormat('%.2d');
+        ;
+    }
+
+Search and Pagination Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // the names of the Doctrine entity properties where the search is made on
+            // (by default it looks for in all properties)
+            ->searchFields(['name', 'description'])
+            // use dots (e.g. 'seller.email') to search in Doctrine associations
+            ->searchFields(['name', 'description', 'seller.email', 'seller.phone'])
+            // set it to null to disable and hide the search box
+            ->searchFields(null);
+
+            // defines the initial sorting applied to the list of entities
+            // (user can later change this sorting by clciking on the table columns)
+            ->setDefaultSort(['id' => 'DESC'])
+            ->setDefaultSort(['id' => 'DESC', 'title' => 'ASC', 'startsAt' => 'DESC'])
+
+            // the max number of entities to display per page
+            ->setPaginatorPageSize(30)
+            // these are advanced options related to Doctrine Pagination
+            // (see https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/tutorials/pagination.html)
+            ->setPaginatorUseOutputWalkers(true)
+            ->setPaginatorFetchJoinCollection(true)
+        ;
+    }
+
+.. note::
+
+    When using `Doctrine filters`_, listings may not include some items because
+    they were removed by those global Doctrine filters. Use the dashboard route
+    name to not apply the filters when the request URL belongs to the dashboard
+    You can also get the dashboard route name via the :ref:`application context variable <admin-context>`.
+
+The default Doctrine query executed to get the list of entities displayed in the
+``index`` page takes into account the sorting configuration, the optional search
+query, the optional :doc:`filters </filters>` and the pagination. If you need to
+fully customize this query, override the ``createIndexQueryBuilder()`` method in
+your CRUD controller.
+
+Templates and Form Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // this method allows to use your own template to render a certain part
+            // of the backend instead of using EasyAdmin default template
+            // the first argument is the "template name", which is the same as the
+            // Twig path but without the `@EasyAdmin/` prefix
+            ->overrideTemplate('crud/field/id', 'admin/fields/my_id.html.twig')
+
+            // the theme/themes to use when rendering the forms of this entity
+            // (in addition to EasyAdmin default theme)
+            ->addFormTheme('foo.html.twig')
+            // this method overrides all existing the form themes (including the
+            // default EasyAdmin form theme)
+            ->setFormThemes(['my_theme.html.twig', 'admin.html.twig'])
+
+            // options passed as second argument when creating the form with createFormBuilder()
+            ->formOptions([
+                'validation_groups' => ['Default', 'my_validation_group']
+            ]);
+        ;
+    }
+
+Same Configuration in Different CRUD Controllers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you want to do the same config in all CRUD controllers, there's no need to
+repeat the config in each controller. Instead, add the ``configureCrud()`` method
+in your dashboard and all controllers will inherit that configuration::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+
+    class DashboardController extends AbstractDashboardController
+    {
+        // ...
+
+        public function configureCrud(): Crud
+        {
+            return Crud::new()
+                // this defines the pagination size for all CRUD controllers
+                // (each CRUD controller can override this value if needed)
+                ->setPaginatorPageSize(30)
+            ;
+        }
+    }
+
+Fields
+------
+
+Fields allow to display the contents of your Doctrine entities on each
+:ref:`CRUD page <crud-pages>`. EasyAdmin provides built-in fields to display
+all the common data types, but you can also :ref:`create your own fields <custom-fields>`.
+
+If your CRUD controller extends from the ``AbstractCrudController``, the fields
+are configured automatically. In the ``index`` page you'll see a few fields and
+in the rest of pages you'll see as many fields as needed to display all the
+properties of your Doctrine entity.
+
+Read the :doc:`chapter about Fields </fields>` to learn how to configure which
+fields to display on each page, how to configure the way each field is rendered, etc.
+
+.. _`How to Create a Custom Form Field Type`: https://symfony.com/doc/current/cookbook/form/create_custom_field_type.html
+.. _`Symfony Form types`: https://symfony.com/doc/current/reference/forms/types.html
+.. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html#how-to-customize-an-individual-field
+.. _`form fragment naming rules`: https://symfony.com/doc/current/form/form_themes.html#form-template-blocks
+.. _`override any part of third-party bundles`: https://symfony.com/doc/current/bundles/override.html
+.. _`Trix editor`: https://trix-editor.org/
+.. _`Symfony security voters`: https://symfony.com/doc/current/security/voters.html
+.. _`form data transformer`: https://symfony.com/doc/current/form/data_transformers.html
+.. _`Doctrine filters`: https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/filters.html

@@ -1,0 +1,360 @@
+Design
+======
+
+.. raw:: html
+
+    <div class="box box--small box--warning">
+        <strong class="title">WARNING:</strong>
+
+        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
+        which hasn't been released as a stable version yet. You are probably
+        using EasyAdmin 2.x in your application, so you can switch to
+        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>.
+    </div>
+
+The design of the backend is ready for any kind of application. It's been
+created with `Bootstrap 4`_, `Font Awesome icons`_ and some custom CSS and
+JavaScript code; all managed by `Webpack`_ via Symfony's `Webpack Encore`_.
+
+Depending on your needs, there are several ways of customizing the design. Some
+of them require pure CSS/JavaScript code and others require overriding and/or
+creating new Twig templates.
+
+Modifying Backend Templates
+---------------------------
+
+Backend pages are created with multiple Twig templates and fragments. You can
+modify them in two ways:
+
+* **Override EasyAdmin templates** using Symfony's mechanism to override templates
+  (this is the same for all bundles, not only EasyAdmin);
+* **Replace EasyAdmin templates** using EasyAdmin features.
+
+Overriding Templates
+~~~~~~~~~~~~~~~~~~~~
+
+.. tip::
+
+    Instead of using Symfony mechanism to override templates, you may consider
+    using a similar but more powerful feature provided by EasyAdmin to replace
+    templates, as explained in ref:`the next section <replacing_templates>`.
+
+Following Symfony's mechanism to `override templates from bundles`_, you must
+create the ``templates/bundles/EasyAdminBundle/`` directory in your application
+and then create new templates with the same path as the original templates.
+For example::
+
+    your-project/
+    ├─ ...
+    └─ templates/
+       └─ bundles/
+          └─ EasyAdminBundle/
+             ├─ crud/
+             │  └─ field/
+             │     ├─ country.html.twig
+             │     └─ text.html.twig
+             ├─ label/
+             │  └─ null.html.twig
+             └─ page/
+                ├─ index.html.twig
+                ├─ form.html.twig
+                └─ paginator.html.twig
+
+Instead of creating the new templates from scratch, you can extend from the
+original templates and change only the parts you want to override. However, you
+must use a special syntax inside ``extends`` to avoid an infinite loop:
+
+.. code-block:: twig
+
+    {# templates/bundles/EasyAdminBundle/page/layout.html.twig #}
+
+    {# DON'T DO THIS: it will cause an infinite loop #}
+    {% extends '@EasyAdmin/page/layout.html.twig' %}
+
+    {# DO THIS: the '!' symbol tells Symfony to extend from the original template #}
+    {% extends '@!EasyAdmin/page/layout.html.twig' %}
+
+    {% block sidebar %}
+        {# ... #}
+    {% endblock %}
+
+.. _replacing_templates:
+
+Replacing Templates
+~~~~~~~~~~~~~~~~~~~
+
+This option allows you to render certain parts of the backend with your own Twig
+templates. First, you can replace some templates globally in the
+:doc:`dashboard </dashboards>`::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+
+    class DashboardController extends AbstractDashboardController
+    {
+        // ...
+
+        public function configureCrud(): Crud
+        {
+            return Crud::new()
+                // ...
+
+                // the first argument is the "template name", which is the same as the
+                // Twig path but without the `@EasyAdmin/` prefix
+                ->overrideTemplate('label/null', 'admin/labels/my_null_label.html.twig')
+
+                ->overrideTemplates([
+                    'crud/index' => 'admin/pages/index.html.twig',
+                    'crud/field/textarea' => 'admin/fields/dynamic_textarea.html.twig',
+                ])
+            ;
+        }
+    }
+
+You can also replace templates per :doc:`CRUD controller </crud>` (this override
+any change done in the dashboard)::
+
+    namespace App\Controller\Admin;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function configureCrud(Crud $crud): Crud
+        {
+            return $crud
+                // ...
+
+                ->overrideTemplate('crud/layout', 'admin/advanced_layout.html.twig')
+
+                ->overrideTemplates([
+                    'crud/field/text' => 'admin/product/field_id.html.twig',
+                    'label/null' => 'admin/labels/null_product.html.twig',
+                ])
+            ;
+        }
+    }
+
+Fields And Actions Templates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Each :doc:`field </fields>` (and each :doc:`action </actions>`) defines a
+``setTemplatePath()`` method to set the Twig template used to render that
+specific field (or action)::
+
+    TextField::new('...', '...')
+        // ...
+        ->setTemplatePath('custom_fields/text.html.twig');
+
+    // ...
+
+    Action::new('...', '...')
+        // ...
+        ->setTemplatePath('admin/actions/my_custom_action.html.twig');
+
+The ``->setTemplatePath()`` field option only applies to fields displayed on the
+``index`` and ``detail`` pages. Read the next section to learn how to customize
+fields in the ``new`` and ``edit`` pages, which use Symfony forms.
+
+Form Field Templates
+~~~~~~~~~~~~~~~~~~~~
+
+EasyAdmin provides a ready-to-use `form theme`_ based on Boostrap 4. Dashboards
+and CRUD controllers define an ``->addFormTheme(string $themePath)`` and
+``->setFormThemes(array $themePaths)`` methods so you can
+`customize individual form fields`_ using your own form theme.
+
+Imagine a form field where you want to include a ``<a>`` element that links to
+additional information. If the field is called ``title`` and belongs to a
+``Product`` entity, the configuration would look like this::
+
+    TextField::new('title')
+        // ...
+        ->setFormTypeOptions([
+            'block_name' => 'custom_title',
+        ]);
+
+The next step is to define the template fragment used by that field, which
+requires to know the `form fragment naming rules`_ defined by Symfony:
+
+.. code-block:: twig
+
+    {# templates/admin/form.html.twig #}
+    {% block _product_custom_title_widget %}
+        {# ... #}
+        <a href="...">More information</a>
+    {% endblock %}
+
+Finally, add this custom theme to the list of themes used to render backend forms::
+
+    namespace App\Controller\Admin;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function configureCrud(Crud $crud): Crud
+        {
+            return $crud
+                // ...
+
+                // don't forget to add EasyAdmin's form theme at the end of the list
+                // (otherwise you'll lose all the styles for the rest of form fields)
+                ->formThemes(['admin/form.html.twig', '@EasyAdmin/crud/form_theme.html.twig']);
+            ;
+        }
+    }
+
+Adding Custom Web Assets
+------------------------
+
+Use the ``configureAssets()`` method in the :doc:`dashboard </dashboards>` and/or
+the :doc:`CRUD controllers </crud>` to add your own CSS and JavaScript files::
+
+    namespace App\Controller\Admin;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+
+    class ProductCrudController extends AbstractCrudController
+    {
+        // ...
+
+        public function configureAssets(Assets $assets): Assets
+        {
+            return $assets
+                // the argument of these methods is passed to the asset() Twig function
+                // CSS assets are added just before the closing </head> element
+                // and JS assets are added just before the closing </body> element
+                ->addCssFile('build/admin.css')
+                ->addCssFile('https://example.org/css/admin2.css')
+                ->addJsFile('build/admin.js');
+                ->addJsFile('https://example.org/js/admin2.js')
+
+                // use these generic methods to add any code before </head> or </body>
+                // the contents are included "as is" in the rendered page (without escaping them)
+                ->addHtmlContentToHead('<link rel="icon" type="image/png" href="/favicon-admin.png" />')
+                ->addHtmlContentToBody('<script> ... </script>')
+                ->addHtmlContentToBody('<!-- generated at '.time().' -->')
+            ;
+        }
+    }
+
+.. tip::
+
+    :doc:`Fields </fields>` can also add CSS and JavaScript assets to the
+    rendered pages. :ref:`Read this section <fields-custom-field>` to learn how.
+
+.. note::
+
+    If you want to unload the default assets included by EasyAdmin, override the
+    default ``layout.html.twig`` template and empty the ``head_stylesheets`` and
+    ``head_javascript`` Twig blocks.
+
+Customizing the Backend Design
+------------------------------
+
+The design of the backend is created with lots of CSS variables. This makes it
+easier to customize it to your own needs. You'll find all variables in the
+``assets/css/easyadmin-theme/variables.scss`` file. To override any of them,
+create a CSS file and redefine the variable values:
+
+.. code-block:: css
+
+    /* public/css/admin.css */
+    :root {
+        /* make the backend contents as wide as the browser window */
+        --body-max-width: 100%;
+        /* change the background color of the <body> */
+        --body-bg: #f5f5f5;
+        /* make the base font size smaller */
+        --font-size-base: 13px;
+        /* remove all border radius to make corners straight */
+        --border-radius: 0px;
+    }
+
+Then, load this CSS file in your dashboard and/or resource admin::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+
+    class DashboardController extends AbstractDashboardController
+    {
+        // ...
+
+        public function configureAssets(): Assets
+        {
+            return Assets::new()->addCssFile('css/admin.css');
+        }
+    }
+
+.. note::
+
+    Because of how Bootstrap styles are defined, it's not possible to use CSS
+    variables to override every style. Sometimes you may need to also override
+    the value of some `Sass`_ variables (which are also defined in the same
+    ``assets/css/easyadmin-theme/variables.scss`` file).
+
+CSS Selectors
+~~~~~~~~~~~~~
+
+The ``<body>`` element of every backend page includes different ``id`` and ``class``
+attributes to help you target your own styles. The ``id`` follows this pattern:
+
+==========  ==============================================
+Page        ``<body>`` ID attribute
+==========  ==============================================
+``detail``  ``ea-detail-<entity_name>-<entity_id>``
+``edit``    ``ea-edit-<entity_name>-<entity_id>``
+``index``   ``ea-index-<entity_name>``
+``new``     ``ea-new-<entity_name>``
+==========  ==============================================
+
+If you are editing for example the element with ``id = 200`` of the ``User`` entity,
+the ``<body>`` of that page will be ``<body id="easyadmin-edit-User-200" ...>``.
+
+The pattern of the ``class`` attribute is different because it applies several
+CSS classes at the same time:
+
+==========  ============================================
+Page        ``<body>`` CSS class
+==========  ============================================
+``detail``  ``ea detail detail-<entity_name>``
+``edit``    ``ea edit edit-<entity_name>``
+``index``   ``ea index index-<entity_name>``
+``new``     ``ea new new-<entity_name>``
+==========  ============================================
+
+If you are displaying for example the listing of ``User`` entity elements, the
+``<body>`` of that page will be ``<body class="ea index index-User" ...>``.
+
+Managing the Backend Assets with Webpack
+----------------------------------------
+
+EasyAdmin uses `Webpack`_ (via Symfony's `Webpack Encore`_) to manage its CSS
+and JavaScript assets. This bundle provides both the source files and the
+compiled versions of all assets, so you don't have to install Webpack to use
+this bundle.
+
+However, if you want total control over the backend styles, you can use Webpack
+to integrate the SCSS and JavaScript source files provided in the ``assets/``
+directory. The only caveat is that EasyAdmin doesn't use Webpack Encore yet when
+loading the assets, so you can't use features like versioning. This will be
+fixed in future versions.
+
+.. _`Bootstrap 4`: https://github.com/twbs/bootstrap
+.. _`Sass`: https://sass-lang.com/
+.. _`Font Awesome icons`: https://github.com/FortAwesome/Font-Awesome
+.. _`Webpack`: https://webpack.js.org/
+.. _`Webpack Encore`: https://symfony.com/doc/current/frontend.html
+.. _`override templates from bundles`: https://symfony.com/doc/current/bundles/override.html#templates
+.. _`customize individual form fields`: https://symfony.com/doc/current/form/form_customization.html
+.. _`form theme`: https://symfony.com/doc/current/form/form_themes.html

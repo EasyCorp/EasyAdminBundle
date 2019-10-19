@@ -79,9 +79,13 @@ class ApplicationContextListener
         $menu = $this->getMenu($dashboard);
 
         $entityFqcn = $this->getEntityFqcn($request);
-        $entityManager = $this->getEntityManager($entityFqcn);
-        $entityInstance = $this->getEntityInstance($entityManager, $entityFqcn, $request->query->get('id'));
-        $entityConfig = new EntityConfig($entityManager, $entityInstance, $entityFqcn);
+        if (null === $entityFqcn) {
+            $entityInstance = $entityConfig = null;
+        } else {
+            $entityManager = $this->getEntityManager($entityFqcn);
+            $entityInstance = $this->getEntityInstance($entityManager, $entityFqcn, $request->query->get('id'));
+            $entityConfig = new EntityConfig($entityManager, $entityInstance, $entityFqcn);
+        }
 
         $applicationContext = new ApplicationContext($request, $dashboard, $menu, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);

@@ -79,7 +79,7 @@ final class MenuProvider implements MenuProviderInterface
     private function build(): void
     {
         $this->items = [];
-        $translationDomain = $this->getApplicationContext()->getDashboard()->getConfig()->getTranslationDomain();
+        $translationDomain = $this->getApplicationContext()->getDashboard()->getConfig()->translationDomain();
         $dashboardRouteName = $this->getApplicationContext()->getDashboardRouteName();
 
         foreach ($this->itemBuilders as $i => $itemBuilder) {

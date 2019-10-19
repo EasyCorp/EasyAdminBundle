@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
 /**
  * Holds the configuration options of the dashboard.
  *
@@ -15,31 +13,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class DashboardConfig
 {
-    private static $defaultValues = [
-        'siteName' => 'EasyAdmin',
-        'dateFormat' => 'Y-m-d',
-        'timeFormat' => 'H:i:s',
-        'dateTimeFormat' => 'F j, Y H:i',
-        'dateIntervalFormat' => '%%y Year(s) %%m Month(s) %%d Day(s)',
-        'numberFormat' => '',
-        'translationDomain' => 'messages',
-        'disabledActions' => [],
-    ];
-
-    private $siteName;
-    private $dateFormat;
-    private $timeFormat;
-    private $dateTimeFormat;
-    private $numberFormat;
-    private $translationDomain;
-    private $disabledActions;
+    private $siteName = 'EasyAdmin';
+    private $dateFormat = 'Y-m-d';
+    private $timeFormat = 'H:i:s';
+    private $dateTimeFormat = 'F j, Y H:i';
+    private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
+    private $numberFormat = '';
+    private $translationDomain = 'messages';
+    private $disabledActions = [];
 
     public static function new(): self
     {
         return new self();
     }
 
-    public function siteName(string $name): self
+    /**
+     * @return $this|string|null
+     */
+    public function siteName(string $name = null)
     {
         if (0 === func_num_args()) {
             return $this->siteName;
@@ -50,7 +41,10 @@ final class DashboardConfig
         return $this;
     }
 
-    public function dateFormat(string $dateFormat): self
+    /**
+     * @return $this|string|null
+     */
+    public function dateFormat(string $dateFormat = null)
     {
         if (0 === func_num_args()) {
             return $this->dateFormat;
@@ -61,7 +55,10 @@ final class DashboardConfig
         return $this;
     }
 
-    public function timeFormat(string $timeFormat): self
+    /**
+     * @return $this|string|null
+     */
+    public function timeFormat(string $timeFormat = null)
     {
         if (0 === func_num_args()) {
             return $this->timeFormat;
@@ -72,7 +69,10 @@ final class DashboardConfig
         return $this;
     }
 
-    public function dateTimeFormat(string $dateTimeFormat): self
+    /**
+     * @return $this|string|null
+     */
+    public function dateTimeFormat(string $dateTimeFormat = null)
     {
         if (0 === func_num_args()) {
             return $this->dateTimeFormat;
@@ -83,7 +83,24 @@ final class DashboardConfig
         return $this;
     }
 
-    public function numberFormat(string $numberFormat): self
+    /**
+     * @return $this|string|null
+     */
+    public function dateIntervalFormat(string $dateIntervalFormat = null)
+    {
+        if (0 === func_num_args()) {
+            return $this->dateIntervalFormat;
+        }
+
+        $this->dateIntervalFormat = $dateIntervalFormat;
+
+        return $this;
+    }
+
+    /**
+     * @return $this|string|null
+     */
+    public function numberFormat(string $numberFormat = null)
     {
         if (0 === func_num_args()) {
             return $this->numberFormat;
@@ -94,7 +111,10 @@ final class DashboardConfig
         return $this;
     }
 
-    public function translationDomain(string $translationDomain): self
+    /**
+     * @return $this|string|null
+     */
+    public function translationDomain(string $translationDomain = null)
     {
         if (0 === func_num_args()) {
             return $this->translationDomain;
@@ -105,7 +125,10 @@ final class DashboardConfig
         return $this;
     }
 
-    public function disabledActions(array $disabledActions): self
+    /**
+     * @return $this|array|null
+     */
+    public function disabledActions(array $disabledActions = null)
     {
         if (0 === func_num_args()) {
             return $this->disabledActions;
@@ -114,23 +137,5 @@ final class DashboardConfig
         $this->disabledActions = $disabledActions;
 
         return $this;
-    }
-
-    public function validateConfig(): void
-    {
-        $optionsResolver = new OptionsResolver();
-        $optionsResolver->setDefaults(self::$defaultValues);
-
-        $options = [
-            'siteName' => $this->siteName,
-            'dateFormat' => $this->dateFormat,
-            'timeFormat' => $this->timeFormat,
-            'dateTimeFormat' => $this->dateTimeFormat,
-            'numberFormat' => $this->numberFormat,
-            'translationDomain' => $this->translationDomain,
-            'disabledActions' => $this->disabledActions,
-        ];
-
-        $optionsResolver->resolve($options);
     }
 }

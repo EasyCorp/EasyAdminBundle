@@ -105,7 +105,6 @@ class ApplicationContextListener
     {
         /** @var DashboardInterface $dashboard */
         $dashboard = $event->getController()[0];
-        $dashboard::getConfig()->validateConfig();
 
         return $dashboard;
     }

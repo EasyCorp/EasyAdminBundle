@@ -23,6 +23,14 @@
             <tag name="kernel.event_listener" event="kernel.controller" />
         </service>
 
+        <service id="easyadmin.menu.provider" class="EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProvider" public="false">
+            <argument type="service" id="easyadmin.security.authorization_checker"></argument>
+            <argument type="service" id="router"></argument>
+            <argument type="service" id="translator"></argument>
+            <argument type="service" id="easyadmin.router"></argument>
+            <argument type="service" id="easyadmin.applicationcontext.provider"></argument>
+        </service>
+
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument>%easyadmin.config%</argument>
             <argument>%kernel.debug%</argument>

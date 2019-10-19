@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use EasyCorp\Bundle\EasyAdminBundle\Routing\EntityRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -22,7 +23,7 @@ final class MenuProvider implements MenuProviderInterface
     private $entityRouter;
     private $applicationContextProvider;
 
-    public function __construct(AuthorizationCheckerInterface $authChecker, UrlGeneratorInterface $urlGenerator, TranslatorInterface $translator, EntityRouter $entityRouter, ApplicationContextProvider $applicationContextProvider)
+    public function __construct(AuthorizationCheckerInterface $authChecker, UrlGeneratorInterface $urlGenerator, TranslatorInterface $translator, EasyAdminRouter $entityRouter, ApplicationContextProvider $applicationContextProvider)
     {
         $this->authChecker = $authChecker;
         $this->urlGenerator = $urlGenerator;

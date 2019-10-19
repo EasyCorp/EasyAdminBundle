@@ -122,7 +122,7 @@ final class DashboardConfig
         $optionsResolver->setDefaults(self::$defaultValues);
 
         $options = [
-            'name' => $this->siteName,
+            'siteName' => $this->siteName,
             'dateFormat' => $this->dateFormat,
             'timeFormat' => $this->timeFormat,
             'dateTimeFormat' => $this->dateTimeFormat,

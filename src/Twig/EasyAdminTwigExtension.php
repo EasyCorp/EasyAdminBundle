@@ -16,6 +16,7 @@ use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
+use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -24,7 +25,7 @@ use Twig\TwigFunction;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EasyAdminTwigExtension extends AbstractExtension
+class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterface
 {
     private $configManager;
     private $propertyAccessor;

@@ -29,11 +29,21 @@ class AuthorizationChecker implements AuthorizationCheckerInterface
         }
 
         try {
-            return $this->authorizationChecker->isGranted($attributes, $subject);
+            if (!\is_array($attributes)) {
+                return $this->authorizationChecker->isGranted($attributes, $subject);
+            }
+
+            foreach ($attributes as $attribute) {
+                if ($this->authorizationChecker->isGranted($attribute, $subject)) {
+                    return true;
+                }
+            }
         } catch (AuthenticationCredentialsNotFoundException $e) {
             // this exception happens when there's no security configured in the application
             // that's a valid scenario for EasyAdmin, where security is not required (although very common)
             return true;
         }
+
+        return false;
     }
 }

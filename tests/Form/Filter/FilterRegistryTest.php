@@ -19,7 +19,7 @@ class FilterRegistryTest extends TestCase
     /** @var FilterRegistry */
     private $filterRegistry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $typesMap = [
             'foo' => 'easyadmin.filter.type.foo',

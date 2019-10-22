@@ -10,14 +10,14 @@ imports:
 
 parameters:
     locale: en
-    database_path: '%kernel.root_dir%/../../../build/test.db'
+    database_path: '%kernel.project_dir%/../../../build/test.db'
 
 framework:
     secret:          secret
     translator:      ~
     default_locale:  '%locale%'
     test:            ~
-    router:          { resource: "%kernel.root_dir%/config/routing_override.yml" }
+    router:          { resource: "%kernel.project_dir%/config/routing_override.yml" }
     form:            true
     validation:      { enable_annotations: true }
     profiler:
@@ -27,6 +27,7 @@ framework:
 
 twig:
     strict_variables: '%kernel.debug%'
+    exception_controller: ~
 
 doctrine:
     dbal:
@@ -39,7 +40,7 @@ doctrine:
             FunctionalTestEntities:
                 mapping: true
                 type: annotation
-                dir: '%kernel.root_dir%/../AppTestBundle/Entity/FunctionalTests/'
+                dir: '%kernel.project_dir%/../AppTestBundle/Entity/FunctionalTests/'
                 alias: 'FunctionalTests'
                 prefix: 'AppTestBundle\Entity\FunctionalTests'
                 is_bundle: false

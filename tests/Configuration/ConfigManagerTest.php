@@ -7,7 +7,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class ConfigManagerTest extends TestCase
 {
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         // this is important because this test generates a different Symfony
         // kernel for each configuration to avoid cache issues

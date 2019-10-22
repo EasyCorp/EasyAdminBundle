@@ -37,6 +37,9 @@ class MakeAdminMigrationCommand extends Command
         ;
     }
 
+    /**
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
@@ -58,7 +61,7 @@ class MakeAdminMigrationCommand extends Command
             if (false === $overwriteBackupFile) {
                 $io->text('<bg=yellow> OK </> If you still want to backup the EasyAdmin 2 config, delete or rename the previous backup file or select a different backup directory and run this command again.');
 
-                return;
+                return 0;
             }
         }
 
@@ -74,6 +77,8 @@ class MakeAdminMigrationCommand extends Command
             'If you need help, read https://symfony.com/...',
             'Finally, run this command again in your project to generate the EasyAdmin 3 files using the EasyAdmin 2 config backup.',
         ]);
+
+        return 0;
     }
 
     private function getBackupDir(InputInterface $input, OutputInterface $output): string

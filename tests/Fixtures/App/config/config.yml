@@ -5,15 +5,15 @@ imports:
 
 parameters:
     locale: en
-    database_path: '%kernel.root_dir%/../../../build/test.db'
+    database_path: '%kernel.project_dir%/../../../build/test.db'
 
 framework:
     secret:          secret
     translator:
-        default_path: '%kernel.root_dir%/translations'
+        default_path: '%kernel.project_dir%/translations'
     default_locale:  '%locale%'
     test:            ~
-    router:          { resource: '%kernel.root_dir%/config/routing_base.yml' }
+    router:          { resource: '%kernel.project_dir%/config/routing_base.yml' }
     form:            true
     validation:      { enable_annotations: true }
     profiler:
@@ -32,21 +32,21 @@ doctrine:
             # UnitTestEntities:
             #     mapping: true
             #     type: annotation
-            #     dir: '%kernel.root_dir%/../AppTestBundle/Entity/UnitTests/'
+            #     dir: '%kernel.project_dir%/../AppTestBundle/Entity/UnitTests/'
             #     alias: 'UnitTests'
             #     prefix: 'AppTestBundle\Entity\UnitTests'
             #     is_bundle: false
             FunctionalTestEntities:
                 mapping: true
                 type: annotation
-                dir: '%kernel.root_dir%/../AppTestBundle/Entity/FunctionalTests/'
+                dir: '%kernel.project_dir%/../AppTestBundle/Entity/FunctionalTests/'
                 alias: 'FunctionalTests'
                 prefix: 'AppTestBundle\Entity\FunctionalTests'
                 is_bundle: false
 
 twig:
     strict_variables: '%kernel.debug%'
-    default_path: '%kernel.root_dir%/templates'
+    default_path: '%kernel.project_dir%/templates'
 
 security:
     firewalls:

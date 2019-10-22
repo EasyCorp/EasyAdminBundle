@@ -12,7 +12,7 @@ class DynamicChoiceLoaderTest extends TestCase
     /** @var ChoiceLoaderInterface */
     private $loader;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->loader = new DynamicChoiceLoader();
     }

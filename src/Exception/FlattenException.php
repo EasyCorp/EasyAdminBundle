@@ -2,60 +2,17 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
-use Symfony\Component\Debug\Exception\FlattenException as BaseFlattenException;
+use Symfony\Component\Debug\Exception\FlattenException as LegacyBaseFlattenException;
+use Symfony\Component\ErrorRenderer\Exception\FlattenException as BaseFlattenException;
 
-/**
- * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
- */
-class FlattenException extends BaseFlattenException
-{
-    /** @var ExceptionContext */
-    private $context;
-
-    /**
-     * @param \Exception $exception
-     * @param int        $statusCode
-     * @param array      $headers
-     *
-     * @return FlattenException
-     *
-     * @throws \RuntimeException
-     */
-    public static function create(\Exception $exception, $statusCode = null, array $headers = [])
+if (class_exists(BaseFlattenException::class)) {
+    class FlattenException extends BaseFlattenException
     {
-        if (!$exception instanceof BaseException) {
-            throw new \RuntimeException(sprintf('You should only try to create an instance of "%s" with a "EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException" instance, or subclass. "%s" given.', __CLASS__, \get_class($exception)));
-        }
-
-        /** @var FlattenException $e */
-        $e = parent::create($exception, $statusCode, $headers);
-        $e->context = $exception->getContext();
-
-        return $e;
+        use FlattenExceptionTrait;
     }
-
-    public function getPublicMessage()
+} else {
+    class FlattenException extends LegacyBaseFlattenException
     {
-        return $this->context->getPublicMessage();
-    }
-
-    public function getDebugMessage()
-    {
-        return $this->context->getDebugMessage();
-    }
-
-    public function getParameters()
-    {
-        return $this->context->getParameters();
-    }
-
-    public function getTranslationParameters()
-    {
-        return $this->context->getTranslationParameters();
-    }
-
-    public function getStatusCode()
-    {
-        return $this->context->getStatusCode();
+        use FlattenExceptionTrait;
     }
 }

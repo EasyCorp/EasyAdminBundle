@@ -1,0 +1,12 @@
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2019-10-22T15:26:06Z
+
+Wait , don't merge yet :)
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2019-10-23T15:24:10Z
+
+PR is green and ready.
+It also improves the Travis-CI script.

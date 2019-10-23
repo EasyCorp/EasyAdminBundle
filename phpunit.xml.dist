@@ -9,6 +9,8 @@
          processIsolation="false"
          stopOnFailure="false"
          bootstrap="tests/bootstrap.php"
+         failOnRisky="true"
+         failOnWarning="true"
 >
 
     <testsuites>
@@ -18,7 +20,7 @@
     </testsuites>
 
     <php>
-        <env name="SYMFONY_PHPUNIT_VERSION" value="7.4.4" />
+        <env name="SYMFONY_PHPUNIT_VERSION" value="7.5" />
         <server name="KERNEL_DIR" value="./tests/Fixtures/App" />
         <server name="KERNEL_CLASS" value="\AppKernel" />
         <ini name="error_reporting" value="E_ALL" />

@@ -7,29 +7,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException as EasyEnt
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ExceptionListenerTest extends TestCase
 {
     private function getTwig()
     {
-        $twig = $this->getMockBuilder('\Twig_Environment')->disableOriginalConstructor()->getMock();
+        $twig = $this->createMock('Twig\Environment');
         $twig->method('render')->willReturn('template content');
 
         return $twig;
-    }
-
-    private function getEventExceptionThatShouldBeCalledOnce($exception)
-    {
-        $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $event->method('getException')->willReturn($exception);
-        $event->method('getRequest')->willReturn(new Request());
-        $event->method('getKernel')->willReturn(new TestKernel());
-        $event->expects($this->once())->method('setResponse');
-
-        return $event;
     }
 
     public function testCatchBaseExceptions()
@@ -39,33 +28,27 @@ class ExceptionListenerTest extends TestCase
             'entity_id_name' => 'Test key',
             'entity_id_value' => 2,
         ]);
-        $event = $this->getEventExceptionThatShouldBeCalledOnce($exception);
+        $event = class_exists(ExceptionEvent::class) ? ExceptionEvent::class : GetResponseForExceptionEvent::class;
+        $event = new $event(new TestKernel(), new Request(), TestKernel::MASTER_REQUEST, $exception);
         $twig = $this->getTwig();
 
         $listener = new ExceptionListener($twig, []);
         $listener->onKernelException($event);
-    }
 
-    private function getEventExceptionThatShouldNotBeCalled($exception)
-    {
-        $event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $event->method('getException')->willReturn($exception);
-        $event->method('getRequest')->willReturn(new Request());
-        $event->expects($this->never())->method('setResponse');
-
-        return $event;
+        $this->assertInstanceOf(Response::class, $event->getResponse());
     }
 
     public function testShouldNotCatchExceptionsWithSameName()
     {
         $exception = new EntityNotFoundException();
-        $event = $this->getEventExceptionThatShouldNotBeCalled($exception);
+        $event = class_exists(ExceptionEvent::class) ? ExceptionEvent::class : GetResponseForExceptionEvent::class;
+        $event = new $event(new TestKernel(), new Request(), TestKernel::MASTER_REQUEST, $exception);
         $twig = $this->getTwig();
 
         $listener = new ExceptionListener($twig, []);
         $listener->onKernelException($event);
+
+        $this->assertNull($event->getResponse());
     }
 }
 

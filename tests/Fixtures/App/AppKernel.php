@@ -1,5 +1,6 @@
 <?php
 
+use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
@@ -31,20 +32,27 @@ class AppKernel extends Kernel
                 'assets' => null,
             ]);
         });
+
+        if (trait_exists(MailerAssertionsTrait::class)) {
+            $loader->load(function (ContainerBuilder $container) {
+                $container->loadFromExtension('twig', [
+                    'exception_controller' => null,
+                ]);
+            });
+        }
     }
 
-    /**
-     * @return string
-     */
-    public function getCacheDir()
+    public function getProjectDir(): string
+    {
+        return __DIR__;
+    }
+
+    public function getCacheDir(): string
     {
         return __DIR__.'/../../../build/cache/'.$this->getEnvironment();
     }
 
-    /**
-     * @return string
-     */
-    public function getLogDir()
+    public function getLogDir(): string
     {
         return __DIR__.'/../../../build/kernel_logs/'.$this->getEnvironment();
     }

@@ -7,7 +7,7 @@ doctrine:
             UnitTestEntities:
                 mapping: true
                 type: annotation
-                dir: '%kernel.root_dir%/../AppTestBundle/Entity/UnitTests/'
+                dir: '%kernel.project_dir%/../AppTestBundle/Entity/UnitTests/'
                 alias: 'UnitTests'
                 prefix: 'AppTestBundle\Entity\UnitTests'
                 is_bundle: false

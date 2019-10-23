@@ -6,9 +6,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class SplitConfigurationTest extends AbstractTestCase
 {
+    protected function setUp(): void
+    {
+        // ignore parent method
+    }
+
     public function testConfigurationInDifferentFiles()
     {
         $this->initClient(['environment' => 'split_configuration']);
+        $this->initDatabase();
+
         $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertSame(['Category', 'Product'], array_keys($backendConfig['entities']));

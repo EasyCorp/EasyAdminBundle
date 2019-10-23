@@ -11,10 +11,7 @@ class Finder
 {
     private const MAX_RESULTS = 15;
 
-    /** @var QueryBuilder */
     private $queryBuilder;
-
-    /** @var Paginator */
     private $paginator;
 
     public function __construct(QueryBuilder $queryBuilder, Paginator $paginator)

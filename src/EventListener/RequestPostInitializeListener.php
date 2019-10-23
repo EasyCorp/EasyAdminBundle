@@ -15,16 +15,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class RequestPostInitializeListener
 {
-    /** @var RequestStack|null */
+    private $doctrine;
     private $requestStack;
 
-    /** @var Registry */
-    private $doctrine;
-
-    /**
-     * @param Registry          $doctrine
-     * @param RequestStack|null $requestStack
-     */
     public function __construct(Registry $doctrine, RequestStack $requestStack = null)
     {
         $this->doctrine = $doctrine;

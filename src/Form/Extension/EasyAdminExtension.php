@@ -16,12 +16,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class EasyAdminExtension extends AbstractTypeExtension
 {
-    /** @var RequestStack|null */
     private $requestStack;
 
-    /**
-     * @param RequestStack|null $requestStack
-     */
     public function __construct(RequestStack $requestStack = null)
     {
         $this->requestStack = $requestStack;

@@ -46,7 +46,7 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
-/*
+/**
  * Utility class to map shortcut form types (e.g. `text` or `submit`) to its
  * associated FQCN type.
  *

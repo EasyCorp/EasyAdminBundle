@@ -12,7 +12,6 @@ use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
  */
 class QueryBuilder
 {
-    /** @var Registry */
     private $doctrine;
 
     public function __construct(Registry $doctrine)

@@ -15,9 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ControllerListener
 {
-    /** @var ConfigManager */
     private $configManager;
-    /** @var ControllerResolverInterface */
     private $resolver;
 
     public function __construct(ConfigManager $configManager, ControllerResolverInterface $resolver)

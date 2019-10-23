@@ -34,7 +34,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     private $translator;
     private $authorizationChecker;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationChecker $authorizationChecker)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug, ?LogoutUrlGenerator $logoutUrlGenerator, $translator, AuthorizationChecker $authorizationChecker)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;

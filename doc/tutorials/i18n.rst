@@ -27,8 +27,8 @@ Translate the Backend Interface
 -------------------------------
 
 The backend interface uses the same language as the underlying Symfony
-application. If you want to change it, update the value of the ``locale`` option
-in the ``app/config/parameters.yml`` file.
+application. If you want to change it, update the value of the ``locale`` parameter
+in the ``config/services.yaml`` file.
 
 EasyAdmin is already translated into tens of languages thanks to the generosity
 of its community. We're actively looking for more translations, so please

@@ -19,7 +19,7 @@ it disabled by default):
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/framework.yaml
     framework:
         translator: { fallbacks: [ "en" ] }
 

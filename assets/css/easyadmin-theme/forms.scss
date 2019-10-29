@@ -57,7 +57,9 @@
 
 .form-widget input.form-control,
 .form-widget textarea.form-control,
-.form-widget select.form-control {
+.form-widget select.form-control,
+.form-widget .input-group-append,
+.form-widget .input-group-prepend {
     border: 0;
     padding: 3px 7px 5px;
     box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
@@ -90,6 +92,23 @@
 
 .form-widget select[multiple].form-control {
     height: auto;
+}
+
+// Since we are using the form-control styling for our group, we need to remove the inner border
+.form-widget .input-group .input-group-text {
+	border: none;
+}
+
+.form-widget .input-group-append {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    margin-left: 2px;
+}
+
+.form-widget .input-group-prepend {
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    margin-right: 2px;
 }
 
 // Checkbox widgets

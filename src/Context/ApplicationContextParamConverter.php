@@ -14,13 +14,20 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ApplicationContextParamConverter implements ParamConverterInterface
 {
+    private $applicationContextProvider;
+
+    public function __construct(ApplicationContextProvider $applicationContextProvider)
+    {
+        $this->applicationContextProvider = $applicationContextProvider;
+    }
+
     public function supports(ParamConverter $configuration)
     {
-        // TODO
+        return $configuration->getClass() === ApplicationContext::class;
     }
 
     public function apply(Request $request, ParamConverter $configuration)
     {
-        // TODO
+        $request->attributes->set($configuration->getName(), $this->applicationContextProvider->getContext());
     }
 }

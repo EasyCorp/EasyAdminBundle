@@ -27,7 +27,6 @@
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <argument type="service" id="router"></argument>
             <argument type="service" id="translator"></argument>
-            <argument type="service" id="easyadmin.router"></argument>
             <argument type="service" id="easyadmin.applicationcontext.provider"></argument>
         </service>
 

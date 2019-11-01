@@ -20,15 +20,13 @@ final class MenuProvider implements MenuProviderInterface
     private $authChecker;
     private $urlGenerator;
     private $translator;
-    private $entityRouter;
     private $applicationContextProvider;
 
-    public function __construct(AuthorizationCheckerInterface $authChecker, UrlGeneratorInterface $urlGenerator, TranslatorInterface $translator, EasyAdminRouter $entityRouter, ApplicationContextProvider $applicationContextProvider)
+    public function __construct(AuthorizationCheckerInterface $authChecker, UrlGeneratorInterface $urlGenerator, TranslatorInterface $translator, ApplicationContextProvider $applicationContextProvider)
     {
         $this->authChecker = $authChecker;
         $this->urlGenerator = $urlGenerator;
         $this->translator = $translator;
-        $this->entityRouter = $entityRouter;
         $this->applicationContextProvider = $applicationContextProvider;
     }
 
@@ -149,8 +147,11 @@ final class MenuProvider implements MenuProviderInterface
                 return $this->urlGenerator->generate($itemConfig['routeName'], $routeParameters);
 
             case MenuItem::TYPE_ENTITY:
-                // TODO: path('easyadmin', { entity: item.entity, action: 'list' }|merge(menu_params)|merge(item.params))
-                return $this->entityRouter->generate($itemConfig['entityController'], $itemConfig['entityAction'], $itemConfig['entityParameters']);
+                // add the index and subIndex query parameters to display the selected menu item
+                $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
+                $routeParameters = array_merge($menuParameters, $itemConfig['routeParameters']);
+
+                return $this->urlGenerator->generate($dashboardRouteName, $routeParameters);
 
             case MenuItem::TYPE_SECTION:
                 return '#';

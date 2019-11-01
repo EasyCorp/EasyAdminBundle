@@ -15,9 +15,6 @@ final class MenuItemBuilder
     private $routeName;
     private $routeParameters;
     private $url;
-    private $entityController;
-    private $entityAction;
-    private $entityParameters;
     private $cssClass;
     private $linkRel;
     private $linkTarget;
@@ -32,12 +29,13 @@ final class MenuItemBuilder
         $this->linkTarget = '_self';
     }
 
-    public function entity(string $controllerClass, string $action = 'index', array $parameters = []): self
+    public function entity(string $controllerClass, array $routeParameters = []): self
     {
         $this->type = MenuItem::TYPE_ENTITY;
-        $this->entityController = $controllerClass;
-        $this->entityAction = $action;
-        $this->entityParameters = $parameters;
+        $this->routeParameters = array_merge([
+            'controller' => $controllerClass,
+            'action' => 'index',
+        ], $routeParameters);
 
         return $this;
     }

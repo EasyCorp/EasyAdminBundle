@@ -635,4 +635,13 @@ class CustomizedBackendTest extends AbstractTestCase
         $this->assertSame('<i class="fa fa-fw fa-foo"></i><span><b>foo</b></span>', $crawler->filter('form#new-category-form .form-group')->eq(2)->filter('.input-group-prepend .input-group-text')->html());
         $this->assertSame('<i class="fa fa-fw fa-bar"></i><span><span>bar</span></span>', $crawler->filter('form#new-category-form .form-group')->eq(2)->filter('.input-group-append .input-group-text')->html());
     }
+
+    public function testBatchActions()
+    {
+        $crawler = $this->requestListView('Product');
+
+        $this->assertSame('Delete', $crawler->filter('button.batch-action-requires-confirmation')->text());
+        $this->assertCount(1, $crawler->filter('input[type="hidden"]#batch_form__token'));
+        $this->assertCount(15, $crawler->filter('input[type="checkbox"].form-batch-checkbox'));
+    }
 }

@@ -151,6 +151,7 @@ easy_admin:
             class: AppTestBundle\Entity\FunctionalTests\Product
             label: 'Products'
             list:
+                batch_actions: ['delete']
                 collapse_actions: true
                 fields:
                     - id

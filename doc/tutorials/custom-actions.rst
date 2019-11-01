@@ -281,5 +281,5 @@ example, create an ``approveBatchAction()`` method:
         }
     }
 
-Batch actions can be configured in the same way as regular actions (icon, label,
-etc.) and they can be defined globally or locally per entity.
+Now that the action logic is ready, :ref:`configure the batch action <batch-actions>`
+to add it to the backend and define its icon, label, etc.

@@ -28,7 +28,7 @@ class ActionConfigPass implements ConfigPassInterface
         'target' => '_self',
         // the value of the template. Will be set in the TemplateConfigPass, if value will stay null.
         'template' => null,
-        // if a confirmation should be asked before the action is executed. For delet
+        // if TRUE, a confirmation message is displayed before executing the batch action
         'ask_confirm' => null,
     ];
 

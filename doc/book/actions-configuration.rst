@@ -303,6 +303,8 @@ global option):
                     collapse_actions: false
                 # ...
 
+.. _batch-actions:
+
 Batch Actions
 -------------
 
@@ -331,6 +333,18 @@ Batch actions are configured the same as regular actions, so you can change
 their label, icon and title as explained in the previous sections. The merging
 of global and local config is also done in the same way and the config of
 ``disabled_actions`` is applied to these batch actions too.
+
+By default, the ``delete`` batch action asks for confirmation before deleting
+the selected items. You can change this behavior with the ``ask_confirm`` option
+(which can also be applied to your own :ref:`custom batch actions <custom-batch-actions>`):
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        list:
+            # this will delete selected items immediately, without asking for confirmation
+            batch_actions: [{ name: 'delete', ask_confirm: false }]
 
 Read how to :ref:`create your own batch actions <custom-batch-actions>` to get
 the most out of this feature.

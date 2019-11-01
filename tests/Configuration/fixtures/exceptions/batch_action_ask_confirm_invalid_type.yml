@@ -1,5 +1,5 @@
 # TEST
-# the "ask_confirm" item of the batch actions cannot contain non boolean value
+# the "ask_confirm" option of batch actions can only be null or a boolean value
 
 # EXCEPTION
 expected_exception:

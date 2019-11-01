@@ -79,7 +79,7 @@ class ApplicationContextListener
         $menu = $this->getMenu($dashboard);
 
         $entityFqcn = $this->getEntityFqcn($request);
-        if (null === $entityFqcn) {
+        if (null === $entityFqcn || null === $request->query->get('id')) {
             $entityInstance = $entityConfig = null;
         } else {
             $entityManager = $this->getEntityManager($entityFqcn);
@@ -120,15 +120,17 @@ class ApplicationContextListener
 
     private function getEntityFqcn(Request $request): ?string
     {
-        if (null === $controllerClass = $request->query->get('controller')) {
+        if (null === $controllerFqcn = $request->query->get('controller')) {
             return null;
         }
 
-        if (!$this->classImplements($controllerClass, EntityAdminControllerInterface::class)) {
+        if (!$this->classImplements($controllerFqcn, EntityAdminControllerInterface::class)) {
             return null;
         }
 
-        $entityClassFqcn = $controllerClass::{'getEntityClass'}();
+        /** @var EntityAdminControllerInterface $controllerInstance */
+        $controllerInstance = new $controllerFqcn();
+        $entityClassFqcn =  $controllerInstance->getEntityClass();
 
         return $entityClassFqcn;
     }
@@ -159,21 +161,21 @@ class ApplicationContextListener
     private function setController(ControllerEvent $event): void
     {
         $request = $event->getRequest();
-        $controllerClass = $request->query->get('controller');
+        $controllerFqcn = $request->query->get('controller');
         $controllerMethod = $request->query->get('action');
 
-        if (null === $controllerClass || null === $controllerMethod) {
+        if (null === $controllerFqcn || null === $controllerMethod) {
             return;
         }
 
         // TODO: VERY IMPORTANT: check that the controller is associated to the
         // current dashboard. Otherwise, anyone can access any app controller.
 
-        $request->attributes->set('_controller', [$controllerClass, $controllerMethod]);
+        $request->attributes->set('_controller', [$controllerFqcn, $controllerMethod]);
         $newController = $this->controllerResolver->getController($request);
 
         if (false === $newController) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $controllerClass, $controllerMethod));
+            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $controllerFqcn, $controllerMethod));
         }
 
         $event->setController($newController);

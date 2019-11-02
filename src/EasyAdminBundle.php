@@ -18,7 +18,9 @@ class EasyAdminBundle extends Bundle
 
     public function boot()
     {
-        throw new \RuntimeException('You are trying to use EasyAdmin 3 in your project. However, that version is not ready yet to test it in real projects. Instead, use EasyAdmin 2.x, which is the latest stable version.');
+        if ('cli' !== php_sapi_name()) {
+            throw new \RuntimeException('You are trying to use EasyAdmin 3 in your project. However, that version is not ready yet to test it in real projects. Instead, use EasyAdmin 2.x, which is the latest stable version.');
+        }
     }
 
     public function build(ContainerBuilder $container)

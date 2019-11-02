@@ -7,9 +7,9 @@
                 <source>new.page_title</source>
                 <target>Create %entity_label%</target>
             </trans-unit>
-            <trans-unit id="show.page_title">
-                <source>show.page_title</source>
-                <target>%entity_label% (#%entity_id%)</target>
+            <trans-unit id="page.detail.title">
+                <source>page.detail.title</source>
+                <target><![CDATA[%entity_label_singular% <span class="text-small text-muted">(#%entity_id%)</span>]]></target>
             </trans-unit>
             <trans-unit id="edit.page_title">
                 <source>edit.page_title</source>

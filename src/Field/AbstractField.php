@@ -10,14 +10,16 @@ abstract class AbstractField implements FieldInterface
     private $property;
     private $type;
     private $formType;
-    private $formTypeOptions;
+    private $formTypeOptions = [];
     private $label;
     private $permission;
     private $textAlign;
     private $help;
     private $cssClass;
-    private $templatePath;
-    private $templateParams;
+    private $defaultTemplatePath;
+    private $customTemplatePath;
+    private $customTemplateParams = [];
+    private $assets = [];
 
     public static function new(string $property, string $label = null)
     {
@@ -28,9 +30,11 @@ abstract class AbstractField implements FieldInterface
         return $field;
     }
 
-    public function addAssets(): array
+    public function addAssets(array $assets): FieldInterface
     {
-        return [];
+        $this->assets = $assets;
+
+        return $this;
     }
 
     public function setCustomOptions(OptionsResolver $resolver): void
@@ -74,60 +78,134 @@ abstract class AbstractField implements FieldInterface
             });
     }
 
-    public function formType(string $formType): self
+    public function setType(string $type): FieldInterface
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function setFormType(string $formType): FieldInterface
     {
         $this->formType = $formType;
 
         return $this;
     }
 
-    public function formTypeOptions(array $formTypeOptions): self
+    public function setFormTypeOptions(array $options): FieldInterface
     {
-        $this->formTypeOptions = $formTypeOptions;
+        $this->formTypeOptions = $options;
 
         return $this;
     }
 
-    public function textAlign(string $textAlign): self
+    public function setTextAlign(string $textAlign): FieldInterface
     {
         $this->textAlign = $textAlign;
 
         return $this;
     }
 
-    public function permission(string $role): self
+    public function setPermission(string $role): FieldInterface
     {
         $this->permission = $role;
 
         return $this;
     }
 
-    public function help(string $help): self
+    public function setHelp(string $help): FieldInterface
     {
         $this->help = $help;
 
         return $this;
     }
 
-    public function cssClass(string $cssClass): self
+    public function setCssClass(string $cssClass): FieldInterface
     {
         $this->cssClass = $cssClass;
 
         return $this;
     }
 
-    public function template(string $templatePath): self
+    public function setDefaultTemplatePath(string $path): FieldInterface
     {
-        $this->templatePath = $templatePath;
+        $this->defaultTemplatePath = $path;
 
         return $this;
     }
 
-    public function templateParams(array $templateParams): self
+    public function setCustomTemplatePath(string $path): FieldInterface
     {
-        $this->templateParams = $templateParams;
+        $this->customTemplatePath = $path;
 
         return $this;
+    }
+
+    public function setCustomTemplateParams(array $params): FieldInterface
+    {
+        $this->customTemplateParams = $params;
+
+        return $this;
+    }
+
+    public function getProperty(): string
+    {
+        return $this->property;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getFormType(): string
+    {
+        return $this->formType;
+    }
+
+    public function getFormTypeOptions(): array
+    {
+        return $this->formTypeOptions;
+    }
+
+    public function getTextAlign(): ?string
+    {
+        return $this->textAlign;
+    }
+
+    public function getPermission(): ?string
+    {
+        return $this->permission;
+    }
+
+    public function getHelp(): ?string
+    {
+        return $this->help;
+    }
+
+    public function getCssClass(): ?string
+    {
+        return $this->cssClass;
+    }
+
+    public function getDefaultTemplatePath(): string
+    {
+        return $this->defaultTemplatePath;
+    }
+
+    public function getCustomTemplatePath(): ?string
+    {
+        return $this->customTemplatePath;
+    }
+
+    public function getCustomTemplateParams(): array
+    {
+        return $this->customTemplateParams;
     }
 
     // copied from Symfony\Component\Form\FormRenderer::humanize()

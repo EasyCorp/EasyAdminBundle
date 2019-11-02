@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityAdminConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,28 +12,16 @@ use Symfony\Component\HttpFoundation\Response;
  */
 interface EntityAdminControllerInterface
 {
-    public function getEntityAdminConfig(): EntityAdminConfig;
+    public function configureEntityAdmin(): EntityAdminConfig;
+
+    public function configureDetailPage(DetailPageConfig $config): DetailPageConfig;
 
     /**
      * @return FieldInterface[]
      */
-    public function getFields(string $action): iterable;
+    public function configureFields(string $action): iterable;
 
     public function index(): Response;
 
-    /**
-     * The fully-qualified class name (FQCN) of the Doctrine ORM entity
-     * managed by this controller (e.g. 'App\Entity\User')
-     */
-    public function getEntityClass(): string;
-
-    /**
-     * The singular name of the managed entity as displayed to end users (e.g. 'User', 'Invoice')
-     */
-    public function getNameInSingular(): string;
-
-    /**
-     * The plural name of the managed entity as displayed to end users (e.g. 'Users', 'Invoices')
-     */
-    public function getNameInPlural(): string;
+    public function getEntityAdminConfig(): EntityAdminConfig;
 }

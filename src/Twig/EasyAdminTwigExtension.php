@@ -4,7 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityAdminConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Intl\Countries;
@@ -67,6 +70,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     public function getFunctions()
     {
         return [
+            new TwigFunction('ea_render_field', [$this, 'renderEntityAdminField'], ['is_safe' => ['html'], 'needs_environment' => true]),
             new TwigFunction('easyadmin_render_field_for_*_view', [$this, 'renderEntityField'], ['is_safe' => ['html'], 'needs_environment' => true]),
             new TwigFunction('easyadmin_config', [$this, 'getBackendConfiguration']),
             new TwigFunction('easyadmin_entity', [$this, 'getEntityConfiguration']),
@@ -150,6 +154,45 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     }
 
     /**
+     * Renders the value stored in a property of the given entity.
+     */
+    public function renderEntityAdminField(Environment $twig, string $pageName, EntityAdminConfig $entityAdminConfig, EntityConfig $entityConfig, $entityInstance, FieldInterface $field): string
+    {
+        $hasCustomTemplate = null !== $field->getCustomTemplatePath();
+        $templateParameters = [];
+
+        try {
+            $templateParameters = $this->getTemplateParameters($entityConfig, $pageName, $field, $entityInstance);
+            $templateParameters = array_merge($templateParameters, $field->getCustomTemplateParams());
+
+            // if the field defines a custom template, render it (no matter if the value is null or inaccessible)
+            if ($hasCustomTemplate) {
+                return $twig->render($field->getCustomTemplatePath(), $templateParameters);
+            }
+
+            if (false === $templateParameters['is_accessible']) {
+                return $twig->render($entityAdminConfig->getTemplate('label_inaccessible'), $templateParameters);
+            }
+
+            if (null === $templateParameters['value']) {
+                return $twig->render($entityAdminConfig->getTemplate('label_null'), $templateParameters);
+            }
+
+            if (empty($templateParameters['value']) && \in_array($field->getType(), ['image', 'file', 'array', 'simple_array'])) {
+                return $twig->render($entityAdminConfig->getTemplate('label_empty'), $templateParameters);
+            }
+
+            return $twig->render($field->getDefaultTemplatePath(), $templateParameters);
+        } catch (\Exception $e) {
+            if ($this->debug) {
+                throw $e;
+            }
+
+            return $twig->render($entityAdminConfig->getTemplate('label_undefined'), $templateParameters);
+        }
+    }
+
+    /**
      * Renders the value stored in a property/field of the given entity. This
      * function contains a lot of code protections to avoid errors when the
      * property doesn't exist or its value is not accessible. This ensures that
@@ -201,45 +244,47 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         }
     }
 
-    private function getTemplateParameters($entityName, $view, array $fieldMetadata, $item)
+    private function getTemplateParameters(EntityConfig $entityConfig, string $pageName, FieldInterface $field, $entityInstance)
     {
-        $fieldName = $fieldMetadata['property'];
-        $fieldType = $fieldMetadata['dataType'];
+        if ($entityConfig->hasProperty($field->getProperty())) {
+            $fieldMetadata = array_merge($entityConfig->getPropertyMetadata($field->getProperty()), ['virtual' => false]);
+        } else {
+            $fieldMetadata = ['virtual' => true];
+        }
 
         $parameters = [
-            'backend_config' => $this->getBackendConfiguration(),
-            'entity_config' => $this->configManager->getEntityConfig($entityName),
-            'field_options' => $fieldMetadata,
-            'item' => $item,
-            'view' => $view,
+            'entity_config' => $entityConfig,
+            'field_metadata' => $fieldMetadata,
+            'item' => $entityInstance,
+            'page' => $pageName,
         ];
 
-        if ($this->propertyAccessor->isReadable($item, $fieldName)) {
-            $parameters['value'] = $this->propertyAccessor->getValue($item, $fieldName);
+        if ($this->propertyAccessor->isReadable($entityInstance, $field->getProperty())) {
+            $parameters['value'] = $this->propertyAccessor->getValue($entityInstance, $field->getProperty());
             $parameters['is_accessible'] = true;
         } else {
             $parameters['value'] = null;
             $parameters['is_accessible'] = false;
         }
 
-        if ('image' === $fieldType) {
+        if ('image' === $field->getType()) {
             $parameters = $this->addImageFieldParameters($parameters);
         }
 
-        if ('file' === $fieldType) {
+        if ('file' === $field->getType()) {
             $parameters = $this->addFileFieldParameters($parameters);
         }
 
-        if ('association' === $fieldType) {
+        if ('association' === $field->getType()) {
             $parameters = $this->addAssociationFieldParameters($parameters);
         }
 
-        if ('country' === $fieldType) {
+        if ('country' === $field->getType()) {
             $parameters['value'] = null !== $parameters['value'] ? strtoupper($parameters['value']) : null;
             $parameters['country_name'] = $this->getCountryName($parameters['value']);
         }
 
-        if ('avatar' === $fieldType) {
+        if ('avatar' === $field->getType()) {
             $parameters['image_height'] = $fieldMetadata['height'];
 
             if ($fieldMetadata['is_image_url'] ?? false) {
@@ -247,11 +292,6 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             } else {
                 $parameters['image_url'] = null === $parameters['value'] ? null : sprintf('https://www.gravatar.com/avatar/%s?s=%d&d=mp', md5($parameters['value']), $parameters['image_height']);
             }
-        }
-
-        // when a virtual field doesn't define it's type, consider it a string
-        if (true === $fieldMetadata['virtual'] && null === $parameters['field_options']['dataType']) {
-            $parameters['value'] = (string) $parameters['value'];
         }
 
         return $parameters;

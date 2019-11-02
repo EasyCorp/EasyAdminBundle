@@ -1,0 +1,100 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var page_config \EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig #}
+{# @var entity_admin \EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityAdminConfig #}
+{# @var entity_config \EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig #}
+{# @var fields \EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface[] #}
+{% extends entity_admin.templates.layout %}
+{% trans_default_domain entity_admin.translationDomain %}
+{% set trans_parameters = {
+    '%entity_label_singular%': entity_admin.labelInSingular|trans,
+    '%entity_label_plural%': entity_admin.labelInPlural|trans,
+    '%entity_name%': entity_config.shortClassName|trans,
+    '%entity_id%': entity_config.id
+} %}
+
+{% block body_id 'easyadmin-show-' ~ entity_config.shortClassName ~ '-' ~ entity_config.id %}
+{% block body_class 'show show-' ~ entity_config.shortClassName %}
+
+{% block content_title %}
+    {% apply spaceless %}
+        {% set default_title = 'page.detail.title'|trans(trans_parameters, 'EasyAdminBundle') %}
+        {{ page_config.title is null ? default_title|raw : page_config.title|trans(trans_parameters)|raw }}
+    {% endapply %}
+{% endblock %}
+
+{% block content_footer_wrapper '' %}
+
+{% block main %}
+    <div class="form-horizontal">
+        {% block show_fields %}
+            {% set _fields_visible_by_user = fields|filter((metadata, field) => easyadmin_is_granted(metadata.permission)) %}
+            {% for field in fields %}
+                {% block show_field %}
+                    <div class="form-group field-{{ (field.type ?? 'default')|lower }} {{ field.cssClass ?? '' }}">
+                        <label class="control-label">
+                            {{ field.label|trans(trans_parameters)|raw }}
+                        </label>
+                        <div class="form-widget">
+                            <div class="form-control">
+                                {{ ea_render_field('detail', entity_admin, entity_config, entity, field) }}
+                            </div>
+
+                            {% if field.help is not empty %}
+                                <small class="form-help"><i class="fa fa-fw fa-info-circle"></i> {{ field.help|trans|raw }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endblock %}
+            {% endfor %}
+        {% endblock %}
+    </div>
+{#
+    <section class="content-footer">
+        <div class="form-actions">
+            {% block item_actions %}
+                {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
+                {% set _request_parameters = app.request.query.all %}
+
+                {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+                    actions: _show_actions,
+                    entity_config: _entity_config,
+                    request_parameters: _request_parameters,
+                    translation_domain: _entity_config.translation_domain,
+                    trans_parameters: _trans_parameters,
+                    item_id: _entity_id,
+                    item: entity
+                }, with_context = false) }}
+            {% endblock item_actions %}
+        </div>
+    </section>
+
+    {% block delete_form %}
+        {{ include('@EasyAdmin/default/includes/_delete_form.html.twig', {
+            view: 'show',
+            referer: app.request.query.get('referer', ''),
+            delete_form: delete_form,
+            _translation_domain: _entity_config.translation_domain,
+            _trans_parameters: _trans_parameters,
+            _entity_config: _entity_config,
+        }, with_context = false) }}
+    {% endblock delete_form %}
+#}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function() {
+            $('a.action-delete').on('click', function(e) {
+                e.preventDefault();
+
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .off('click', '#modal-delete-button')
+                    .on('click', '#modal-delete-button', function () {
+                        $('#delete-form').trigger('submit');
+                    });
+            });
+        });
+    </script>
+{% endblock %}

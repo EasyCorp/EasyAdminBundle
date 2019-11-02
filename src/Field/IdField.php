@@ -7,12 +7,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IdField extends AbstractField
 {
-    public function setCustomOptions(OptionsResolver $resolver): void
+    public function __construct()
     {
-        $resolver->setDefaults([
-            'type' => 'id',
-            'formType' => TextType::class,
-            'templatePath' => '@EasyAdmin/default/field_id.html.twig',
-        ]);
+        $this
+            ->setType('id')
+            ->setFormType(TextType::class)
+            ->setDefaultTemplatePath('@EasyAdmin/field_id.html.twig');
     }
 }

@@ -7,21 +7,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TextField extends AbstractField
 {
-    private $maxLength;
+    private $maxLength = INF;
 
-    public function setCustomOptions(OptionsResolver $resolver): void
+    public function __construct()
     {
-        $resolver->setDefined([
-            'maxLength',
-        ])->setDefaults([
-            'type' => 'text',
-            'formType' => TextType::class,
-            'maxLength' => -1,
-            'templatePath' => '@EasyAdmin/default/field_text.html.twig',
-        ]);
+        $this
+            ->setType('text')
+            ->setFormType(TextType::class)
+            ->setDefaultTemplatePath('@EasyAdmin/field_text.html.twig');
     }
 
-    public function maxLength(int $length): self
+    public function getMaxLength(): int
+    {
+        return $this->maxLength;
+    }
+
+    public function setMaxLength(int $length): self
     {
         $this->maxLength = $length;
 

@@ -13,6 +13,7 @@
         </service>
 
         <service id="easyadmin.paramconverter.applicationcontext" class="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextParamConverter" public="false">
+            <argument type="service" id="easyadmin.applicationcontext.provider" />
             <tag name="request.param_converter" priority="10" converter="pageContext" />
         </service>
 

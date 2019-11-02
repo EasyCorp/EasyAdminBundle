@@ -12,6 +12,8 @@
             <argument type="service" id="request_stack" />
         </service>
 
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" alias="easyadmin.applicationcontext.provider" />
+
         <service id="easyadmin.paramconverter.applicationcontext" class="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextParamConverter" public="false">
             <argument type="service" id="easyadmin.applicationcontext.provider" />
             <tag name="request.param_converter" priority="10" converter="pageContext" />

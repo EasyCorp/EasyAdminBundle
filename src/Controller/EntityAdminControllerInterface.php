@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityAdminConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -16,6 +17,8 @@ interface EntityAdminControllerInterface
      * @return FieldInterface[]
      */
     public function getFields(string $action): iterable;
+
+    public function index(): Response;
 
     /**
      * The fully-qualified class name (FQCN) of the Doctrine ORM entity

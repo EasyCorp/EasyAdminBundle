@@ -3,8 +3,15 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityAdminConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityAdminActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityAdminActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -13,6 +20,16 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractEntityAdminController extends AbstractController implements EntityAdminControllerInterface
 {
     protected $processedConfig;
+    private $applicationContextProvider;
+    private $doctrine;
+    private $eventDispatcher;
+
+    public function __construct(ApplicationContextProvider $applicationContextProvider, RegistryInterface $doctrine, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->applicationContextProvider = $applicationContextProvider;
+        $this->doctrine = $doctrine;
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     abstract public function getEntityAdminConfig(): EntityAdminConfig;
 
@@ -42,7 +59,29 @@ abstract class AbstractEntityAdminController extends AbstractController implemen
 
     public function index(): Response
     {
-        return new Response('TODO');
+        $event = new BeforeEntityAdminActionEvent($this->getContext());
+        $this->eventDispatcher->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        $fields = $this->getFields('index');
+        $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->entity['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'), $this->entity['list']['dql_filter']);
+
+        $parameters = [
+            'paginator' => $paginator,
+            'fields' => $fields,
+            'batch_form' => $this->createBatchForm($this->entity['name'])->createView(),
+            'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
+        ];
+
+        $event = new AfterEntityAdminActionEvent($this->getContext(), $parameters);
+        $this->eventDispatcher->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        return $this->render($this->entity['templates']['list'], $event->getTemplateParameters());
     }
 
     protected function getProcessedConfig(): EntityAdminConfig
@@ -52,5 +91,10 @@ abstract class AbstractEntityAdminController extends AbstractController implemen
         }
 
         return $this->processedConfig = $this->getEntityAdminConfig();
+    }
+
+    protected function getContext(): ?ApplicationContext
+    {
+        return $this->applicationContextProvider->getContext();
     }
 }

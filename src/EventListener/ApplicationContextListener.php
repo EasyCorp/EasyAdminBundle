@@ -78,6 +78,7 @@ class ApplicationContextListener
         $dashboard = $this->getDashboard($event);
         $menu = $this->getMenu($dashboard);
 
+        /*
         $entityFqcn = $this->getEntityFqcn($request);
         if (null === $entityFqcn || null === $request->query->get('id')) {
             $entityInstance = $entityConfig = null;
@@ -86,7 +87,8 @@ class ApplicationContextListener
             $entityInstance = $this->getEntityInstance($entityManager, $entityFqcn, $request->query->get('id'));
             $entityConfig = new EntityConfig($entityManager, $entityInstance, $entityFqcn);
         }
-
+        */
+        $entityInstance = $entityConfig = null;
         $applicationContext = new ApplicationContext($request, $dashboard, $menu, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);
     }

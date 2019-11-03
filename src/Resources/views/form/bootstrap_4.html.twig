@@ -131,7 +131,7 @@
 
 {% block form_row -%}
     {% set _field_type = easyadmin.field.fieldType|default('default') %}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
+    <div class="form-group {% with {attr: row_attr|default({})} %}{{ block('attributes') }}{% endwith %}  {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
         {{- form_label(form) -}}
         <div class="form-widget">
             {% set has_prepend_html = easyadmin.field.prepend_html|default(null) is not null %}

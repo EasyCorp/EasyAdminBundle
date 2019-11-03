@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EntityAdminConfigBuilder
+class CrudConfigBuilder
 {
     private $entityFqcn;
     private $labelInSingular;

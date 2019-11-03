@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityAdminConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
@@ -70,7 +70,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     public function getFunctions()
     {
         return [
-            new TwigFunction('ea_render_field', [$this, 'renderEntityAdminField'], ['is_safe' => ['html'], 'needs_environment' => true]),
+            new TwigFunction('ea_render_field', [$this, 'renderCrudField'], ['is_safe' => ['html'], 'needs_environment' => true]),
             new TwigFunction('easyadmin_render_field_for_*_view', [$this, 'renderEntityField'], ['is_safe' => ['html'], 'needs_environment' => true]),
             new TwigFunction('easyadmin_config', [$this, 'getBackendConfiguration']),
             new TwigFunction('easyadmin_entity', [$this, 'getEntityConfiguration']),
@@ -156,7 +156,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     /**
      * Renders the value stored in a property of the given entity.
      */
-    public function renderEntityAdminField(Environment $twig, string $pageName, EntityAdminConfig $entityAdminConfig, EntityConfig $entityConfig, $entityInstance, FieldInterface $field): string
+    public function renderCrudField(Environment $twig, string $pageName, CrudConfig $crudConfig, EntityConfig $entityConfig, $entityInstance, FieldInterface $field): string
     {
         $hasCustomTemplate = null !== $field->getCustomTemplatePath();
         $templateParameters = [];
@@ -171,15 +171,15 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
             }
 
             if (false === $templateParameters['is_accessible']) {
-                return $twig->render($entityAdminConfig->getTemplate('label_inaccessible'), $templateParameters);
+                return $twig->render($crudConfig->getTemplate('label_inaccessible'), $templateParameters);
             }
 
             if (null === $templateParameters['value']) {
-                return $twig->render($entityAdminConfig->getTemplate('label_null'), $templateParameters);
+                return $twig->render($crudConfig->getTemplate('label_null'), $templateParameters);
             }
 
             if (empty($templateParameters['value']) && \in_array($field->getType(), ['image', 'file', 'array', 'simple_array'])) {
-                return $twig->render($entityAdminConfig->getTemplate('label_empty'), $templateParameters);
+                return $twig->render($crudConfig->getTemplate('label_empty'), $templateParameters);
             }
 
             return $twig->render($field->getDefaultTemplatePath(), $templateParameters);
@@ -188,7 +188,7 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
                 throw $e;
             }
 
-            return $twig->render($entityAdminConfig->getTemplate('label_undefined'), $templateParameters);
+            return $twig->render($crudConfig->getTemplate('label_undefined'), $templateParameters);
         }
     }
 

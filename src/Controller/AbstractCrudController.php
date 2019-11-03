@@ -3,12 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityAdminConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityAdminActionEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityAdminActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-abstract class AbstractEntityAdminController extends AbstractController implements EntityAdminControllerInterface
+abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
     protected $processedConfig;
     private $applicationContextProvider;
@@ -39,7 +39,7 @@ abstract class AbstractEntityAdminController extends AbstractController implemen
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    abstract public function configureEntityAdmin(): EntityAdminConfig;
+    abstract public function configureCrud(): CrudConfig;
 
     abstract public function configureFields(string $action): iterable;
 
@@ -48,13 +48,13 @@ abstract class AbstractEntityAdminController extends AbstractController implemen
         return $config;
     }
 
-    public function getEntityAdminConfig(): EntityAdminConfig
+    public function getCrudConfig(): CrudConfig
     {
         if (null !== $this->processedConfig) {
             return $this->processedConfig;
         }
 
-        return $this->processedConfig = $this->configureEntityAdmin();
+        return $this->processedConfig = $this->configureCrud();
     }
 
     public static function getSubscribedServices()
@@ -66,7 +66,7 @@ abstract class AbstractEntityAdminController extends AbstractController implemen
 
     public function index(): Response
     {
-        $event = new BeforeEntityAdminActionEvent($this->getContext());
+        $event = new BeforeCrudActionEvent($this->getContext());
         $this->eventDispatcher->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
@@ -82,7 +82,7 @@ abstract class AbstractEntityAdminController extends AbstractController implemen
             'delete_form_template' => $this->createDeleteForm('__id__')->createView(),
         ];
 
-        $event = new AfterEntityAdminActionEvent($this->getContext(), $parameters);
+        $event = new AfterCrudActionEvent($this->getContext(), $parameters);
         $this->eventDispatcher->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
@@ -93,14 +93,14 @@ abstract class AbstractEntityAdminController extends AbstractController implemen
 
     public function detail(Request $request): Response
     {
-        $event = new BeforeEntityAdminActionEvent($this->getContext());
+        $event = new BeforeCrudActionEvent($this->getContext());
         $this->eventDispatcher->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
         $entityId = $request->query->get('id');
-        $entityFqcn = $this->getEntityAdminConfig()->getEntityClass();
+        $entityFqcn = $this->getCrudConfig()->getEntityClass();
         $entity = $this->doctrine->getRepository($entityFqcn)->find($entityId);
         $entityConfig = new EntityConfig($this->doctrine->getEntityManagerForClass($entityFqcn)->getClassMetadata($entityFqcn), $entityId);
         $fields = $this->configureFields('detail');
@@ -108,20 +108,20 @@ abstract class AbstractEntityAdminController extends AbstractController implemen
 
         $parameters = [
             'page_config' => $this->configureDetailPage(DetailPageConfig::new()),
-            'entity_admin' => $this->getEntityAdminConfig(),
+            'crud_config' => $this->getCrudConfig(),
             'entity' => $entity,
             'entity_config' => $entityConfig,
             'fields' => $fields,
             'delete_form' => $deleteForm->createView(),
         ];
 
-        $event = new AfterEntityAdminActionEvent($this->getContext(), $parameters);
+        $event = new AfterCrudActionEvent($this->getContext(), $parameters);
         $this->eventDispatcher->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
-        return $this->render($this->getEntityAdminConfig()->getTemplate('detail'), $event->getTemplateParameters());
+        return $this->render($this->getCrudConfig()->getTemplate('detail'), $event->getTemplateParameters());
     }
 
     protected function getContext(): ?ApplicationContext

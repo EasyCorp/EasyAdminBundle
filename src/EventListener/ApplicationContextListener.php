@@ -6,7 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\EntityAdminControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -126,11 +126,11 @@ class ApplicationContextListener
             return null;
         }
 
-        if (!$this->classImplements($controllerFqcn, EntityAdminControllerInterface::class)) {
+        if (!$this->classImplements($controllerFqcn, CrudControllerInterface::class)) {
             return null;
         }
 
-        /** @var EntityAdminControllerInterface $controllerInstance */
+        /** @var CrudControllerInterface $controllerInstance */
         $controllerInstance = new $controllerFqcn();
         $entityClassFqcn =  $controllerInstance->getEntityClass();
 

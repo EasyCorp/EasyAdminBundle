@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 
-final class BeforeEntityAdminActionEvent extends StoppableEvent
+final class BeforeCrudActionEvent extends StoppableEvent
 {
     private $applicationContext;
 

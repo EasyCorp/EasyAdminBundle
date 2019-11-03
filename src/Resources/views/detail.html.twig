@@ -1,13 +1,13 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var page_config \EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig #}
-{# @var entity_admin \EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityAdminConfig #}
+{# @var crud_config \EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig #}
 {# @var entity_config \EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig #}
 {# @var fields \EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface[] #}
-{% extends entity_admin.templates.layout %}
-{% trans_default_domain entity_admin.translationDomain %}
+{% extends crud_config.templates.layout %}
+{% trans_default_domain crud_config.translationDomain %}
 {% set trans_parameters = {
-    '%entity_label_singular%': entity_admin.labelInSingular|trans,
-    '%entity_label_plural%': entity_admin.labelInPlural|trans,
+    '%entity_label_singular%': crud_config.labelInSingular|trans,
+    '%entity_label_plural%': crud_config.labelInPlural|trans,
     '%entity_name%': entity_config.shortClassName|trans,
     '%entity_id%': entity_config.id
 } %}
@@ -36,7 +36,7 @@
                         </label>
                         <div class="form-widget">
                             <div class="form-control">
-                                {{ ea_render_field('detail', entity_admin, entity_config, entity, field) }}
+                                {{ ea_render_field('detail', crud_config, entity_config, entity, field) }}
                             </div>
 
                             {% if field.help is not empty %}

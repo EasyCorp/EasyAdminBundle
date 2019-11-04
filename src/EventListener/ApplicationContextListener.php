@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Twig\Environment;
 
 /**
  * Initializes the ApplicationContext variable and stores it as a request attribute.
@@ -28,12 +29,14 @@ class ApplicationContextListener
 {
     private $controllerResolver;
     private $doctrine;
+    private $twig;
     private $menuProvider;
 
-    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, MenuProvider $menuProvider)
+    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, MenuProvider $menuProvider)
     {
         $this->controllerResolver = $controllerResolver;
         $this->doctrine = $doctrine;
+        $this->twig = $twig;
         $this->menuProvider = $menuProvider;
     }
 
@@ -44,6 +47,10 @@ class ApplicationContextListener
         }
 
         $this->createApplicationContext($event);
+        $applicationContext = $this->getApplicationContext($event);
+        // this makes the ApplicationContext available in all templates as a short named variable
+        $this->twig->addGlobal('ea', $applicationContext);
+
         $this->setController($event);
     }
 

@@ -22,6 +22,7 @@
         <service id="EasyCorp\Bundle\EasyAdminBundle\EventListener\ApplicationContextListener" public="false">
             <argument type="service" id="controller_resolver" />
             <argument type="service" id="doctrine" />
+            <argument type="service" id="twig" />
             <argument type="service" id="easyadmin.menu.provider" />
             <tag name="kernel.event_listener" event="kernel.controller" />
         </service>
@@ -73,7 +74,6 @@
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <argument type="service" id="translator" on-invalid="null" />
             <argument type="service" id="easyadmin.security.authorization_checker" />
-            <argument type="service" id="easyadmin.applicationcontext.provider" />
             <tag name="twig.extension" />
         </service>
 

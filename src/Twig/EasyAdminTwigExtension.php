@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
@@ -19,7 +18,6 @@ use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -28,7 +26,7 @@ use Twig\TwigFunction;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterface
+class EasyAdminTwigExtension extends AbstractExtension
 {
     private $configManager;
     private $propertyAccessor;
@@ -38,9 +36,8 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
     /** @var TranslatorInterface|null */
     private $translator;
     private $authorizationChecker;
-    private $applicationContextProvider;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker, ApplicationContextProvider $applicationContextProvider)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
@@ -49,19 +46,6 @@ class EasyAdminTwigExtension extends AbstractExtension implements GlobalsInterfa
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->translator = $translator;
         $this->authorizationChecker = $authorizationChecker;
-        $this->applicationContextProvider = $applicationContextProvider;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getGlobals(): array
-    {
-        return [
-            // this makes the ApplicationContext available in all templates as a short named variable
-            // (the method call is needed to force an ApplicationContext return type that enables IDE autocompletion in templates)
-            'ea' => $this->applicationContextProvider->getContext(),
-        ];
     }
 
     /**

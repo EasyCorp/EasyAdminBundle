@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
@@ -42,6 +43,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     abstract public function configureCrud(): CrudConfig;
 
+    public function configureAssets(): AssetConfig
+    {
+        return AssetConfig::new();
+    }
+
     /**
      * @inheritDoc
      */
@@ -80,6 +86,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->entity['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'), $this->entity['list']['dql_filter']);
 
         $parameters = [
+            'crud_assets' => $this->configureAssets(),
             'paginator' => $paginator,
             'fields' => $fields,
             'batch_form' => $this->createBatchForm($this->entity['name'])->createView(),
@@ -111,6 +118,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $deleteForm = $this->createDeleteForm($entityId);
 
         $parameters = [
+            'crud_assets' => $this->configureAssets(),
             'page_config' => $this->configureDetailPage(DetailPageConfig::new()),
             'crud_config' => $this->getCrudConfig(),
             'entity' => $entity,

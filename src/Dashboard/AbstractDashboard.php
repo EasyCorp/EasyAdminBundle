@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,11 +24,16 @@ abstract class AbstractDashboard extends AbstractController implements Dashboard
         yield MenuItem::new('Dashboard', 'fa-home')->homepage();
     }
 
+    public function configureAssets(): AssetConfig
+    {
+        return AssetConfig::new();
+    }
+
     /**
      * @Route("/admin", name="dashboard")
      */
     public function index(): Response
     {
-        return $this->render('@EasyAdmin/default/layout.html.twig');
+        return $this->render('@EasyAdmin/layout.html.twig');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
@@ -13,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 interface CrudControllerInterface
 {
     public function configureCrud(): CrudConfig;
+
+    public function configureAssets(): AssetConfig;
 
     public function configureDetailPage(DetailPageConfig $config): DetailPageConfig;
 

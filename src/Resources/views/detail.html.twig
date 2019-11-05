@@ -27,7 +27,6 @@
 {% block main %}
     <div class="form-horizontal">
         {% block show_fields %}
-            {% set _fields_visible_by_user = fields|filter((metadata, field) => easyadmin_is_granted(metadata.permission)) %}
             {% for field in fields %}
                 {% block show_field %}
                     <div class="form-group field-{{ (field.type ?? 'default')|lower }} {{ field.cssClass ?? '' }}">
@@ -48,7 +47,7 @@
             {% endfor %}
         {% endblock %}
     </div>
-{#
+
     <section class="content-footer">
         <div class="form-actions">
             {% block item_actions %}
@@ -78,7 +77,6 @@
             _entity_config: _entity_config,
         }, with_context = false) }}
     {% endblock delete_form %}
-#}
 {% endblock %}
 
 {% block body_javascript %}

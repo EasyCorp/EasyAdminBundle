@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
+
 /**
  * This must be implemented by all backend dashboards.
  *
@@ -10,6 +12,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
 interface DashboardInterface
 {
     public static function getConfig(): DashboardConfig;
+
+    public function configureAssets(): AssetConfig;
 
     /**
      * @return MenuItemBuilder[]

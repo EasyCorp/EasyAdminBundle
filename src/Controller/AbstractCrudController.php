@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,6 +42,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     abstract public function configureCrud(): CrudConfig;
 
+    /**
+     * @inheritDoc
+     */
     abstract public function configureFields(string $action): iterable;
 
     public function configureDetailPage(DetailPageConfig $config): DetailPageConfig
@@ -72,7 +76,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $fields = $this->configureFields('index');
+        $fields = $this->getFields('index');
         $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->entity['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'), $this->entity['list']['dql_filter']);
 
         $parameters = [
@@ -103,7 +107,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityFqcn = $this->getCrudConfig()->getEntityClass();
         $entity = $this->doctrine->getRepository($entityFqcn)->find($entityId);
         $entityConfig = new EntityConfig($this->doctrine->getEntityManagerForClass($entityFqcn)->getClassMetadata($entityFqcn), $entityId);
-        $fields = $this->configureFields('detail');
+        $fields = $this->getFields('detail');
         $deleteForm = $this->createDeleteForm($entityId);
 
         $parameters = [
@@ -147,11 +151,27 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             ->setMethod('DELETE')
             ->add('submit', SubmitType::class, [
                 'label' => 'delete_modal.action',
-                'translation_domain' => 'EasyAdminBundle'
+                'translation_domain' => 'EasyAdminBundle',
             ])
             // needed to avoid submitting empty delete forms (see issue #1409)
             ->add('_easyadmin_delete_flag', HiddenType::class, ['data' => '1']);
 
         return $formBuilder->getForm();
+    }
+
+    /**
+     * Filters the page fields to only display the ones which the current user
+     * has permission for.
+     *
+     * @return FieldInterface[]
+     */
+    protected function getFields(string $page): iterable
+    {
+        /** @var FieldInterface $field */
+        foreach ($this->configureFields($page) as $field) {
+            if ($this->get('ea.authorization_checker')->isGranted($field->getPermission())) {
+                yield $field;
+            }
+        }
     }
 }

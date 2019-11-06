@@ -34,6 +34,7 @@ final class ApplicationContext
         $this->dashboard = $dashboard;
         $this->menu = $menu;
         $this->crudConfig = $crudConfig;
+        $this->pageConfig = $pageConfig;
         $this->entityConfig = $entityConfig;
         $this->entity = $entity;
     }

@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-interface DashboardInterface
+interface DashboardControllerInterface
 {
     public static function getConfig(): DashboardConfig;
 

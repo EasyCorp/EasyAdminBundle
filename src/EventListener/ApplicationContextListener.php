@@ -14,7 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProviderInterface;
@@ -49,19 +49,26 @@ class ApplicationContextListener
 
     public function onKernelController(ControllerEvent $event): void
     {
-        if (!$this->isEasyAdminController($event->getController())) {
+        if (!$this->isDashboardController($event->getController())) {
             return;
         }
 
-        $this->createApplicationContext($event);
+        $crudControllerCallable = $this->getCrudController($event->getRequest());
+        $crudControllerInstance = $crudControllerCallable[0];
+
+        $this->createApplicationContext($event, $crudControllerInstance);
         $applicationContext = $this->getApplicationContext($event);
         // this makes the ApplicationContext available in all templates as a short named variable
         $this->twig->addGlobal('ea', $applicationContext);
 
-        $this->setController($event);
+        if (null !== $crudControllerInstance) {
+            // Changes the controller associated to the current request to execute the
+            // CRUD controller and page requested via the dashboard menu and actions
+            $event->setController($crudControllerCallable);
+        }
     }
 
-    private function isEasyAdminController(callable $controller): bool
+    private function isDashboardController(callable $controller): bool
     {
         // if the controller is defined in a class, $controller is an array
         // otherwise do nothing because it's a Closure (rare but possible in Symfony)
@@ -71,16 +78,47 @@ class ApplicationContextListener
 
         $controllerInstance = $controller[0];
 
-        // If the controller does not implement EasyAdmin's DashboardInterface,
+        // If the controller does not implement EasyAdmin's DashboardControllerInterface,
         // assume that the request is not related to EasyAdmin
-        if (!$controllerInstance instanceof DashboardInterface) {
+        if (!$controllerInstance instanceof DashboardControllerInterface) {
             return false;
         }
 
         return true;
     }
 
-    private function createApplicationContext(ControllerEvent $event): void
+    private function getCrudController(Request $request): ?callable
+    {
+        $crudControllerFqcn = $request->query->get('crud');
+        $crudPage = $request->query->get('page');
+
+        if (null === $crudControllerFqcn || null === $crudPage) {
+            return null;
+        }
+
+        // TODO: VERY IMPORTANT: check that the controller is associated to the
+        // current dashboard. Otherwise, anyone can access any app controller.
+
+        $crudRequest = $request->duplicate();
+        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
+        $crudControllerCallable = $this->controllerResolver->getController($crudRequest);
+
+        if (false === $crudControllerCallable) {
+            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $crudControllerFqcn, $crudPage));
+        }
+
+        if (!is_array($crudControllerCallable)) {
+            return null;
+        }
+
+        if (!$crudControllerCallable[0] instanceof CrudControllerInterface) {
+            return null;
+        }
+
+        return $crudControllerCallable;
+    }
+
+    private function createApplicationContext(ControllerEvent $event, ?CrudControllerInterface $crudControllerInstance): void
     {
         // creating the context is expensive, so it's created once and stored in the request
         // if the current request already has an ApplicationContext object, do nothing
@@ -89,12 +127,16 @@ class ApplicationContextListener
         }
 
         $request = $event->getRequest();
+        $dashboardControllerInstance = $event->getController()[0];
+        $crudPage = $request->query->get('page');
+        $entityId = $request->query->get('id');
+
         $dashboard = $this->getDashboard($event);
         $menu = $this->getMenu($dashboard);
-        $assetCollection = $this->getAssetCollection($event);
-        $crudConfig = $this->getCrudConfig($request);
-        $pageConfig = $this->getPageConfig($request);
-        [$entityConfig, $entityInstance] = $this->getDoctrineEntity($request);
+        $assetCollection = $this->getAssetCollection($dashboardControllerInstance, $crudControllerInstance);
+        $crudConfig = $this->getCrudConfig($crudControllerInstance);
+        $pageConfig = $this->getPageConfig($crudControllerInstance, $crudPage);
+        [$entityConfig, $entityInstance] = $this->getDoctrineEntity($crudControllerInstance, $entityId);
 
         $applicationContext = new ApplicationContext($request, $dashboard, $menu, $assetCollection, $crudConfig, $pageConfig, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);
@@ -110,15 +152,15 @@ class ApplicationContextListener
         $event->getRequest()->attributes->set(ApplicationContext::ATTRIBUTE_KEY, $applicationContext);
     }
 
-    private function getDashboard(ControllerEvent $event): DashboardInterface
+    private function getDashboard(ControllerEvent $event): DashboardControllerInterface
     {
-        /** @var DashboardInterface $dashboard */
+        /** @var DashboardControllerInterface $dashboard */
         $dashboard = $event->getController()[0];
 
         return $dashboard;
     }
 
-    private function getMenu(DashboardInterface $dashboard): MenuProviderInterface
+    private function getMenu(DashboardControllerInterface $dashboard): MenuProviderInterface
     {
         foreach ($dashboard->getMenuItems() as $menuItem) {
             $this->menuProvider->addItem($menuItem);
@@ -127,82 +169,52 @@ class ApplicationContextListener
         return $this->menuProvider;
     }
 
-    private function getAssetCollection(ControllerEvent $event): AssetCollection
+    private function getAssetCollection(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetCollection
     {
-        $request = $event->getRequest();
-        $crudControllerFqcn = $request->query->get('crud');
-        $crudPage = $request->query->get('page', 'index');
+        $dashboardAssets = $dashboardController->configureAssets();
 
-        /** @var DashboardInterface $dashboardControllerInstance */
-        $dashboardControllerInstance = $event->getController()[0];
-        $dashboardAssets = $dashboardControllerInstance->configureAssets();
-
-        if (null === $crudControllerFqcn || !$this->classImplements($crudControllerFqcn, CrudControllerInterface::class)) {
+        if (null === $crudController) {
             return new AssetCollection($dashboardAssets);
         }
 
-        $crudRequest = $request->duplicate();
-        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
-        $crudController = $this->controllerResolver->getController($crudRequest);
-        /** @var CrudControllerInterface $crudControllerInstance */
-        $crudControllerInstance = $crudController[0];
-        $crudAssets = $crudControllerInstance->configureAssets();
+        $crudAssets = $crudController->configureAssets();
 
         return new AssetCollection($dashboardAssets, $crudAssets);
     }
 
-    private function getCrudConfig(Request $request): ?CrudConfig
+    private function getCrudConfig(?CrudControllerInterface $crudController): ?CrudConfig
     {
-        $crudControllerFqcn = $request->query->get('crud');
-        $crudPage = $request->query->get('page', 'index');
-
-        if (null === $crudControllerFqcn || !$this->classImplements($crudControllerFqcn, CrudControllerInterface::class)) {
+        if (null === $crudController) {
             return null;
         }
 
-        $crudRequest = $request->duplicate();
-        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
-        $crudController = $this->controllerResolver->getController($crudRequest);
-        /** @var CrudControllerInterface $crudControllerInstance */
-        $crudControllerInstance = $crudController[0];
-        $crudConfig = $crudControllerInstance->configureCrud();
-
-        return $crudConfig;
+        return $crudController->configureCrud();
     }
 
     /**
-     * @return IndexPageConfig|DetailPageConfig|FormPageConfig
+     * @return IndexPageConfig|DetailPageConfig|FormPageConfig|null
      */
-    private function getPageConfig(Request $request)
+    private function getPageConfig(?CrudControllerInterface $crudController, ?string $crudPage)
     {
-        $crudControllerFqcn = $request->query->get('crud');
-        $crudPage = $request->query->get('page', 'index');
-        $validPageNames = ['index', 'detail', 'form'];
-
-        if (null === $crudControllerFqcn || !$this->classImplements($crudControllerFqcn, CrudControllerInterface::class) || !in_array($crudPage, $validPageNames)) {
+        $pageConfigMethodName = 'configure'.ucfirst($crudPage).'Page';
+        if (null === $crudController || !method_exists($crudController, $pageConfigMethodName)) {
             return null;
         }
 
-        $crudRequest = $request->duplicate();
-        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
-        $crudController = $this->controllerResolver->getController($crudRequest);
-        /** @var CrudControllerInterface $crudControllerInstance */
-        $crudControllerInstance = $crudController[0];
-        $pageConfigMethodName = 'configure'.ucfirst($crudPage).'Page';
-        $pageConfig = $crudControllerInstance->{$pageConfigMethodName}();
-
-        return $pageConfig;
+        return $crudController->{$pageConfigMethodName}();
     }
 
     /**
      * @return [?EntityConfig, ?$entityInstance]
      */
-    private function getDoctrineEntity(Request $request): array
+    private function getDoctrineEntity(?CrudControllerInterface $crudController, $entityId): array
     {
-        $entityFqcn = $this->getEntityFqcn($request);
-        $entityId = $request->query->get('id');
+        if (null === $crudController || null === $entityId) {
+            return [null, null];
+        }
 
-        if (null === $entityFqcn || null === $entityId) {
+        $entityFqcn = $crudController->configureCrud()->getEntityClass();
+        if (null === $entityFqcn) {
             return [null, null];
         }
 
@@ -211,27 +223,6 @@ class ApplicationContextListener
         $entityConfig = new EntityConfig($entityManager->getClassMetadata($entityFqcn), $entityId);
 
         return [$entityConfig, $entityInstance];
-    }
-
-    private function getEntityFqcn(Request $request): ?string
-    {
-        if (null === $crudControllerFqcn = $request->query->get('crud')) {
-            return null;
-        }
-
-        if (!$this->classImplements($crudControllerFqcn, CrudControllerInterface::class)) {
-            return null;
-        }
-
-        $crudMethod = $request->query->get('page', 'index');
-        $crudRequest = $request->duplicate();
-        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudMethod]);
-        $crudController = $this->controllerResolver->getController($crudRequest);
-        /** @var CrudControllerInterface $crudControllerInstance */
-        $crudControllerInstance = $crudController[0];
-        $entityClassFqcn = $crudControllerInstance->configureCrud()->getEntityClass();
-
-        return $entityClassFqcn;
     }
 
     private function getEntityManager(string $entityClass): ObjectManager
@@ -251,39 +242,5 @@ class ApplicationContextListener
         }
 
         return $entityInstance;
-    }
-
-    /**
-     * Changes the controller associated to the current request to execute the
-     * controller and action requested via the dashboard menu and actions.
-     */
-    private function setController(ControllerEvent $event): void
-    {
-        $request = $event->getRequest();
-        $crudControllerFqcn = $request->query->get('crud');
-        $crudPage = $request->query->get('page');
-
-        if (null === $crudControllerFqcn || null === $crudPage) {
-            return;
-        }
-
-        // TODO: VERY IMPORTANT: check that the controller is associated to the
-        // current dashboard. Otherwise, anyone can access any app controller.
-
-        $request->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
-        $newController = $this->controllerResolver->getController($request);
-
-        if (false === $newController) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $crudControllerFqcn, $crudPage));
-        }
-
-        $event->setController($newController);
-    }
-
-    private function classImplements(string $classFqcn, string $interfaceFqcn): bool
-    {
-        $implementedInterfaces = class_implements($classFqcn);
-
-        return $implementedInterfaces && \in_array($interfaceFqcn, $implementedInterfaces, true);
     }
 }

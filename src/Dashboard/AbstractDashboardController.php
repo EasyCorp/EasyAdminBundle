@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * This class is useful to extend your dashboard from it instead of implementing
  * the interface.
  */
-abstract class AbstractDashboard extends AbstractController implements DashboardInterface
+abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
     public static function getConfig(): DashboardConfig
     {

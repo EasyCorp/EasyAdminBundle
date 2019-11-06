@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,7 +30,7 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, DashboardInterface $dashboard, MenuProviderInterface $menu, AssetCollection $assetCollection, ?CrudConfig $crudConfig, $pageConfig, ?EntityConfig $entityConfig, $entity)
+    public function __construct(Request $request, DashboardControllerInterface $dashboard, MenuProviderInterface $menu, AssetCollection $assetCollection, ?CrudConfig $crudConfig, $pageConfig, ?EntityConfig $entityConfig, $entity)
     {
         $this->request = $request;
         $this->dashboard = $dashboard;
@@ -47,7 +47,7 @@ final class ApplicationContext
         return $this->request;
     }
 
-    public function getDashboard(): DashboardInterface
+    public function getDashboard(): DashboardControllerInterface
     {
         return $this->dashboard;
     }
@@ -68,7 +68,7 @@ final class ApplicationContext
     }
 
     /**
-     * @return IndexPageConfig|DetailPageConfig|FormPageConfig
+     * @return IndexPageConfig|DetailPageConfig|FormPageConfig|null
      */
     public function getPageConfig()
     {

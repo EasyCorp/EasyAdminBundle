@@ -8,12 +8,12 @@
 {% set trans_parameters = {
     '%entity_label_singular%': crud_config.labelInSingular|trans,
     '%entity_label_plural%': crud_config.labelInPlural|trans,
-    '%entity_name%': entity_config.shortClassName|trans,
-    '%entity_id%': entity_config.id
+    '%entity_name%': ea.entityConfig.shortClassName|trans,
+    '%entity_id%': ea.entityConfig.id
 } %}
 
-{% block body_id 'easyadmin-show-' ~ entity_config.shortClassName ~ '-' ~ entity_config.id %}
-{% block body_class 'show show-' ~ entity_config.shortClassName %}
+{% block body_id 'easyadmin-show-' ~ ea.entityConfig.shortClassName ~ '-' ~ ea.entityConfig.id %}
+{% block body_class 'show show-' ~ ea.entityConfig.shortClassName %}
 
 {% block content_title %}
     {% apply spaceless %}
@@ -35,7 +35,7 @@
                         </label>
                         <div class="form-widget">
                             <div class="form-control">
-                                {{ ea_render_field('detail', crud_config, entity_config, entity, field) }}
+                                {{ ea_render_field('detail', crud_config, ea.entityConfig, ea.entity, field) }}
                             </div>
 
                             {% if field.help is not empty %}
@@ -47,7 +47,7 @@
             {% endfor %}
         {% endblock %}
     </div>
-
+{#
     <section class="content-footer">
         <div class="form-actions">
             {% block item_actions %}
@@ -77,6 +77,7 @@
             _entity_config: _entity_config,
         }, with_context = false) }}
     {% endblock delete_form %}
+#}
 {% endblock %}
 
 {% block body_javascript %}

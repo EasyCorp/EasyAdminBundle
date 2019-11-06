@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardInterface;
@@ -84,18 +85,8 @@ class ApplicationContextListener
         $request = $event->getRequest();
         $dashboard = $this->getDashboard($event);
         $menu = $this->getMenu($dashboard);
+        [$entityConfig, $entityInstance] = $this->getDoctrineEntity($request);
 
-        /*
-        $entityFqcn = $this->getEntityFqcn($request);
-        if (null === $entityFqcn || null === $request->query->get('id')) {
-            $entityInstance = $entityConfig = null;
-        } else {
-            $entityManager = $this->getEntityManager($entityFqcn);
-            $entityInstance = $this->getEntityInstance($entityManager, $entityFqcn, $request->query->get('id'));
-            $entityConfig = new EntityConfig($entityManager, $entityInstance, $entityFqcn);
-        }
-        */
-        $entityInstance = $entityConfig = null;
         $applicationContext = new ApplicationContext($request, $dashboard, $menu, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);
     }
@@ -127,6 +118,25 @@ class ApplicationContextListener
         return $this->menuProvider;
     }
 
+    /**
+     * @return [?EntityConfig, ?$entityInstance]
+     */
+    private function getDoctrineEntity(Request $request): array
+    {
+        $entityFqcn = $this->getEntityFqcn($request);
+        $entityId = $request->query->get('id');
+
+        if (null === $entityFqcn || null === $entityId) {
+            return [null, null];
+        }
+
+        $entityManager = $this->getEntityManager($entityFqcn);
+        $entityInstance = $this->getEntityInstance($entityManager, $entityFqcn, $entityId);
+        $entityConfig = new EntityConfig($entityManager->getClassMetadata($entityFqcn), $entityId);
+
+        return [$entityConfig, $entityInstance];
+    }
+
     private function getEntityFqcn(Request $request): ?string
     {
         if (null === $controllerFqcn = $request->query->get('controller')) {
@@ -137,9 +147,13 @@ class ApplicationContextListener
             return null;
         }
 
-        /** @var CrudControllerInterface $controllerInstance */
-        $controllerInstance = new $controllerFqcn();
-        $entityClassFqcn =  $controllerInstance->getEntityClass();
+        $crudMethod = $request->query->get('action', 'index');
+        $crudRequest = $request->duplicate();
+        $crudRequest->attributes->set('_controller', [$controllerFqcn, $crudMethod]);
+        $crudController = $this->controllerResolver->getController($crudRequest);
+        /** @var CrudControllerInterface $crudControllerInstance */
+        $crudControllerInstance = $crudController[0];
+        $entityClassFqcn = $crudControllerInstance->configureCrud()->getEntityClass();
 
         return $entityClassFqcn;
     }

@@ -110,19 +110,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $entityId = $request->query->get('id');
-        $entityFqcn = $this->getCrudConfig()->getEntityClass();
-        $entity = $this->doctrine->getRepository($entityFqcn)->find($entityId);
-        $entityConfig = new EntityConfig($this->doctrine->getEntityManagerForClass($entityFqcn)->getClassMetadata($entityFqcn), $entityId);
         $fields = $this->getFields('detail');
+        $entityId = $request->query->get('id');
         $deleteForm = $this->createDeleteForm($entityId);
 
         $parameters = [
             'crud_assets' => $this->configureAssets(),
             'page_config' => $this->configureDetailPage(DetailPageConfig::new()),
             'crud_config' => $this->getCrudConfig(),
-            'entity' => $entity,
-            'entity_config' => $entityConfig,
             'fields' => $fields,
             'delete_form' => $deleteForm->createView(),
         ];

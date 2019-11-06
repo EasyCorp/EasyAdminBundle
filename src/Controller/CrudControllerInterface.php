@@ -17,7 +17,7 @@ interface CrudControllerInterface
 
     public function configureAssets(): AssetConfig;
 
-    public function configureDetailPage(DetailPageConfig $config): DetailPageConfig;
+    public function configureDetailPage(): DetailPageConfig;
 
     /**
      * @return FieldInterface[]

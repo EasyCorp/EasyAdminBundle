@@ -53,9 +53,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
      */
     abstract public function configureFields(string $action): iterable;
 
-    public function configureDetailPage(DetailPageConfig $config): DetailPageConfig
+    public function configureDetailPage(): DetailPageConfig
     {
-        return $config;
+        return DetailPageConfig::new();
     }
 
     public function getCrudConfig(): CrudConfig
@@ -116,8 +116,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $parameters = [
             'crud_assets' => $this->configureAssets(),
-            'page_config' => $this->configureDetailPage(DetailPageConfig::new()),
-            'crud_config' => $this->getCrudConfig(),
             'fields' => $fields,
             'delete_form' => $deleteForm->createView(),
         ];

@@ -1,13 +1,10 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
-{# @var page_config \EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig #}
-{# @var crud_config \EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig #}
-{# @var entity_config \EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig #}
 {# @var fields \EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface[] #}
-{% extends crud_config.templates.layout %}
-{% trans_default_domain crud_config.translationDomain %}
+{% extends ea.crudConfig.templates.layout %}
+{% trans_default_domain ea.crudConfig.translationDomain %}
 {% set trans_parameters = {
-    '%entity_label_singular%': crud_config.labelInSingular|trans,
-    '%entity_label_plural%': crud_config.labelInPlural|trans,
+    '%entity_label_singular%': ea.crudConfig.labelInSingular|trans,
+    '%entity_label_plural%': ea.crudConfig.labelInPlural|trans,
     '%entity_name%': ea.entityConfig.shortClassName|trans,
     '%entity_id%': ea.entityConfig.id
 } %}
@@ -18,7 +15,7 @@
 {% block content_title %}
     {% apply spaceless %}
         {% set default_title = 'page.detail.title'|trans(trans_parameters, 'EasyAdminBundle') %}
-        {{ page_config.title is null ? default_title|raw : page_config.title|trans(trans_parameters)|raw }}
+        {{ ea.pageConfig.title is null ? default_title|raw : ea.pageConfig.title|trans(trans_parameters)|raw }}
     {% endapply %}
 {% endblock %}
 
@@ -35,7 +32,7 @@
                         </label>
                         <div class="form-widget">
                             <div class="form-control">
-                                {{ ea_render_field('detail', crud_config, ea.entityConfig, ea.entity, field) }}
+                                {{ ea_render_field('detail', ea.crudConfig, ea.entityConfig, ea.entity, field) }}
                             </div>
 
                             {% if field.help is not empty %}

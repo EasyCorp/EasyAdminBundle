@@ -4,7 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudControllerInterface;
@@ -85,9 +89,11 @@ class ApplicationContextListener
         $request = $event->getRequest();
         $dashboard = $this->getDashboard($event);
         $menu = $this->getMenu($dashboard);
+        $crudConfig = $this->getCrudConfig($request);
+        $pageConfig = $this->getPageConfig($request);
         [$entityConfig, $entityInstance] = $this->getDoctrineEntity($request);
 
-        $applicationContext = new ApplicationContext($request, $dashboard, $menu, $entityConfig, $entityInstance);
+        $applicationContext = new ApplicationContext($request, $dashboard, $menu, $crudConfig, $pageConfig, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -116,6 +122,49 @@ class ApplicationContextListener
         }
 
         return $this->menuProvider;
+    }
+
+    private function getCrudConfig(Request $request): ?CrudConfig
+    {
+        $crudControllerFqcn = $request->query->get('crud');
+        $crudPage = $request->query->get('page', 'index');
+
+        if (null === $crudControllerFqcn || !$this->classImplements($crudControllerFqcn, CrudControllerInterface::class)) {
+            return null;
+        }
+
+        $crudRequest = $request->duplicate();
+        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
+        $crudController = $this->controllerResolver->getController($crudRequest);
+        /** @var CrudControllerInterface $crudControllerInstance */
+        $crudControllerInstance = $crudController[0];
+        $crudConfig = $crudControllerInstance->configureCrud();
+
+        return $crudConfig;
+    }
+
+    /**
+     * @return IndexPageConfig|DetailPageConfig|FormPageConfig
+     */
+    private function getPageConfig(Request $request)
+    {
+        $crudControllerFqcn = $request->query->get('crud');
+        $crudPage = $request->query->get('page', 'index');
+        $validPageNames = ['index', 'detail', 'form'];
+
+        if (null === $crudControllerFqcn || !$this->classImplements($crudControllerFqcn, CrudControllerInterface::class) || !in_array($crudPage, $validPageNames)) {
+            return null;
+        }
+
+        $crudRequest = $request->duplicate();
+        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
+        $crudController = $this->controllerResolver->getController($crudRequest);
+        /** @var CrudControllerInterface $crudControllerInstance */
+        $crudControllerInstance = $crudController[0];
+        $pageConfigMethodName = 'configure'.ucfirst($crudPage).'Page';
+        $pageConfig = $crudControllerInstance->{$pageConfigMethodName}();
+
+        return $pageConfig;
     }
 
     /**

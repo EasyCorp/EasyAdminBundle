@@ -33,8 +33,8 @@ final class MenuItemBuilder
     {
         $this->type = MenuItem::TYPE_ENTITY;
         $this->routeParameters = array_merge([
-            'controller' => $controllerClass,
-            'action' => 'index',
+            'crud' => $controllerClass,
+            'page' => 'index',
         ], $routeParameters);
 
         return $this;

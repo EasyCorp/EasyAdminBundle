@@ -139,17 +139,17 @@ class ApplicationContextListener
 
     private function getEntityFqcn(Request $request): ?string
     {
-        if (null === $controllerFqcn = $request->query->get('controller')) {
+        if (null === $crudControllerFqcn = $request->query->get('crud')) {
             return null;
         }
 
-        if (!$this->classImplements($controllerFqcn, CrudControllerInterface::class)) {
+        if (!$this->classImplements($crudControllerFqcn, CrudControllerInterface::class)) {
             return null;
         }
 
-        $crudMethod = $request->query->get('action', 'index');
+        $crudMethod = $request->query->get('page', 'index');
         $crudRequest = $request->duplicate();
-        $crudRequest->attributes->set('_controller', [$controllerFqcn, $crudMethod]);
+        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudMethod]);
         $crudController = $this->controllerResolver->getController($crudRequest);
         /** @var CrudControllerInterface $crudControllerInstance */
         $crudControllerInstance = $crudController[0];
@@ -184,21 +184,21 @@ class ApplicationContextListener
     private function setController(ControllerEvent $event): void
     {
         $request = $event->getRequest();
-        $controllerFqcn = $request->query->get('controller');
-        $controllerMethod = $request->query->get('action');
+        $crudControllerFqcn = $request->query->get('crud');
+        $crudPage = $request->query->get('page');
 
-        if (null === $controllerFqcn || null === $controllerMethod) {
+        if (null === $crudControllerFqcn || null === $crudPage) {
             return;
         }
 
         // TODO: VERY IMPORTANT: check that the controller is associated to the
         // current dashboard. Otherwise, anyone can access any app controller.
 
-        $request->attributes->set('_controller', [$controllerFqcn, $controllerMethod]);
+        $request->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
         $newController = $this->controllerResolver->getController($request);
 
         if (false === $newController) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $controllerFqcn, $controllerMethod));
+            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $crudControllerFqcn, $crudPage));
         }
 
         $event->setController($newController);

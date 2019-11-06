@@ -15,10 +15,7 @@
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
     {% endblock %}
 
-    {% for css_asset in ea.dashboard.configureAssets.cssAssets ?? [] %}
-        <link rel="stylesheet" href="{{ asset(css_asset) }}">
-    {% endfor %}
-    {% for css_asset in crud_assets.cssAssets ?? [] %}
+    {% for css_asset in ea.assets.cssAssets ?? [] %}
         <link rel="stylesheet" href="{{ asset(css_asset) }}">
     {% endfor %}
 
@@ -35,10 +32,7 @@
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app-rtl.css') }}">
     {% endif %}
 
-    {% for htmlContent in ea.dashboard.configureAssets.headContents ?? [] %}
-        {{ htmlContent|raw }}
-    {% endfor %}
-    {% for htmlContent in crud_assets.headContents ?? [] %}
+    {% for htmlContent in ea.assets.headContents ?? [] %}
         {{ htmlContent|raw }}
     {% endfor %}
 </head>
@@ -190,17 +184,11 @@
 
     {% block body_javascript %}{% endblock body_javascript %}
 
-    {% for js_asset in ea.dashboard.configureAssets.jsAssets ?? [] %}
-        <script src="{{ asset(js_asset) }}"></script>
-    {% endfor %}
-    {% for js_asset in crud_assets.jsAssets ?? [] %}
+    {% for js_asset in ea.assets.jsAssets ?? [] %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
 
-    {% for htmlContent in ea.dashboard.configureAssets.bodyContents ?? [] %}
-        {{ htmlContent|raw }}
-    {% endfor %}
-    {% for htmlContent in crud_assets.bodyContents ?? [] %}
+    {% for htmlContent in ea.assets.bodyContents ?? [] %}
         {{ htmlContent|raw }}
     {% endfor %}
     </body>

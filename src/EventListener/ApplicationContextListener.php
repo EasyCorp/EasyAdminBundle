@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
@@ -17,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProviderInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -89,11 +91,12 @@ class ApplicationContextListener
         $request = $event->getRequest();
         $dashboard = $this->getDashboard($event);
         $menu = $this->getMenu($dashboard);
+        $assetCollection = $this->getAssetCollection($event);
         $crudConfig = $this->getCrudConfig($request);
         $pageConfig = $this->getPageConfig($request);
         [$entityConfig, $entityInstance] = $this->getDoctrineEntity($request);
 
-        $applicationContext = new ApplicationContext($request, $dashboard, $menu, $crudConfig, $pageConfig, $entityConfig, $entityInstance);
+        $applicationContext = new ApplicationContext($request, $dashboard, $menu, $assetCollection, $crudConfig, $pageConfig, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -122,6 +125,30 @@ class ApplicationContextListener
         }
 
         return $this->menuProvider;
+    }
+
+    private function getAssetCollection(ControllerEvent $event): AssetCollection
+    {
+        $request = $event->getRequest();
+        $crudControllerFqcn = $request->query->get('crud');
+        $crudPage = $request->query->get('page', 'index');
+
+        /** @var DashboardInterface $dashboardControllerInstance */
+        $dashboardControllerInstance = $event->getController()[0];
+        $dashboardAssets = $dashboardControllerInstance->configureAssets();
+
+        if (null === $crudControllerFqcn || !$this->classImplements($crudControllerFqcn, CrudControllerInterface::class)) {
+            return new AssetCollection($dashboardAssets);
+        }
+
+        $crudRequest = $request->duplicate();
+        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
+        $crudController = $this->controllerResolver->getController($crudRequest);
+        /** @var CrudControllerInterface $crudControllerInstance */
+        $crudControllerInstance = $crudController[0];
+        $crudAssets = $crudControllerInstance->configureAssets();
+
+        return new AssetCollection($dashboardAssets, $crudAssets);
     }
 
     private function getCrudConfig(Request $request): ?CrudConfig

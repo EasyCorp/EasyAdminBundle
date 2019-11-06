@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
@@ -23,16 +24,18 @@ final class ApplicationContext
     private $request;
     private $dashboard;
     private $menu;
+    private $assetCollection;
     private $crudConfig;
     private $pageConfig;
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, DashboardInterface $dashboard, MenuProviderInterface $menu, ?CrudConfig $crudConfig, $pageConfig, ?EntityConfig $entityConfig, $entity)
+    public function __construct(Request $request, DashboardInterface $dashboard, MenuProviderInterface $menu, AssetCollection $assetCollection, ?CrudConfig $crudConfig, $pageConfig, ?EntityConfig $entityConfig, $entity)
     {
         $this->request = $request;
         $this->dashboard = $dashboard;
         $this->menu = $menu;
+        $this->assetCollection = $assetCollection;
         $this->crudConfig = $crudConfig;
         $this->pageConfig = $pageConfig;
         $this->entityConfig = $entityConfig;
@@ -52,6 +55,11 @@ final class ApplicationContext
     public function getMenu(): MenuProviderInterface
     {
         return $this->menu;
+    }
+
+    public function getAssets(): AssetCollection
+    {
+        return $this->assetCollection;
     }
 
     public function getCrudConfig(): ?CrudConfig

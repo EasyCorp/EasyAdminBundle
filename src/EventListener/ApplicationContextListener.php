@@ -11,14 +11,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProviderInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -37,14 +33,14 @@ class ApplicationContextListener
     private $controllerResolver;
     private $doctrine;
     private $twig;
-    private $menuProvider;
+    private $menuBuilder;
 
-    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, MenuProvider $menuProvider)
+    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, MenuBuilderInterface $menuBuilder)
     {
         $this->controllerResolver = $controllerResolver;
         $this->doctrine = $doctrine;
         $this->twig = $twig;
-        $this->menuProvider = $menuProvider;
+        $this->menuBuilder = $menuBuilder;
     }
 
     public function onKernelController(ControllerEvent $event): void
@@ -131,6 +127,7 @@ class ApplicationContextListener
         $crudPage = $request->query->get('page');
         $entityId = $request->query->get('id');
 
+
         $dashboard = $this->getDashboard($event);
         $menu = $this->getMenu($dashboard);
         $assetCollection = $this->getAssetCollection($dashboardControllerInstance, $crudControllerInstance);
@@ -160,13 +157,13 @@ class ApplicationContextListener
         return $dashboard;
     }
 
-    private function getMenu(DashboardControllerInterface $dashboard): MenuProviderInterface
+    private function getMenu(DashboardControllerInterface $dashboard): MenuBuilderInterface
     {
         foreach ($dashboard->getMenuItems() as $menuItem) {
-            $this->menuProvider->addItem($menuItem);
+            $this->menuBuilder->addItem($menuItem);
         }
 
-        return $this->menuProvider;
+        return $this->menuBuilder;
     }
 
     private function getAssetCollection(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetCollection

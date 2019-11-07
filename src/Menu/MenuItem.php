@@ -4,11 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
 final class MenuItem implements MenuItemInterface
 {
-    public const TYPE_ENTITY = 'entity';
-    public const TYPE_HOMEPAGE = 'homepage';
-    public const TYPE_SUBMENU = 'group';
+    public const TYPE_CRUD = 'crud';
+    public const TYPE_DASHBOARD = 'dashboard';
     public const TYPE_ROUTE = 'route';
     public const TYPE_SECTION = 'section';
+    public const TYPE_SUBMENU = 'submenu';
     public const TYPE_URL = 'url';
 
     private $type;
@@ -16,35 +16,134 @@ final class MenuItem implements MenuItemInterface
     private $subIndex;
     private $label;
     private $icon;
-    private $url;
+    private $cssClass = '';
     private $permission;
-    private $cssClass;
-    private $linkRel;
-    private $linkTarget;
+    private $routeName;
+    private $routeParameters;
+    private $linkUrl = '';
+    private $linkRel = '';
+    private $linkTarget = '_self';
     /** @var MenuItemInterface[] */
-    private $subItems;
+    private $subItems = [];
 
     /**
-     * @internal Don't use this constructor; use the 'new()' named constructor
+     * @internal Don't use this constructor; use the named constructors
      */
-    public function __construct(string $type, int $index, int $subIndex, string $label, string $icon, string $url, ?string $permission, string $cssClass, string $linkRel, string $linkTarget, array $subItems)
+    private function __construct()
     {
-        $this->type = $type;
-        $this->index = $index;
-        $this->subIndex = $subIndex;
-        $this->label = $label;
-        $this->icon = $icon;
-        $this->url = $url;
-        $this->permission = $permission;
-        $this->cssClass = $cssClass;
-        $this->linkRel = $linkRel;
-        $this->linkTarget = $linkTarget;
-        $this->subItems = $subItems;
     }
 
-    public static function new(string $label = null, string $icon = null): MenuItemBuilder
+    public static function crud(string $label, string $icon, string $crudControllerFqcn, array $routeParameters = []): self
     {
-        return new MenuItemBuilder($label, $icon);
+        $menuItem = new self();
+        $menuItem->type = self::TYPE_CRUD;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+        $menuItem->routeParameters = array_merge([
+            'crud' => $crudControllerFqcn,
+            'page' => 'index',
+        ], $routeParameters);
+
+        return $menuItem;
+    }
+
+    public static function dashboardIndex(string $label, string $icon): self
+    {
+        $menuItem = new self();
+        $menuItem->type = self::TYPE_DASHBOARD;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+
+        return $menuItem;
+    }
+
+    public static function route(string $name, array $parameters = []): self
+    {
+        $menuItem = new self();
+        $menuItem->type = self::TYPE_ROUTE;
+        $menuItem->routeName = $name;
+        $menuItem->routeParameters = $parameters;
+
+        return $menuItem;
+    }
+
+    public static function section(string $label = null, string $icon = null): self
+    {
+        $menuItem = new self();
+        $menuItem->type = self::TYPE_SECTION;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+
+        return $menuItem;
+    }
+
+    public static function subMenu(string $label, string $icon, array $submenuItems): self
+    {
+        $menuItem = new self();
+        $menuItem->type = self::TYPE_SUBMENU;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+        $menuItem->subItems = $submenuItems;
+
+        return $menuItem;
+    }
+
+    public static function url(string $label, string $icon, string $url): self
+    {
+        $menuItem = new self();
+        $menuItem->type = self::TYPE_URL;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+        $menuItem->linkUrl = $url;
+
+        return $menuItem;
+    }
+
+    public static function build(string $type, int $index, int $subIndex, string $label, string $icon, string $linkUrl, ?string $permission, string $cssClass, string $linkRel, string $linkTarget, array $subItems): MenuItemInterface
+    {
+        $menuItem = new self();
+
+        $menuItem->type = $type;
+        $menuItem->index = $index;
+        $menuItem->subIndex = $subIndex;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+        $menuItem->linkUrl = $linkUrl;
+        $menuItem->permission = $permission;
+        $menuItem->cssClass = $cssClass;
+        $menuItem->linkRel = $linkRel;
+        $menuItem->linkTarget = $linkTarget;
+        $menuItem->subItems = $subItems;
+
+        return $menuItem;
+    }
+
+    public function setCssClass(string $cssClass): self
+    {
+        $this->cssClass = $cssClass;
+
+        return $this;
+    }
+
+    public function setLinkRel(string $rel): self
+    {
+        $this->linkRel = $rel;
+
+        return $this;
+    }
+
+    public function setLinkTarget(string $target): self
+    {
+        $this->linkTarget = $target;
+
+        return $this;
+    }
+
+    public function setPermission(string $role): self
+    {
+        $this->permission = $role;
+
+        return $this;
     }
 
     public function getType(): string
@@ -57,7 +156,7 @@ final class MenuItem implements MenuItemInterface
         return $this->index;
     }
 
-    public function getSubindex(): int
+    public function getSubIndex(): int
     {
         return $this->subIndex;
     }
@@ -72,9 +171,19 @@ final class MenuItem implements MenuItemInterface
         return $this->icon;
     }
 
-    public function getUrl(): string
+    public function getLinkUrl(): string
     {
-        return $this->url;
+        return $this->linkUrl;
+    }
+
+    public function getRouteName(): ?string
+    {
+        return $this->routeName;
+    }
+
+    public function getRouteParameters(): array
+    {
+        return $this->routeParameters ?? [];
     }
 
     public function getPermission(): ?string
@@ -100,6 +209,20 @@ final class MenuItem implements MenuItemInterface
     public function getSubItems(): array
     {
         return $this->subItems;
+    }
+
+    public function isSelected(?int $selectedIndex, ?int $selectedSubIndex = null): bool
+    {
+        if (null === $selectedSubIndex) {
+            return $this->getIndex() === $selectedIndex;
+        }
+
+        return $this->getIndex() === $selectedIndex && $this->getSubIndex() === $selectedSubIndex;
+    }
+
+    public function isExpanded(?int $selectedIndex, ?int $selectedSubIndex): bool
+    {
+        return $this->isSelected($selectedIndex) && -1 !== $selectedSubIndex;
     }
 
     public function hasSubItems(): bool

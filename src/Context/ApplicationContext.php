@@ -9,7 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProviderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -31,7 +32,7 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, DashboardControllerInterface $dashboard, MenuProviderInterface $menu, AssetCollection $assetCollection, ?CrudConfig $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
+    public function __construct(Request $request, DashboardControllerInterface $dashboard, MenuBuilderInterface $menu, AssetCollection $assetCollection, ?CrudConfig $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
     {
         $this->request = $request;
         $this->dashboard = $dashboard;
@@ -54,9 +55,27 @@ final class ApplicationContext
         return $this->dashboard;
     }
 
-    public function getMenu(): MenuProviderInterface
+    public function getTranslationDomain(): string
     {
-        return $this->menu;
+        return $this->getDashboard()->getConfig()->translationDomain();
+    }
+
+    /**
+     * @return MenuItemInterface[]
+     */
+    public function getMenu(): array
+    {
+        return $this->menu->build();
+    }
+
+    public function getSelectedMenuIndex(): ?int
+    {
+        return $this->getRequest()->query->getInt('menuIndex', -1);
+    }
+
+    public function getSelectedSubMenuIndex(): ?int
+    {
+        return $this->getRequest()->query->getInt('submenuIndex', -1);
     }
 
     public function getAssets(): AssetCollection

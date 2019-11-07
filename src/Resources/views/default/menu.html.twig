@@ -1,8 +1,9 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {% macro render_menu_item(item) %}
     {% if item.isMenuSection %}
         <span class="{{ item.cssClass }}">{{ item.label }}</span>
     {% else %}
-        <a href="{{ item.url }}" class="{{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
+        <a href="{{ item.linkUrl }}" class="{{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
             {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
             <span>{{ item.label }}</span>
             {% if item.hasSubItems %}<i class="fa fa-fw fa-angle-right treeview-icon"></i>{% endif %}
@@ -14,17 +15,17 @@
 
 <ul class="sidebar-menu" data-widget="tree" data-animation-speed="250">
     {% block main_menu %}
-        {% for item in ea.menu.items %}
+        {% for item in ea.menu %}
             {% block menu_item %}
-                <li class="{{ item.isMenuSection ? 'header' }} {{ item.hasSubItems ? 'treeview' }} {{ ea.menu.isSelectedItem(item, app.request) ? 'active' }} {{ ea.menu.isItemSubMenuExpanded(item, app.request) ? 'submenu-active' }}">
+                <li class="{{ item.isMenuSection ? 'header' }} {{ item.hasSubItems ? 'treeview' }} {{ item.isSelected(ea.selectedMenuIndex) ? 'active' }} {{ item.isExpanded(ea.selectedMenuIndex, ea.selectedSubMenuIndex) ? 'submenu-active' }}">
                     {{ _self.render_menu_item(item) }}
 
                     {% if item.hasSubItems %}
                         <ul class="treeview-menu">
-                            {% for subitem in item.subItems %}
+                            {% for subItem in item.subItems %}
                                 {% block menu_subitem %}
-                                    <li class="{{ subitem.isMenuSection ? 'header' }} {{ ea.menu.isSelectedSubItem(subitem, app.request) ? 'active' }}">
-                                        {{ _self.render_menu_item(subitem) }}
+                                    <li class="{{ subItem.isMenuSection ? 'header' }} {{ subItem.isSelected(ea.selectedMenuIndex, ea.selectedSubMenuIndex) ? 'active' }}">
+                                        {{ _self.render_menu_item(subItem) }}
                                     </li>
                                 {% endblock menu_subitem %}
                             {% endfor %}

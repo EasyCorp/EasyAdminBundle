@@ -23,11 +23,11 @@
             <argument type="service" id="controller_resolver" />
             <argument type="service" id="doctrine" />
             <argument type="service" id="twig" />
-            <argument type="service" id="easyadmin.menu.provider" />
+            <argument type="service" id="easyadmin.menu.builder" />
             <tag name="kernel.event_listener" event="kernel.controller" />
         </service>
 
-        <service id="easyadmin.menu.provider" class="EasyCorp\Bundle\EasyAdminBundle\Menu\MenuProvider" public="false">
+        <service id="easyadmin.menu.builder" class="EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilder" public="false">
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <argument type="service" id="router"></argument>
             <argument type="service" id="translator"></argument>

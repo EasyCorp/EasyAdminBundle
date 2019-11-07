@@ -2,20 +2,15 @@
 {# @var fields \EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface[] #}
 {% extends ea.crudConfig.templates.layout %}
 {% trans_default_domain ea.crudConfig.translationDomain %}
-{% set trans_parameters = {
-    '%entity_label_singular%': ea.crudConfig.labelInSingular|trans,
-    '%entity_label_plural%': ea.crudConfig.labelInPlural|trans,
-    '%entity_name%': ea.entityConfig.shortClassName|trans,
-    '%entity_id%': ea.entityConfig.id
-} %}
+{% trans_default_domain ea.crudConfig.translationDomain %}
 
 {% block body_id 'easyadmin-show-' ~ ea.entityConfig.shortClassName ~ '-' ~ ea.entityConfig.id %}
 {% block body_class 'show show-' ~ ea.entityConfig.shortClassName %}
 
 {% block content_title %}
     {% apply spaceless %}
-        {% set default_title = 'page.detail.title'|trans(trans_parameters, 'EasyAdminBundle') %}
-        {{ ea.pageConfig.title is null ? default_title|raw : ea.pageConfig.title|trans(trans_parameters)|raw }}
+        {% set default_title = 'page.detail.title'|trans(ea.transParameters, 'EasyAdminBundle') %}
+        {{ ea.pageConfig.title is null ? default_title|raw : ea.pageConfig.title|trans(ea.transParameters)|raw }}
     {% endapply %}
 {% endblock %}
 
@@ -28,7 +23,7 @@
                 {% block show_field %}
                     <div class="form-group field-{{ (field.type ?? 'default')|lower }} {{ field.cssClass ?? '' }}">
                         <label class="control-label">
-                            {{ field.label|trans(trans_parameters)|raw }}
+                            {{ field.label|trans(ea.transParameters)|raw }}
                         </label>
                         <div class="form-widget">
                             <div class="form-control">
@@ -56,7 +51,7 @@
                     entity_config: _entity_config,
                     request_parameters: _request_parameters,
                     translation_domain: _entity_config.translation_domain,
-                    trans_parameters: _trans_parameters,
+                    trans_parameters: ea.transParameters,
                     item_id: _entity_id,
                     item: entity
                 }, with_context = false) }}
@@ -70,7 +65,7 @@
             referer: app.request.query.get('referer', ''),
             delete_form: delete_form,
             _translation_domain: _entity_config.translation_domain,
-            _trans_parameters: _trans_parameters,
+            _trans_parameters: ea.transParameters,
             _entity_config: _entity_config,
         }, with_context = false) }}
     {% endblock delete_form %}

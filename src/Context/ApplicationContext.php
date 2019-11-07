@@ -67,6 +67,20 @@ final class ApplicationContext
         return $this->crudConfig;
     }
 
+    public function getTransParameters(): array
+    {
+        if ((null === $crudConfig = $this->getCrudConfig()) || null === $this->getEntity()) {
+            return [];
+        }
+
+        return [
+            '%entity_label_singular%' => $crudConfig->getLabelInSingular(),
+            '%entity_label_plural%' => $crudConfig->getLabelInPlural(),
+            '%entity_name%' => $crudConfig->getLabelInPlural(),
+            '%entity_id%' => $this->getEntityConfig()->getId(),
+        ];
+    }
+
     /**
      * @return IndexPageConfig|DetailPageConfig|FormPageConfig|null
      */

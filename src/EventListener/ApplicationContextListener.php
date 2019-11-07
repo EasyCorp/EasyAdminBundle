@@ -138,7 +138,7 @@ class ApplicationContextListener
         $pageConfig = $this->getPageConfig($crudControllerInstance, $crudPage);
         [$entityConfig, $entityInstance] = $this->getDoctrineEntity($crudControllerInstance, $entityId);
 
-        $applicationContext = new ApplicationContext($request, $dashboard, $menu, $assetCollection, $crudConfig, $pageConfig, $entityConfig, $entityInstance);
+        $applicationContext = new ApplicationContext($request, $dashboard, $menu, $assetCollection, $crudConfig, $crudPage, $pageConfig, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);
     }
 

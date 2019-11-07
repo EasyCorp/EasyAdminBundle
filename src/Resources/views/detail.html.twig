@@ -27,7 +27,7 @@
                         </label>
                         <div class="form-widget">
                             <div class="form-control">
-                                {{ ea_render_field('detail', ea.crudConfig, ea.entityConfig, ea.entity, field) }}
+                                {{ ea_render_field(field) }}
                             </div>
 
                             {% if field.help is not empty %}

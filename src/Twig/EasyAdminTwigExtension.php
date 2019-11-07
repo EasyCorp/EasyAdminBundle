@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
@@ -140,8 +141,15 @@ class EasyAdminTwigExtension extends AbstractExtension
     /**
      * Renders the value stored in a property of the given entity.
      */
-    public function renderCrudField(Environment $twig, string $pageName, CrudConfig $crudConfig, EntityConfig $entityConfig, $entityInstance, FieldInterface $field): string
+    public function renderCrudField(Environment $twig, FieldInterface $field): string
     {
+        /** @var ApplicationContext $applicationContext */
+        $applicationContext = $twig->getGlobals()['ea'];
+        $pageName = $applicationContext->getPage();
+        $crudConfig = $applicationContext->getCrudConfig();
+        $entityConfig = $applicationContext->getEntityConfig();
+        $entityInstance = $applicationContext->getEntity();
+
         $hasCustomTemplate = null !== $field->getCustomTemplatePath();
         $templateParameters = [];
 

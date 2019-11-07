@@ -26,17 +26,19 @@ final class ApplicationContext
     private $menu;
     private $assetCollection;
     private $crudConfig;
+    private $crudPage;
     private $pageConfig;
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, DashboardControllerInterface $dashboard, MenuProviderInterface $menu, AssetCollection $assetCollection, ?CrudConfig $crudConfig, $pageConfig, ?EntityConfig $entityConfig, $entity)
+    public function __construct(Request $request, DashboardControllerInterface $dashboard, MenuProviderInterface $menu, AssetCollection $assetCollection, ?CrudConfig $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
     {
         $this->request = $request;
         $this->dashboard = $dashboard;
         $this->menu = $menu;
         $this->assetCollection = $assetCollection;
         $this->crudConfig = $crudConfig;
+        $this->crudPage = $crudPage;
         $this->pageConfig = $pageConfig;
         $this->entityConfig = $entityConfig;
         $this->entity = $entity;
@@ -65,6 +67,14 @@ final class ApplicationContext
     public function getCrudConfig(): ?CrudConfig
     {
         return $this->crudConfig;
+    }
+
+    /**
+     * Returns the name of the current CRUD page, if any (e.g. 'detail')
+     */
+    public function getPage(): ?string
+    {
+        return $this->crudPage;
     }
 
     public function getTransParameters(): array

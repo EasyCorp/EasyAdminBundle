@@ -13,6 +13,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
  */
 final class DashboardConfig
 {
+    private $faviconPath = 'favicon.ico';
     private $siteName = 'EasyAdmin';
     private $dateFormat = 'Y-m-d';
     private $timeFormat = 'H:i:s';
@@ -25,6 +26,20 @@ final class DashboardConfig
     public static function new(): self
     {
         return new self();
+    }
+
+    /**
+     * @return $this|string|null
+     */
+    public function faviconPath(string $path = null)
+    {
+        if (0 === func_num_args()) {
+            return $this->faviconPath;
+        }
+
+        $this->faviconPath = $path;
+
+        return $this;
     }
 
     /**

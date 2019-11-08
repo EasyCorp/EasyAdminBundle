@@ -20,8 +20,7 @@
     {% endfor %}
 
     {% block head_favicon %}
-        {% set favicon = easyadmin_config('design.assets.favicon') %}
-        <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}" />
+        <link rel="shortcut icon" href="{{ asset(ea.dashboard.config.faviconPath) }}">
     {% endblock %}
 
     {% block head_javascript %}

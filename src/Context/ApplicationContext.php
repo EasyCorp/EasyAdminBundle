@@ -50,6 +50,15 @@ final class ApplicationContext
         return $this->request;
     }
 
+    public function getLocale(bool $languageOnly = false): string
+    {
+        $fullLocale = $this->getRequest()->getLocale();
+        $localeLanguage = strtok($fullLocale, '-_');
+        $locale = $languageOnly ? $localeLanguage : $fullLocale;
+
+        return empty($locale) ? 'en' : $locale;
+    }
+
     public function getDashboard(): DashboardControllerInterface
     {
         return $this->dashboard;

@@ -14,19 +14,19 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
-    public static function getConfig(): DashboardConfig
+    public function configureDashboard(): DashboardConfig
     {
         return DashboardConfig::new();
-    }
-
-    public function getMenuItems(): iterable
-    {
-        yield MenuItem::new('Dashboard', 'fa-home')->homepage();
     }
 
     public function configureAssets(): AssetConfig
     {
         return AssetConfig::new();
+    }
+
+    public function getMenuItems(): iterable
+    {
+        yield MenuItem::new('Dashboard', 'fa-home')->homepage();
     }
 
     /**

@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemInterface;
@@ -23,7 +24,7 @@ final class ApplicationContext
     public const ATTRIBUTE_KEY = 'easyadmin_context';
 
     private $request;
-    private $dashboard;
+    private $dashboardControllerInstance;
     private $menu;
     private $assetCollection;
     private $crudConfig;
@@ -35,7 +36,7 @@ final class ApplicationContext
     public function __construct(Request $request, DashboardControllerInterface $dashboard, MenuBuilderInterface $menu, AssetCollection $assetCollection, ?CrudConfig $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
     {
         $this->request = $request;
-        $this->dashboard = $dashboard;
+        $this->dashboardControllerInstance = $dashboard;
         $this->menu = $menu;
         $this->assetCollection = $assetCollection;
         $this->crudConfig = $crudConfig;
@@ -59,14 +60,14 @@ final class ApplicationContext
         return empty($locale) ? 'en' : $locale;
     }
 
-    public function getDashboard(): DashboardControllerInterface
+    public function getDashboardConfig(): DashboardConfig
     {
-        return $this->dashboard;
+        return $this->dashboardControllerInstance->configureDashboard();
     }
 
     public function getTranslationDomain(): string
     {
-        return $this->getDashboard()->getConfig()->translationDomain();
+        return $this->getDashboardConfig()->translationDomain();
     }
 
     /**

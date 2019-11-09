@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
  */
 interface DashboardControllerInterface
 {
-    public static function getConfig(): DashboardConfig;
+    public function configureDashboard(): DashboardConfig;
 
     public function configureAssets(): AssetConfig;
 

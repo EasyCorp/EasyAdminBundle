@@ -20,7 +20,7 @@
     {% endfor %}
 
     {% block head_favicon %}
-        <link rel="shortcut icon" href="{{ asset(ea.dashboard.config.faviconPath) }}">
+        <link rel="shortcut icon" href="{{ asset(ea.dashboardConfig.faviconPath) }}">
     {% endblock %}
 
     {% block head_javascript %}
@@ -57,8 +57,9 @@
 
                             <div id="header-logo">
                                 {% block header_logo %}
-                                    <a class="logo {{ ea.dashboard.config.siteName|length > 14 ? 'logo-long' }}" title="{{ ea.dashboard.config.siteName|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                        {{ ea.dashboard.config.siteName|raw }}
+                                    {% set ea_site_name = ea.dashboardConfig.siteName %}
+                                    <a class="logo {{ ea_site_name|length > 14 ? 'logo-long' }}" title="{{ ea_site_name|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                        {{ ea_site_name|raw }}
                                     </a>
                                 {% endblock header_logo %}
                             </div>

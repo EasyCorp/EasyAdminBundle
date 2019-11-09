@@ -4,12 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
 
 /**
  * Holds the configuration options of the dashboard.
- *
- * The methods of this class are both getters and setters at the same time. This is
- * generally a bad practice. However, doing this allows to have a fluent and expressive
- * configuration and also a concise and expressive template code. Twig tries "property()"
- * before "getProperty()", so if you define "property()" for the fluent config, Twig
- * will try to use it to get the config value too and it will fail.
  */
 final class DashboardConfig
 {
@@ -28,129 +22,111 @@ final class DashboardConfig
         return new self();
     }
 
-    /**
-     * @return $this|string|null
-     */
-    public function faviconPath(string $path = null)
+    public function setFaviconPath(string $path): self
     {
-        if (0 === func_num_args()) {
-            return $this->faviconPath;
-        }
-
         $this->faviconPath = $path;
 
         return $this;
     }
 
-    /**
-     * @return $this|string|null
-     */
-    public function siteName(string $name = null)
+    public function setSiteName(string $name): self
     {
-        if (0 === func_num_args()) {
-            return $this->siteName;
-        }
-
         $this->siteName = $name;
 
         return $this;
     }
 
-    /**
-     * @return $this|string|null
-     */
-    public function dateFormat(string $dateFormat = null)
+    public function setDateFormat(string $dateFormat): self
     {
-        if (0 === func_num_args()) {
-            return $this->dateFormat;
-        }
-
         $this->dateFormat = $dateFormat;
 
         return $this;
     }
 
-    /**
-     * @return $this|string|null
-     */
-    public function timeFormat(string $timeFormat = null)
+    public function setTimeFormat(string $timeFormat): self
     {
-        if (0 === func_num_args()) {
-            return $this->timeFormat;
-        }
-
         $this->timeFormat = $timeFormat;
 
         return $this;
     }
 
-    /**
-     * @return $this|string|null
-     */
-    public function dateTimeFormat(string $dateTimeFormat = null)
+    public function setDateTimeFormat(string $dateTimeFormat): self
     {
-        if (0 === func_num_args()) {
-            return $this->dateTimeFormat;
-        }
-
         $this->dateTimeFormat = $dateTimeFormat;
 
         return $this;
     }
 
-    /**
-     * @return $this|string|null
-     */
-    public function dateIntervalFormat(string $dateIntervalFormat = null)
+    public function setDateIntervalFormat(string $dateIntervalFormat): self
     {
-        if (0 === func_num_args()) {
-            return $this->dateIntervalFormat;
-        }
-
         $this->dateIntervalFormat = $dateIntervalFormat;
 
         return $this;
     }
 
-    /**
-     * @return $this|string|null
-     */
-    public function numberFormat(string $numberFormat = null)
+    public function setNumberFormat(string $numberFormat): self
     {
-        if (0 === func_num_args()) {
-            return $this->numberFormat;
-        }
-
         $this->numberFormat = $numberFormat;
 
         return $this;
     }
 
-    /**
-     * @return $this|string|null
-     */
-    public function translationDomain(string $translationDomain = null)
+    public function setTranslationDomain(string $translationDomain): self
     {
-        if (0 === func_num_args()) {
-            return $this->translationDomain;
-        }
-
         $this->translationDomain = $translationDomain;
 
         return $this;
     }
 
-    /**
-     * @return $this|array|null
-     */
-    public function disabledActions(array $disabledActions = null)
+    public function setDisabledActions(array $disabledActions): self
     {
-        if (0 === func_num_args()) {
-            return $this->disabledActions;
-        }
-
         $this->disabledActions = $disabledActions;
 
         return $this;
+    }
+
+    public function getFaviconPath(): string
+    {
+        return $this->faviconPath;
+    }
+
+    public function getSiteName(): string
+    {
+        return $this->siteName;
+    }
+
+    public function getDateFormat(): string
+    {
+        return $this->dateFormat;
+    }
+
+    public function getTimeFormat(): string
+    {
+        return $this->timeFormat;
+    }
+
+    public function getDateTimeFormat(): string
+    {
+        return $this->dateTimeFormat;
+    }
+
+    public function getDateIntervalFormat(): string
+    {
+        return $this->dateIntervalFormat;
+    }
+
+    public function getNumberFormat(): string
+    {
+        return $this->numberFormat;
+    }
+
+    public function getTranslationDomain(): string
+    {
+        return $this->translationDomain;
+    }
+
+    public function getDisabledActions(): array
+    {
+        return $this->disabledActions;
     }
 }

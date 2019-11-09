@@ -67,7 +67,7 @@ final class ApplicationContext
 
     public function getTranslationDomain(): string
     {
-        return $this->getDashboardConfig()->translationDomain();
+        return $this->getDashboardConfig()->getTranslationDomain();
     }
 
     /**

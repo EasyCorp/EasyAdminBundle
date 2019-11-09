@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Environment;
 
 /**
@@ -33,13 +34,15 @@ class ApplicationContextListener
     private $controllerResolver;
     private $doctrine;
     private $twig;
+    private $tokenStorage;
     private $menuBuilder;
 
-    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, MenuBuilderInterface $menuBuilder)
+    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, ?TokenStorageInterface $tokenStorage, MenuBuilderInterface $menuBuilder)
     {
         $this->controllerResolver = $controllerResolver;
         $this->doctrine = $doctrine;
         $this->twig = $twig;
+        $this->tokenStorage = $tokenStorage;
         $this->menuBuilder = $menuBuilder;
     }
 
@@ -129,13 +132,12 @@ class ApplicationContextListener
 
 
         $dashboard = $this->getDashboard($event);
-        $menu = $this->getMenu($dashboard);
         $assetCollection = $this->getAssetCollection($dashboardControllerInstance, $crudControllerInstance);
         $crudConfig = $this->getCrudConfig($crudControllerInstance);
         $pageConfig = $this->getPageConfig($crudControllerInstance, $crudPage);
         [$entityConfig, $entityInstance] = $this->getDoctrineEntity($crudControllerInstance, $entityId);
 
-        $applicationContext = new ApplicationContext($request, $dashboard, $menu, $assetCollection, $crudConfig, $crudPage, $pageConfig, $entityConfig, $entityInstance);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboard, $this->menuBuilder, $assetCollection, $crudConfig, $crudPage, $pageConfig, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -155,15 +157,6 @@ class ApplicationContextListener
         $dashboard = $event->getController()[0];
 
         return $dashboard;
-    }
-
-    private function getMenu(DashboardControllerInterface $dashboard): MenuBuilderInterface
-    {
-        foreach ($dashboard->getMenuItems() as $menuItem) {
-            $this->menuBuilder->addItem($menuItem);
-        }
-
-        return $this->menuBuilder;
     }
 
     private function getAssetCollection(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetCollection

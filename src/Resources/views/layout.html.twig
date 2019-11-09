@@ -15,23 +15,23 @@
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
     {% endblock %}
 
-    {% for css_asset in ea.assets.cssAssets ?? [] %}
+    {% for css_asset in ea.config.cssAssets ?? [] %}
         <link rel="stylesheet" href="{{ asset(css_asset) }}">
     {% endfor %}
 
     {% block head_favicon %}
-        <link rel="shortcut icon" href="{{ asset(ea.dashboardConfig.faviconPath) }}">
+        <link rel="shortcut icon" href="{{ asset(ea.config.faviconPath) }}">
     {% endblock %}
 
     {% block head_javascript %}
         <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
     {% endblock head_javascript %}
 
-    {% if easyadmin_config('design.rtl') %}
+    {% if 'rtl' == ea.config.textDirection %}
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app-rtl.css') }}">
     {% endif %}
 
-    {% for htmlContent in ea.assets.headContents ?? [] %}
+    {% for htmlContent in ea.config.headHtmlContents ?? [] %}
         {{ htmlContent|raw }}
     {% endfor %}
 </head>
@@ -57,39 +57,30 @@
 
                             <div id="header-logo">
                                 {% block header_logo %}
-                                    {% set ea_site_name = ea.dashboardConfig.siteName %}
-                                    <a class="logo {{ ea_site_name|length > 14 ? 'logo-long' }}" title="{{ ea_site_name|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                        {{ ea_site_name|raw }}
+                                    <a class="logo {{ ea.config.siteName|length > 14 ? 'logo-long' }}" title="{{ ea.config.siteName|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                        {{ ea.config.siteName|raw }}
                                     </a>
                                 {% endblock header_logo %}
                             </div>
                         </nav>
 
-                        {% set _user_name = easyadmin_read_property(app.user, easyadmin_config('user.name_property_path'))|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) %}
-                        {% set _logout_path = easyadmin_logout_path() %}
-                        {% set _user_has_logout = _logout_path is not empty %}
-                        {% set _user_is_impersonated = is_granted('ROLE_PREVIOUS_ADMIN') %}
                         {% set _user_menu_content %}
-                            <div class="popover-content-section user-details {{ _user_has_logout or _user_is_impersonated ? 'user-has-actions' }}">
+                            <div class="popover-content-section user-details {{ ea.config.user.menuItems|length > 0 ? 'user-has-actions' }}">
                                 <p class="small text-muted mb-0">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</p>
                                 <p class="user-details-name">
-                                    {% if app.user|default(false) == false %}
-                                        {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
-                                    {% else %}
-                                        {{ _user_name }}
-                                    {% endif %}
+                                    {{ ea.user is null ? 'user.anonymous'|trans(domain = 'EasyAdminBundle') : ea.config.user.name }}
                                 </p>
                             </div>
 
                             {% block user_menu %}
-                                {% if _user_has_logout or _user_is_impersonated %}
+                                {% if ea.config.user.menuItems|length > 0 %}
                                     <div class="popover-content-section user-menu">
-                                        {% if _user_has_logout %}
-                                            <a class="user-action user-action-logout" href="{{ _logout_path }}">{{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
-                                        {% endif %}
-                                        {% if _user_is_impersonated %}
-                                            <a class="user-action user-action-exit-impersonation" href="?_switch_user=_exit">{{ 'user.exit_impersonation'|trans(domain = 'EasyAdminBundle') }}</a>
-                                        {% endif %}
+                                        {% for item in ea.config.user.menuItems %}
+                                            <a href="{{ item.linkUrl }}" class="user-action {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
+                                                {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+                                                <span>{{ item.label }}</span>
+                                            </a>
+                                        {% endfor %}
                                     </div>
                                 {% endif %}
                             {% endblock user_menu %}
@@ -97,17 +88,16 @@
 
                         <div class="content-top navbar-custom-menu">
                             {% block header_custom_menu %}
-                                <div class="user user-menu-wrapper {{ _user_is_impersonated ? 'user-is-impersonated' }}" data-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
-                                    {% if easyadmin_config('user.display_avatar') %}
-                                        {% set _avatar_image_path = easyadmin_read_property(app.user, easyadmin_config('user.avatar_property_path')) %}
-                                        {% if null == _avatar_image_path %}
-                                            <i class="fa fa-fw {{ app.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
+                                <div class="user user-menu-wrapper {{ is_granted('ROLE_PREVIOUS_ADMIN') ? 'user-is-impersonated' }}" data-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
+                                    {% if ea.config.user.isAvatarDisplayed %}
+                                        {% if null == ea.config.user.avatarUrl %}
+                                            <i class="fa fa-fw {{ ea.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
                                         {% else %}
-                                            <img class="user-avatar" src="{{ _avatar_image_path }}" />
+                                            <img class="user-avatar" src="{{ ea.config.user.avatarUrl }}" />
                                         {% endif %}
                                     {% endif %}
-                                    {% if easyadmin_config('user.display_name') %}
-                                        <span class="user-name">{{ _user_name }}</span>
+                                    {% if ea.config.user.isNameDisplayed %}
+                                        <span class="user-name">{{ ea.config.user.name }}</span>
                                     {% endif %}
                                 </div>
                             {% endblock header_custom_menu %}
@@ -119,11 +109,7 @@
                     {% block sidebar %}
                         <section class="sidebar">
                             {% block main_menu_wrapper %}
-                                {{ include([
-                                    _entity_config is defined ? _entity_config.templates.menu,
-                                    easyadmin_config('design.templates.menu'),
-                                    '@EasyAdmin/default/menu.html.twig'
-                                ]) }}
+                                {{ include(ea.config.template('menu')) }}
                             {% endblock main_menu_wrapper %}
                         </section>
 
@@ -132,7 +118,7 @@
 
                 <div class="content-wrapper">
                     {% block flash_messages %}
-                        {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@EasyAdmin/default/flash_messages.html.twig') }}
+                        {{ include(ea.config.template('flash_messages')) }}
                     {% endblock flash_messages %}
 
                     <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
@@ -140,8 +126,7 @@
                     {% block content %}
                         <div class="content">
                             {% block content_header_wrapper %}
-                                {% set _has_content_help = _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
-                                <section class="content-header {{ _has_content_help ? 'has-content-help' }}">
+                                <section class="content-header {{ ea.config.pageHelp is not empty ? 'has-content-help' }}">
                                     {% block content_header %}
                                         <div class="d-flex flex-row justify-content-between align-content-center w-100">
                                             <div class="content-header-title">
@@ -154,9 +139,9 @@
                                         </div>
 
                                         {% block content_help %}
-                                            {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
+                                            {% if ea.config.pageHelp is not empty %}
                                                 <div class="content-header-help">
-                                                    {{ _entity_config[app.request.query.get('action')]['help']|trans(domain = _entity_config.translation_domain)|raw }}
+                                                    {{ ea.config.pageHelp|trans(domain = ea.config.translationDomain)|raw }}
                                                 </div>
                                             {% endif %}
                                         {% endblock content_help %}
@@ -184,11 +169,11 @@
 
     {% block body_javascript %}{% endblock body_javascript %}
 
-    {% for js_asset in ea.assets.jsAssets ?? [] %}
+    {% for js_asset in ea.config.jsAssets ?? [] %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
 
-    {% for htmlContent in ea.assets.bodyContents ?? [] %}
+    {% for htmlContent in ea.config.bodyHtmlContents ?? [] %}
         {{ htmlContent|raw }}
     {% endfor %}
     </body>

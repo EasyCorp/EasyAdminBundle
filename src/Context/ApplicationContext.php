@@ -3,16 +3,16 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * A context object that stores all the config about the current dashboard and resource.
@@ -23,9 +23,11 @@ final class ApplicationContext
 {
     public const ATTRIBUTE_KEY = 'easyadmin_context';
 
+    private $config;
     private $request;
+    private $tokenStorage;
     private $dashboardControllerInstance;
-    private $menu;
+    private $menuBuilder;
     private $assetCollection;
     private $crudConfig;
     private $crudPage;
@@ -33,17 +35,26 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, DashboardControllerInterface $dashboard, MenuBuilderInterface $menu, AssetCollection $assetCollection, ?CrudConfig $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetCollection $assetCollection, ?CrudConfig $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
     {
         $this->request = $request;
+        $this->tokenStorage = $tokenStorage;
         $this->dashboardControllerInstance = $dashboard;
-        $this->menu = $menu;
+        $this->menuBuilder = $menuBuilder;
         $this->assetCollection = $assetCollection;
         $this->crudConfig = $crudConfig;
         $this->crudPage = $crudPage;
         $this->pageConfig = $pageConfig;
         $this->entityConfig = $entityConfig;
         $this->entity = $entity;
+
+        $userConfig = null === $this->getUser() ? UserMenuConfig::new() : $dashboard->configureUserMenu($this->getUser());
+        $this->config = new Configuration($dashboard->configureDashboard(), $assetCollection, $userConfig, $crudConfig, $pageConfig, $this->menuBuilder, $request->getLocale());
+    }
+
+    public function getConfig(): Configuration
+    {
+        return $this->config;
     }
 
     public function getRequest(): Request
@@ -60,14 +71,21 @@ final class ApplicationContext
         return empty($locale) ? 'en' : $locale;
     }
 
-    public function getDashboardConfig(): DashboardConfig
+    public function getUser(): ?UserInterface
     {
-        return $this->dashboardControllerInstance->configureDashboard();
-    }
+        // The code of this method is copied from https://github.com/symfony/twig-bridge/blob/master/AppVariable.php
+        // MIT License - (c) Fabien Potencier <fabien@symfony.com>
+        if (null === $tokenStorage = $this->tokenStorage) {
+            throw new \RuntimeException('The "user" variable is not available.');
+        }
 
-    public function getTranslationDomain(): string
-    {
-        return $this->getDashboardConfig()->getTranslationDomain();
+        if (!$token = $tokenStorage->getToken()) {
+            return null;
+        }
+
+        $user = $token->getUser();
+
+        return \is_object($user) ? $user : null;
     }
 
     /**
@@ -75,7 +93,9 @@ final class ApplicationContext
      */
     public function getMenu(): array
     {
-        return $this->menu->build();
+        $mainMenuItems = iterator_to_array($this->dashboardControllerInstance->getMenuItems());
+
+        return $this->menuBuilder->setItems($mainMenuItems)->build();
     }
 
     public function getSelectedMenuIndex(): ?int
@@ -88,16 +108,6 @@ final class ApplicationContext
         return $this->getRequest()->query->getInt('submenuIndex', -1);
     }
 
-    public function getAssets(): AssetCollection
-    {
-        return $this->assetCollection;
-    }
-
-    public function getCrudConfig(): ?CrudConfig
-    {
-        return $this->crudConfig;
-    }
-
     /**
      * Returns the name of the current CRUD page, if any (e.g. 'detail')
      */
@@ -108,24 +118,16 @@ final class ApplicationContext
 
     public function getTransParameters(): array
     {
-        if ((null === $crudConfig = $this->getCrudConfig()) || null === $this->getEntity()) {
+        if (null === $this->crudConfig || null === $this->getEntity()) {
             return [];
         }
 
         return [
-            '%entity_label_singular%' => $crudConfig->getLabelInSingular(),
-            '%entity_label_plural%' => $crudConfig->getLabelInPlural(),
-            '%entity_name%' => $crudConfig->getLabelInPlural(),
+            '%entity_label_singular%' => $this->crudConfig->getLabelInSingular(),
+            '%entity_label_plural%' => $this->crudConfig->getLabelInPlural(),
+            '%entity_name%' => $this->crudConfig->getLabelInPlural(),
             '%entity_id%' => $this->getEntityConfig()->getId(),
         ];
-    }
-
-    /**
-     * @return IndexPageConfig|DetailPageConfig|FormPageConfig|null
-     */
-    public function getPageConfig()
-    {
-        return $this->pageConfig;
     }
 
     /**

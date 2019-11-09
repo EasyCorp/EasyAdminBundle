@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Routing\EntityRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class MenuBuilder implements MenuBuilderInterface
@@ -19,19 +20,32 @@ final class MenuBuilder implements MenuBuilderInterface
     private $authChecker;
     private $urlGenerator;
     private $translator;
+    private $logoutUrlGenerator;
     private $applicationContextProvider;
 
-    public function __construct(AuthorizationCheckerInterface $authChecker, UrlGeneratorInterface $urlGenerator, TranslatorInterface $translator, ApplicationContextProvider $applicationContextProvider)
+    public function __construct(AuthorizationCheckerInterface $authChecker, UrlGeneratorInterface $urlGenerator, TranslatorInterface $translator, LogoutUrlGenerator $logoutUrlGenerator, ApplicationContextProvider $applicationContextProvider)
     {
         $this->authChecker = $authChecker;
         $this->urlGenerator = $urlGenerator;
         $this->translator = $translator;
+        $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->applicationContextProvider = $applicationContextProvider;
     }
 
-    public function addItem(MenuItemInterface $item): void
+    public function addItem(MenuItemInterface $item): MenuBuilderInterface
     {
         $this->items[] = $item;
+        $this->resetBuiltMenu();
+
+        return $this;
+    }
+
+    public function setItems(array $items): MenuBuilderInterface
+    {
+        $this->items = $items;
+        $this->resetBuiltMenu();
+
+        return $this;
     }
 
     /**
@@ -47,10 +61,16 @@ final class MenuBuilder implements MenuBuilderInterface
         return $this->builtItems;
     }
 
+    private function resetBuiltMenu(): void
+    {
+        $this->builtItems = [];
+        $this->isBuilt = false;
+    }
+
     private function buildMenu(): void
     {
         $this->builtItems = [];
-        $translationDomain = $this->getApplicationContext()->getTranslationDomain();
+        $translationDomain = $this->getApplicationContext()->getConfig()->getTranslationDomain();
         $dashboardRouteName = $this->getApplicationContext()->getDashboardRouteName();
 
         foreach ($this->items as $i => $item) {
@@ -115,6 +135,14 @@ final class MenuBuilder implements MenuBuilderInterface
                 $routeParameters = array_merge($menuParameters, $item->getRouteParameters());
 
                 return $this->urlGenerator->generate($dashboardRouteName, $routeParameters);
+
+            case MenuItem::TYPE_LOGOUT:
+                return $this->logoutUrlGenerator->getLogoutPath();
+
+            case MenuItem::TYPE_EXIT_IMPERSONATION:
+                // the switch parameter name can be changed, but this code assumes it's always
+                // the default one because Symfony doesn't provide a generic exitImpersonationUrlGenerator
+                return '?_switch_user=_exit';
 
             case MenuItem::TYPE_SECTION:
                 return '#';

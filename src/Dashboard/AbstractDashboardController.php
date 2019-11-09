@@ -3,10 +3,13 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * This class is useful to extend your dashboard from it instead of implementing
@@ -14,9 +17,34 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
+    public static function getSubscribedServices()
+    {
+        return array_merge(parent::getSubscribedServices(), [
+            'translator' => '?'.TranslatorInterface::class,
+        ]);
+    }
+
     public function configureDashboard(): DashboardConfig
     {
         return DashboardConfig::new();
+    }
+
+    public function configureUserMenu(UserInterface $user): UserMenuConfig
+    {
+        $signOutLabel = $this->get('translator')->trans('user.signout', [], 'EasyAdminBundle');
+        $exitImpersonationLabel = $this->get('translator')->trans('user.exit_impersonation', [], 'EasyAdminBundle');
+
+        $userMenuItems = [
+            MenuItem::logout($signOutLabel, 'fa-sign-out'),
+        ];
+        if ($this->isGranted('ROLE_PREVIOUS_ADMIN')) {
+            $userMenuItems[] = MenuItem::exitImpersonation($exitImpersonationLabel, 'fa-user-lock');
+        }
+
+        return UserMenuConfig::new()
+            ->setName(method_exists($user, '__toString') ? (string) $user : $user->getUsername())
+            ->setAvatarUrl(null)
+            ->setMenuItems($userMenuItems);
     }
 
     public function configureAssets(): AssetConfig

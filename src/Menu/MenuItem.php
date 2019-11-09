@@ -6,6 +6,8 @@ final class MenuItem implements MenuItemInterface
 {
     public const TYPE_CRUD = 'crud';
     public const TYPE_DASHBOARD = 'dashboard';
+    public const TYPE_EXIT_IMPERSONATION = 'exit_impersonation';
+    public const TYPE_LOGOUT = 'logout';
     public const TYPE_ROUTE = 'route';
     public const TYPE_SECTION = 'section';
     public const TYPE_SUBMENU = 'submenu';
@@ -51,6 +53,26 @@ final class MenuItem implements MenuItemInterface
     {
         $menuItem = new self();
         $menuItem->type = self::TYPE_DASHBOARD;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+
+        return $menuItem;
+    }
+
+    public static function exitImpersonation(string $label, string $icon): self
+    {
+        $menuItem = new self();
+        $menuItem->type = self::TYPE_EXIT_IMPERSONATION;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+
+        return $menuItem;
+    }
+
+    public static function logout(string $label, string $icon): self
+    {
+        $menuItem = new self();
+        $menuItem->type = self::TYPE_LOGOUT;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
 

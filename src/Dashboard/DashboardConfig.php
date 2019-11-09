@@ -2,19 +2,21 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CommonFormatConfigTrait;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CommonTemplateConfigTrait;
+
 /**
  * Holds the configuration options of the dashboard.
  */
 final class DashboardConfig
 {
+    use CommonFormatConfigTrait;
+    use CommonTemplateConfigTrait;
+
     private $faviconPath = 'favicon.ico';
     private $siteName = 'EasyAdmin';
-    private $dateFormat = 'Y-m-d';
-    private $timeFormat = 'H:i:s';
-    private $dateTimeFormat = 'F j, Y H:i';
-    private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
-    private $numberFormat = '';
     private $translationDomain = 'messages';
+    private $textDirection;
     private $disabledActions = [];
 
     public static function new(): self
@@ -36,44 +38,20 @@ final class DashboardConfig
         return $this;
     }
 
-    public function setDateFormat(string $dateFormat): self
-    {
-        $this->dateFormat = $dateFormat;
-
-        return $this;
-    }
-
-    public function setTimeFormat(string $timeFormat): self
-    {
-        $this->timeFormat = $timeFormat;
-
-        return $this;
-    }
-
-    public function setDateTimeFormat(string $dateTimeFormat): self
-    {
-        $this->dateTimeFormat = $dateTimeFormat;
-
-        return $this;
-    }
-
-    public function setDateIntervalFormat(string $dateIntervalFormat): self
-    {
-        $this->dateIntervalFormat = $dateIntervalFormat;
-
-        return $this;
-    }
-
-    public function setNumberFormat(string $numberFormat): self
-    {
-        $this->numberFormat = $numberFormat;
-
-        return $this;
-    }
-
     public function setTranslationDomain(string $translationDomain): self
     {
         $this->translationDomain = $translationDomain;
+
+        return $this;
+    }
+
+    public function setTextDirection(string $direction): self
+    {
+        if (\in_array($direction, ['ltr', 'rtl'], true)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" value given to the textDirection option is not valid. It can only be "ltr" or "rtl"', $direction));
+        }
+
+        $this->textDirection = $direction;
 
         return $this;
     }
@@ -95,34 +73,14 @@ final class DashboardConfig
         return $this->siteName;
     }
 
-    public function getDateFormat(): string
-    {
-        return $this->dateFormat;
-    }
-
-    public function getTimeFormat(): string
-    {
-        return $this->timeFormat;
-    }
-
-    public function getDateTimeFormat(): string
-    {
-        return $this->dateTimeFormat;
-    }
-
-    public function getDateIntervalFormat(): string
-    {
-        return $this->dateIntervalFormat;
-    }
-
-    public function getNumberFormat(): string
-    {
-        return $this->numberFormat;
-    }
-
     public function getTranslationDomain(): string
     {
         return $this->translationDomain;
+    }
+
+    public function getTextDirection(): ?string
+    {
+        return $this->textDirection;
     }
 
     public function getDisabledActions(): array

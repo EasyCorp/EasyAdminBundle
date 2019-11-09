@@ -145,8 +145,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     {
         /** @var ApplicationContext $applicationContext */
         $applicationContext = $twig->getGlobals()['ea'];
-        $pageName = $applicationContext->getPage();
-        $crudConfig = $applicationContext->getCrudConfig();
+        $config = $applicationContext->getConfig();
         $entityConfig = $applicationContext->getEntityConfig();
         $entityInstance = $applicationContext->getEntity();
 
@@ -154,7 +153,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $templateParameters = [];
 
         try {
-            $templateParameters = $this->getTemplateParameters($entityConfig, $pageName, $field, $entityInstance);
+            $templateParameters = $this->getTemplateParameters($entityConfig, $field, $entityInstance);
             $templateParameters = array_merge($templateParameters, $field->getCustomTemplateParams());
 
             // if the field defines a custom template, render it (no matter if the value is null or inaccessible)
@@ -163,15 +162,15 @@ class EasyAdminTwigExtension extends AbstractExtension
             }
 
             if (false === $templateParameters['is_accessible']) {
-                return $twig->render($crudConfig->getTemplate('label_inaccessible'), $templateParameters);
+                return $twig->render($config->getTemplate('label_inaccessible'), $templateParameters);
             }
 
             if (null === $templateParameters['value']) {
-                return $twig->render($crudConfig->getTemplate('label_null'), $templateParameters);
+                return $twig->render($config->getTemplate('label_null'), $templateParameters);
             }
 
             if (empty($templateParameters['value']) && \in_array($field->getType(), ['image', 'file', 'array', 'simple_array'])) {
-                return $twig->render($crudConfig->getTemplate('label_empty'), $templateParameters);
+                return $twig->render($config->getTemplate('label_empty'), $templateParameters);
             }
 
             return $twig->render($field->getDefaultTemplatePath(), $templateParameters);
@@ -180,7 +179,7 @@ class EasyAdminTwigExtension extends AbstractExtension
                 throw $e;
             }
 
-            return $twig->render($crudConfig->getTemplate('label_undefined'), $templateParameters);
+            return $twig->render($config->getTemplate('label_undefined'), $templateParameters);
         }
     }
 
@@ -207,7 +206,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         $templateParameters = [];
 
         try {
-            $templateParameters = $this->getTemplateParameters($entityName, $view, $fieldMetadata, $item);
+            $templateParameters = $this->getTemplateParameters($entityName, $fieldMetadata, $item);
 
             // if the field defines a custom template, render it (no matter if the value is null or inaccessible)
             if ($hasCustomTemplate) {
@@ -236,7 +235,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
     }
 
-    private function getTemplateParameters(EntityConfig $entityConfig, string $pageName, FieldInterface $field, $entityInstance)
+    private function getTemplateParameters(EntityConfig $entityConfig, FieldInterface $field, $entityInstance)
     {
         if ($entityConfig->hasProperty($field->getProperty())) {
             $fieldMetadata = array_merge($entityConfig->getPropertyMetadata($field->getProperty()), ['virtual' => false]);
@@ -245,10 +244,8 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         $parameters = [
-            'entity_config' => $entityConfig,
             'field_metadata' => $fieldMetadata,
             'item' => $entityInstance,
-            'page' => $pageName,
         ];
 
         if ($this->propertyAccessor->isReadable($entityInstance, $field->getProperty())) {

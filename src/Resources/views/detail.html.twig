@@ -1,8 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var fields \EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface[] #}
-{% extends ea.crudConfig.templates.layout %}
-{% trans_default_domain ea.crudConfig.translationDomain %}
-{% trans_default_domain ea.crudConfig.translationDomain %}
+{% extends ea.config.template('layout') %}
+{% trans_default_domain ea.config.translationDomain %}
 
 {% block body_id 'easyadmin-show-' ~ ea.entityConfig.shortClassName ~ '-' ~ ea.entityConfig.id %}
 {% block body_class 'show show-' ~ ea.entityConfig.shortClassName %}
@@ -10,7 +9,7 @@
 {% block content_title %}
     {% apply spaceless %}
         {% set default_title = 'page.detail.title'|trans(ea.transParameters, 'EasyAdminBundle') %}
-        {{ ea.pageConfig.title is null ? default_title|raw : ea.pageConfig.title|trans(ea.transParameters)|raw }}
+        {{ ea.config.pageTitle is null ? default_title|raw : ea.config.pageTitle|trans(ea.transParameters)|raw }}
     {% endapply %}
 {% endblock %}
 

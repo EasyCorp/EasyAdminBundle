@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
@@ -126,12 +127,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        return $this->render($this->getCrudConfig()->getTemplate('detail'), $event->getTemplateParameters());
+        return $this->render($this->getConfig()->getTemplate('detail'), $event->getTemplateParameters());
     }
 
     protected function getContext(): ?ApplicationContext
     {
         return $this->applicationContextProvider->getContext();
+    }
+
+    protected function getConfig(): Configuration
+    {
+        return $this->getContext()->getConfig();
     }
 
     /**

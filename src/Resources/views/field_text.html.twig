@@ -1,4 +1,5 @@
-{% if page == 'detail' %}
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{% if ea.page == 'detail' %}
     {{ value|nl2br }}
 {% else %}
     {{ value|striptags|easyadmin_truncate }}

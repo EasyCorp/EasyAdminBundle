@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Field;
+namespace EasyCorp\Bundle\EasyAdminBundle\Contracts;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

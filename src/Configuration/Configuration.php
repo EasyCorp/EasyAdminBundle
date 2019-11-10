@@ -7,8 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext;
-use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
 
 final class Configuration
 {

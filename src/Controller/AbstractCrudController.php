@@ -4,23 +4,20 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Contacts\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -170,11 +167,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
      * Filters the page fields to only display the ones which the current user
      * has permission for.
      *
-     * @return FieldInterface[]
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface[]
      */
     protected function getFields(string $page): iterable
     {
-        /** @var FieldInterface $field */
+        /** @var \EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface $field */
         foreach ($this->configureFields($page) as $field) {
             if ($this->get('ea.authorization_checker')->isGranted($field->getPermission())) {
                 yield $field;

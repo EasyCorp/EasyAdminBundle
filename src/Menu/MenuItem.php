@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
+
 final class MenuItem implements MenuItemInterface
 {
     public const TYPE_CRUD = 'crud';

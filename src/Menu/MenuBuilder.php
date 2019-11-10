@@ -4,6 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Menu;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Routing\EntityRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;

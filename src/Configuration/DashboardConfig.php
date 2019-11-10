@@ -1,9 +1,7 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
+namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CommonFormatConfigTrait;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CommonTemplateConfigTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
 
 /**

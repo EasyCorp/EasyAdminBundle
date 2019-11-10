@@ -3,12 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuItemInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -89,7 +88,7 @@ final class ApplicationContext
     }
 
     /**
-     * @return MenuItemInterface[]
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface[]
      */
     public function getMenu(): array
     {

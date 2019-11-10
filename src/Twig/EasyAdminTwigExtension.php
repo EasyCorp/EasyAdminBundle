@@ -4,10 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Intl\Countries;

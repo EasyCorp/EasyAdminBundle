@@ -65,17 +65,17 @@
                         </nav>
 
                         {% set _user_menu_content %}
-                            <div class="popover-content-section user-details {{ ea.config.user.menuItems|length > 0 ? 'user-has-actions' }}">
+                            <div class="popover-content-section user-details {{ ea.config.userMenu.items|length > 0 ? 'user-has-actions' }}">
                                 <p class="small text-muted mb-0">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</p>
                                 <p class="user-details-name">
-                                    {{ ea.user is null ? 'user.anonymous'|trans(domain = 'EasyAdminBundle') : ea.config.user.name }}
+                                    {{ ea.user is null ? 'user.anonymous'|trans(domain = 'EasyAdminBundle') : ea.config.userMenu.name }}
                                 </p>
                             </div>
 
                             {% block user_menu %}
-                                {% if ea.config.user.menuItems|length > 0 %}
+                                {% if ea.config.userMenu.items|length > 0 %}
                                     <div class="popover-content-section user-menu">
-                                        {% for item in ea.config.user.menuItems %}
+                                        {% for item in ea.config.userMenu.items %}
                                             <a href="{{ item.linkUrl }}" class="user-action {{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
                                                 {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
                                                 <span>{{ item.label }}</span>
@@ -89,15 +89,15 @@
                         <div class="content-top navbar-custom-menu">
                             {% block header_custom_menu %}
                                 <div class="user user-menu-wrapper {{ is_granted('ROLE_PREVIOUS_ADMIN') ? 'user-is-impersonated' }}" data-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
-                                    {% if ea.config.user.isAvatarDisplayed %}
-                                        {% if null == ea.config.user.avatarUrl %}
+                                    {% if ea.config.userMenu.isAvatarDisplayed %}
+                                        {% if null == ea.config.userMenu.avatarUrl %}
                                             <i class="fa fa-fw {{ ea.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
                                         {% else %}
-                                            <img class="user-avatar" src="{{ ea.config.user.avatarUrl }}" />
+                                            <img class="user-avatar" src="{{ ea.config.userMenu.avatarUrl }}" />
                                         {% endif %}
                                     {% endif %}
-                                    {% if ea.config.user.isNameDisplayed %}
-                                        <span class="user-name">{{ ea.config.user.name }}</span>
+                                    {% if ea.config.userMenu.isNameDisplayed %}
+                                        <span class="user-name">{{ ea.config.userMenu.name }}</span>
                                     {% endif %}
                                 </div>
                             {% endblock header_custom_menu %}

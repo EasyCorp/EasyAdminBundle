@@ -48,8 +48,8 @@ final class ApplicationContext
         $this->entityConfig = $entityConfig;
         $this->entity = $entity;
 
-        $userConfig = null === $this->getUser() ? UserMenuConfig::new() : $dashboard->configureUserMenu($this->getUser());
-        $this->config = new Configuration($dashboard->configureDashboard(), $assetCollection, $userConfig, $crudConfig, $pageConfig, $this->menuBuilder, $request->getLocale());
+        $userMenuConfig = null === $this->getUser() ? UserMenuConfig::new()->getAsValueObject() : $dashboard->configureUserMenu($this->getUser())->getAsValueObject();
+        $this->config = new Configuration($dashboard->configureDashboard(), $assetCollection, $userMenuConfig, $crudConfig, $pageConfig, $this->menuBuilder, $request->getLocale());
     }
 
     public function getConfig(): Configuration

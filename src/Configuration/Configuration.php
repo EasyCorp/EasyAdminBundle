@@ -9,17 +9,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
 final class Configuration
 {
     private $dashboardConfig;
-    private $assets;
+    private $assetCollection;
     private $userMenuConfig;
     private $crudConfig;
     private $pageConfig;
     private $menuBuilder;
     private $locale;
 
-    public function __construct(DashboardConfig $dashboardConfig, AssetCollection $assets, UserMenuContext $userMenuConfig, ?CrudConfig $crudConfig, ?CrudPageConfigInterface $pageConfig, MenuBuilderInterface $menuBuilder, string $locale)
+    public function __construct(DashboardConfig $dashboardConfig, AssetCollection $assetCollection, UserMenuContext $userMenuConfig, ?CrudConfig $crudConfig, ?CrudPageConfigInterface $pageConfig, MenuBuilderInterface $menuBuilder, string $locale)
     {
         $this->dashboardConfig = $dashboardConfig;
-        $this->assets = $assets;
+        $this->assetCollection = $assetCollection;
         $this->userMenuConfig = $userMenuConfig;
         $this->crudConfig = $crudConfig;
         $this->pageConfig = $pageConfig;
@@ -32,24 +32,9 @@ final class Configuration
         return $this->dashboardConfig->getFaviconPath();
     }
 
-    public function getCssAssets(): array
+    public function getAssets(): AssetCollection
     {
-        return $this->assets->getCssAssets();
-    }
-
-    public function getJsAssets(): array
-    {
-        return $this->assets->getJsAssets();
-    }
-
-    public function getHeadHtmlContents(): array
-    {
-        return $this->assets->getHeadContents();
-    }
-
-    public function getBodyHtmlContents(): array
-    {
-        return $this->assets->getBodyContents();
+        return $this->assetCollection;
     }
 
     public function getSiteName(): string

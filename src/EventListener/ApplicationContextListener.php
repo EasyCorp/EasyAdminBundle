@@ -161,13 +161,13 @@ class ApplicationContextListener
 
     private function getAssetCollection(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetCollection
     {
-        $dashboardAssets = $dashboardController->configureAssets();
+        $dashboardAssets = $dashboardController->configureAssets()->getAsValueObject();
 
         if (null === $crudController) {
             return new AssetCollection($dashboardAssets);
         }
 
-        $crudAssets = $crudController->configureAssets();
+        $crudAssets = $crudController->configureAssets()->getAsValueObject();
 
         return new AssetCollection($dashboardAssets, $crudAssets);
     }

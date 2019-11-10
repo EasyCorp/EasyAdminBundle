@@ -2,10 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
+
 final class AssetConfig
 {
-    private $cssAssets = [];
-    private $jsAssets = [];
+    private $cssFiles = [];
+    private $jsFiles = [];
     private $headContents = [];
     private $bodyContents = [];
 
@@ -14,51 +16,36 @@ final class AssetConfig
         return new self();
     }
 
-    public function addCss(string $path): self
+    public function addCssFile(string $path): self
     {
-        $this->cssAssets[] = $path;
+        $this->cssFiles[] = $path;
 
         return $this;
     }
 
-    public function addJs(string $path): self
+    public function addJsFile(string $path): self
     {
-        $this->jsAssets[] = $path;
+        $this->jsFiles[] = $path;
 
         return $this;
     }
 
-    public function addToHead(string $htmlContent): self
+    public function addHtmlContentToHead(string $htmlContent): self
     {
         $this->headContents[] = $htmlContent;
 
         return $this;
     }
 
-    public function addToBody(string $htmlContent): self
+    public function addHtmlContentToBody(string $htmlContent): self
     {
         $this->bodyContents[] = $htmlContent;
 
         return $this;
     }
 
-    public function getCssAssets(): array
+    public function getAsValueObject(): AssetContext
     {
-        return $this->cssAssets;
-    }
-
-    public function getJsAssets(): array
-    {
-        return $this->jsAssets;
-    }
-
-    public function getHeadContents(): array
-    {
-        return $this->headContents;
-    }
-
-    public function getBodyContents(): array
-    {
-        return $this->bodyContents;
+        return new AssetContext($this->cssFiles, $this->jsFiles, $this->headContents, $this->bodyContents);
     }
 }

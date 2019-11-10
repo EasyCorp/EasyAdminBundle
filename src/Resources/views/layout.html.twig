@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
     {% endblock %}
 
-    {% for css_asset in ea.config.cssAssets ?? [] %}
+    {% for css_asset in ea.config.assets.cssFiles ?? [] %}
         <link rel="stylesheet" href="{{ asset(css_asset) }}">
     {% endfor %}
 
@@ -31,7 +31,7 @@
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app-rtl.css') }}">
     {% endif %}
 
-    {% for htmlContent in ea.config.headHtmlContents ?? [] %}
+    {% for htmlContent in ea.config.assets.headContents ?? [] %}
         {{ htmlContent|raw }}
     {% endfor %}
 </head>
@@ -169,11 +169,11 @@
 
     {% block body_javascript %}{% endblock body_javascript %}
 
-    {% for js_asset in ea.config.jsAssets ?? [] %}
+    {% for js_asset in ea.config.assets.jsFiles ?? [] %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
 
-    {% for htmlContent in ea.config.bodyHtmlContents ?? [] %}
+    {% for htmlContent in ea.config.assets.bodyContents ?? [] %}
         {{ htmlContent|raw }}
     {% endfor %}
     </body>

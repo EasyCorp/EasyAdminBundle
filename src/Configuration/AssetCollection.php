@@ -2,37 +2,39 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
+
 final class AssetCollection
 {
-    private $cssAssets = [];
-    private $jsAssets = [];
+    private $cssFiles = [];
+    private $jsFiles = [];
     private $headContents = [];
     private $bodyContents = [];
 
-    public function __construct(AssetConfig ...$assetConfigs)
+    public function __construct(AssetContext ...$assetContexts)
     {
-        $cssAssets = $jsAssets = $headContents = $bodyContents = [];
-        foreach ($assetConfigs as $assetConfig) {
-            $cssAssets = array_merge($cssAssets, $assetConfig->getCssAssets());
-            $jsAssets = array_merge($jsAssets, $assetConfig->getJsAssets());
-            $headContents = array_merge($headContents, $assetConfig->getHeadContents());
-            $bodyContents = array_merge($bodyContents, $assetConfig->getBodyContents());
+        $cssFiles = $jsFiles = $headContents = $bodyContents = [];
+        foreach ($assetContexts as $assetContext) {
+            $cssFiles = array_merge($cssFiles, $assetContext->getCssFiles());
+            $jsFiles = array_merge($jsFiles, $assetContext->getJsFiles());
+            $headContents = array_merge($headContents, $assetContext->getHeadContents());
+            $bodyContents = array_merge($bodyContents, $assetContext->getBodyContents());
         }
 
-        $this->cssAssets = array_unique($cssAssets);
-        $this->jsAssets = array_unique($jsAssets);
+        $this->cssFiles = array_unique($cssFiles);
+        $this->jsFiles = array_unique($jsFiles);
         $this->headContents = array_unique($headContents);
         $this->bodyContents = array_unique($bodyContents);
     }
 
-    public function getCssAssets(): array
+    public function getCssFiles(): array
     {
-        return $this->cssAssets;
+        return $this->cssFiles;
     }
 
-    public function getJsAssets(): array
+    public function getJsFiles(): array
     {
-        return $this->jsAssets;
+        return $this->jsFiles;
     }
 
     public function getHeadContents(): array

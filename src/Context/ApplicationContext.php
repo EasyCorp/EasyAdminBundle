@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
@@ -28,20 +27,20 @@ final class ApplicationContext
     private $tokenStorage;
     private $dashboardControllerInstance;
     private $menuBuilder;
-    private $assetCollection;
+    private $assets;
     private $crudConfig;
     private $crudPage;
     private $pageConfig;
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetCollection $assetCollection, ?CrudConfig $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetContext $assets, ?CrudConfig $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
         $this->dashboardControllerInstance = $dashboard;
         $this->menuBuilder = $menuBuilder;
-        $this->assetCollection = $assetCollection;
+        $this->assets = $assets;
         $this->crudConfig = $crudConfig;
         $this->crudPage = $crudPage;
         $this->pageConfig = $pageConfig;
@@ -49,7 +48,7 @@ final class ApplicationContext
         $this->entity = $entity;
 
         $userMenuConfig = null === $this->getUser() ? UserMenuConfig::new()->getAsValueObject() : $dashboard->configureUserMenu($this->getUser())->getAsValueObject();
-        $this->config = new Configuration($dashboard->configureDashboard(), $assetCollection, $userMenuConfig, $crudConfig, $pageConfig, $this->menuBuilder, $request->getLocale());
+        $this->config = new Configuration($dashboard->configureDashboard(), $assets, $userMenuConfig, $crudConfig, $pageConfig, $this->menuBuilder, $request->getLocale());
     }
 
     public function getConfig(): Configuration

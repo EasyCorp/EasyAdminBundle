@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
@@ -9,17 +10,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
 final class Configuration
 {
     private $dashboardConfig;
-    private $assetCollection;
+    private $assets;
     private $userMenuConfig;
     private $crudConfig;
     private $pageConfig;
     private $menuBuilder;
     private $locale;
 
-    public function __construct(DashboardConfig $dashboardConfig, AssetCollection $assetCollection, UserMenuContext $userMenuConfig, ?CrudConfig $crudConfig, ?CrudPageConfigInterface $pageConfig, MenuBuilderInterface $menuBuilder, string $locale)
+    public function __construct(DashboardConfig $dashboardConfig, AssetContext $assets, UserMenuContext $userMenuConfig, ?CrudConfig $crudConfig, ?CrudPageConfigInterface $pageConfig, MenuBuilderInterface $menuBuilder, string $locale)
     {
         $this->dashboardConfig = $dashboardConfig;
-        $this->assetCollection = $assetCollection;
+        $this->assets = $assets;
         $this->userMenuConfig = $userMenuConfig;
         $this->crudConfig = $crudConfig;
         $this->pageConfig = $pageConfig;
@@ -32,9 +33,9 @@ final class Configuration
         return $this->dashboardConfig->getFaviconPath();
     }
 
-    public function getAssets(): AssetCollection
+    public function getAssets(): AssetContext
     {
-        return $this->assetCollection;
+        return $this->assets;
     }
 
     public function getSiteName(): string

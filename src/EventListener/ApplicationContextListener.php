@@ -4,13 +4,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -132,12 +132,12 @@ class ApplicationContextListener
 
 
         $dashboard = $this->getDashboard($event);
-        $assetCollection = $this->getAssetCollection($dashboardControllerInstance, $crudControllerInstance);
+        $assets = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
         $crudConfig = $this->getCrudConfig($crudControllerInstance);
         $pageConfig = $this->getPageConfig($crudControllerInstance, $crudPage);
         [$entityConfig, $entityInstance] = $this->getDoctrineEntity($crudControllerInstance, $entityId);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboard, $this->menuBuilder, $assetCollection, $crudConfig, $crudPage, $pageConfig, $entityConfig, $entityInstance);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboard, $this->menuBuilder, $assets, $crudConfig, $crudPage, $pageConfig, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -159,17 +159,17 @@ class ApplicationContextListener
         return $dashboard;
     }
 
-    private function getAssetCollection(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetCollection
+    private function getAssets(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetContext
     {
         $dashboardAssets = $dashboardController->configureAssets()->getAsValueObject();
 
         if (null === $crudController) {
-            return new AssetCollection($dashboardAssets);
+            return $dashboardAssets;
         }
 
         $crudAssets = $crudController->configureAssets()->getAsValueObject();
 
-        return new AssetCollection($dashboardAssets, $crudAssets);
+        return $dashboardAssets->mergeWith($crudAssets);
     }
 
     private function getCrudConfig(?CrudControllerInterface $crudController): ?CrudConfig

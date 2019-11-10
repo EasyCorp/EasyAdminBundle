@@ -36,4 +36,14 @@ final class AssetContext
     {
         return $this->bodyContents;
     }
+
+    public function mergeWith(AssetContext $assets): self
+    {
+        $this->cssFiles = array_unique(array_merge($this->cssFiles, $assets->getCssFiles()));
+        $this->jsFiles = array_unique(array_merge($this->jsFiles, $assets->getJsFiles()));
+        $this->headContents = array_unique(array_merge($this->headContents, $assets->getHeadContents()));
+        $this->bodyContents = array_unique(array_merge($this->bodyContents, $assets->getBodyContents()));
+
+        return $this;
+    }
 }

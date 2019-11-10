@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -183,7 +184,7 @@ class ApplicationContextListener
     }
 
     /**
-     * @return IndexPageConfig|DetailPageConfig|FormPageConfig|null
+     * @return CrudPageContext|null
      */
     private function getPageConfig(?CrudControllerInterface $crudController, ?string $crudPage)
     {
@@ -192,7 +193,7 @@ class ApplicationContextListener
             return null;
         }
 
-        return $crudController->{$pageConfigMethodName}();
+        return $crudController->{$pageConfigMethodName}()->getAsValueObject();
     }
 
     /**

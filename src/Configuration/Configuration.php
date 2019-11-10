@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
@@ -15,17 +16,17 @@ final class Configuration
     private $assets;
     private $userMenuContext;
     private $crudContext;
-    private $pageConfig;
+    private $pageContext;
     private $menuBuilder;
     private $locale;
 
-    public function __construct(DashboardContext $dashboardContext, AssetContext $assets, UserMenuContext $userMenuContext, ?CrudContext $crudContext, ?CrudPageConfigInterface $pageConfig, MenuBuilderInterface $menuBuilder, string $locale)
+    public function __construct(DashboardContext $dashboardContext, AssetContext $assets, UserMenuContext $userMenuContext, ?CrudContext $crudContext, ?CrudPageContext $pageContext, MenuBuilderInterface $menuBuilder, string $locale)
     {
         $this->dashboardContext = $dashboardContext;
         $this->assets = $assets;
         $this->userMenuContext = $userMenuContext;
         $this->crudContext = $crudContext;
-        $this->pageConfig = $pageConfig;
+        $this->pageContext = $pageContext;
         $this->menuBuilder = $menuBuilder;
         $this->locale = $locale;
     }
@@ -68,20 +69,20 @@ final class Configuration
 
     public function getPageTitle(): ?string
     {
-        if (null === $this->pageConfig) {
+        if (null === $this->pageContext) {
             return null;
         }
 
-        return $this->pageConfig->getTitle();
+        return $this->pageContext->getTitle();
     }
 
     public function getPageHelp(): ?string
     {
-        if (null === $this->pageConfig) {
+        if (null === $this->pageContext) {
             return null;
         }
 
-        return $this->pageConfig->getHelp();
+        return $this->pageContext->getHelp();
     }
 
     public function getTemplate(string $name): string

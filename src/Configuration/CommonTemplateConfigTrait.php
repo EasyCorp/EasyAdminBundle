@@ -46,30 +46,6 @@ trait CommonTemplateConfigTrait
     ];
 
     /**
-     * @return string|string[]|null
-     */
-    public function getCustomTemplate(string $templateName = null)
-    {
-        if (null === $templateName) {
-            return $this->customTemplates;
-        }
-
-        return $this->customTemplates[$templateName] ?? null;
-    }
-
-    /**
-     * @return string|string[]|null
-     */
-    public function getDefaultTemplate(string $templateName = null)
-    {
-        if (null === $templateName) {
-            return $this->defaultTemplates;
-        }
-
-        return $this->defaultTemplates[$templateName] ?? null;
-    }
-
-    /**
      * Used to override the default template used to render a specific backend part.
      */
     public function setCustomTemplate(string $templateName, string $templatePath): self

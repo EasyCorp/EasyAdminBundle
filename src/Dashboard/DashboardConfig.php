@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dashboard;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CommonFormatConfigTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CommonTemplateConfigTrait;
+use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
 
 /**
  * Holds the configuration options of the dashboard.
@@ -63,28 +64,8 @@ final class DashboardConfig
         return $this;
     }
 
-    public function getFaviconPath(): string
+    public function getAsValueObject(): DashboardContext
     {
-        return $this->faviconPath;
-    }
-
-    public function getSiteName(): string
-    {
-        return $this->siteName;
-    }
-
-    public function getTranslationDomain(): string
-    {
-        return $this->translationDomain;
-    }
-
-    public function getTextDirection(): ?string
-    {
-        return $this->textDirection;
-    }
-
-    public function getDisabledActions(): array
-    {
-        return $this->disabledActions;
+        return new DashboardContext($this->faviconPath, $this->siteName, $this->translationDomain, $this->textDirection, $this->disabledActions, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->defaultTemplates);
     }
 }

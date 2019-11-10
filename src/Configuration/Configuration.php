@@ -3,26 +3,28 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilderInterface;
 
 final class Configuration
 {
-    private $dashboardConfig;
+    private $dashboardContext;
     private $assets;
-    private $userMenuConfig;
-    private $crudConfig;
+    private $userMenuContext;
+    private $crudContext;
     private $pageConfig;
     private $menuBuilder;
     private $locale;
 
-    public function __construct(DashboardConfig $dashboardConfig, AssetContext $assets, UserMenuContext $userMenuConfig, ?CrudConfig $crudConfig, ?CrudPageConfigInterface $pageConfig, MenuBuilderInterface $menuBuilder, string $locale)
+    public function __construct(DashboardContext $dashboardContext, AssetContext $assets, UserMenuContext $userMenuContext, ?CrudContext $crudContext, ?CrudPageConfigInterface $pageConfig, MenuBuilderInterface $menuBuilder, string $locale)
     {
-        $this->dashboardConfig = $dashboardConfig;
+        $this->dashboardContext = $dashboardContext;
         $this->assets = $assets;
-        $this->userMenuConfig = $userMenuConfig;
-        $this->crudConfig = $crudConfig;
+        $this->userMenuContext = $userMenuContext;
+        $this->crudContext = $crudContext;
         $this->pageConfig = $pageConfig;
         $this->menuBuilder = $menuBuilder;
         $this->locale = $locale;
@@ -30,7 +32,7 @@ final class Configuration
 
     public function getFaviconPath(): string
     {
-        return $this->dashboardConfig->getFaviconPath();
+        return $this->dashboardContext->getFaviconPath();
     }
 
     public function getAssets(): AssetContext
@@ -40,17 +42,17 @@ final class Configuration
 
     public function getSiteName(): string
     {
-        return $this->dashboardConfig->getSiteName();
+        return $this->dashboardContext->getSiteName();
     }
 
     public function getTranslationDomain(): string
     {
-        return $this->dashboardConfig->getTranslationDomain();
+        return $this->dashboardContext->getTranslationDomain();
     }
 
     public function getTextDirection(): string
     {
-        if (null !== $textDirection = $this->dashboardConfig->getTextDirection()) {
+        if (null !== $textDirection = $this->dashboardContext->getTextDirection()) {
             return $textDirection;
         }
 
@@ -61,7 +63,7 @@ final class Configuration
 
     public function getUserMenu(): UserMenuContext
     {
-        return $this->userMenuConfig;
+        return $this->userMenuContext;
     }
 
     public function getPageTitle(): ?string
@@ -84,11 +86,11 @@ final class Configuration
 
     public function getTemplate(string $name): string
     {
-        if (null !== $this->crudConfig && null !== $templatePath = $this->crudConfig->getCustomTemplate($name)) {
+        if (null !== $this->crudContext && null !== $templatePath = $this->crudContext->getCustomTemplate($name)) {
             return $templatePath;
         }
 
-        return $this->dashboardConfig->getCustomTemplate($name)
-            ?? $this->dashboardConfig->getDefaultTemplate($name);
+        return $this->dashboardContext->getCustomTemplate($name)
+            ?? $this->dashboardContext->getDefaultTemplate($name);
     }
 }

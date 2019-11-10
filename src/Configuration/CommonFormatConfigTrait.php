@@ -10,31 +10,6 @@ trait CommonFormatConfigTrait
     private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
     private $numberFormat;
 
-    public function getDateFormat(): string
-    {
-        return $this->dateFormat;
-    }
-
-    public function getTimeFormat(): string
-    {
-        return $this->timeFormat;
-    }
-
-    public function getDateTimeFormat(): string
-    {
-        return $this->dateTimeFormat;
-    }
-
-    public function getDateIntervalFormat(): string
-    {
-        return $this->dateIntervalFormat;
-    }
-
-    public function getNumberFormat(): ?string
-    {
-        return $this->numberFormat;
-    }
-
     public function setDateFormat(string $format): self
     {
         $this->dateFormat = $format;

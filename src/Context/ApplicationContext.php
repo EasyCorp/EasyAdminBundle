@@ -34,7 +34,7 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetContext $assets, ?CrudConfig $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPage, $pageConfig, ?EntityConfig $entityConfig, $entity)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
@@ -48,7 +48,8 @@ final class ApplicationContext
         $this->entity = $entity;
 
         $userMenuConfig = null === $this->getUser() ? UserMenuConfig::new()->getAsValueObject() : $dashboard->configureUserMenu($this->getUser())->getAsValueObject();
-        $this->config = new Configuration($dashboard->configureDashboard(), $assets, $userMenuConfig, $crudConfig, $pageConfig, $this->menuBuilder, $request->getLocale());
+        $dashboardConfig = $dashboard->configureDashboard()->getAsValueObject();
+        $this->config = new Configuration($dashboardConfig, $assets, $userMenuConfig, $crudConfig, $pageConfig, $this->menuBuilder, $request->getLocale());
     }
 
     public function getConfig(): Configuration

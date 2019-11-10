@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dashboard\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -172,13 +173,13 @@ class ApplicationContextListener
         return $dashboardAssets->mergeWith($crudAssets);
     }
 
-    private function getCrudConfig(?CrudControllerInterface $crudController): ?CrudConfig
+    private function getCrudConfig(?CrudControllerInterface $crudController): ?CrudContext
     {
         if (null === $crudController) {
             return null;
         }
 
-        return $crudController->configureCrud();
+        return $crudController->configureCrud()->getAsValueObject();
     }
 
     /**
@@ -203,7 +204,7 @@ class ApplicationContextListener
             return [null, null];
         }
 
-        $entityFqcn = $crudController->configureCrud()->getEntityClass();
+        $entityFqcn = $crudController->configureCrud()->getAsValueObject()->getEntityClass();
         if (null === $entityFqcn) {
             return [null, null];
         }

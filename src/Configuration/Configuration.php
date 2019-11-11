@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\ActionContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
@@ -82,6 +83,24 @@ final class Configuration
         }
 
         return $this->pageContext->getHelp();
+    }
+
+    /**
+     * @return ActionContext[]
+     */
+    public function getPageActions(): array
+    {
+        if (null === $this->pageContext) {
+            return [];
+        }
+
+        $actions = [];
+        $actionConfigs = $this->pageContext->getActions();
+        foreach ($actionConfigs as $actionConfig) {
+            $actions[] = $actionConfig->getAsValueObject();
+        }
+
+        return $actions;
     }
 
     public function getTemplate(string $name): string

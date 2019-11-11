@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contacts;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -17,14 +17,14 @@ interface CrudControllerInterface
 
     public function configureAssets(): AssetConfig;
 
+    public function configureActions(string $page): ActionCollection;
+
     public function configureDetailPage(): DetailPageConfig;
 
     /**
      * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface[]
      */
-    public function configureFields(string $action): iterable;
+    public function configureFields(string $page): iterable;
 
     public function index(): Response;
-
-    public function getCrudConfig(): CrudConfig;
 }

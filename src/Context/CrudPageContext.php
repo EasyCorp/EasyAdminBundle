@@ -6,6 +6,7 @@ final class CrudPageContext
 {
     private $title;
     private $help;
+    private $actions;
     private $maxResults;
     private $searchFields;
     private $filters;
@@ -25,12 +26,13 @@ final class CrudPageContext
         return $context;
     }
 
-    public static function newFromDetailPage(?string $title, ?string $help): self
+    public static function newFromDetailPage(?string $title, ?string $help, array $actions): self
     {
         $context = new self();
 
         $context->title = $title;
         $context->help = $help;
+        $context->actions = $actions;
 
         return $context;
     }
@@ -55,6 +57,11 @@ final class CrudPageContext
     public function getHelp(): ?string
     {
         return $this->help;
+    }
+
+    public function getActions(): array
+    {
+        return $this->actions;
     }
 
     public function getMaxResults(): ?int

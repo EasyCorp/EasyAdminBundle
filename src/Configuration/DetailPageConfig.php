@@ -8,6 +8,8 @@ final class DetailPageConfig
 {
     private $title;
     private $help;
+    /** @var ActionConfig[] */
+    private $actions = [];
 
     public static function new(): self
     {
@@ -28,8 +30,31 @@ final class DetailPageConfig
         return $this;
     }
 
+    public function addAction(ActionConfig $actionConfig): self
+    {
+        $actionName = (string) $actionConfig;
+        if (array_key_exists($actionName, $this->actions)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" action already exists. You can use the "updateAction()" method to update any property of an existing action.', $actionName));
+        }
+
+        $this->actions[$actionName] = $actionConfig;
+
+        return $this;
+    }
+
+    public function updateAction(string $actionName, array $actionProperties): self
+    {
+        if (!array_key_exists($actionName, $this->actions)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" action already does not exist, so you cannot update its properties. You can use the "addAction()" method to define the action first.', $actionName));
+        }
+
+        $this->actions[$actionName] = $this->actions[$actionName]->withProperties($actionProperties);
+
+        return $this;
+    }
+
     public function getAsValueObject(): CrudPageContext
     {
-        return CrudPageContext::newFromDetailPage($this->title, $this->help);
+        return CrudPageContext::newFromDetailPage($this->title, $this->help, $this->actions);
     }
 }

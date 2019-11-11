@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;

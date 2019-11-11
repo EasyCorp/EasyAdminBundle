@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
@@ -21,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -46,29 +49,57 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return AssetConfig::new();
     }
 
+    public function configureActions(string $page): ActionCollection
+    {
+        $backToIndex = ActionConfig::new('index', $this->trans('action.list'), null)
+            ->setCssClass('btn btn-link pr-0');
+        $edit = ActionConfig::new('edit', $this->trans('action.edit'))
+            ->setCssClass('btn btn-primary')->setMethodName('form');
+        $new = ActionConfig::new('new', $this->trans('action.new'))->setMethodName('form')
+            ->setCssClass('btn btn-primary');
+        $show = ActionConfig::new('show', $this->trans('action.show'));
+        $delete = ActionConfig::new('delete', $this->trans('action.delete'), 'trash-o')
+            ->setCssClass('btn text-danger');
+
+        if ('index' === $page) {
+            return [];
+        }
+
+        if ('detail' === $page) {
+            return ActionCollection::new()
+                ->addAction($page, $edit)
+                ->addAction($page, $delete)
+                ->addAction($page, $backToIndex);
+        }
+
+        if ('form' === $page) {
+            return [];
+        }
+    }
+
+    private function trans(string $original, array $parameters = []): string
+    {
+        return $this->get('translator')->trans($original, $parameters, 'EasyAdminBundle');
+    }
+
     /**
      * @inheritDoc
      */
-    abstract public function configureFields(string $action): iterable;
+    abstract public function configureFields(string $page): iterable;
 
     public function configureDetailPage(): DetailPageConfig
     {
-        return DetailPageConfig::new();
-    }
-
-    public function getCrudConfig(): CrudConfig
-    {
-        if (null !== $this->processedConfig) {
-            return $this->processedConfig;
-        }
-
-        return $this->processedConfig = $this->configureCrud();
+        return DetailPageConfig::new()
+            ->addAction(ActionConfig::new('edit', $this->trans('action.edit'), null)->setCssClass('btn btn-primary')->setMethodName('form'))
+            ->addAction(ActionConfig::new('delete', $this->trans('action.delete'), 'trash-o')->setCssClass('btn text-danger'))
+            ->addAction(ActionConfig::new('index', $this->trans('action.list'), null)->setCssClass('btn btn-link pr-0'));
     }
 
     public static function getSubscribedServices()
     {
         return array_merge(parent::getSubscribedServices(), [
             'ea.authorization_checker' => '?'.AuthorizationChecker::class,
+            'translator' => '?'.TranslatorInterface::class,
         ]);
     }
 

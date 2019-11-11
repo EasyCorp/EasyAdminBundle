@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contacts\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;

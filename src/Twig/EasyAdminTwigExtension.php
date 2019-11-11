@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\DoctrineEntityContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\EntityContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
@@ -234,7 +234,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
     }
 
-    private function getTemplateParameters(DoctrineEntityContext $entityConfig, FieldInterface $field, $entityInstance)
+    private function getTemplateParameters(EntityContext $entityConfig, FieldInterface $field, $entityInstance)
     {
         if ($entityConfig->hasProperty($field->getProperty())) {
             $fieldMetadata = array_merge($entityConfig->getPropertyMetadata($field->getProperty()), ['virtual' => false]);

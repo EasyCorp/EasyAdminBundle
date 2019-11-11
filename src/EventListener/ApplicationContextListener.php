@@ -9,7 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\DoctrineEntityContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\EntityContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -213,7 +213,7 @@ class ApplicationContextListener
             throw new \RuntimeException('EasyAdmin does not support Doctrine entities with composite primary keys.');
         }
 
-        $entityConfig = new DoctrineEntityContext($entityMetadata, $entityInstance, $entityId);
+        $entityConfig = new EntityContext($entityMetadata, $entityInstance, $entityId);
 
         return [$entityConfig, $entityInstance];
     }

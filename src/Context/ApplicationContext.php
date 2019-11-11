@@ -31,7 +31,7 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?DoctrineEntityContext $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?EntityContext $entityConfig, $entity)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
@@ -127,7 +127,7 @@ final class ApplicationContext
         ];
     }
 
-    public function getEntity(): ?DoctrineEntityContext
+    public function getEntity(): ?EntityContext
     {
         return $this->entityConfig;
     }

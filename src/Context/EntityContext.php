@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
-final class DoctrineEntityContext
+final class EntityContext
 {
     private $entityMetadata;
     private $entityInstance;

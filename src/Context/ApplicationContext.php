@@ -2,13 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -34,7 +31,7 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?EntityConfig $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?DoctrineEntityContext $entityConfig, $entity)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
@@ -126,19 +123,11 @@ final class ApplicationContext
             '%entity_label_singular%' => $this->crudConfig->getLabelInSingular(),
             '%entity_label_plural%' => $this->crudConfig->getLabelInPlural(),
             '%entity_name%' => $this->crudConfig->getLabelInPlural(),
-            '%entity_id%' => $this->getEntityConfig()->getId(),
+            '%entity_id%' => $this->getEntity()->getIdValue(),
         ];
     }
 
-    /**
-     * @return object|null
-     */
-    public function getEntity()
-    {
-        return $this->entity;
-    }
-
-    public function getEntityConfig(): ?EntityConfig
+    public function getEntity(): ?DoctrineEntityContext
     {
         return $this->entityConfig;
     }

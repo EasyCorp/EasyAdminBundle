@@ -4,13 +4,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\EntityConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contacts\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\DoctrineEntityContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -209,7 +208,12 @@ class ApplicationContextListener
 
         $entityManager = $this->getEntityManager($entityFqcn);
         $entityInstance = $this->getEntityInstance($entityManager, $entityFqcn, $entityId);
-        $entityConfig = new EntityConfig($entityManager->getClassMetadata($entityFqcn), $entityId);
+        $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
+        if (1 !== count($entityMetadata->getIdentifierFieldNames())) {
+            throw new \RuntimeException('EasyAdmin does not support Doctrine entities with composite primary keys.');
+        }
+
+        $entityConfig = new DoctrineEntityContext($entityMetadata, $entityInstance, $entityId);
 
         return [$entityConfig, $entityInstance];
     }

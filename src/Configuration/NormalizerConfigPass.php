@@ -74,8 +74,6 @@ class NormalizerConfigPass implements ConfigPassInterface
      *             class: AppBundle\Entity\User
      *             label: 'Clients'
      *
-     * @param array $backendConfig
-     *
      * @return array
      */
     private function normalizeEntityConfig(array $backendConfig)
@@ -114,8 +112,6 @@ class NormalizerConfigPass implements ConfigPassInterface
     /**
      * Normalizes the view configuration when some of them doesn't define any
      * configuration.
-     *
-     * @param array $backendConfig
      *
      * @return array
      */
@@ -159,8 +155,6 @@ class NormalizerConfigPass implements ConfigPassInterface
      *
      * This method processes both formats to produce a common form field configuration
      * format used in the rest of the application.
-     *
-     * @param array $backendConfig
      *
      * @return array
      *
@@ -222,8 +216,6 @@ class NormalizerConfigPass implements ConfigPassInterface
     /**
      * Normalizes the configuration of the special elements that forms may include
      * to create advanced designs (such as dividers and fieldsets).
-     *
-     * @param array $backendConfig
      *
      * @return array
      */
@@ -366,8 +358,6 @@ class NormalizerConfigPass implements ConfigPassInterface
      * given controller exists (it doesn't matter if it's a normal controller
      * or if it's defined as a service).
      *
-     * @param array $backendConfig
-     *
      * @return array
      *
      * @throws \InvalidArgumentException
@@ -505,8 +495,6 @@ class NormalizerConfigPass implements ConfigPassInterface
      * The 'edit' and 'new' views can remove fields defined in the 'form' view
      * by defining fields with a '-' dash at the beginning of its name (e.g.
      * { property: '-name' } to remove the 'name' property).
-     *
-     * @param array $fieldsConfig
      *
      * @return array
      */

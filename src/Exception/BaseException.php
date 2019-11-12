@@ -12,9 +12,6 @@ class BaseException extends HttpException
     /** @var ExceptionContext */
     private $context;
 
-    /**
-     * @param ExceptionContext $context
-     */
     public function __construct(ExceptionContext $context)
     {
         $this->context = $context;

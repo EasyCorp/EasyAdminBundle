@@ -47,8 +47,6 @@ class EasyAdminExtension extends Extension
      * Without this, Symfony doesn't merge correctly the 'entities' config key
      * defined in different files.
      *
-     * @param array $configs
-     *
      * @return array
      */
     private function processConfigFiles(array $configs)
@@ -136,8 +134,6 @@ class EasyAdminExtension extends Extension
      * guaranteed to be unique.
      *
      * @param string $entityName
-     * @param array  $entityConfig
-     * @param array  $existingEntityNames
      *
      * @return string The entity name transformed to be unique
      */

@@ -31,7 +31,6 @@ class EasyAdminFormType extends AbstractType
     private $authorizationChecker;
 
     /**
-     * @param ConfigManager               $configManager
      * @param TypeConfiguratorInterface[] $configurators
      */
     public function __construct(ConfigManager $configManager, array $configurators = [], AuthorizationCheckerInterface $authorizationChecker = null)

@@ -87,8 +87,6 @@ class PropertyConfigPass implements ConfigPassInterface
      * required because $entityConfig['properties'] will be used as the fields of
      * the views that don't define their fields.
      *
-     * @param array $backendConfig
-     *
      * @return array
      */
     private function processMetadataConfig(array $backendConfig)
@@ -141,8 +139,6 @@ class PropertyConfigPass implements ConfigPassInterface
     /**
      * Completes the configuration of each field/property with the metadata
      * provided by Doctrine for each entity property.
-     *
-     * @param array $backendConfig
      *
      * @return array
      */
@@ -309,10 +305,6 @@ class PropertyConfigPass implements ConfigPassInterface
     /**
      * Resolves from type options of field.
      *
-     * @param array $mergedConfig
-     * @param array $guessedConfig
-     * @param array $userDefinedConfig
-     *
      * @return array
      */
     private function getFormTypeOptionsOfProperty(array $mergedConfig, array $guessedConfig, array $userDefinedConfig)
@@ -356,7 +348,6 @@ class PropertyConfigPass implements ConfigPassInterface
      * according to its type and the default formats defined for the backend.
      *
      * @param string $fieldType
-     * @param array  $backendConfig
      *
      * @return string The format that should be applied to the field value
      */

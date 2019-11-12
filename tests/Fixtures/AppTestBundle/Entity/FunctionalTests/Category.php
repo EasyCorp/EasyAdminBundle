@@ -144,9 +144,6 @@ class Category
         }
     }
 
-    /**
-     * @param Product $product
-     */
     public function removeProduct(Product $product)
     {
         $this->products->removeElement($product);

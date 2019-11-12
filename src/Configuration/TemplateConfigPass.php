@@ -87,8 +87,6 @@ class TemplateConfigPass implements ConfigPassInterface
      * trivial because templates can depend on the entity displayed and they
      * define an advanced override mechanism.
      *
-     * @param array $backendConfig
-     *
      * @return array
      *
      * @throws \RuntimeException
@@ -141,8 +139,6 @@ class TemplateConfigPass implements ConfigPassInterface
      * This is needed for example when an exception is triggered and no entity
      * configuration is available to know which template should be rendered.
      *
-     * @param array $backendConfig
-     *
      * @return array
      */
     private function processDefaultTemplates(array $backendConfig)
@@ -170,8 +166,6 @@ class TemplateConfigPass implements ConfigPassInterface
      * Determines the template used to render each backend element. This is not
      * trivial because templates can depend on the entity displayed and they
      * define an advanced override mechanism.
-     *
-     * @param array $backendConfig
      *
      * @return array
      */
@@ -214,8 +208,6 @@ class TemplateConfigPass implements ConfigPassInterface
 
     /**
      * Sets the default action template for every action, if it is not already set.
-     *
-     * @param array $backendConfig
      *
      * @return array
      */

@@ -15,9 +15,7 @@ trait FlattenExceptionTrait
     private $context;
 
     /**
-     * @param \Exception $exception
-     * @param int        $statusCode
-     * @param array      $headers
+     * @param int $statusCode
      *
      * @return FlattenException
      *

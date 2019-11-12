@@ -124,7 +124,6 @@ class EasyAdminTwigExtension extends AbstractExtension
     /**
      * @param object|string $entity
      * @param string        $action
-     * @param array         $parameters
      *
      * @return string
      */
@@ -139,11 +138,10 @@ class EasyAdminTwigExtension extends AbstractExtension
      * property doesn't exist or its value is not accessible. This ensures that
      * the function never generates a warning or error message when calling it.
      *
-     * @param Environment $twig
-     * @param string      $view          The view in which the item is being rendered
-     * @param string      $entityName    The name of the entity associated with the item
-     * @param object      $item          The item which is being rendered
-     * @param array       $fieldMetadata The metadata of the actual field being rendered
+     * @param string $view          The view in which the item is being rendered
+     * @param string $entityName    The name of the entity associated with the item
+     * @param object $item          The item which is being rendered
+     * @param array  $fieldMetadata The metadata of the actual field being rendered
      *
      * @return string
      *

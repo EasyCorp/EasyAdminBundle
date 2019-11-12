@@ -76,8 +76,6 @@ class ActionConfigPass implements ConfigPassInterface
      *             list:
      *                 actions: ['search', { name: 'show', label: 'Show', 'icon': 'user' }, 'grantAccess']
      *
-     * @param array $backendConfig
-     *
      * @return array
      */
     private function normalizeActionsConfig(array $backendConfig)
@@ -126,8 +124,6 @@ class ActionConfigPass implements ConfigPassInterface
      *         User:
      *             list:
      *                 batch_actions: ['delete', { name: 'reset', label: 'Reset Account' }]
-     *
-     * @param array $backendConfig
      *
      * @return array
      */
@@ -223,7 +219,6 @@ class ActionConfigPass implements ConfigPassInterface
      * default value for any option that you don't explicitly set (e.g. the icon
      * or the CSS class).
      *
-     * @param array  $actionsConfig
      * @param string $view
      *
      * @return array

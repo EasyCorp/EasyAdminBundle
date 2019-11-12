@@ -39,9 +39,7 @@ class MenuConfigPass implements ConfigPassInterface
      * Normalizes the different shortcut notations of the menu config to simplify
      * further processing.
      *
-     * @param array $menuConfig
-     * @param array $backendConfig
-     * @param int   $parentItemIndex The index of the parent item for this menu item (allows to treat submenus differently)
+     * @param int $parentItemIndex The index of the parent item for this menu item (allows to treat submenus differently)
      *
      * @return array
      */

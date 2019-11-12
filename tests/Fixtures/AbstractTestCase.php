@@ -47,8 +47,6 @@ abstract class AbstractTestCase extends WebTestCase
     }
 
     /**
-     * @param array $queryParameters
-     *
      * @return Crawler
      */
     protected function getBackendPage(array $queryParameters, array $serverParameters = [])

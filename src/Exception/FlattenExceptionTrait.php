@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
-use Symfony\Component\ErrorRenderer\Exception\FlattenException;
-
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  *
@@ -13,26 +11,6 @@ trait FlattenExceptionTrait
 {
     /** @var ExceptionContext */
     private $context;
-
-    /**
-     * @param int $statusCode
-     *
-     * @return FlattenException
-     *
-     * @throws \RuntimeException
-     */
-    public static function create(\Exception $exception, $statusCode = null, array $headers = []): parent
-    {
-        if (!$exception instanceof BaseException) {
-            throw new \RuntimeException(sprintf('You should only try to create an instance of "%s" with a "EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException" instance, or subclass. "%s" given.', __CLASS__, \get_class($exception)));
-        }
-
-        /** @var FlattenException $e */
-        $e = parent::create($exception, $statusCode, $headers);
-        $e->context = $exception->getContext();
-
-        return $e;
-    }
 
     public function getPublicMessage()
     {
@@ -57,5 +35,17 @@ trait FlattenExceptionTrait
     public function getStatusCode()
     {
         return $this->context->getStatusCode();
+    }
+
+    private static function createException(\Exception $exception, $statusCode = null, array $headers = [])
+    {
+        if (!$exception instanceof BaseException) {
+            throw new \RuntimeException(sprintf('You should only try to create an instance of "%s" with a "EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException" instance, or subclass. "%s" given.', __CLASS__, \get_class($exception)));
+        }
+
+        $e = parent::create($exception, $statusCode, $headers);
+        $e->context = $exception->getContext();
+
+        return $e;
     }
 }

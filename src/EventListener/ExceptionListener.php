@@ -34,7 +34,7 @@ class ExceptionListener
      */
     public function onKernelException($event)
     {
-        $exception = $event->getException();
+        $exception = $this->getException($event);
         if (!$exception instanceof BaseException) {
             return;
         }
@@ -58,5 +58,14 @@ class ExceptionListener
             'exception' => $exception,
             'layout_template_path' => $exceptionLayoutTemplatePath,
         ]), $exception->getStatusCode());
+    }
+
+    private function getException($event)
+    {
+        if (method_exists($event, 'getThrowable')) {
+            return $event->getThrowable();
+        }
+
+        return $event->getException();
     }
 }

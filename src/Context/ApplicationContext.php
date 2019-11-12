@@ -24,6 +24,7 @@ final class ApplicationContext
     private $tokenStorage;
     private $dashboardControllerInstance;
     private $menuBuilder;
+    private $actionBuilder;
     private $assets;
     private $crudConfig;
     private $crudPageName;
@@ -31,12 +32,13 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?EntityContext $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, $actionBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?EntityContext $entityConfig, $entity)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
         $this->dashboardControllerInstance = $dashboard;
         $this->menuBuilder = $menuBuilder;
+        $this->actionBuilder = $actionBuilder;
         $this->assets = $assets;
         $this->crudConfig = $crudConfig;
         $this->crudPageName = $crudPageName;
@@ -46,7 +48,7 @@ final class ApplicationContext
 
         $userMenuConfig = null === $this->getUser() ? UserMenuConfig::new()->getAsValueObject() : $dashboard->configureUserMenu($this->getUser())->getAsValueObject();
         $dashboardConfig = $dashboard->configureDashboard()->getAsValueObject();
-        $this->config = new Configuration($dashboardConfig, $assets, $userMenuConfig, $crudConfig, $crudPageContext, $this->menuBuilder, $request->getLocale());
+        $this->config = new Configuration($dashboardConfig, $assets, $userMenuConfig, $crudConfig, $crudPageContext, $request->getLocale());
     }
 
     public function getConfig(): Configuration
@@ -130,6 +132,18 @@ final class ApplicationContext
     public function getEntity(): ?EntityContext
     {
         return $this->entityConfig;
+    }
+
+    /**
+     * @return ActionContext[]
+     */
+    public function getActions(): ?array
+    {
+        if (null === $this->crudPageContext) {
+            return [];
+        }
+
+        return $this->actionBuilder->setItems($this->crudPageContext->getActions())->build();
     }
 
     public function getDashboardRouteName(): string

@@ -34,14 +34,16 @@ class ApplicationContextListener
     private $twig;
     private $tokenStorage;
     private $menuBuilder;
+    private $actionBuilder;
 
-    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, ?TokenStorageInterface $tokenStorage, MenuBuilderInterface $menuBuilder)
+    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, ?TokenStorageInterface $tokenStorage, MenuBuilderInterface $menuBuilder, $actionBuilder)
     {
         $this->controllerResolver = $controllerResolver;
         $this->doctrine = $doctrine;
         $this->twig = $twig;
         $this->tokenStorage = $tokenStorage;
         $this->menuBuilder = $menuBuilder;
+        $this->actionBuilder = $actionBuilder;
     }
 
     public function onKernelController(ControllerEvent $event): void
@@ -135,7 +137,7 @@ class ApplicationContextListener
         $pageConfig = $this->getPageConfig($crudControllerInstance, $crudPage);
         [$entityConfig, $entityInstance] = $this->getDoctrineEntity($crudControllerInstance, $entityId);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboard, $this->menuBuilder, $assets, $crudConfig, $crudPage, $pageConfig, $entityConfig, $entityInstance);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboard, $this->menuBuilder, $this->actionBuilder, $assets, $crudConfig, $crudPage, $pageConfig, $entityConfig, $entityInstance);
         $this->setApplicationContext($event, $applicationContext);
     }
 

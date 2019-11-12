@@ -8,7 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
 
 final class Configuration
 {
@@ -17,17 +16,15 @@ final class Configuration
     private $userMenuContext;
     private $crudContext;
     private $pageContext;
-    private $menuBuilder;
     private $locale;
 
-    public function __construct(DashboardContext $dashboardContext, AssetContext $assets, UserMenuContext $userMenuContext, ?CrudContext $crudContext, ?CrudPageContext $pageContext, MenuBuilderInterface $menuBuilder, string $locale)
+    public function __construct(DashboardContext $dashboardContext, AssetContext $assets, UserMenuContext $userMenuContext, ?CrudContext $crudContext, ?CrudPageContext $pageContext, string $locale)
     {
         $this->dashboardContext = $dashboardContext;
         $this->assets = $assets;
         $this->userMenuContext = $userMenuContext;
         $this->crudContext = $crudContext;
         $this->pageContext = $pageContext;
-        $this->menuBuilder = $menuBuilder;
         $this->locale = $locale;
     }
 
@@ -83,24 +80,6 @@ final class Configuration
         }
 
         return $this->pageContext->getHelp();
-    }
-
-    /**
-     * @return ActionContext[]
-     */
-    public function getPageActions(): array
-    {
-        if (null === $this->pageContext) {
-            return [];
-        }
-
-        $actions = [];
-        $actionConfigs = $this->pageContext->getActions();
-        foreach ($actionConfigs as $actionConfig) {
-            $actions[] = $actionConfig->getAsValueObject();
-        }
-
-        return $actions;
     }
 
     public function getTemplate(string $name): string

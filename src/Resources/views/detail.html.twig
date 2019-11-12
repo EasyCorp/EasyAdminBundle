@@ -39,72 +39,25 @@
         {% endblock %}
     </div>
 
-    {% if ea.config.pageActions is not empty %}
+    {% if ea.actions is not empty %}
         <section class="content-footer">
             <div class="form-actions">
                 {% block item_actions %}
-                    {% for action in ea.config.pageActions %}
-                        {% set request_parameters = app.request.query.all %}
-                        {% if 'list' == action.name %}
-                            {% set action_href = request_parameters.referer|default('') ? request_parameters.referer|easyadmin_urldecode : path('easyadmin', request_parameters|merge({ action: 'list' })) %}
-                        {% elseif action.methodName is not null %}
-                            {% set action_href = path('easyadmin', request_parameters|merge({ page: action.name, id: ea.entity.idValue })) %}
-                        {% elseif action.routeName is not null %}
-                            {% set action_href = path(action.name, request_parameters|merge({ page: action.name, id: ea.entity.idValue })) %}
-                        {% endif %}
-
+                    {% for action in ea.actions %}
                         {{ include(action.template) }}
                     {% endfor %}
-{#
-                    {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
-
-
-                    {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
-                        actions: _show_actions,
-                        entity_config: _entity_config,
-                        request_parameters: request_parameters,
-                        translation_domain: _entity_config.translation_domain,
-                        trans_parameters: ea.transParameters,
-                        item_id: _entity_id,
-                        item: entity
-                    }, with_context = false) }}
-                    #}
                 {% endblock item_actions %}
             </div>
         </section>
     {% endif %}
 
-    {#
-    <section class="content-footer">
-        <div class="form-actions">
-            {% block item_actions %}
-                {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
-                {% set _request_parameters = app.request.query.all %}
-
-                {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
-                    actions: _show_actions,
-                    entity_config: _entity_config,
-                    request_parameters: _request_parameters,
-                    translation_domain: _entity_config.translation_domain,
-                    trans_parameters: ea.transParameters,
-                    item_id: _entity_id,
-                    item: entity
-                }, with_context = false) }}
-            {% endblock item_actions %}
-        </div>
-    </section>
-
     {% block delete_form %}
-        {{ include('@EasyAdmin/default/includes/_delete_form.html.twig', {
+        {{ include('@EasyAdmin/includes/_delete_form.html.twig', {
             view: 'show',
             referer: app.request.query.get('referer', ''),
             delete_form: delete_form,
-            _translation_domain: _entity_config.translation_domain,
-            _trans_parameters: ea.transParameters,
-            _entity_config: _entity_config,
-        }, with_context = false) }}
+        }) }}
     {% endblock delete_form %}
-#}
 {% endblock %}
 
 {% block body_javascript %}

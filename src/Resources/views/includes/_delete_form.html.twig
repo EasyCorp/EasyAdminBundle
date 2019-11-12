@@ -1,0 +1,30 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{{ form(delete_form, {
+    action: delete_form.vars.action ~ ('?' in delete_form.vars.action ? '&' : '?') ~ 'referer=' ~ referer|url_encode,
+    method: 'DELETE',
+    attr: { id: 'delete-form', style: 'display: none' }
+}) }}
+
+<div id="modal-delete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4>{{ 'delete_modal.title'|trans(ea.transParameters, 'EasyAdminBundle') }}</h4>
+                <p>{{ 'delete_modal.content'|trans(ea.transParameters, 'EasyAdminBundle') }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-secondary">
+                    <span class="btn-label">{{ 'action.cancel'|trans(ea.transParameters, ea.config.translationDomain) }}</span>
+                </button>
+
+                {% if easyadmin_action_is_enabled(view, 'delete', ea.entity.shortClassName) %}
+                    {% set _delete_action = easyadmin_get_action(view, 'delete', ea.entity.shortClassName) %}
+                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button" formtarget="{{ _delete_action.target }}">
+                        {% if _delete_action.icon %}<i class="fa fa-fw fa-{{ _delete_action.icon }}"></i>{% endif %}
+                        <span class="btn-label">{{ 'delete_modal.action'|trans(ea.transParameters, 'EasyAdminBundle') }}</span>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

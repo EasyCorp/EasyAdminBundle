@@ -25,7 +25,15 @@
             <argument type="service" id="twig" />
             <argument type="service" id="security.token_storage" on-invalid="null" />
             <argument type="service" id="easyadmin.menu.builder" />
+            <argument type="service" id="easyadmin.builder.action" />
             <tag name="kernel.event_listener" event="kernel.controller" />
+        </service>
+
+        <service id="easyadmin.builder.action" class="EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder" public="false">
+            <argument type="service" id="easyadmin.applicationcontext.provider"></argument>
+            <argument type="service" id="easyadmin.security.authorization_checker"></argument>
+            <argument type="service" id="translator"></argument>
+            <argument type="service" id="router"></argument>
         </service>
 
         <service id="easyadmin.menu.builder" class="EasyCorp\Bundle\EasyAdminBundle\Menu\MenuBuilder" public="false">

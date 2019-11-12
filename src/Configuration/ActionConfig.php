@@ -10,12 +10,15 @@ final class ActionConfig
     private $label;
     private $icon;
     private $cssClass;
-    private $title;
+    private $htmlTitle;
     private $target = '_self';
     private $template = '@EasyAdmin/action.html.twig';
+    private $permission;
     private $methodName;
     private $routeName;
     private $routeParameters;
+    private $translationDomain = 'messages';
+    private $translationParameters = [];
 
     private function __construct()
     {
@@ -57,9 +60,9 @@ final class ActionConfig
         return $this;
     }
 
-    public function setTitle(string $title): self
+    public function setHtmlTitle(string $htmlTitle): self
     {
-        $this->title = $title;
+        $this->htmlTitle = $htmlTitle;
 
         return $this;
     }
@@ -78,6 +81,13 @@ final class ActionConfig
         return $this;
     }
 
+    public function setPermission(string $permission): self
+    {
+        $this->permission = $permission;
+
+        return $this;
+    }
+
     public function setMethodName(string $methodName): self
     {
         $this->methodName = $methodName;
@@ -89,6 +99,20 @@ final class ActionConfig
     {
         $this->routeName = $routeName;
         $this->routeParameters = $routeParameters;
+
+        return $this;
+    }
+
+    public function setTranslationDomain(string $domain): self
+    {
+        $this->translationDomain = $domain;
+
+        return $this;
+    }
+
+    public function setTranslationParameters(string $parameters): self
+    {
+        $this->translationParameters = $parameters;
 
         return $this;
     }
@@ -112,6 +136,10 @@ final class ActionConfig
             throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be null at the same time. Either set the label, the icon or both.'));
         }
 
-        return new ActionContext($this->name, $this->label, $this->icon, $this->cssClass, $this->title, $this->target, $this->template, $this->methodName, $this->routeName, $this->routeParameters);
+        if (null === $this->methodName && null === $this->routeName) {
+            throw new \InvalidArgumentException(sprintf('The method name and the route name of an action cannot be null at the same time. Either set the method name or the route name for the action "%s".', $this->name));
+        }
+
+        return new ActionContext($this->name, $this->label, $this->icon, $this->cssClass, $this->htmlTitle, $this->target, $this->template, $this->permission, $this->methodName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
     }
 }

@@ -71,7 +71,8 @@ final class MenuBuilder implements MenuBuilderInterface
 
     private function buildMenu(): void
     {
-        $this->builtItems = [];
+        $this->resetBuiltMenu();
+
         $translationDomain = $this->getApplicationContext()->getConfig()->getTranslationDomain();
         $dashboardRouteName = $this->getApplicationContext()->getDashboardRouteName();
 
@@ -93,6 +94,8 @@ final class MenuBuilder implements MenuBuilderInterface
 
             $this->builtItems[] = $builtItem;
         }
+
+        $this->isBuilt = true;
     }
 
     private function buildMenuItem(MenuItemInterface $item, array $subItems, int $index, int $subIndex, string $translationDomain, string $dashboardRouteName): MenuItemInterface

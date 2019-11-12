@@ -17,8 +17,6 @@ interface CrudControllerInterface
 
     public function configureAssets(): AssetConfig;
 
-    public function configureActions(string $page): ActionCollection;
-
     public function configureDetailPage(): DetailPageConfig;
 
     /**

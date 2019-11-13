@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ActionContext;
 
-final class ActionConfig
+final class Action
 {
     private $name;
     private $label;

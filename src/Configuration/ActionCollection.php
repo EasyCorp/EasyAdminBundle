@@ -16,21 +16,21 @@ final class ActionCollection
         return new self();
     }
 
-    public function addBatchAction(ActionConfig $actionConfig): self
+    public function addBatchAction(Action $actionConfig): self
     {
         $this->actions[self::BATCH_ACTION][(string) $actionConfig] = $actionConfig;
 
         return $this;
     }
 
-    public function addRowAction(ActionConfig $actionConfig): self
+    public function addRowAction(Action $actionConfig): self
     {
         $this->actions[self::ROW_ACTION][(string) $actionConfig] = $actionConfig;
 
         return $this;
     }
 
-    public function addAction(string $page, ActionConfig $actionConfig): self
+    public function addAction(string $page, Action $actionConfig): self
     {
         $validPageNames = ['index', 'detail', 'form'];
         if (!\in_array($page, $validPageNames)) {

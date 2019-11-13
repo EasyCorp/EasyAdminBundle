@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ActionContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -14,7 +14,7 @@ final class ActionBuilder
     private $isBuilt;
     /** @var ActionContext[] */
     private $builtActions;
-    /** @var ActionConfig[] */
+    /** @var Action[] */
     private $actionConfigs;
     private $authChecker;
     private $urlGenerator;
@@ -29,7 +29,7 @@ final class ActionBuilder
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function addItem(ActionConfig $actionConfig): self
+    public function addItem(Action $actionConfig): self
     {
         $this->actionConfigs[] = $actionConfig;
         $this->resetBuiltActions();
@@ -38,7 +38,7 @@ final class ActionBuilder
     }
 
     /**
-     * @param ActionConfig[] $actionConfigs
+     * @param Action[] $actionConfigs
      */
     public function setItems(array $actionConfigs): self
     {

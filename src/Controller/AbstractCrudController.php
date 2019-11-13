@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
@@ -57,17 +57,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function configureDetailPage(): DetailPageConfig
     {
         return DetailPageConfig::new()
-            ->addAction(ActionConfig::new('index', 'action.list', null)
+            ->addAction(Action::new('index', 'action.list', null)
                 ->setMethodName('index')
                 ->setCssClass('btn btn-link pr-0')
                 ->setTranslationDomain('EasyAdminBundle'))
 
-            ->addAction(ActionConfig::new('delete', 'action.delete', 'trash-o')
+            ->addAction(Action::new('delete', 'action.delete', 'trash-o')
                 ->setMethodName('delete')
                 ->setCssClass('btn text-danger')
                 ->setTranslationDomain('EasyAdminBundle'))
 
-            ->addAction(ActionConfig::new('edit', 'action.edit', null)
+            ->addAction(Action::new('edit', 'action.edit', null)
                 ->setMethodName('form')
                 ->setCssClass('btn btn-primary')
                 ->setTranslationDomain('EasyAdminBundle'));

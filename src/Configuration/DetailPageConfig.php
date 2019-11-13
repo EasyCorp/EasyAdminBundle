@@ -8,7 +8,7 @@ final class DetailPageConfig
 {
     private $title;
     private $help;
-    /** @var ActionConfig[] */
+    /** @var Action[] */
     private $actions = [];
 
     public static function new(): self
@@ -30,7 +30,7 @@ final class DetailPageConfig
         return $this;
     }
 
-    public function addAction(ActionConfig $actionConfig): self
+    public function addAction(Action $actionConfig): self
     {
         $actionName = (string) $actionConfig;
         if (array_key_exists($actionName, $this->actions)) {

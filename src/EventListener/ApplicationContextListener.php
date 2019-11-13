@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\EntityContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
@@ -36,7 +36,7 @@ class ApplicationContextListener
     private $menuBuilder;
     private $actionBuilder;
 
-    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, ?TokenStorageInterface $tokenStorage, MenuBuilderInterface $menuBuilder, $actionBuilder)
+    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, ?TokenStorageInterface $tokenStorage, ItemCollectionBuilderInterface $menuBuilder, $actionBuilder)
     {
         $this->controllerResolver = $controllerResolver;
         $this->doctrine = $doctrine;

@@ -5,11 +5,12 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ActionContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class ActionBuilder
+final class ActionBuilder implements ItemCollectionBuilderInterface
 {
     private $isBuilt;
     /** @var ActionContext[] */
@@ -29,7 +30,10 @@ final class ActionBuilder
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function addItem(Action $actionConfig): self
+    /**
+     * @param Action $actionConfig
+     */
+    public function addItem($actionConfig): ItemCollectionBuilderInterface
     {
         $this->actionConfigs[] = $actionConfig;
         $this->resetBuiltActions();
@@ -40,7 +44,7 @@ final class ActionBuilder
     /**
      * @param Action[] $actionConfigs
      */
-    public function setItems(array $actionConfigs): self
+    public function setItems(array $actionConfigs): ItemCollectionBuilderInterface
     {
         $this->actionConfigs = $actionConfigs;
         $this->resetBuiltActions();
@@ -73,7 +77,6 @@ final class ActionBuilder
 
         foreach ($this->actionConfigs as $actionConfig) {
             $actionContext = $actionConfig->getAsValueObject();
-
             if (!$this->authChecker->isGranted($actionContext->getPermission())) {
                 continue;
             }

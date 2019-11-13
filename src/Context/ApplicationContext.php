@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,7 +32,7 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, MenuBuilderInterface $menuBuilder, $actionBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?EntityContext $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, ItemCollectionBuilderInterface $menuBuilder, $actionBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?EntityContext $entityConfig, $entity)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;

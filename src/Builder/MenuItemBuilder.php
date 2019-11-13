@@ -3,9 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Routing\EntityRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -13,40 +12,47 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class MenuBuilder implements MenuBuilderInterface
+final class MenuItemBuilder implements ItemCollectionBuilderInterface
 {
     private $isBuilt;
     /** @var MenuItemInterface[] */
-    private $builtItems;
+    private $builtMenuItems;
     /** @var MenuItemInterface[] */
-    private $items;
+    private $menuItems;
     private $authChecker;
     private $urlGenerator;
     private $translator;
     private $logoutUrlGenerator;
     private $applicationContextProvider;
 
-    public function __construct(AuthorizationCheckerInterface $authChecker, UrlGeneratorInterface $urlGenerator, TranslatorInterface $translator, LogoutUrlGenerator $logoutUrlGenerator, ApplicationContextProvider $applicationContextProvider)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator)
     {
-        $this->authChecker = $authChecker;
-        $this->urlGenerator = $urlGenerator;
-        $this->translator = $translator;
-        $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->applicationContextProvider = $applicationContextProvider;
+        $this->authChecker = $authChecker;
+        $this->translator = $translator;
+        $this->urlGenerator = $urlGenerator;
+        $this->logoutUrlGenerator = $logoutUrlGenerator;
     }
 
-    public function addItem(MenuItemInterface $item): MenuBuilderInterface
+    /**
+     * @param MenuItemInterface $menuItem
+     */
+    public function addItem($menuItem): ItemCollectionBuilderInterface
     {
-        $this->items[] = $item;
-        $this->resetBuiltMenu();
+        $this->menuItems[] = $menuItem;
+        $this->resetBuiltMenuItems();
 
         return $this;
     }
 
-    public function setItems(array $items): MenuBuilderInterface
+    /**
+     * @param MenuItemInterface[] $menuItems
+     * @return ItemCollectionBuilderInterface
+     */
+    public function setItems(array $menuItems): ItemCollectionBuilderInterface
     {
-        $this->items = $items;
-        $this->resetBuiltMenu();
+        $this->menuItems = $menuItems;
+        $this->resetBuiltMenuItems();
 
         return $this;
     }
@@ -57,27 +63,28 @@ final class MenuBuilder implements MenuBuilderInterface
     public function build(): array
     {
         if (!$this->isBuilt) {
-            $this->buildMenu();
+            $this->buildMenuItems();
             $this->isBuilt = true;
         }
 
-        return $this->builtItems;
+        return $this->builtMenuItems;
     }
 
-    private function resetBuiltMenu(): void
+    private function resetBuiltMenuItems(): void
     {
-        $this->builtItems = [];
+        $this->builtMenuItems = [];
         $this->isBuilt = false;
     }
 
-    private function buildMenu(): void
+    private function buildMenuItems(): void
     {
-        $this->resetBuiltMenu();
+        $this->resetBuiltMenuItems();
 
-        $translationDomain = $this->getApplicationContext()->getConfig()->getTranslationDomain();
-        $dashboardRouteName = $this->getApplicationContext()->getDashboardRouteName();
+        $applicationContext = $this->applicationContextProvider->getContext();
+        $translationDomain = $applicationContext->getConfig()->getTranslationDomain();
+        $dashboardRouteName = $applicationContext->getDashboardRouteName();
 
-        foreach ($this->items as $i => $item) {
+        foreach ($this->menuItems as $i => $item) {
             if (false === $this->authChecker->isGranted($item->getPermission())) {
                 continue;
             }
@@ -93,7 +100,7 @@ final class MenuBuilder implements MenuBuilderInterface
 
             $builtItem = $this->buildMenuItem($item, $subItems, $i, -1, $translationDomain, $dashboardRouteName);
 
-            $this->builtItems[] = $builtItem;
+            $this->builtMenuItems[] = $builtItem;
         }
 
         $this->isBuilt = true;
@@ -102,28 +109,16 @@ final class MenuBuilder implements MenuBuilderInterface
     private function buildMenuItem(MenuItemInterface $item, array $subItems, int $index, int $subIndex, string $translationDomain, string $dashboardRouteName): MenuItemInterface
     {
         $label = $this->translator->trans($item->getLabel(), [], $translationDomain);
-        $url = $this->getUrl($item, $dashboardRouteName, $index, $subIndex);
+        $url = $this->generateMenuItemUrl($item, $dashboardRouteName, $index, $subIndex);
 
-        return MenuItem::build(
-            $item->getType(),
-            $index,
-            $subIndex,
-            $label,
-            $item->getIcon(),
-            $url,
-            $item->getPermission(),
-            $item->getCssClass(),
-            $item->getLinkRel(),
-            $item->getLinkTarget(),
-            $subItems
-        );
+        return MenuItem::build($item->getType(), $index, $subIndex, $label, $item->getIcon(), $url, $item->getPermission(), $item->getCssClass(), $item->getLinkRel(), $item->getLinkTarget(), $subItems);
     }
 
-    private function getUrl(MenuItemInterface $item, string $dashboardRouteName, int $index, int $subIndex): string
+    private function generateMenuItemUrl(MenuItemInterface $menuItem, string $dashboardRouteName, int $index, int $subIndex): string
     {
-        switch ($item->getType()) {
+        switch ($menuItem->getType()) {
             case MenuItem::TYPE_URL:
-                return $item->getLinkUrl();
+                return $menuItem->getLinkUrl();
 
             case MenuItem::TYPE_DASHBOARD:
                 return $this->urlGenerator->generate($dashboardRouteName);
@@ -131,14 +126,14 @@ final class MenuBuilder implements MenuBuilderInterface
             case MenuItem::TYPE_ROUTE:
                 // add the index and subIndex query parameters to display the selected menu item
                 $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
-                $routeParameters = array_merge($menuParameters, $item->getRouteParameters());
+                $routeParameters = array_merge($menuParameters, $menuItem->getRouteParameters());
 
-                return $this->urlGenerator->generate($item->getRouteName(), $routeParameters);
+                return $this->urlGenerator->generate($menuItem->getRouteName(), $routeParameters);
 
             case MenuItem::TYPE_CRUD:
                 // add the index and subIndex query parameters to display the selected menu item
                 $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
-                $routeParameters = array_merge($menuParameters, $item->getRouteParameters());
+                $routeParameters = array_merge($menuParameters, $menuItem->getRouteParameters());
 
                 return $this->urlGenerator->generate($dashboardRouteName, $routeParameters);
 
@@ -156,10 +151,5 @@ final class MenuBuilder implements MenuBuilderInterface
             default:
                 return '';
         }
-    }
-
-    private function getApplicationContext(): ApplicationContext
-    {
-        return $this->applicationContextProvider->getContext();
     }
 }

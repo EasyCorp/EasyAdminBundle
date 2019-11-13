@@ -17,7 +17,7 @@ final class Action
     private $methodName;
     private $routeName;
     private $routeParameters;
-    private $translationDomain = 'messages';
+    private $translationDomain;
     private $translationParameters = [];
 
     private function __construct()
@@ -103,6 +103,9 @@ final class Action
         return $this;
     }
 
+    /**
+     * If not defined, actions use the same domain as configured for the entire dashboard
+     */
     public function setTranslationDomain(string $domain): self
     {
         $this->translationDomain = $domain;

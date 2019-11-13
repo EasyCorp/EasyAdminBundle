@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ActionContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -75,15 +76,18 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
     {
         $this->resetBuiltActions();
 
+        $applicationContext = $this->applicationContextProvider->getContext();
+        $defaultTranslationDomain = $applicationContext->getConfig()->getTranslationDomain();
+
         foreach ($this->actionConfigs as $actionConfig) {
             $actionContext = $actionConfig->getAsValueObject();
             if (!$this->authChecker->isGranted($actionContext->getPermission())) {
                 continue;
             }
 
-            $generatedActionUrl = $this->generateActionUrl($actionContext);
-            $translatedActionLabel = $this->translator->trans($actionContext->getLabel(), $actionContext->getTranslationParameters(), $actionContext->getTranslationDomain());
-            $translatedActionHtmlTitle = $this->translator->trans($actionContext->getHtmlTitle(), $actionContext->getTranslationParameters(), $actionContext->getTranslationDomain());
+            $generatedActionUrl = $this->generateActionUrl($applicationContext, $actionContext);
+            $translatedActionLabel = $this->translator->trans($actionContext->getLabel(), $actionContext->getTranslationParameters(), $actionContext->getTranslationDomain() ?? $defaultTranslationDomain);
+            $translatedActionHtmlTitle = $this->translator->trans($actionContext->getHtmlTitle(), $actionContext->getTranslationParameters(), $actionContext->getTranslationDomain() ?? $defaultTranslationDomain);
 
             $this->builtActions[] = $actionContext->withProperties([
                 'htmlTitle' => $translatedActionHtmlTitle,
@@ -93,9 +97,8 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
         }
     }
 
-    private function generateActionUrl(ActionContext $actionContext): string
+    private function generateActionUrl(ApplicationContext $applicationContext, ActionContext $actionContext): string
     {
-        $applicationContext = $this->applicationContextProvider->getContext();
         $requestParameters = $applicationContext->getRequest()->query->all();
 
         if (null !== $routeName = $actionContext->getRouteName()) {

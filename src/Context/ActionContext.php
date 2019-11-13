@@ -19,7 +19,7 @@ final class ActionContext
     private $translationDomain;
     private $translationParameters;
 
-    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $htmlTitle, string $target, ?string $template, ?string $permission, ?string $methodName, ?string $routeName, ?array $routeParameters, string $translationDomain, array $translationParameters)
+    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $htmlTitle, string $target, ?string $template, ?string $permission, ?string $methodName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters)
     {
         $this->name = $name;
         $this->label = $label;
@@ -96,7 +96,7 @@ final class ActionContext
         return $this->url;
     }
 
-    public function getTranslationDomain(): string
+    public function getTranslationDomain(): ?string
     {
         return $this->translationDomain;
     }

@@ -57,9 +57,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function configureDetailPage(): DetailPageConfig
     {
         return DetailPageConfig::new()
-            ->addAction(ActionConfig::new('edit', 'action.edit', null)
-                ->setMethodName('form')
-                ->setCssClass('btn btn-primary')
+            ->addAction(ActionConfig::new('index', 'action.list', null)
+                ->setMethodName('index')
+                ->setCssClass('btn btn-link pr-0')
                 ->setTranslationDomain('EasyAdminBundle'))
 
             ->addAction(ActionConfig::new('delete', 'action.delete', 'trash-o')
@@ -67,9 +67,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 ->setCssClass('btn text-danger')
                 ->setTranslationDomain('EasyAdminBundle'))
 
-            ->addAction(ActionConfig::new('index', 'action.list', null)
-                ->setMethodName('index')
-                ->setCssClass('btn btn-link pr-0')
+            ->addAction(ActionConfig::new('edit', 'action.edit', null)
+                ->setMethodName('form')
+                ->setCssClass('btn btn-primary')
                 ->setTranslationDomain('EasyAdminBundle'));
     }
 

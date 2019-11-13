@@ -387,8 +387,7 @@ fieldset .legend-help {
 // Form actions ("Save changes", "Delete", etc.)
 .form-actions {
     display: flex;
-    justify-items: flex-end;
-    flex-direction: row-reverse;
+    justify-content: flex-end;
     padding: 0;
 }
 

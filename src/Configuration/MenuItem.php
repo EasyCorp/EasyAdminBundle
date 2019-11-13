@@ -2,19 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
 
 final class MenuItem implements MenuItemInterface
 {
-    public const TYPE_CRUD = 'crud';
-    public const TYPE_DASHBOARD = 'dashboard';
-    public const TYPE_EXIT_IMPERSONATION = 'exit_impersonation';
-    public const TYPE_LOGOUT = 'logout';
-    public const TYPE_ROUTE = 'route';
-    public const TYPE_SECTION = 'section';
-    public const TYPE_SUBMENU = 'submenu';
-    public const TYPE_URL = 'url';
-
     private $type;
     private $index;
     private $subIndex;
@@ -40,7 +32,7 @@ final class MenuItem implements MenuItemInterface
     public static function crud(string $label, string $icon, string $crudControllerFqcn, array $routeParameters = []): self
     {
         $menuItem = new self();
-        $menuItem->type = self::TYPE_CRUD;
+        $menuItem->type = MenuItemBuilder::TYPE_CRUD;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->routeParameters = array_merge([
@@ -54,7 +46,7 @@ final class MenuItem implements MenuItemInterface
     public static function dashboardIndex(string $label, string $icon): self
     {
         $menuItem = new self();
-        $menuItem->type = self::TYPE_DASHBOARD;
+        $menuItem->type = MenuItemBuilder::TYPE_DASHBOARD;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
 
@@ -64,7 +56,7 @@ final class MenuItem implements MenuItemInterface
     public static function exitImpersonation(string $label, string $icon): self
     {
         $menuItem = new self();
-        $menuItem->type = self::TYPE_EXIT_IMPERSONATION;
+        $menuItem->type = MenuItemBuilder::TYPE_EXIT_IMPERSONATION;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
 
@@ -74,7 +66,7 @@ final class MenuItem implements MenuItemInterface
     public static function logout(string $label, string $icon): self
     {
         $menuItem = new self();
-        $menuItem->type = self::TYPE_LOGOUT;
+        $menuItem->type = MenuItemBuilder::TYPE_LOGOUT;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
 
@@ -84,7 +76,7 @@ final class MenuItem implements MenuItemInterface
     public static function route(string $name, array $parameters = []): self
     {
         $menuItem = new self();
-        $menuItem->type = self::TYPE_ROUTE;
+        $menuItem->type = MenuItemBuilder::TYPE_ROUTE;
         $menuItem->routeName = $name;
         $menuItem->routeParameters = $parameters;
 
@@ -94,7 +86,7 @@ final class MenuItem implements MenuItemInterface
     public static function section(string $label = null, string $icon = null): self
     {
         $menuItem = new self();
-        $menuItem->type = self::TYPE_SECTION;
+        $menuItem->type = MenuItemBuilder::TYPE_SECTION;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
 
@@ -104,7 +96,7 @@ final class MenuItem implements MenuItemInterface
     public static function subMenu(string $label, string $icon, array $submenuItems): self
     {
         $menuItem = new self();
-        $menuItem->type = self::TYPE_SUBMENU;
+        $menuItem->type = MenuItemBuilder::TYPE_SUBMENU;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->subItems = $submenuItems;
@@ -115,7 +107,7 @@ final class MenuItem implements MenuItemInterface
     public static function url(string $label, string $icon, string $url): self
     {
         $menuItem = new self();
-        $menuItem->type = self::TYPE_URL;
+        $menuItem->type = MenuItemBuilder::TYPE_URL;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->linkUrl = $url;
@@ -251,11 +243,11 @@ final class MenuItem implements MenuItemInterface
 
     public function hasSubItems(): bool
     {
-        return self::TYPE_SUBMENU === $this->type && count($this->subItems) > 0;
+        return MenuItemBuilder::TYPE_SUBMENU === $this->type && count($this->subItems) > 0;
     }
 
     public function isMenuSection(): bool
     {
-        return self::TYPE_SECTION === $this->type;
+        return MenuItemBuilder::TYPE_SECTION === $this->type;
     }
 }

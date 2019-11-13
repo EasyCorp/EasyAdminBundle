@@ -14,6 +14,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class MenuItemBuilder implements ItemCollectionBuilderInterface
 {
+    public const TYPE_CRUD = 'crud';
+    public const TYPE_DASHBOARD = 'dashboard';
+    public const TYPE_EXIT_IMPERSONATION = 'exit_impersonation';
+    public const TYPE_LOGOUT = 'logout';
+    public const TYPE_ROUTE = 'route';
+    public const TYPE_SECTION = 'section';
+    public const TYPE_SUBMENU = 'submenu';
+    public const TYPE_URL = 'url';
+
     private $isBuilt;
     /** @var MenuItemInterface[] */
     private $builtMenuItems;
@@ -117,35 +126,35 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
     private function generateMenuItemUrl(MenuItemInterface $menuItem, string $dashboardRouteName, int $index, int $subIndex): string
     {
         switch ($menuItem->getType()) {
-            case MenuItem::TYPE_URL:
+            case self::TYPE_URL:
                 return $menuItem->getLinkUrl();
 
-            case MenuItem::TYPE_DASHBOARD:
+            case self::TYPE_DASHBOARD:
                 return $this->urlGenerator->generate($dashboardRouteName);
 
-            case MenuItem::TYPE_ROUTE:
+            case self::TYPE_ROUTE:
                 // add the index and subIndex query parameters to display the selected menu item
                 $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
                 $routeParameters = array_merge($menuParameters, $menuItem->getRouteParameters());
 
                 return $this->urlGenerator->generate($menuItem->getRouteName(), $routeParameters);
 
-            case MenuItem::TYPE_CRUD:
+            case self::TYPE_CRUD:
                 // add the index and subIndex query parameters to display the selected menu item
                 $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
                 $routeParameters = array_merge($menuParameters, $menuItem->getRouteParameters());
 
                 return $this->urlGenerator->generate($dashboardRouteName, $routeParameters);
 
-            case MenuItem::TYPE_LOGOUT:
+            case self::TYPE_LOGOUT:
                 return $this->logoutUrlGenerator->getLogoutPath();
 
-            case MenuItem::TYPE_EXIT_IMPERSONATION:
+            case self::TYPE_EXIT_IMPERSONATION:
                 // the switch parameter name can be changed, but this code assumes it's always
                 // the default one because Symfony doesn't provide a generic exitImpersonationUrlGenerator
                 return '?_switch_user=_exit';
 
-            case MenuItem::TYPE_SECTION:
+            case self::TYPE_SECTION:
                 return '#';
 
             default:

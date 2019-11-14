@@ -6,6 +6,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,7 +38,7 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?EntityContext $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assets, ?CrudDto $crudConfig, ?string $crudPageName, ?CrudPageDto $crudPageContext, ?EntityDto $entityConfig, $entity)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
@@ -46,7 +52,7 @@ final class ApplicationContext
         $this->entityConfig = $entityConfig;
         $this->entity = $entity;
 
-        $dashboardConfig = $dashboard->configureDashboard()->getAsValueObject();
+        $dashboardConfig = $dashboard->configureDashboard()->getAsDto();
         $this->config = new Configuration($dashboardConfig, $assets, $crudConfig, $crudPageContext, $request->getLocale());
     }
 
@@ -87,7 +93,7 @@ final class ApplicationContext
     }
 
     /**
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Context\MenuItemContext[]
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto[]
      */
     public function getMainMenu(): array
     {
@@ -97,16 +103,16 @@ final class ApplicationContext
     }
 
     /**
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto
      */
-    public function getUserMenu(): UserMenuContext
+    public function getUserMenu(): UserMenuDto
     {
         if (null === $this->getUser()) {
-            return UserMenuConfig::new()->getAsValueObject();
+            return UserMenuConfig::new()->getAsDto();
         }
 
         $userMenuConfig = $this->dashboardControllerInstance->configureUserMenu($this->getUser());
-        $userMenuContext = $userMenuConfig->getAsValueObject();
+        $userMenuContext = $userMenuConfig->getAsDto();
         $builtUserMenuItems = $this->menuBuilder->setItems($userMenuContext->getItems())->build();
 
         return $userMenuContext->withProperties([
@@ -146,13 +152,13 @@ final class ApplicationContext
         ];
     }
 
-    public function getEntity(): ?EntityContext
+    public function getEntity(): ?EntityDto
     {
         return $this->entityConfig;
     }
 
     /**
-     * @return ActionContext[]
+     * @return ActionDto[]
      */
     public function getActions(): ?array
     {

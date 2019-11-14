@@ -1,8 +1,8 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Context;
+namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-final class ActionContext
+final class ActionDto
 {
     private $name;
     private $label;

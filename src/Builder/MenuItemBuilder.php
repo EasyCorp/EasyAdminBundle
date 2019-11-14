@@ -4,9 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Context\MenuItemContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Routing\EntityRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -25,7 +24,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
     public const TYPE_URL = 'url';
 
     private $isBuilt;
-    /** @var MenuItemContext[] */
+    /** @var MenuItemDto[] */
     private $builtMenuItems;
     /** @var MenuItem[] */
     private $menuItems;
@@ -68,7 +67,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
     }
 
     /**
-     * @return MenuItemContext[]
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto[]
      */
     public function build(): array
     {
@@ -95,14 +94,15 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $dashboardRouteName = $applicationContext->getDashboardRouteName();
 
         foreach ($this->menuItems as $i => $menuItem) {
-            $menuItemContext = $menuItem->getAsValueObject();
+            $menuItemContext = $menuItem->getAsDto();
             if (false === $this->authChecker->isGranted($menuItemContext->getPermission())) {
                 continue;
             }
 
             $subItems = [];
+            /** @var MenuItem $menuSubItemConfig */
             foreach ($menuItemContext->getSubItems() as $j => $menuSubItemConfig) {
-                $menuSubItemContext = $menuSubItemConfig->getAsValueObject();
+                $menuSubItemContext = $menuSubItemConfig->getAsDto();
                 if (false === $this->authChecker->isGranted($menuSubItemContext->getPermission())) {
                     continue;
                 }
@@ -118,7 +118,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $this->isBuilt = true;
     }
 
-    private function buildMenuItem(MenuItemContext $menuItemContext, array $subItemsContext, int $index, int $subIndex, string $translationDomain, string $dashboardRouteName): MenuItemContext
+    private function buildMenuItem(MenuItemDto $menuItemContext, array $subItemsContext, int $index, int $subIndex, string $translationDomain, string $dashboardRouteName): MenuItemDto
     {
         $label = $this->translator->trans($menuItemContext->getLabel(), [], $translationDomain);
         $url = $this->generateMenuItemUrl($menuItemContext, $dashboardRouteName, $index, $subIndex);
@@ -132,7 +132,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         ]);
     }
 
-    private function generateMenuItemUrl(MenuItemContext $menuItemContext, string $dashboardRouteName, int $index, int $subIndex): string
+    private function generateMenuItemUrl(MenuItemDto $menuItemContext, string $dashboardRouteName, int $index, int $subIndex): string
     {
         switch ($menuItemContext->getType()) {
             case self::TYPE_URL:

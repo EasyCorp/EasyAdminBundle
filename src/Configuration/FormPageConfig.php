@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 
 final class FormPageConfig
 {
@@ -57,8 +57,8 @@ final class FormPageConfig
         return $this;
     }
 
-    public function getAsValueObject(): CrudPageContext
+    public function getAsDto(): CrudPageDto
     {
-        return CrudPageContext::newFromFormPage($this->title, $this->help, $this->formThemes, $this->formOptions);
+        return CrudPageDto::newFromFormPage($this->title, $this->help, $this->formThemes, $this->formOptions);
     }
 }

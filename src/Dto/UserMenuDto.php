@@ -1,8 +1,8 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Context;
+namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-final class UserMenuContext
+final class UserMenuDto
 {
     private $isNameDisplayed;
     private $isAvatarDisplayed;

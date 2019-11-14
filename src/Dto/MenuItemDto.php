@@ -1,10 +1,11 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Context;
+namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Context\MenuItem;
 
-final class MenuItemContext
+final class MenuItemDto
 {
     private $type;
     private $index;
@@ -18,7 +19,7 @@ final class MenuItemContext
     private $linkUrl;
     private $linkRel;
     private $linkTarget;
-    /** @var MenuItem[]|MenuItemContext[] */
+    /** @var MenuItem[]|MenuItemDto[] */
     private $subItems;
 
     public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParameters, ?string $linkUrl, string $linkRel, string $linkTarget, array $subItems)

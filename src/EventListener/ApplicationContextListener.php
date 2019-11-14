@@ -6,12 +6,12 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use EasyCorp\Bundle\EasyAdminBundle\Contacts\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\EntityContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
@@ -158,30 +158,30 @@ class ApplicationContextListener
         return $dashboard;
     }
 
-    private function getAssets(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetContext
+    private function getAssets(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetDto
     {
-        $dashboardAssets = $dashboardController->configureAssets()->getAsValueObject();
+        $dashboardAssets = $dashboardController->configureAssets()->getAsDto();
 
         if (null === $crudController) {
             return $dashboardAssets;
         }
 
-        $crudAssets = $crudController->configureAssets()->getAsValueObject();
+        $crudAssets = $crudController->configureAssets()->getAsDto();
 
         return $dashboardAssets->mergeWith($crudAssets);
     }
 
-    private function getCrudConfig(?CrudControllerInterface $crudController): ?CrudContext
+    private function getCrudConfig(?CrudControllerInterface $crudController): ?CrudDto
     {
         if (null === $crudController) {
             return null;
         }
 
-        return $crudController->configureCrud()->getAsValueObject();
+        return $crudController->configureCrud()->getAsDto();
     }
 
     /**
-     * @return CrudPageContext|null
+     * @return CrudPageDto|null
      */
     private function getPageConfig(?CrudControllerInterface $crudController, ?string $crudPage)
     {
@@ -190,7 +190,7 @@ class ApplicationContextListener
             return null;
         }
 
-        return $crudController->{$pageConfigMethodName}()->getAsValueObject();
+        return $crudController->{$pageConfigMethodName}()->getAsDto();
     }
 
     /**
@@ -202,7 +202,7 @@ class ApplicationContextListener
             return [null, null];
         }
 
-        $entityFqcn = $crudController->configureCrud()->getAsValueObject()->getEntityClass();
+        $entityFqcn = $crudController->configureCrud()->getAsDto()->getEntityClass();
         if (null === $entityFqcn) {
             return [null, null];
         }
@@ -214,7 +214,7 @@ class ApplicationContextListener
             throw new \RuntimeException('EasyAdmin does not support Doctrine entities with composite primary keys.');
         }
 
-        $entityConfig = new EntityContext($entityMetadata, $entityInstance, $entityId);
+        $entityConfig = new EntityDto($entityMetadata, $entityInstance, $entityId);
 
         return [$entityConfig, $entityInstance];
     }

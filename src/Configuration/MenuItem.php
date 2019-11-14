@@ -3,8 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Context\MenuItemContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 
 final class MenuItem
 {
@@ -142,12 +142,12 @@ final class MenuItem
         return $this;
     }
 
-    public function getAsValueObject()
+    public function getAsDto()
     {
         if (empty($this->label) && null === $this->icon) {
             throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be empty/null at the same time. Either set the label to a non-empty value, or set the icon or both.'));
         }
 
-        return new MenuItemContext($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->subItems);
+        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->subItems);
     }
 }

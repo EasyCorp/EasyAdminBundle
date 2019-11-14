@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -42,7 +42,7 @@ class CrudConfig
         return $this;
     }
 
-    public function getAsValueObject(): CrudContext
+    public function getAsDto(): CrudDto
     {
         if (null === $this->entityFqcn) {
             throw new \RuntimeException(sprintf('One of your CrudControllers doesn\'t define the FQCN of its related Doctrine entity. Did you forget to call the "setEntityClass()" on the "CrudConfig" object?'));
@@ -56,6 +56,6 @@ class CrudConfig
             $this->labelInPlural = $this->labelInSingular;
         }
 
-        return new CrudContext($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->defaultTemplates);
+        return new CrudDto($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->defaultTemplates);
     }
 }

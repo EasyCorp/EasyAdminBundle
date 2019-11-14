@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 
 final class IndexPageConfig
 {
@@ -56,8 +56,8 @@ final class IndexPageConfig
         return $this;
     }
 
-    public function getAsValueObject(): CrudPageContext
+    public function getAsDto(): CrudPageDto
     {
-        return CrudPageContext::newFromIndexPage($this->title, $this->help, $this->maxResults, $this->searchFields, $this->filters);
+        return CrudPageDto::newFromIndexPage($this->title, $this->help, $this->maxResults, $this->searchFields, $this->filters);
     }
 }

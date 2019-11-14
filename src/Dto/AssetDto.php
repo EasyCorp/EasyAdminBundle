@@ -1,8 +1,8 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Context;
+namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-final class AssetContext
+final class AssetDto
 {
     private $cssFiles;
     private $jsFiles;
@@ -37,7 +37,7 @@ final class AssetContext
         return $this->bodyContents;
     }
 
-    public function mergeWith(AssetContext $assets): self
+    public function mergeWith(AssetDto $assets): self
     {
         $this->cssFiles = array_unique(array_merge($this->cssFiles, $assets->getCssFiles()));
         $this->jsFiles = array_unique(array_merge($this->jsFiles, $assets->getJsFiles()));

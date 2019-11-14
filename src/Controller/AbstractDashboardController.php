@@ -37,9 +37,9 @@ abstract class AbstractDashboardController extends AbstractController implements
         $signOutLabel = $this->get('translator')->trans('user.signout', [], 'EasyAdminBundle');
         $exitImpersonationLabel = $this->get('translator')->trans('user.exit_impersonation', [], 'EasyAdminBundle');
 
-        $userMenuItems = [MenuItem::logout($signOutLabel, 'fa-sign-out')->getAsValueObject()];
+        $userMenuItems = [MenuItem::logout($signOutLabel, 'fa-sign-out')->getAsDto()];
         if ($this->isGranted('ROLE_PREVIOUS_ADMIN')) {
-            $userMenuItems[] = MenuItem::exitImpersonation($exitImpersonationLabel, 'fa-user-lock')->getAsValueObject();
+            $userMenuItems[] = MenuItem::exitImpersonation($exitImpersonationLabel, 'fa-user-lock')->getAsDto();
         }
 
         return UserMenuConfig::new()

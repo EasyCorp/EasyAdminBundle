@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ActionContext;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 
 final class Action
 {
@@ -133,7 +133,7 @@ final class Action
         return $this;
     }
 
-    public function getAsValueObject()
+    public function getAsDto()
     {
         if (null === $this->label && null === $this->icon) {
             throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be null at the same time. Either set the label, the icon or both.'));
@@ -143,6 +143,6 @@ final class Action
             throw new \InvalidArgumentException(sprintf('The method name and the route name of an action cannot be null at the same time. Either set the method name or the route name for the action "%s".', $this->name));
         }
 
-        return new ActionContext($this->name, $this->label, $this->icon, $this->cssClass, $this->htmlTitle, $this->target, $this->template, $this->permission, $this->methodName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
+        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->htmlTitle, $this->target, $this->template, $this->permission, $this->methodName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
     }
 }

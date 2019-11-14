@@ -3,10 +3,10 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ActionContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -14,7 +14,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class ActionBuilder implements ItemCollectionBuilderInterface
 {
     private $isBuilt;
-    /** @var ActionContext[] */
+    /** @var ActionDto[] */
     private $builtActions;
     /** @var Action[] */
     private $actionConfigs;
@@ -54,7 +54,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
     }
 
     /**
-     * @return ActionContext[]
+     * @return ActionDto[]
      */
     public function build(): array
     {
@@ -80,7 +80,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
         $defaultTranslationDomain = $applicationContext->getConfig()->getTranslationDomain();
 
         foreach ($this->actionConfigs as $actionConfig) {
-            $actionContext = $actionConfig->getAsValueObject();
+            $actionContext = $actionConfig->getAsDto();
             if (!$this->authChecker->isGranted($actionContext->getPermission())) {
                 continue;
             }
@@ -97,7 +97,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
         }
     }
 
-    private function generateActionUrl(ApplicationContext $applicationContext, ActionContext $actionContext): string
+    private function generateActionUrl(ApplicationContext $applicationContext, ActionDto $actionContext): string
     {
         $requestParameters = $applicationContext->getRequest()->query->all();
 

@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 
 final class DetailPageConfig
 {
@@ -53,8 +53,8 @@ final class DetailPageConfig
         return $this;
     }
 
-    public function getAsValueObject(): CrudPageContext
+    public function getAsDto(): CrudPageDto
     {
-        return CrudPageContext::newFromDetailPage($this->title, $this->help, $this->actions);
+        return CrudPageDto::newFromDetailPage($this->title, $this->help, $this->actions);
     }
 }

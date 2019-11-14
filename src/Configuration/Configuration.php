@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 
 final class Configuration
 {
@@ -15,7 +15,7 @@ final class Configuration
     private $pageContext;
     private $locale;
 
-    public function __construct(DashboardContext $dashboardContext, AssetContext $assets, ?CrudContext $crudContext, ?CrudPageContext $pageContext, string $locale)
+    public function __construct(DashboardDto $dashboardContext, AssetDto $assets, ?CrudDto $crudContext, ?CrudPageDto $pageContext, string $locale)
     {
         $this->dashboardContext = $dashboardContext;
         $this->assets = $assets;
@@ -29,7 +29,7 @@ final class Configuration
         return $this->dashboardContext->getFaviconPath();
     }
 
-    public function getAssets(): AssetContext
+    public function getAssets(): AssetDto
     {
         return $this->assets;
     }

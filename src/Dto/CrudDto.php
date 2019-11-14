@@ -1,14 +1,12 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Context;
+namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-final class DashboardContext
+final class CrudDto
 {
-    private $faviconPath;
-    private $siteName;
-    private $translationDomain;
-    private $textDirection;
-    private $disabledActions;
+    private $entityFqcn;
+    private $labelInSingular;
+    private $labelInPlural;
     private $dateFormat;
     private $timeFormat ;
     private $dateTimeFormat;
@@ -17,14 +15,11 @@ final class DashboardContext
     private $customTemplates;
     private $defaultTemplates;
 
-    public function __construct(string $faviconPath, string $siteName, string $translationDomain, ?string $textDirection, array $disabledActions, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $customTemplates, array $defaultTemplates
-    )
+    public function __construct(string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $customTemplates, array $defaultTemplates)
     {
-        $this->faviconPath = $faviconPath;
-        $this->siteName = $siteName;
-        $this->translationDomain = $translationDomain;
-        $this->textDirection = $textDirection;
-        $this->disabledActions = $disabledActions;
+        $this->entityFqcn = $entityFqcn;
+        $this->labelInSingular = $labelInSingular;
+        $this->labelInPlural = $labelInPlural;
         $this->dateFormat = $dateFormat;
         $this->timeFormat = $timeFormat;
         $this->dateTimeFormat = $dateTimeFormat;
@@ -34,29 +29,19 @@ final class DashboardContext
         $this->defaultTemplates = $defaultTemplates;
     }
 
-    public function getFaviconPath(): string
+    public function getEntityClass(): string
     {
-        return $this->faviconPath;
+        return $this->entityFqcn;
     }
 
-    public function getSiteName(): string
+    public function getLabelInSingular(): string
     {
-        return $this->siteName;
+        return $this->labelInSingular;
     }
 
-    public function getTranslationDomain(): string
+    public function getLabelInPlural(): string
     {
-        return $this->translationDomain;
-    }
-
-    public function getTextDirection(): ?string
-    {
-        return $this->textDirection;
-    }
-
-    public function getDisabledActions(): array
-    {
-        return $this->disabledActions;
+        return $this->labelInPlural;
     }
 
     public function getDateFormat(): string

@@ -1,10 +1,10 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Context;
+namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
-final class EntityContext
+final class EntityDto
 {
     private $entityMetadata;
     private $entityInstance;

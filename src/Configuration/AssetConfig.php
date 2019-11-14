@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 
 final class AssetConfig
 {
@@ -44,8 +44,8 @@ final class AssetConfig
         return $this;
     }
 
-    public function getAsValueObject(): AssetContext
+    public function getAsDto(): AssetDto
     {
-        return new AssetContext($this->cssFiles, $this->jsFiles, $this->headContents, $this->bodyContents);
+        return new AssetDto($this->cssFiles, $this->jsFiles, $this->headContents, $this->bodyContents);
     }
 }

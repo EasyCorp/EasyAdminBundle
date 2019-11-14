@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 
 final class UserMenuConfig
 {
@@ -74,8 +74,8 @@ final class UserMenuConfig
         return $this;
     }
 
-    public function getAsValueObject(): UserMenuContext
+    public function getAsDto(): UserMenuDto
     {
-        return new UserMenuContext($this->isNameDisplayed, $this->isAvatarDisplayed, $this->name, $this->avatarUrl, $this->menuItems);
+        return new UserMenuDto($this->isNameDisplayed, $this->isAvatarDisplayed, $this->name, $this->avatarUrl, $this->menuItems);
     }
 }

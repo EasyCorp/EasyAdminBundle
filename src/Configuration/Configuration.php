@@ -2,27 +2,23 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ActionContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AssetContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\CrudPageContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext;
 
 final class Configuration
 {
     private $dashboardContext;
     private $assets;
-    private $userMenuContext;
     private $crudContext;
     private $pageContext;
     private $locale;
 
-    public function __construct(DashboardContext $dashboardContext, AssetContext $assets, UserMenuContext $userMenuContext, ?CrudContext $crudContext, ?CrudPageContext $pageContext, string $locale)
+    public function __construct(DashboardContext $dashboardContext, AssetContext $assets, ?CrudContext $crudContext, ?CrudPageContext $pageContext, string $locale)
     {
         $this->dashboardContext = $dashboardContext;
         $this->assets = $assets;
-        $this->userMenuContext = $userMenuContext;
         $this->crudContext = $crudContext;
         $this->pageContext = $pageContext;
         $this->locale = $locale;
@@ -57,11 +53,6 @@ final class Configuration
         $localePrefix = strtolower(substr($this->locale, 0, 2));
 
         return \in_array($localePrefix, ['ar', 'fa', 'he']) ? 'rtl' : 'ltr';
-    }
-
-    public function getUserMenu(): UserMenuContext
-    {
-        return $this->userMenuContext;
     }
 
     public function getPageTitle(): ?string

@@ -3,20 +3,19 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Context\MenuItemContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
 
-final class MenuItem implements MenuItemInterface
+final class MenuItem
 {
     private $type;
-    private $index;
-    private $subIndex;
     private $label;
     private $icon;
     private $cssClass = '';
     private $permission;
     private $routeName;
     private $routeParameters;
-    private $linkUrl = '';
+    private $linkUrl;
     private $linkRel = '';
     private $linkTarget = '_self';
     /** @var MenuItemInterface[] */
@@ -29,7 +28,7 @@ final class MenuItem implements MenuItemInterface
     {
     }
 
-    public static function crud(string $label, string $icon, string $crudControllerFqcn, array $routeParameters = []): self
+    public static function crud(string $label, ?string $icon = null, string $crudControllerFqcn, array $routeParameters = []): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_CRUD;
@@ -43,7 +42,7 @@ final class MenuItem implements MenuItemInterface
         return $menuItem;
     }
 
-    public static function dashboardIndex(string $label, string $icon): self
+    public static function dashboardIndex(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_DASHBOARD;
@@ -53,7 +52,7 @@ final class MenuItem implements MenuItemInterface
         return $menuItem;
     }
 
-    public static function exitImpersonation(string $label, string $icon): self
+    public static function exitImpersonation(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_EXIT_IMPERSONATION;
@@ -63,7 +62,7 @@ final class MenuItem implements MenuItemInterface
         return $menuItem;
     }
 
-    public static function logout(string $label, string $icon): self
+    public static function logout(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_LOGOUT;
@@ -83,7 +82,7 @@ final class MenuItem implements MenuItemInterface
         return $menuItem;
     }
 
-    public static function section(string $label = null, string $icon = null): self
+    public static function section(string $label = null, ?string $icon = null): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_SECTION;
@@ -93,7 +92,7 @@ final class MenuItem implements MenuItemInterface
         return $menuItem;
     }
 
-    public static function subMenu(string $label, string $icon, array $submenuItems): self
+    public static function subMenu(string $label, ?string $icon = null, array $submenuItems): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_SUBMENU;
@@ -104,32 +103,13 @@ final class MenuItem implements MenuItemInterface
         return $menuItem;
     }
 
-    public static function url(string $label, string $icon, string $url): self
+    public static function url(string $label, ?string $icon = null, string $url): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_URL;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->linkUrl = $url;
-
-        return $menuItem;
-    }
-
-    public static function build(string $type, int $index, int $subIndex, string $label, string $icon, string $linkUrl, ?string $permission, string $cssClass, string $linkRel, string $linkTarget, array $subItems): MenuItemInterface
-    {
-        $menuItem = new self();
-
-        $menuItem->type = $type;
-        $menuItem->index = $index;
-        $menuItem->subIndex = $subIndex;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-        $menuItem->linkUrl = $linkUrl;
-        $menuItem->permission = $permission;
-        $menuItem->cssClass = $cssClass;
-        $menuItem->linkRel = $linkRel;
-        $menuItem->linkTarget = $linkTarget;
-        $menuItem->subItems = $subItems;
 
         return $menuItem;
     }
@@ -162,92 +142,12 @@ final class MenuItem implements MenuItemInterface
         return $this;
     }
 
-    public function getType(): string
+    public function getAsValueObject()
     {
-        return $this->type;
-    }
-
-    public function getIndex(): int
-    {
-        return $this->index;
-    }
-
-    public function getSubIndex(): int
-    {
-        return $this->subIndex;
-    }
-
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    public function getIcon(): string
-    {
-        return $this->icon;
-    }
-
-    public function getLinkUrl(): string
-    {
-        return $this->linkUrl;
-    }
-
-    public function getRouteName(): ?string
-    {
-        return $this->routeName;
-    }
-
-    public function getRouteParameters(): array
-    {
-        return $this->routeParameters ?? [];
-    }
-
-    public function getPermission(): ?string
-    {
-        return $this->permission;
-    }
-
-    public function getCssClass(): string
-    {
-        return $this->cssClass;
-    }
-
-    public function getLinkRel(): string
-    {
-        return $this->linkRel;
-    }
-
-    public function getLinkTarget(): string
-    {
-        return $this->linkTarget;
-    }
-
-    public function getSubItems(): array
-    {
-        return $this->subItems;
-    }
-
-    public function isSelected(?int $selectedIndex, ?int $selectedSubIndex = null): bool
-    {
-        if (null === $selectedSubIndex) {
-            return $this->getIndex() === $selectedIndex;
+        if (empty($this->label) && null === $this->icon) {
+            throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be empty/null at the same time. Either set the label to a non-empty value, or set the icon or both.'));
         }
 
-        return $this->getIndex() === $selectedIndex && $this->getSubIndex() === $selectedSubIndex;
-    }
-
-    public function isExpanded(?int $selectedIndex, ?int $selectedSubIndex): bool
-    {
-        return $this->isSelected($selectedIndex) && -1 !== $selectedSubIndex;
-    }
-
-    public function hasSubItems(): bool
-    {
-        return MenuItemBuilder::TYPE_SUBMENU === $this->type && count($this->subItems) > 0;
-    }
-
-    public function isMenuSection(): bool
-    {
-        return MenuItemBuilder::TYPE_SECTION === $this->type;
+        return new MenuItemContext($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->subItems);
     }
 }

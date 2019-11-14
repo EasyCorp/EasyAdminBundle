@@ -15,7 +15,7 @@
 
 <ul class="sidebar-menu" data-widget="tree" data-animation-speed="250">
     {% block main_menu %}
-        {% for item in ea.menu %}
+        {% for item in ea.mainMenu %}
             {% block menu_item %}
                 <li class="{{ item.isMenuSection ? 'header' }} {{ item.hasSubItems ? 'treeview' }} {{ item.isSelected(ea.selectedMenuIndex) ? 'active' }} {{ item.isExpanded(ea.selectedMenuIndex, ea.selectedSubMenuIndex) ? 'submenu-active' }}">
                     {{ _self.render_menu_item(item) }}

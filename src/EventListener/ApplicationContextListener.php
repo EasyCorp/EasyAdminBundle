@@ -130,7 +130,6 @@ class ApplicationContextListener
         $crudPage = $request->query->get('page');
         $entityId = $request->query->get('id');
 
-
         $dashboard = $this->getDashboard($event);
         $assets = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
         $crudConfig = $this->getCrudConfig($crudControllerInstance);

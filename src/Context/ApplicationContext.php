@@ -32,7 +32,7 @@ final class ApplicationContext
     private $entity;
     private $entityConfig;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, ItemCollectionBuilderInterface $menuBuilder, $actionBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?EntityContext $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetContext $assets, ?CrudContext $crudConfig, ?string $crudPageName, ?CrudPageContext $crudPageContext, ?EntityContext $entityConfig, $entity)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
@@ -46,9 +46,8 @@ final class ApplicationContext
         $this->entityConfig = $entityConfig;
         $this->entity = $entity;
 
-        $userMenuConfig = null === $this->getUser() ? UserMenuConfig::new()->getAsValueObject() : $dashboard->configureUserMenu($this->getUser())->getAsValueObject();
         $dashboardConfig = $dashboard->configureDashboard()->getAsValueObject();
-        $this->config = new Configuration($dashboardConfig, $assets, $userMenuConfig, $crudConfig, $crudPageContext, $request->getLocale());
+        $this->config = new Configuration($dashboardConfig, $assets, $crudConfig, $crudPageContext, $request->getLocale());
     }
 
     public function getConfig(): Configuration
@@ -88,13 +87,31 @@ final class ApplicationContext
     }
 
     /**
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface[]
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Context\MenuItemContext[]
      */
-    public function getMenu(): array
+    public function getMainMenu(): array
     {
         $mainMenuItems = iterator_to_array($this->dashboardControllerInstance->getMenuItems());
 
         return $this->menuBuilder->setItems($mainMenuItems)->build();
+    }
+
+    /**
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext
+     */
+    public function getUserMenu(): UserMenuContext
+    {
+        if (null === $this->getUser()) {
+            return UserMenuConfig::new()->getAsValueObject();
+        }
+
+        $userMenuConfig = $this->dashboardControllerInstance->configureUserMenu($this->getUser());
+        $userMenuContext = $userMenuConfig->getAsValueObject();
+        $builtUserMenuItems = $this->menuBuilder->setItems($userMenuContext->getItems())->build();
+
+        return $userMenuContext->withProperties([
+            'items' => $builtUserMenuItems,
+        ]);
     }
 
     public function getSelectedMenuIndex(): ?int

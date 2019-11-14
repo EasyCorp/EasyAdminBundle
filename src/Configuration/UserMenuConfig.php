@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\UserMenuContext;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
 
 final class UserMenuConfig
 {
@@ -11,6 +10,7 @@ final class UserMenuConfig
     private $isAvatarDisplayed = true;
     private $name;
     private $avatarUrl;
+    /** @var MenuItem[] */
     private $menuItems = [];
 
     public static function new(): self
@@ -55,7 +55,7 @@ final class UserMenuConfig
     }
 
     /**
-     * @param \EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface[] $items
+     * @param \EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem[] $items
      */
     public function addMenuItems(array $items): self
     {
@@ -65,7 +65,7 @@ final class UserMenuConfig
     }
 
     /**
-     * @param \EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface[] $items
+     * @param \EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem[] $items
      */
     public function setMenuItems(array $items): self
     {

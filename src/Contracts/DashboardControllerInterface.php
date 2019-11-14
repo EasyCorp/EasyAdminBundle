@@ -4,8 +4,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contracts;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DashboardConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Dashboard\MenuItemBuilder;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -22,7 +22,7 @@ interface DashboardControllerInterface
     public function configureUserMenu(UserInterface $user): UserMenuConfig;
 
     /**
-     * @return MenuItemBuilder[]
+     * @return MenuItem[]
      */
     public function getMenuItems(): iterable;
 }

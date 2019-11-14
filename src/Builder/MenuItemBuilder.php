@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\MenuItemContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Routing\EntityRouter;
@@ -24,9 +25,9 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
     public const TYPE_URL = 'url';
 
     private $isBuilt;
-    /** @var MenuItemInterface[] */
+    /** @var MenuItemContext[] */
     private $builtMenuItems;
-    /** @var MenuItemInterface[] */
+    /** @var MenuItem[] */
     private $menuItems;
     private $authChecker;
     private $urlGenerator;
@@ -44,7 +45,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
     }
 
     /**
-     * @param MenuItemInterface $menuItem
+     * @param MenuItem $menuItem
      */
     public function addItem($menuItem): ItemCollectionBuilderInterface
     {
@@ -55,7 +56,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
     }
 
     /**
-     * @param MenuItemInterface[] $menuItems
+     * @param MenuItem[] $menuItems
      * @return ItemCollectionBuilderInterface
      */
     public function setItems(array $menuItems): ItemCollectionBuilderInterface
@@ -67,7 +68,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
     }
 
     /**
-     * @return MenuItemInterface[]
+     * @return MenuItemContext[]
      */
     public function build(): array
     {
@@ -93,21 +94,23 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $translationDomain = $applicationContext->getConfig()->getTranslationDomain();
         $dashboardRouteName = $applicationContext->getDashboardRouteName();
 
-        foreach ($this->menuItems as $i => $item) {
-            if (false === $this->authChecker->isGranted($item->getPermission())) {
+        foreach ($this->menuItems as $i => $menuItem) {
+            $menuItemContext = $menuItem->getAsValueObject();
+            if (false === $this->authChecker->isGranted($menuItemContext->getPermission())) {
                 continue;
             }
 
             $subItems = [];
-            foreach ($item->getSubItems() as $j => $subItem) {
-                if (false === $this->authChecker->isGranted($subItem->getPermission())) {
+            foreach ($menuItemContext->getSubItems() as $j => $menuSubItemConfig) {
+                $menuSubItemContext = $menuSubItemConfig->getAsValueObject();
+                if (false === $this->authChecker->isGranted($menuSubItemContext->getPermission())) {
                     continue;
                 }
 
-                $subItems[] = $this->buildMenuItem($subItem, [], $i, $j, $translationDomain, $dashboardRouteName);
+                $subItems[] = $this->buildMenuItem($menuSubItemContext, [], $i, $j, $translationDomain, $dashboardRouteName);
             }
 
-            $builtItem = $this->buildMenuItem($item, $subItems, $i, -1, $translationDomain, $dashboardRouteName);
+            $builtItem = $this->buildMenuItem($menuItemContext, $subItems, $i, -1, $translationDomain, $dashboardRouteName);
 
             $this->builtMenuItems[] = $builtItem;
         }
@@ -115,19 +118,25 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $this->isBuilt = true;
     }
 
-    private function buildMenuItem(MenuItemInterface $item, array $subItems, int $index, int $subIndex, string $translationDomain, string $dashboardRouteName): MenuItemInterface
+    private function buildMenuItem(MenuItemContext $menuItemContext, array $subItemsContext, int $index, int $subIndex, string $translationDomain, string $dashboardRouteName): MenuItemContext
     {
-        $label = $this->translator->trans($item->getLabel(), [], $translationDomain);
-        $url = $this->generateMenuItemUrl($item, $dashboardRouteName, $index, $subIndex);
+        $label = $this->translator->trans($menuItemContext->getLabel(), [], $translationDomain);
+        $url = $this->generateMenuItemUrl($menuItemContext, $dashboardRouteName, $index, $subIndex);
 
-        return MenuItem::build($item->getType(), $index, $subIndex, $label, $item->getIcon(), $url, $item->getPermission(), $item->getCssClass(), $item->getLinkRel(), $item->getLinkTarget(), $subItems);
+        return $menuItemContext->withProperties([
+            'index' => $index,
+            'subIndex' => $subIndex,
+            'label' => $label,
+            'linkUrl' => $url,
+            'subItems' => $subItemsContext,
+        ]);
     }
 
-    private function generateMenuItemUrl(MenuItemInterface $menuItem, string $dashboardRouteName, int $index, int $subIndex): string
+    private function generateMenuItemUrl(MenuItemContext $menuItemContext, string $dashboardRouteName, int $index, int $subIndex): string
     {
-        switch ($menuItem->getType()) {
+        switch ($menuItemContext->getType()) {
             case self::TYPE_URL:
-                return $menuItem->getLinkUrl();
+                return $menuItemContext->getLinkUrl();
 
             case self::TYPE_DASHBOARD:
                 return $this->urlGenerator->generate($dashboardRouteName);
@@ -135,14 +144,14 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
             case self::TYPE_ROUTE:
                 // add the index and subIndex query parameters to display the selected menu item
                 $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
-                $routeParameters = array_merge($menuParameters, $menuItem->getRouteParameters());
+                $routeParameters = array_merge($menuParameters, $menuItemContext->getRouteParameters());
 
-                return $this->urlGenerator->generate($menuItem->getRouteName(), $routeParameters);
+                return $this->urlGenerator->generate($menuItemContext->getRouteName(), $routeParameters);
 
             case self::TYPE_CRUD:
                 // add the index and subIndex query parameters to display the selected menu item
                 $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
-                $routeParameters = array_merge($menuParameters, $menuItem->getRouteParameters());
+                $routeParameters = array_merge($menuParameters, $menuItemContext->getRouteParameters());
 
                 return $this->urlGenerator->generate($dashboardRouteName, $routeParameters);
 

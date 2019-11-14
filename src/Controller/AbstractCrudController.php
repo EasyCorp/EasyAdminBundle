@@ -23,7 +23,6 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -77,7 +76,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         return array_merge(parent::getSubscribedServices(), [
             'ea.authorization_checker' => '?'.AuthorizationChecker::class,
-            'translator' => '?'.TranslatorInterface::class,
         ]);
     }
 

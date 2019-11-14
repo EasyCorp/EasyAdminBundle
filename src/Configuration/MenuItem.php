@@ -28,7 +28,7 @@ final class MenuItem
     {
     }
 
-    public static function crud(string $label, ?string $icon = null, string $crudControllerFqcn, array $routeParameters = []): self
+    public static function linkToCrud(string $label, ?string $icon = null, string $crudControllerFqcn, array $routeParameters = []): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_CRUD;
@@ -42,7 +42,7 @@ final class MenuItem
         return $menuItem;
     }
 
-    public static function dashboardIndex(string $label, ?string $icon = null): self
+    public static function linktoDashboard(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_DASHBOARD;
@@ -52,7 +52,7 @@ final class MenuItem
         return $menuItem;
     }
 
-    public static function exitImpersonation(string $label, ?string $icon = null): self
+    public static function linkToExitImpersonation(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_EXIT_IMPERSONATION;
@@ -62,7 +62,7 @@ final class MenuItem
         return $menuItem;
     }
 
-    public static function logout(string $label, ?string $icon = null): self
+    public static function linktoLogout(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_LOGOUT;
@@ -72,12 +72,23 @@ final class MenuItem
         return $menuItem;
     }
 
-    public static function route(string $name, array $parameters = []): self
+    public static function linktoRoute(string $name, array $parameters = []): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_ROUTE;
         $menuItem->routeName = $name;
         $menuItem->routeParameters = $parameters;
+
+        return $menuItem;
+    }
+
+    public static function linkToUrl(string $label, ?string $icon = null, string $url): self
+    {
+        $menuItem = new self();
+        $menuItem->type = MenuItemBuilder::TYPE_URL;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+        $menuItem->linkUrl = $url;
 
         return $menuItem;
     }
@@ -99,17 +110,6 @@ final class MenuItem
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->subItems = $submenuItems;
-
-        return $menuItem;
-    }
-
-    public static function url(string $label, ?string $icon = null, string $url): self
-    {
-        $menuItem = new self();
-        $menuItem->type = MenuItemBuilder::TYPE_URL;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-        $menuItem->linkUrl = $url;
 
         return $menuItem;
     }

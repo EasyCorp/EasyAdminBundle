@@ -18,6 +18,8 @@ final class MenuItem
     private $linkUrl;
     private $linkRel = '';
     private $linkTarget = '_self';
+    private $translationDomain;
+    private $translationParameters = [];
     /** @var MenuItemInterface[] */
     private $subItems = [];
 
@@ -62,7 +64,7 @@ final class MenuItem
         return $menuItem;
     }
 
-    public static function linktoLogout(string $label, ?string $icon = null): self
+    public static function linkToLogout(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_LOGOUT;
@@ -142,12 +144,29 @@ final class MenuItem
         return $this;
     }
 
+    /**
+     * If not defined, menu items use the same domain as configured for the entire dashboard
+     */
+    public function setTranslationDomain(string $domain): self
+    {
+        $this->translationDomain = $domain;
+
+        return $this;
+    }
+
+    public function setTranslationParameters(string $parameters): self
+    {
+        $this->translationParameters = $parameters;
+
+        return $this;
+    }
+
     public function getAsDto()
     {
         if (empty($this->label) && null === $this->icon) {
             throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be empty/null at the same time. Either set the label to a non-empty value, or set the icon or both.'));
         }
 
-        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->subItems);
+        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, $this->subItems);
     }
 }

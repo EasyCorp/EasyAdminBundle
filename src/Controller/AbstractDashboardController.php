@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * This class is useful to extend your dashboard from it instead of implementing
@@ -19,13 +18,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
-    public static function getSubscribedServices()
-    {
-        return array_merge(parent::getSubscribedServices(), [
-            'translator' => '?'.TranslatorInterface::class,
-        ]);
-    }
-
     public function configureDashboard(): DashboardConfig
     {
         return DashboardConfig::new();
@@ -33,13 +25,9 @@ abstract class AbstractDashboardController extends AbstractController implements
 
     public function configureUserMenu(UserInterface $user): UserMenuConfig
     {
-        return UserMenuConfig::new();
-        $signOutLabel = $this->get('translator')->trans('user.signout', [], 'EasyAdminBundle');
-        $exitImpersonationLabel = $this->get('translator')->trans('user.exit_impersonation', [], 'EasyAdminBundle');
-
-        $userMenuItems = [MenuItem::linktoLogout($signOutLabel, 'fa-sign-out')->getAsDto()];
+        $userMenuItems = [MenuItem::linkToLogout('user.signout', 'fa-sign-out')->setTranslationDomain('EasyAdminBundle')];
         if ($this->isGranted('ROLE_PREVIOUS_ADMIN')) {
-            $userMenuItems[] = MenuItem::linkToExitImpersonation($exitImpersonationLabel, 'fa-user-lock')->getAsDto();
+            $userMenuItems[] = MenuItem::linkToExitImpersonation('user.exit_impersonation', 'fa-user-lock')->setTranslationDomain('EasyAdminBundle');
         }
 
         return UserMenuConfig::new()

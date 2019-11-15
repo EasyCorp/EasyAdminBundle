@@ -90,7 +90,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $this->resetBuiltMenuItems();
 
         $applicationContext = $this->applicationContextProvider->getContext();
-        $translationDomain = $applicationContext->getConfig()->getTranslationDomain();
+        $defaultTranslationDomain = $applicationContext->getConfig()->getTranslationDomain();
         $dashboardRouteName = $applicationContext->getDashboardRouteName();
 
         foreach ($this->menuItems as $i => $menuItem) {
@@ -107,10 +107,10 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
                     continue;
                 }
 
-                $subItems[] = $this->buildMenuItem($menuSubItemContext, [], $i, $j, $translationDomain, $dashboardRouteName);
+                $subItems[] = $this->buildMenuItem($menuSubItemContext, [], $i, $j, $defaultTranslationDomain, $dashboardRouteName);
             }
 
-            $builtItem = $this->buildMenuItem($menuItemContext, $subItems, $i, -1, $translationDomain, $dashboardRouteName);
+            $builtItem = $this->buildMenuItem($menuItemContext, $subItems, $i, -1, $defaultTranslationDomain, $dashboardRouteName);
 
             $this->builtMenuItems[] = $builtItem;
         }
@@ -118,9 +118,9 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $this->isBuilt = true;
     }
 
-    private function buildMenuItem(MenuItemDto $menuItemContext, array $subItemsContext, int $index, int $subIndex, string $translationDomain, string $dashboardRouteName): MenuItemDto
+    private function buildMenuItem(MenuItemDto $menuItemContext, array $subItemsContext, int $index, int $subIndex, string $defaultTranslationDomain, string $dashboardRouteName): MenuItemDto
     {
-        $label = $this->translator->trans($menuItemContext->getLabel(), [], $translationDomain);
+        $label = $this->translator->trans($menuItemContext->getLabel(), [], $menuItemContext->getTranslationDomain() ?? $defaultTranslationDomain);
         $url = $this->generateMenuItemUrl($menuItemContext, $dashboardRouteName, $index, $subIndex);
 
         return $menuItemContext->withProperties([

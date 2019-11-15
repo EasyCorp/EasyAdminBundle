@@ -19,10 +19,12 @@ final class MenuItemDto
     private $linkUrl;
     private $linkRel;
     private $linkTarget;
+    private $translationDomain;
+    private $translationParameters;
     /** @var MenuItem[]|MenuItemDto[] */
     private $subItems;
 
-    public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParameters, ?string $linkUrl, string $linkRel, string $linkTarget, array $subItems)
+    public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParameters, ?string $linkUrl, string $linkRel, string $linkTarget, ?string $translationDomain, array $translationParameters, array $subItems)
     {
         $this->type = $type;
         $this->label = $label;
@@ -34,6 +36,8 @@ final class MenuItemDto
         $this->linkUrl = $linkUrl;
         $this->linkRel = $linkRel;
         $this->linkTarget = $linkTarget;
+        $this->translationDomain = $translationDomain;
+        $this->translationParameters = $translationParameters;
         $this->subItems = $subItems;
     }
 
@@ -95,6 +99,16 @@ final class MenuItemDto
     public function getLinkTarget(): string
     {
         return $this->linkTarget;
+    }
+
+    public function getTranslationDomain(): ?string
+    {
+        return $this->translationDomain;
+    }
+
+    public function getTranslationParameters(): array
+    {
+        return $this->translationParameters;
     }
 
     public function getSubItems(): array

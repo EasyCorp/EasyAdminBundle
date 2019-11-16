@@ -9,44 +9,44 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 
 final class Configuration
 {
-    private $dashboardContext;
-    private $assets;
-    private $crudContext;
-    private $pageContext;
+    private $dashboardDto;
+    private $assetDto;
+    private $crudDto;
+    private $crudPageDto;
     private $locale;
 
-    public function __construct(DashboardDto $dashboardContext, AssetDto $assets, ?CrudDto $crudContext, ?CrudPageDto $pageContext, string $locale)
+    public function __construct(DashboardDto $dashboardDto, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto, string $locale)
     {
-        $this->dashboardContext = $dashboardContext;
-        $this->assets = $assets;
-        $this->crudContext = $crudContext;
-        $this->pageContext = $pageContext;
+        $this->dashboardDto = $dashboardDto;
+        $this->assetDto = $assetDto;
+        $this->crudDto = $crudDto;
+        $this->crudPageDto = $crudPageDto;
         $this->locale = $locale;
     }
 
     public function getFaviconPath(): string
     {
-        return $this->dashboardContext->getFaviconPath();
+        return $this->dashboardDto->getFaviconPath();
     }
 
     public function getAssets(): AssetDto
     {
-        return $this->assets;
+        return $this->assetDto;
     }
 
     public function getSiteName(): string
     {
-        return $this->dashboardContext->getSiteName();
+        return $this->dashboardDto->getSiteName();
     }
 
     public function getTranslationDomain(): string
     {
-        return $this->dashboardContext->getTranslationDomain();
+        return $this->dashboardDto->getTranslationDomain();
     }
 
     public function getTextDirection(): string
     {
-        if (null !== $textDirection = $this->dashboardContext->getTextDirection()) {
+        if (null !== $textDirection = $this->dashboardDto->getTextDirection()) {
             return $textDirection;
         }
 
@@ -57,29 +57,29 @@ final class Configuration
 
     public function getPageTitle(): ?string
     {
-        if (null === $this->pageContext) {
+        if (null === $this->crudPageDto) {
             return null;
         }
 
-        return $this->pageContext->getTitle();
+        return $this->crudPageDto->getTitle();
     }
 
     public function getPageHelp(): ?string
     {
-        if (null === $this->pageContext) {
+        if (null === $this->crudPageDto) {
             return null;
         }
 
-        return $this->pageContext->getHelp();
+        return $this->crudPageDto->getHelp();
     }
 
     public function getTemplate(string $name): string
     {
-        if (null !== $this->crudContext && null !== $templatePath = $this->crudContext->getCustomTemplate($name)) {
+        if (null !== $this->crudDto && null !== $templatePath = $this->crudDto->getCustomTemplate($name)) {
             return $templatePath;
         }
 
-        return $this->dashboardContext->getCustomTemplate($name)
-            ?? $this->dashboardContext->getDefaultTemplate($name);
+        return $this->dashboardDto->getCustomTemplate($name)
+            ?? $this->dashboardDto->getDefaultTemplate($name);
     }
 }

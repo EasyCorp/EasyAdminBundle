@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 
 final class IndexPageConfig
 {
+    private $pageName = 'index';
     private $title;
     private $help;
     private $maxResults = 30;
@@ -58,6 +59,6 @@ final class IndexPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromIndexPage($this->title, $this->help, $this->maxResults, $this->searchFields, $this->filters);
+        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->maxResults, $this->searchFields, $this->filters);
     }
 }

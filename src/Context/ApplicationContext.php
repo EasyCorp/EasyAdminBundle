@@ -33,11 +33,10 @@ final class ApplicationContext
     private $actionBuilder;
     private $assetDto;
     private $crudDto;
-    private $crudPageName;
     private $crudPageDto;
     private $entityDto;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboardController, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?string $crudPageName, ?CrudPageDto $crudPageDto, ?EntityDto $entityDto)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboardController, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto, ?EntityDto $entityDto)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
@@ -46,7 +45,6 @@ final class ApplicationContext
         $this->actionBuilder = $actionBuilder;
         $this->assetDto = $assetDto;
         $this->crudDto = $crudDto;
-        $this->crudPageName = $crudPageName;
         $this->crudPageDto = $crudPageDto;
         $this->entityDto = $entityDto;
 
@@ -131,9 +129,9 @@ final class ApplicationContext
     /**
      * Returns the name of the current CRUD page, if any (e.g. 'detail')
      */
-    public function getPage(): ?string
+    public function getPageName(): string
     {
-        return $this->crudPageName;
+        return $this->crudPageDto->getPageName();
     }
 
     public function getTransParameters(): array

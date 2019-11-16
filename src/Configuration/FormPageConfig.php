@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 
 final class FormPageConfig
 {
+    private $pageName = 'form';
     private $title;
     private $help;
     private $formThemes = [];
@@ -59,6 +60,6 @@ final class FormPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromFormPage($this->title, $this->help, $this->formThemes, $this->formOptions);
+        return CrudPageDto::newFromFormPage($this->pageName, $this->title, $this->help, $this->formThemes, $this->formOptions);
     }
 }

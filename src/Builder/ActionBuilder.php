@@ -103,7 +103,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
 
         if (null !== $routeName = $actionContext->getRouteName()) {
             $routeParameters = array_merge($actionContext->getRouteParameters(), [
-                'page' => $applicationContext->getPage(),
+                'page' => $applicationContext->getPageName(),
                 'id' => $applicationContext->getEntity()->getIdValue(),
             ]);
 
@@ -112,7 +112,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
 
         if ('index' !== $actionContext->getMethodName()) {
             $routeParameters = array_merge($requestParameters, [
-                'page' => $applicationContext->getPage(),
+                'page' => $applicationContext->getPageName(),
                 'id' => $applicationContext->getEntity()->getIdValue(),
             ]);
 

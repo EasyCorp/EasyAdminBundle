@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 final class CrudPageDto
 {
+    private $pageName;
     private $title;
     private $help;
     private $actions;
@@ -13,10 +14,11 @@ final class CrudPageDto
     private $formThemes;
     private $formOptions;
 
-    public static function newFromIndexPage(?string $title, ?string $help, int $maxResults, ?array $searchFields, ?array $filters): self
+    public static function newFromIndexPage(string $pageName, ?string $title, ?string $help, int $maxResults, ?array $searchFields, ?array $filters): self
     {
         $context = new self();
 
+        $context->pageName = $pageName;
         $context->title = $title;
         $context->help = $help;
         $context->maxResults = $maxResults;
@@ -26,10 +28,11 @@ final class CrudPageDto
         return $context;
     }
 
-    public static function newFromDetailPage(?string $title, ?string $help, array $actions): self
+    public static function newFromDetailPage(string $pageName, ?string $title, ?string $help, array $actions): self
     {
         $context = new self();
 
+        $context->pageName = $pageName;
         $context->title = $title;
         $context->help = $help;
         $context->actions = $actions;
@@ -37,16 +40,22 @@ final class CrudPageDto
         return $context;
     }
 
-    public static function newFromFormPage(?string $title, ?string $help, array $formThemes, array $formOptions): self
+    public static function newFromFormPage(string $pageName, ?string $title, ?string $help, array $formThemes, array $formOptions): self
     {
         $context = new self();
 
+        $context->pageName = $pageName;
         $context->title = $title;
         $context->help = $help;
         $context->formThemes = $formThemes;
         $context->formOptions = $formOptions;
 
         return $context;
+    }
+
+    public function getPageName(): string
+    {
+        return $this->pageName;
     }
 
     public function getTitle(): ?string

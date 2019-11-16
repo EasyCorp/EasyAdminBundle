@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 
 final class DetailPageConfig
 {
+    private $pageName = 'detail';
     private $title;
     private $help;
     /** @var Action[] */
@@ -45,7 +46,7 @@ final class DetailPageConfig
     public function updateAction(string $actionName, array $actionProperties): self
     {
         if (!array_key_exists($actionName, $this->actions)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action already does not exist, so you cannot update its properties. You can use the "addAction()" method to define the action first.', $actionName));
+            throw new \InvalidArgumentException(sprintf('The "%s" action does not exist, so you cannot update its properties. You can use the "addAction()" method to define the action first.', $actionName));
         }
 
         $this->actions[$actionName] = $this->actions[$actionName]->withProperties($actionProperties);
@@ -55,6 +56,6 @@ final class DetailPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromDetailPage($this->title, $this->help, $this->actions);
+        return CrudPageDto::newFromDetailPage($this->pageName, $this->title, $this->help, $this->actions);
     }
 }

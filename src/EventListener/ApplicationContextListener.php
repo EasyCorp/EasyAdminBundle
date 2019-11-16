@@ -133,7 +133,7 @@ class ApplicationContextListener
         $crudPageDto = $this->getPageConfig($crudControllerInstance, $crudPage);
         $entityDto = null === $crudDto ? null : $this->getDoctrineEntity($crudDto, $entityId);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboardController, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPage, $crudPageDto, $entityDto);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboardController, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $entityDto);
         $this->setApplicationContext($event, $applicationContext);
     }
 

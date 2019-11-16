@@ -95,9 +95,6 @@ class ApplicationContextListener
             return null;
         }
 
-        // TODO: VERY IMPORTANT: check that the controller is associated to the
-        // current dashboard. Otherwise, anyone can access any app controller.
-
         $crudRequest = $request->duplicate();
         $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
         $crudControllerCallable = $this->controllerResolver->getController($crudRequest);
@@ -130,13 +127,13 @@ class ApplicationContextListener
         $crudPage = $request->query->get('page');
         $entityId = $request->query->get('id');
 
-        $dashboard = $this->getDashboard($event);
-        $assets = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
-        $crudConfig = $this->getCrudConfig($crudControllerInstance);
-        $pageConfig = $this->getPageConfig($crudControllerInstance, $crudPage);
-        [$entityConfig, $entityInstance] = $this->getDoctrineEntity($crudControllerInstance, $entityId);
+        $dashboardController = $this->getDashboard($event);
+        $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
+        $crudDto = $this->getCrudConfig($crudControllerInstance);
+        $crudPageDto = $this->getPageConfig($crudControllerInstance, $crudPage);
+        $entityDto = null === $crudDto ? null : $this->getDoctrineEntity($crudDto, $entityId);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboard, $this->menuBuilder, $this->actionBuilder, $assets, $crudConfig, $crudPage, $pageConfig, $entityConfig, $entityInstance);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboardController, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPage, $crudPageDto, $entityDto);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -193,18 +190,10 @@ class ApplicationContextListener
         return $crudController->{$pageConfigMethodName}()->getAsDto();
     }
 
-    /**
-     * @return [?EntityConfig, ?$entityInstance]
-     */
-    private function getDoctrineEntity(?CrudControllerInterface $crudController, $entityId): array
+    private function getDoctrineEntity(CrudDto $crudDto, $entityId): ?EntityDto
     {
-        if (null === $crudController || null === $entityId) {
-            return [null, null];
-        }
-
-        $entityFqcn = $crudController->configureCrud()->getAsDto()->getEntityClass();
-        if (null === $entityFqcn) {
-            return [null, null];
+        if (null === $entityId || null === $entityFqcn = $crudDto->getEntityClass()) {
+            return null;
         }
 
         $entityManager = $this->getEntityManager($entityFqcn);
@@ -214,9 +203,7 @@ class ApplicationContextListener
             throw new \RuntimeException('EasyAdmin does not support Doctrine entities with composite primary keys.');
         }
 
-        $entityConfig = new EntityDto($entityMetadata, $entityInstance, $entityId);
-
-        return [$entityConfig, $entityInstance];
+        return new EntityDto($entityMetadata, $entityInstance, $entityId);
     }
 
     private function getEntityManager(string $entityClass): ObjectManager
@@ -228,11 +215,12 @@ class ApplicationContextListener
         return $entityManager;
     }
 
-    private function getEntityInstance(ObjectManager $entityManager, string $entityClass, $entityId)
+    private function getEntityInstance(ObjectManager $entityManager, string $entityClass, $entityIdValue)
     {
-        // TODO: get the real 'primary_key_field_name' of the entity
-        if (null === $entityInstance = $entityManager->getRepository($entityClass)->find($entityId)) {
-            throw new EntityNotFoundException(['entity_name' => $entityClass, 'entity_id_name' => '...', 'entity_id_value' => $entityId]);
+        if (null === $entityInstance = $entityManager->getRepository($entityClass)->find($entityIdValue)) {
+            $entityIdName = $entityManager->getClassMetadata($entityClass)->getIdentifierFieldNames()[0];
+
+            throw new EntityNotFoundException(['entity_name' => $entityClass, 'entity_id_name' => $entityIdName, 'entity_id_value' => $entityIdValue]);
         }
 
         return $entityInstance;

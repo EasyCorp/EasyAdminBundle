@@ -31,29 +31,27 @@ final class ApplicationContext
     private $dashboardControllerInstance;
     private $menuBuilder;
     private $actionBuilder;
-    private $assets;
-    private $crudConfig;
+    private $assetDto;
+    private $crudDto;
     private $crudPageName;
-    private $crudPageContext;
-    private $entity;
-    private $entityConfig;
+    private $crudPageDto;
+    private $entityDto;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboard, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assets, ?CrudDto $crudConfig, ?string $crudPageName, ?CrudPageDto $crudPageContext, ?EntityDto $entityConfig, $entity)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboardController, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?string $crudPageName, ?CrudPageDto $crudPageDto, ?EntityDto $entityDto)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
-        $this->dashboardControllerInstance = $dashboard;
+        $this->dashboardControllerInstance = $dashboardController;
         $this->menuBuilder = $menuBuilder;
         $this->actionBuilder = $actionBuilder;
-        $this->assets = $assets;
-        $this->crudConfig = $crudConfig;
+        $this->assetDto = $assetDto;
+        $this->crudDto = $crudDto;
         $this->crudPageName = $crudPageName;
-        $this->crudPageContext = $crudPageContext;
-        $this->entityConfig = $entityConfig;
-        $this->entity = $entity;
+        $this->crudPageDto = $crudPageDto;
+        $this->entityDto = $entityDto;
 
-        $dashboardConfig = $dashboard->configureDashboard()->getAsDto();
-        $this->config = new Configuration($dashboardConfig, $assets, $crudConfig, $crudPageContext, $request->getLocale());
+        $dashboardDto = $dashboardController->configureDashboard()->getAsDto();
+        $this->config = new Configuration($dashboardDto, $assetDto, $crudDto, $crudPageDto, $request->getLocale());
     }
 
     public function getConfig(): Configuration
@@ -140,21 +138,21 @@ final class ApplicationContext
 
     public function getTransParameters(): array
     {
-        if (null === $this->crudConfig || null === $this->getEntity()) {
+        if (null === $this->crudDto || null === $this->getEntity()) {
             return [];
         }
 
         return [
-            '%entity_label_singular%' => $this->crudConfig->getLabelInSingular(),
-            '%entity_label_plural%' => $this->crudConfig->getLabelInPlural(),
-            '%entity_name%' => $this->crudConfig->getLabelInPlural(),
+            '%entity_label_singular%' => $this->crudDto->getLabelInSingular(),
+            '%entity_label_plural%' => $this->crudDto->getLabelInPlural(),
+            '%entity_name%' => $this->crudDto->getLabelInPlural(),
             '%entity_id%' => $this->getEntity()->getIdValue(),
         ];
     }
 
     public function getEntity(): ?EntityDto
     {
-        return $this->entityConfig;
+        return $this->entityDto;
     }
 
     /**
@@ -162,11 +160,11 @@ final class ApplicationContext
      */
     public function getActions(): ?array
     {
-        if (null === $this->crudPageContext) {
+        if (null === $this->crudPageDto) {
             return [];
         }
 
-        return $this->actionBuilder->setItems($this->crudPageContext->getActions())->build();
+        return $this->actionBuilder->setItems($this->crudPageDto->getActions())->build();
     }
 
     public function getDashboardRouteName(): string

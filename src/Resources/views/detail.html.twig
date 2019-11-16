@@ -20,7 +20,7 @@
         {% block show_fields %}
             {% for field in fields %}
                 {% block show_field %}
-                    <div class="form-group field-{{ (field.type ?? 'default')|lower }} {{ field.cssClass ?? '' }}">
+                    <div class="form-group field-{{ field.type|lower }} {{ field.cssClass ?? '' }}">
                         <label class="control-label">
                             {{ field.label|trans(ea.transParameters)|raw }}
                         </label>

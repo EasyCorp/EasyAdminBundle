@@ -7,10 +7,10 @@ final class ActionDto
     private $name;
     private $label;
     private $icon;
-    private $url;
     private $cssClass;
-    private $htmlTitle;
-    private $target;
+    private $linkUrl;
+    private $linkTarget;
+    private $linkTitleAttribute;
     private $template;
     private $permission;
     private $methodName;
@@ -19,14 +19,14 @@ final class ActionDto
     private $translationDomain;
     private $translationParameters;
 
-    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $htmlTitle, string $target, ?string $template, ?string $permission, ?string $methodName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters)
+    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $linkTitleAttribute, string $linkTarget, ?string $template, ?string $permission, ?string $methodName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters)
     {
         $this->name = $name;
         $this->label = $label;
         $this->icon = $icon;
         $this->cssClass = $cssClass;
-        $this->htmlTitle = $htmlTitle;
-        $this->target = $target;
+        $this->linkTitleAttribute = $linkTitleAttribute;
+        $this->linkTarget = $linkTarget;
         $this->template = $template;
         $this->permission = $permission;
         $this->methodName = $methodName;
@@ -56,14 +56,14 @@ final class ActionDto
         return $this->cssClass;
     }
 
-    public function getHtmlTitle(): ?string
+    public function getLinkTitleAttribute(): ?string
     {
-        return $this->htmlTitle;
+        return $this->linkTitleAttribute;
     }
 
-    public function getTarget(): string
+    public function getLinkTarget(): string
     {
-        return $this->target;
+        return $this->linkTarget;
     }
 
     public function getTemplate(): ?string
@@ -91,9 +91,9 @@ final class ActionDto
         return $this->routeParameters;
     }
 
-    public function getUrl(): ?string
+    public function getLinkUrl(): ?string
     {
-        return $this->url;
+        return $this->linkUrl;
     }
 
     public function getTranslationDomain(): ?string

@@ -1,6 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
-{# @var action \EasyCorp\Bundle\EasyAdminBundle\Context\ActionContext #}
-<a class="{{ is_dropdown|default(false) ? 'dropdown-item' }} {{ action.cssClass ?? '' }}" title="{{ action.htmlTitle ?? '' }}" href="{{ action.url }}" target="{{ action.target }}">
+{# @var action \EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto #}
+<a class="{{ is_dropdown|default(false) ? 'dropdown-item' }} {{ action.cssClass ?? '' }}" title="{{ action.linkTitleAttribute ?? '' }}" href="{{ action.linkUrl }}" target="{{ action.linkTarget }}">
     {%- if action.icon %}<i class="fa fa-fw fa-{{ action.icon }}"></i> {% endif -%}
     {%- if action.label is not empty -%}{{ action.label }}{%- endif -%}
 </a>

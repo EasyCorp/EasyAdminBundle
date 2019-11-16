@@ -10,8 +10,8 @@ final class Action
     private $label;
     private $icon;
     private $cssClass;
-    private $htmlTitle;
-    private $target = '_self';
+    private $linkTitleAttribute;
+    private $linkTarget = '_self';
     private $template = '@EasyAdmin/action.html.twig';
     private $permission;
     private $methodName;
@@ -60,16 +60,16 @@ final class Action
         return $this;
     }
 
-    public function setHtmlTitle(string $htmlTitle): self
+    public function setLinkTitleAttribute(string $title): self
     {
-        $this->htmlTitle = $htmlTitle;
+        $this->linkTitleAttribute = $title;
 
         return $this;
     }
 
-    public function setTarget(string $target): self
+    public function setLinkTarget(string $target): self
     {
-        $this->target = $target;
+        $this->linkTarget = $target;
 
         return $this;
     }
@@ -143,6 +143,6 @@ final class Action
             throw new \InvalidArgumentException(sprintf('The method name and the route name of an action cannot be null at the same time. Either set the method name or the route name for the action "%s".', $this->name));
         }
 
-        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->htmlTitle, $this->target, $this->template, $this->permission, $this->methodName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
+        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->linkTitleAttribute, $this->linkTarget, $this->template, $this->permission, $this->methodName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
     }
 }

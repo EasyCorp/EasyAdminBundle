@@ -129,8 +129,12 @@ final class ApplicationContext
     /**
      * Returns the name of the current CRUD page, if any (e.g. 'detail')
      */
-    public function getPageName(): string
+    public function getPageName(): ?string
     {
+        if (null === $this->crudPageDto) {
+            return null;
+        }
+
         return $this->crudPageDto->getPageName();
     }
 

@@ -15,6 +15,7 @@ final class EntityDto
     {
         $this->entityMetadata = $entityMetadata;
         $this->entityInstance = $entityInstance;
+        $this->entityIdName = $this->entityMetadata->getIdentifierFieldNames()[0];
         $this->entityIdValue = $entityIdValue;
     }
 
@@ -25,7 +26,7 @@ final class EntityDto
 
     public function getIdName(): string
     {
-        return $this->entityIdName = $this->entityMetadata->getIdentifierFieldNames()[0];
+        return $this->entityIdName;
     }
 
     public function getIdValue()

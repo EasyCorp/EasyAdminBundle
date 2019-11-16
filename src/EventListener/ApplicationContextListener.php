@@ -88,8 +88,8 @@ class ApplicationContextListener
 
     private function getCrudController(Request $request): ?callable
     {
-        $crudControllerFqcn = $request->query->get('crud');
-        $crudPage = $request->query->get('page');
+        $crudControllerFqcn = $request->query->get('crudController');
+        $crudPage = $request->query->get('crudPage');
 
         if (null === $crudControllerFqcn || null === $crudPage) {
             return null;
@@ -124,8 +124,8 @@ class ApplicationContextListener
 
         $request = $event->getRequest();
         $dashboardControllerInstance = $event->getController()[0];
-        $crudPage = $request->query->get('page');
-        $entityId = $request->query->get('id');
+        $crudPage = $request->query->get('crudPage');
+        $entityId = $request->query->get('entityId');
 
         $dashboardController = $this->getDashboard($event);
         $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);

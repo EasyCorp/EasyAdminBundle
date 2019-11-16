@@ -116,11 +116,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $fields = $this->getFields('detail');
-        $entityId = $request->query->get('id');
+        $entityId = $request->query->get('entityId');
         $deleteForm = $this->createDeleteForm($entityId);
 
         $parameters = [
-            'crud_assets' => $this->configureAssets(),
             'fields' => $fields,
             'delete_form' => $deleteForm->createView(),
         ];

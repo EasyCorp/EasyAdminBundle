@@ -79,11 +79,7 @@ class ApplicationContextListener
 
         // If the controller does not implement EasyAdmin's DashboardControllerInterface,
         // assume that the request is not related to EasyAdmin
-        if (!$controllerInstance instanceof DashboardControllerInterface) {
-            return false;
-        }
-
-        return true;
+        return $controllerInstance instanceof DashboardControllerInterface;
     }
 
     private function getCrudController(Request $request): ?callable
@@ -149,7 +145,7 @@ class ApplicationContextListener
 
     private function getDashboard(ControllerEvent $event): DashboardControllerInterface
     {
-        /** @var \EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface $dashboard */
+        /** @var DashboardControllerInterface $dashboard */
         $dashboard = $event->getController()[0];
 
         return $dashboard;
@@ -177,10 +173,7 @@ class ApplicationContextListener
         return $crudController->configureCrud()->getAsDto();
     }
 
-    /**
-     * @return CrudPageDto|null
-     */
-    private function getPageConfig(?CrudControllerInterface $crudController, ?string $crudPage)
+    private function getPageConfig(?CrudControllerInterface $crudController, ?string $crudPage): ?CrudPageDto
     {
         $pageConfigMethodName = 'configure'.ucfirst($crudPage).'Page';
         if (null === $crudController || !method_exists($crudController, $pageConfigMethodName)) {

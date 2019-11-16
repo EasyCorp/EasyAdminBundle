@@ -11,6 +11,7 @@ final class AfterCrudActionEvent extends StoppableEvent
 
     public function __construct(?ApplicationContext $applicationContext, array $templateParameters)
     {
+        $this->applicationContext = $applicationContext;
         $this->templateParameters = $templateParameters;
     }
 

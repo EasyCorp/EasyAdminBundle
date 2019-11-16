@@ -30,7 +30,7 @@ final class MenuItem
     {
     }
 
-    public static function linkToCrud(string $label, ?string $icon = null, string $crudControllerFqcn, array $routeParameters = []): self
+    public static function linkToCrud(string $label, ?string $icon, string $crudControllerFqcn, array $routeParameters = []): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_CRUD;
@@ -84,7 +84,7 @@ final class MenuItem
         return $menuItem;
     }
 
-    public static function linkToUrl(string $label, ?string $icon = null, string $url): self
+    public static function linkToUrl(string $label, ?string $icon, string $url): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_URL;
@@ -105,7 +105,7 @@ final class MenuItem
         return $menuItem;
     }
 
-    public static function subMenu(string $label, ?string $icon = null, array $submenuItems): self
+    public static function subMenu(string $label, ?string $icon, array $submenuItems): self
     {
         $menuItem = new self();
         $menuItem->type = MenuItemBuilder::TYPE_SUBMENU;

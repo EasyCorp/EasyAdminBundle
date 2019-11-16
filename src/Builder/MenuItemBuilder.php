@@ -6,7 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
-use EasyCorp\Bundle\EasyAdminBundle\Routing\EntityRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
@@ -67,7 +66,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
     }
 
     /**
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto[]
+     * @return MenuItemDto[]
      */
     public function build(): array
     {

@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Context\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 
 final class MenuItemDto
 {

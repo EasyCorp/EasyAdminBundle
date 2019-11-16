@@ -31,7 +31,6 @@ final class ApplicationContext
     private $dashboardControllerInstance;
     private $menuBuilder;
     private $actionBuilder;
-    private $assetDto;
     private $crudDto;
     private $crudPageDto;
     private $entityDto;
@@ -43,7 +42,6 @@ final class ApplicationContext
         $this->dashboardControllerInstance = $dashboardController;
         $this->menuBuilder = $menuBuilder;
         $this->actionBuilder = $actionBuilder;
-        $this->assetDto = $assetDto;
         $this->crudDto = $crudDto;
         $this->crudPageDto = $crudPageDto;
         $this->entityDto = $entityDto;
@@ -98,9 +96,6 @@ final class ApplicationContext
         return $this->menuBuilder->setItems($mainMenuItems)->build();
     }
 
-    /**
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto
-     */
     public function getUserMenu(): UserMenuDto
     {
         if (null === $this->getUser()) {

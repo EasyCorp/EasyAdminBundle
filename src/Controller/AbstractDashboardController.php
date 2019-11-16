@@ -43,7 +43,7 @@ abstract class AbstractDashboardController extends AbstractController implements
 
     public function getMenuItems(): iterable
     {
-        yield MenuItem::new('Dashboard', 'fa-home')->homepage();
+        yield MenuItem::linktoDashboard('Dashboard', 'fa-home');
     }
 
     /**

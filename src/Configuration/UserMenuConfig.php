@@ -55,7 +55,7 @@ final class UserMenuConfig
     }
 
     /**
-     * @param \EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem[] $items
+     * @param MenuItem[] $items
      */
     public function addMenuItems(array $items): self
     {
@@ -65,7 +65,7 @@ final class UserMenuConfig
     }
 
     /**
-     * @param \EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem[] $items
+     * @param MenuItem[] $items
      */
     public function setMenuItems(array $items): self
     {

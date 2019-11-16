@@ -88,14 +88,14 @@ final class Action
         return $this;
     }
 
-    public function setMethodName(string $methodName): self
+    public function linkToMethod(string $methodName): self
     {
         $this->methodName = $methodName;
 
         return $this;
     }
 
-    public function setRoute(string $routeName, array $routeParameters = [])
+    public function linkToRoute(string $routeName, array $routeParameters = [])
     {
         $this->routeName = $routeName;
         $this->routeParameters = $routeParameters;

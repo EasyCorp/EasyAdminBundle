@@ -57,17 +57,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         return DetailPageConfig::new()
             ->addAction(Action::new('index', 'action.list', null)
-                ->setMethodName('index')
+                ->linkToMethod('index')
                 ->setCssClass('btn btn-link pr-0')
                 ->setTranslationDomain('EasyAdminBundle'))
 
             ->addAction(Action::new('delete', 'action.delete', 'trash-o')
-                ->setMethodName('delete')
+                ->linkToMethod('delete')
                 ->setCssClass('btn text-danger')
                 ->setTranslationDomain('EasyAdminBundle'))
 
             ->addAction(Action::new('edit', 'action.edit', null)
-                ->setMethodName('form')
+                ->linkToMethod('form')
                 ->setCssClass('btn btn-primary')
                 ->setTranslationDomain('EasyAdminBundle'));
     }

@@ -1,5 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
-{# @var assets \EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig #}
+{% trans_default_domain ea.config.translationDomain %}
+
 <!DOCTYPE html>
 <html lang="{{ ea.locale }}">
 <head>
@@ -141,7 +142,7 @@
                                         {% block content_help %}
                                             {% if ea.config.pageHelp is not empty %}
                                                 <div class="content-header-help">
-                                                    {{ ea.config.pageHelp|trans(domain = ea.config.translationDomain)|raw }}
+                                                    {{ ea.config.pageHelp|trans|raw }}
                                                 </div>
                                             {% endif %}
                                         {% endblock content_help %}

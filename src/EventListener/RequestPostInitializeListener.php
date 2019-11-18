@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -18,7 +18,7 @@ class RequestPostInitializeListener
     private $doctrine;
     private $requestStack;
 
-    public function __construct(Registry $doctrine, RequestStack $requestStack = null)
+    public function __construct(ManagerRegistry $doctrine, RequestStack $requestStack = null)
     {
         $this->doctrine = $doctrine;
         $this->requestStack = $requestStack;

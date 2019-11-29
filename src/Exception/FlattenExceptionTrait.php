@@ -56,7 +56,7 @@ trait FlattenExceptionTrait
         return $this->context->getTranslationParameters();
     }
 
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->context->getStatusCode();
     }

@@ -4,25 +4,33 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 final class CrudPageDto
 {
-    private $pageName;
+    private $name;
     private $title;
     private $help;
     private $actions;
+    private $defaultSort;
     private $maxResults;
+    private $itemPermission;
     private $searchFields;
+    private $paginatorFetchJoinCollection;
+    private $paginatorUseOutputWalkers;
     private $filters;
     private $formThemes;
     private $formOptions;
 
-    public static function newFromIndexPage(string $pageName, ?string $title, ?string $help, int $maxResults, ?array $searchFields, ?array $filters): self
+    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, int $maxResults, ?string $itemPermission, ?array $searchFields, bool $paginatorFetchJoinCollection, ?bool $paginatorUseOutputWalkers, ?array $filters): self
     {
         $context = new self();
 
-        $context->pageName = $pageName;
+        $context->name = $name;
         $context->title = $title;
         $context->help = $help;
+        $context->defaultSort = $defaultSort;
         $context->maxResults = $maxResults;
+        $context->itemPermission = $itemPermission;
         $context->searchFields = $searchFields;
+        $context->paginatorFetchJoinCollection = $paginatorFetchJoinCollection;
+        $context->paginatorUseOutputWalkers = $paginatorUseOutputWalkers;
         $context->filters = $filters;
 
         return $context;
@@ -32,7 +40,7 @@ final class CrudPageDto
     {
         $context = new self();
 
-        $context->pageName = $pageName;
+        $context->name = $pageName;
         $context->title = $title;
         $context->help = $help;
         $context->actions = $actions;
@@ -44,7 +52,7 @@ final class CrudPageDto
     {
         $context = new self();
 
-        $context->pageName = $pageName;
+        $context->name = $pageName;
         $context->title = $title;
         $context->help = $help;
         $context->formThemes = $formThemes;
@@ -53,9 +61,9 @@ final class CrudPageDto
         return $context;
     }
 
-    public function getPageName(): string
+    public function getName(): string
     {
-        return $this->pageName;
+        return $this->name;
     }
 
     public function getTitle(): ?string
@@ -73,14 +81,34 @@ final class CrudPageDto
         return $this->actions;
     }
 
+    public function getDefaultSort(): array
+    {
+        return $this->defaultSort;
+    }
+
     public function getMaxResults(): ?int
     {
         return $this->maxResults;
     }
 
+    public function getItemPermission(): ?string
+    {
+        return $this->itemPermission;
+    }
+
     public function getSearchFields(): ?array
     {
         return $this->searchFields;
+    }
+
+    public function getPaginatorFetchJoinCollection(): bool
+    {
+        return $this->paginatorFetchJoinCollection;
+    }
+
+    public function getPaginatorUseOutputWalkers(): ?bool
+    {
+        return $this->paginatorUseOutputWalkers;
     }
 
     public function getFilters(): ?array

@@ -77,7 +77,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
         $this->resetBuiltActions();
 
         $applicationContext = $this->applicationContextProvider->getContext();
-        $defaultTranslationDomain = $applicationContext->getConfig()->getTranslationDomain();
+        $defaultTranslationDomain = $applicationContext->getDashboard()->getTranslationDomain();
 
         foreach ($this->actionConfigs as $actionConfig) {
             $actionContext = $actionConfig->getAsDto();
@@ -103,7 +103,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
 
         if (null !== $routeName = $actionContext->getRouteName()) {
             $routeParameters = array_merge($actionContext->getRouteParameters(), [
-                'crudPage' => $applicationContext->getPageName(),
+                'crudPage' => $applicationContext->getPage()->getName(),
                 'entityId' => $applicationContext->getEntity()->getIdValue(),
             ]);
 
@@ -112,11 +112,11 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
 
         if ('index' !== $actionContext->getMethodName()) {
             $routeParameters = array_merge($requestParameters, [
-                'crudPage' => $applicationContext->getPageName(),
+                'crudPage' => $applicationContext->getPage()->getName(),
                 'entityId' => $applicationContext->getEntity()->getIdValue(),
             ]);
 
-            return $this->urlGenerator->generate($applicationContext->getDashboardRouteName(), $routeParameters);
+            return $this->urlGenerator->generate($applicationContext->getDashboard()->getRouteName(), $routeParameters);
         }
 
         // for the 'index' action, try to use the 'referer' value if it exists
@@ -124,6 +124,6 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
             return urldecode($applicationContext->getRequest()->query->has('referer'));
         }
 
-        return $this->urlGenerator->generate($applicationContext->getDashboardRouteName(), array_merge($requestParameters, ['crudPage' => 'index']));
+        return $this->urlGenerator->generate($applicationContext->getDashboard()->getRouteName(), array_merge($requestParameters, ['crudPage' => 'index']));
     }
 }

@@ -144,7 +144,7 @@ final class MenuItemDto
     {
         foreach ($properties as $propertyName => $propertyValue) {
             if (!property_exists($this, $propertyName)) {
-                throw new \InvalidArgumentException(sprintf('The "%s" option is not a valid action context option name. Valid option names are: %s', $propertyName, implode(', ', get_object_vars($this))));
+                throw new \InvalidArgumentException(sprintf('The "%s" option is not a valid action context option name. Valid option names are: %s', $propertyName, implode(', ', array_keys(get_object_vars($this)))));
             }
 
             $this->{$propertyName} = $propertyValue;

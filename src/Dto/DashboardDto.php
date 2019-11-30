@@ -2,8 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
+
 final class DashboardDto
 {
+    private $controllerInstance;
+    private $routeName;
     private $faviconPath;
     private $siteName;
     private $translationDomain;
@@ -32,6 +36,16 @@ final class DashboardDto
         $this->numberFormat = $numberFormat;
         $this->customTemplates = $customTemplates;
         $this->defaultTemplates = $defaultTemplates;
+    }
+
+    public function getRouteName(): string
+    {
+        return $this->routeName;
+    }
+
+    public function getInstance(): DashboardControllerInterface
+    {
+        return $this->controllerInstance;
     }
 
     public function getFaviconPath(): string
@@ -92,5 +106,18 @@ final class DashboardDto
     public function getDefaultTemplate(string $templateName = null): ?string
     {
         return $this->defaultTemplates[$templateName] ?? null;
+    }
+
+    public function withProperties(array $properties): self
+    {
+        foreach ($properties as $propertyName => $propertyValue) {
+            if (!property_exists($this, $propertyName)) {
+                throw new \InvalidArgumentException(sprintf('The "%s" option is not a valid action context option name. Valid option names are: %s', $propertyName, implode(', ', array_keys(get_object_vars($this)))));
+            }
+
+            $this->{$propertyName} = $propertyValue;
+        }
+
+        return $this;
     }
 }

@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,34 +26,27 @@ final class ApplicationContext
 {
     public const ATTRIBUTE_KEY = 'easyadmin_context';
 
-    private $config;
     private $request;
     private $tokenStorage;
-    private $dashboardControllerInstance;
     private $menuBuilder;
     private $actionBuilder;
+    private $assetDto;
+    private $dashboardDto;
     private $crudDto;
     private $crudPageDto;
     private $entityDto;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardControllerInterface $dashboardController, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto, ?EntityDto $entityDto)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardDto $dashboardDto, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto, ?EntityDto $entityDto)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
-        $this->dashboardControllerInstance = $dashboardController;
+        $this->dashboardDto = $dashboardDto;
         $this->menuBuilder = $menuBuilder;
         $this->actionBuilder = $actionBuilder;
+        $this->assetDto = $assetDto;
         $this->crudDto = $crudDto;
         $this->crudPageDto = $crudPageDto;
         $this->entityDto = $entityDto;
-
-        $dashboardDto = $dashboardController->configureDashboard()->getAsDto();
-        $this->config = new Configuration($dashboardDto, $assetDto, $crudDto, $crudPageDto, $request->getLocale());
-    }
-
-    public function getConfig(): Configuration
-    {
-        return $this->config;
     }
 
     public function getRequest(): Request
@@ -67,6 +61,31 @@ final class ApplicationContext
         $locale = $languageOnly ? $localeLanguage : $fullLocale;
 
         return empty($locale) ? 'en' : $locale;
+    }
+
+    public function getTransParameters(): array
+    {
+        if (null === $this->crudDto || null === $this->getEntity()) {
+            return [];
+        }
+
+        return [
+            '%entity_label_singular%' => $this->crudDto->getLabelInSingular(),
+            '%entity_label_plural%' => $this->crudDto->getLabelInPlural(),
+            '%entity_name%' => $this->crudDto->getLabelInPlural(),
+            '%entity_id%' => $this->getEntity()->getIdValue(),
+        ];
+    }
+
+    public function getTextDirection(): string
+    {
+        if (null !== $textDirection = $this->dashboardDto->getTextDirection()) {
+            return $textDirection;
+        }
+
+        $localePrefix = strtolower(substr($this->getLocale(), 0, 2));
+
+        return \in_array($localePrefix, ['ar', 'fa', 'he']) ? 'rtl' : 'ltr';
     }
 
     public function getUser(): ?UserInterface
@@ -86,12 +105,22 @@ final class ApplicationContext
         return \is_object($user) ? $user : null;
     }
 
+    public function getAssets(): AssetDto
+    {
+        return $this->assetDto;
+    }
+
+    public function getDashboard(): DashboardDto
+    {
+        return $this->dashboardDto;
+    }
+
     /**
      * @return \EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto[]
      */
     public function getMainMenu(): array
     {
-        $mainMenuItems = iterator_to_array($this->dashboardControllerInstance->getMenuItems());
+        $mainMenuItems = iterator_to_array($this->getDashboard()->getInstance()->getMenuItems());
 
         return $this->menuBuilder->setItems($mainMenuItems)->build();
     }
@@ -102,7 +131,7 @@ final class ApplicationContext
             return UserMenuConfig::new()->getAsDto();
         }
 
-        $userMenuConfig = $this->dashboardControllerInstance->configureUserMenu($this->getUser());
+        $userMenuConfig = $this->getDashboard()->getInstance()->configureUserMenu($this->getUser());
         $userMenuContext = $userMenuConfig->getAsDto();
         $builtUserMenuItems = $this->menuBuilder->setItems($userMenuContext->getItems())->build();
 
@@ -121,35 +150,29 @@ final class ApplicationContext
         return $this->getRequest()->query->getInt('submenuIndex', -1);
     }
 
-    /**
-     * Returns the name of the current CRUD page, if any (e.g. 'detail')
-     */
-    public function getPageName(): ?string
+    public function getCrud(): ?CrudDto
     {
-        if (null === $this->crudPageDto) {
-            return null;
-        }
-
-        return $this->crudPageDto->getPageName();
+        return $this->crudDto;
     }
 
-    public function getTransParameters(): array
+    public function getPage(): ?CrudPageDto
     {
-        if (null === $this->crudDto || null === $this->getEntity()) {
-            return [];
-        }
-
-        return [
-            '%entity_label_singular%' => $this->crudDto->getLabelInSingular(),
-            '%entity_label_plural%' => $this->crudDto->getLabelInPlural(),
-            '%entity_name%' => $this->crudDto->getLabelInPlural(),
-            '%entity_id%' => $this->getEntity()->getIdValue(),
-        ];
+        return $this->crudPageDto;
     }
 
     public function getEntity(): ?EntityDto
     {
         return $this->entityDto;
+    }
+
+    public function getTemplate(string $templateName): string
+    {
+        if (null !== $this->crudDto && null !== $templatePath = $this->crudDto->getCustomTemplate($templateName)) {
+            return $templatePath;
+        }
+
+        return $this->dashboardDto->getCustomTemplate($templateName)
+            ?? $this->dashboardDto->getDefaultTemplate($templateName);
     }
 
     /**
@@ -162,10 +185,5 @@ final class ApplicationContext
         }
 
         return $this->actionBuilder->setItems($this->crudPageDto->getActions())->build();
-    }
-
-    public function getDashboardRouteName(): string
-    {
-        return $this->request->attributes->get('_route');
     }
 }

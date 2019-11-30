@@ -15,9 +15,9 @@
                 <source>edit.page_title</source>
                 <target>Edit %entity_label% (#%entity_id%)</target>
             </trans-unit>
-            <trans-unit id="list.page_title">
-                <source>list.page_title</source>
-                <target>%entity_label%</target>
+            <trans-unit id="page.index.title">
+                <source>page.index.title</source>
+                <target>%entity_label_plural%</target>
             </trans-unit>
             <trans-unit id="search.page_title">
                 <source>search.page_title</source>

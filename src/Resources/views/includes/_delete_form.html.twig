@@ -14,7 +14,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-secondary">
-                    <span class="btn-label">{{ 'action.cancel'|trans(ea.transParameters, ea.config.translationDomain) }}</span>
+                    <span class="btn-label">{{ 'action.cancel'|trans(ea.transParameters, ea.dashboard.translationDomain) }}</span>
                 </button>
 
                 {% if easyadmin_action_is_enabled(view, 'delete', ea.entity.shortClassName) %}

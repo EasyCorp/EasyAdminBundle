@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
@@ -27,19 +28,21 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
     private $builtMenuItems;
     /** @var MenuItem[] */
     private $menuItems;
-    private $authChecker;
-    private $urlGenerator;
-    private $translator;
-    private $logoutUrlGenerator;
     private $applicationContextProvider;
+    private $authChecker;
+    private $translator;
+    private $urlGenerator;
+    private $logoutUrlGenerator;
+    private $crudRouter;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator, CrudUrlGenerator $crudRouter)
     {
         $this->applicationContextProvider = $applicationContextProvider;
         $this->authChecker = $authChecker;
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
+        $this->crudRouter = $crudRouter;
     }
 
     /**
@@ -89,8 +92,8 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $this->resetBuiltMenuItems();
 
         $applicationContext = $this->applicationContextProvider->getContext();
-        $defaultTranslationDomain = $applicationContext->getConfig()->getTranslationDomain();
-        $dashboardRouteName = $applicationContext->getDashboardRouteName();
+        $defaultTranslationDomain = $applicationContext->getDashboard()->getTranslationDomain();
+        $dashboardRouteName = $applicationContext->getDashboard()->getRouteName();
 
         foreach ($this->menuItems as $i => $menuItem) {
             $menuItemContext = $menuItem->getAsDto();
@@ -152,7 +155,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
                 $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
                 $routeParameters = array_merge($menuParameters, $menuItemContext->getRouteParameters());
 
-                return $this->urlGenerator->generate($dashboardRouteName, $routeParameters);
+                return $this->crudRouter->generate($routeParameters);
 
             case self::TYPE_LOGOUT:
                 return $this->logoutUrlGenerator->getLogoutPath();

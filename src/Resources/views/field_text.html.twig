@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
-{% if ea.pageName == 'detail' %}
+{% if ea.page.name == 'detail' %}
     {{ value|nl2br }}
 {% else %}
     {{ value|striptags|easyadmin_truncate }}

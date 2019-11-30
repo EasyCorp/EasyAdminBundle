@@ -1,15 +1,15 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var fields \EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface[] #}
-{% extends ea.config.template('layout') %}
-{% trans_default_domain ea.config.translationDomain %}
+{% extends ea.template('layout') %}
+{% trans_default_domain ea.dashboard.translationDomain %}
 
-{% block body_id 'easyadmin-show-' ~ ea.entity.shortClassName ~ '-' ~ ea.entity.idValue %}
-{% block body_class 'show show-' ~ ea.entity.shortClassName %}
+{% block body_id 'easyadmin-detail-' ~ ea.entity.shortClassName ~ '-' ~ ea.entity.idValue %}
+{% block body_class 'detail detail-' ~ ea.entity.shortClassName %}
 
 {% block content_title %}
     {% apply spaceless %}
         {% set default_title = 'page.detail.title'|trans(ea.transParameters, 'EasyAdminBundle') %}
-        {{ ea.config.pageTitle is null ? default_title|raw : ea.config.pageTitle|trans(ea.transParameters)|raw }}
+        {{ ea.page.title is null ? default_title|raw : ea.page.title|trans(ea.transParameters)|raw }}
     {% endapply %}
 {% endblock %}
 
@@ -26,7 +26,7 @@
                         </label>
                         <div class="form-widget">
                             <div class="form-control">
-                                {{ ea_render_field(field) }}
+                                {{ ea_render_field(field, ea.entity) }}
                             </div>
 
                             {% if field.help is not empty %}

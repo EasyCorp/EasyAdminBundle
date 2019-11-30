@@ -41,6 +41,8 @@ interface FieldInterface
 
     public function getType(): string;
 
+    public function getSortable(): bool;
+
     public function getFormType(): string;
 
     public function getFormTypeOptions(): array;

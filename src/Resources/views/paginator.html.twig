@@ -1,0 +1,25 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
+{% trans_default_domain 'EasyAdminBundle' %}
+
+<div class="list-pagination">
+    <div class="list-pagination-counter">
+        {{ 'paginator.results'|transchoice(paginator.numResults)|raw }}
+    </div>
+
+    <nav class="pager list-pagination-paginator {{ not paginator.hasPreviousPage ? 'first-page' }} {{ not paginator.hasNextPage ? 'last-page' }}">
+        <ul class="pagination">
+            <li class="page-item {{ not paginator.hasPreviousPage ? 'disabled' }}">
+                <a class="page-link" href="{{ not paginator.hasPreviousPage ? '#' : paginator.generateUrlForPage(paginator.previousPage) }}">
+                    <i class="fa fa-angle-left mx-1"></i> <span class="btn-label">{{ 'paginator.previous'|trans }}</span>
+                </a>
+            </li>
+
+            <li class="page-item {{ not paginator.hasNextPage ? 'disabled' }}">
+                <a class="page-link" href="{{ not paginator.hasNextPage ? '#' : paginator.generateUrlForPage(paginator.nextPage) }}">
+                    <span class="btn-label">{{ 'paginator.next'|trans }}</span> <i class="fa fa-angle-right mx-1"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

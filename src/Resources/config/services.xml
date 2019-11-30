@@ -29,6 +29,22 @@
             <tag name="kernel.event_listener" event="kernel.controller" />
         </service>
 
+        <service id="easyadmin.orm.entity_repository" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository" public="false">
+            <argument type="service" id="doctrine" />
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface" alias="easyadmin.orm.entity_repository" />
+
+        <service id="easyadmin.orm.entity_paginator" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator">
+            <argument type="service" id="easyadmin.applicationcontext.provider"/>
+            <argument type="service" id="easyadmin.router.crud_url_generator"/>
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator" alias="easyadmin.orm.entity_paginator" />
+
+        <service id="easyadmin.router.crud_url_generator" class="EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator" >
+            <argument type="service" id="easyadmin.applicationcontext.provider" />
+            <argument type="service" id="router.default" />
+        </service>
+
         <service id="easyadmin.builder.action" class="EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder" public="false">
             <argument type="service" id="easyadmin.applicationcontext.provider"></argument>
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
@@ -42,6 +58,7 @@
             <argument type="service" id="translator"></argument>
             <argument type="service" id="router"></argument>
             <argument type="service" id="security.logout_url_generator"></argument>
+            <argument type="service" id="easyadmin.router.crud_url_generator"></argument>
         </service>
 
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
@@ -79,7 +96,7 @@
         <service id="easyadmin.twig.extension" class="EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="property_accessor" />
-            <argument type="service" id="easyadmin.router" />
+            <argument type="service" id="easyadmin.router.crud_url_generator" />
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <argument type="service" id="translator" on-invalid="null" />

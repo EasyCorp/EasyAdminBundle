@@ -10,6 +10,7 @@ abstract class AbstractField implements FieldInterface
 {
     private $property;
     private $type;
+    private $sortable;
     private $formType;
     private $formTypeOptions = [];
     private $label;
@@ -164,6 +165,12 @@ abstract class AbstractField implements FieldInterface
         return $this->type;
     }
 
+    public function getSortable(): bool
+    {
+        // TODO: fix this
+        return true;
+    }
+
     public function getFormType(): string
     {
         return $this->formType;
@@ -211,7 +218,7 @@ abstract class AbstractField implements FieldInterface
 
     // copied from Symfony\Component\Form\FormRenderer::humanize()
     // (author: Bernhard Schussek <bschussek@gmail.com>).
-    private function humanizeString(string $string): string
+    private static function humanizeString(string $string): string
     {
         return ucfirst(mb_strtolower(trim(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $string))));
     }

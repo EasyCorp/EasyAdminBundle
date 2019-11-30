@@ -3,10 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\Entity;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Intl\Countries;
@@ -30,18 +32,18 @@ class EasyAdminTwigExtension extends AbstractExtension
 {
     private $configManager;
     private $propertyAccessor;
-    private $easyAdminRouter;
+    private $crudRouter;
     private $debug;
     private $logoutUrlGenerator;
     /** @var TranslatorInterface|null */
     private $translator;
     private $authorizationChecker;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, EasyAdminRouter $easyAdminRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, CrudUrlGenerator $crudRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
-        $this->easyAdminRouter = $easyAdminRouter;
+        $this->crudRouter = $crudRouter;
         $this->debug = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->translator = $translator;
@@ -54,6 +56,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
+            new TwigFunction('ea_path', [$this, 'generateCrudRoute']),
             new TwigFunction('ea_render_field', [$this, 'renderCrudField'], ['is_safe' => ['html'], 'needs_environment' => true]),
             new TwigFunction('easyadmin_render_field_for_*_view', [$this, 'renderEntityField'], ['is_safe' => ['html'], 'needs_environment' => true]),
             new TwigFunction('easyadmin_config', [$this, 'getBackendConfiguration']),
@@ -134,25 +137,26 @@ class EasyAdminTwigExtension extends AbstractExtension
      */
     public function getEntityPath($entity, $action, array $parameters = [])
     {
-        return $this->easyAdminRouter->generate($entity, $action, $parameters);
+        return $this->crudRouter->generate($entity, $action, $parameters);
+    }
+
+    public function generateCrudRoute(array $queryParams): string
+    {
+        return $this->crudRouter->generate($queryParams);
     }
 
     /**
      * Renders the value stored in a property of the given entity.
      */
-    public function renderCrudField(Environment $twig, FieldInterface $field): string
+    public function renderCrudField(Environment $twig, FieldInterface $field, EntityDto $entityDto): string
     {
         /** @var ApplicationContext $applicationContext */
         $applicationContext = $twig->getGlobals()['ea'];
-        $config = $applicationContext->getConfig();
-        $entityConfig = $applicationContext->getEntity();
-        $entityInstance = $applicationContext->getEntity()->getInstance();
-
         $hasCustomTemplate = null !== $field->getCustomTemplatePath();
         $templateParameters = [];
 
         try {
-            $templateParameters = $this->getTemplateParameters($entityConfig, $field, $entityInstance);
+            $templateParameters = $this->getTemplateParameters($entityDto, $field);
             $templateParameters = array_merge($templateParameters, $field->getCustomTemplateParams());
 
             // if the field defines a custom template, render it (no matter if the value is null or inaccessible)
@@ -161,15 +165,15 @@ class EasyAdminTwigExtension extends AbstractExtension
             }
 
             if (false === $templateParameters['is_accessible']) {
-                return $twig->render($config->getTemplate('label_inaccessible'), $templateParameters);
+                return $twig->render($applicationContext->getTemplate('label_inaccessible'), $templateParameters);
             }
 
             if (null === $templateParameters['value']) {
-                return $twig->render($config->getTemplate('label_null'), $templateParameters);
+                return $twig->render($applicationContext->getTemplate('label_null'), $templateParameters);
             }
 
             if (empty($templateParameters['value']) && \in_array($field->getType(), ['image', 'file', 'array', 'simple_array'])) {
-                return $twig->render($config->getTemplate('label_empty'), $templateParameters);
+                return $twig->render($applicationContext->getTemplate('label_empty'), $templateParameters);
             }
 
             return $twig->render($field->getDefaultTemplatePath(), $templateParameters);
@@ -178,7 +182,7 @@ class EasyAdminTwigExtension extends AbstractExtension
                 throw $e;
             }
 
-            return $twig->render($config->getTemplate('label_undefined'), $templateParameters);
+            return $twig->render($applicationContext->getTemplate('label_undefined'), $templateParameters);
         }
     }
 
@@ -234,21 +238,21 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
     }
 
-    private function getTemplateParameters(EntityDto $entityConfig, FieldInterface $field, $entityInstance)
+    private function getTemplateParameters(EntityDto $entityDto, FieldInterface $field)
     {
-        if ($entityConfig->hasProperty($field->getProperty())) {
-            $fieldMetadata = array_merge($entityConfig->getPropertyMetadata($field->getProperty()), ['virtual' => false]);
+        if ($entityDto->hasProperty($field->getProperty())) {
+            $fieldMetadata = array_merge($entityDto->getPropertyMetadata($field->getProperty()), ['virtual' => false]);
         } else {
             $fieldMetadata = ['virtual' => true];
         }
 
         $parameters = [
             'field_metadata' => $fieldMetadata,
-            'item' => $entityInstance,
+            'item' => $entityDto->getInstance(),
         ];
 
-        if ($this->propertyAccessor->isReadable($entityInstance, $field->getProperty())) {
-            $parameters['value'] = $this->propertyAccessor->getValue($entityInstance, $field->getProperty());
+        if ($this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty())) {
+            $parameters['value'] = $this->propertyAccessor->getValue($entityDto->getInstance(), $field->getProperty());
             $parameters['is_accessible'] = true;
         } else {
             $parameters['value'] = null;

@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
@@ -123,13 +124,13 @@ class ApplicationContextListener
         $crudPage = $request->query->get('crudPage');
         $entityId = $request->query->get('entityId');
 
-        $dashboardController = $this->getDashboard($event);
+        $dashboardDto = $this->getDashboard($event);
         $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
         $crudDto = $this->getCrudConfig($crudControllerInstance);
         $crudPageDto = $this->getPageConfig($crudControllerInstance, $crudPage);
         $entityDto = null === $crudDto ? null : $this->getDoctrineEntity($crudDto, $entityId);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboardController, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $entityDto);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboardDto, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $entityDto);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -143,12 +144,19 @@ class ApplicationContextListener
         $event->getRequest()->attributes->set(ApplicationContext::ATTRIBUTE_KEY, $applicationContext);
     }
 
-    private function getDashboard(ControllerEvent $event): DashboardControllerInterface
+    private function getDashboard(ControllerEvent $event): DashboardDto
     {
-        /** @var DashboardControllerInterface $dashboard */
-        $dashboard = $event->getController()[0];
+        /** @var DashboardControllerInterface $dashboardControllerInstance */
+        $dashboardControllerInstance = $event->getController()[0];
+        $currentRouteName = $event->getRequest()->attributes->get('_route');
 
-        return $dashboard;
+        return $dashboardControllerInstance
+            ->configureDashboard()
+            ->getAsDto()
+            ->withProperties([
+                'controllerInstance' => $dashboardControllerInstance,
+                'routeName' => $currentRouteName,
+            ]);
     }
 
     private function getAssets(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetDto
@@ -185,18 +193,23 @@ class ApplicationContextListener
 
     private function getDoctrineEntity(CrudDto $crudDto, $entityId): ?EntityDto
     {
-        if (null === $entityId || null === $entityFqcn = $crudDto->getEntityClass()) {
+        if (null === $entityFqcn = $crudDto->getEntityClass()) {
             return null;
         }
 
         $entityManager = $this->getEntityManager($entityFqcn);
-        $entityInstance = $this->getEntityInstance($entityManager, $entityFqcn, $entityId);
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
         if (1 !== count($entityMetadata->getIdentifierFieldNames())) {
             throw new \RuntimeException('EasyAdmin does not support Doctrine entities with composite primary keys.');
         }
 
-        return new EntityDto($entityMetadata, $entityInstance, $entityId);
+        if (null === $entityId) {
+            return new EntityDto($entityFqcn, $entityMetadata);
+        }
+
+        $entityInstance = $this->getEntityInstance($entityManager, $entityFqcn, $entityId);
+
+        return new EntityDto($entityFqcn, $entityMetadata, $entityInstance, $entityId);
     }
 
     private function getEntityManager(string $entityClass): ObjectManager

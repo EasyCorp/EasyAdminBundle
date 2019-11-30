@@ -2,16 +2,23 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contacts\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -29,11 +36,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     protected $processedConfig;
     private $applicationContextProvider;
     private $eventDispatcher;
+    private $entityRepository;
+    private $entityPaginator;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, EventDispatcherInterface $eventDispatcher)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, EventDispatcherInterface $eventDispatcher, EntityRepositoryInterface $entityRepository, EntityPaginator $entityPaginator)
     {
         $this->applicationContextProvider = $applicationContextProvider;
         $this->eventDispatcher = $eventDispatcher;
+        $this->entityRepository = $entityRepository;
+        $this->entityPaginator = $entityPaginator;
     }
 
     abstract public function configureCrud(): CrudConfig;
@@ -47,6 +58,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
      * @inheritDoc
      */
     abstract public function configureFields(string $page): iterable;
+
+    public function configureIndexPage(): IndexPageConfig
+    {
+        return IndexPageConfig::new();
+    }
 
     public function configureDetailPage(): DetailPageConfig
     {
@@ -82,14 +98,19 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $fields = $this->getFields('index');
-        $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1), $this->entity['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'), $this->entity['list']['dql_filter']);
+        $fields = iterator_to_array($this->getFields('index'));
+
+        $queryParams = $this->getContext()->getRequest()->query;
+        $searchDto = new SearchDto($queryParams, $this->getContext()->getPage()->getDefaultSort());
+        $queryBuilder = $this->createIndexQueryBuilder($searchDto, $this->getContext()->getEntity());
+        $pageNumber = $queryParams->get('page', 1);
+        $maxPerPage = $this->getContext()->getPage()->getMaxResults();
+        $paginator = $this->entityPaginator->paginate($queryBuilder, $pageNumber, $maxPerPage);
 
         $parameters = [
-            'crud_assets' => $this->configureAssets(),
             'paginator' => $paginator,
             'fields' => $fields,
-            'batch_form' => $this->createBatchForm($this->entity['name'])->createView(),
+            'batch_form' => $this->createBatchForm($this->getContext()->getEntity()->getFqcn())->createView(),
             'delete_form_template' => $this->createDeleteForm('__id__')->createView(),
         ];
 
@@ -99,7 +120,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        return $this->render($this->entity['templates']['list'], $event->getTemplateParameters());
+        return $this->render($this->getContext()->getTemplate('index'), $event->getTemplateParameters());
+    }
+
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
+    {
+        return $this->entityRepository->createQueryBuilder($searchDto, $entityDto);
     }
 
     public function detail(Request $request): Response
@@ -125,17 +151,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        return $this->render($this->getConfig()->getTemplate('detail'), $event->getTemplateParameters());
+        return $this->render($this->getContext()->getTemplate('detail'), $event->getTemplateParameters());
     }
 
     protected function getContext(): ?ApplicationContext
     {
         return $this->applicationContextProvider->getContext();
-    }
-
-    protected function getConfig(): Configuration
-    {
-        return $this->getContext()->getConfig();
     }
 
     /**
@@ -162,6 +183,16 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             ->add('_easyadmin_delete_flag', HiddenType::class, ['data' => '1']);
 
         return $formBuilder->getForm();
+    }
+
+    protected function createBatchForm(string $entityName): FormInterface
+    {
+        return $this->get('form.factory')->create();
+
+        return $this->get('form.factory')->createNamed('batch_form', EasyAdminBatchFormType::class, null, [
+            'action' => $this->generateUrl('easyadmin', ['action' => 'batch', 'entity' => $entityName]),
+            'entity' => $entityName,
+        ]);
     }
 
     /**

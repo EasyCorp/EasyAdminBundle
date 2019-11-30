@@ -77,6 +77,8 @@ class DefaultConfigPass implements ConfigPassInterface
                 }
             }
         }
+
+        return reset($menuConfig[0]);
     }
 
     /**

@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
@@ -86,18 +87,18 @@ class ApplicationContextListener
     private function getCrudController(Request $request): ?callable
     {
         $crudControllerFqcn = $request->query->get('crudController');
-        $crudPage = $request->query->get('crudPage');
+        $crudAction = $request->query->get('crudAction');
 
-        if (null === $crudControllerFqcn || null === $crudPage) {
+        if (null === $crudControllerFqcn || null === $crudAction) {
             return null;
         }
 
         $crudRequest = $request->duplicate();
-        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudPage]);
+        $crudRequest->attributes->set('_controller', [$crudControllerFqcn, $crudAction]);
         $crudControllerCallable = $this->controllerResolver->getController($crudRequest);
 
         if (false === $crudControllerCallable) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $crudControllerFqcn, $crudPage));
+            throw new NotFoundHttpException(sprintf('Unable to find the controller "%s::%s".', $crudControllerFqcn, $crudAction));
         }
 
         if (!is_array($crudControllerCallable)) {
@@ -121,16 +122,17 @@ class ApplicationContextListener
 
         $request = $event->getRequest();
         $dashboardControllerInstance = $event->getController()[0];
-        $crudPage = $request->query->get('crudPage');
+        $crudAction = $request->query->get('crudAction');
         $entityId = $request->query->get('entityId');
 
         $dashboardDto = $this->getDashboard($event);
         $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
         $crudDto = $this->getCrudConfig($crudControllerInstance);
-        $crudPageDto = $this->getPageConfig($crudControllerInstance, $crudPage);
+        $crudPageDto = $this->getPageConfig($crudControllerInstance, $crudAction);
         $entityDto = null === $crudDto ? null : $this->getDoctrineEntity($crudDto, $entityId);
+        $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto, $entityDto);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $dashboardDto, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $entityDto);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $entityDto);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -181,9 +183,9 @@ class ApplicationContextListener
         return $crudController->configureCrud()->getAsDto();
     }
 
-    private function getPageConfig(?CrudControllerInterface $crudController, ?string $crudPage): ?CrudPageDto
+    private function getPageConfig(?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
     {
-        $pageConfigMethodName = 'configure'.ucfirst($crudPage).'Page';
+        $pageConfigMethodName = 'configure'.ucfirst($crudAction).'Page';
         if (null === $crudController || !method_exists($crudController, $pageConfigMethodName)) {
             return null;
         }
@@ -230,5 +232,27 @@ class ApplicationContextListener
         }
 
         return $entityInstance;
+    }
+
+    private function getI18nConfig(Request $request, DashboardDto $dashboardDto, ?CrudDto $crudDto, ?EntityDto $entityDto): I18nDto
+    {
+        $locale = $request->getLocale();
+
+        $configuredTextDirection = $dashboardDto->getTextDirection();
+        $localePrefix = strtolower(substr($locale, 0, 2));
+        $defaultTextDirection = \in_array($localePrefix, ['ar', 'fa', 'he']) ? 'rtl' : 'ltr';
+        $textDirection = $configuredTextDirection ?? $defaultTextDirection;
+
+        $translationParameters = [];
+        if (null !== $crudDto) {
+            $translationParameters['%entity_label_singular%'] = $crudDto->getLabelInSingular();
+            $translationParameters['%entity_label_plural%'] = $crudDto->getLabelInPlural();
+        }
+        if (null !== $entityDto) {
+            $translationParameters['%entity_name%'] = $entityDto->getShortClassName();
+            $translationParameters['%entity_id%'] = $entityDto->getIdValue();
+        }
+
+        return new I18nDto($locale, $textDirection, $translationParameters);
     }
 }

@@ -31,8 +31,8 @@
             {% set default_title = 'search.page_title'|transchoice(paginator.numResults, {}, 'EasyAdminBundle') %}
             {{ ea.page.title is null ? default_title|raw : ea.page.title|transchoice(paginator.numResults)|raw }}
         {% else %}
-            {% set default_title = 'page.index.title'|trans(ea.transParameters, 'EasyAdminBundle') %}
-            {{ ea.page.title is null ? default_title|raw : ea.page.title|trans(ea.transParameters)|raw }}
+            {% set default_title = 'page.index.title'|trans(ea.i18n.transParameters, 'EasyAdminBundle') %}
+            {{ ea.page.title is null ? default_title|raw : ea.page.title|trans(ea.i18n.transParameters)|raw }}
         {% endif %}
     {% endapply %}
 {% endblock %}
@@ -153,10 +153,10 @@
                 {% for field in fields %}
                     {% set isSortingField = (field.property == sort_field_name) or ('association' == field.type and sort_field_name starts with field.property ~ '.') %}
                     {% set nextSortDirection = isSortingField ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
-                    {% set column_label = field.label|trans(ea.transParameters) %}
+                    {% set column_label = field.label|trans(ea.i18n.transParameters) %}
                     {% set column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
-                    <th class="{{ isSortingField ? 'sorted' }} {# metadata.virtual ? 'virtual' #} {# metadata.dataType|lower #} {{ field.cssClass }}" dir="{{ ea.textDirection }}">
+                    <th class="{{ isSortingField ? 'sorted' }} {# metadata.virtual ? 'virtual' #} {# metadata.dataType|lower #} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                         {% if field.sortable %}
                             <a href="{{ ea_path({ page: 1, sort: { (field.property): nextSortDirection }}) }}">
                                 {{ column_label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
@@ -194,7 +194,7 @@
                     #}
 
                     {% for field in fields %}
-                        <td class="{{ field.property == sort_field_name ? 'sorted' }} {{ field.type|lower }} {{ field.cssClass }}" dir="{{ ea.textDirection }}">
+                        <td class="{{ field.property == sort_field_name ? 'sorted' }} {{ field.type|lower }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                             {{ ea_render_field(field, ea.entity.withProperties({ entityInstance: entity })) }}
                         </td>
                     {% endfor %}
@@ -223,7 +223,6 @@
                 </tr>
                 #}
                 {% endif %}
-
             {% else %}
                 <tr>
                     <td class="no-results" colspan="{{ fields|length + 1 }}">
@@ -281,7 +280,7 @@
                     const oldValue = !newValue;
                     const propertyName = this.closest('.checkbox-switch').dataset.propertyname;
 
-                    const toggleUrl = "{{ path(ea.dashboard.routeName, { crudPage: 'form', crudController: 'App\Controller\Admin\ProductAdminController' })|raw }}"
+                    const toggleUrl = "{{ path(ea.dashboard.routeName, { crudAction: 'form', crudController: 'App\Controller\Admin\ProductAdminController' })|raw }}"
                         + "&id=" + this.closest('tr').dataset.id
                         + "&property=" + propertyName
                         + "&newValue=" + newValue.toString();

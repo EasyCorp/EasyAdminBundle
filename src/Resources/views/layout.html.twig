@@ -2,7 +2,7 @@
 {% trans_default_domain ea.dashboard.translationDomain %}
 
 <!DOCTYPE html>
-<html lang="{{ ea.locale }}">
+<html lang="{{ ea.i18n.locale }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,7 +28,7 @@
         <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
     {% endblock head_javascript %}
 
-    {% if 'rtl' == ea.textDirection %}
+    {% if 'rtl' == ea.i18n.textDirection %}
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app-rtl.css') }}">
     {% endif %}
 

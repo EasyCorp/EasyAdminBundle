@@ -103,7 +103,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
 
         if (null !== $routeName = $actionContext->getRouteName()) {
             $routeParameters = array_merge($actionContext->getRouteParameters(), [
-                'crudPage' => $applicationContext->getPage()->getName(),
+                'crudAction' => $applicationContext->getPage()->getName(),
                 'entityId' => $applicationContext->getEntity()->getIdValue(),
             ]);
 
@@ -112,7 +112,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
 
         if ('index' !== $actionContext->getMethodName()) {
             $routeParameters = array_merge($requestParameters, [
-                'crudPage' => $applicationContext->getPage()->getName(),
+                'crudAction' => $applicationContext->getPage()->getName(),
                 'entityId' => $applicationContext->getEntity()->getIdValue(),
             ]);
 
@@ -124,6 +124,6 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
             return urldecode($applicationContext->getRequest()->query->has('referer'));
         }
 
-        return $this->urlGenerator->generate($applicationContext->getDashboard()->getRouteName(), array_merge($requestParameters, ['crudPage' => 'index']));
+        return $this->urlGenerator->generate($applicationContext->getDashboard()->getRouteName(), array_merge($requestParameters, ['crudAction' => 'index']));
     }
 }

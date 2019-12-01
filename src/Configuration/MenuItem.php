@@ -38,7 +38,7 @@ final class MenuItem
         $menuItem->icon = $icon;
         $menuItem->routeParameters = array_merge([
             'crudController' => $crudControllerFqcn,
-            'crudPage' => 'index',
+            'crudAction' => 'index',
         ], $routeParameters);
 
         return $menuItem;

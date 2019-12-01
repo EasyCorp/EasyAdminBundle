@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -28,18 +29,20 @@ final class ApplicationContext
 
     private $request;
     private $tokenStorage;
+    private $i18nDto;
+    private $dashboardDto;
     private $menuBuilder;
     private $actionBuilder;
     private $assetDto;
-    private $dashboardDto;
     private $crudDto;
     private $crudPageDto;
     private $entityDto;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, DashboardDto $dashboardDto, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto, ?EntityDto $entityDto)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, I18nDto $i18nDto, DashboardDto $dashboardDto, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto, ?EntityDto $entityDto)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
+        $this->i18nDto = $i18nDto;
         $this->dashboardDto = $dashboardDto;
         $this->menuBuilder = $menuBuilder;
         $this->actionBuilder = $actionBuilder;
@@ -54,38 +57,9 @@ final class ApplicationContext
         return $this->request;
     }
 
-    public function getLocale(bool $languageOnly = false): string
+    public function getI18n(): I18nDto
     {
-        $fullLocale = $this->getRequest()->getLocale();
-        $localeLanguage = strtok($fullLocale, '-_');
-        $locale = $languageOnly ? $localeLanguage : $fullLocale;
-
-        return empty($locale) ? 'en' : $locale;
-    }
-
-    public function getTransParameters(): array
-    {
-        if (null === $this->crudDto || null === $this->getEntity()) {
-            return [];
-        }
-
-        return [
-            '%entity_label_singular%' => $this->crudDto->getLabelInSingular(),
-            '%entity_label_plural%' => $this->crudDto->getLabelInPlural(),
-            '%entity_name%' => $this->crudDto->getLabelInPlural(),
-            '%entity_id%' => $this->getEntity()->getIdValue(),
-        ];
-    }
-
-    public function getTextDirection(): string
-    {
-        if (null !== $textDirection = $this->dashboardDto->getTextDirection()) {
-            return $textDirection;
-        }
-
-        $localePrefix = strtolower(substr($this->getLocale(), 0, 2));
-
-        return \in_array($localePrefix, ['ar', 'fa', 'he']) ? 'rtl' : 'ltr';
+        return $this->i18nDto;
     }
 
     public function getUser(): ?UserInterface

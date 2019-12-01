@@ -6,6 +6,8 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 final class EntityDto
 {
+    use PropertyModifierTrait;
+
     private $entityFqcn;
     private $entityMetadata;
     private $entityInstance;
@@ -80,18 +82,5 @@ final class EntityDto
         $propertyNameParts = explode('.', $propertyName, 2);
 
         return \array_key_exists($propertyNameParts[0], $this->entityMetadata->embeddedClasses);
-    }
-
-    public function withProperties(array $properties): self
-    {
-        foreach ($properties as $propertyName => $propertyValue) {
-            if (!property_exists($this, $propertyName)) {
-                throw new \InvalidArgumentException(sprintf('The "%s" option is not a valid action context option name. Valid option names are: %s', $propertyName, implode(', ', array_keys(get_object_vars($this)))));
-            }
-
-            $this->{$propertyName} = $propertyValue;
-        }
-
-        return $this;
     }
 }

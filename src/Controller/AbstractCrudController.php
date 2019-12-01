@@ -121,7 +121,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        return $this->render($this->getContext()->getTemplate('index'), $event->getTemplateParameters());
+        return $this->render(
+            $this->getContext()->getTemplate('index'),
+            $this->getTemplateParameters('index', $event->getTemplateParameters())
+        );
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
@@ -152,7 +155,19 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        return $this->render($this->getContext()->getTemplate('detail'), $event->getTemplateParameters());
+        return $this->render(
+            $this->getContext()->getTemplate('detail'),
+            $this->getTemplateParameters('detail', $event->getTemplateParameters())
+        );
+    }
+
+    /**
+     * Used to add/modify/remove parameters before passing them to the Twig template.
+     * $templateName = 'index', 'detail' or 'form'
+     */
+    public function getTemplateParameters(string $templateName, array $parameters): array
+    {
+        return $parameters;
     }
 
     protected function getContext(): ?ApplicationContext

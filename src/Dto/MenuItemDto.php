@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 
 final class MenuItemDto
 {
+    use PropertyModifierTrait;
+
     private $type;
     private $index;
     private $subIndex;
@@ -138,18 +140,5 @@ final class MenuItemDto
     public function isMenuSection(): bool
     {
         return MenuItemBuilder::TYPE_SECTION === $this->type;
-    }
-
-    public function withProperties(array $properties): self
-    {
-        foreach ($properties as $propertyName => $propertyValue) {
-            if (!property_exists($this, $propertyName)) {
-                throw new \InvalidArgumentException(sprintf('The "%s" option is not a valid action context option name. Valid option names are: %s', $propertyName, implode(', ', array_keys(get_object_vars($this)))));
-            }
-
-            $this->{$propertyName} = $propertyValue;
-        }
-
-        return $this;
     }
 }

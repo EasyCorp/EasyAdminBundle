@@ -26,7 +26,7 @@ final class EntityRepository implements EntityRepositoryInterface
             ->from($entityDto->getFqcn(), 'entity')
         ;
 
-        if (null !== $query = $searchDto->getQuery()) {
+        if (null !== $searchDto->getQuery()) {
             $this->addSearchClause($queryBuilder, $searchDto, $entityDto);
         }
 

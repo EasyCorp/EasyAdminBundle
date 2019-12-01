@@ -3,20 +3,8 @@
 {# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
 {% extends ea.template('layout') %}
 {% trans_default_domain ea.dashboard.translationDomain %}
-{#
-{% set _request_parameters = app.request.query.all|merge(_request_parameters|default({}))|merge({
-    action: app.request.get('action'),
-    entity: _entity_config.name,
-    menuIndex: app.request.get('menuIndex'),
-    submenuIndex: app.request.get('submenuIndex'),
-    sortField: app.request.get('sortField'),
-    sortDirection: app.request.get('sortDirection'),
-    page: app.request.get('page', 1),
-    filters: app.request.get('filters', []),
-    query: app.request.get('query')|default(''),
-    referer: null
-}) %}
 
+{#
 {% set _request_parameters = _request_parameters|merge({ referer: path('easyadmin', _request_parameters)|url_encode }) %}
 {% set _has_batch_actions = batch_form is defined and batch_form.vars.batch_actions|length > 0 %}
 {% set _has_filters = _entity_config.list.filters|default(false) %}
@@ -43,26 +31,17 @@
             <div class="form-action form-action-search">
                 <form method="get">
                     {% block search_form %}
+                        {# reset the referrer and page number whenever a new query is performed #}
+                        {% set query_params = ea.request.query.all|merge({
+                            'referrer': null, 'page': 1,
+                        }) %}
+
                         {# browsers remove the query string when submitting forms using GET;
                            that's why all query string params are added as hidden form fields #}
-                        {% for paramName, paramValue in ea.request.query.all %}
-                            {% if paramValue is iterable %}
-                                {% for subParamName, subParamValue in paramValue %}
-                                    <input type="hidden" name="{{ paramName }}[{{ subParamName }}]" value="{{ subParamValue }}">
-                                {% endfor %}
-                            {% else %}
-                                <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
-                            {% endif %}
+                        {% for paramName, paramValue in query_params|ea_query_params_to_form_fields %}
+                            <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
                         {% endfor %}
 
-                        {# reset the page number whenever a new query is performed #}
-                        <input type="hidden" name="page" value="1">
-
-                        {#
-                        {% for name, value in _request_parameters.filters|easyadmin_form_hidden_params('filters') %}
-                            <input type="hidden" name="{{ name }}" value="{{ value }}">
-                        {% endfor %}
-                        #}
                         <div class="form-group">
                             <div class="form-widget">
                                 <input class="form-control" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.transParameters, 'EasyAdminBundle') }}">

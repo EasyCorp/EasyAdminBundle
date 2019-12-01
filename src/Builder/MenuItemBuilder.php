@@ -145,15 +145,17 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
 
             case self::TYPE_ROUTE:
                 // add the index and subIndex query parameters to display the selected menu item
-                $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
-                $routeParameters = array_merge($menuParameters, $menuItemContext->getRouteParameters());
+                // remove the 'query' parameter to not perform a search query when clicking on menu items
+                $defaultRouteParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'query' => null];
+                $routeParameters = array_merge($defaultRouteParameters, $menuItemContext->getRouteParameters());
 
                 return $this->urlGenerator->generate($menuItemContext->getRouteName(), $routeParameters);
 
             case self::TYPE_CRUD:
                 // add the index and subIndex query parameters to display the selected menu item
-                $menuParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex];
-                $routeParameters = array_merge($menuParameters, $menuItemContext->getRouteParameters());
+                // remove the 'query' parameter to not perform a search query when clicking on menu items
+                $defaultRouteParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'query' => null];
+                $routeParameters = array_merge($defaultRouteParameters, $menuItemContext->getRouteParameters());
 
                 return $this->crudRouter->generate($routeParameters);
 

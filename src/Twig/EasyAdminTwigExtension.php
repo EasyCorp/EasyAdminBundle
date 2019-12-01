@@ -79,6 +79,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getFilters()
     {
         $filters = [
+            new TwigFilter('ea_query_params_to_form_fields', [$this, 'transformQueryParamsIntoFormFields']),
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
             new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParams']),
@@ -90,6 +91,28 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
 
         return $filters;
+    }
+
+    public function transformQueryParamsIntoFormFields(array $queryParams)
+    {
+        $formFields = [];
+
+        foreach ($queryParams as $paramName => $paramValue) {
+            if (null === $paramValue) {
+                continue;
+            }
+
+            if (is_iterable($paramValue)) {
+                foreach ($paramValue as $subParamName => $subParamValue) {
+                    $key = sprintf('%s[%s]', $paramName, $subParamName);
+                    $formFields[$key] = $subParamValue;
+                }
+            } else {
+                $formFields[$paramName] = $paramValue;
+            }
+        }
+
+        return $formFields;
     }
 
     public function fileSize(int $bytes): string

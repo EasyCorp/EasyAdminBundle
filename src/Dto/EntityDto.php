@@ -51,9 +51,18 @@ final class EntityDto
         return (string) $this->entityIdValue;
     }
 
-    public function getPropertyMetadata(string $propertyName)
+    public function getPropertyMetadata(string $propertyName): array
     {
+        if (!array_key_exists($propertyName, $this->entityMetadata->fieldMappings)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" property does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
+        }
+
         return $this->entityMetadata->fieldMappings[$propertyName];
+    }
+
+    public function getDataType(string $propertyName)
+    {
+        return $this->getPropertyMetadata($propertyName)['type'];
     }
 
     public function hasProperty(string $propertyName): bool

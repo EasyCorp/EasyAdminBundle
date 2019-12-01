@@ -101,7 +101,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $fields = iterator_to_array($this->getFields('index'));
 
         $queryParams = $this->getContext()->getRequest()->query;
-        $searchDto = new SearchDto($queryParams, $this->getContext()->getPage()->getDefaultSort());
+        $searchFields = $this->getContext()->getPage()->getSearchFields();
+        $searchDto = new SearchDto($queryParams, $this->getContext()->getPage()->getDefaultSort(), $fields, $searchFields);
         $queryBuilder = $this->createIndexQueryBuilder($searchDto, $this->getContext()->getEntity());
         $pageNumber = $queryParams->get('page', 1);
         $maxPerPage = $this->getContext()->getPage()->getMaxResults();

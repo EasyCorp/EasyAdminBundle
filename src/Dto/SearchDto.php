@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 final class SearchDto
@@ -9,12 +10,18 @@ final class SearchDto
     private $defaultSort;
     private $customSort;
     private $query;
+    /** @var FieldInterface[] */
+    private $fields;
+    /** @var string[]|null */
+    private $searchFields;
 
-    public function __construct(ParameterBag $queryParams, array $defaultSort)
+    public function __construct(ParameterBag $queryParams, array $defaultSort, array $fields, ?array $searchFields)
     {
         $this->defaultSort = $defaultSort;
         $this->customSort = $queryParams->get('sort', []);
         $this->query = $queryParams->get('query');
+        $this->fields = $fields;
+        $this->searchFields = $searchFields;
     }
 
     public function getSort(): array
@@ -35,5 +42,24 @@ final class SearchDto
     public function getQuery(): ?string
     {
         return $this->query;
+    }
+
+    /**
+     * @return FieldInterface[]
+     */
+    public function getSearchableFields(): array
+    {
+        if (empty($this->searchFields)) {
+            return $this->fields;
+        }
+
+        $fields = [];
+        foreach ($this->fields as $field) {
+            if (in_array($field->getProperty(), $this->searchFields, true)) {
+                $fields[] = $field;
+            }
+        }
+
+        return $fields;
     }
 }

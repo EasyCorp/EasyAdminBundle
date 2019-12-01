@@ -75,7 +75,7 @@ final class IndexPageConfig
         return $this;
     }
 
-    public function setSearchFields(array $fieldNames): self
+    public function setSearchFields(?array $fieldNames): self
     {
         $this->searchFields = $fieldNames;
 

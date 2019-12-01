@@ -12,7 +12,7 @@ final class IndexPageConfig
     private $defaultSort = [];
     private $maxResults = 15;
     private $itemPermission;
-    private $searchFields;
+    private $searchFields = [];
     private $paginatorFetchJoinCollection = true;
     private $paginatorUseOutputWalkers;
     private $filters;

@@ -101,6 +101,11 @@ final class CrudPageDto
         return $this->searchFields;
     }
 
+    public function isSearchEnabled(): bool
+    {
+        return null !== $this->searchFields;
+    }
+
     public function getPaginatorFetchJoinCollection(): bool
     {
         return $this->paginatorFetchJoinCollection;

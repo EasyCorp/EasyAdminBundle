@@ -16,7 +16,7 @@ final class CrudUrlGenerator
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function generate(array $newQueryParams): string
+    public function generate(array $newQueryParams = []): string
     {
         $previousQueryParams = $this->applicationContextProvider->getContext()->getRequest()->query->all();
         unset($previousQueryParams['referrer']);
@@ -27,7 +27,7 @@ final class CrudUrlGenerator
         return $this->doGenerateUrl($queryParams);
     }
 
-    public function generateWithoutReferrer(array $newQueryParams): string
+    public function generateWithoutReferrer(array $newQueryParams = []): string
     {
         $previousQueryParams = $this->applicationContextProvider->getContext()->getRequest()->query->all();
         unset($previousQueryParams['referrer']);

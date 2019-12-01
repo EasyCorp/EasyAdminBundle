@@ -38,37 +38,34 @@
 {% endblock %}
 
 {% block global_actions %}
-    {#
-    {% if easyadmin_action_is_enabled_for_list_view('search', _entity_config.name) %}
-        {% set _action = easyadmin_get_action_for_list_view('search', _entity_config.name) %}
-
+    {% if ea.page.searchEnabled %}
         {% block search_action %}
-            <div class="form-action form-action-search {{ _action.css_class|default('') }}">
-                <form method="get" action="{{ path('easyadmin') }}">
+            <div class="form-action form-action-search">
+                <form method="get">
                     {% block search_form %}
-                        <input type="hidden" name="action" value="search">
-                        <input type="hidden" name="entity" value="{{ _request_parameters.entity }}">
-                        {# if the Request query doesn't define 'sortField' and 'sortDirection', we add them in the
-                           controller (but they don't appear in the request URI). When users click on a column to
-                           sort results, 'sortField' and 'sortDirection' are added to the Request query and they
-                            appear in the request URI too. So, checking if 'sortField' and 'sortDirection' is the
-                            only way to differentiate between sorting made by user and sorting made by us. We only
-                            need to persist the sorting if it's explicitly made by the user. #}
-    {#
-                        {% if 'sortField' in app.request.uri %}
-                            <input type="hidden" name="sortField" value="{{ _request_parameters.sortField }}">
-                        {% endif %}
-                        {% if 'sortDirection' in app.request.uri %}
-                            <input type="hidden" name="sortDirection" value="{{ _request_parameters.sortDirection }}">
-                        {% endif %}
-                        <input type="hidden" name="menuIndex" value="{{ _request_parameters.menuIndex }}">
-                        <input type="hidden" name="submenuIndex" value="{{ _request_parameters.submenuIndex }}">
+                        {# browsers remove the query string when submitting forms using GET;
+                           that's why all query string params are added as hidden form fields #}
+                        {% for paramName, paramValue in ea.request.query.all %}
+                            {% if paramValue is iterable %}
+                                {% for subParamName, subParamValue in paramValue %}
+                                    <input type="hidden" name="{{ paramName }}[{{ subParamName }}]" value="{{ subParamValue }}">
+                                {% endfor %}
+                            {% else %}
+                                <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
+                            {% endif %}
+                        {% endfor %}
+
+                        {# reset the page number whenever a new query is performed #}
+                        <input type="hidden" name="page" value="1">
+
+                        {#
                         {% for name, value in _request_parameters.filters|easyadmin_form_hidden_params('filters') %}
                             <input type="hidden" name="{{ name }}" value="{{ value }}">
                         {% endfor %}
+                        #}
                         <div class="form-group">
                             <div class="form-widget">
-                                <input class="form-control" type="search" name="query" value="{{ app.request.get('query')|default('') }}" placeholder="{{ _action.label|default('action.search')|trans(_trans_parameters) }}">
+                                <input class="form-control" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.transParameters, 'EasyAdminBundle') }}">
                             </div>
                         </div>
                     {% endblock %}
@@ -76,7 +73,7 @@
             </div>
         {% endblock search_action %}
     {% endif %}
-
+{#
     {% if _has_filters %}
         {% set _applied_filters = app.request.attributes.get('easyadmin').filters.applied|default(false) %}
         {% block filters_action %}
@@ -226,7 +223,7 @@
             {% else %}
                 <tr>
                     <td class="no-results" colspan="{{ fields|length + 1 }}">
-                        {{ 'search.no_results'|trans(ea.transParameters, 'EasyAdminBundle') }}
+                        {{ 'search.no_results'|trans(ea.i18n.transParameters, 'EasyAdminBundle') }}
                     </td>
                 </tr>
             {% endfor %}

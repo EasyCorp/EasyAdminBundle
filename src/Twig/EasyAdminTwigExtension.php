@@ -140,7 +140,7 @@ class EasyAdminTwigExtension extends AbstractExtension
         return $this->crudRouter->generate($entity, $action, $parameters);
     }
 
-    public function generateCrudRoute(array $queryParams): string
+    public function generateCrudRoute(array $queryParams = []): string
     {
         return $this->crudRouter->generate($queryParams);
     }

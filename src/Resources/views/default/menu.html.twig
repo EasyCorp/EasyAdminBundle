@@ -15,17 +15,17 @@
 
 <ul class="sidebar-menu" data-widget="tree" data-animation-speed="250">
     {% block main_menu %}
-        {% for item in ea.mainMenu %}
+        {% for menuItem in ea.mainMenu.items %}
             {% block menu_item %}
-                <li class="{{ item.isMenuSection ? 'header' }} {{ item.hasSubItems ? 'treeview' }} {{ item.isSelected(ea.selectedMenuIndex) ? 'active' }} {{ item.isExpanded(ea.selectedMenuIndex, ea.selectedSubMenuIndex) ? 'submenu-active' }}">
-                    {{ _self.render_menu_item(item) }}
+                <li class="{{ menuItem.isMenuSection ? 'header' }} {{ menuItem.hasSubItems ? 'treeview' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'active submenu-active' }}">
+                    {{ _self.render_menu_item(menuItem) }}
 
-                    {% if item.hasSubItems %}
+                    {% if menuItem.hasSubItems %}
                         <ul class="treeview-menu">
-                            {% for subItem in item.subItems %}
+                            {% for menuSubItem in menuItem.subItems %}
                                 {% block menu_subitem %}
-                                    <li class="{{ subItem.isMenuSection ? 'header' }} {{ subItem.isSelected(ea.selectedMenuIndex, ea.selectedSubMenuIndex) ? 'active' }}">
-                                        {{ _self.render_menu_item(subItem) }}
+                                    <li class="{{ menuSubItem.isMenuSection ? 'header' }} {{ ea.mainMenu.isSelected(menuSubItem) ? 'active' }}">
+                                        {{ _self.render_menu_item(menuSubItem) }}
                                     </li>
                                 {% endblock menu_subitem %}
                             {% endfor %}

@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -89,14 +90,15 @@ final class ApplicationContext
         return $this->dashboardDto;
     }
 
-    /**
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto[]
-     */
-    public function getMainMenu(): array
+    public function getMainMenu(): MainMenuDto
     {
         $mainMenuItems = iterator_to_array($this->getDashboard()->getInstance()->getMenuItems());
+        $builtMainMenuItems = $this->menuBuilder->setItems($mainMenuItems)->build();
 
-        return $this->menuBuilder->setItems($mainMenuItems)->build();
+        $selectedMenuIndex = $this->getRequest()->query->getInt('menuIndex', -1);
+        $selectedMenuSubIndex = $this->getRequest()->query->getInt('submenuIndex', -1);
+
+        return $this->mainMenuDto = new MainMenuDto($builtMainMenuItems, $selectedMenuIndex, $selectedMenuSubIndex);
     }
 
     public function getUserMenu(): UserMenuDto
@@ -112,16 +114,6 @@ final class ApplicationContext
         return $userMenuContext->withProperties([
             'items' => $builtUserMenuItems,
         ]);
-    }
-
-    public function getSelectedMenuIndex(): ?int
-    {
-        return $this->getRequest()->query->getInt('menuIndex', -1);
-    }
-
-    public function getSelectedSubMenuIndex(): ?int
-    {
-        return $this->getRequest()->query->getInt('submenuIndex', -1);
     }
 
     public function getCrud(): ?CrudDto

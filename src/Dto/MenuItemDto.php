@@ -118,20 +118,6 @@ final class MenuItemDto
         return $this->subItems;
     }
 
-    public function isSelected(?int $selectedIndex, ?int $selectedSubIndex = null): bool
-    {
-        if (null === $selectedSubIndex) {
-            return $this->getIndex() === $selectedIndex;
-        }
-
-        return $this->getIndex() === $selectedIndex && $this->getSubIndex() === $selectedSubIndex;
-    }
-
-    public function isExpanded(?int $selectedIndex, ?int $selectedSubIndex): bool
-    {
-        return $this->isSelected($selectedIndex) && -1 !== $selectedSubIndex;
-    }
-
     public function hasSubItems(): bool
     {
         return MenuItemBuilder::TYPE_SUBMENU === $this->type && count($this->subItems) > 0;

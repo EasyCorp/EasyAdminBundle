@@ -33,6 +33,8 @@ final class ApplicationContext
     private $i18nDto;
     private $dashboardDto;
     private $menuBuilder;
+    private $mainMenuDto;
+    private $userMenuDto;
     private $actionBuilder;
     private $assetDto;
     private $crudDto;
@@ -92,6 +94,10 @@ final class ApplicationContext
 
     public function getMainMenu(): MainMenuDto
     {
+        if (null !== $this->mainMenuDto) {
+            return $this->mainMenuDto;
+        }
+
         $mainMenuItems = iterator_to_array($this->getDashboard()->getInstance()->getMenuItems());
         $builtMainMenuItems = $this->menuBuilder->setItems($mainMenuItems)->build();
 
@@ -107,11 +113,15 @@ final class ApplicationContext
             return UserMenuConfig::new()->getAsDto();
         }
 
-        $userMenuConfig = $this->getDashboard()->getInstance()->configureUserMenu($this->getUser());
-        $userMenuContext = $userMenuConfig->getAsDto();
-        $builtUserMenuItems = $this->menuBuilder->setItems($userMenuContext->getItems())->build();
+        if (null !== $this->userMenuDto) {
+            return $this->userMenuDto;
+        }
 
-        return $userMenuContext->withProperties([
+        $userMenuConfig = $this->getDashboard()->getInstance()->configureUserMenu($this->getUser());
+        $userMenuDto = $userMenuConfig->getAsDto();
+        $builtUserMenuItems = $this->menuBuilder->setItems($userMenuDto->getItems())->build();
+
+        return $this->userMenuDto = $userMenuDto->withProperties([
             'items' => $builtUserMenuItems,
         ]);
     }

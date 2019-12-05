@@ -151,6 +151,14 @@ final class ApplicationContext
             ?? $this->dashboardDto->getDefaultTemplate($templateName);
     }
 
+    public function getFormThemes(): array
+    {
+        $crudFormThemes = null === $this->crudDto ? [] : $this->crudDto->getFormThemes();
+        $dashboardFormThemes = null === $this->dashboardDto ? [] : $this->dashboardDto->getFormThemes();
+
+        return array_merge($crudFormThemes, $dashboardFormThemes);
+    }
+
     /**
      * @return ActionDto[]
      */

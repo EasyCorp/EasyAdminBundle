@@ -4,9 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
 
 final class SearchDto
 {
+    private $request;
     private $defaultSort;
     private $customSort;
     private $query;
@@ -14,14 +16,23 @@ final class SearchDto
     private $fields;
     /** @var string[]|null */
     private $searchFields;
+    /** @var string[]|null */
+    private $filters;
 
-    public function __construct(ParameterBag $queryParams, array $defaultSort, array $fields, ?array $searchFields)
+    public function __construct(Request $request, array $defaultSort, array $fields, ?array $searchFields, ?array $filters)
     {
+        $this->request = $request;
         $this->defaultSort = $defaultSort;
-        $this->customSort = $queryParams->get('sort', []);
-        $this->query = $queryParams->get('query');
+        $this->customSort = $request->query->get('sort', []);
+        $this->query = $request->query->get('query');
         $this->fields = $fields;
         $this->searchFields = $searchFields;
+        $this->filters = $filters;
+    }
+
+    public function getRequest(): Request
+    {
+        return $this->request;
     }
 
     public function getSort(): array
@@ -53,6 +64,7 @@ final class SearchDto
             return $this->fields;
         }
 
+        // TODO: check the 'permission' of the field before using it
         $fields = [];
         foreach ($this->fields as $field) {
             if (in_array($field->getProperty(), $this->searchFields, true)) {
@@ -61,5 +73,10 @@ final class SearchDto
         }
 
         return $fields;
+    }
+
+    public function getFilters(): ?array
+    {
+        return $this->filters;
     }
 }

@@ -8,8 +8,8 @@
 
 {% block content_title %}
     {% apply spaceless %}
-        {% set default_title = 'page.detail.title'|trans(ea.i18n.transParameters, 'EasyAdminBundle') %}
-        {{ ea.page.title is null ? default_title|raw : ea.page.title|trans(ea.i18n.transParameters)|raw }}
+        {% set default_title = 'page.detail.title'|trans(ea.i18n.translationParams, 'EasyAdminBundle') %}
+        {{ ea.page.title is null ? default_title|raw : ea.page.title|trans(ea.i18n.translationParams)|raw }}
     {% endapply %}
 {% endblock %}
 
@@ -22,7 +22,7 @@
                 {% block show_field %}
                     <div class="form-group field-{{ field.type|lower }} {{ field.cssClass ?? '' }}">
                         <label class="control-label">
-                            {{ field.label|trans(ea.i18n.transParameters)|raw }}
+                            {{ field.label|trans(ea.i18n.translationParams)|raw }}
                         </label>
                         <div class="form-widget">
                             <div class="form-control">

@@ -30,7 +30,10 @@
         </service>
 
         <service id="easyadmin.orm.entity_repository" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository" public="false">
+            <argument type="service" id="easyadmin.applicationcontext.provider" />
             <argument type="service" id="doctrine" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="easyadmin.filter.registry" />
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface" alias="easyadmin.orm.entity_repository" />
 

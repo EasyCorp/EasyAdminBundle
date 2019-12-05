@@ -1,0 +1,13 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{% form_theme filters_form with ea.formThemes only %}
+
+{{ form_start(filters_form, { attr: { id: filters_form.vars.id } }) }}
+    {# browsers remove the query string when submitting forms using GET;
+       that's why all query string params are added as hidden form fields #}
+    {% for paramName, paramValue in ea.request.query.all|ea_flatten_array %}
+        <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
+    {% endfor %}
+    <input type="hidden" name="crudAction" value="{{ ea.request.query.get('originalCrudAction') }}">
+
+    {{ form_widget(filters_form) }}
+{{ form_end(filters_form) }}

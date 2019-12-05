@@ -16,15 +16,15 @@ final class DashboardDto
     private $textDirection;
     private $disabledActions;
     private $dateFormat;
-    private $timeFormat ;
+    private $timeFormat;
     private $dateTimeFormat;
     private $dateIntervalFormat;
     private $numberFormat;
     private $customTemplates;
     private $defaultTemplates;
+    private $formThemes;
 
-    public function __construct(string $faviconPath, string $siteName, string $translationDomain, ?string $textDirection, array $disabledActions, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $customTemplates, array $defaultTemplates
-    )
+    public function __construct(string $faviconPath, string $siteName, string $translationDomain, ?string $textDirection, array $disabledActions, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $customTemplates, array $defaultTemplates, array $formThemes)
     {
         $this->faviconPath = $faviconPath;
         $this->siteName = $siteName;
@@ -38,6 +38,7 @@ final class DashboardDto
         $this->numberFormat = $numberFormat;
         $this->customTemplates = $customTemplates;
         $this->defaultTemplates = $defaultTemplates;
+        $this->formThemes = $formThemes;
     }
 
     public function getRouteName(): string
@@ -108,5 +109,10 @@ final class DashboardDto
     public function getDefaultTemplate(string $templateName = null): ?string
     {
         return $this->defaultTemplates[$templateName] ?? null;
+    }
+
+    public function getFormThemes(): array
+    {
+        return $this->formThemes;
     }
 }

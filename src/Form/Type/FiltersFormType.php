@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class EasyAdminFiltersFormType extends AbstractType
+class FiltersFormType extends AbstractType
 {
     private $configManager;
     private $configurators;
@@ -30,7 +30,7 @@ class EasyAdminFiltersFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $entityConfig = $this->configManager->getEntityConfig($options['entity']);
+        $entityConfig = $this->configManager->getEntityConfig('Product');
 
         foreach ($entityConfig['list']['filters'] as $propertyName => $filterConfig) {
             $formFieldOptions = $filterConfig['type_options'];
@@ -51,12 +51,10 @@ class EasyAdminFiltersFormType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired('entity');
         $resolver->setDefaults([
             'allow_extra_fields' => true,
             'csrf_protection' => false,
         ]);
-        $resolver->setAllowedTypes('entity', 'string');
     }
 
     /**

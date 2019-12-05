@@ -14,8 +14,9 @@ final class CrudDto
     private $numberFormat;
     private $customTemplates;
     private $defaultTemplates;
+    private $formThemes;
 
-    public function __construct(string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $customTemplates, array $defaultTemplates)
+    public function __construct(string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $customTemplates, array $defaultTemplates, $formThemes)
     {
         $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;
@@ -27,6 +28,7 @@ final class CrudDto
         $this->numberFormat = $numberFormat;
         $this->customTemplates = $customTemplates;
         $this->defaultTemplates = $defaultTemplates;
+        $this->formThemes = $formThemes;
     }
 
     public function getEntityClass(): string
@@ -77,5 +79,10 @@ final class CrudDto
     public function getDefaultTemplate(string $templateName = null): ?string
     {
         return $this->defaultTemplates[$templateName] ?? null;
+    }
+
+    public function getFormThemes(): array
+    {
+        return $this->formThemes;
     }
 }

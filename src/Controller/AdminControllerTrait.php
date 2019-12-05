@@ -13,7 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\NoPermissionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFiltersFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
@@ -528,7 +528,7 @@ trait AdminControllerTrait
 
     protected function createFiltersForm(string $entityName): FormInterface
     {
-        return $this->get('form.factory')->createNamed('filters', EasyAdminFiltersFormType::class, null, [
+        return $this->get('form.factory')->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
             'entity' => $entityName,
         ]);

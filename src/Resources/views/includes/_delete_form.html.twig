@@ -9,19 +9,19 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <h4>{{ 'delete_modal.title'|trans(ea.i18n.transParameters, 'EasyAdminBundle') }}</h4>
-                <p>{{ 'delete_modal.content'|trans(ea.i18n.transParameters, 'EasyAdminBundle') }}</p>
+                <h4>{{ 'delete_modal.title'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}</h4>
+                <p>{{ 'delete_modal.content'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-secondary">
-                    <span class="btn-label">{{ 'action.cancel'|trans(ea.i18n.transParameters, ea.dashboard.translationDomain) }}</span>
+                    <span class="btn-label">{{ 'action.cancel'|trans(ea.i18n.translationParams, ea.dashboard.translationDomain) }}</span>
                 </button>
 
                 {% if easyadmin_action_is_enabled(view, 'delete', ea.entity.shortClassName) %}
                     {% set _delete_action = easyadmin_get_action(view, 'delete', ea.entity.shortClassName) %}
                     <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button" formtarget="{{ _delete_action.target }}">
                         {% if _delete_action.icon %}<i class="fa fa-fw fa-{{ _delete_action.icon }}"></i>{% endif %}
-                        <span class="btn-label">{{ 'delete_modal.action'|trans(ea.i18n.transParameters, 'EasyAdminBundle') }}</span>
+                        <span class="btn-label">{{ 'delete_modal.action'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}</span>
                     </button>
                 {% endif %}
             </div>

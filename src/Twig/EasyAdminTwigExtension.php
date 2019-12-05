@@ -79,7 +79,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getFilters()
     {
         $filters = [
-            new TwigFilter('ea_query_params_to_form_fields', [$this, 'transformQueryParamsIntoFormFields']),
+            new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
             new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParams']),
@@ -93,26 +93,25 @@ class EasyAdminTwigExtension extends AbstractExtension
         return $filters;
     }
 
-    public function transformQueryParamsIntoFormFields(array $queryParams)
+    /**
+     * Transforms ['a' => 'foo', 'b' => ['c' => ['d' => 7]]] into ['a' => 'foo', 'b[c][d]' => 7]
+     * It's useful to submit nested arrays (e.g. query string params) as form fields.
+     */
+    function flattenArray($array, $parentKey = null)
     {
-        $formFields = [];
+        $flattenedArray = [];
 
-        foreach ($queryParams as $paramName => $paramValue) {
-            if (null === $paramValue) {
-                continue;
-            }
+        foreach ($array as $flattenedKey => $value) {
+            $flattenedKey = null !== $parentKey ? sprintf('%s[%s]', $parentKey, $flattenedKey) : $flattenedKey;
 
-            if (is_iterable($paramValue)) {
-                foreach ($paramValue as $subParamName => $subParamValue) {
-                    $key = sprintf('%s[%s]', $paramName, $subParamName);
-                    $formFields[$key] = $subParamValue;
-                }
+            if (is_array($value)) {
+                $flattenedArray = array_merge($flattenedArray, $this->flattenArray($value, $flattenedKey));
             } else {
-                $formFields[$paramName] = $paramValue;
+                $flattenedArray[$flattenedKey] = $value;
             }
         }
 
-        return $formFields;
+        return $flattenedArray;
     }
 
     public function fileSize(int $bytes): string

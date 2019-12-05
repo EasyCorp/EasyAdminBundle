@@ -11,6 +11,7 @@ class CrudConfig
 {
     use CommonFormatConfigTrait;
     use CommonTemplateConfigTrait;
+    use CommonFormThemeConfigTrait;
 
     private $entityFqcn;
     private $labelInSingular = 'Undefined';
@@ -56,6 +57,6 @@ class CrudConfig
             $this->labelInPlural = $this->labelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->defaultTemplates);
+        return new CrudDto($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->defaultTemplates, $this->formThemes);
     }
 }

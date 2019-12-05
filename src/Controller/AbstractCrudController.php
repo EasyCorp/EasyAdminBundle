@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
@@ -100,11 +101,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $fields = iterator_to_array($this->getFields('index'));
 
-        $queryParams = $this->getContext()->getRequest()->query;
         $searchFields = $this->getContext()->getPage()->getSearchFields();
-        $searchDto = new SearchDto($queryParams, $this->getContext()->getPage()->getDefaultSort(), $fields, $searchFields);
+        $searchDto = new SearchDto($this->getContext()->getRequest(), $this->getContext()->getPage()->getDefaultSort(), $fields, $searchFields, $this->getContext()->getPage()->getFilters());
         $queryBuilder = $this->createIndexQueryBuilder($searchDto, $this->getContext()->getEntity());
-        $pageNumber = $queryParams->get('page', 1);
+        $pageNumber = $this->getContext()->getRequest()->query->get('page', 1);
         $maxPerPage = $this->getContext()->getPage()->getMaxResults();
         $paginator = $this->entityPaginator->paginate($queryBuilder, $pageNumber, $maxPerPage);
 
@@ -130,6 +130,24 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
     {
         return $this->entityRepository->createQueryBuilder($searchDto, $entityDto);
+    }
+
+    public function showFilters(): Response
+    {
+        $filtersForm = $this->get('form.factory')->createNamed('filters', FiltersFormType::class, null, [
+            'method' => 'GET',
+            'action' => $this->getContext()->getRequest()->query->get('referrer'),
+        ]);
+        $filtersForm->handleRequest($this->getContext()->getRequest());
+
+        $templateParameters = [
+            'filters_form' => $filtersForm->createView(),
+        ];
+
+        return $this->render(
+            $this->getContext()->getTemplate('filters'),
+            $this->getTemplateParameters('filters', $templateParameters)
+        );
     }
 
     public function detail(Request $request): Response

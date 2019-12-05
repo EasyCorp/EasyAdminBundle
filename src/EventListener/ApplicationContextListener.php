@@ -244,6 +244,8 @@ class ApplicationContextListener
         $defaultTextDirection = \in_array($localePrefix, ['ar', 'fa', 'he']) ? 'rtl' : 'ltr';
         $textDirection = $configuredTextDirection ?? $defaultTextDirection;
 
+        $translationDomain = $dashboardDto->getTranslationDomain();
+
         $translationParameters = [];
         if (null !== $crudDto) {
             $translationParameters['%entity_label_singular%'] = $crudDto->getLabelInSingular();
@@ -254,6 +256,6 @@ class ApplicationContextListener
             $translationParameters['%entity_id%'] = $entityDto->getIdValue();
         }
 
-        return new I18nDto($locale, $textDirection, $translationParameters);
+        return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);
     }
 }

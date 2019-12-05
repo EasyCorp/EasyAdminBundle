@@ -13,6 +13,7 @@ trait CommonTemplateConfigTrait
         'detail' => '@EasyAdmin/detail.html.twig',
         'form' => '@EasyAdmin/form.html.twig',
         'action' => '@EasyAdmin/action.html.twig',
+        'filters' => '@EasyAdmin/filters.html.twig',
         'exception' => '@EasyAdmin/exception.html.twig',
         'field_array' => '@EasyAdmin/field_array.html.twig',
         'field_association' => '@EasyAdmin/field_association.html.twig',

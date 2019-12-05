@@ -119,9 +119,9 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
             return $this->urlGenerator->generate($applicationContext->getDashboard()->getRouteName(), $routeParameters);
         }
 
-        // for the 'index' action, try to use the 'referer' value if it exists
-        if ($applicationContext->getRequest()->query->has('referer')) {
-            return urldecode($applicationContext->getRequest()->query->has('referer'));
+        // for the 'index' action, try to use the 'referrer' value if it exists
+        if ($applicationContext->getRequest()->query->has('referrer')) {
+            return urldecode($applicationContext->getRequest()->query->has('referrer'));
         }
 
         return $this->urlGenerator->generate($applicationContext->getDashboard()->getRouteName(), array_merge($requestParameters, ['crudAction' => 'index']));

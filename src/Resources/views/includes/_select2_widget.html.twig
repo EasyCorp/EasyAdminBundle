@@ -1,0 +1,21 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{% set ea_select2_locales = ['ar', 'az', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'gl', 'he', 'hi', 'hr', 'hu', 'id', 'is', 'it', 'ja', 'km', 'ko', 'lt', 'lv', 'mk', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt', 'ro', 'ru', 'sk', 'sr-Cyrl', 'sr', 'sv', 'th', 'tr', 'uk', 'vi', 'zh-CN', 'zh-TW'] %}
+{% set ea_select2_locale = ea_select2_locales[ea.i18n.locale] ?? ea_select2_locales[ea.i18n.language] ?? 'en' %}
+
+<script src="{{ asset('bundles/easyadmin/select2/i18n/' ~ ea_select2_locale ~ '.js') }}"></script>
+<script type="text/javascript">
+    $(function() {
+        // Select2 widget is only enabled for the <select> elements which
+        // explicitly ask for it
+
+        function init() {
+            $('form select[data-widget="select2"]').select2({
+                theme: 'bootstrap',
+                language: '{{ ea_select2_locale }}'
+            });
+        }
+
+        $(document).on('easyadmin.collection.item-added', init);
+        init();
+    });
+</script>

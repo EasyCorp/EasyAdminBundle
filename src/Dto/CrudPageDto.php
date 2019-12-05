@@ -15,7 +15,6 @@ final class CrudPageDto
     private $paginatorFetchJoinCollection;
     private $paginatorUseOutputWalkers;
     private $filters;
-    private $formThemes;
     private $formOptions;
 
     public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, int $maxResults, ?string $itemPermission, ?array $searchFields, bool $paginatorFetchJoinCollection, ?bool $paginatorUseOutputWalkers, ?array $filters): self
@@ -48,14 +47,13 @@ final class CrudPageDto
         return $context;
     }
 
-    public static function newFromFormPage(string $pageName, ?string $title, ?string $help, array $formThemes, array $formOptions): self
+    public static function newFromFormPage(string $pageName, ?string $title, ?string $help, array $formOptions): self
     {
         $context = new self();
 
         $context->name = $pageName;
         $context->title = $title;
         $context->help = $help;
-        $context->formThemes = $formThemes;
         $context->formOptions = $formOptions;
 
         return $context;
@@ -106,6 +104,16 @@ final class CrudPageDto
         return null !== $this->searchFields;
     }
 
+    public function getFilters(): ?array
+    {
+        return $this->filters;
+    }
+
+    public function isFilterEnabled(): bool
+    {
+        return null !== $this->filters;
+    }
+
     public function getPaginatorFetchJoinCollection(): bool
     {
         return $this->paginatorFetchJoinCollection;
@@ -114,16 +122,6 @@ final class CrudPageDto
     public function getPaginatorUseOutputWalkers(): ?bool
     {
         return $this->paginatorUseOutputWalkers;
-    }
-
-    public function getFilters(): ?array
-    {
-        return $this->filters;
-    }
-
-    public function getFormThemes(): ?array
-    {
-        return $this->formThemes;
     }
 
     public function getFormOptions(): ?array

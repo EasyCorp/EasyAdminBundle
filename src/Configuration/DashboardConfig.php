@@ -11,6 +11,7 @@ final class DashboardConfig
 {
     use CommonFormatConfigTrait;
     use CommonTemplateConfigTrait;
+    use CommonFormThemeConfigTrait;
 
     private $faviconPath = 'favicon.ico';
     private $siteName = 'EasyAdmin';
@@ -64,6 +65,6 @@ final class DashboardConfig
 
     public function getAsDto(): DashboardDto
     {
-        return new DashboardDto($this->faviconPath, $this->siteName, $this->translationDomain, $this->textDirection, $this->disabledActions, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->defaultTemplates);
+        return new DashboardDto($this->faviconPath, $this->siteName, $this->translationDomain, $this->textDirection, $this->disabledActions, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->defaultTemplates, $this->formThemes);
     }
 }

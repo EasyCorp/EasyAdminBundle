@@ -7,13 +7,15 @@ final class I18nDto
     private $locale;
     private $language;
     private $textDirection;
+    private $translationDomain;
     private $translationParameters;
 
-    public function __construct(string $locale, string $textDirection, array $translationParameters)
+    public function __construct(string $locale, string $textDirection, string $translationDomain, array $translationParameters)
     {
         $this->locale = $locale;
         $this->language = strtok($locale, '-_');
         $this->textDirection = $textDirection;
+        $this->translationDomain = $translationDomain;
         $this->translationParameters = $translationParameters;
     }
 
@@ -32,7 +34,12 @@ final class I18nDto
         return $this->textDirection;
     }
 
-    public function getTransParameters(): array
+    public function getTranslationDomain(): string
+    {
+        return $this->translationDomain;
+    }
+
+    public function getTranslationParams(): array
     {
         return $this->translationParameters;
     }

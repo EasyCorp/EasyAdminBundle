@@ -15,7 +15,7 @@ final class IndexPageConfig
     private $searchFields = [];
     private $paginatorFetchJoinCollection = true;
     private $paginatorUseOutputWalkers;
-    private $filters;
+    private $filters = null;
 
     public static function new(): self
     {
@@ -96,7 +96,7 @@ final class IndexPageConfig
         return $this;
     }
 
-    public function setFilters(array $filters): self
+    public function setFilters(?array $filters): self
     {
         $this->filters = $filters;
 

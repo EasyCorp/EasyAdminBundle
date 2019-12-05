@@ -4,16 +4,26 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 
 final class EntityRepository implements EntityRepositoryInterface
 {
     private $doctrine;
+    private $formFactory;
+    private $filterRegistry;
 
-    public function __construct(ManagerRegistry $doctrine)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, ManagerRegistry $doctrine, FormFactoryInterface $formFactory, FilterRegistry $filterRegistry)
     {
+        $this->applicationContextProvider = $applicationContextProvider;
         $this->doctrine = $doctrine;
+        $this->formFactory = $formFactory;
+        $this->filterRegistry = $filterRegistry;
     }
 
     public function createQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
@@ -26,8 +36,12 @@ final class EntityRepository implements EntityRepositoryInterface
             ->from($entityDto->getFqcn(), 'entity')
         ;
 
-        if (null !== $searchDto->getQuery()) {
+        if (!empty($searchDto->getQuery())) {
             $this->addSearchClause($queryBuilder, $searchDto, $entityDto);
+        }
+
+        if (!empty($searchDto->getFilters())) {
+            $this->addFilterClause($queryBuilder, $searchDto, $entityDto);
         }
 
         $this->addOrderClause($queryBuilder, $searchDto, $entityDto);
@@ -115,6 +129,39 @@ final class EntityRepository implements EntityRepositoryInterface
             } else {
                 $queryBuilder->addOrderBy('entity.'.$sortField, $sortOrder);
             }
+        }
+    }
+
+    private function addFilterClause(QueryBuilder $queryBuilder, SearchDto $searchDto): void
+    {
+        /** @var FormInterface $filtersForm */
+        $filtersForm = $this->formFactory->createNamed('filters', FiltersFormType::class, null, [
+            'method' => 'GET',
+            'action' => $this->applicationContextProvider->getContext()->getRequest()->query->get('referrer'),
+        ]);
+        $filtersForm->handleRequest($searchDto->getRequest());
+        if (!$filtersForm->isSubmitted()) {
+            return;
+        }
+
+        foreach ($filtersForm as $filterForm) {
+            $name = $filterForm->getName();
+            if (!in_array($name, $searchDto->getFilters())) {
+                // this filter is not applied
+                continue;
+            }
+
+            // if the form filter is not valid, don't apply the filter
+            if (!$filterForm->isValid()) {
+                continue;
+            }
+
+            // resolve the filter type related to this form field
+            $filterType = $this->filterRegistry->resolveType($filterForm);
+
+            // TODO: fix this
+            $metadata = ['property' => 'enabled']; //$this->entity['list']['filters'][$name] ?? [];
+            $filterType->filter($queryBuilder, $filterForm, $metadata);
         }
     }
 }

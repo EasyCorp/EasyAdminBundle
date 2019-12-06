@@ -66,6 +66,7 @@ class DefaultConfigPass implements ConfigPassInterface
      */
     private function findDefaultMenuItem(array $menuConfig)
     {
+        $firstItem = $menuConfig[0];
         foreach ($menuConfig as $itemConfig) {
             if (true === $itemConfig['default']) {
                 return $itemConfig;
@@ -78,7 +79,7 @@ class DefaultConfigPass implements ConfigPassInterface
             }
         }
 
-        return reset($menuConfig[0]);
+        return $firstItem;
     }
 
     /**

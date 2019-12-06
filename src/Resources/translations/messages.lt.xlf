@@ -25,7 +25,7 @@
             </trans-unit>
             <trans-unit id="action.save">
                 <source>action.save</source>
-                <target>Išsaugoti pakitimus</target>
+                <target>Išsaugoti pakeitimus</target>
             </trans-unit>
             <trans-unit id="action.cancel">
                 <source>action.cancel</source>

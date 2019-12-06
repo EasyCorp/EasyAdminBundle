@@ -34,7 +34,12 @@ class ExceptionListener
      */
     public function onKernelException($event)
     {
-        $exception = $event->getException();
+        if (method_exists($event, 'getThrowable')) {
+            $exception = $event->getThrowable();
+        } else {
+            $exception = $event->getException();
+        }
+
         if (!$exception instanceof BaseException) {
             return;
         }

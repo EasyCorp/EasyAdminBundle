@@ -597,9 +597,9 @@ trait AdminControllerTrait
 
         $this->get('easyadmin.property_accessor')->setValue($entity, $property, $value);
 
-        $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity, 'newValue' => $value]);
+        $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity, 'property' => $property, 'newValue' => $value]);
         $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);
-        $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity, 'newValue' => $value]);
+        $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity, 'property' => $property, 'newValue' => $value]);
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
     }

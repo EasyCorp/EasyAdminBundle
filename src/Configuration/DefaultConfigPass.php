@@ -46,7 +46,7 @@ class DefaultConfigPass implements ConfigPassInterface
     {
         $defaultMenuItem = $this->findDefaultMenuItem($backendConfig['design']['menu']);
 
-        if (\is_array($defaultMenuItem) && 'empty' === $defaultMenuItem['type']) {
+        if (null !== $defaultMenuItem && \is_array($defaultMenuItem) && 'empty' === $defaultMenuItem['type']) {
             throw new \RuntimeException(sprintf('The "menu" configuration sets "%s" as the default item, which is not possible because its type is "empty" and it cannot redirect to a valid URL.', $defaultMenuItem['label']));
         }
 
@@ -66,7 +66,6 @@ class DefaultConfigPass implements ConfigPassInterface
      */
     private function findDefaultMenuItem(array $menuConfig)
     {
-        $firstItem = $menuConfig[0];
         foreach ($menuConfig as $itemConfig) {
             if (true === $itemConfig['default']) {
                 return $itemConfig;
@@ -78,8 +77,6 @@ class DefaultConfigPass implements ConfigPassInterface
                 }
             }
         }
-
-        return $firstItem;
     }
 
     /**

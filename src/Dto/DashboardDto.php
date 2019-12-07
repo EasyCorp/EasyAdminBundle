@@ -2,13 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
-
 final class DashboardDto
 {
     use PropertyModifierTrait;
 
-    private $controllerInstance;
     private $routeName;
     private $faviconPath;
     private $siteName;
@@ -44,11 +41,6 @@ final class DashboardDto
     public function getRouteName(): string
     {
         return $this->routeName;
-    }
-
-    public function getInstance(): DashboardControllerInterface
-    {
-        return $this->controllerInstance;
     }
 
     public function getFaviconPath(): string

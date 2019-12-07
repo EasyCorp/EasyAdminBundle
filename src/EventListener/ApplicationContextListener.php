@@ -133,7 +133,7 @@ class ApplicationContextListener
         $entityDto = null === $crudDto ? null : $this->getDoctrineEntity($crudDto, $entityId);
         $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto, $entityDto);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $entityDto);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $dashboardControllerInstance, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $entityDto);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -156,10 +156,7 @@ class ApplicationContextListener
         return $dashboardControllerInstance
             ->configureDashboard()
             ->getAsDto()
-            ->withProperties([
-                'controllerInstance' => $dashboardControllerInstance,
-                'routeName' => $currentRouteName,
-            ]);
+            ->withProperties(['routeName' => $currentRouteName]);
     }
 
     private function getAssets(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetDto

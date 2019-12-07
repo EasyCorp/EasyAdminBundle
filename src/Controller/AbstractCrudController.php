@@ -74,7 +74,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public static function getSubscribedServices()
     {
         return array_merge(parent::getSubscribedServices(), [
-            'ea.authorization_checker' => '?'.AuthorizationChecker::class,
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
             'ea.context_provider' => '?'.ApplicationContextProvider::class,
             'ea.field_builder' => '?'.FieldBuilder::class,
@@ -95,8 +94,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             ->setItems(iterator_to_array($this->configureFields('index')))
             ->build();
 
-        $searchFields = $this->getContext()->getPage()->getSearchFields();
-        $searchDto = new SearchDto($this->getContext()->getRequest(), $this->getContext()->getPage()->getDefaultSort(), $fields, $searchFields, $this->getContext()->getPage()->getFilters());
+        $searchDto = new SearchDto($this->getContext(), $fields);
         $queryBuilder = $this->createIndexQueryBuilder($searchDto, $this->getContext()->getEntity());
         $pageNumber = $this->getContext()->getRequest()->query->get('page', 1);
         $maxPerPage = $this->getContext()->getPage()->getMaxResults();
@@ -221,21 +219,5 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'action' => $this->generateUrl('easyadmin', ['action' => 'batch', 'entity' => $entityName]),
             'entity' => $entityName,
         ]);
-    }
-
-    /**
-     * Filters the page fields to only display the ones which the current user
-     * has permission for.
-     *
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface[]
-     */
-    protected function getFields(string $page): iterable
-    {
-        /** @var \EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface $field */
-        foreach ($this->configureFields($page) as $field) {
-            if ($this->get('ea.authorization_checker')->isGranted($field->getPermission())) {
-                yield $field;
-            }
-        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,15 +20,15 @@ final class SearchDto
     /** @var string[]|null */
     private $filters;
 
-    public function __construct(Request $request, array $defaultSort, array $fields, ?array $searchFields, ?array $filters)
+    public function __construct(ApplicationContext $applicationContext, array $fields)
     {
-        $this->request = $request;
-        $this->defaultSort = $defaultSort;
+        $this->request = $request = $applicationContext->getRequest();
+        $this->defaultSort = $applicationContext->getPage()->getDefaultSort();
         $this->customSort = $request->query->get('sort', []);
         $this->query = $request->query->get('query');
+        $this->searchFields = $applicationContext->getPage()->getSearchFields();
+        $this->filters = $applicationContext->getPage()->getFilters();
         $this->fields = $fields;
-        $this->searchFields = $searchFields;
-        $this->filters = $filters;
     }
 
     public function getRequest(): Request

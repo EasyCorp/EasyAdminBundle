@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Builder\FieldBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
@@ -34,20 +35,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
-    protected $processedConfig;
-    private $applicationContextProvider;
-    private $eventDispatcher;
-    private $entityRepository;
-    private $entityPaginator;
-
-    public function __construct(ApplicationContextProvider $applicationContextProvider, EventDispatcherInterface $eventDispatcher, EntityRepositoryInterface $entityRepository, EntityPaginator $entityPaginator)
-    {
-        $this->applicationContextProvider = $applicationContextProvider;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->entityRepository = $entityRepository;
-        $this->entityPaginator = $entityPaginator;
-    }
-
     abstract public function configureCrud(): CrudConfig;
 
     public function configureAssets(): AssetConfig
@@ -88,25 +75,32 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         return array_merge(parent::getSubscribedServices(), [
             'ea.authorization_checker' => '?'.AuthorizationChecker::class,
+            'event_dispatcher' => '?'.EventDispatcherInterface::class,
+            'ea.context_provider' => '?'.ApplicationContextProvider::class,
+            'ea.field_builder' => '?'.FieldBuilder::class,
+            'ea.entity_paginator' => '?'.EntityPaginator::class,
+            'ea.entity_repository' => '?'.EntityRepositoryInterface::class,
         ]);
     }
 
     public function index(): Response
     {
         $event = new BeforeCrudActionEvent($this->getContext());
-        $this->eventDispatcher->dispatch($event);
+        $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
-        $fields = iterator_to_array($this->getFields('index'));
+        $fields = $this->get('ea.field_builder')
+            ->setItems(iterator_to_array($this->configureFields('index')))
+            ->build();
 
         $searchFields = $this->getContext()->getPage()->getSearchFields();
         $searchDto = new SearchDto($this->getContext()->getRequest(), $this->getContext()->getPage()->getDefaultSort(), $fields, $searchFields, $this->getContext()->getPage()->getFilters());
         $queryBuilder = $this->createIndexQueryBuilder($searchDto, $this->getContext()->getEntity());
         $pageNumber = $this->getContext()->getRequest()->query->get('page', 1);
         $maxPerPage = $this->getContext()->getPage()->getMaxResults();
-        $paginator = $this->entityPaginator->paginate($queryBuilder, $pageNumber, $maxPerPage);
+        $paginator = $this->get('ea.entity_paginator')->paginate($queryBuilder, $pageNumber, $maxPerPage);
 
         $parameters = [
             'paginator' => $paginator,
@@ -116,7 +110,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
-        $this->eventDispatcher->dispatch($event);
+        $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
@@ -129,7 +123,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
     {
-        return $this->entityRepository->createQueryBuilder($searchDto, $entityDto);
+        return $this->get('ea.entity_repository')->createQueryBuilder($searchDto, $entityDto);
     }
 
     public function showFilters(): Response
@@ -153,7 +147,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     public function detail(Request $request): Response
     {
         $event = new BeforeCrudActionEvent($this->getContext());
-        $this->eventDispatcher->dispatch($event);
+        $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
@@ -168,7 +162,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
-        $this->eventDispatcher->dispatch($event);
+        $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
@@ -190,7 +184,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     protected function getContext(): ?ApplicationContext
     {
-        return $this->applicationContextProvider->getContext();
+        return $this->get('ea.context_provider')->getContext();
     }
 
     /**

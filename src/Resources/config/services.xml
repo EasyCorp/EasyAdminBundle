@@ -8,14 +8,13 @@
             <tag name="cache.pool" />
         </service>
 
-        <service id="easyadmin.applicationcontext.provider" class="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" public="true">
+        <service id="ea.context_provider" class="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" public="true">
             <argument type="service" id="request_stack" />
         </service>
-
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" alias="easyadmin.applicationcontext.provider" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" alias="ea.context_provider" />
 
         <service id="easyadmin.paramconverter.applicationcontext" class="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextParamConverter" public="false">
-            <argument type="service" id="easyadmin.applicationcontext.provider" />
+            <argument type="service" id="ea.context_provider" />
             <tag name="request.param_converter" priority="10" converter="pageContext" />
         </service>
 
@@ -29,40 +28,44 @@
             <tag name="kernel.event_listener" event="kernel.controller" />
         </service>
 
-        <service id="easyadmin.orm.entity_repository" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository" public="false">
-            <argument type="service" id="easyadmin.applicationcontext.provider" />
+        <service id="ea.entity_repository" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository" public="false">
+            <argument type="service" id="ea.context_provider" />
             <argument type="service" id="doctrine" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="easyadmin.filter.registry" />
         </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface" alias="easyadmin.orm.entity_repository" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface" alias="ea.entity_repository" />
 
-        <service id="easyadmin.orm.entity_paginator" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator">
-            <argument type="service" id="easyadmin.applicationcontext.provider"/>
+        <service id="ea.entity_paginator" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator">
+            <argument type="service" id="ea.context_provider"/>
             <argument type="service" id="easyadmin.router.crud_url_generator"/>
         </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator" alias="easyadmin.orm.entity_paginator" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator" alias="ea.entity_paginator" />
 
         <service id="easyadmin.router.crud_url_generator" class="EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator" >
-            <argument type="service" id="easyadmin.applicationcontext.provider" />
+            <argument type="service" id="ea.context_provider" />
             <argument type="service" id="router.default" />
         </service>
 
         <service id="easyadmin.builder.action" class="EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder" public="false">
-            <argument type="service" id="easyadmin.applicationcontext.provider"></argument>
+            <argument type="service" id="ea.context_provider"></argument>
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <argument type="service" id="translator"></argument>
             <argument type="service" id="router"></argument>
         </service>
 
         <service id="easyadmin.builder.menu_item" class="EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder" public="false">
-            <argument type="service" id="easyadmin.applicationcontext.provider"></argument>
+            <argument type="service" id="ea.context_provider"></argument>
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <argument type="service" id="translator"></argument>
             <argument type="service" id="router"></argument>
             <argument type="service" id="security.logout_url_generator"></argument>
             <argument type="service" id="easyadmin.router.crud_url_generator"></argument>
         </service>
+
+        <service id="ea.field_builder" class="EasyCorp\Bundle\EasyAdminBundle\Builder\FieldBuilder" public="false">
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Builder\FieldBuilder" alias="ea.field_builder" />
 
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument>%easyadmin.config%</argument>

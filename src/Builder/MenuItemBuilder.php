@@ -96,14 +96,14 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $dashboardRouteName = $applicationContext->getDashboard()->getRouteName();
 
         foreach ($this->menuItems as $i => $menuItem) {
-            $menuItemContext = $menuItem->getAsDto();
-            if (false === $this->authChecker->isGranted($menuItemContext->getPermission())) {
+            $menuItemDto = $menuItem->getAsDto();
+            if (false === $this->authChecker->isGranted($menuItemDto->getPermission())) {
                 continue;
             }
 
             $subItems = [];
             /** @var MenuItem $menuSubItemConfig */
-            foreach ($menuItemContext->getSubItems() as $j => $menuSubItemConfig) {
+            foreach ($menuItemDto->getSubItems() as $j => $menuSubItemConfig) {
                 $menuSubItemContext = $menuSubItemConfig->getAsDto();
                 if (false === $this->authChecker->isGranted($menuSubItemContext->getPermission())) {
                     continue;
@@ -112,7 +112,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
                 $subItems[] = $this->buildMenuItem($menuSubItemContext, [], $i, $j, $defaultTranslationDomain, $dashboardRouteName);
             }
 
-            $builtItem = $this->buildMenuItem($menuItemContext, $subItems, $i, -1, $defaultTranslationDomain, $dashboardRouteName);
+            $builtItem = $this->buildMenuItem($menuItemDto, $subItems, $i, -1, $defaultTranslationDomain, $dashboardRouteName);
 
             $this->builtMenuItems[] = $builtItem;
         }
@@ -120,12 +120,12 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $this->isBuilt = true;
     }
 
-    private function buildMenuItem(MenuItemDto $menuItemContext, array $subItemsContext, int $index, int $subIndex, string $defaultTranslationDomain, string $dashboardRouteName): MenuItemDto
+    private function buildMenuItem(MenuItemDto $menuItemDto, array $subItemsContext, int $index, int $subIndex, string $defaultTranslationDomain, string $dashboardRouteName): MenuItemDto
     {
-        $label = $this->translator->trans($menuItemContext->getLabel(), [], $menuItemContext->getTranslationDomain() ?? $defaultTranslationDomain);
-        $url = $this->generateMenuItemUrl($menuItemContext, $dashboardRouteName, $index, $subIndex);
+        $label = $this->translator->trans($menuItemDto->getLabel(), [], $menuItemDto->getTranslationDomain() ?? $defaultTranslationDomain);
+        $url = $this->generateMenuItemUrl($menuItemDto, $dashboardRouteName, $index, $subIndex);
 
-        return $menuItemContext->withProperties([
+        return $menuItemDto->with([
             'index' => $index,
             'subIndex' => $subIndex,
             'label' => $label,

@@ -31,7 +31,7 @@ final class CrudDto
         $this->formThemes = $formThemes;
     }
 
-    public function getEntityClass(): string
+    public function getEntityFqcn(): string
     {
         return $this->entityFqcn;
     }

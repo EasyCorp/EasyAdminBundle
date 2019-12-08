@@ -6,8 +6,9 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Entity;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter;
 use Symfony\Component\HttpKernel\Kernel;
@@ -170,20 +171,20 @@ class EasyAdminTwigExtension extends AbstractExtension
     /**
      * Renders the value stored in a property of the given entity.
      */
-    public function renderCrudField(Environment $twig, FieldInterface $field, EntityDto $entityDto): string
+    public function renderCrudField(Environment $twig, PropertyDto $fieldDto, EntityDto $entityDto): string
     {
         /** @var ApplicationContext $applicationContext */
         $applicationContext = $twig->getGlobals()['ea'];
-        $hasCustomTemplate = null !== $field->getCustomTemplatePath();
+        $hasCustomTemplate = null !== $fieldDto->getCustomTemplatePath();
         $templateParameters = [];
 
         try {
-            $templateParameters = $this->getTemplateParameters($entityDto, $field);
-            $templateParameters = array_merge($templateParameters, $field->getCustomTemplateParams());
+            $templateParameters = $this->getTemplateParameters($entityDto, $fieldDto);
+            $templateParameters = array_merge($templateParameters, $fieldDto->getCustomTemplateParams());
 
             // if the field defines a custom template, render it (no matter if the value is null or inaccessible)
             if ($hasCustomTemplate) {
-                return $twig->render($field->getCustomTemplatePath(), $templateParameters);
+                return $twig->render($fieldDto->getCustomTemplatePath(), $templateParameters);
             }
 
             if (false === $templateParameters['is_accessible']) {
@@ -194,11 +195,11 @@ class EasyAdminTwigExtension extends AbstractExtension
                 return $twig->render($applicationContext->getTemplate('label_null'), $templateParameters);
             }
 
-            if (empty($templateParameters['value']) && \in_array($field->getType(), ['image', 'file', 'array', 'simple_array'])) {
+            if (empty($templateParameters['value']) && \in_array($fieldDto->getType(), ['image', 'file', 'array', 'simple_array'])) {
                 return $twig->render($applicationContext->getTemplate('label_empty'), $templateParameters);
             }
 
-            return $twig->render($field->getDefaultTemplatePath(), $templateParameters);
+            return $twig->render($fieldDto->getDefaultTemplatePath(), $templateParameters);
         } catch (\Exception $e) {
             if ($this->debug) {
                 throw $e;
@@ -260,10 +261,10 @@ class EasyAdminTwigExtension extends AbstractExtension
         }
     }
 
-    private function getTemplateParameters(EntityDto $entityDto, FieldInterface $field)
+    private function getTemplateParameters(EntityDto $entityDto, PropertyDto $fieldDto)
     {
-        if ($entityDto->hasProperty($field->getProperty())) {
-            $fieldMetadata = array_merge($entityDto->getPropertyMetadata($field->getProperty()), ['virtual' => false]);
+        if ($entityDto->hasProperty($fieldDto->getName())) {
+            $fieldMetadata = array_merge($entityDto->getPropertyMetadata($fieldDto->getName()), ['virtual' => false]);
         } else {
             $fieldMetadata = ['virtual' => true];
         }
@@ -273,32 +274,32 @@ class EasyAdminTwigExtension extends AbstractExtension
             'item' => $entityDto->getInstance(),
         ];
 
-        if ($this->propertyAccessor->isReadable($entityDto->getInstance(), $field->getProperty())) {
-            $parameters['value'] = $this->propertyAccessor->getValue($entityDto->getInstance(), $field->getProperty());
+        if ($this->propertyAccessor->isReadable($entityDto->getInstance(), $fieldDto->getName())) {
+            $parameters['value'] = $this->propertyAccessor->getValue($entityDto->getInstance(), $fieldDto->getName());
             $parameters['is_accessible'] = true;
         } else {
             $parameters['value'] = null;
             $parameters['is_accessible'] = false;
         }
 
-        if ('image' === $field->getType()) {
+        if ('image' === $fieldDto->getType()) {
             $parameters = $this->addImageFieldParameters($parameters);
         }
 
-        if ('file' === $field->getType()) {
+        if ('file' === $fieldDto->getType()) {
             $parameters = $this->addFileFieldParameters($parameters);
         }
 
-        if ('association' === $field->getType()) {
+        if ('association' === $fieldDto->getType()) {
             $parameters = $this->addAssociationFieldParameters($parameters);
         }
 
-        if ('country' === $field->getType()) {
+        if ('country' === $fieldDto->getType()) {
             $parameters['value'] = null !== $parameters['value'] ? strtoupper($parameters['value']) : null;
             $parameters['country_name'] = $this->getCountryName($parameters['value']);
         }
 
-        if ('avatar' === $field->getType()) {
+        if ('avatar' === $fieldDto->getType()) {
             $parameters['image_height'] = $fieldMetadata['height'];
 
             if ($fieldMetadata['is_image_url'] ?? false) {

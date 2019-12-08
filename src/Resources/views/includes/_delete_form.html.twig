@@ -17,8 +17,8 @@
                     <span class="btn-label">{{ 'action.cancel'|trans(ea.i18n.translationParams, ea.dashboard.translationDomain) }}</span>
                 </button>
 
-                {% if easyadmin_action_is_enabled(view, 'delete', ea.entity.shortClassName) %}
-                    {% set _delete_action = easyadmin_get_action(view, 'delete', ea.entity.shortClassName) %}
+                {% if easyadmin_action_is_enabled(view, 'delete', entity.name) %}
+                    {% set _delete_action = easyadmin_get_action(view, 'delete', entity.name) %}
                     <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button" formtarget="{{ _delete_action.target }}">
                         {% if _delete_action.icon %}<i class="fa fa-fw fa-{{ _delete_action.icon }}"></i>{% endif %}
                         <span class="btn-label">{{ 'delete_modal.action'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}</span>

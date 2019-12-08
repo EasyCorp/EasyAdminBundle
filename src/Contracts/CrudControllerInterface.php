@@ -19,9 +19,9 @@ interface CrudControllerInterface
     public function configureDetailPage(): DetailPageConfig;
 
     /**
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface[]
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\PropertyInterface[]
      */
-    public function configureFields(string $page): iterable;
+    public function configureProperties(string $page): iterable;
 
     public function index(): Response;
 }

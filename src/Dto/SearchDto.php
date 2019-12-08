@@ -2,8 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\PropertyInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,22 +14,22 @@ final class SearchDto
     private $defaultSort;
     private $customSort;
     private $query;
-    /** @var FieldInterface[] */
-    private $fields;
+    /** @var PropertyDtoCollection */
+    private $properties;
     /** @var string[]|null */
-    private $searchFields;
+    private $searchProperties;
     /** @var string[]|null */
     private $filters;
 
-    public function __construct(ApplicationContext $applicationContext, array $fields)
+    public function __construct(ApplicationContext $applicationContext, PropertyDtoCollection $properties)
     {
         $this->request = $request = $applicationContext->getRequest();
         $this->defaultSort = $applicationContext->getPage()->getDefaultSort();
         $this->customSort = $request->query->get('sort', []);
         $this->query = $request->query->get('query');
-        $this->searchFields = $applicationContext->getPage()->getSearchFields();
+        $this->searchProperties = $applicationContext->getPage()->getSearchFields();
         $this->filters = $applicationContext->getPage()->getFilters();
-        $this->fields = $fields;
+        $this->properties = $properties;
     }
 
     public function getRequest(): Request
@@ -40,11 +41,11 @@ final class SearchDto
     {
         // we can't use an array_merge() call because $customSort has more priority
         // than $defaultSort, so the default sort must only be applied if there's
-        // not already a custom sort config for the same field
+        // not already a custom sort config for the same property
         $mergedSort = $this->customSort;
-        foreach ($this->defaultSort as $fieldName => $order) {
-            if (!array_key_exists($fieldName, $mergedSort)) {
-                $mergedSort[$fieldName] = $order;
+        foreach ($this->defaultSort as $propertyName => $order) {
+            if (!array_key_exists($propertyName, $mergedSort)) {
+                $mergedSort[$propertyName] = $order;
             }
         }
 
@@ -56,24 +57,21 @@ final class SearchDto
         return $this->query;
     }
 
-    /**
-     * @return FieldInterface[]
-     */
-    public function getSearchableFields(): array
+    public function getSearchableProperties(): PropertyDtoCollection
     {
-        if (empty($this->searchFields)) {
-            return $this->fields;
+        if (empty($this->searchProperties)) {
+            return $this->properties;
         }
 
         // TODO: check the 'permission' of the field before using it
-        $fields = [];
-        foreach ($this->fields as $field) {
-            if (in_array($field->getProperty(), $this->searchFields, true)) {
-                $fields[] = $field;
+        $propertiesDto = [];
+        foreach ($this->properties as $propertyDto) {
+            if (in_array($propertyDto->getName(), $this->searchProperties, true)) {
+                $propertiesDto[] = $propertyDto;
             }
         }
 
-        return $fields;
+        return $propertiesDto;
     }
 
     public function getFilters(): ?array

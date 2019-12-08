@@ -39,10 +39,9 @@ class ApplicationContextListener
     private $menuBuilder;
     private $actionBuilder;
 
-    public function __construct(ControllerResolverInterface $controllerResolver, Registry $doctrine, Environment $twig, ?TokenStorageInterface $tokenStorage, ItemCollectionBuilderInterface $menuBuilder, $actionBuilder)
+    public function __construct(ControllerResolverInterface $controllerResolver, Environment $twig, ?TokenStorageInterface $tokenStorage, ItemCollectionBuilderInterface $menuBuilder, $actionBuilder)
     {
         $this->controllerResolver = $controllerResolver;
-        $this->doctrine = $doctrine;
         $this->twig = $twig;
         $this->tokenStorage = $tokenStorage;
         $this->menuBuilder = $menuBuilder;
@@ -129,11 +128,10 @@ class ApplicationContextListener
         $dashboardDto = $this->getDashboard($event);
         $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
         $crudDto = $this->getCrudConfig($crudControllerInstance);
-        $crudPageDto = $this->getPageConfig($crudControllerInstance, $crudAction);
-        $entityDto = null === $crudDto ? null : $this->getDoctrineEntity($crudDto, $entityId);
-        $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto, $entityDto);
+        $crudPageDto = $this->getCrudPageConfig($crudControllerInstance, $crudAction);
+        $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $dashboardControllerInstance, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $entityDto);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $dashboardControllerInstance, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -156,7 +154,7 @@ class ApplicationContextListener
         return $dashboardControllerInstance
             ->configureDashboard()
             ->getAsDto()
-            ->withProperties(['routeName' => $currentRouteName]);
+            ->with(['routeName' => $currentRouteName]);
     }
 
     private function getAssets(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetDto
@@ -181,7 +179,7 @@ class ApplicationContextListener
         return $crudController->configureCrud()->getAsDto();
     }
 
-    private function getPageConfig(?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
+    private function getCrudPageConfig(?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
     {
         $pageConfigMethodName = 'configure'.ucfirst($crudAction).'Page';
         if (null === $crudController || !method_exists($crudController, $pageConfigMethodName)) {
@@ -191,48 +189,7 @@ class ApplicationContextListener
         return $crudController->{$pageConfigMethodName}()->getAsDto();
     }
 
-    private function getDoctrineEntity(CrudDto $crudDto, $entityId): ?EntityDto
-    {
-        if (null === $entityFqcn = $crudDto->getEntityClass()) {
-            return null;
-        }
-
-        $entityManager = $this->getEntityManager($entityFqcn);
-        $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
-        if (1 !== count($entityMetadata->getIdentifierFieldNames())) {
-            throw new \RuntimeException('EasyAdmin does not support Doctrine entities with composite primary keys.');
-        }
-
-        if (null === $entityId) {
-            return new EntityDto($entityFqcn, $entityMetadata);
-        }
-
-        $entityInstance = $this->getEntityInstance($entityManager, $entityFqcn, $entityId);
-
-        return new EntityDto($entityFqcn, $entityMetadata, $entityInstance, $entityId);
-    }
-
-    private function getEntityManager(string $entityClass): ObjectManager
-    {
-        if (null === $entityManager = $this->doctrine->getManagerForClass($entityClass)) {
-            throw new \RuntimeException(sprintf('There is no Doctrine Entity Manager defined for the "%s" class', $entityClass));
-        }
-
-        return $entityManager;
-    }
-
-    private function getEntityInstance(ObjectManager $entityManager, string $entityClass, $entityIdValue)
-    {
-        if (null === $entityInstance = $entityManager->getRepository($entityClass)->find($entityIdValue)) {
-            $entityIdName = $entityManager->getClassMetadata($entityClass)->getIdentifierFieldNames()[0];
-
-            throw new EntityNotFoundException(['entity_name' => $entityClass, 'entity_id_name' => $entityIdName, 'entity_id_value' => $entityIdValue]);
-        }
-
-        return $entityInstance;
-    }
-
-    private function getI18nConfig(Request $request, DashboardDto $dashboardDto, ?CrudDto $crudDto, ?EntityDto $entityDto): I18nDto
+    private function getI18nConfig(Request $request, DashboardDto $dashboardDto, ?CrudDto $crudDto): I18nDto
     {
         $locale = $request->getLocale();
 
@@ -247,10 +204,6 @@ class ApplicationContextListener
         if (null !== $crudDto) {
             $translationParameters['%entity_label_singular%'] = $crudDto->getLabelInSingular();
             $translationParameters['%entity_label_plural%'] = $crudDto->getLabelInPlural();
-        }
-        if (null !== $entityDto) {
-            $translationParameters['%entity_name%'] = $entityDto->getShortClassName();
-            $translationParameters['%entity_id%'] = $entityDto->getIdValue();
         }
 
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);

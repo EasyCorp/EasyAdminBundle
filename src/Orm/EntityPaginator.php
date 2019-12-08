@@ -6,7 +6,9 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityViewBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityViewDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
 final class EntityPaginator
@@ -108,7 +110,7 @@ final class EntityPaginator
         return $this->numResults;
     }
 
-    public function getResults(): ?\Traversable
+    public function getResults(): ?iterable
     {
         return $this->results;
     }

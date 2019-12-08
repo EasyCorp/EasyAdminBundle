@@ -11,7 +11,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
@@ -32,6 +31,7 @@ final class ApplicationContext
     private $tokenStorage;
     private $i18nDto;
     private $dashboardDto;
+    private $dashboardControllerInstance;
     private $menuBuilder;
     private $mainMenuDto;
     private $userMenuDto;
@@ -39,20 +39,19 @@ final class ApplicationContext
     private $assetDto;
     private $crudDto;
     private $crudPageDto;
-    private $entityDto;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, I18nDto $i18nDto, DashboardDto $dashboardDto, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto, ?EntityDto $entityDto)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
         $this->i18nDto = $i18nDto;
         $this->dashboardDto = $dashboardDto;
+        $this->dashboardControllerInstance = $dashboardController;
         $this->menuBuilder = $menuBuilder;
         $this->actionBuilder = $actionBuilder;
         $this->assetDto = $assetDto;
         $this->crudDto = $crudDto;
         $this->crudPageDto = $crudPageDto;
-        $this->entityDto = $entityDto;
     }
 
     public function getRequest(): Request
@@ -98,7 +97,7 @@ final class ApplicationContext
             return $this->mainMenuDto;
         }
 
-        $mainMenuItems = iterator_to_array($this->getDashboard()->getInstance()->getMenuItems());
+        $mainMenuItems = iterator_to_array($this->dashboardControllerInstance->getMenuItems());
         $builtMainMenuItems = $this->menuBuilder->setItems($mainMenuItems)->build();
 
         $selectedMenuIndex = $this->getRequest()->query->getInt('menuIndex', -1);
@@ -117,11 +116,11 @@ final class ApplicationContext
             return $this->userMenuDto;
         }
 
-        $userMenuConfig = $this->getDashboard()->getInstance()->configureUserMenu($this->getUser());
+        $userMenuConfig = $this->dashboardControllerInstance->configureUserMenu($this->getUser());
         $userMenuDto = $userMenuConfig->getAsDto();
         $builtUserMenuItems = $this->menuBuilder->setItems($userMenuDto->getItems())->build();
 
-        return $this->userMenuDto = $userMenuDto->withProperties([
+        return $this->userMenuDto = $userMenuDto->with([
             'items' => $builtUserMenuItems,
         ]);
     }
@@ -134,11 +133,6 @@ final class ApplicationContext
     public function getPage(): ?CrudPageDto
     {
         return $this->crudPageDto;
-    }
-
-    public function getEntity(): ?EntityDto
-    {
-        return $this->entityDto;
     }
 
     public function getTemplate(string $templateName): string
@@ -164,6 +158,7 @@ final class ApplicationContext
      */
     public function getActions(): ?array
     {
+        return [];
         if (null === $this->crudPageDto) {
             return [];
         }

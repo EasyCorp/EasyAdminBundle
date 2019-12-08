@@ -22,9 +22,9 @@ class CrudConfig
         return new self();
     }
 
-    public function setEntityClass(string $entityFqcn): self
+    public function setEntityFqcn(string $fqcn): self
     {
-        $this->entityFqcn = $entityFqcn;
+        $this->entityFqcn = $fqcn;
 
         return $this;
     }

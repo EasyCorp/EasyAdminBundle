@@ -12,7 +12,7 @@ final class IndexPageConfig
     private $defaultSort = [];
     private $maxResults = 15;
     private $itemPermission;
-    private $searchFields = [];
+    private $searchProperties = [];
     private $paginatorFetchJoinCollection = true;
     private $paginatorUseOutputWalkers;
     private $filters = null;
@@ -75,9 +75,9 @@ final class IndexPageConfig
         return $this;
     }
 
-    public function setSearchFields(?array $fieldNames): self
+    public function setSearchProperties(?array $propertyNames): self
     {
-        $this->searchFields = $fieldNames;
+        $this->searchProperties = $propertyNames;
 
         return $this;
     }
@@ -105,6 +105,6 @@ final class IndexPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->maxResults, $this->itemPermission, $this->searchFields, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers, $this->filters);
+        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->maxResults, $this->itemPermission, $this->searchProperties, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers, $this->filters);
     }
 }

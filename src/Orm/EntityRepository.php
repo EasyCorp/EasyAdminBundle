@@ -67,12 +67,12 @@ final class EntityRepository implements EntityRepositoryInterface
         ];
 
         $entitiesAlreadyJoined = [];
-        foreach ($searchDto->getSearchableFields() as $field) {
+        foreach ($searchDto->getSearchableProperties() as $property) {
             $entityName = 'entity';
-            $PropertyDataType = $entityDto->getDataType($field->getProperty());
-            $propertyName = $field->getProperty();
+            $PropertyDataType = $entityDto->getPropertyDataType($property->getName());
+            $propertyName = $property->getName();
 
-            if ($entityDto->isAssociation($field->getProperty())) {
+            if ($entityDto->isAssociationProperty($property->getName())) {
                 // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
                 $associatedProperties = explode('.', $propertyName);
                 for ($i = 0; $i < \count($associatedProperties) - 1; ++$i) {
@@ -119,15 +119,15 @@ final class EntityRepository implements EntityRepositoryInterface
 
     private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
     {
-        foreach ($searchDto->getSort() as $sortField => $sortOrder) {
-            $sortFieldIsDoctrineAssociation = $entityDto->isAssociation($sortField);
+        foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
+            $sortFieldIsDoctrineAssociation = $entityDto->isAssociationProperty($sortProperty);
 
             if ($sortFieldIsDoctrineAssociation) {
-                $sortFieldParts = explode('.', $sortField, 2);
+                $sortFieldParts = explode('.', $sortProperty, 2);
                 $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
-                $queryBuilder->addOrderBy($sortField, $sortOrder);
+                $queryBuilder->addOrderBy($sortProperty, $sortOrder);
             } else {
-                $queryBuilder->addOrderBy('entity.'.$sortField, $sortOrder);
+                $queryBuilder->addOrderBy('entity.'.$sortProperty, $sortOrder);
             }
         }
     }

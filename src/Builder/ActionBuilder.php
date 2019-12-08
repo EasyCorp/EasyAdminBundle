@@ -89,7 +89,7 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
             $translatedActionLabel = $this->translator->trans($actionContext->getLabel(), $actionContext->getTranslationParameters(), $actionContext->getTranslationDomain() ?? $defaultTranslationDomain);
             $translatedActionHtmlTitle = $this->translator->trans($actionContext->getLinkTitleAttribute(), $actionContext->getTranslationParameters(), $actionContext->getTranslationDomain() ?? $defaultTranslationDomain);
 
-            $this->builtActions[] = $actionContext->withProperties([
+            $this->builtActions[] = $actionContext->with([
                 'label' => $translatedActionLabel,
                 'linkUrl' => $generatedActionUrl,
                 'linkTitleAttribute' => $translatedActionHtmlTitle,

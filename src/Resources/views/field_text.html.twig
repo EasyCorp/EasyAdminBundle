@@ -1,6 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
 {% if ea.page.name == 'detail' %}
-    {{ value|nl2br }}
+    {{ property.value|nl2br|easyadmin_truncate() }}
 {% else %}
-    {{ value|striptags|easyadmin_truncate }}
+    {{ property.value|striptags|easyadmin_truncate() }}
 {% endif %}

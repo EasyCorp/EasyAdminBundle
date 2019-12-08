@@ -1,10 +1,11 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
-{# @var fields \EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface[] #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{# @var fields \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto[] #}
 {% extends ea.template('layout') %}
 {% trans_default_domain ea.dashboard.translationDomain %}
 
-{% block body_id 'easyadmin-detail-' ~ ea.entity.shortClassName ~ '-' ~ ea.entity.idValue %}
-{% block body_class 'detail detail-' ~ ea.entity.shortClassName %}
+{% block body_id 'easyadmin-detail-' ~ entity.name ~ '-' ~ entity.idValue %}
+{% block body_class 'detail detail-' ~ entity.name %}
 
 {% block content_title %}
     {% apply spaceless %}
@@ -18,19 +19,19 @@
 {% block main %}
     <div class="form-horizontal">
         {% block show_fields %}
-            {% for field in fields %}
+            {% for property in entity.properties %}
                 {% block show_field %}
-                    <div class="form-group field-{{ field.type|lower }} {{ field.cssClass ?? '' }}">
+                    <div class="form-group field-{{ property.type }} {{ property.cssClass ?? '' }}">
                         <label class="control-label">
-                            {{ field.label|trans(ea.i18n.translationParams)|raw }}
+                            {{ property.label|raw }}
                         </label>
                         <div class="form-widget">
                             <div class="form-control">
-                                {{ ea_render_field(field, ea.entity) }}
+                                {{ include(property.templatePath, { property: property }, with_context = false) }}
                             </div>
 
-                            {% if field.help is not empty %}
-                                <small class="form-help"><i class="fa fa-fw fa-info-circle"></i> {{ field.help|trans|raw }}</small>
+                            {% if property.help is not empty %}
+                                <small class="form-help"><i class="fa fa-fw fa-info-circle"></i> {{ property.help|raw }}</small>
                             {% endif %}
                         </div>
                     </div>

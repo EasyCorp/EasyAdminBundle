@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
-{# @var fields \EasyCorp\Bundle\EasyAdminBundle\Contracts\FieldInterface[] #}
+{# @var fields \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto[] #}
 {# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
 {% extends ea.template('layout') %}
 {% trans_default_domain ea.dashboard.translationDomain %}
@@ -9,8 +9,8 @@
 {% set _has_batch_actions = batch_form is defined and batch_form.vars.batch_actions|length > 0 %}
 #}
 
-{% block body_id 'easyadmin-index-' ~ ea.entity.shortClassName %}
-{% block body_class 'index index-' ~ ea.entity.shortClassName %}
+{% block body_id 'easyadmin-index-' ~ entities|first.name %}
+{% block body_class 'index index-' ~ entities|first.name %}
 
 {% block content_title %}
     {% apply spaceless %}
@@ -126,19 +126,18 @@
                 #}
 
 
-                {% for field in fields %}
-                    {% set isSortingField = (field.property == sort_field_name) or ('association' == field.type and sort_field_name starts with field.property ~ '.') %}
-                    {% set nextSortDirection = isSortingField ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
-                    {% set column_label = field.label|trans(ea.i18n.translationParams) %}
-                    {% set column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
+                {% for property in entities|first.properties %}
+                    {% set isSortingProperty = (property.name == sort_field_name) or ('association' == property.type and sort_field_name starts with property.name ~ '.') %}
+                    {% set nextSortDirection = isSortingProperty ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
+                    {% set column_icon = isSortingProperty ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
-                    <th class="{{ isSortingField ? 'sorted' }} {# metadata.virtual ? 'virtual' #} {# metadata.dataType|lower #} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
-                        {% if field.sortable %}
-                            <a href="{{ ea_path({ page: 1, sort: { (field.property): nextSortDirection }}) }}">
-                                {{ column_label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
+                    <th class="{{ isSortingProperty ? 'sorted' }} {# metadata.virtual ? 'virtual' #} {{ property.type }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                        {% if property.isSortable %}
+                            <a href="{{ ea_path({ page: 1, sort: { (property.name): nextSortDirection }}) }}">
+                                {{ property.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                             </a>
                         {% else %}
-                            <span>{{ column_label|raw }}</span>
+                            <span>{{ property.label|raw }}</span>
                         {% endif %}
                     </th>
                 {% endfor %}
@@ -158,20 +157,20 @@
 
         <tbody>
         {% block table_body %}
-            {% for entity in paginator.results %}
+            {% for entity in entities %}
                 {% if not easyadmin_is_granted(ea.page.itemPermission, entity) %}
                     {% set some_results_are_hidden = true %}
                 {% else %}
-                    <tr data-id="{{ ea.entity.idValueAsString }}">
+                    <tr data-id="{{ entity.idValueAsString }}">
                     {#
                         {% if _has_batch_actions %}
                             <td><input type="checkbox" class="form-batch-checkbox" value="{{ _item_id }}"></td>
                         {% endif %}
                     #}
 
-                    {% for field in fields %}
-                        <td class="{{ field.property == sort_field_name ? 'sorted' }} {{ field.type|lower }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
-                            {{ ea_render_field(field, ea.entity.withProperties({ entityInstance: entity })) }}
+                    {% for property in entity.properties %}
+                        <td class="{{ property.name == sort_field_name ? 'sorted' }} {{ property.type|lower }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                            {{ include(property.templatePath, { property: property }, with_context = false) }}
                         </td>
                     {% endfor %}
 

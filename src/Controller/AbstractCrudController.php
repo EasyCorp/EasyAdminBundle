@@ -3,7 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Builder\FieldBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityViewBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
@@ -14,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contacts\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
@@ -45,7 +48,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     /**
      * @inheritDoc
      */
-    abstract public function configureFields(string $page): iterable;
+    abstract public function configureProperties(string $page): iterable;
 
     public function configureIndexPage(): IndexPageConfig
     {
@@ -76,9 +79,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return array_merge(parent::getSubscribedServices(), [
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
             'ea.context_provider' => '?'.ApplicationContextProvider::class,
-            'ea.field_builder' => '?'.FieldBuilder::class,
             'ea.entity_paginator' => '?'.EntityPaginator::class,
+            'ea.entity_builder' => '?'.EntityBuilder::class,
+            'ea.entity_view_builder' => '?'.EntityViewBuilder::class,
             'ea.entity_repository' => '?'.EntityRepositoryInterface::class,
+            'ea.property_builder' => '?'.PropertyBuilder::class,
         ]);
     }
 
@@ -90,20 +95,27 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $fields = $this->get('ea.field_builder')
-            ->setItems(iterator_to_array($this->configureFields('index')))
-            ->build();
+        $propertiesConfig = iterator_to_array($this->configureProperties('index'));
+        $propertiesDto = $this->get('ea.property_builder')->setItems($propertiesConfig)->build();
 
-        $searchDto = new SearchDto($this->getContext(), $fields);
-        $queryBuilder = $this->createIndexQueryBuilder($searchDto, $this->getContext()->getEntity());
+        $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
+        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn);
+
+        $searchDto = new SearchDto($this->getContext(), $propertiesDto);
+        $queryBuilder = $this->createIndexQueryBuilder($searchDto, $entityDto);
         $pageNumber = $this->getContext()->getRequest()->query->get('page', 1);
         $maxPerPage = $this->getContext()->getPage()->getMaxResults();
         $paginator = $this->get('ea.entity_paginator')->paginate($queryBuilder, $pageNumber, $maxPerPage);
 
+        $entityInstances = iterator_to_array($paginator->getResults());
+        $entitiesDto = $this->get('ea.entity_builder')->buildAll($entityDto, $entityInstances);
+        $entitiesDto = $this->get('ea.property_builder')
+            ->setItems($propertiesConfig)->buildForMultipleEntities($entitiesDto);
+
         $parameters = [
+            'entities' => $entitiesDto,
             'paginator' => $paginator,
-            'fields' => $fields,
-            'batch_form' => $this->createBatchForm($this->getContext()->getEntity()->getFqcn())->createView(),
+            'batch_form' => $this->createBatchForm($entityFqcn)->createView(),
             'delete_form_template' => $this->createDeleteForm('__id__')->createView(),
         ];
 
@@ -142,7 +154,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         );
     }
 
-    public function detail(Request $request): Response
+    public function detail(): Response
     {
         $event = new BeforeCrudActionEvent($this->getContext());
         $this->get('event_dispatcher')->dispatch($event);
@@ -150,12 +162,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $fields = $this->getFields('detail');
-        $entityId = $request->query->get('entityId');
+        $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
+        $entityId = $this->getContext()->getRequest()->query->get('entityId');
+        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityId);
+
+        $propertiesConfig = iterator_to_array($this->configureProperties('detail'));
+        $entityDto = $this->get('ea.property_builder')->setItems($propertiesConfig)->buildForEntity($entityDto);
+
         $deleteForm = $this->createDeleteForm($entityId);
 
         $parameters = [
-            'fields' => $fields,
+            'entity' => $entityDto,
             'delete_form' => $deleteForm->createView(),
         ];
 

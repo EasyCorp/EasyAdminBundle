@@ -27,11 +27,15 @@ final class EntityPaginator
         $this->crudRouter = $crudRouter;
     }
 
-    public function paginate(QueryBuilder $queryBuilder, int $page = 1, int $pageSize = 15): self
+    public function paginate(QueryBuilder $queryBuilder): self
     {
+        $applicationContext = $this->applicationContextProvider->getContext();
+        $pageNumber = $applicationContext->getRequest()->query->get('page', 1);
+        $pageSize = $applicationContext->getPage()->getMaxResults();
+
         $this->queryBuilder = $queryBuilder;
         $this->pageSize = $pageSize;
-        $this->currentPage = \max(1, $page);
+        $this->currentPage = \max(1, $pageNumber);
         $firstResult = ($this->currentPage - 1) * $this->pageSize;
 
         /** @var Query $query */
@@ -44,8 +48,8 @@ final class EntityPaginator
             $query->setHint(CountWalker::HINT_DISTINCT, false);
         }
 
-        $fetchJoinCollection = $this->applicationContextProvider->getContext()->getPage()->getPaginatorFetchJoinCollection();
-        $useOutputWalkers = $this->applicationContextProvider->getContext()->getPage()->getPaginatorUseOutputWalkers();
+        $fetchJoinCollection = $applicationContext->getPage()->getPaginatorFetchJoinCollection();
+        $useOutputWalkers = $applicationContext->getPage()->getPaginatorUseOutputWalkers();
 
         $paginator = new Paginator($query, $fetchJoinCollection);
 

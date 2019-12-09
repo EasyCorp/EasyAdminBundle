@@ -9,15 +9,15 @@ final class CrudPageDto
     private $help;
     private $actions;
     private $defaultSort;
-    private $maxResults;
     private $itemPermission;
     private $searchFields;
+    private $paginatorPageSize;
     private $paginatorFetchJoinCollection;
     private $paginatorUseOutputWalkers;
     private $filters;
     private $formOptions;
 
-    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, int $maxResults, ?string $itemPermission, ?array $searchFields, bool $paginatorFetchJoinCollection, ?bool $paginatorUseOutputWalkers, ?array $filters): self
+    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $itemPermission, ?array $searchFields, int $paginatorPageSize, bool $paginatorFetchJoinCollection, ?bool $paginatorUseOutputWalkers, ?array $filters): self
     {
         $context = new self();
 
@@ -25,9 +25,9 @@ final class CrudPageDto
         $context->title = $title;
         $context->help = $help;
         $context->defaultSort = $defaultSort;
-        $context->maxResults = $maxResults;
         $context->itemPermission = $itemPermission;
         $context->searchFields = $searchFields;
+        $context->paginatorPageSize = $paginatorPageSize;
         $context->paginatorFetchJoinCollection = $paginatorFetchJoinCollection;
         $context->paginatorUseOutputWalkers = $paginatorUseOutputWalkers;
         $context->filters = $filters;
@@ -84,11 +84,6 @@ final class CrudPageDto
         return $this->defaultSort;
     }
 
-    public function getMaxResults(): ?int
-    {
-        return $this->maxResults;
-    }
-
     public function getItemPermission(): ?string
     {
         return $this->itemPermission;
@@ -112,6 +107,11 @@ final class CrudPageDto
     public function isFilterEnabled(): bool
     {
         return null !== $this->filters;
+    }
+
+    public function getPaginatorPageSize(): ?int
+    {
+        return $this->paginatorPageSize;
     }
 
     public function getPaginatorFetchJoinCollection(): bool

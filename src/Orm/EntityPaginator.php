@@ -31,7 +31,7 @@ final class EntityPaginator
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $pageNumber = $applicationContext->getRequest()->query->get('page', 1);
-        $pageSize = $applicationContext->getPage()->getMaxResults();
+        $pageSize = $applicationContext->getPage()->getPaginatorPageSize();
 
         $this->queryBuilder = $queryBuilder;
         $this->pageSize = $pageSize;

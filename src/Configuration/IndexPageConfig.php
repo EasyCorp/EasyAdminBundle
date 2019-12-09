@@ -10,9 +10,9 @@ final class IndexPageConfig
     private $title;
     private $help;
     private $defaultSort = [];
-    private $maxResults = 15;
     private $itemPermission;
     private $searchProperties = [];
+    private $paginatorPageSize = 15;
     private $paginatorFetchJoinCollection = true;
     private $paginatorUseOutputWalkers;
     private $filters = null;
@@ -57,17 +57,6 @@ final class IndexPageConfig
         return $this;
     }
 
-    public function setMaxResults(int $maxResults): self
-    {
-        if ($maxResults < 1) {
-            throw new \InvalidArgumentException(sprintf('The minimum value of the maxResults option is 1.'));
-        }
-
-        $this->maxResults = $maxResults;
-
-        return $this;
-    }
-
     public function setItemPermission(string $permission): self
     {
         $this->itemPermission = $permission;
@@ -78,6 +67,17 @@ final class IndexPageConfig
     public function setSearchProperties(?array $propertyNames): self
     {
         $this->searchProperties = $propertyNames;
+
+        return $this;
+    }
+
+    public function setPaginatorPageSize(int $maxResultsPerPage): self
+    {
+        if ($maxResultsPerPage < 1) {
+            throw new \InvalidArgumentException(sprintf('The minimum value of paginator results per page is 1.'));
+        }
+
+        $this->paginatorPageSize = $maxResultsPerPage;
 
         return $this;
     }
@@ -105,6 +105,6 @@ final class IndexPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->maxResults, $this->itemPermission, $this->searchProperties, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers, $this->filters);
+        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->itemPermission, $this->searchProperties, $this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers, $this->filters);
     }
 }

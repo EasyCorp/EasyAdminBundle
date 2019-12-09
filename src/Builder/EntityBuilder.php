@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -14,14 +16,16 @@ final class EntityBuilder
 {
     private $doctrine;
     private $eventDispatcher;
+    private $propertyBuilder;
 
-    public function __construct(ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher, ItemCollectionBuilderInterface $propertyBuilder)
     {
         $this->doctrine = $doctrine;
         $this->eventDispatcher = $eventDispatcher;
+        $this->propertyBuilder = $propertyBuilder;
     }
 
-    public function build(string $entityFqcn, $entityId = null): EntityDto
+    public function buildFromEntityFqcn(string $entityFqcn, PropertyDtoCollection $propertiesDto): EntityDto
     {
         $entityManager = $this->getEntityManager($entityFqcn);
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
@@ -30,19 +34,42 @@ final class EntityBuilder
             throw new \RuntimeException(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', $entityFqcn));
         }
 
-        $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityManager, $entityFqcn, $entityId);
-        $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityInstance, $entityId);
+        $entityPropertiesDto = $this->propertyBuilder->setItems(iterator_to_array($propertiesDto))->build();
+
+        $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPropertiesDto);
 
         $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($entityDto));
 
         return $entityDto;
     }
 
-    public function buildAll(EntityDto $entityDto, array $entityInstances): EntityDtoCollection
+    public function buildFromEntityId(string $entityFqcn, $entityId, PropertyDtoCollection $propertiesDto): EntityDto
+    {
+        $entityDto = $this->buildFromEntityFqcn($entityFqcn, $propertiesDto);
+
+        $entityManager = $this->getEntityManager($entityFqcn);
+        $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityManager, $entityFqcn, $entityId);
+
+        return $this->buildFromEntityInstance($entityDto, $entityInstance);
+    }
+
+    public function buildFromEntityInstance(EntityDto $entityDto, $entityInstance): EntityDto
+    {
+        $newProperties = $this->propertyBuilder
+            ->setItems(iterator_to_array($entityDto->getProperties()))
+            ->buildForEntity($entityDto->with(['instance' => $entityInstance]));
+
+        $newEntityDto = $entityDto->with(['propertiesDto' => $newProperties]);
+        $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($newEntityDto));
+
+        return $newEntityDto;
+    }
+
+    public function buildFromEntityInstances(EntityDto $entityDto, array $entityInstances): EntityDtoCollection
     {
         $entitiesDto = [];
         foreach ($entityInstances as $entityInstance) {
-            $entitiesDto[] = $entityDto->with(['instance' => $entityInstance]);
+            $entitiesDto[] = $this->buildFromEntityInstance($entityDto, $entityInstance);
         }
 
         return EntityDtoCollection::new($entitiesDto);

@@ -69,6 +69,7 @@
         <service id="ea.entity_builder" class="EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder" public="false">
             <argument type="service" id="doctrine"></argument>
             <argument type="service" id="event_dispatcher"></argument>
+            <argument type="service" id="ea.property_builder"></argument>
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder" alias="ea.entity_builder" />
 

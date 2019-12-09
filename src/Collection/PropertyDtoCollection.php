@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 
 final class PropertyDtoCollection implements \IteratorAggregate
@@ -19,6 +20,19 @@ final class PropertyDtoCollection implements \IteratorAggregate
         $collection->propertiesDto = $propertiesDto;
 
         return $collection;
+    }
+
+    /**
+     * @param PropertyInterface[] $propertiesConfig
+     */
+    public static function fromPropertiesConfig(array $propertiesConfig): self
+    {
+        $propertiesDto = [];
+        foreach ($propertiesConfig as $propertyConfig) {
+            $propertiesDto[] = $propertyConfig->getAsDto();
+        }
+
+        return self::new($propertiesDto);
     }
 
     /**

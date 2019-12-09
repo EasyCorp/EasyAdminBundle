@@ -4,9 +4,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contracts;
 
 interface ItemCollectionBuilderInterface
 {
-    public function addItem($menuItem): self;
+    public function addItem($item): self;
 
-    public function setItems(array $menuItems): self;
+    public function setItems(array $items): self;
 
     public function build();
 }

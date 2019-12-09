@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 interface PropertyInterface
@@ -34,4 +35,6 @@ interface PropertyInterface
 
     // mandatory options for all fields
     public function setDefaultOptions(OptionsResolver $resolver): void;
+
+    public function getAsDto(): PropertyDto;
 }

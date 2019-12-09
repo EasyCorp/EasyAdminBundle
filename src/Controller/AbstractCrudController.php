@@ -2,10 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use AppTestBundle\Entity\UnitTests\Product;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityViewBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
@@ -95,13 +97,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $propertiesConfig = iterator_to_array($this->configureProperties('index'));
-        $propertiesDto = $this->get('ea.property_builder')->setItems($propertiesConfig)->build();
-
+        $propertiesDto = PropertyDtoCollection::fromPropertiesConfig(iterator_to_array($this->configureProperties('index')));
         $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
-        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn);
+        $entityDto = $this->get('ea.entity_builder')->buildFromEntityFqcn($entityFqcn, $propertiesDto);
 
-        $searchDto = new SearchDto($this->getContext(), $propertiesDto);
+        $searchDto = new SearchDto($this->getContext(), $entityDto->getProperties());
         $queryBuilder = $this->createIndexQueryBuilder($searchDto, $entityDto);
         $paginatorDto = $this->getContext()->getPage()->getPaginator()->with([
             'pageNumber' => $this->getContext()->getRequest()->query->get('page', 1),
@@ -109,9 +109,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $paginator = $this->get('ea.entity_paginator')->paginate($paginatorDto, $queryBuilder);
 
         $entityInstances = iterator_to_array($paginator->getResults());
-        $entitiesDto = $this->get('ea.entity_builder')->buildAll($entityDto, $entityInstances);
-        $entitiesDto = $this->get('ea.property_builder')
-            ->setItems($propertiesConfig)->buildForMultipleEntities($entitiesDto);
+        $entitiesDto = $this->get('ea.entity_builder')->buildFromEntityInstances($entityDto, $entityInstances);
 
         $parameters = [
             'entities' => $entitiesDto,
@@ -165,10 +163,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
         $entityId = $this->getContext()->getRequest()->query->get('entityId');
-        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityId);
-
-        $propertiesConfig = iterator_to_array($this->configureProperties('detail'));
-        $entityDto = $this->get('ea.property_builder')->setItems($propertiesConfig)->buildForEntity($entityDto);
+        $propertiesDto = PropertyDtoCollection::fromPropertiesConfig(iterator_to_array($this->configureProperties('detail')));
+        $entityDto = $this->get('ea.entity_builder')->buildFromEntityId($entityFqcn, $entityId, $propertiesDto);
 
         $deleteForm = $this->createDeleteForm($entityId);
 

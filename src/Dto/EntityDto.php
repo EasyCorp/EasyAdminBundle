@@ -11,17 +11,18 @@ final class EntityDto
 
     private $fqcn;
     private $metadata;
+    private $propertiesDto;
     private $instance;
     private $idName;
     private $idValue;
-    private $properties;
 
-    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata = null, $entityInstance = null, $entityIdValue = null)
+    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, PropertyDtoCollection $propertiesDto, $entityInstance = null, $entityIdValue = null)
     {
         $this->fqcn = $entityFqcn;
         $this->metadata = $entityMetadata;
+        $this->propertiesDto = $propertiesDto;
         $this->instance = $entityInstance;
-        $this->idName = null === $this->metadata ? null : $this->metadata->getIdentifierFieldNames()[0];
+        $this->idName = $this->metadata->getIdentifierFieldNames()[0];
         $this->idValue = $entityIdValue;
     }
 
@@ -33,6 +34,11 @@ final class EntityDto
     public function getName(): string
     {
         return basename(str_replace('\\', '/', $this->fqcn));
+    }
+
+    public function getProperties(): PropertyDtoCollection
+    {
+        return $this->propertiesDto;
     }
 
     public function getInstance()
@@ -53,11 +59,6 @@ final class EntityDto
     public function getIdValueAsString(): string
     {
         return (string) $this->idValue;
-    }
-
-    public function getProperties(): PropertyDtoCollection
-    {
-        return $this->properties;
     }
 
     public function getPropertyMetadata(string $propertyName): array

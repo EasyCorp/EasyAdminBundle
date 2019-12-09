@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class PropertyBuilder implements ItemCollectionBuilderInterface
@@ -22,12 +23,12 @@ final class PropertyBuilder implements ItemCollectionBuilderInterface
     private $translator;
     private $propertyAccessor;
     private $isBuilt;
-    /** @var PropertyInterface[] */
+    /** @var PropertyDtoCollection */
     private $properties;
     /** @var PropertyDtoCollection */
     private $builtProperties;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationChecker $authorizationChecker, TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authorizationChecker, TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
     {
         $this->applicationContextProvider = $applicationContextProvider;
         $this->authorizationChecker = $authorizationChecker;
@@ -47,11 +48,11 @@ final class PropertyBuilder implements ItemCollectionBuilderInterface
     }
 
     /**
-     * @param PropertyInterface[] $menuItems
+     * @param PropertyDtoCollection[] $propertiesDto
      */
-    public function setItems(array $properties): ItemCollectionBuilderInterface
+    public function setItems(array $propertiesDto): ItemCollectionBuilderInterface
     {
-        $this->properties = $properties;
+        $this->properties = $propertiesDto;
         $this->resetBuiltProperties();
 
         return $this;
@@ -70,34 +71,7 @@ final class PropertyBuilder implements ItemCollectionBuilderInterface
         return $this->builtProperties;
     }
 
-    private function resetBuiltProperties(): void
-    {
-        $this->builtProperties = PropertyDtoCollection::new();
-        $this->isBuilt = false;
-    }
-
-    private function buildProperties(): void
-    {
-        $applicationContext = $this->applicationContextProvider->getContext();
-        $translationDomain = $applicationContext->getI18n()->getTranslationDomain();
-
-        $builtProperties = [];
-        foreach ($this->properties as $propertyConfig) {
-            $propertyDto = $propertyConfig->getAsDto();
-            if (false === $this->authorizationChecker->isGranted($propertyDto->getPermission())) {
-                continue;
-            }
-
-            $builtProperties[] = $propertyDto->with([
-                'help' => $this->buildHelpProperty($propertyDto, $translationDomain),
-                'label' => $this->buildLabelProperty($propertyDto, $translationDomain),
-            ]);
-        }
-
-        $this->builtProperties = PropertyDtoCollection::new($builtProperties);
-    }
-
-    public function buildForEntity(EntityDto $entityDto): EntityDto
+    public function buildForEntity(EntityDto $entityDto): PropertyDtoCollection
     {
         $this->build();
 
@@ -120,7 +94,33 @@ final class PropertyBuilder implements ItemCollectionBuilderInterface
             $updatedPropertiesDto[] = $updatedPropertyDto;
         }
 
-        return $entityDto->with(['properties' => PropertyDtoCollection::new($updatedPropertiesDto)]);
+        return PropertyDtoCollection::new($updatedPropertiesDto);
+    }
+
+    private function resetBuiltProperties(): void
+    {
+        $this->builtProperties = PropertyDtoCollection::new();
+        $this->isBuilt = false;
+    }
+
+    private function buildProperties(): void
+    {
+        $applicationContext = $this->applicationContextProvider->getContext();
+        $translationDomain = $applicationContext->getI18n()->getTranslationDomain();
+
+        $builtProperties = [];
+        foreach ($this->properties as $propertyDto) {
+            if (false === $this->authorizationChecker->isGranted($propertyDto->getPermission())) {
+                continue;
+            }
+
+            $builtProperties[] = $propertyDto->with([
+                'help' => $this->buildHelpProperty($propertyDto, $translationDomain),
+                'label' => $this->buildLabelProperty($propertyDto, $translationDomain),
+            ]);
+        }
+
+        $this->builtProperties = PropertyDtoCollection::new($builtProperties);
     }
 
     public function buildForMultipleEntities(EntityDtoCollection $entitiesDto): EntityDtoCollection

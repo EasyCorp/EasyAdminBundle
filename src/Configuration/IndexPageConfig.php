@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 
 final class IndexPageConfig
 {
@@ -105,6 +106,6 @@ final class IndexPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->itemPermission, $this->searchProperties, $this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers, $this->filters);
+        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->itemPermission, $this->searchProperties, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
     }
 }

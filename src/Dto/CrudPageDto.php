@@ -11,13 +11,11 @@ final class CrudPageDto
     private $defaultSort;
     private $itemPermission;
     private $searchFields;
-    private $paginatorPageSize;
-    private $paginatorFetchJoinCollection;
-    private $paginatorUseOutputWalkers;
     private $filters;
+    private $paginatorDto;
     private $formOptions;
 
-    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $itemPermission, ?array $searchFields, int $paginatorPageSize, bool $paginatorFetchJoinCollection, ?bool $paginatorUseOutputWalkers, ?array $filters): self
+    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $itemPermission, ?array $searchFields, ?array $filters, PaginatorDto $paginatorDto): self
     {
         $context = new self();
 
@@ -27,10 +25,8 @@ final class CrudPageDto
         $context->defaultSort = $defaultSort;
         $context->itemPermission = $itemPermission;
         $context->searchFields = $searchFields;
-        $context->paginatorPageSize = $paginatorPageSize;
-        $context->paginatorFetchJoinCollection = $paginatorFetchJoinCollection;
-        $context->paginatorUseOutputWalkers = $paginatorUseOutputWalkers;
         $context->filters = $filters;
+        $context->paginatorDto = $paginatorDto;
 
         return $context;
     }
@@ -109,19 +105,9 @@ final class CrudPageDto
         return null !== $this->filters;
     }
 
-    public function getPaginatorPageSize(): ?int
+    public function getPaginator(): PaginatorDto
     {
-        return $this->paginatorPageSize;
-    }
-
-    public function getPaginatorFetchJoinCollection(): bool
-    {
-        return $this->paginatorFetchJoinCollection;
-    }
-
-    public function getPaginatorUseOutputWalkers(): ?bool
-    {
-        return $this->paginatorUseOutputWalkers;
+        return $this->paginatorDto;
     }
 
     public function getFormOptions(): ?array

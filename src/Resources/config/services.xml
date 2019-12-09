@@ -41,7 +41,6 @@
         <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface" alias="ea.entity_repository" />
 
         <service id="ea.entity_paginator" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator">
-            <argument type="service" id="ea.context_provider"/>
             <argument type="service" id="easyadmin.router.crud_url_generator"/>
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator" alias="ea.entity_paginator" />

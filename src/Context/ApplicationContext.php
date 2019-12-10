@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
@@ -39,8 +40,9 @@ final class ApplicationContext
     private $assetDto;
     private $crudDto;
     private $crudPageDto;
+    private $templateRegistry;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
@@ -52,6 +54,7 @@ final class ApplicationContext
         $this->assetDto = $assetDto;
         $this->crudDto = $crudDto;
         $this->crudPageDto = $crudPageDto;
+        $this->templateRegistry = $templateRegistry;
     }
 
     public function getRequest(): Request
@@ -137,12 +140,7 @@ final class ApplicationContext
 
     public function getTemplate(string $templateName): string
     {
-        if (null !== $this->crudDto && null !== $templatePath = $this->crudDto->getCustomTemplate($templateName)) {
-            return $templatePath;
-        }
-
-        return $this->dashboardDto->getCustomTemplate($templateName)
-            ?? $this->dashboardDto->getDefaultTemplate($templateName);
+        return $this->templateRegistry->getPath($templateName);
     }
 
     public function getFormThemes(): array

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Contacts\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
@@ -128,10 +129,11 @@ class ApplicationContextListener
         $dashboardDto = $this->getDashboard($event);
         $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
         $crudDto = $this->getCrudConfig($crudControllerInstance);
+        $templateRegistry = $this->getTemplateRegistry($crudDto);
         $crudPageDto = $this->getCrudPageConfig($crudControllerInstance, $crudAction);
         $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $dashboardControllerInstance, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $dashboardControllerInstance, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $templateRegistry);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -177,6 +179,16 @@ class ApplicationContextListener
         }
 
         return $crudController->configureCrud()->getAsDto();
+    }
+
+    private function getTemplateRegistry(?CrudDto $crudDto): TemplateRegistry
+    {
+        $templateRegistry = TemplateRegistry::new();
+        if (null !== $crudDto) {
+            $templateRegistry->addTemplateCollection($crudDto->getCustomTemplates());
+        }
+
+        return $templateRegistry;
     }
 
     private function getCrudPageConfig(?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto

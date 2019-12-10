@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 
 /**
@@ -10,16 +11,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 class CrudConfig
 {
     use CommonFormatConfigTrait;
-    use CommonTemplateConfigTrait;
     use CommonFormThemeConfigTrait;
 
     private $entityFqcn;
     private $labelInSingular = 'Undefined';
     private $labelInPlural = 'Undefined';
+    /** @var TemplateCollection */
+    private $customTemplates;
 
     public static function new(): self
     {
-        return new self();
+        $config = new self();
+        $config->customTemplates = TemplateCollection::new();
+
+        return $config;
     }
 
     public function setEntityFqcn(string $fqcn): self
@@ -43,6 +48,34 @@ class CrudConfig
         return $this;
     }
 
+    /**
+     * Used to override the default template used to render a specific backend part.
+     */
+    public function setCustomTemplate(string $templateName, string $templatePath): self
+    {
+        $validTemplateNames = TemplateRegistry::getTemplateNames();
+        if (!array_key_exists($templateName, $validTemplateNames)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', $validTemplateNames)));
+        }
+
+        $this->customTemplates->setTemplate($templateName, $templatePath);
+
+        return $this;
+    }
+
+    /**
+     * It allows to override more than one template at the same time.
+     * Format: ['templateName' => 'templatePath', ...]
+     */
+    public function setCustomTemplates(array $templateNamesAndPaths): self
+    {
+        foreach ($templateNamesAndPaths as $templateName => $templatePath) {
+            $this->setCustomTemplate($templateName, $templatePath);
+        }
+
+        return $this;
+    }
+
     public function getAsDto(): CrudDto
     {
         if (null === $this->entityFqcn) {
@@ -57,6 +90,6 @@ class CrudConfig
             $this->labelInPlural = $this->labelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->defaultTemplates, $this->formThemes);
+        return new CrudDto($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->formThemes);
     }
 }

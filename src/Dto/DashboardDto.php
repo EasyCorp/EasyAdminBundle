@@ -17,11 +17,9 @@ final class DashboardDto
     private $dateTimeFormat;
     private $dateIntervalFormat;
     private $numberFormat;
-    private $customTemplates;
-    private $defaultTemplates;
     private $formThemes;
 
-    public function __construct(string $faviconPath, string $siteName, string $translationDomain, ?string $textDirection, array $disabledActions, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $customTemplates, array $defaultTemplates, array $formThemes)
+    public function __construct(string $faviconPath, string $siteName, string $translationDomain, ?string $textDirection, array $disabledActions, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $formThemes)
     {
         $this->faviconPath = $faviconPath;
         $this->siteName = $siteName;
@@ -33,8 +31,6 @@ final class DashboardDto
         $this->dateTimeFormat = $dateTimeFormat;
         $this->dateIntervalFormat = $dateIntervalFormat;
         $this->numberFormat = $numberFormat;
-        $this->customTemplates = $customTemplates;
-        $this->defaultTemplates = $defaultTemplates;
         $this->formThemes = $formThemes;
     }
 
@@ -91,16 +87,6 @@ final class DashboardDto
     public function getNumberFormat(): ?string
     {
         return $this->numberFormat;
-    }
-
-    public function getCustomTemplate(string $templateName = null): ?string
-    {
-        return $this->customTemplates[$templateName] ?? null;
-    }
-
-    public function getDefaultTemplate(string $templateName = null): ?string
-    {
-        return $this->defaultTemplates[$templateName] ?? null;
     }
 
     public function getFormThemes(): array

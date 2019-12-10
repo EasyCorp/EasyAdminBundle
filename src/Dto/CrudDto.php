@@ -2,6 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateCollection;
+
 final class CrudDto
 {
     private $entityFqcn;
@@ -16,7 +18,7 @@ final class CrudDto
     private $defaultTemplates;
     private $formThemes;
 
-    public function __construct(string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $customTemplates, array $defaultTemplates, $formThemes)
+    public function __construct(string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateCollection $customTemplates, $formThemes)
     {
         $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;
@@ -27,7 +29,6 @@ final class CrudDto
         $this->dateIntervalFormat = $dateIntervalFormat;
         $this->numberFormat = $numberFormat;
         $this->customTemplates = $customTemplates;
-        $this->defaultTemplates = $defaultTemplates;
         $this->formThemes = $formThemes;
     }
 
@@ -71,14 +72,9 @@ final class CrudDto
         return $this->numberFormat;
     }
 
-    public function getCustomTemplate(string $templateName = null): ?string
+    public function getCustomTemplates(): TemplateCollection
     {
-        return $this->customTemplates[$templateName] ?? null;
-    }
-
-    public function getDefaultTemplate(string $templateName = null): ?string
-    {
-        return $this->defaultTemplates[$templateName] ?? null;
+        return $this->customTemplates;
     }
 
     public function getFormThemes(): array

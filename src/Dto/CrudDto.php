@@ -15,10 +15,9 @@ final class CrudDto
     private $dateIntervalFormat;
     private $numberFormat;
     private $customTemplates;
-    private $defaultTemplates;
     private $formThemes;
 
-    public function __construct(string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateDtoCollection $customTemplates, $formThemes)
+    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateDtoCollection $customTemplates, $formThemes)
     {
         $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;

@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contacts;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -12,11 +14,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 interface CrudControllerInterface
 {
-    public function configureCrud(): CrudConfig;
+    public function configureCrud(CrudConfig $crudConfig): CrudConfig;
 
     public function configureAssets(): AssetConfig;
 
-    public function configureDetailPage(): DetailPageConfig;
+    public function configureIndexPage(IndexPageConfig $indexPageConfig): IndexPageConfig;
+    public function configureDetailPage(DetailPageConfig $detailPageConfig): DetailPageConfig;
+    public function configureFormPage(FormPageConfig $formPageConfig): FormPageConfig;
 
     /**
      * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\PropertyInterface[]

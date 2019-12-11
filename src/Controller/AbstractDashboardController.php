@@ -3,7 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DashboardConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
@@ -39,6 +43,26 @@ abstract class AbstractDashboardController extends AbstractController implements
     public function configureAssets(): AssetConfig
     {
         return AssetConfig::new();
+    }
+
+    public function configureCrud(): CrudConfig
+    {
+        return CrudConfig::new();
+    }
+
+    public function configureIndexPage(): IndexPageConfig
+    {
+        return IndexPageConfig::new();
+    }
+
+    public function configureDetailPage(): DetailPageConfig
+    {
+        return DetailPageConfig::new();
+    }
+
+    public function configureFormPage(): FormPageConfig
+    {
+        return FormPageConfig::new();
     }
 
     public function getMenuItems(): iterable

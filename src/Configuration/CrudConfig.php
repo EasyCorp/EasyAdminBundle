@@ -79,7 +79,7 @@ class CrudConfig
     public function getAsDto(): CrudDto
     {
         if (null === $this->entityFqcn) {
-            throw new \RuntimeException(sprintf('One of your CrudControllers doesn\'t define the FQCN of its related Doctrine entity. Did you forget to call the "setEntityClass()" on the "CrudConfig" object?'));
+            throw new \RuntimeException(sprintf('One of your CrudControllers doesn\'t define the FQCN of its related Doctrine entity. Did you forget to call the "setEntityFqcn()" method on the "CrudConfig" object?'));
         }
 
         if (null === $this->labelInSingular) {

@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contacts\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
@@ -40,7 +41,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
-    abstract public function configureCrud(): CrudConfig;
+    abstract public function configureCrud(CrudConfig $crudConfig): CrudConfig;
 
     public function configureAssets(): AssetConfig
     {
@@ -52,14 +53,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
      */
     abstract public function configureProperties(string $page): iterable;
 
-    public function configureIndexPage(): IndexPageConfig
+    public function configureIndexPage(IndexPageConfig $indexPageConfig): IndexPageConfig
     {
-        return IndexPageConfig::new();
+        return $indexPageConfig;
     }
 
-    public function configureDetailPage(): DetailPageConfig
+    public function configureDetailPage(DetailPageConfig $detailPageConfig): DetailPageConfig
     {
-        return DetailPageConfig::new()
+        return $detailPageConfig
             ->addAction(Action::new('index', 'action.list', null)
                 ->linkToMethod('index')
                 ->setCssClass('btn btn-link pr-0')
@@ -74,6 +75,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                 ->linkToMethod('form')
                 ->setCssClass('btn btn-primary')
                 ->setTranslationDomain('EasyAdminBundle'));
+    }
+
+    public function configureFormPage(FormPageConfig $formPageConfig): FormPageConfig
+    {
+        return $formPageConfig;
     }
 
     public static function getSubscribedServices()

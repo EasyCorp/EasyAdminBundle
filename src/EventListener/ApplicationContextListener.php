@@ -124,13 +124,12 @@ class ApplicationContextListener
         $request = $event->getRequest();
         $dashboardControllerInstance = $event->getController()[0];
         $crudAction = $request->query->get('crudAction');
-        $entityId = $request->query->get('entityId');
 
         $dashboardDto = $this->getDashboard($event);
         $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
-        $crudDto = $this->getCrudConfig($crudControllerInstance);
-        $templateRegistry = $this->getTemplateRegistry($crudDto);
-        $crudPageDto = $this->getCrudPageConfig($crudControllerInstance, $crudAction);
+        $crudDto = $this->getCrudConfig($dashboardControllerInstance, $crudControllerInstance);
+        $templateRegistry = $this->getTemplateRegistry($dashboardControllerInstance, $crudDto);
+        $crudPageDto = $this->getCrudPageConfig($dashboardControllerInstance, $crudControllerInstance, $crudAction);
         $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto);
 
         $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $dashboardControllerInstance, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $templateRegistry);
@@ -172,18 +171,27 @@ class ApplicationContextListener
         return $dashboardAssets->mergeWith($crudAssets);
     }
 
-    private function getCrudConfig(?CrudControllerInterface $crudController): ?CrudDto
+    private function getCrudConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): ?CrudDto
     {
         if (null === $crudController) {
             return null;
         }
 
-        return $crudController->configureCrud()->getAsDto();
+        $defaultCrudConfig = $dashboardController->configureCrud();
+
+        return $crudController->configureCrud($defaultCrudConfig)->getAsDto();
     }
 
-    private function getTemplateRegistry(?CrudDto $crudDto): TemplateRegistry
+    private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry
     {
         $templateRegistry = TemplateRegistry::new();
+
+        // the fake setEntityFqcn() is needed because CrudDto require defining an
+        // entity class. This is not important here, where we're configuring the
+        // default values of other CrudConfig options via the Dashboard
+        $defaultCrudDto = $dashboardController->configureCrud()->setEntityFqcn(__CLASS__)->getAsDto();
+        $templateRegistry->addTemplates($defaultCrudDto->getCustomTemplates());
+
         if (null !== $crudDto) {
             $templateRegistry->addTemplates($crudDto->getCustomTemplates());
         }
@@ -191,14 +199,16 @@ class ApplicationContextListener
         return $templateRegistry;
     }
 
-    private function getCrudPageConfig(?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
+    private function getCrudPageConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
     {
         $pageConfigMethodName = 'configure'.ucfirst($crudAction).'Page';
         if (null === $crudController || !method_exists($crudController, $pageConfigMethodName)) {
             return null;
         }
 
-        return $crudController->{$pageConfigMethodName}()->getAsDto();
+        $defaultPageConfig = $dashboardController->{$pageConfigMethodName}();
+
+        return $crudController->{$pageConfigMethodName}($defaultPageConfig)->getAsDto();
     }
 
     private function getI18nConfig(Request $request, DashboardDto $dashboardDto, ?CrudDto $crudDto): I18nDto

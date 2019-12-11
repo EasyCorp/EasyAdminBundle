@@ -43,9 +43,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 {
     abstract public function configureCrud(CrudConfig $crudConfig): CrudConfig;
 
-    public function configureAssets(): AssetConfig
+    public function configureAssets(AssetConfig $assetConfig): AssetConfig
     {
-        return AssetConfig::new();
+        return $assetConfig;
     }
 
     /**

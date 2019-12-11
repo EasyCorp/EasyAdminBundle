@@ -160,15 +160,13 @@ class ApplicationContextListener
 
     private function getAssets(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetDto
     {
-        $dashboardAssets = $dashboardController->configureAssets()->getAsDto();
+        $defaultAssetConfig = $dashboardController->configureAssets();
 
         if (null === $crudController) {
-            return $dashboardAssets;
+            return $defaultAssetConfig->getAsDto();
         }
 
-        $crudAssets = $crudController->configureAssets()->getAsDto();
-
-        return $dashboardAssets->mergeWith($crudAssets);
+        return $crudController->configureAssets($defaultAssetConfig)->getAsDto();
     }
 
     private function getCrudConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): ?CrudDto

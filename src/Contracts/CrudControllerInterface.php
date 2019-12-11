@@ -16,7 +16,7 @@ interface CrudControllerInterface
 {
     public function configureCrud(CrudConfig $crudConfig): CrudConfig;
 
-    public function configureAssets(): AssetConfig;
+    public function configureAssets(AssetConfig $assetConfig): AssetConfig;
 
     public function configureIndexPage(IndexPageConfig $indexPageConfig): IndexPageConfig;
     public function configureDetailPage(DetailPageConfig $detailPageConfig): DetailPageConfig;
@@ -25,7 +25,7 @@ interface CrudControllerInterface
     /**
      * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\PropertyInterface[]
      */
-    public function configureProperties(string $page): iterable;
+    public function configureProperties(string $action): iterable;
 
     public function index(): Response;
 }

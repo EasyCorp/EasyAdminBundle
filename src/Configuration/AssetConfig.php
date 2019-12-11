@@ -46,6 +46,6 @@ final class AssetConfig
 
     public function getAsDto(): AssetDto
     {
-        return new AssetDto($this->cssFiles, $this->jsFiles, $this->headContents, $this->bodyContents);
+        return new AssetDto(array_unique($this->cssFiles), array_unique($this->jsFiles), array_unique($this->headContents), array_unique($this->bodyContents));
     }
 }

@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
@@ -97,7 +98,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
 
         foreach ($this->menuItems as $i => $menuItem) {
             $menuItemDto = $menuItem->getAsDto();
-            if (false === $this->authChecker->isGranted($menuItemDto->getPermission())) {
+            if (false === $this->authChecker->isGranted(Permission::EA_VIEW_MENU_ITEM, $menuItemDto)) {
                 continue;
             }
 

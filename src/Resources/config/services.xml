@@ -81,6 +81,11 @@
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder" alias="ea.property_builder" />
 
+        <service id="ea.security_voter" class="EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter" public="false">
+            <argument type="service" id="easyadmin.security.authorization_checker"></argument>
+            <tag name="security.voter" />
+        </service>
+
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument>%easyadmin.config%</argument>
             <argument>%kernel.debug%</argument>

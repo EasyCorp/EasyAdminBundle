@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 
 /**
@@ -16,13 +16,13 @@ class CrudConfig
     private $entityFqcn;
     private $labelInSingular = 'Undefined';
     private $labelInPlural = 'Undefined';
-    /** @var TemplateCollection */
+    /** @var TemplateDtoCollection */
     private $customTemplates;
 
     public static function new(): self
     {
         $config = new self();
-        $config->customTemplates = TemplateCollection::new();
+        $config->customTemplates = TemplateDtoCollection::new();
 
         return $config;
     }

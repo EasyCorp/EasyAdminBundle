@@ -191,15 +191,15 @@ final class PropertyBuilder implements ItemCollectionBuilderInterface
 
         $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $propertyDto->getName());
         if (!$isPropertyReadable) {
-            return $applicationContext->getTemplate('label_inaccessible');
+            return $applicationContext->getTemplatePath('label_inaccessible');
         }
 
         if (null === $value = $propertyDto->getValue()) {
-            return $applicationContext->getTemplate('label_null');
+            return $applicationContext->getTemplatePath('label_null');
         }
 
         if (empty($value) && \in_array($propertyDto->getType(), ['image', 'file', 'array', 'simple_array'])) {
-            return $applicationContext->getTemplate('label_empty');
+            return $applicationContext->getTemplatePath('label_empty');
         }
 
         return $propertyDto->getDefaultTemplatePath();

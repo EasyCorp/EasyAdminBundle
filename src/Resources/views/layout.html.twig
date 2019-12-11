@@ -110,7 +110,7 @@
                     {% block sidebar %}
                         <section class="sidebar">
                             {% block main_menu_wrapper %}
-                                {{ include(ea.template('main_menu')) }}
+                                {{ include(ea.templatePath('main_menu')) }}
                             {% endblock main_menu_wrapper %}
                         </section>
 
@@ -119,7 +119,7 @@
 
                 <div class="content-wrapper">
                     {% block flash_messages %}
-                        {{ include(ea.template('flash_messages')) }}
+                        {{ include(ea.templatePath('flash_messages')) }}
                     {% endblock flash_messages %}
 
                     <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>

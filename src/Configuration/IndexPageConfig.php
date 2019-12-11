@@ -75,7 +75,7 @@ final class IndexPageConfig
     public function setPaginatorPageSize(int $maxResultsPerPage): self
     {
         if ($maxResultsPerPage < 1) {
-            throw new \InvalidArgumentException(sprintf('The minimum value of paginator results per page is 1.'));
+            throw new \InvalidArgumentException(sprintf('The minimum value of paginator page size is 1.'));
         }
 
         $this->paginatorPageSize = $maxResultsPerPage;

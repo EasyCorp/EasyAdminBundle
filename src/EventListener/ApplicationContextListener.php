@@ -185,7 +185,7 @@ class ApplicationContextListener
     {
         $templateRegistry = TemplateRegistry::new();
         if (null !== $crudDto) {
-            $templateRegistry->addTemplateCollection($crudDto->getCustomTemplates());
+            $templateRegistry->addTemplates($crudDto->getCustomTemplates());
         }
 
         return $templateRegistry;

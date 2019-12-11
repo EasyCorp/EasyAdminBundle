@@ -1,7 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var fields \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto[] #}
 {# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
-{% extends ea.template('layout') %}
+{% extends ea.templatePath('layout') %}
 {% trans_default_domain ea.dashboard.translationDomain %}
 
 {#
@@ -238,7 +238,7 @@
 
 {% block content_footer %}
     {% block paginator %}
-        {{ include(ea.template('paginator')) }}
+        {{ include(ea.templatePath('paginator')) }}
     {% endblock paginator %}
 {% endblock %}
 

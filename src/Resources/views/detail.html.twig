@@ -1,7 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {# @var fields \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto[] #}
-{% extends ea.template('layout') %}
+{% extends ea.templatePath('layout') %}
 {% trans_default_domain ea.dashboard.translationDomain %}
 
 {% block body_id 'easyadmin-detail-' ~ entity.name ~ '-' ~ entity.idValue %}

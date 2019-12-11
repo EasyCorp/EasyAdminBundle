@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 
 final class CrudDto
 {
@@ -18,7 +18,7 @@ final class CrudDto
     private $defaultTemplates;
     private $formThemes;
 
-    public function __construct(string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateCollection $customTemplates, $formThemes)
+    public function __construct(string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateDtoCollection $customTemplates, $formThemes)
     {
         $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;
@@ -72,7 +72,7 @@ final class CrudDto
         return $this->numberFormat;
     }
 
-    public function getCustomTemplates(): TemplateCollection
+    public function getCustomTemplates(): TemplateDtoCollection
     {
         return $this->customTemplates;
     }

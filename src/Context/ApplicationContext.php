@@ -138,9 +138,9 @@ final class ApplicationContext
         return $this->crudPageDto;
     }
 
-    public function getTemplate(string $templateName): string
+    public function getTemplatePath(string $templateName): string
     {
-        return $this->templateRegistry->getPath($templateName);
+        return $this->templateRegistry->get($templateName)->getPath();
     }
 
     public function getFormThemes(): array

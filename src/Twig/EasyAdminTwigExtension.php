@@ -188,15 +188,15 @@ class EasyAdminTwigExtension extends AbstractExtension
             }
 
             if (false === $templateParameters['is_accessible']) {
-                return $twig->render($applicationContext->getTemplate('label_inaccessible'), $templateParameters);
+                return $twig->render($applicationContext->getTemplatePath('label_inaccessible'), $templateParameters);
             }
 
             if (null === $templateParameters['value']) {
-                return $twig->render($applicationContext->getTemplate('label_null'), $templateParameters);
+                return $twig->render($applicationContext->getTemplatePath('label_null'), $templateParameters);
             }
 
             if (empty($templateParameters['value']) && \in_array($fieldDto->getType(), ['image', 'file', 'array', 'simple_array'])) {
-                return $twig->render($applicationContext->getTemplate('label_empty'), $templateParameters);
+                return $twig->render($applicationContext->getTemplatePath('label_empty'), $templateParameters);
             }
 
             return $twig->render($fieldDto->getDefaultTemplatePath(), $templateParameters);
@@ -205,7 +205,7 @@ class EasyAdminTwigExtension extends AbstractExtension
                 throw $e;
             }
 
-            return $twig->render($applicationContext->getTemplate('label_undefined'), $templateParameters);
+            return $twig->render($applicationContext->getTemplatePath('label_undefined'), $templateParameters);
         }
     }
 

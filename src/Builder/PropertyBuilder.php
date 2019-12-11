@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -110,7 +111,7 @@ final class PropertyBuilder implements ItemCollectionBuilderInterface
 
         $builtProperties = [];
         foreach ($this->properties as $propertyDto) {
-            if (false === $this->authorizationChecker->isGranted($propertyDto->getPermission())) {
+            if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_PROPERTY, $propertyDto)) {
                 continue;
             }
 

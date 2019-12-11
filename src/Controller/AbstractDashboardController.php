@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,7 +31,7 @@ abstract class AbstractDashboardController extends AbstractController implements
     public function configureUserMenu(UserInterface $user): UserMenuConfig
     {
         $userMenuItems = [MenuItem::linkToLogout('user.signout', 'fa-sign-out')->setTranslationDomain('EasyAdminBundle')];
-        if ($this->isGranted('ROLE_PREVIOUS_ADMIN')) {
+        if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {
             $userMenuItems[] = MenuItem::linkToExitImpersonation('user.exit_impersonation', 'fa-user-lock')->setTranslationDomain('EasyAdminBundle');
         }
 

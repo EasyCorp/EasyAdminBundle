@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 final class Permission
 {
     public const EA_VIEW_MENU_ITEM = 'EA_VIEW_MENU_ITEM';
+    public const EA_VIEW_PROPERTY = 'EA_VIEW_PROPERTY';
+    public const EA_EXIT_IMPERSONATION = 'EA_EXIT_IMPERSONATION';
 
     public static function exists(?string $permissionName): bool
     {

@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

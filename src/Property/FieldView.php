@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\PropertyInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**

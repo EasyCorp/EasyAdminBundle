@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Contacts;
+namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
@@ -23,7 +23,7 @@ interface CrudControllerInterface
     public function configureFormPage(FormPageConfig $formPageConfig): FormPageConfig;
 
     /**
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\PropertyInterface[]
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface[]
      */
     public function configureProperties(string $action): iterable;
 

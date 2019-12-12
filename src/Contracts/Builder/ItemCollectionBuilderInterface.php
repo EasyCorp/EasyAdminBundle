@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Contracts;
+namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder;
 
 interface ItemCollectionBuilderInterface
 {

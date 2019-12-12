@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;

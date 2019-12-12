@@ -2,21 +2,16 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\ObjectManager;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Contacts\CrudControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\ItemCollectionBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder\ItemCollectionBuilderInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
-use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -148,7 +143,7 @@ class ApplicationContextListener
 
     private function getDashboard(ControllerEvent $event): DashboardDto
     {
-        /** @var DashboardControllerInterface $dashboardControllerInstance */
+        /** @var \EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface $dashboardControllerInstance */
         $dashboardControllerInstance = $event->getController()[0];
         $currentRouteName = $event->getRequest()->attributes->get('_route');
 

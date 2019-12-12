@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Contracts;
+namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Configuration;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

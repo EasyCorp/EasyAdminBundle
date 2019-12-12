@@ -11,7 +11,7 @@ final class IndexPageConfig
     private $title;
     private $help;
     private $defaultSort = [];
-    private $itemPermission;
+    private $entityViewPermission;
     private $searchProperties = [];
     private $paginatorPageSize = 15;
     private $paginatorFetchJoinCollection = true;
@@ -58,9 +58,9 @@ final class IndexPageConfig
         return $this;
     }
 
-    public function setItemPermission(string $permission): self
+    public function setEntityViewPermission(string $permission): self
     {
-        $this->itemPermission = $permission;
+        $this->entityViewPermission = $permission;
 
         return $this;
     }
@@ -106,6 +106,6 @@ final class IndexPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->itemPermission, $this->searchProperties, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
+        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->entityViewPermission, $this->searchProperties, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
     }
 }

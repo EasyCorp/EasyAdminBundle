@@ -9,13 +9,13 @@ final class CrudPageDto
     private $help;
     private $actions;
     private $defaultSort;
-    private $itemPermission;
+    private $entityPermission;
     private $searchFields;
     private $filters;
     private $paginatorDto;
     private $formOptions;
 
-    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $itemPermission, ?array $searchFields, ?array $filters, PaginatorDto $paginatorDto): self
+    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $entityViewPermission, ?array $searchFields, ?array $filters, PaginatorDto $paginatorDto): self
     {
         $context = new self();
 
@@ -23,7 +23,7 @@ final class CrudPageDto
         $context->title = $title;
         $context->help = $help;
         $context->defaultSort = $defaultSort;
-        $context->itemPermission = $itemPermission;
+        $context->entityPermission = $entityViewPermission;
         $context->searchFields = $searchFields;
         $context->filters = $filters;
         $context->paginatorDto = $paginatorDto;
@@ -82,7 +82,7 @@ final class CrudPageDto
 
     public function getItemPermission(): ?string
     {
-        return $this->itemPermission;
+        return $this->entityPermission;
     }
 
     public function getSearchFields(): ?array

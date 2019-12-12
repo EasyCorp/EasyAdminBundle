@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Contracts;
+namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\OptionsResolver\OptionsResolver;

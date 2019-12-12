@@ -76,10 +76,10 @@ class CrudConfig
         return $this;
     }
 
-    public function getAsDto(): CrudDto
+    public function getAsDto(bool $validateProperties = true): CrudDto
     {
-        if (null === $this->entityFqcn) {
-            throw new \RuntimeException(sprintf('One of your CrudControllers doesn\'t define the FQCN of its related Doctrine entity. Did you forget to call the "setEntityFqcn()" method on the "CrudConfig" object?'));
+        if ($validateProperties) {
+            $this->validate();
         }
 
         if (null === $this->labelInSingular) {
@@ -91,5 +91,12 @@ class CrudConfig
         }
 
         return new CrudDto($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->formThemes);
+    }
+
+    private function validate(): void
+    {
+        if (null === $this->entityFqcn) {
+            throw new \RuntimeException(sprintf('One of your CrudControllers doesn\'t define the FQCN of its related Doctrine entity. Did you forget to call the "setEntityFqcn()" method on the "CrudConfig" object?'));
+        }
     }
 }

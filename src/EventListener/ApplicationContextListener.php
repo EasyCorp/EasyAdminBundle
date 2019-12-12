@@ -184,10 +184,7 @@ class ApplicationContextListener
     {
         $templateRegistry = TemplateRegistry::new();
 
-        // the fake setEntityFqcn() is needed because CrudDto require defining an
-        // entity class. This is not important here, where we're configuring the
-        // default values of other CrudConfig options via the Dashboard
-        $defaultCrudDto = $dashboardController->configureCrud()->setEntityFqcn(__CLASS__)->getAsDto();
+        $defaultCrudDto = $dashboardController->configureCrud()->getAsDto(false);
         $templateRegistry->addTemplates($defaultCrudDto->getCustomTemplates());
 
         if (null !== $crudDto) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Field;
+namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 

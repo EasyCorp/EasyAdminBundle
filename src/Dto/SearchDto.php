@@ -16,17 +16,17 @@ final class SearchDto
     private $searchProperties;
     /** @var string[]|null */
     private $filters;
-    private $entityDto;
+    private $allEntityProperties;
 
-    public function __construct(ApplicationContext $applicationContext, EntityDto $entityDto)
+    public function __construct(Request $request, CrudPageDto $crudPageDto, EntityDto $entityDto)
     {
-        $this->request = $request = $applicationContext->getRequest();
-        $this->defaultSort = $applicationContext->getCrud()->getPage()->getDefaultSort();
+        $this->request = $request;
+        $this->defaultSort = $crudPageDto->getDefaultSort();
         $this->customSort = $request->query->get('sort', []);
         $this->query = $request->query->get('query');
-        $this->searchProperties = $applicationContext->getCrud()->getPage()->getSearchFields();
-        $this->filters = $applicationContext->getCrud()->getPage()->getFilters();
-        $this->entityDto = $entityDto;
+        $this->searchProperties = $crudPageDto->getSearchFields();
+        $this->filters = $crudPageDto->getFilters();
+        $this->allEntityProperties = $entityDto->getDefinedPropertiesNames();
     }
 
     public function getRequest(): Request
@@ -60,7 +60,7 @@ final class SearchDto
     public function getSearchableProperties(): array
     {
         if (empty($this->searchProperties)) {
-            return $this->entityDto->getDefinedPropertiesNames();
+            return $this->allEntityProperties;
         }
 
         return $this->searchProperties;

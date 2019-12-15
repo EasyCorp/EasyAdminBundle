@@ -120,7 +120,7 @@ class ApplicationContextListener
 
         $dashboardDto = $this->getDashboard($event);
         $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
-        $crudDto = $this->getCrudConfig($dashboardControllerInstance, $crudControllerInstance);
+        $crudDto = $this->getCrudConfig($dashboardControllerInstance, $crudControllerInstance, $crudAction);
         $crudPageDto = $this->getCrudPageConfig($dashboardControllerInstance, $crudControllerInstance, $crudAction);
         $crudDto = $crudDto->with(['crudPageDto' => $crudPageDto]);
         $templateRegistry = $this->getTemplateRegistry($dashboardControllerInstance, $crudDto);
@@ -163,7 +163,7 @@ class ApplicationContextListener
         return $crudController->configureAssets($defaultAssetConfig)->getAsDto();
     }
 
-    private function getCrudConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): ?CrudDto
+    private function getCrudConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $crudAction): ?CrudDto
     {
         if (null === $crudController) {
             return null;
@@ -171,7 +171,9 @@ class ApplicationContextListener
 
         $defaultCrudConfig = $dashboardController->configureCrud();
 
-        return $crudController->configureCrud($defaultCrudConfig)->getAsDto();
+        return $crudController->configureCrud($defaultCrudConfig)
+            ->getAsDto()
+            ->with(['actionName' => $crudAction]);
     }
 
     private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry

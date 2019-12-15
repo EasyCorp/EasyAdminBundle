@@ -20,6 +20,7 @@ final class CrudDto
     private $formThemes;
     /** @var CrudPageDto */
     private $crudPageDto;
+    private $actionName;
 
     public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateDtoCollection $customTemplates, $formThemes)
     {
@@ -88,5 +89,10 @@ final class CrudDto
     public function getPage(): ?CrudPageDto
     {
         return $this->crudPageDto;
+    }
+
+    public function getAction(): string
+    {
+        return $this->actionName;
     }
 }

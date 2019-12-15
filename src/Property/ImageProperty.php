@@ -14,10 +14,10 @@ class ImageProperty extends AbstractProperty
 
     public function __construct()
     {
-        $this->type = 'id';
+        $this->type = 'image';
         $this->formType = FileUploadType::class;
         $this->textAlign = 'center';
-        $this->defaultTemplatePath = '@EasyAdmin/field_image.html.twig';
+        $this->templateName = 'property/image';
     }
 
     public function setCustomOptions(OptionsResolver $resolver): void

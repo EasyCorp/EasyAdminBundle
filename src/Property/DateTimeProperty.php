@@ -14,9 +14,9 @@ class DateTimeProperty extends AbstractProperty
 
     public function __construct()
     {
-        $this->type = 'id';
+        $this->type = 'datetime';
         $this->formType = DateTimeType::class;
-        $this->defaultTemplatePath = '@EasyAdmin/field_datetime.html.twig';
+        $this->templateName = 'property/datetime';
     }
 
     public function setCustomOptions(OptionsResolver $resolver): void

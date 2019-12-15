@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 
 final class CrudDto
 {
+    use PropertyAccessorTrait;
     use PropertyModifierTrait;
 
     private $entityFqcn;
@@ -16,13 +17,13 @@ final class CrudDto
     private $dateTimeFormat;
     private $dateIntervalFormat;
     private $numberFormat;
-    private $customTemplates;
+    private $overriddenTemplates;
     private $formThemes;
     /** @var CrudPageDto */
     private $crudPageDto;
     private $actionName;
 
-    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateDtoCollection $customTemplates, $formThemes)
+    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateDtoCollection $overriddenTemplates, $formThemes)
     {
         $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;
@@ -32,7 +33,7 @@ final class CrudDto
         $this->dateTimeFormat = $dateTimeFormat;
         $this->dateIntervalFormat = $dateIntervalFormat;
         $this->numberFormat = $numberFormat;
-        $this->customTemplates = $customTemplates;
+        $this->overriddenTemplates = $overriddenTemplates;
         $this->formThemes = $formThemes;
     }
 
@@ -74,11 +75,6 @@ final class CrudDto
     public function getNumberFormat(): ?string
     {
         return $this->numberFormat;
-    }
-
-    public function getCustomTemplates(): TemplateDtoCollection
-    {
-        return $this->customTemplates;
     }
 
     public function getFormThemes(): array

@@ -11,10 +11,10 @@ class BooleanProperty extends AbstractProperty
 {
     public function __construct()
     {
-        $this->type = 'id';
+        $this->type = 'boolean';
         $this->formType = ChoiceType::class;
         $this->textAlign = 'center';
-        $this->defaultTemplatePath = '@EasyAdmin/field_boolean.html.twig';
+        $this->templateName = 'property/boolean';
     }
 
     public function build(PropertyDto $propertyDto, EntityDto $entityDto, ApplicationContext $applicationContext): PropertyDto

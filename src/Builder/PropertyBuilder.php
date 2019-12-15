@@ -51,7 +51,7 @@ final class PropertyBuilder
                 'help' => $this->buildHelpProperty($propertyDto, $translationDomain),
                 'label' => $this->buildLabelProperty($propertyDto, $translationDomain),
                 'sortable' => $this->buildSortableProperty($propertyDto, $entityDto),
-                'templatePath' => $this->buildTemplatePathProperty($applicationContext, $propertyDto, $entityDto, $value),
+                'resolvedTemplatePath' => $this->buildTemplatePathProperty($applicationContext, $propertyDto, $entityDto, $value),
                 'value' => $value,
                 'virtual' => $this->buildVirtualProperty($propertyDto, $entityDto),
             ]);
@@ -132,8 +132,8 @@ final class PropertyBuilder
 
     private function buildTemplatePathProperty(ApplicationContext $applicationContext, PropertyDto $propertyDto, EntityDto $entityDto, $propertyValue): string
     {
-        if (null !== $customTemplatePath = $propertyDto->getCustomTemplatePath()) {
-            return $customTemplatePath;
+        if (null !== $templatePath = $propertyDto->get('templatePath')) {
+            return $templatePath;
         }
 
         $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $propertyDto->getName());
@@ -145,11 +145,16 @@ final class PropertyBuilder
             return $applicationContext->getTemplatePath('label/null');
         }
 
+        // TODO: move this condition to each property class
         if (empty($propertyValue) && \in_array($propertyDto->getType(), ['image', 'file', 'array', 'simple_array'])) {
             return $applicationContext->getTemplatePath('label/empty');
         }
 
-        return $propertyDto->getDefaultTemplatePath();
+        if (null === $templateName = $propertyDto->get('templateName')) {
+            throw new \RuntimeException(sprintf('Properties must define either their templateName or their templatePath. None give for "%s" property.', $propertyDto->getName()));
+        }
+
+        return $applicationContext->getTemplatePath($templateName);
     }
 
     // copied from Symfony\Component\Form\FormRenderer::humanize()

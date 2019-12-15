@@ -18,14 +18,17 @@ class CrudConfig
     private $dateTimeFormat = 'F j, Y H:i';
     private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
     private $numberFormat;
-    /** @var TemplateDtoCollection */
-    private $customTemplates;
     private $formThemes = ['@EasyAdmin/form_theme.html.twig'];
+    /**
+     * @internal
+     * @var TemplateDtoCollection
+     */
+    private $overriddenTemplates;
 
     public static function new(): self
     {
         $config = new self();
-        $config->customTemplates = TemplateDtoCollection::new();
+        $config->overriddenTemplates = TemplateDtoCollection::new();
 
         return $config;
     }
@@ -86,29 +89,25 @@ class CrudConfig
         return $this;
     }
 
-    /**
-     * Used to override the default template used to render a specific backend part.
-     */
-    public function setCustomTemplate(string $templateName, string $templatePath): self
+    public function overrideTemplate(string $templateName, string $templatePath): self
     {
         $validTemplateNames = TemplateRegistry::getTemplateNames();
-        if (!array_key_exists($templateName, $validTemplateNames)) {
+        if (!in_array($templateName, $validTemplateNames)) {
             throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', $validTemplateNames)));
         }
 
-        $this->customTemplates->setTemplate($templateName, $templatePath);
+        $this->overriddenTemplates->setTemplate($templateName, $templatePath);
 
         return $this;
     }
 
     /**
-     * It allows to override more than one template at the same time.
      * Format: ['templateName' => 'templatePath', ...]
      */
-    public function setCustomTemplates(array $templateNamesAndPaths): self
+    public function overrideTemplates(array $templateNamesAndPaths): self
     {
         foreach ($templateNamesAndPaths as $templateName => $templatePath) {
-            $this->setCustomTemplate($templateName, $templatePath);
+            $this->overrideTemplate($templateName, $templatePath);
         }
 
         return $this;
@@ -149,7 +148,7 @@ class CrudConfig
             $this->labelInPlural = $this->labelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->customTemplates, $this->formThemes);
+        return new CrudDto($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->overriddenTemplates, $this->formThemes);
     }
 
     private function validate(): void

@@ -16,7 +16,7 @@ class TextProperty extends AbstractProperty
     {
         $this->type = 'text';
         $this->formType = TextType::class;
-        $this->defaultTemplatePath = '@EasyAdmin/field_text.html.twig';
+        $this->templateName = 'property/text';
     }
 
     public function setCustomOptions(OptionsResolver $resolver): void

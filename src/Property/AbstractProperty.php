@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,8 +20,8 @@ abstract class AbstractProperty implements PropertyInterface
     protected $help;
     protected $cssClass;
     protected $translationParams = [];
-    protected $defaultTemplatePath;
-    protected $customTemplatePath;
+    protected $templateName;
+    protected $templatePath;
     protected $customTemplateParams = [];
     protected $assets = [];
 
@@ -95,9 +94,16 @@ abstract class AbstractProperty implements PropertyInterface
         return $this;
     }
 
-    public function setCustomTemplatePath(string $path): PropertyInterface
+    public function setTemplatePath(string $path): PropertyInterface
     {
-        $this->customTemplatePath = $path;
+        $this->templatePath = $path;
+
+        return $this;
+    }
+
+    public function setTemplateName(string $name): PropertyInterface
+    {
+        $this->templateName = $name;
 
         return $this;
     }
@@ -134,8 +140,8 @@ abstract class AbstractProperty implements PropertyInterface
                 'textAlign',
                 'help',
                 'cssClass',
-                'defaultTemplatePath',
-                'customTemplatePath',
+                'templateName',
+                'templatePath',
                 'customTemplateParams',
                 'assets',
             ])
@@ -150,7 +156,8 @@ abstract class AbstractProperty implements PropertyInterface
                 'textAlign' => 'left',
                 'help' => null,
                 'cssClass' => null,
-                'customTemplatePath' => null,
+                'templateName' => null,
+                'templatePath' => null,
                 'customTemplateParams' => [],
                 'assets' => [],
             ])
@@ -168,6 +175,10 @@ abstract class AbstractProperty implements PropertyInterface
     {
         // TODO: resolve and validate options
 
-        return new PropertyDto($this->name, $this->type, $this->formType, $this->formTypeOptions, $this->sortable, $this->label, $this->permission, $this->textAlign, $this->help, $this->cssClass, $this->translationParams, $this->defaultTemplatePath, $this->customTemplatePath, $this->customTemplateParams, $this->assets, []);
+        if (null !== $this->templateName && null !== $this->templatePath) {
+            throw new \InvalidArgumentException(sprintf('Properties can only define either the name or the path of their templates, but the "%s" property defines both (remove one of them).', $this->name));
+        }
+
+        return new PropertyDto($this->name, $this->type, $this->formType, $this->formTypeOptions, $this->sortable, $this->label, $this->permission, $this->textAlign, $this->help, $this->cssClass, $this->translationParams, $this->templateName, $this->templatePath, $this->customTemplateParams, $this->assets, []);
     }
 }

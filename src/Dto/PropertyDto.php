@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 final class PropertyDto
 {
+    use PropertyAccessorTrait;
     use PropertyModifierTrait;
 
     private $name;
@@ -23,14 +24,16 @@ final class PropertyDto
     private $help;
     private $cssClass;
     private $translationParams;
+    /** @internal */
+    private $templateName;
+    /** @internal */
     private $templatePath;
-    private $defaultTemplatePath;
-    private $customTemplatePath;
+    private $resolvedTemplatePath;
     private $customTemplateParams = [];
     private $assets = [];
     private $customOptions;
 
-    public function __construct(string $name, string $type, string $formType, array $formTypeOptions, ?bool $sortable, ?string $label, ?string $permission, string $textAlign, ?string $help, ?string $cssClass, array $translationParams, string $defaultTemplatePath, ?string $customTemplatePath, array $customTemplateParams, array $assets, array $customOptions)
+    public function __construct(string $name, string $type, string $formType, array $formTypeOptions, ?bool $sortable, ?string $label, ?string $permission, string $textAlign, ?string $help, ?string $cssClass, array $translationParams, ?string $templateName, ?string $templatePath, array $customTemplateParams, array $assets, array $customOptions)
     {
         $this->name = $name;
         $this->type = $type;
@@ -43,8 +46,8 @@ final class PropertyDto
         $this->help = $help;
         $this->cssClass = $cssClass;
         $this->translationParams = $translationParams;
-        $this->defaultTemplatePath = $defaultTemplatePath;
-        $this->customTemplatePath = $customTemplatePath;
+        $this->templateName = $templateName;
+        $this->templatePath = $templatePath;
         $this->customTemplateParams = $customTemplateParams;
         $this->assets = $assets;
         $this->customOptions = $customOptions;
@@ -133,25 +136,7 @@ final class PropertyDto
      */
     public function getTemplatePath(): string
     {
-        return $this->templatePath;
-    }
-
-    /**
-     * This is the optional template that a field can define as its own
-     * template to override the default template defined by the field.
-     */
-    public function getCustomTemplatePath(): ?string
-    {
-        return $this->customTemplatePath;
-    }
-
-    /**
-     * This is the template which the fields render by default unless the
-     * field defines a custom template.
-     */
-    public function getDefaultTemplatePath(): string
-    {
-        return $this->defaultTemplatePath;
+        return $this->resolvedTemplatePath;
     }
 
     public function getCustomTemplateParams(): array

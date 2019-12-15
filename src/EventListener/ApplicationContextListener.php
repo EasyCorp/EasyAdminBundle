@@ -181,10 +181,10 @@ class ApplicationContextListener
         $templateRegistry = TemplateRegistry::new();
 
         $defaultCrudDto = $dashboardController->configureCrud()->getAsDto(false);
-        $templateRegistry->addTemplates($defaultCrudDto->getCustomTemplates());
+        $templateRegistry->addTemplates($defaultCrudDto->get('overriddenTemplates'));
 
         if (null !== $crudDto) {
-            $templateRegistry->addTemplates($crudDto->getCustomTemplates());
+            $templateRegistry->addTemplates($crudDto->get('overriddenTemplates'));
         }
 
         return $templateRegistry;

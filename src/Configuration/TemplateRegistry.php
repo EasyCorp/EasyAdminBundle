@@ -55,18 +55,15 @@ final class TemplateRegistry
     public static function new(): self
     {
         $registry = new self();
-
-        $templatesDto = [];
-        foreach (self::$templateNamesAndPaths as $name => $path) {
-            $templatesDto[$name] = new TemplateDto($name, $path);
-        }
-        $registry::$templates = $templatesDto;
+        $registry::initialize();
 
         return $registry;
     }
 
     public static function getTemplateNames(): array
     {
+        self::initialize();
+
         return array_keys(self::$templates);
     }
 
@@ -84,5 +81,19 @@ final class TemplateRegistry
         }
 
         return self::$templates[$templateName];
+    }
+
+    private static function initialize(): void
+    {
+        if (null !== self::$templates) {
+            return;
+        }
+
+        $templatesDto = [];
+        foreach (self::$templateNamesAndPaths as $name => $path) {
+            $templatesDto[$name] = new TemplateDto($name, $path);
+        }
+
+        self::$templates = $templatesDto;
     }
 }

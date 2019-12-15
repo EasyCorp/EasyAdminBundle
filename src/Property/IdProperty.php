@@ -13,7 +13,7 @@ class IdProperty extends AbstractProperty
     {
         $this->type = 'id';
         $this->formType = TextType::class;
-        $this->defaultTemplatePath = '@EasyAdmin/field_id.html.twig';
+        $this->templateName = 'property/id';
     }
 
     public function build(PropertyDto $propertyDto, EntityDto $entityDto, ApplicationContext $applicationContext): PropertyDto

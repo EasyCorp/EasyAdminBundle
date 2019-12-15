@@ -23,7 +23,9 @@ interface PropertyInterface
 
     public function setTranslationParams(array $params): self;
 
-    public function setCustomTemplatePath(string $path): self;
+    public function setTemplateName(string $name): self;
+
+    public function setTemplatePath(string $path): self;
 
     public function setCustomTemplateParams(array $params): self;
 

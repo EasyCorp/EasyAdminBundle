@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
-{# @var fields \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto[] #}
+{# @var entities \EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection #}
 {# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
 {% extends ea.templatePath('layout') %}
 {% trans_default_domain ea.dashboard.translationDomain %}
@@ -131,7 +131,7 @@
                     {% set nextSortDirection = isSortingProperty ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
                     {% set column_icon = isSortingProperty ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
-                    <th class="{{ isSortingProperty ? 'sorted' }} {# metadata.virtual ? 'virtual' #} {{ property.type }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                    <th class="{{ isSortingProperty ? 'sorted' }} {{ property.isVirtual ? 'property-virtual' }} property-{{ property.type|lower }} text-{{ property.textAlign }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                         {% if property.isSortable %}
                             <a href="{{ ea_path({ page: 1, sort: { (property.name): nextSortDirection }}) }}">
                                 {{ property.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
@@ -158,7 +158,7 @@
         <tbody>
         {% block table_body %}
             {% for entity in entities %}
-                {% if not easyadmin_is_granted(ea.page.itemPermission, entity) %}
+                {% if not entity.isAccessible %}
                     {% set some_results_are_hidden = true %}
                 {% else %}
                     <tr data-id="{{ entity.idValueAsString }}">
@@ -169,7 +169,7 @@
                     #}
 
                     {% for property in entity.properties %}
-                        <td class="{{ property.name == sort_field_name ? 'sorted' }} {{ property.type|lower }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                        <td class="{{ property.name == sort_field_name ? 'sorted' }} property-{{ property.type|lower }} text-{{ property.textAlign }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                             {{ include(property.templatePath, { property: property }, with_context = false) }}
                         </td>
                     {% endfor %}
@@ -200,7 +200,7 @@
                 {% endif %}
             {% else %}
                 <tr>
-                    <td class="no-results" colspan="{{ fields|length + 1 }}">
+                    <td class="no-results" colspan="100">
                         {{ 'search.no_results'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}
                     </td>
                 </tr>
@@ -208,7 +208,7 @@
 
             {% if some_results_are_hidden %}
                 <tr class="datagrid-row-empty">
-                    <td class="text-center" colspan="{{ fields|length + 1 }}">
+                    <td class="text-center" colspan="{{ entities|first.properties|length + 1 }}">
                         <span class="datagrid-row-empty-message"><i class="fa fa-lock mr-1"></i> {{ 'security.list.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
                     </td>
                 </tr>

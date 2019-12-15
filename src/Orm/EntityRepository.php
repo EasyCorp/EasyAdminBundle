@@ -67,12 +67,11 @@ final class EntityRepository implements EntityRepositoryInterface
         ];
 
         $entitiesAlreadyJoined = [];
-        foreach ($searchDto->getSearchableProperties() as $property) {
+        foreach ($searchDto->getSearchableProperties() as $propertyName) {
             $entityName = 'entity';
-            $PropertyDataType = $entityDto->getPropertyDataType($property->getName());
-            $propertyName = $property->getName();
+            $propertyDataType = $entityDto->getPropertyDataType($propertyName);
 
-            if ($entityDto->isAssociationProperty($property->getName())) {
+            if ($entityDto->isAssociationProperty($propertyName)) {
                 // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
                 $associatedProperties = explode('.', $propertyName);
                 for ($i = 0; $i < \count($associatedProperties) - 1; ++$i) {
@@ -90,12 +89,12 @@ final class EntityRepository implements EntityRepositoryInterface
                 }
             }
 
-            $isSmallIntegerProperty = 'smallint' === $PropertyDataType;
-            $isIntegerProperty = 'integer' === $PropertyDataType;
-            $isNumericProperty = \in_array($PropertyDataType, ['number', 'bigint', 'decimal', 'float']);
+            $isSmallIntegerProperty = 'smallint' === $propertyDataType;
+            $isIntegerProperty = 'integer' === $propertyDataType;
+            $isNumericProperty = \in_array($propertyDataType, ['number', 'bigint', 'decimal', 'float']);
             // 'citext' is a PostgreSQL extension (https://github.com/EasyCorp/EasyAdminBundle/issues/2556)
-            $isTextProperty = \in_array($PropertyDataType, ['string', 'text', 'citext', 'array', 'simple_array']);
-            $isGuidProperty = \in_array($PropertyDataType, ['guid', 'uuid']);
+            $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array']);
+            $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid']);
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
             if (

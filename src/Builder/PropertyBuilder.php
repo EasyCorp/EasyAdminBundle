@@ -6,7 +6,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
@@ -15,17 +14,12 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class PropertyBuilder implements ItemCollectionBuilderInterface
+final class PropertyBuilder
 {
     private $applicationContextProvider;
     private $authorizationChecker;
     private $translator;
     private $propertyAccessor;
-    private $isBuilt;
-    /** @var PropertyDtoCollection */
-    private $properties;
-    /** @var PropertyDtoCollection */
-    private $builtProperties;
 
     public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authorizationChecker, TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
     {
@@ -36,100 +30,54 @@ final class PropertyBuilder implements ItemCollectionBuilderInterface
     }
 
     /**
-     * @param PropertyInterface $property
+     * @param PropertyInterface[] $propertiesConfig
      */
-    public function addItem($property): ItemCollectionBuilderInterface
-    {
-        $this->properties[] = $property;
-        $this->resetBuiltProperties();
-
-        return $this;
-    }
-
-    /**
-     * @param PropertyDtoCollection[] $propertiesDto
-     */
-    public function setItems(array $propertiesDto): ItemCollectionBuilderInterface
-    {
-        $this->properties = $propertiesDto;
-        $this->resetBuiltProperties();
-
-        return $this;
-    }
-
-    /**
-     * @return MenuItemDto[]
-     */
-    public function build(): PropertyDtoCollection
-    {
-        if (!$this->isBuilt) {
-            $this->buildProperties();
-            $this->isBuilt = true;
-        }
-
-        return $this->builtProperties;
-    }
-
-    public function buildForEntity(EntityDto $entityDto): PropertyDtoCollection
-    {
-        $this->build();
-
-        $applicationContext = $this->applicationContextProvider->getContext();
-
-        $updatedPropertiesDto = [];
-        foreach ($this->builtProperties as $propertyDto) {
-            // property is built in two steps because some dynamic properties depend on
-            // other properties built dynamically in step 1
-            $updatedPropertyDto = $propertyDto->with([
-                'sortable' => $this->buildSortableProperty($propertyDto, $entityDto),
-                'value' => $this->buildValueProperty($propertyDto, $entityDto),
-                'virtual' => $this->buildVirtualProperty($propertyDto, $entityDto),
-            ]);
-
-            $updatedPropertyDto = $updatedPropertyDto->with([
-                'templatePath' => $this->buildTemplatePathProperty($applicationContext, $updatedPropertyDto, $entityDto),
-            ]);
-
-            $updatedPropertiesDto[] = $updatedPropertyDto;
-        }
-
-        return PropertyDtoCollection::new($updatedPropertiesDto);
-    }
-
-    private function resetBuiltProperties(): void
-    {
-        $this->builtProperties = PropertyDtoCollection::new();
-        $this->isBuilt = false;
-    }
-
-    private function buildProperties(): void
+    public function build(EntityDto $entityDto, iterable $propertiesConfig): EntityDto
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $translationDomain = $applicationContext->getI18n()->getTranslationDomain();
 
         $builtProperties = [];
-        foreach ($this->properties as $propertyDto) {
+        foreach ($propertiesConfig as $propertyConfig) {
+            $propertyDto = $propertyConfig->getAsDto();
             if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_PROPERTY, $propertyDto)) {
                 continue;
             }
 
-            $builtProperties[] = $propertyDto->with([
+            $value = $this->buildValueProperty($propertyDto, $entityDto);
+
+            $propertyDto = $propertyDto->with([
                 'help' => $this->buildHelpProperty($propertyDto, $translationDomain),
                 'label' => $this->buildLabelProperty($propertyDto, $translationDomain),
+                'sortable' => $this->buildSortableProperty($propertyDto, $entityDto),
+                'rawValue' => $value,
+                'templatePath' => $this->buildTemplatePathProperty($applicationContext, $propertyDto, $entityDto, $value),
+                'value' => $value,
+                'virtual' => $this->buildVirtualProperty($propertyDto, $entityDto),
             ]);
+
+            $propertyDto = $propertyConfig->build($propertyDto, $entityDto, $applicationContext);
+
+            $builtProperties[] = $propertyDto;
         }
 
-        $this->builtProperties = PropertyDtoCollection::new($builtProperties);
+        return $entityDto->with([
+            'properties' => PropertyDtoCollection::new($builtProperties),
+        ]);
     }
 
-    public function buildForMultipleEntities(EntityDtoCollection $entitiesDto): EntityDtoCollection
+    /**
+     * @param PropertyInterface[] $propertiesConfig
+     */
+    public function buildAll(EntityDto $entityDto, $entityInstances, iterable $propertiesConfig): EntityDtoCollection
     {
-        $updatedEntitiesDto = [];
-        foreach ($entitiesDto as $entityDto) {
-            $updatedEntitiesDto[] = $this->buildForEntity($entityDto);
+        $builtEntities = [];
+        foreach ($entityInstances as $entityInstance) {
+            $currentEntityDto = $entityDto->with(['instance' => $entityInstance]);
+            $builtEntities[] = $this->build($currentEntityDto, $propertiesConfig);
         }
 
-        return EntityDtoCollection::new($updatedEntitiesDto);
+        return EntityDtoCollection::new($builtEntities);
     }
 
     private function buildHelpProperty(PropertyDto $propertyDto, string $translationDomain): ?string
@@ -182,7 +130,7 @@ final class PropertyBuilder implements ItemCollectionBuilderInterface
         return null;
     }
 
-    private function buildTemplatePathProperty(ApplicationContext $applicationContext, PropertyDto $propertyDto, EntityDto $entityDto): string
+    private function buildTemplatePathProperty(ApplicationContext $applicationContext, PropertyDto $propertyDto, EntityDto $entityDto, $propertyValue): string
     {
         if (null !== $customTemplatePath = $propertyDto->getCustomTemplatePath()) {
             return $customTemplatePath;
@@ -190,15 +138,15 @@ final class PropertyBuilder implements ItemCollectionBuilderInterface
 
         $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $propertyDto->getName());
         if (!$isPropertyReadable) {
-            return $applicationContext->getTemplatePath('label_inaccessible');
+            return $applicationContext->getTemplatePath('label/inaccessible');
         }
 
-        if (null === $value = $propertyDto->getValue()) {
-            return $applicationContext->getTemplatePath('label_null');
+        if (null === $propertyValue) {
+            return $applicationContext->getTemplatePath('label/null');
         }
 
-        if (empty($value) && \in_array($propertyDto->getType(), ['image', 'file', 'array', 'simple_array'])) {
-            return $applicationContext->getTemplatePath('label_empty');
+        if (empty($propertyValue) && \in_array($propertyDto->getType(), ['image', 'file', 'array', 'simple_array'])) {
+            return $applicationContext->getTemplatePath('label/empty');
         }
 
         return $propertyDto->getDefaultTemplatePath();

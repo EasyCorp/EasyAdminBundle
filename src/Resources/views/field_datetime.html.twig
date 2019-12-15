@@ -1,0 +1,3 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+<time datetime="{{ property.rawValue|date('c') }}" title="{{ property.rawValue|date('r') }}">{{ property.value }}</time>

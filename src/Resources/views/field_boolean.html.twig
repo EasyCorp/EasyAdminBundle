@@ -1,0 +1,9 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{% trans_default_domain 'EasyAdminBundle' %}
+
+{% if property.rawValue == true %}
+    <span class="badge badge-success">{{ 'label.true'|trans }}</span>
+{% else %}
+    <span class="badge badge-danger">{{ 'label.false'|trans }}</span>
+{% endif %}

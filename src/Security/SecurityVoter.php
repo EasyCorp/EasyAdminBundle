@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -32,6 +33,10 @@ final class SecurityVoter extends Voter
             return $this->voteOnViewPropertyPermission($subject);
         }
 
+        if (Permission::EA_VIEW_ENTITY === $permissionName) {
+            return $this->voteOnViewEntityPermission($subject);
+        }
+
         if (Permission::EA_EXIT_IMPERSONATION === $permissionName) {
             return $this->voteOnExitImpersonationPermission();
         }
@@ -49,6 +54,12 @@ final class SecurityVoter extends Voter
     {
         // users can see the property if they have the permission required by the property
         return $this->authorizationChecker->isGranted($propertyDto->getPermission());
+    }
+
+    private function voteOnViewentityPermission(EntityDto $entityDto): bool
+    {
+        // users can see the entity if they have the required permission on the specific entity instance
+        return $this->authorizationChecker->isGranted($entityDto->getPermission(), $entityDto->getInstance());
     }
 
     private function voteOnExitImpersonationPermission(): bool

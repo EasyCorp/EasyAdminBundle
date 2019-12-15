@@ -31,13 +31,14 @@ final class CrudPageDto
         return $context;
     }
 
-    public static function newFromDetailPage(string $pageName, ?string $title, ?string $help, array $actions): self
+    public static function newFromDetailPage(string $pageName, ?string $title, ?string $help, ?string $entityViewPermission, array $actions): self
     {
         $context = new self();
 
         $context->name = $pageName;
         $context->title = $title;
         $context->help = $help;
+        $context->entityPermission = $entityViewPermission;
         $context->actions = $actions;
 
         return $context;
@@ -80,7 +81,7 @@ final class CrudPageDto
         return $this->defaultSort;
     }
 
-    public function getItemPermission(): ?string
+    public function getEntityPermission(): ?string
     {
         return $this->entityPermission;
     }

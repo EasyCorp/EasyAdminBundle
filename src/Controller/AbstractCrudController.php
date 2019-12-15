@@ -47,7 +47,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     /**
      * @inheritDoc
      */
-    abstract public function configureProperties(string $page): iterable;
+    abstract public function configureProperties(string $action): iterable;
 
     public function configureIndexPage(IndexPageConfig $indexPageConfig): IndexPageConfig
     {
@@ -99,11 +99,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $propertiesDto = PropertyDtoCollection::fromPropertiesConfig(iterator_to_array($this->configureProperties('index')));
         $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
-        $entityDto = $this->get('ea.entity_builder')->buildFromEntityFqcn($entityFqcn, $propertiesDto);
+        $entityPermission = $this->getContext()->getPage()->getEntityPermission();
+        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityPermission);
 
-        $searchDto = new SearchDto($this->getContext(), $entityDto->getProperties());
+        $searchDto = new SearchDto($this->getContext(), $entityDto);
         $queryBuilder = $this->createIndexQueryBuilder($searchDto, $entityDto);
         $paginatorDto = $this->getContext()->getPage()->getPaginator()->with([
             'pageNumber' => $this->getContext()->getRequest()->query->get('page', 1),
@@ -111,10 +111,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $paginator = $this->get('ea.entity_paginator')->paginate($paginatorDto, $queryBuilder);
 
         $entityInstances = iterator_to_array($paginator->getResults());
-        $entitiesDto = $this->get('ea.entity_builder')->buildFromEntityInstances($entityDto, $entityInstances);
+        $entityCollection = $this->get('ea.property_builder')->buildAll($entityDto, $entityInstances, iterator_to_array($this->configureProperties('index')));
 
         $parameters = [
-            'entities' => $entitiesDto,
+            'entities' => $entityCollection,
             'paginator' => $paginator,
             'batch_form' => $this->createBatchForm($entityFqcn)->createView(),
             'delete_form_template' => $this->createDeleteForm('__id__')->createView(),
@@ -165,8 +165,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
         $entityId = $this->getContext()->getRequest()->query->get('entityId');
-        $propertiesDto = PropertyDtoCollection::fromPropertiesConfig(iterator_to_array($this->configureProperties('detail')));
-        $entityDto = $this->get('ea.entity_builder')->buildFromEntityId($entityFqcn, $entityId, $propertiesDto);
+        $entityPermission = $this->getContext()->getPage()->getEntityPermission();
+        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityPermission, $entityId);
+
+        $entityDto = $this->get('ea.property_builder')->build($entityDto, $this->configureProperties('detail'));
 
         $deleteForm = $this->createDeleteForm($entityId);
 

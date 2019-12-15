@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 final class PropertyDto
@@ -11,6 +12,7 @@ final class PropertyDto
     private $name;
     private $type;
     private $value;
+    private $rawValue;
     private $formType;
     private $formTypeOptions = [];
     private $sortable;
@@ -28,7 +30,7 @@ final class PropertyDto
     private $assets = [];
     private $customOptions;
 
-    public function __construct(string $name, string $type, string $formType, array $formTypeOptions, ?bool $sortable, ?string $label, ?string $permission, string $textAlign, ?string $help, ?string $cssClass, array $translationParams, string $defaultTemplatePath, ?string $customTemplatePath, array $customTemplateParams, array $assets, ParameterBag $customOptions)
+    public function __construct(string $name, string $type, string $formType, array $formTypeOptions, ?bool $sortable, ?string $label, ?string $permission, string $textAlign, ?string $help, ?string $cssClass, array $translationParams, string $defaultTemplatePath, ?string $customTemplatePath, array $customTemplateParams, array $assets, array $customOptions)
     {
         $this->name = $name;
         $this->type = $type;
@@ -58,6 +60,18 @@ final class PropertyDto
         return $this->type;
     }
 
+    /**
+     * Returns the original unmodified value stored in the entity property.
+     */
+    public function getRawValue()
+    {
+        return $this->rawValue;
+    }
+
+    /**
+     * Returns the value to be displayed for the entity property (it could be the
+     * same as the value stored in the property or not)
+     */
     public function getValue()
     {
         return $this->value;
@@ -143,5 +157,15 @@ final class PropertyDto
     public function getCustomTemplateParams(): array
     {
         return $this->customTemplateParams;
+    }
+
+    public function getAssets(): AssetDto
+    {
+        return $this->assets->getAsDto();
+    }
+
+    public function getCustomOptions(): ParameterBag
+    {
+        return new ParameterBag($this->customOptions);
     }
 }

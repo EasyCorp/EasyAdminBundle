@@ -11,19 +11,23 @@ final class EntityDto
 
     private $fqcn;
     private $metadata;
-    private $propertiesDto;
     private $instance;
     private $idName;
     private $idValue;
+    private $requiredPermission;
+    private $userHasPermission;
+    /** @var ?PropertyDtoCollection $properties */
+    private $properties;
 
-    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, PropertyDtoCollection $propertiesDto, $entityInstance = null, $entityIdValue = null)
+    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, $entityInstance = null, $entityIdValue = null)
     {
         $this->fqcn = $entityFqcn;
         $this->metadata = $entityMetadata;
-        $this->propertiesDto = $propertiesDto;
         $this->instance = $entityInstance;
         $this->idName = $this->metadata->getIdentifierFieldNames()[0];
         $this->idValue = $entityIdValue;
+        $this->requiredPermission = $entityPermission;
+        $this->userHasPermission = true;
     }
 
     public function getFqcn(): string
@@ -34,11 +38,6 @@ final class EntityDto
     public function getName(): string
     {
         return basename(str_replace('\\', '/', $this->fqcn));
-    }
-
-    public function getProperties(): PropertyDtoCollection
-    {
-        return $this->propertiesDto;
     }
 
     public function getInstance()
@@ -61,6 +60,37 @@ final class EntityDto
         return (string) $this->idValue;
     }
 
+    public function getPermission(): ?string
+    {
+        return $this->requiredPermission;
+    }
+
+    public function isAccessible(): bool
+    {
+        return true === $this->userHasPermission;
+    }
+
+    public function markAsInaccessible(): void
+    {
+        $this->instance = null;
+        $this->propertiesDto = PropertyDtoCollection::new([]);
+        $this->userHasPermission = false;
+    }
+
+    public function getProperties(): ?PropertyDtoCollection
+    {
+        return $this->properties;
+    }
+
+    /**
+     * Returns the names of all properties defined in the entity, no matter
+     * if they are used or not in the application.
+     */
+    public function getDefinedPropertiesNames(): array
+    {
+        return $this->metadata->getFieldNames();
+    }
+
     public function getPropertyMetadata(string $propertyName): array
     {
         if (!array_key_exists($propertyName, $this->metadata->fieldMappings)) {
@@ -77,7 +107,7 @@ final class EntityDto
 
     public function hasProperty(string $propertyName): bool
     {
-        return array_key_exists($propertyName, array_keys($this->metadata->fieldMappings));
+        return array_key_exists($propertyName, $this->metadata->fieldMappings);
     }
 
     public function isAssociationProperty(string $propertyName): bool

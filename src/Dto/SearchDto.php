@@ -12,14 +12,13 @@ final class SearchDto
     private $defaultSort;
     private $customSort;
     private $query;
-    /** @var PropertyDtoCollection */
-    private $properties;
     /** @var string[]|null */
     private $searchProperties;
     /** @var string[]|null */
     private $filters;
+    private $entityDto;
 
-    public function __construct(ApplicationContext $applicationContext, PropertyDtoCollection $properties)
+    public function __construct(ApplicationContext $applicationContext, EntityDto $entityDto)
     {
         $this->request = $request = $applicationContext->getRequest();
         $this->defaultSort = $applicationContext->getPage()->getDefaultSort();
@@ -27,7 +26,7 @@ final class SearchDto
         $this->query = $request->query->get('query');
         $this->searchProperties = $applicationContext->getPage()->getSearchFields();
         $this->filters = $applicationContext->getPage()->getFilters();
-        $this->properties = $properties;
+        $this->entityDto = $entityDto;
     }
 
     public function getRequest(): Request
@@ -55,21 +54,16 @@ final class SearchDto
         return $this->query;
     }
 
-    public function getSearchableProperties(): PropertyDtoCollection
+    /**
+     * @return string[]
+     */
+    public function getSearchableProperties(): array
     {
         if (empty($this->searchProperties)) {
-            return $this->properties;
+            return $this->entityDto->getDefinedPropertiesNames();
         }
 
-        // TODO: check the 'permission' of the field before using it
-        $propertiesDto = [];
-        foreach ($this->properties as $propertyDto) {
-            if (in_array($propertyDto->getName(), $this->searchProperties, true)) {
-                $propertiesDto[] = $propertyDto;
-            }
-        }
-
-        return $propertiesDto;
+        return $this->searchProperties;
     }
 
     public function getFilters(): ?array

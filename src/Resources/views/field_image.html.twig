@@ -1,0 +1,10 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+
+<a href="#" class="easyadmin-thumbnail" data-featherlight="#easyadmin-lightbox-{{ property.customOptions.get('contentHash') }}" data-featherlight-close-on-click="anywhere">
+    <img src="{{ asset(property.value) }}">
+</a>
+
+<div id="easyadmin-lightbox-{{ property.customOptions.get('contentHash') }}" class="easyadmin-lightbox">
+    <img src="{{ asset(property.value) }}">
+</div>

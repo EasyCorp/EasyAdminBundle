@@ -168,6 +168,6 @@ abstract class AbstractProperty implements PropertyInterface
     {
         // TODO: resolve and validate options
 
-        return new PropertyDto($this->name, $this->type, $this->formType, $this->formTypeOptions, $this->sortable, $this->label, $this->permission, $this->textAlign, $this->help, $this->cssClass, $this->translationParams, $this->defaultTemplatePath, $this->customTemplatePath, $this->customTemplateParams, $this->assets, new ParameterBag());
+        return new PropertyDto($this->name, $this->type, $this->formType, $this->formTypeOptions, $this->sortable, $this->label, $this->permission, $this->textAlign, $this->help, $this->cssClass, $this->translationParams, $this->defaultTemplatePath, $this->customTemplatePath, $this->customTemplateParams, $this->assets, []);
     }
 }

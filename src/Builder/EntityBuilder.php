@@ -3,29 +3,50 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class EntityBuilder
 {
+    private $authorizationChecker;
     private $doctrine;
     private $eventDispatcher;
-    private $propertyBuilder;
 
-    public function __construct(ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher, ItemCollectionBuilderInterface $propertyBuilder)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
+        $this->authorizationChecker = $authorizationChecker;
         $this->doctrine = $doctrine;
         $this->eventDispatcher = $eventDispatcher;
-        $this->propertyBuilder = $propertyBuilder;
     }
 
-    public function buildFromEntityFqcn(string $entityFqcn, PropertyDtoCollection $propertiesDto): EntityDto
+    public function build(string $entityFqcn, ?string $entityPermission, $entityId = null): EntityDto
+    {
+        $entityMetadata = $this->getEntityMetadata($entityFqcn);
+        $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
+        $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPermission, $entityInstance, $entityId);
+
+        $this->checkEntityPermission($entityDto);
+        $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($entityDto));
+
+        return $entityDto;
+    }
+
+    private function getEntityManager(string $entityFqcn): ObjectManager
+    {
+        if (null === $entityManager = $this->doctrine->getManagerForClass($entityFqcn)) {
+            throw new \RuntimeException(sprintf('There is no Doctrine Entity Manager defined for the "%s" class', $entityFqcn));
+        }
+
+        return $entityManager;
+    }
+
+    private function getEntityMetadata(string $entityFqcn): ClassMetadata
     {
         $entityManager = $this->getEntityManager($entityFqcn);
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
@@ -34,58 +55,15 @@ final class EntityBuilder
             throw new \RuntimeException(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', $entityFqcn));
         }
 
-        $entityPropertiesDto = $this->propertyBuilder->setItems(iterator_to_array($propertiesDto))->build();
-
-        $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPropertiesDto);
-
-        $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($entityDto));
-
-        return $entityDto;
+        return $entityMetadata;
     }
 
-    public function buildFromEntityId(string $entityFqcn, $entityId, PropertyDtoCollection $propertiesDto): EntityDto
+    /**
+     * @return object|null
+     */
+    private function getEntityInstance(string $entityFqcn, $entityIdValue)
     {
-        $entityDto = $this->buildFromEntityFqcn($entityFqcn, $propertiesDto);
-
         $entityManager = $this->getEntityManager($entityFqcn);
-        $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityManager, $entityFqcn, $entityId);
-
-        return $this->buildFromEntityInstance($entityDto, $entityInstance);
-    }
-
-    public function buildFromEntityInstance(EntityDto $entityDto, $entityInstance): EntityDto
-    {
-        $newProperties = $this->propertyBuilder
-            ->setItems(iterator_to_array($entityDto->getProperties()))
-            ->buildForEntity($entityDto->with(['instance' => $entityInstance]));
-
-        $newEntityDto = $entityDto->with(['propertiesDto' => $newProperties]);
-        $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($newEntityDto));
-
-        return $newEntityDto;
-    }
-
-    public function buildFromEntityInstances(EntityDto $entityDto, array $entityInstances): EntityDtoCollection
-    {
-        $entitiesDto = [];
-        foreach ($entityInstances as $entityInstance) {
-            $entitiesDto[] = $this->buildFromEntityInstance($entityDto, $entityInstance);
-        }
-
-        return EntityDtoCollection::new($entitiesDto);
-    }
-
-    private function getEntityManager(string $entityClass): ObjectManager
-    {
-        if (null === $entityManager = $this->doctrine->getManagerForClass($entityClass)) {
-            throw new \RuntimeException(sprintf('There is no Doctrine Entity Manager defined for the "%s" class', $entityClass));
-        }
-
-        return $entityManager;
-    }
-
-    private function getEntityInstance(ObjectManager $entityManager, string $entityFqcn, $entityIdValue)
-    {
         if (null === $entityInstance = $entityManager->getRepository($entityFqcn)->find($entityIdValue)) {
             $entityIdName = $entityManager->getClassMetadata($entityFqcn)->getIdentifierFieldNames()[0];
 
@@ -93,5 +71,12 @@ final class EntityBuilder
         }
 
         return $entityInstance;
+    }
+
+    private function checkEntityPermission(EntityDto $entityDto): void
+    {
+        if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $entityDto)) {
+            $entityDto->markAsInaccessible();
+        }
     }
 }

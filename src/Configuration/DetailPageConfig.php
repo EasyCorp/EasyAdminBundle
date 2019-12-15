@@ -9,6 +9,7 @@ final class DetailPageConfig
     private $pageName = 'detail';
     private $title;
     private $help;
+    private $entityViewPermission;
     /** @var Action[] */
     private $actions = [];
 
@@ -27,6 +28,13 @@ final class DetailPageConfig
     public function setHelp(string $help): self
     {
         $this->help = $help;
+
+        return $this;
+    }
+
+    public function setEntityViewPermission(string $permission): self
+    {
+        $this->entityViewPermission = $permission;
 
         return $this;
     }
@@ -56,6 +64,6 @@ final class DetailPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromDetailPage($this->pageName, $this->title, $this->help, $this->actions);
+        return CrudPageDto::newFromDetailPage($this->pageName, $this->title, $this->help, $this->entityViewPermission, $this->actions);
     }
 }

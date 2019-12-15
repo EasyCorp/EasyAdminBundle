@@ -47,10 +47,10 @@ final class PropertyBuilder
             $value = $this->buildValueProperty($propertyDto, $entityDto);
 
             $propertyDto = $propertyDto->with([
+                'formattedValue' => $value,
                 'help' => $this->buildHelpProperty($propertyDto, $translationDomain),
                 'label' => $this->buildLabelProperty($propertyDto, $translationDomain),
                 'sortable' => $this->buildSortableProperty($propertyDto, $entityDto),
-                'rawValue' => $value,
                 'templatePath' => $this->buildTemplatePathProperty($applicationContext, $propertyDto, $entityDto, $value),
                 'value' => $value,
                 'virtual' => $this->buildVirtualProperty($propertyDto, $entityDto),

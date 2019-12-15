@@ -38,13 +38,13 @@ class DateTimeProperty extends AbstractProperty
     {
         $defaultFormat = $applicationContext->getCrud()->getDateTimeFormat();
         $propertyFormat = $this->format;
-        $value = $propertyDto->getRawValue()->format($propertyFormat ?? $defaultFormat);
+        $formattedValue = $propertyDto->getValue()->format($propertyFormat ?? $defaultFormat);
 
         return $propertyDto->with([
             'customOptions' => [
                 'format' => $this->format,
             ],
-            'value' => $value,
+            'formattedValue' => $formattedValue,
         ]);
     }
 }

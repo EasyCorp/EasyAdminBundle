@@ -37,10 +37,10 @@ class ImageProperty extends AbstractProperty
 
     public function build(PropertyDto $propertyDto, EntityDto $entityDto, ApplicationContext $applicationContext): PropertyDto
     {
-        $value = $this->getImagePath($propertyDto->getRawValue(), $this->basePath);
+        $formattedValue = $this->getImagePath($propertyDto->getValue(), $this->basePath);
 
         // this check is needed to avoid displaying broken images when image properties are optional
-        if (empty($value) || $value === rtrim($this->basePath ?? '', '/')) {
+        if (empty($formattedValue) || $formattedValue === rtrim($this->basePath ?? '', '/')) {
             return $propertyDto->with([
                 'templatePath' => '@EasyAdmin/label_empty.html.twig',
             ]);
@@ -49,9 +49,9 @@ class ImageProperty extends AbstractProperty
         return $propertyDto->with([
             'customOptions' => [
                 'basePath' => $this->basePath,
-                'contentHash' => md5($propertyDto->getRawValue()),
+                'contentHash' => md5($propertyDto->getValue()),
             ],
-            'value' => $value,
+            'formattedValue' => $formattedValue,
         ]);
     }
 

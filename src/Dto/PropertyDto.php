@@ -12,7 +12,7 @@ final class PropertyDto
     private $name;
     private $type;
     private $value;
-    private $rawValue;
+    private $formattedValue;
     private $formType;
     private $formTypeOptions = [];
     private $sortable;
@@ -63,18 +63,18 @@ final class PropertyDto
     /**
      * Returns the original unmodified value stored in the entity property.
      */
-    public function getRawValue()
+    public function getValue()
     {
-        return $this->rawValue;
+        return $this->value;
     }
 
     /**
      * Returns the value to be displayed for the entity property (it could be the
      * same as the value stored in the property or not)
      */
-    public function getValue()
+    public function getFormattedValue()
     {
-        return $this->value;
+        return $this->formattedValue;
     }
 
     public function getLabel(): ?string

@@ -2,7 +2,7 @@
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
 {% trans_default_domain 'EasyAdminBundle' %}
 
-{% if property.rawValue == true %}
+{% if property.value == true %}
     <span class="badge badge-success">{{ 'label.true'|trans }}</span>
 {% else %}
     <span class="badge badge-danger">{{ 'label.false'|trans }}</span>

@@ -44,16 +44,16 @@ class TextProperty extends AbstractProperty
             $this->maxLength = 'detail' === $applicationContext->getCrud()->getAction() ? PHP_INT_MAX : 64;
         }
 
-        $value = mb_substr($propertyDto->getValue(), 0, $this->maxLength);
-        if ($this->maxLength < mb_strlen($propertyDto->getRawValue())) {
-            $value .= '…';
+        $formattedValue = mb_substr($propertyDto->getValue(), 0, $this->maxLength);
+        if ($formattedValue !== $propertyDto->getValue()) {
+            $formattedValue .= '…';
         }
 
         return $propertyDto->with([
             'customOptions' => [
                 'max_length' => $this->maxLength,
             ],
-            'value' => $value,
+            'formattedValue' => $formattedValue,
         ]);
     }
 }

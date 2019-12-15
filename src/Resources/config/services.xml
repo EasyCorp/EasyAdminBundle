@@ -23,7 +23,6 @@
             <argument type="service" id="twig" />
             <argument type="service" id="security.token_storage" on-invalid="null" />
             <argument type="service" id="easyadmin.builder.menu_item" />
-            <argument type="service" id="easyadmin.builder.action" />
             <tag name="kernel.event_listener" event="kernel.controller" />
         </service>
 

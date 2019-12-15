@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
+use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -29,19 +30,16 @@ use Twig\Environment;
 class ApplicationContextListener
 {
     private $controllerResolver;
-    private $doctrine;
     private $twig;
     private $tokenStorage;
     private $menuBuilder;
-    private $actionBuilder;
 
-    public function __construct(ControllerResolverInterface $controllerResolver, Environment $twig, ?TokenStorageInterface $tokenStorage, ItemCollectionBuilderInterface $menuBuilder, $actionBuilder)
+    public function __construct(ControllerResolverInterface $controllerResolver, Environment $twig, ?TokenStorageInterface $tokenStorage, ItemCollectionBuilderInterface $menuBuilder)
     {
         $this->controllerResolver = $controllerResolver;
         $this->twig = $twig;
         $this->tokenStorage = $tokenStorage;
         $this->menuBuilder = $menuBuilder;
-        $this->actionBuilder = $actionBuilder;
     }
 
     public function onKernelController(ControllerEvent $event): void
@@ -123,22 +121,23 @@ class ApplicationContextListener
         $dashboardDto = $this->getDashboard($event);
         $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
         $crudDto = $this->getCrudConfig($dashboardControllerInstance, $crudControllerInstance);
-        $templateRegistry = $this->getTemplateRegistry($dashboardControllerInstance, $crudDto);
         $crudPageDto = $this->getCrudPageConfig($dashboardControllerInstance, $crudControllerInstance, $crudAction);
+        $crudDto = $crudDto->with(['crudPageDto' => $crudPageDto]);
+        $templateRegistry = $this->getTemplateRegistry($dashboardControllerInstance, $crudDto);
         $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $dashboardControllerInstance, $this->menuBuilder, $this->actionBuilder, $assetDto, $crudDto, $crudPageDto, $templateRegistry);
+        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $dashboardControllerInstance, $this->menuBuilder, $assetDto, $crudDto, $templateRegistry);
         $this->setApplicationContext($event, $applicationContext);
     }
 
     private function getApplicationContext(ControllerEvent $event): ?ApplicationContext
     {
-        return $event->getRequest()->attributes->get(ApplicationContext::ATTRIBUTE_KEY);
+        return $event->getRequest()->attributes->get(EasyAdminBundle::REQUEST_ATTRIBUTE_NAME);
     }
 
     private function setApplicationContext(ControllerEvent $event, ApplicationContext $applicationContext): void
     {
-        $event->getRequest()->attributes->set(ApplicationContext::ATTRIBUTE_KEY, $applicationContext);
+        $event->getRequest()->attributes->set(EasyAdminBundle::REQUEST_ATTRIBUTE_NAME, $applicationContext);
     }
 
     private function getDashboard(ControllerEvent $event): DashboardDto

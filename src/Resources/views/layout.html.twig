@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
-{% trans_default_domain ea.dashboard.translationDomain %}
+{% trans_default_domain ea.i18n.translationDomain %}
 
 <!DOCTYPE html>
 <html lang="{{ ea.i18n.locale }}">
@@ -21,7 +21,7 @@
     {% endfor %}
 
     {% block head_favicon %}
-        <link rel="shortcut icon" href="{{ asset(ea.dashboard.faviconPath) }}">
+        <link rel="shortcut icon" href="{{ asset(ea.dashboardFaviconPath) }}">
     {% endblock %}
 
     {% block head_javascript %}
@@ -58,8 +58,8 @@
 
                             <div id="header-logo">
                                 {% block header_logo %}
-                                    <a class="logo {{ ea.dashboard.siteName|length > 14 ? 'logo-long' }}" title="{{ ea.dashboard.siteName|striptags }}" href="{{ path(ea.dashboard.routeName) }}">
-                                        {{ ea.dashboard.siteName|raw }}
+                                    <a class="logo {{ ea.dashboardTitle|length > 14 ? 'logo-long' }}" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                        {{ ea.dashboardTitle|raw }}
                                     </a>
                                 {% endblock header_logo %}
                             </div>
@@ -127,7 +127,7 @@
                     {% block content %}
                         <div class="content">
                             {% block content_header_wrapper %}
-                                <section class="content-header {{ (ea.page.help ?? '') is not empty ? 'has-content-help' }}">
+                                <section class="content-header {{ (ea.crud.page.help ?? '') is not empty ? 'has-content-help' }}">
                                     {% block content_header %}
                                         <div class="d-flex flex-row justify-content-between align-content-center w-100">
                                             <div class="content-header-title">
@@ -140,9 +140,9 @@
                                         </div>
 
                                         {% block content_help %}
-                                            {% if (ea.page.help ?? '') is not empty %}
+                                            {% if (ea.crud.page.help ?? '') is not empty %}
                                                 <div class="content-header-help">
-                                                    {{ ea.page.help|trans|raw }}
+                                                    {{ ea.crud.page.help|trans|raw }}
                                                 </div>
                                             {% endif %}
                                         {% endblock content_help %}

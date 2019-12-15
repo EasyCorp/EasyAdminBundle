@@ -2,7 +2,7 @@
 {# @var entities \EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection #}
 {# @var paginator \EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator #}
 {% extends ea.templatePath('layout') %}
-{% trans_default_domain ea.dashboard.translationDomain %}
+{% trans_default_domain ea.i18n.translationDomain %}
 
 {#
 {% set _request_parameters = _request_parameters|merge({ referer: path('easyadmin', _request_parameters)|url_encode }) %}
@@ -16,16 +16,16 @@
     {% apply spaceless %}
         {% if 'search' == app.request.get('action') %}
             {% set default_title = 'search.page_title'|transchoice(paginator.numResults, {}, 'EasyAdminBundle') %}
-            {{ ea.page.title is null ? default_title|raw : ea.page.title|transchoice(paginator.numResults)|raw }}
+            {{ ea.crud.page.title is null ? default_title|raw : ea.crud.page.title|transchoice(paginator.numResults)|raw }}
         {% else %}
             {% set default_title = 'page.index.title'|trans(ea.i18n.translationParams, 'EasyAdminBundle') %}
-            {{ ea.page.title is null ? default_title|raw : ea.page.title|trans(ea.i18n.translationParams)|raw }}
+            {{ ea.crud.page.title is null ? default_title|raw : ea.crud.page.title|trans(ea.i18n.translationParams)|raw }}
         {% endif %}
     {% endapply %}
 {% endblock %}
 
 {% block global_actions %}
-    {% if ea.page.isSearchEnabled %}
+    {% if ea.crud.page.isSearchEnabled %}
         {% block search_action %}
             <div class="form-action form-action-search">
                 <form method="get">
@@ -52,7 +52,7 @@
         {% endblock search_action %}
     {% endif %}
 
-    {% if ea.page.isFilterEnabled %}
+    {% if ea.crud.page.isFilterEnabled %}
         {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
         {% block filters_action %}
             <div class="btn-group action-filters">
@@ -103,7 +103,7 @@
 {% block content_header %}
     {{ parent() }}
     {{ block('batch_actions') }}
-    {% if ea.page.isFilterEnabled %}
+    {% if ea.crud.page.isFilterEnabled %}
         {{ include('@EasyAdmin/includes/_filters_modal.html.twig') }}
     {% endif %}
 {% endblock content_header %}
@@ -255,7 +255,7 @@
                     const oldValue = !newValue;
                     const propertyName = this.closest('.checkbox-switch').dataset.propertyname;
 
-                    const toggleUrl = "{{ path(ea.dashboard.routeName, { crudAction: 'form', crudController: 'App\Controller\Admin\ProductAdminController' })|raw }}"
+                    const toggleUrl = "{{ ea_path({ crudAction: 'form' })|raw }}"
                         + "&id=" + this.closest('tr').dataset.id
                         + "&property=" + propertyName
                         + "&newValue=" + newValue.toString();
@@ -286,7 +286,7 @@
                     });
             });
 
-            {% if ea.page.isFilterEnabled %}
+            {% if ea.crud.page.isFilterEnabled %}
             // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
             // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
             // That's why we can't use just 'innerHTML'. See https://stackoverflow.com/a/47614491/2804294

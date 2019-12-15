@@ -39,7 +39,7 @@ final class CrudUrlGenerator
 
     private function doGenerateUrl(array $queryParams): string
     {
-        $dashboardRoute = $this->applicationContextProvider->getContext()->getDashboard()->getRouteName();
+        $dashboardRoute = $this->applicationContextProvider->getContext()->getDashboardRouteName();
         ksort($queryParams);
 
         return $this->urlGenerator->generate($dashboardRoute, $queryParams);

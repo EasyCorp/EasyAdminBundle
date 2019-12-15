@@ -18,7 +18,7 @@ final class TranslationParamsUpdaterListener
     {
         // in the 'index' page there are multiple entities instead of just one,
         // so it doesn't make sense to create these translation parameters
-        if ('index' === $this->applicationContextProvider->getContext()->getPage()->getName()) {
+        if ('index' === $this->applicationContextProvider->getContext()->getCrud()->getPage()->getName()) {
             return;
         }
 

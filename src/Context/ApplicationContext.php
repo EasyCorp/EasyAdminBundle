@@ -7,10 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
@@ -26,8 +24,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class ApplicationContext
 {
-    public const ATTRIBUTE_KEY = 'easyadmin_context';
-
     private $request;
     private $tokenStorage;
     private $i18nDto;
@@ -36,13 +32,11 @@ final class ApplicationContext
     private $menuBuilder;
     private $mainMenuDto;
     private $userMenuDto;
-    private $actionBuilder;
     private $assetDto;
     private $crudDto;
-    private $crudPageDto;
     private $templateRegistry;
 
-    public function __construct(Request $request, TokenStorageInterface $tokenStorage, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, ItemCollectionBuilderInterface $menuBuilder, ItemCollectionBuilderInterface $actionBuilder, AssetDto $assetDto, ?CrudDto $crudDto, ?CrudPageDto $crudPageDto, TemplateRegistry $templateRegistry)
+    public function __construct(Request $request, TokenStorageInterface $tokenStorage, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, ItemCollectionBuilderInterface $menuBuilder, AssetDto $assetDto, ?CrudDto $crudDto, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
@@ -50,10 +44,8 @@ final class ApplicationContext
         $this->dashboardDto = $dashboardDto;
         $this->dashboardControllerInstance = $dashboardController;
         $this->menuBuilder = $menuBuilder;
-        $this->actionBuilder = $actionBuilder;
         $this->assetDto = $assetDto;
         $this->crudDto = $crudDto;
-        $this->crudPageDto = $crudPageDto;
         $this->templateRegistry = $templateRegistry;
     }
 
@@ -89,9 +81,19 @@ final class ApplicationContext
         return $this->assetDto;
     }
 
-    public function getDashboard(): DashboardDto
+    public function getDashboardTitle(): string
     {
-        return $this->dashboardDto;
+        return $this->dashboardDto->getTitle();
+    }
+
+    public function getDashboardFaviconPath(): string
+    {
+        return $this->dashboardDto->getFaviconPath();
+    }
+
+    public function getDashboardRouteName(): string
+    {
+        return $this->dashboardDto->getRouteName();
     }
 
     public function getMainMenu(): MainMenuDto
@@ -133,34 +135,8 @@ final class ApplicationContext
         return $this->crudDto;
     }
 
-    public function getPage(): ?CrudPageDto
-    {
-        return $this->crudPageDto;
-    }
-
     public function getTemplatePath(string $templateName): string
     {
         return $this->templateRegistry->get($templateName)->getPath();
-    }
-
-    public function getFormThemes(): array
-    {
-        $crudFormThemes = null === $this->crudDto ? [] : $this->crudDto->getFormThemes();
-        $dashboardFormThemes = null === $this->dashboardDto ? [] : $this->dashboardDto->getFormThemes();
-
-        return array_merge($crudFormThemes, $dashboardFormThemes);
-    }
-
-    /**
-     * @return ActionDto[]
-     */
-    public function getActions(): ?array
-    {
-        return [];
-        if (null === $this->crudPageDto) {
-            return [];
-        }
-
-        return $this->actionBuilder->setItems($this->crudPageDto->getActions())->build();
     }
 }

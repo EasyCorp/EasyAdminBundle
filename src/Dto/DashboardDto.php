@@ -8,30 +8,16 @@ final class DashboardDto
 
     private $routeName;
     private $faviconPath;
-    private $siteName;
+    private $title;
     private $translationDomain;
     private $textDirection;
-    private $disabledActions;
-    private $dateFormat;
-    private $timeFormat;
-    private $dateTimeFormat;
-    private $dateIntervalFormat;
-    private $numberFormat;
-    private $formThemes;
 
-    public function __construct(string $faviconPath, string $siteName, string $translationDomain, ?string $textDirection, array $disabledActions, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, array $formThemes)
+    public function __construct(string $faviconPath, string $title, string $translationDomain, ?string $textDirection)
     {
         $this->faviconPath = $faviconPath;
-        $this->siteName = $siteName;
+        $this->title = $title;
         $this->translationDomain = $translationDomain;
         $this->textDirection = $textDirection;
-        $this->disabledActions = $disabledActions;
-        $this->dateFormat = $dateFormat;
-        $this->timeFormat = $timeFormat;
-        $this->dateTimeFormat = $dateTimeFormat;
-        $this->dateIntervalFormat = $dateIntervalFormat;
-        $this->numberFormat = $numberFormat;
-        $this->formThemes = $formThemes;
     }
 
     public function getRouteName(): string
@@ -44,9 +30,9 @@ final class DashboardDto
         return $this->faviconPath;
     }
 
-    public function getSiteName(): string
+    public function getTitle(): string
     {
-        return $this->siteName;
+        return $this->title;
     }
 
     public function getTranslationDomain(): string
@@ -57,40 +43,5 @@ final class DashboardDto
     public function getTextDirection(): ?string
     {
         return $this->textDirection;
-    }
-
-    public function getDisabledActions(): array
-    {
-        return $this->disabledActions;
-    }
-
-    public function getDateFormat(): string
-    {
-        return $this->dateFormat;
-    }
-
-    public function getTimeFormat(): string
-    {
-        return $this->timeFormat;
-    }
-
-    public function getDateTimeFormat(): string
-    {
-        return $this->dateTimeFormat;
-    }
-
-    public function getDateIntervalFormat(): string
-    {
-        return $this->dateIntervalFormat;
-    }
-
-    public function getNumberFormat(): ?string
-    {
-        return $this->numberFormat;
-    }
-
-    public function getFormThemes(): array
-    {
-        return $this->formThemes;
     }
 }

@@ -2,7 +2,7 @@
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {# @var fields \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto[] #}
 {% extends ea.templatePath('layout') %}
-{% trans_default_domain ea.dashboard.translationDomain %}
+{% trans_default_domain ea.i18n.translationDomain %}
 
 {% block body_id 'easyadmin-detail-' ~ entity.name ~ '-' ~ entity.idValue %}
 {% block body_class 'detail detail-' ~ entity.name %}
@@ -10,7 +10,7 @@
 {% block content_title %}
     {% apply spaceless %}
         {% set default_title = 'page.detail.title'|trans(ea.i18n.translationParams, 'EasyAdminBundle') %}
-        {{ ea.page.title is null ? default_title|raw : ea.page.title|trans(ea.i18n.translationParams)|raw }}
+        {{ ea.crud.page.title is null ? default_title|raw : ea.crud.page.title|trans(ea.i18n.translationParams)|raw }}
     {% endapply %}
 {% endblock %}
 
@@ -40,11 +40,11 @@
         {% endblock %}
     </div>
 
-    {% if ea.actions is not empty %}
+    {% if ea.crud.page.actions is not empty %}
         <section class="content-footer">
             <div class="form-actions">
                 {% block item_actions %}
-                    {% for action in ea.actions %}
+                    {% for action in ea.crud.page.actions %}
                         {{ include(action.template) }}
                     {% endfor %}
                 {% endblock item_actions %}

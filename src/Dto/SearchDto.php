@@ -21,11 +21,11 @@ final class SearchDto
     public function __construct(ApplicationContext $applicationContext, EntityDto $entityDto)
     {
         $this->request = $request = $applicationContext->getRequest();
-        $this->defaultSort = $applicationContext->getPage()->getDefaultSort();
+        $this->defaultSort = $applicationContext->getCrud()->getPage()->getDefaultSort();
         $this->customSort = $request->query->get('sort', []);
         $this->query = $request->query->get('query');
-        $this->searchProperties = $applicationContext->getPage()->getSearchFields();
-        $this->filters = $applicationContext->getPage()->getFilters();
+        $this->searchProperties = $applicationContext->getCrud()->getPage()->getSearchFields();
+        $this->filters = $applicationContext->getCrud()->getPage()->getFilters();
         $this->entityDto = $entityDto;
     }
 

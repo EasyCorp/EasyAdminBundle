@@ -6,16 +6,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 
 final class CrudDto
 {
+    use PropertyModifierTrait;
+
     private $entityFqcn;
     private $labelInSingular;
     private $labelInPlural;
     private $dateFormat;
-    private $timeFormat ;
+    private $timeFormat;
     private $dateTimeFormat;
     private $dateIntervalFormat;
     private $numberFormat;
     private $customTemplates;
     private $formThemes;
+    /** @var CrudPageDto */
+    private $crudPageDto;
 
     public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateDtoCollection $customTemplates, $formThemes)
     {
@@ -79,5 +83,10 @@ final class CrudDto
     public function getFormThemes(): array
     {
         return $this->formThemes;
+    }
+
+    public function getPage(): ?CrudPageDto
+    {
+        return $this->crudPageDto;
     }
 }

@@ -93,8 +93,8 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
         $this->resetBuiltMenuItems();
 
         $applicationContext = $this->applicationContextProvider->getContext();
-        $defaultTranslationDomain = $applicationContext->getDashboard()->getTranslationDomain();
-        $dashboardRouteName = $applicationContext->getDashboard()->getRouteName();
+        $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
+        $dashboardRouteName = $applicationContext->getDashboardRouteName();
 
         foreach ($this->menuItems as $i => $menuItem) {
             $menuItemDto = $menuItem->getAsDto();

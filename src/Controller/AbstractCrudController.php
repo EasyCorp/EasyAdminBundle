@@ -100,12 +100,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
-        $entityPermission = $this->getContext()->getPage()->getEntityPermission();
+        $entityPermission = $this->getContext()->getCrud()->getPage()->getEntityPermission();
         $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityPermission);
 
         $searchDto = new SearchDto($this->getContext(), $entityDto);
         $queryBuilder = $this->createIndexQueryBuilder($searchDto, $entityDto);
-        $paginatorDto = $this->getContext()->getPage()->getPaginator()->with([
+        $paginatorDto = $this->getContext()->getCrud()->getPage()->getPaginator()->with([
             'pageNumber' => $this->getContext()->getRequest()->query->get('page', 1),
         ]);
         $paginator = $this->get('ea.entity_paginator')->paginate($paginatorDto, $queryBuilder);
@@ -165,7 +165,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
         $entityId = $this->getContext()->getRequest()->query->get('entityId');
-        $entityPermission = $this->getContext()->getPage()->getEntityPermission();
+        $entityPermission = $this->getContext()->getCrud()->getPage()->getEntityPermission();
         $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityPermission, $entityId);
 
         $entityDto = $this->get('ea.property_builder')->build($entityDto, $this->configureProperties('detail'));

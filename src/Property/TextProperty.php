@@ -41,7 +41,7 @@ class TextProperty extends AbstractProperty
     public function build(PropertyDto $propertyDto, EntityDto $entityDto, ApplicationContext $applicationContext): PropertyDto
     {
         if (-1 === $this->maxLength) {
-            $pageName = $applicationContext->getPage()->getName();
+            $pageName = $applicationContext->getCrud()->getPage()->getName();
             $this->maxLength = 'detail' === $pageName ? PHP_INT_MAX : 64;
         }
 

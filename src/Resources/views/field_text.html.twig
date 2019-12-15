@@ -1,6 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
-{% if ea.page.name == 'detail' %}
+{% if ea.crud.page.name == 'detail' %}
     <span title="{{ property.rawValue }}">{{ property.value|nl2br }}</span>
 {% else %}
     <span title="{{ property.rawValue }}">{{ property.value|striptags }}</span>

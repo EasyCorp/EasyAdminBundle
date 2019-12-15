@@ -9,14 +9,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
  */
 final class DashboardConfig
 {
-    use CommonFormatConfigTrait;
-    use CommonFormThemeConfigTrait;
-
     private $faviconPath = 'favicon.ico';
-    private $siteName = 'EasyAdmin';
+    private $title = 'EasyAdmin';
     private $translationDomain = 'messages';
     private $textDirection;
-    private $disabledActions = [];
 
     public static function new(): self
     {
@@ -30,9 +26,9 @@ final class DashboardConfig
         return $this;
     }
 
-    public function setSiteName(string $name): self
+    public function setTitle(string $title): self
     {
-        $this->siteName = $name;
+        $this->title = $title;
 
         return $this;
     }
@@ -55,15 +51,8 @@ final class DashboardConfig
         return $this;
     }
 
-    public function setDisabledActions(array $disabledActions): self
-    {
-        $this->disabledActions = $disabledActions;
-
-        return $this;
-    }
-
     public function getAsDto(): DashboardDto
     {
-        return new DashboardDto($this->faviconPath, $this->siteName, $this->translationDomain, $this->textDirection, $this->disabledActions, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->formThemes);
+        return new DashboardDto($this->faviconPath, $this->title, $this->translationDomain, $this->textDirection);
     }
 }

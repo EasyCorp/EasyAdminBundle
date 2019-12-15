@@ -10,14 +10,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
  */
 class CrudConfig
 {
-    use CommonFormatConfigTrait;
-    use CommonFormThemeConfigTrait;
-
     private $entityFqcn;
     private $labelInSingular = 'Undefined';
     private $labelInPlural = 'Undefined';
+    private $dateFormat = 'Y-m-d';
+    private $timeFormat = 'H:i:s';
+    private $dateTimeFormat = 'F j, Y H:i';
+    private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
+    private $numberFormat;
     /** @var TemplateDtoCollection */
     private $customTemplates;
+    private $formThemes = ['@EasyAdmin/form_theme.html.twig'];
 
     public static function new(): self
     {
@@ -48,6 +51,41 @@ class CrudConfig
         return $this;
     }
 
+    public function setDateFormat(string $format): self
+    {
+        $this->dateFormat = $format;
+
+        return $this;
+    }
+
+    public function setTimeFormat(string $format): self
+    {
+        $this->timeFormat = $format;
+
+        return $this;
+    }
+
+    public function setDateTimeFormat(string $format): self
+    {
+        $this->dateTimeFormat = $format;
+
+        return $this;
+    }
+
+    public function setDateIntervalFormat(string $format): self
+    {
+        $this->dateIntervalFormat = $format;
+
+        return $this;
+    }
+
+    public function setNumberFormat(string $format): self
+    {
+        $this->numberFormat = $format;
+
+        return $this;
+    }
+
     /**
      * Used to override the default template used to render a specific backend part.
      */
@@ -72,6 +110,27 @@ class CrudConfig
         foreach ($templateNamesAndPaths as $templateName => $templatePath) {
             $this->setCustomTemplate($templateName, $templatePath);
         }
+
+        return $this;
+    }
+
+    public function addFormTheme(string $themePath): self
+    {
+        // custom form themes are added first to give them more priority
+        array_unshift($this->formThemes, $themePath);
+
+        return $this;
+    }
+
+    public function setFormThemes(array $themePaths): self
+    {
+        foreach ($themePaths as $path) {
+            if (!\is_string($path)) {
+                throw new \InvalidArgumentException(sprintf('All form theme paths must be strings, but "%s" was provided in "%s"', gettype($path), (string) $path));
+            }
+        }
+
+        $this->formThemes = $themePaths;
 
         return $this;
     }

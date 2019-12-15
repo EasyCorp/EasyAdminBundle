@@ -1,5 +1,5 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
-{% form_theme filters_form with ea.formThemes only %}
+{% form_theme filters_form with ea.crud.formThemes only %}
 
 {{ form_start(filters_form, { attr: { id: filters_form.vars.id } }) }}
     {# browsers remove the query string when submitting forms using GET;

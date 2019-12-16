@@ -3,18 +3,22 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyModifierTrait;
 
 final class Action
 {
+    use PropertyModifierTrait;
+
     private $name;
     private $label;
     private $icon;
     private $cssClass;
     private $linkTitleAttribute;
     private $linkTarget = '_self';
-    private $template = '@EasyAdmin/action.html.twig';
+    private $templateName = 'action';
+    private $templatePath;
     private $permission;
-    private $methodName;
+    private $crudActionName;
     private $routeName;
     private $routeParameters;
     private $translationDomain;
@@ -76,7 +80,7 @@ final class Action
 
     public function setTemplate(string $templatePath): self
     {
-        $this->template = $templatePath;
+        $this->templatePath = $templatePath;
 
         return $this;
     }
@@ -88,9 +92,9 @@ final class Action
         return $this;
     }
 
-    public function linkToMethod(string $methodName): self
+    public function linkToCrudAction(string $crudActionName): self
     {
-        $this->methodName = $methodName;
+        $this->crudActionName = $crudActionName;
 
         return $this;
     }
@@ -120,29 +124,16 @@ final class Action
         return $this;
     }
 
-    public function withProperties(array $properties): self
-    {
-        foreach ($properties as $propertyName => $propertyValue) {
-            if (!property_exists($this, $propertyName)) {
-                throw new \InvalidArgumentException(sprintf('The "%s" option is not a valid action option name. Valid option names are: %s', $propertyName, implode(', ', get_object_vars($this))));
-            }
-
-            $this->{$propertyName} = $propertyValue;
-        }
-
-        return $this;
-    }
-
     public function getAsDto(): ActionDto
     {
         if (null === $this->label && null === $this->icon) {
             throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be null at the same time. Either set the label, the icon or both.'));
         }
 
-        if (null === $this->methodName && null === $this->routeName) {
+        if (null === $this->crudActionName && null === $this->routeName) {
             throw new \InvalidArgumentException(sprintf('The method name and the route name of an action cannot be null at the same time. Either set the method name or the route name for the action "%s".', $this->name));
         }
 
-        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->linkTitleAttribute, $this->linkTarget, $this->template, $this->permission, $this->methodName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
+        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->linkTitleAttribute, $this->linkTarget, $this->templateName, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
     }
 }

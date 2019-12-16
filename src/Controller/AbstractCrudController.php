@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityViewBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder;
@@ -56,21 +57,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function configureDetailPage(DetailPageConfig $detailPageConfig): DetailPageConfig
     {
-        return $detailPageConfig
-            ->addAction(Action::new('index', 'action.list', null)
-                ->linkToMethod('index')
-                ->setCssClass('btn btn-link pr-0')
-                ->setTranslationDomain('EasyAdminBundle'))
-
-            ->addAction(Action::new('delete', 'action.delete', 'trash-o')
-                ->linkToMethod('delete')
-                ->setCssClass('btn text-danger')
-                ->setTranslationDomain('EasyAdminBundle'))
-
-            ->addAction(Action::new('edit', 'action.edit', null)
-                ->linkToMethod('form')
-                ->setCssClass('btn btn-primary')
-                ->setTranslationDomain('EasyAdminBundle'));
+        return $detailPageConfig;
     }
 
     public function configureFormPage(FormPageConfig $formPageConfig): FormPageConfig
@@ -82,6 +69,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         return array_merge(parent::getSubscribedServices(), [
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
+            'ea.action_builder' => '?'.ActionBuilder::class,
             'ea.context_provider' => '?'.ApplicationContextProvider::class,
             'ea.entity_paginator' => '?'.EntityPaginator::class,
             'ea.entity_builder' => '?'.EntityBuilder::class,
@@ -170,9 +158,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entityDto = $this->get('ea.property_builder')->build($entityDto, $this->configureProperties('detail'));
 
+        $actions = $this->get('ea.action_builder')->setItems($this->getContext()->getCrud()->getPage()->getActions())->build();
+
         $deleteForm = $this->createDeleteForm($entityId);
 
         $parameters = [
+            'actions' => $actions,
             'entity' => $entityDto,
             'delete_form' => $deleteForm->createView(),
         ];

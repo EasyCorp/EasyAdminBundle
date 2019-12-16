@@ -40,11 +40,11 @@
         {% endblock %}
     </div>
 
-    {% if ea.crud.page.actions is not empty %}
+    {% if actions is not empty %}
         <section class="content-footer">
             <div class="form-actions">
                 {% block item_actions %}
-                    {% for action in ea.crud.page.actions %}
+                    {% for action in actions %}
                         {{ include(action.template) }}
                     {% endfor %}
                 {% endblock item_actions %}

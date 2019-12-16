@@ -15,7 +15,25 @@ final class DetailPageConfig
 
     public static function new(): self
     {
-        return new self();
+        $config = new self();
+
+        $config
+            ->addAction(Action::new('delete', 'action.delete', 'trash-o')
+                ->linkToCrudAction('delete')
+                ->setCssClass('btn btn-link pr-0 text-danger')
+                ->setTranslationDomain('EasyAdminBundle'))
+
+            ->addAction(Action::new('index', 'action.list', null)
+                ->linkToCrudAction('index')
+                ->setCssClass('btn')
+                ->setTranslationDomain('EasyAdminBundle'))
+
+            ->addAction(Action::new('edit', 'action.edit', null)
+                ->linkToCrudAction('edit')
+                ->setCssClass('btn btn-primary')
+                ->setTranslationDomain('EasyAdminBundle'));
+
+        return $config;
     }
 
     public function setTitle(string $title): self
@@ -57,7 +75,7 @@ final class DetailPageConfig
             throw new \InvalidArgumentException(sprintf('The "%s" action does not exist, so you cannot update its properties. You can use the "addAction()" method to define the action first.', $actionName));
         }
 
-        $this->actions[$actionName] = $this->actions[$actionName]->withProperties($actionProperties);
+        $this->actions[$actionName] = $this->actions[$actionName]->with($actionProperties);
 
         return $this;
     }

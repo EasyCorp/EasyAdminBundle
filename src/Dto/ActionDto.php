@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 final class ActionDto
 {
+    use PropertyAccessorTrait;
     use PropertyModifierTrait;
 
     private $name;
@@ -13,15 +14,19 @@ final class ActionDto
     private $linkUrl;
     private $linkTarget;
     private $linkTitleAttribute;
-    private $template;
+    /** @internal */
+    private $templateName;
+    /** @internal */
+    private $templatePath;
+    private $resolvedTemplatePath;
     private $permission;
-    private $methodName;
+    private $crudActionName;
     private $routeName;
     private $routeParameters;
     private $translationDomain;
     private $translationParameters;
 
-    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $linkTitleAttribute, string $linkTarget, ?string $template, ?string $permission, ?string $methodName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters)
+    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $linkTitleAttribute, string $linkTarget, string $templateName, ?string $templatePath, ?string $permission, ?string $crudActionName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters)
     {
         $this->name = $name;
         $this->label = $label;
@@ -29,9 +34,10 @@ final class ActionDto
         $this->cssClass = $cssClass;
         $this->linkTitleAttribute = $linkTitleAttribute;
         $this->linkTarget = $linkTarget;
-        $this->template = $template;
+        $this->templateName = $templateName;
+        $this->templatePath = $templatePath;
         $this->permission = $permission;
-        $this->methodName = $methodName;
+        $this->crudActionName = $crudActionName;
         $this->routeName = $routeName;
         $this->routeParameters = $routeParameters;
         $this->translationDomain = $translationDomain;
@@ -70,7 +76,7 @@ final class ActionDto
 
     public function getTemplate(): ?string
     {
-        return $this->template;
+        return $this->resolvedTemplatePath;
     }
 
     public function getPermission(): ?string
@@ -78,9 +84,9 @@ final class ActionDto
         return $this->permission;
     }
 
-    public function getMethodName(): ?string
+    public function getCrudActionName(): ?string
     {
-        return $this->methodName;
+        return $this->crudActionName;
     }
 
     public function getRouteName(): ?string
@@ -103,7 +109,7 @@ final class ActionDto
         return $this->translationDomain;
     }
 
-    public function getTranslationParameters(): array
+    public function getTranslationParams(): array
     {
         return $this->translationParameters;
     }

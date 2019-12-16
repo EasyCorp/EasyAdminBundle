@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -18,17 +20,19 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
     private $builtActions;
     /** @var Action[] */
     private $actionConfigs;
-    private $authChecker;
-    private $urlGenerator;
-    private $translator;
     private $applicationContextProvider;
+    private $authChecker;
+    private $translator;
+    private $urlGenerator;
+    private $crudUrlGenerator;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, CrudUrlGenerator $crudUrlGenerator)
     {
         $this->applicationContextProvider = $applicationContextProvider;
         $this->authChecker = $authChecker;
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
+        $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
     /**
@@ -77,53 +81,48 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
         $this->resetBuiltActions();
 
         $applicationContext = $this->applicationContextProvider->getContext();
-        $defaultTranslationDomain = $applicationContext->getDashboard()->getTranslationDomain();
+        $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
 
         foreach ($this->actionConfigs as $actionConfig) {
-            $actionContext = $actionConfig->getAsDto();
-            if (!$this->authChecker->isGranted($actionContext->getPermission())) {
+            $actionDto = $actionConfig->getAsDto();
+            if (false === $this->authChecker->isGranted(Permission::EA_VIEW_ACTION, $actionDto)) {
                 continue;
             }
 
-            $generatedActionUrl = $this->generateActionUrl($applicationContext, $actionContext);
-            $translatedActionLabel = $this->translator->trans($actionContext->getLabel(), $actionContext->getTranslationParameters(), $actionContext->getTranslationDomain() ?? $defaultTranslationDomain);
-            $translatedActionHtmlTitle = $this->translator->trans($actionContext->getLinkTitleAttribute(), $actionContext->getTranslationParameters(), $actionContext->getTranslationDomain() ?? $defaultTranslationDomain);
+            $generatedActionUrl = $this->generateActionUrl($applicationContext, $actionDto);
+            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $actionDto->getTranslationParams(), $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
+            $translatedActionHtmlTitle = $this->translator->trans($actionDto->getLinkTitleAttribute(), $actionDto->getTranslationParams(), $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
 
-            $this->builtActions[] = $actionContext->with([
+            $defaultTemplatePath = $applicationContext->getTemplatePath($actionDto->get('templateName'));
+
+            $this->builtActions[] = $actionDto->with([
                 'label' => $translatedActionLabel,
                 'linkUrl' => $generatedActionUrl,
                 'linkTitleAttribute' => $translatedActionHtmlTitle,
+                'resolvedTemplatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
             ]);
         }
     }
 
-    private function generateActionUrl(ApplicationContext $applicationContext, ActionDto $actionContext): string
+    private function generateActionUrl(ApplicationContext $applicationContext, ActionDto $actionDto): string
     {
         $requestParameters = $applicationContext->getRequest()->query->all();
 
-        if (null !== $routeName = $actionContext->getRouteName()) {
-            $routeParameters = array_merge($actionContext->getRouteParameters(), [
-                'crudAction' => $applicationContext->getPage()->getName(),
-                'entityId' => $applicationContext->getEntity()->getIdValue(),
-            ]);
+        if (null !== $routeName = $actionDto->getRouteName()) {
+            $routeParameters = array_merge($requestParameters, $actionDto->getRouteParameters());
 
             return $this->urlGenerator->generate($routeName, $routeParameters);
         }
 
-        if ('index' !== $actionContext->getMethodName()) {
-            $routeParameters = array_merge($requestParameters, [
-                'crudAction' => $applicationContext->getPage()->getName(),
-                'entityId' => $applicationContext->getEntity()->getIdValue(),
-            ]);
-
-            return $this->urlGenerator->generate($applicationContext->getDashboard()->getRouteName(), $routeParameters);
+        if ('index' !== $crudActionName = $actionDto->getCrudActionName()) {
+            return $this->crudUrlGenerator->generate(['crudAction' => $crudActionName]);
         }
 
         // for the 'index' action, try to use the 'referrer' value if it exists
         if ($applicationContext->getRequest()->query->has('referrer')) {
-            return urldecode($applicationContext->getRequest()->query->has('referrer'));
+            return urldecode($applicationContext->getRequest()->query->get('referrer'));
         }
 
-        return $this->urlGenerator->generate($applicationContext->getDashboard()->getRouteName(), array_merge($requestParameters, ['crudAction' => 'index']));
+        return $this->crudUrlGenerator->generate(['crudAction' => 'index']);
     }
 }

@@ -49,12 +49,14 @@
             <argument type="service" id="router.default" />
         </service>
 
-        <service id="easyadmin.builder.action" class="EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder" public="false">
+        <service id="ea.action_builder" class="EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder" public="false">
             <argument type="service" id="ea.context_provider"></argument>
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <argument type="service" id="translator"></argument>
             <argument type="service" id="router"></argument>
+            <argument type="service" id="easyadmin.router.crud_url_generator"></argument>
         </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder" alias="ea.action_builder" />
 
         <service id="easyadmin.builder.menu_item" class="EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder" public="false">
             <argument type="service" id="ea.context_provider"></argument>

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
@@ -37,6 +38,10 @@ final class SecurityVoter extends Voter
             return $this->voteOnViewEntityPermission($subject);
         }
 
+        if (Permission::EA_VIEW_ACTION === $permissionName) {
+            return $this->voteOnViewActionPermission($subject);
+        }
+
         if (Permission::EA_EXIT_IMPERSONATION === $permissionName) {
             return $this->voteOnExitImpersonationPermission();
         }
@@ -56,10 +61,16 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($propertyDto->getPermission());
     }
 
-    private function voteOnViewentityPermission(EntityDto $entityDto): bool
+    private function voteOnViewEntityPermission(EntityDto $entityDto): bool
     {
         // users can see the entity if they have the required permission on the specific entity instance
         return $this->authorizationChecker->isGranted($entityDto->getPermission(), $entityDto->getInstance());
+    }
+
+    private function voteOnViewActionPermission(ActionDto $actionDto): bool
+    {
+        // users can see the action if they have the permission required by the action
+        return $this->authorizationChecker->isGranted($actionDto->getPermission());
     }
 
     private function voteOnExitImpersonationPermission(): bool

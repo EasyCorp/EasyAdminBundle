@@ -121,8 +121,10 @@ class ApplicationContextListener
         $dashboardDto = $this->getDashboard($event);
         $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
         $crudDto = $this->getCrudConfig($dashboardControllerInstance, $crudControllerInstance, $crudAction);
-        $crudPageDto = $this->getCrudPageConfig($dashboardControllerInstance, $crudControllerInstance, $crudAction);
-        $crudDto = $crudDto->with(['crudPageDto' => $crudPageDto]);
+        if (null !== $crudDto) {
+            $crudPageDto = $this->getCrudPageConfig($dashboardControllerInstance, $crudControllerInstance, $crudAction);
+            $crudDto = $crudDto->with(['crudPageDto' => $crudPageDto]);
+        }
         $templateRegistry = $this->getTemplateRegistry($dashboardControllerInstance, $crudDto);
         $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto);
 

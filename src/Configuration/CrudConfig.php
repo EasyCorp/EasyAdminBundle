@@ -11,8 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 class CrudConfig
 {
     private $entityFqcn;
-    private $labelInSingular = 'Undefined';
-    private $labelInPlural = 'Undefined';
+    private $entityLabelInSingular = 'Undefined';
+    private $entityLabelInPlural = 'Undefined';
     private $dateFormat = 'Y-m-d';
     private $timeFormat = 'H:i:s';
     private $dateTimeFormat = 'F j, Y H:i';
@@ -40,16 +40,16 @@ class CrudConfig
         return $this;
     }
 
-    public function setLabelInSingular(string $label): self
+    public function setEntityLabelInSingular(string $label): self
     {
-        $this->labelInSingular = $label;
+        $this->entityLabelInSingular = $label;
 
         return $this;
     }
 
-    public function setLabelInPlural(string $label): self
+    public function setEntityLabelInPlural(string $label): self
     {
-        $this->labelInPlural = $label;
+        $this->entityLabelInPlural = $label;
 
         return $this;
     }
@@ -140,15 +140,15 @@ class CrudConfig
             $this->validate();
         }
 
-        if (null === $this->labelInSingular) {
-            $this->labelInSingular = (new \ReflectionClass($this->entityFqcn))->getName();
+        if (null === $this->entityLabelInSingular) {
+            $this->entityLabelInSingular = (new \ReflectionClass($this->entityFqcn))->getName();
         }
 
-        if (null === $this->labelInPlural) {
-            $this->labelInPlural = $this->labelInSingular;
+        if (null === $this->entityLabelInPlural) {
+            $this->entityLabelInPlural = $this->entityLabelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->labelInSingular, $this->labelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->overriddenTemplates, $this->formThemes);
+        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->overriddenTemplates, $this->formThemes);
     }
 
     private function validate(): void

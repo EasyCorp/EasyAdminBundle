@@ -5,10 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * The methods of this class allow to stop the event propagation and
- * return the given response immediately.
+ * These methods allow to stop the event propagation and return the given
+ * response immediately.
  */
-class StoppableEvent
+trait StoppableEventTrait
 {
     private $response;
 

@@ -4,8 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 
-final class BeforeCrudActionEvent extends StoppableEvent
+final class BeforeCrudActionEvent
 {
+    use StoppableEventTrait;
+
     private $applicationContext;
 
     public function __construct(?ApplicationContext $applicationContext)

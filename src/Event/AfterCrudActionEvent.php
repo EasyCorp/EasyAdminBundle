@@ -4,8 +4,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 
-final class AfterCrudActionEvent extends StoppableEvent
+final class AfterCrudActionEvent
 {
+    use StoppableEventTrait;
+
     private $applicationContext;
     private $templateParameters;
 

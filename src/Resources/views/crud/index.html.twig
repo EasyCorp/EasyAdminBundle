@@ -104,7 +104,7 @@
     {{ parent() }}
     {{ block('batch_actions') }}
     {% if ea.crud.page.isFilterEnabled %}
-        {{ include('@EasyAdmin/includes/_filters_modal.html.twig') }}
+        {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
     {% endif %}
 {% endblock content_header %}
 
@@ -238,7 +238,7 @@
 
 {% block content_footer %}
     {% block paginator %}
-        {{ include(ea.templatePath('paginator')) }}
+        {{ include(ea.templatePath('crud/paginator')) }}
     {% endblock paginator %}
 {% endblock %}
 

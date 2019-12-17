@@ -18,7 +18,7 @@ class CrudConfig
     private $dateTimeFormat = 'F j, Y H:i';
     private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
     private $numberFormat;
-    private $formThemes = ['@EasyAdmin/form_theme.html.twig'];
+    private $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
     /**
      * @internal
      * @var TemplateDtoCollection

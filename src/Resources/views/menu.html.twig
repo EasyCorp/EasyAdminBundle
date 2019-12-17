@@ -1,0 +1,40 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{% macro render_menu_item(item) %}
+    {% if item.isMenuSection %}
+        <span class="{{ item.cssClass }}">{{ item.label }}</span>
+    {% else %}
+        <a href="{{ item.linkUrl }}" class="{{ item.cssClass }}" target="{{ item.linkTarget }}" rel="{{ item.linkRel }}" referrerpolicy="origin-when-cross-origin">
+            {% if item.icon is not empty %}<i class="fa fa-fw {{ item.icon }}"></i>{% endif %}
+            <span>{{ item.label }}</span>
+            {% if item.hasSubItems %}<i class="fa fa-fw fa-angle-right treeview-icon"></i>{% endif %}
+        </a>
+    {% endif %}
+{% endmacro %}
+
+{% block main_menu_before %}{% endblock %}
+
+<ul class="sidebar-menu" data-widget="tree" data-animation-speed="250">
+    {% block main_menu %}
+        {% for menuItem in ea.mainMenu.items %}
+            {% block menu_item %}
+                <li class="{{ menuItem.isMenuSection ? 'header' }} {{ menuItem.hasSubItems ? 'treeview' }} {{ ea.mainMenu.isSelected(menuItem) ? 'active' }} {{ ea.mainMenu.isExpanded(menuItem) ? 'active submenu-active' }}">
+                    {{ _self.render_menu_item(menuItem) }}
+
+                    {% if menuItem.hasSubItems %}
+                        <ul class="treeview-menu">
+                            {% for menuSubItem in menuItem.subItems %}
+                                {% block menu_subitem %}
+                                    <li class="{{ menuSubItem.isMenuSection ? 'header' }} {{ ea.mainMenu.isSelected(menuSubItem) ? 'active' }}">
+                                        {{ _self.render_menu_item(menuSubItem) }}
+                                    </li>
+                                {% endblock menu_subitem %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endblock menu_item %}
+        {% endfor %}
+    {% endblock main_menu %}
+</ul>
+
+{% block main_menu_after %}{% endblock %}

@@ -15,7 +15,7 @@ final class Action
     private $cssClass;
     private $linkTitleAttribute;
     private $linkTarget = '_self';
-    private $templateName = 'action';
+    private $templateName = 'crud/action';
     private $templatePath;
     private $permission;
     private $crudActionName;

@@ -42,7 +42,7 @@ class ImageProperty extends AbstractProperty
         // this check is needed to avoid displaying broken images when image properties are optional
         if (empty($formattedValue) || $formattedValue === rtrim($this->basePath ?? '', '/')) {
             return $propertyDto->with([
-                'templatePath' => '@EasyAdmin/label_empty.html.twig',
+                'templateName' => 'label/empty',
             ]);
         }
 

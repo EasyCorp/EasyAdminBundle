@@ -115,8 +115,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         return $this->render(
-            $this->getContext()->getTemplatePath('index'),
-            $this->getTemplateParameters('index', $event->getTemplateParameters())
+            $this->getContext()->getTemplatePath('crud/index'),
+            $this->getTemplateParameters('crud/index', $event->getTemplateParameters())
         );
     }
 
@@ -138,8 +138,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         ];
 
         return $this->render(
-            $this->getContext()->getTemplatePath('filters'),
-            $this->getTemplateParameters('filters', $templateParameters)
+            $this->getContext()->getTemplatePath('crud/filters'),
+            $this->getTemplateParameters('crud/filters', $templateParameters)
         );
     }
 
@@ -175,8 +175,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         return $this->render(
-            $this->getContext()->getTemplatePath('detail'),
-            $this->getTemplateParameters('detail', $event->getTemplateParameters())
+            $this->getContext()->getTemplatePath('crud/detail'),
+            $this->getTemplateParameters('crud/detail', $event->getTemplateParameters())
         );
     }
 

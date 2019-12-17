@@ -2,7 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
+use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder\ItemCollectionBuilderInterface;
@@ -12,12 +14,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Environment;
 
 /**
@@ -34,7 +39,7 @@ class ApplicationContextListener
     private $tokenStorage;
     private $menuBuilder;
 
-    public function __construct(ControllerResolverInterface $controllerResolver, Environment $twig, ?TokenStorageInterface $tokenStorage, ItemCollectionBuilderInterface $menuBuilder)
+    public function __construct(ControllerResolverInterface $controllerResolver, Environment $twig, ?TokenStorageInterface $tokenStorage, MenuBuilder $menuBuilder)
     {
         $this->controllerResolver = $controllerResolver;
         $this->twig = $twig;
@@ -51,7 +56,7 @@ class ApplicationContextListener
         $crudControllerCallable = $this->getCrudController($event->getRequest());
         $crudControllerInstance = $crudControllerCallable[0];
 
-        $this->createApplicationContext($event, $crudControllerInstance);
+        $this->createApplicationContext($event, $crudControllerInstance, $this->tokenStorage, $this->menuBuilder);
         $applicationContext = $this->getApplicationContext($event);
         // this makes the ApplicationContext available in all templates as a short named variable
         $this->twig->addGlobal('ea', $applicationContext);
@@ -106,7 +111,7 @@ class ApplicationContextListener
         return $crudControllerCallable;
     }
 
-    private function createApplicationContext(ControllerEvent $event, ?CrudControllerInterface $crudControllerInstance): void
+    private function createApplicationContext(ControllerEvent $event, ?CrudControllerInterface $crudControllerInstance, TokenStorageInterface $tokenStorage, MenuBuilder $menuBuilder): void
     {
         // creating the context is expensive, so it's created once and stored in the request
         // if the current request already has an ApplicationContext object, do nothing
@@ -127,8 +132,9 @@ class ApplicationContextListener
         }
         $templateRegistry = $this->getTemplateRegistry($dashboardControllerInstance, $crudDto);
         $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto);
+        $user = $this->getUser($tokenStorage);
 
-        $applicationContext = new ApplicationContext($request, $this->tokenStorage, $i18nDto, $dashboardDto, $dashboardControllerInstance, $this->menuBuilder, $assetDto, $crudDto, $templateRegistry);
+        $applicationContext = new ApplicationContext($request, $user, $i18nDto, $dashboardDto, $dashboardControllerInstance, $assetDto, $crudDto, $menuBuilder, $templateRegistry);
         $this->setApplicationContext($event, $applicationContext);
     }
 
@@ -222,5 +228,18 @@ class ApplicationContextListener
         }
 
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);
+    }
+
+    // Copied from https://github.com/symfony/twig-bridge/blob/master/AppVariable.php
+    // MIT License - (c) Fabien Potencier <fabien@symfony.com>
+    private function getUser(?TokenStorageInterface $tokenStorage): ?UserInterface
+    {
+        if (null === $tokenStorage || !$token = $tokenStorage->getToken()) {
+            return null;
+        }
+
+        $user = $token->getUser();
+
+        return \is_object($user) ? $user : null;
     }
 }

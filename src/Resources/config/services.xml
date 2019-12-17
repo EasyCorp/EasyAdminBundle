@@ -22,7 +22,7 @@
             <argument type="service" id="controller_resolver" />
             <argument type="service" id="twig" />
             <argument type="service" id="security.token_storage" on-invalid="null" />
-            <argument type="service" id="easyadmin.builder.menu_item" />
+            <argument type="service" id="easyadmin.builder.menu" />
             <tag name="kernel.event_listener" event="kernel.controller" />
         </service>
 
@@ -65,6 +65,10 @@
             <argument type="service" id="router"></argument>
             <argument type="service" id="security.logout_url_generator"></argument>
             <argument type="service" id="easyadmin.router.crud_url_generator"></argument>
+        </service>
+
+        <service id="easyadmin.builder.menu" class="EasyCorp\Bundle\EasyAdminBundle\Builder\MenuBuilder" public="false">
+            <argument type="service" id="easyadmin.builder.menu_item"></argument>
         </service>
 
         <service id="ea.entity_builder" class="EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder" public="false">

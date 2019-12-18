@@ -19,11 +19,15 @@
         </service>
 
         <service id="EasyCorp\Bundle\EasyAdminBundle\EventListener\ApplicationContextListener" public="false">
+            <argument type="service" id="ea.application_context_factory" />
             <argument type="service" id="controller_resolver" />
             <argument type="service" id="twig" />
+            <tag name="kernel.event_listener" event="kernel.controller" />
+        </service>
+
+        <service id="ea.application_context_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\ApplicationContextFactory" public="false">
             <argument type="service" id="security.token_storage" on-invalid="null" />
             <argument type="service" id="easyadmin.builder.menu" />
-            <tag name="kernel.event_listener" event="kernel.controller" />
         </service>
 
         <service id="ea.entity_repository" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository" public="false">

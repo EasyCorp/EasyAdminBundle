@@ -2,27 +2,15 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ApplicationContextFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Environment;
 
 /**
@@ -34,17 +22,15 @@ use Twig\Environment;
  */
 class ApplicationContextListener
 {
+    private $applicationContextFactory;
     private $controllerResolver;
     private $twig;
-    private $tokenStorage;
-    private $menuBuilder;
 
-    public function __construct(ControllerResolverInterface $controllerResolver, Environment $twig, ?TokenStorageInterface $tokenStorage, MenuBuilder $menuBuilder)
+    public function __construct(ApplicationContextFactory $applicationContextFactory, ControllerResolverInterface $controllerResolver, Environment $twig)
     {
+        $this->applicationContextFactory = $applicationContextFactory;
         $this->controllerResolver = $controllerResolver;
         $this->twig = $twig;
-        $this->tokenStorage = $tokenStorage;
-        $this->menuBuilder = $menuBuilder;
     }
 
     public function onKernelController(ControllerEvent $event): void
@@ -56,8 +42,15 @@ class ApplicationContextListener
         $crudControllerCallable = $this->getCrudController($event->getRequest());
         $crudControllerInstance = $crudControllerCallable[0];
 
-        $this->createApplicationContext($event, $crudControllerInstance, $this->tokenStorage, $this->menuBuilder);
-        $applicationContext = $this->getApplicationContext($event);
+        // creating the context is expensive, so it's created once and stored in the request
+        // if the current request already has an ApplicationContext object, do nothing
+        if (null === $applicationContext = $this->getApplicationContext($event)) {
+            $dashboardControllerInstance = $event->getController()[0];
+            $applicationContext = $this->createApplicationContext($event->getRequest(), $dashboardControllerInstance, $crudControllerInstance);
+        }
+
+        $this->setApplicationContext($event, $applicationContext);
+
         // this makes the ApplicationContext available in all templates as a short named variable
         $this->twig->addGlobal('ea', $applicationContext);
 
@@ -111,31 +104,9 @@ class ApplicationContextListener
         return $crudControllerCallable;
     }
 
-    private function createApplicationContext(ControllerEvent $event, ?CrudControllerInterface $crudControllerInstance, TokenStorageInterface $tokenStorage, MenuBuilder $menuBuilder): void
+    private function createApplicationContext(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): ApplicationContext
     {
-        // creating the context is expensive, so it's created once and stored in the request
-        // if the current request already has an ApplicationContext object, do nothing
-        if ($this->getApplicationContext($event) instanceof ApplicationContext) {
-            return;
-        }
-
-        $request = $event->getRequest();
-        $dashboardControllerInstance = $event->getController()[0];
-        $crudAction = $request->query->get('crudAction');
-
-        $dashboardDto = $this->getDashboard($event);
-        $assetDto = $this->getAssets($dashboardControllerInstance, $crudControllerInstance);
-        $crudDto = $this->getCrudConfig($dashboardControllerInstance, $crudControllerInstance, $crudAction);
-        if (null !== $crudDto) {
-            $crudPageDto = $this->getCrudPageConfig($dashboardControllerInstance, $crudControllerInstance, $crudAction);
-            $crudDto = $crudDto->with(['crudPageDto' => $crudPageDto]);
-        }
-        $templateRegistry = $this->getTemplateRegistry($dashboardControllerInstance, $crudDto);
-        $i18nDto = $this->getI18nConfig($request, $dashboardDto, $crudDto);
-        $user = $this->getUser($tokenStorage);
-
-        $applicationContext = new ApplicationContext($request, $user, $i18nDto, $dashboardDto, $dashboardControllerInstance, $assetDto, $crudDto, $menuBuilder, $templateRegistry);
-        $this->setApplicationContext($event, $applicationContext);
+        return $this->applicationContextFactory->create($request, $dashboardController, $crudController);
     }
 
     private function getApplicationContext(ControllerEvent $event): ?ApplicationContext
@@ -146,106 +117,5 @@ class ApplicationContextListener
     private function setApplicationContext(ControllerEvent $event, ApplicationContext $applicationContext): void
     {
         $event->getRequest()->attributes->set(EasyAdminBundle::REQUEST_ATTRIBUTE_NAME, $applicationContext);
-    }
-
-    private function getDashboard(ControllerEvent $event): DashboardDto
-    {
-        /** @var \EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface $dashboardControllerInstance */
-        $dashboardControllerInstance = $event->getController()[0];
-        $currentRouteName = $event->getRequest()->attributes->get('_route');
-
-        return $dashboardControllerInstance
-            ->configureDashboard()
-            ->getAsDto()
-            ->with(['routeName' => $currentRouteName]);
-    }
-
-    private function getAssets(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetDto
-    {
-        $defaultAssetConfig = $dashboardController->configureAssets();
-
-        if (null === $crudController) {
-            return $defaultAssetConfig->getAsDto();
-        }
-
-        return $crudController->configureAssets($defaultAssetConfig)->getAsDto();
-    }
-
-    private function getCrudConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $crudAction): ?CrudDto
-    {
-        if (null === $crudController) {
-            return null;
-        }
-
-        $defaultCrudConfig = $dashboardController->configureCrud();
-
-        return $crudController->configureCrud($defaultCrudConfig)
-            ->getAsDto()
-            ->with(['actionName' => $crudAction]);
-    }
-
-    private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry
-    {
-        $templateRegistry = TemplateRegistry::new();
-
-        $defaultCrudDto = $dashboardController->configureCrud()->getAsDto(false);
-        $templateRegistry->addTemplates($defaultCrudDto->get('overriddenTemplates'));
-
-        if (null !== $crudDto) {
-            $templateRegistry->addTemplates($crudDto->get('overriddenTemplates'));
-        }
-
-        return $templateRegistry;
-    }
-
-    private function getCrudPageConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
-    {
-        if (in_array($crudAction, ['edit', 'new'])) {
-            $crudAction = 'form';
-        }
-
-        $pageConfigMethodName = 'configure'.ucfirst($crudAction).'Page';
-        if (null === $crudController || !method_exists($crudController, $pageConfigMethodName)) {
-            return null;
-        }
-
-        $defaultPageConfig = $dashboardController->{$pageConfigMethodName}();
-
-        return $crudController->{$pageConfigMethodName}($defaultPageConfig)->getAsDto();
-    }
-
-    private function getI18nConfig(Request $request, DashboardDto $dashboardDto, ?CrudDto $crudDto): I18nDto
-    {
-        $locale = $request->getLocale();
-
-        $configuredTextDirection = $dashboardDto->getTextDirection();
-        $localePrefix = strtolower(substr($locale, 0, 2));
-        $defaultTextDirection = \in_array($localePrefix, ['ar', 'fa', 'he']) ? 'rtl' : 'ltr';
-        $textDirection = $configuredTextDirection ?? $defaultTextDirection;
-
-        $translationDomain = $dashboardDto->getTranslationDomain();
-
-        $translationParameters = [];
-        if (null !== $crudDto) {
-            $translationParameters['%entity_label_singular%'] = $crudDto->getLabelInSingular();
-            $translationParameters['%entity_label_plural%'] = $crudDto->getLabelInPlural();
-            $translationParameters['%entity_name%'] = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
-            $translationParameters['%entity_id%'] = $request->query->get('entityId');
-        }
-
-        return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);
-    }
-
-    // Copied from https://github.com/symfony/twig-bridge/blob/master/AppVariable.php
-    // MIT License - (c) Fabien Potencier <fabien@symfony.com>
-    private function getUser(?TokenStorageInterface $tokenStorage): ?UserInterface
-    {
-        if (null === $tokenStorage || !$token = $tokenStorage->getToken()) {
-            return null;
-        }
-
-        $user = $token->getUser();
-
-        return \is_object($user) ? $user : null;
     }
 }

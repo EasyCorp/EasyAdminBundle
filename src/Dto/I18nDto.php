@@ -43,9 +43,4 @@ final class I18nDto
     {
         return $this->translationParams;
     }
-
-    public function addTranslationParam(string $name, $value): void
-    {
-        $this->translationParams[$name] = $value;
-    }
 }

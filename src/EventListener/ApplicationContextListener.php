@@ -229,6 +229,8 @@ class ApplicationContextListener
         if (null !== $crudDto) {
             $translationParameters['%entity_label_singular%'] = $crudDto->getLabelInSingular();
             $translationParameters['%entity_label_plural%'] = $crudDto->getLabelInPlural();
+            $translationParameters['%entity_name%'] = basename(str_replace('\\', '/', $crudDto->getEntityFqcn()));
+            $translationParameters['%entity_id%'] = $request->query->get('entityId');
         }
 
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);

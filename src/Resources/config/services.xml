@@ -26,11 +26,6 @@
             <tag name="kernel.event_listener" event="kernel.controller" />
         </service>
 
-        <service id="EasyCorp\Bundle\EasyAdminBundle\EventListener\TranslationParamsUpdaterListener" public="false">
-            <argument type="service" id="ea.context_provider" />
-            <tag name="kernel.event_listener" event="EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent" method="updateTranslationParams" />
-        </service>
-
         <service id="ea.entity_repository" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository" public="false">
             <argument type="service" id="ea.context_provider" />
             <argument type="service" id="doctrine" />

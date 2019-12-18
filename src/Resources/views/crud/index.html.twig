@@ -9,8 +9,8 @@
 {% set _has_batch_actions = batch_form is defined and batch_form.vars.batch_actions|length > 0 %}
 #}
 
-{% block body_id 'easyadmin-index-' ~ entities|first.name %}
-{% block body_class 'index index-' ~ entities|first.name %}
+{% block body_id entities|length > 0 ? 'easyadmin-index-' ~ entities|first.name : '' %}
+{% block body_class 'index' ~ (entities|length > 0 ? ' index-' ~ entities|first.name : '') %}
 
 {% block content_title %}
     {% apply spaceless %}
@@ -126,7 +126,7 @@
                 #}
 
 
-                {% for property in entities|first.properties %}
+                {% for property in entities|first.properties ?? [] %}
                     {% set isSortingProperty = (property.name == sort_field_name) or ('association' == property.type and sort_field_name starts with property.name ~ '.') %}
                     {% set nextSortDirection = isSortingProperty ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
                     {% set column_icon = isSortingProperty ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}

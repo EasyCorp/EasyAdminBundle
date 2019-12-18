@@ -4,10 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityViewBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
@@ -22,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
@@ -73,8 +71,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'ea.action_builder' => '?'.ActionBuilder::class,
             'ea.context_provider' => '?'.ApplicationContextProvider::class,
             'ea.entity_paginator' => '?'.EntityPaginator::class,
-            'ea.entity_builder' => '?'.EntityBuilder::class,
-            'ea.entity_view_builder' => '?'.EntityViewBuilder::class,
+            'ea.entity_factory' => '?'.EntityFactory::class,
             'ea.entity_repository' => '?'.EntityRepositoryInterface::class,
             'ea.form_factory' => '?'.FormFactory::class,
             'ea.property_builder' => '?'.PropertyBuilder::class,
@@ -89,9 +86,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
-        $entityPermission = $this->getContext()->getCrud()->getPage()->getEntityPermission();
-        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityPermission);
+        $entityDto = $this->get('ea.entity_factory')->create();
 
         $searchDto = new SearchDto($this->getContext()->getRequest(), $this->getContext()->getCrud()->getPage(), $entityDto);
         $queryBuilder = $this->createIndexQueryBuilder($searchDto, $entityDto);
@@ -101,12 +96,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $paginator = $this->get('ea.entity_paginator')->paginate($paginatorDto, $queryBuilder);
 
         $entityInstances = iterator_to_array($paginator->getResults());
-        $entityCollection = $this->get('ea.property_builder')->buildAll($entityDto, $entityInstances, iterator_to_array($this->configureProperties('index')));
+        $configuredProperties = iterator_to_array($this->configureProperties('index'));
+        $entities = $this->get('ea.entity_factory')->createAll($entityDto, $entityInstances, $configuredProperties);
 
         $parameters = [
-            'entities' => $entityCollection,
+            'entities' => $entities,
             'paginator' => $paginator,
-            'batch_form' => $this->createBatchForm($entityFqcn)->createView(),
+            'batch_form' => $this->createBatchForm($entityDto->getFqcn())->createView(),
             'delete_form_template' => $this->get('ea.form_factory')->createDeleteForm(['entityId' => '__id__'])->createView(),
         ];
 
@@ -153,12 +149,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
-        $entityId = $this->getContext()->getRequest()->query->get('entityId');
-        $entityPermission = $this->getContext()->getCrud()->getPage()->getEntityPermission();
-        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityPermission, $entityId);
-
-        $entityDto = $this->get('ea.property_builder')->build($entityDto, $this->configureProperties('detail'));
+        $configuredProperties = iterator_to_array($this->configureProperties('detail'));
+        $entityDto = $this->get('ea.entity_factory')->create($configuredProperties);
 
         $actions = $this->get('ea.action_builder')->setItems($this->getContext()->getCrud()->getPage()->getActions())->build();
 
@@ -188,11 +180,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
-        $entityId = $this->getContext()->getRequest()->query->get('entityId');
-        $entityPermission = $this->getContext()->getCrud()->getPage()->getEntityPermission();
-        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityPermission, $entityId);
-        $entityDto = $this->get('ea.property_builder')->build($entityDto, $this->configureProperties('detail'));
+        $configuredProperties = iterator_to_array($this->configureProperties('edit'));
+        $entityDto = $this->get('ea.entity_factory')->create($configuredProperties);
         $entityInstance = $entityDto->getInstance();
 
         /*

@@ -70,12 +70,14 @@
             <argument type="service" id="easyadmin.builder.menu_item"></argument>
         </service>
 
-        <service id="ea.entity_builder" class="EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder" public="false">
+        <service id="ea.entity_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory" public="false">
+            <argument type="service" id="ea.context_provider"></argument>
+            <argument type="service" id="ea.property_builder"></argument>
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <argument type="service" id="doctrine"></argument>
             <argument type="service" id="event_dispatcher"></argument>
         </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder" alias="ea.entity_builder" />
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory" alias="ea.entity_factory" />
 
         <service id="ea.property_builder" class="EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder" public="false">
             <argument type="service" id="ea.context_provider"></argument>

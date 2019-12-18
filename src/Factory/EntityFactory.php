@@ -1,10 +1,14 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
+namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
+use EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -12,29 +16,54 @@ use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-final class EntityBuilder
+final class EntityFactory
 {
+    private $applicationContextProvider;
+    private $propertyBuilder;
     private $authorizationChecker;
     private $doctrine;
     private $eventDispatcher;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, PropertyBuilder $propertyBuilder, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
+        $this->applicationContextProvider = $applicationContextProvider;
+        $this->propertyBuilder = $propertyBuilder;
         $this->authorizationChecker = $authorizationChecker;
         $this->doctrine = $doctrine;
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function build(string $entityFqcn, ?string $entityPermission, $entityId = null): EntityDto
+    /**
+     * @param PropertyInterface[] $configuredProperties
+     */
+    public function create(array $configuredProperties = null): EntityDto
     {
+        $applicationContext = $this->applicationContextProvider->getContext();
+        $entityFqcn = $applicationContext->getCrud()->getEntityFqcn();
+        $entityId = $applicationContext->getRequest()->query->get('entityId');
+        $entityPermission = $applicationContext->getCrud()->getPage()->getEntityPermission();
+
         $entityMetadata = $this->getEntityMetadata($entityFqcn);
         $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
         $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPermission, $entityInstance, $entityId);
 
-        $this->checkEntityPermission($entityDto);
+        if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $entityDto)) {
+            $entityDto->markAsInaccessible();
+        } elseif (null !== $configuredProperties) {
+            $entityDto = $this->propertyBuilder->build($entityDto, $configuredProperties);
+        }
+
         $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($entityDto));
 
         return $entityDto;
+    }
+
+    /**
+     * @param PropertyInterface[] $propertiesConfig
+     */
+    public function createAll(EntityDto $entityDto, $entityInstances, array $configuredProperties): EntityDtoCollection
+    {
+        return $this->propertyBuilder->buildAll($entityDto, $entityInstances, $configuredProperties);
     }
 
     private function getEntityManager(string $entityFqcn): ObjectManager
@@ -71,12 +100,5 @@ final class EntityBuilder
         }
 
         return $entityInstance;
-    }
-
-    private function checkEntityPermission(EntityDto $entityDto): void
-    {
-        if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $entityDto)) {
-            $entityDto->markAsInaccessible();
-        }
     }
 }

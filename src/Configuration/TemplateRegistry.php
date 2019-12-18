@@ -78,7 +78,7 @@ final class TemplateRegistry
 
     public function get(string $templateName): TemplateDto
     {
-        if (!array_key_exists($templateName, self::$templates)) {
+        if (!\array_key_exists($templateName, self::$templates)) {
             throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', array_keys(self::$templates))));
         }
 

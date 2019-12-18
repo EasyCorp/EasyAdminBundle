@@ -145,7 +145,7 @@ final class MenuItem
     }
 
     /**
-     * If not defined, menu items use the same domain as configured for the entire dashboard
+     * If not defined, menu items use the same domain as configured for the entire dashboard.
      */
     public function setTranslationDomain(string $domain): self
     {

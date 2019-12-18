@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 final class PropertyDto
@@ -73,7 +72,7 @@ final class PropertyDto
 
     /**
      * Returns the value to be displayed for the entity property (it could be the
-     * same as the value stored in the property or not)
+     * same as the value stored in the property or not).
      */
     public function getFormattedValue()
     {
@@ -132,7 +131,7 @@ final class PropertyDto
 
     /**
      * This is the template used to render the field contents. It's resolved at
-     * runtime and it considers all possible field values (null, not readable, etc.)
+     * runtime and it considers all possible field values (null, not readable, etc.).
      */
     public function getTemplatePath(): string
     {

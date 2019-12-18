@@ -120,7 +120,7 @@ final class MenuItemDto
 
     public function hasSubItems(): bool
     {
-        return MenuItemBuilder::TYPE_SUBMENU === $this->type && count($this->subItems) > 0;
+        return MenuItemBuilder::TYPE_SUBMENU === $this->type && \count($this->subItems) > 0;
     }
 
     public function isMenuSection(): bool

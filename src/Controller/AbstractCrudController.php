@@ -7,17 +7,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityViewBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Configuration;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
@@ -26,14 +24,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,7 +47,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     abstract public function configureProperties(string $action): iterable;
 
@@ -216,7 +211,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
         */
 
-
         $editForm = $this->createEditForm($entityDto);
         $editForm->handleRequest($this->getContext()->getRequest());
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -318,7 +312,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     /**
      * Used to add/modify/remove parameters before passing them to the Twig template.
-     * $templateName = 'index', 'detail' or 'form'
+     * $templateName = 'index', 'detail' or 'form'.
      */
     public function getTemplateParameters(string $actionName, array $parameters): array
     {

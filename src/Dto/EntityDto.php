@@ -93,7 +93,7 @@ final class EntityDto
 
     public function getPropertyMetadata(string $propertyName): array
     {
-        if (!array_key_exists($propertyName, $this->metadata->fieldMappings)) {
+        if (!\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
             throw new \InvalidArgumentException(sprintf('The "%s" property does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
         }
 
@@ -107,7 +107,7 @@ final class EntityDto
 
     public function hasProperty(string $propertyName): bool
     {
-        return array_key_exists($propertyName, $this->metadata->fieldMappings);
+        return \array_key_exists($propertyName, $this->metadata->fieldMappings);
     }
 
     public function isAssociationProperty(string $propertyName): bool

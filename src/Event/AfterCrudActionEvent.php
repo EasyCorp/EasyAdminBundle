@@ -24,7 +24,7 @@ final class AfterCrudActionEvent
 
     /**
      * Use this method to pass additional parameters to the rendered template
-     * Format: ['paramName' => $paramValue, ...]
+     * Format: ['paramName' => $paramValue, ...].
      */
     public function addTemplateParameters(array $parameters): void
     {

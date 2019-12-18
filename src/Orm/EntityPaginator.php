@@ -6,8 +6,6 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use EasyCorp\Bundle\EasyAdminBundle\Builder\EntityViewBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityViewDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
@@ -27,7 +25,7 @@ final class EntityPaginator
     public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): self
     {
         $this->pageSize = $paginatorDto->getPageSize();
-        $this->currentPage = \max(1, $paginatorDto->getPageNumber());
+        $this->currentPage = max(1, $paginatorDto->getPageNumber());
         $firstResult = ($this->currentPage - 1) * $this->pageSize;
 
         /** @var Query $query */
@@ -65,7 +63,7 @@ final class EntityPaginator
 
     public function getLastPage(): int
     {
-        return (int) \ceil($this->numResults / $this->pageSize);
+        return (int) ceil($this->numResults / $this->pageSize);
     }
 
     public function getPageSize(): int
@@ -80,7 +78,7 @@ final class EntityPaginator
 
     public function getPreviousPage(): int
     {
-        return \max(1, $this->currentPage - 1);
+        return max(1, $this->currentPage - 1);
     }
 
     public function hasNextPage(): bool
@@ -90,7 +88,7 @@ final class EntityPaginator
 
     public function getNextPage(): int
     {
-        return \min($this->getLastPage(), $this->currentPage + 1);
+        return min($this->getLastPage(), $this->currentPage + 1);
     }
 
     public function hasToPaginate(): bool

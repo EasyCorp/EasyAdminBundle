@@ -23,7 +23,7 @@ class ApplicationContextParamConverter implements ParamConverterInterface
 
     public function supports(ParamConverter $configuration)
     {
-        return $configuration->getClass() === ApplicationContext::class;
+        return ApplicationContext::class === $configuration->getClass();
     }
 
     public function apply(Request $request, ParamConverter $configuration)

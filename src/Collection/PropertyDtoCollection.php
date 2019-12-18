@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 
 final class PropertyDtoCollection implements \IteratorAggregate

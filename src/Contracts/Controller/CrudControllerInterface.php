@@ -19,7 +19,9 @@ interface CrudControllerInterface
     public function configureAssets(AssetConfig $assetConfig): AssetConfig;
 
     public function configureIndexPage(IndexPageConfig $indexPageConfig): IndexPageConfig;
+
     public function configureDetailPage(DetailPageConfig $detailPageConfig): DetailPageConfig;
+
     public function configureFormPage(FormPageConfig $formPageConfig): FormPageConfig;
 
     /**

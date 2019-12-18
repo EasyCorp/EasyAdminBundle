@@ -44,7 +44,7 @@ final class ActionCollection
 
     public function removeBatchAction(string $actionName): self
     {
-        if (!array_key_exists($actionName, $this->actions[self::BATCH_ACTION])) {
+        if (!\array_key_exists($actionName, $this->actions[self::BATCH_ACTION])) {
             throw new \InvalidArgumentException(sprintf('The given "%s" action cannot be removed from the list of batch actions because it\'s not an action of type "batch". Maybe it\'s a "row action" or a normal action?', $actionName));
         }
 
@@ -53,7 +53,7 @@ final class ActionCollection
 
     public function removeRowAction(string $actionName): self
     {
-        if (!array_key_exists($actionName, $this->actions[self::ROW_ACTION])) {
+        if (!\array_key_exists($actionName, $this->actions[self::ROW_ACTION])) {
             throw new \InvalidArgumentException(sprintf('The given "%s" action cannot be removed from the list of row actions because it\'s not an action of type "row". Maybe it\'s a "batch action" or a normal action?', $actionName));
         }
 
@@ -62,7 +62,7 @@ final class ActionCollection
 
     public function removeAction(string $pageName, string $actionName): self
     {
-        if (!array_key_exists($actionName, $this->actions[self::ACTION][$pageName])) {
+        if (!\array_key_exists($actionName, $this->actions[self::ACTION][$pageName])) {
             throw new \InvalidArgumentException(sprintf('The given "%s" action cannot be removed from the list of "%s" actions because it\'s not defined for that page. Maybe it\'s associated to a different page or it\'s another type of action ("batch action" or "row action")?', $actionName, $pageName));
         }
 

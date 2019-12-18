@@ -18,10 +18,10 @@ interface TypeConfiguratorInterface
     /**
      * Configure the options for this type.
      *
-     * @param string              $name             The form field name
+     * @param string              $name                     The form field name
      * @param array               $formFieldFormFieldOtions The configured field options provided by Symfony Form component
-     * @param array               $metadata         The PropertyDto object related to this field
-     * @param FormConfigInterface $parentConfig     The parent form configuration
+     * @param array               $metadata                 The PropertyDto object related to this field
+     * @param FormConfigInterface $parentConfig             The parent form configuration
      *
      * @return array The array with the updated form field options
      */

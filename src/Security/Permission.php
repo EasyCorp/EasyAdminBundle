@@ -16,6 +16,6 @@ final class Permission
             return false;
         }
 
-        return defined('self::'.$permissionName);
+        return \defined('self::'.$permissionName);
     }
 }

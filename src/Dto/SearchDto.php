@@ -2,8 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use Symfony\Component\HttpFoundation\Request;
 
 final class SearchDto
@@ -41,7 +39,7 @@ final class SearchDto
         // not already a custom sort config for the same property
         $mergedSort = $this->customSort;
         foreach ($this->defaultSort as $propertyName => $order) {
-            if (!array_key_exists($propertyName, $mergedSort)) {
+            if (!\array_key_exists($propertyName, $mergedSort)) {
                 $mergedSort[$propertyName] = $order;
             }
         }

@@ -3,18 +3,15 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Custom form type that deals with some of the logic used to render the
@@ -167,7 +164,6 @@ class CrudFormType extends AbstractType
     private function getAttributesNormalizer()
     {
         return function (Options $options, $value) {
-
             return array_replace([
                 'id' => sprintf('%s-%s-form', $options['view'] ?? 'edit', $options['entityDto']->getName()),
             ], $value);

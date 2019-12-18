@@ -21,6 +21,7 @@ class CrudConfig
     private $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
     /**
      * @internal
+     *
      * @var TemplateDtoCollection
      */
     private $overriddenTemplates;
@@ -92,7 +93,7 @@ class CrudConfig
     public function overrideTemplate(string $templateName, string $templatePath): self
     {
         $validTemplateNames = TemplateRegistry::getTemplateNames();
-        if (!in_array($templateName, $validTemplateNames)) {
+        if (!\in_array($templateName, $validTemplateNames)) {
             throw new \InvalidArgumentException(sprintf('The "%s" template is not defined in EasyAdmin. Use one of these allowed template names: %s', $templateName, implode(', ', $validTemplateNames)));
         }
 
@@ -102,7 +103,7 @@ class CrudConfig
     }
 
     /**
-     * Format: ['templateName' => 'templatePath', ...]
+     * Format: ['templateName' => 'templatePath', ...].
      */
     public function overrideTemplates(array $templateNamesAndPaths): self
     {
@@ -125,7 +126,7 @@ class CrudConfig
     {
         foreach ($themePaths as $path) {
             if (!\is_string($path)) {
-                throw new \InvalidArgumentException(sprintf('All form theme paths must be strings, but "%s" was provided in "%s"', gettype($path), (string) $path));
+                throw new \InvalidArgumentException(sprintf('All form theme paths must be strings, but "%s" was provided in "%s"', \gettype($path), (string) $path));
             }
         }
 

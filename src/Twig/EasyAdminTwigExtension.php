@@ -95,14 +95,14 @@ class EasyAdminTwigExtension extends AbstractExtension
      * Transforms ['a' => 'foo', 'b' => ['c' => ['d' => 7]]] into ['a' => 'foo', 'b[c][d]' => 7]
      * It's useful to submit nested arrays (e.g. query string params) as form fields.
      */
-    function flattenArray($array, $parentKey = null)
+    public function flattenArray($array, $parentKey = null)
     {
         $flattenedArray = [];
 
         foreach ($array as $flattenedKey => $value) {
             $flattenedKey = null !== $parentKey ? sprintf('%s[%s]', $parentKey, $flattenedKey) : $flattenedKey;
 
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 $flattenedArray = array_merge($flattenedArray, $this->flattenArray($value, $flattenedKey));
             } else {
                 $flattenedArray[$flattenedKey] = $value;

@@ -97,7 +97,7 @@ final class ApplicationContextFactory
 
     private function getCrudPageDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
     {
-        if (in_array($crudAction, ['edit', 'new'])) {
+        if (\in_array($crudAction, ['edit', 'new'])) {
             $crudAction = 'form';
         }
 

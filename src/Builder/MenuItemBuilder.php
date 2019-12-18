@@ -59,6 +59,7 @@ final class MenuItemBuilder implements ItemCollectionBuilderInterface
 
     /**
      * @param MenuItem[] $menuItems
+     *
      * @return ItemCollectionBuilderInterface
      */
     public function setItems(array $menuItems): ItemCollectionBuilderInterface

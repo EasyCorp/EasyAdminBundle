@@ -22,8 +22,11 @@ interface DashboardControllerInterface
     public function configureDashboard(): DashboardConfig;
 
     public function configureCrud(): CrudConfig;
+
     public function configureIndexPage(): IndexPageConfig;
+
     public function configureDetailPage(): DetailPageConfig;
+
     public function configureFormPage(): FormPageConfig;
 
     public function configureAssets(): AssetConfig;

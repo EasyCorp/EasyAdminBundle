@@ -145,7 +145,7 @@ final class EntityRepository implements EntityRepositoryInterface
 
         foreach ($filtersForm as $filterForm) {
             $name = $filterForm->getName();
-            if (!in_array($name, $searchDto->getFilters())) {
+            if (!\in_array($name, $searchDto->getFilters())) {
                 // this filter is not applied
                 continue;
             }

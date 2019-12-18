@@ -108,7 +108,7 @@ final class Action
     }
 
     /**
-     * If not defined, actions use the same domain as configured for the entire dashboard
+     * If not defined, actions use the same domain as configured for the entire dashboard.
      */
     public function setTranslationDomain(string $domain): self
     {

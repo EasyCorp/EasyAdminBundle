@@ -51,7 +51,7 @@ final class EntityBuilder
         $entityManager = $this->getEntityManager($entityFqcn);
         $entityMetadata = $entityManager->getClassMetadata($entityFqcn);
 
-        if (1 !== count($entityMetadata->getIdentifierFieldNames())) {
+        if (1 !== \count($entityMetadata->getIdentifierFieldNames())) {
             throw new \RuntimeException(sprintf('EasyAdmin does not support Doctrine entities with composite primary keys (such as the ones used in the "%s" entity).', $entityFqcn));
         }
 

@@ -49,7 +49,7 @@ final class IndexPageConfig
             }
 
             if (!\is_string($sortField)) {
-                throw new \InvalidArgumentException(sprintf('The keys of the array that defines the default sort must be strings with the property names, but the given "%s" value is a "%s".', $sortField, gettype($sortField)));
+                throw new \InvalidArgumentException(sprintf('The keys of the array that defines the default sort must be strings with the property names, but the given "%s" value is a "%s".', $sortField, \gettype($sortField)));
             }
         }
 

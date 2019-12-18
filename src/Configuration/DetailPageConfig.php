@@ -60,7 +60,7 @@ final class DetailPageConfig
     public function addAction(Action $actionConfig): self
     {
         $actionName = (string) $actionConfig;
-        if (array_key_exists($actionName, $this->actions)) {
+        if (\array_key_exists($actionName, $this->actions)) {
             throw new \InvalidArgumentException(sprintf('The "%s" action already exists. You can use the "updateAction()" method to update any property of an existing action.', $actionName));
         }
 
@@ -71,7 +71,7 @@ final class DetailPageConfig
 
     public function updateAction(string $actionName, array $actionProperties): self
     {
-        if (!array_key_exists($actionName, $this->actions)) {
+        if (!\array_key_exists($actionName, $this->actions)) {
             throw new \InvalidArgumentException(sprintf('The "%s" action does not exist, so you cannot update its properties. You can use the "addAction()" method to define the action first.', $actionName));
         }
 

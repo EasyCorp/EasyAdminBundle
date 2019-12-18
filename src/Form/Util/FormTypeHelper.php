@@ -3,9 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Util;
 
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;

@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -18,31 +19,33 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
+    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
     {
-        if (!isset($options['multiple']) && $metadata['associationType'] & ClassMetadata::TO_MANY) {
-            $options['multiple'] = true;
+        if (!isset($formFieldOptions['multiple']) && $propertyDto['associationType'] & ClassMetadata::TO_MANY) {
+            $formFieldOptions['multiple'] = true;
         }
 
         // Supported associations are displayed using advanced JavaScript widgets
-        $options['attr']['data-widget'] = 'select2';
+        $formFieldOptions['attr']['data-widget'] = 'select2';
 
         // Configure "placeholder" option for entity fields
-        if (($metadata['associationType'] & ClassMetadata::TO_ONE)
-            && !isset($options['placeholder'])
-            && isset($options['required']) && false === $options['required']
+        if (($propertyDto['associationType'] & ClassMetadata::TO_ONE)
+            && !isset($formFieldOptions['placeholder'])
+            && isset($formFieldOptions['required']) && false === $formFieldOptions['required']
         ) {
-            $options['placeholder'] = 'label.form.empty_value';
+            $formFieldOptions['placeholder'] = 'label.form.empty_value';
         }
 
-        return $options;
+        return $formFieldOptions;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supports($type, array $options, array $metadata)
+    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
     {
+        // TODO: add suport for this
+        return false;
         $isEntityType = \in_array($type, ['entity', EntityType::class], true);
 
         return $isEntityType && 'association' === $metadata['dataType'];

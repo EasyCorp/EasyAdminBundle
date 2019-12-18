@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormConfigInterface;
@@ -17,42 +18,42 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
+    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
     {
-        if (!isset($options['allow_add'])) {
-            $options['allow_add'] = true;
+        if (!isset($formFieldOptions['allow_add'])) {
+            $formFieldOptions['allow_add'] = true;
         }
 
-        if (!isset($options['allow_delete'])) {
-            $options['allow_delete'] = true;
+        if (!isset($formFieldOptions['allow_delete'])) {
+            $formFieldOptions['allow_delete'] = true;
         }
 
-        if (!isset($options['delete_empty'])) {
-            $options['delete_empty'] = true;
+        if (!isset($formFieldOptions['delete_empty'])) {
+            $formFieldOptions['delete_empty'] = true;
         }
 
         // allow using short form types as the 'entry_type' of the collection
-        if (isset($options['entry_type'])) {
-            $options['entry_type'] = FormTypeHelper::getTypeClass($options['entry_type']);
+        if (isset($formFieldOptions['entry_type'])) {
+            $formFieldOptions['entry_type'] = FormTypeHelper::getTypeClass($formFieldOptions['entry_type']);
         }
 
         // by default, the numeric auto-increment label of collection items is hidden...
-        if (!isset($options['entry_options']['label'])) {
-            $options['entry_options']['label'] = false;
+        if (!isset($formFieldOptions['entry_options']['label'])) {
+            $formFieldOptions['entry_options']['label'] = false;
         }
         // ...but you can set the 'entry_options.label' option to TRUE to display it
-        elseif (true === $options['entry_options']['label']) {
-            unset($options['entry_options']['label']);
+        elseif (true === $formFieldOptions['entry_options']['label']) {
+            unset($formFieldOptions['entry_options']['label']);
         }
 
-        return $options;
+        return $formFieldOptions;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supports($type, array $options, array $metadata)
+    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
     {
-        return \in_array($type, ['collection', CollectionType::class], true);
+        return CollectionType::class === $formTypeFqcn;
     }
 }

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
@@ -21,24 +22,17 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
-class EasyAdminFormType extends AbstractType
+class CrudFormType extends AbstractType
 {
-    /** @var ConfigManager */
-    private $configManager;
     /** @var TypeConfiguratorInterface[] */
-    private $configurators;
-    /** @var AuthorizationCheckerInterface */
-    private $authorizationChecker;
+    private $typeConfigurators;
 
     /**
-     * @param ConfigManager               $configManager
-     * @param TypeConfiguratorInterface[] $configurators
+     * @param TypeConfiguratorInterface[] $typeConfigurators
      */
-    public function __construct(ConfigManager $configManager, array $configurators = [], AuthorizationCheckerInterface $authorizationChecker = null)
+    public function __construct(iterable $typeConfigurators)
     {
-        $this->configManager = $configManager;
-        $this->configurators = $configurators;
-        $this->authorizationChecker = $authorizationChecker;
+        $this->typeConfigurators = $typeConfigurators;
     }
 
     /**
@@ -46,34 +40,36 @@ class EasyAdminFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $entity = $options['entity'];
-        $view = $options['view'];
-        $entityConfig = $this->configManager->getEntityConfig($entity);
-        $entityProperties = $entityConfig[$view]['fields'] ?? [];
+        /** @var EntityDto $entityDto */
+        $entityDto = $options['entityDto'];
+        // TODO: fix this
+        $view = 'edit'; //$options['view'];
         $formTabs = [];
         $currentFormTab = null;
         $formGroups = [];
         $currentFormGroup = null;
 
-        foreach ($entityProperties as $name => $metadata) {
-            $formFieldOptions = $metadata['type_options'];
+        foreach ($entityDto->getProperties() as $propertyDto) {
+            $formFieldOptions = $propertyDto->getFormTypeOptions();
 
             // the names of embedded Doctrine entities contain dots, which are not allowed
             // in HTML element names. In those cases, fix the name but also update the
             // 'property_path' option to keep the original field name
-            if (false !== strpos($name, '.')) {
-                $formFieldOptions['property_path'] = $name;
-                $name = str_replace('.', '_', $name);
+            if (false !== strpos($propertyDto->getName(), '.')) {
+                $formFieldOptions['property_path'] = $propertyDto->getName();
+                $name = str_replace('.', '_', $propertyDto->getName());
+            } else {
+                $name = $propertyDto->getName();
             }
 
             // Configure options using the list of registered type configurators:
-            foreach ($this->configurators as $configurator) {
-                if ($configurator->supports($metadata['fieldType'], $formFieldOptions, $metadata)) {
-                    $formFieldOptions = $configurator->configure($name, $formFieldOptions, $metadata, $builder);
+            foreach ($this->typeConfigurators as $configurator) {
+                if ($configurator->supports($propertyDto->getFormType(), $formFieldOptions, $propertyDto)) {
+                    $formFieldOptions = $configurator->configure($name, $formFieldOptions, $propertyDto, $builder);
                 }
             }
 
-            $formFieldType = FormTypeHelper::getTypeClass($metadata['fieldType']);
+            $formFieldType = $propertyDto->getFormType();
 
             // if the form field is a special 'group' design element, don't add it
             // to the form. Instead, consider it the current form group (this is
@@ -106,7 +102,7 @@ class EasyAdminFormType extends AbstractType
 
             // 'section' is a 'fake' form field used to create the design elements of the
             // complex form layouts: define it as unmapped and non-required
-            if (0 === strpos($metadata['property'], '_easyadmin_form_design_element_')) {
+            if (0 === strpos($propertyDto->getName(), '_easyadmin_form_design_element_')) {
                 $formFieldOptions['mapped'] = false;
                 $formFieldOptions['required'] = false;
             }
@@ -115,9 +111,7 @@ class EasyAdminFormType extends AbstractType
             $formField->setAttribute('easyadmin_form_tab', $currentFormTab);
             $formField->setAttribute('easyadmin_form_group', $currentFormGroup);
 
-            if ($this->authorizationChecker->isGranted($metadata['permission'], $entity)) {
-                $builder->add($formField);
-            }
+            $builder->add($formField);
         }
 
         $builder->setAttribute('easyadmin_form_tabs', $formTabs);
@@ -150,12 +144,10 @@ class EasyAdminFormType extends AbstractType
                         return $dataClass;
                     }
 
-                    $entityConfig = $this->configManager->getEntityConfig($options['entity']);
-
-                    return $entityConfig['class'];
+                    return $options['entityDto']->getFqcn();
                 },
             ])
-            ->setRequired(['entity', 'view'])
+            ->setRequired(['entityDto'])
             ->setNormalizer('attr', $this->getAttributesNormalizer());
     }
 
@@ -164,7 +156,7 @@ class EasyAdminFormType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'easyadmin';
+        return 'ea_crud';
     }
 
     /**
@@ -175,8 +167,9 @@ class EasyAdminFormType extends AbstractType
     private function getAttributesNormalizer()
     {
         return function (Options $options, $value) {
+
             return array_replace([
-                'id' => sprintf('%s-%s-form', $options['view'], mb_strtolower($options['entity'])),
+                'id' => sprintf('%s-%s-form', $options['view'] ?? 'edit', $options['entityDto']->getName()),
             ], $value);
         };
     }

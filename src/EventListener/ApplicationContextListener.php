@@ -200,6 +200,10 @@ class ApplicationContextListener
 
     private function getCrudPageConfig(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
     {
+        if (in_array($crudAction, ['edit', 'new'])) {
+            $crudAction = 'form';
+        }
+
         $pageConfigMethodName = 'configure'.ucfirst($crudAction).'Page';
         if (null === $crudController || !method_exists($crudController, $pageConfigMethodName)) {
             return null;

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -16,24 +17,24 @@ class CheckboxTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
+    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
     {
         // If no value is provided explicitly for the "required" option, assume the checkbox is not required.
         // Otherwise, HTML5 validation will prevent the form from being submitted.
-        if (!isset($options['required'])) {
-            $options['required'] = false;
+        if (!isset($formFieldOptions['required'])) {
+            $formFieldOptions['required'] = false;
         }
 
-        $options['label'] = $metadata['label'];
+        $formFieldOptions['label'] = $propertyDto->getLabel();
 
-        return $options;
+        return $formFieldOptions;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supports($type, array $options, array $metadata)
+    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
     {
-        return \in_array($type, ['checkbox', CheckboxType::class], true);
+        return CheckboxType::class === $formTypeFqcn;
     }
 }

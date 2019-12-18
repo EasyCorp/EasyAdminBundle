@@ -22,6 +22,9 @@ class EasyAdminFormTypePass implements CompilerPassInterface
 
     private function registerTypeConfigurators(ContainerBuilder $container)
     {
+        // TODO: this can be removed
+        return;
+
         $configurators = new \SplPriorityQueue();
         foreach ($container->findTaggedServiceIds('easyadmin.form.type.configurator') as $id => $tags) {
             $configuratorClass = new \ReflectionClass($container->getDefinition($id)->getClass());
@@ -46,7 +49,7 @@ class EasyAdminFormTypePass implements CompilerPassInterface
         }
 
         $configurators = iterator_to_array($configurators);
-        $container->getDefinition('easyadmin.form.type')->replaceArgument(1, $configurators);
+        $container->getDefinition('easyadmin.form.type')->replaceArgument(0, $configurators);
         $container->getDefinition('easyadmin.form.type.filters')->replaceArgument(1, $configurators);
     }
 

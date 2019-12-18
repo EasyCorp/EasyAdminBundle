@@ -19,7 +19,7 @@ class FiltersFormType extends AbstractType
     /**
      * @param TypeConfiguratorInterface[] $configurators
      */
-    public function __construct(ConfigManager $configManager, array $configurators = [])
+    public function __construct(ConfigManager $configManager, iterable $configurators)
     {
         $this->configManager = $configManager;
         $this->configurators = $configurators;
@@ -35,12 +35,16 @@ class FiltersFormType extends AbstractType
         foreach ($entityConfig['list']['filters'] as $propertyName => $filterConfig) {
             $formFieldOptions = $filterConfig['type_options'];
 
+            /*
+             * TODO: enable this:
+
             // Configure options using the list of registered type configurators:
             foreach ($this->configurators as $configurator) {
                 if ($configurator->supports($filterConfig['type'], $formFieldOptions, $filterConfig)) {
                     $formFieldOptions = $configurator->configure($propertyName, $formFieldOptions, $filterConfig, $builder);
                 }
             }
+            */
 
             $builder->add($propertyName, $filterConfig['type'], $formFieldOptions);
         }

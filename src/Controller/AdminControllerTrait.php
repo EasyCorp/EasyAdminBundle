@@ -14,7 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
 use Pagerfanta\Pagerfanta;
@@ -790,7 +790,7 @@ trait AdminControllerTrait
     {
         $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', [$entity, $view]);
 
-        return $this->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), EasyAdminFormType::class, $entity, $formOptions);
+        return $this->get('form.factory')->createNamedBuilder(mb_strtolower($this->entity['name']), CrudFormType::class, $entity, $formOptions);
     }
 
     /**

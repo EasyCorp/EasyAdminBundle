@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -15,29 +16,29 @@ class CodeEditorTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig): array
+    public function configure(string $name, array $formFieldOtions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
     {
-        if (isset($metadata['height'])) {
-            $options['height'] = $metadata['height'];
+        if ($propertyDto->getCustomOptions()->has('height')) {
+            $formFieldOtions['height'] = $propertyDto->getCustomOptions()->get('height');
         }
-        if (isset($metadata['tab_size'])) {
-            $options['tab_size'] = $metadata['tab_size'];
+        if ($propertyDto->getCustomOptions()->has('tabSize')) {
+            $formFieldOtions['tab_size'] = $propertyDto->getCustomOptions()->get('tabSize');
         }
-        if (isset($metadata['indent_with_tabs'])) {
-            $options['indent_with_tabs'] = $metadata['indent_with_tabs'];
+        if ($propertyDto->getCustomOptions()->has('indentWithTabs')) {
+            $formFieldOtions['indent_with_tabs'] = $propertyDto->getCustomOptions()->get('indentWithTabs');
         }
-        if (isset($metadata['language'])) {
-            $options['language'] = $metadata['language'];
+        if ($propertyDto->getCustomOptions()->has('language')) {
+            $formFieldOtions['language'] = $propertyDto->getCustomOptions()->get('language');
         }
 
-        return $options;
+        return $formFieldOtions;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supports($type, array $options, array $metadata): bool
+    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
     {
-        return \in_array($type, ['code_editor', CodeEditorType::class], true);
+        return CodeEditorType::class === $formTypeFqcn;
     }
 }

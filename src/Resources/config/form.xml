@@ -4,11 +4,9 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="easyadmin.form.type" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType">
-            <argument type="service" id="easyadmin.config.manager" />
-            <argument type="collection" /> <!-- type configurators -->
-            <argument type="service" id="easyadmin.security.authorization_checker" />
-            <tag name="form.type" alias="easyadmin" />
+        <service id="easyadmin.form.type" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType">
+            <argument type="tagged" tag="ea.form_type_configurator" />
+            <tag name="form.type" alias="ea_crud" />
         </service>
 
         <service id="easyadmin.form.type.fileupload" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType">
@@ -18,7 +16,7 @@
 
         <service id="easyadmin.form.type.filters" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType">
             <argument type="service" id="easyadmin.config.manager"/>
-            <argument type="collection" /> <!-- type configurators -->
+            <argument type="tagged" tag="ea.form_type_configurator" />
             <tag name="form.type" alias="easyadmin_filters" />
         </service>
 
@@ -51,55 +49,55 @@
 
         <!-- Type Configurators -->
 
-        <service id="easyadmin.form.type.configurator.code_editor" public="false"
+        <service id="ea.form_type_configurator.code_editor" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CodeEditorTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="50" />
+            <tag name="ea.form_type_configurator" priority="50" />
         </service>
 
         <service id="easyadmin.filter.type.configurator.choice"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\Configurator\ChoiceFilterTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="0" />
+            <tag name="ea.form_type_configurator" priority="0" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.textarea" public="false"
+        <service id="ea.form_type_configurator.textarea" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TextareaTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="40" />
+            <tag name="ea.form_type_configurator" priority="40" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.autocomplete" public="false"
+        <service id="ea.form_type_configurator.autocomplete" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="30" />
+            <tag name="ea.form_type_configurator" priority="30" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.collection" public="false"
+        <service id="ea.form_type_configurator.collection" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CollectionTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="20" />
+            <tag name="ea.form_type_configurator" priority="20" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.checkbox" public="false"
+        <service id="ea.form_type_configurator.checkbox" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="10" />
+            <tag name="ea.form_type_configurator" priority="10" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.type" public="false"
+        <service id="ea.form_type_configurator.type" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfigurator">
-            <argument type="service" id="easyadmin.config.manager" />
-            <tag name="easyadmin.form.type.configurator" priority="0" />
+            <argument type="service" id="ea.context_provider" />
+            <tag name="ea.form_type_configurator" priority="0" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.entity" public="false"
+        <service id="ea.form_type_configurator.entity" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\EntityTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="-20" />
+            <tag name="ea.form_type_configurator" priority="-20" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.ivory_ckeditor" public="false"
+        <service id="ea.form_type_configurator.ivory_ckeditor" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="-130" />
+            <tag name="ea.form_type_configurator" priority="-130" />
         </service>
 
-        <service id="easyadmin.form.type.configurator.fos_ckeditor" public="false"
+        <service id="ea.form_type_configurator.fos_ckeditor" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\FOSCKEditorTypeConfigurator">
-            <tag name="easyadmin.form.type.configurator" priority="-130" />
+            <tag name="ea.form_type_configurator" priority="-130" />
         </service>
 
         <!-- Type Configurators -->

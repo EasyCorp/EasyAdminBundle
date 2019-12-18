@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Util;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminDividerType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminGroupType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminSectionType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
@@ -106,7 +106,7 @@ final class FormTypeHelper
         'timezone' => TimezoneType::class,
         'url' => UrlType::class,
         // EasyAdmin custom types
-        'easyadmin' => EasyAdminFormType::class,
+        'easyadmin' => CrudFormType::class,
         'easyadmin_autocomplete' => EasyAdminAutocompleteType::class,
         'easyadmin_divider' => EasyAdminDividerType::class,
         'easyadmin_group' => EasyAdminGroupType::class,

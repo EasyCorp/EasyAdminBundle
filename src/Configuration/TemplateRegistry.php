@@ -15,6 +15,8 @@ final class TemplateRegistry
         'crud/paginator' => '@EasyAdmin/crud/paginator.html.twig',
         'crud/index' => '@EasyAdmin/crud/index.html.twig',
         'crud/detail' => '@EasyAdmin/crud/detail.html.twig',
+        'crud/new' => '@EasyAdmin/crud/new.html.twig',
+        'crud/edit' => '@EasyAdmin/crud/edit.html.twig',
         'crud/action' => '@EasyAdmin/crud/action.html.twig',
         'crud/filters' => '@EasyAdmin/crud/filters.html.twig',
         'label/empty' => '@EasyAdmin/label/empty.html.twig',

@@ -86,6 +86,12 @@
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder" alias="ea.property_builder" />
 
+        <service id="ea.form_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory" public="false">
+            <argument type="service" id="form.factory"></argument>
+            <argument type="service" id="easyadmin.router.crud_url_generator"></argument>
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory" alias="ea.form_factory" />
+
         <service id="ea.security_voter" class="EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter" public="false">
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <tag name="security.voter" />

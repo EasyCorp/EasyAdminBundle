@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -16,26 +17,26 @@ class IvoryCKEditorTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
+    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
     {
         // when the IvoryCKEditor doesn't define the toolbar to use, EasyAdmin uses a simple toolbar
-        $options['config']['toolbar'] = [
-            ['name' => 'styles', 'items' => ['Bold', 'Italic', 'Strike', 'Link']],
-            ['name' => 'lists', 'items' => ['BulletedList', 'NumberedList', '-', 'Outdent', 'Indent']],
-            ['name' => 'clipboard', 'items' => ['Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo']],
-            ['name' => 'advanced', 'items' => ['Source']],
-        ];
+        if (!isset($formFieldOptions['config']['toolbar']) && !isset($formFieldOptions['config_name'])) {
+            $formFieldOptions['config']['toolbar'] = [
+                ['name' => 'styles', 'items' => ['Bold', 'Italic', 'Strike', 'Link']],
+                ['name' => 'lists', 'items' => ['BulletedList', 'NumberedList', '-', 'Outdent', 'Indent']],
+                ['name' => 'clipboard', 'items' => ['Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo']],
+                ['name' => 'advanced', 'items' => ['Source']],
+            ];
+        }
 
-        return $options;
+        return $formFieldOptions;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supports($type, array $options, array $metadata)
+    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
     {
-        $isCkeditorField = \in_array($type, ['ckeditor', 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType'], true);
-
-        return $isCkeditorField && !isset($options['config']['toolbar']) && !isset($options['config_name']);
+        return 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType' === $formTypeFqcn;
     }
 }

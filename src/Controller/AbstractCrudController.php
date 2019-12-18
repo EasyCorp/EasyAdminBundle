@@ -21,8 +21,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface;
@@ -31,7 +35,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -75,6 +81,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'ea.entity_builder' => '?'.EntityBuilder::class,
             'ea.entity_view_builder' => '?'.EntityViewBuilder::class,
             'ea.entity_repository' => '?'.EntityRepositoryInterface::class,
+            'ea.form_factory' => '?'.FormFactory::class,
             'ea.property_builder' => '?'.PropertyBuilder::class,
         ]);
     }
@@ -105,7 +112,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'entities' => $entityCollection,
             'paginator' => $paginator,
             'batch_form' => $this->createBatchForm($entityFqcn)->createView(),
-            'delete_form_template' => $this->createDeleteForm('__id__')->createView(),
+            'delete_form_template' => $this->get('ea.form_factory')->createDeleteForm(['entityId' => '__id__'])->createView(),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -116,7 +123,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         return $this->render(
             $this->getContext()->getTemplatePath('crud/index'),
-            $this->getTemplateParameters('crud/index', $event->getTemplateParameters())
+            $this->getTemplateParameters('index', $event->getTemplateParameters())
         );
     }
 
@@ -139,7 +146,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         return $this->render(
             $this->getContext()->getTemplatePath('crud/filters'),
-            $this->getTemplateParameters('crud/filters', $templateParameters)
+            $this->getTemplateParameters('showFilters', $templateParameters)
         );
     }
 
@@ -160,12 +167,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $actions = $this->get('ea.action_builder')->setItems($this->getContext()->getCrud()->getPage()->getActions())->build();
 
-        $deleteForm = $this->createDeleteForm($entityId);
-
         $parameters = [
             'actions' => $actions,
             'entity' => $entityDto,
-            'delete_form' => $deleteForm->createView(),
+            'delete_form' => $this->get('ea.form_factory')->createDeleteForm()->createView(),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -176,15 +181,146 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         return $this->render(
             $this->getContext()->getTemplatePath('crud/detail'),
-            $this->getTemplateParameters('crud/detail', $event->getTemplateParameters())
+            $this->getTemplateParameters('detail', $event->getTemplateParameters())
         );
+    }
+
+    public function edit(): Response
+    {
+        $event = new BeforeCrudActionEvent($this->getContext());
+        $this->get('event_dispatcher')->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        $entityFqcn = $this->getContext()->getCrud()->getEntityFqcn();
+        $entityId = $this->getContext()->getRequest()->query->get('entityId');
+        $entityPermission = $this->getContext()->getCrud()->getPage()->getEntityPermission();
+        $entityDto = $this->get('ea.entity_builder')->build($entityFqcn, $entityPermission, $entityId);
+        $entityDto = $this->get('ea.property_builder')->build($entityDto, $this->configureProperties('detail'));
+        $entityInstance = $entityDto->getInstance();
+
+        /*
+        if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
+            $newValue = 'true' === mb_strtolower($this->request->query->get('newValue'));
+            $fieldsMetadata = $this->entity['list']['fields'];
+
+            if (!isset($fieldsMetadata[$property]) || 'toggle' !== $fieldsMetadata[$property]['dataType']) {
+                throw new \RuntimeException(sprintf('The type of the "%s" property is not "toggle".', $property));
+            }
+
+            $this->updateEntityProperty($entity, $property, $newValue);
+
+            // cast to integer instead of string to avoid sending empty responses for 'false'
+            return new Response((int) $newValue);
+        }
+        */
+
+
+        $editForm = $this->createEditForm($entityDto);
+        $editForm->handleRequest($this->getContext()->getRequest());
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            // TODO:
+            // $this->processUploadedFiles($editForm);
+
+            $event = new BeforeEntityUpdatedEvent($entityInstance);
+            $this->get('event_dispatcher')->dispatch($event);
+            $entityInstance = $event->getEntityInstance();
+
+            $this->updateEntity($entityInstance, $entityDto->getFqcn());
+
+            $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
+
+            return $this->redirectToReferrer();
+        }
+
+        $parameters = [
+            'action' => 'edit',
+            'edit_form' => $editForm->createView(),
+            //'entity_fields' => $fields,
+            'entity' => $entityDto->with(['instance' => $entityInstance]),
+            'delete_form' => $this->get('ea.form_factory')->createDeleteForm()->createView(),
+        ];
+
+        $event = new AfterCrudActionEvent($this->getContext(), $parameters);
+        $this->get('event_dispatcher')->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        return $this->render(
+            $this->getContext()->getTemplatePath('crud/edit'),
+            $this->getTemplateParameters('edit', $event->getTemplateParameters())
+        );
+    }
+
+    protected function updateEntity($entityInstance, string $entityFqcn)
+    {
+        $this->get('doctrine')->persist($entityInstance);
+        $this->get('doctrine')->getManagerForClass($entityFqcn)->flush();
+    }
+
+    protected function createEditForm(EntityDto $entityDto)
+    {
+        return $this->get('ea.form_factory')->createEditForm($entityDto);
+    }
+
+    /**
+     * @return RedirectResponse
+     */
+    protected function redirectToReferrer()
+    {
+        // TODO: fix this
+        return new RedirectResponse($this->getContext()->getDashboardRouteName());
+
+        $refererUrl = $this->request->query->get('referrer', '');
+        $refererAction = $this->request->query->get('action');
+
+        // 1. redirect to list if possible
+        if ($this->isActionAllowed('list')) {
+            if (!empty($refererUrl)) {
+                return $this->redirect(urldecode($refererUrl));
+            }
+
+            return $this->redirectToRoute('easyadmin', [
+                'action' => 'list',
+                'entity' => $this->entity['name'],
+                'menuIndex' => $this->request->query->get('menuIndex'),
+                'submenuIndex' => $this->request->query->get('submenuIndex'),
+            ]);
+        }
+
+        // 2. from new|edit action, redirect to edit if possible
+        if (\in_array($refererAction, ['new', 'edit']) && $this->isActionAllowed('edit')) {
+            return $this->redirectToRoute('easyadmin', [
+                'action' => 'edit',
+                'entity' => $this->entity['name'],
+                'menuIndex' => $this->request->query->get('menuIndex'),
+                'submenuIndex' => $this->request->query->get('submenuIndex'),
+                'id' => ('new' === $refererAction)
+                    ? PropertyAccess::createPropertyAccessor()->getValue($this->request->attributes->get('easyadmin')['item'], $this->entity['primary_key_field_name'])
+                    : $this->request->query->get('id'),
+            ]);
+        }
+
+        // 3. from new action, redirect to new if possible
+        if ('new' === $refererAction && $this->isActionAllowed('new')) {
+            return $this->redirectToRoute('easyadmin', [
+                'action' => 'new',
+                'entity' => $this->entity['name'],
+                'menuIndex' => $this->request->query->get('menuIndex'),
+                'submenuIndex' => $this->request->query->get('submenuIndex'),
+            ]);
+        }
+
+        return new RedirectResponse($this->getContext()->getDashboardRouteName());
     }
 
     /**
      * Used to add/modify/remove parameters before passing them to the Twig template.
      * $templateName = 'index', 'detail' or 'form'
      */
-    public function getTemplateParameters(string $templateName, array $parameters): array
+    public function getTemplateParameters(string $actionName, array $parameters): array
     {
         return $parameters;
     }
@@ -192,32 +328,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     protected function getContext(): ?ApplicationContext
     {
         return $this->get('ea.context_provider')->getContext();
-    }
-
-    /**
-     * Creates the form used to delete an entity. It must be a form because
-     * the deletion of the entity are always performed with the 'DELETE' HTTP method,
-     * which requires a form to work in the current browsers.
-     *
-     * @param int|string $entityId   When reusing the delete form for multiple entities, a pattern string is passed instead of an integer
-     */
-    protected function createDeleteForm($entityId): FormInterface
-    {
-        $formBuilder = $this->get('form.factory')->createNamedBuilder('delete_form')
-            ->setAction($this->generateUrl('easyadmin', [
-                'action' => 'delete',
-                'controller' => static::class,
-                'id' => $entityId,
-            ]))
-            ->setMethod('DELETE')
-            ->add('submit', SubmitType::class, [
-                'label' => 'delete_modal.action',
-                'translation_domain' => 'EasyAdminBundle',
-            ])
-            // needed to avoid submitting empty delete forms (see issue #1409)
-            ->add('_easyadmin_delete_flag', HiddenType::class, ['data' => '1']);
-
-        return $formBuilder->getForm();
     }
 
     protected function createBatchForm(string $entityName): FormInterface

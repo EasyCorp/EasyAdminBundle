@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -15,21 +16,21 @@ class TextareaTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig)
+    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
     {
         // if <textarea> doesn't define its rows, use a default number to make it look good
-        $options['attr']['rows'] = 5;
+        if (!isset($formFieldOptions['attr']['rows'])) {
+            $formFieldOptions['attr']['rows'] = 5;
+        }
 
-        return $options;
+        return $formFieldOptions;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supports($type, array $options, array $metadata)
+    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
     {
-        $isTextareaField = \in_array($type, ['textarea', TextareaType::class], true);
-
-        return $isTextareaField && !isset($options['attr']['rows']);
+        return TextareaType::class === $formTypeFqcn;
     }
 }

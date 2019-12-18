@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ChoiceFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Component\Form\FormConfigInterface;
@@ -14,26 +15,26 @@ class ChoiceFilterTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure($name, array $options, array $metadata, FormConfigInterface $parentConfig): array
+    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
     {
-        if (isset($metadata['expanded'])) {
-            $options['value_type_options']['expanded'] = $metadata['expanded'];
+        if ($propertyDto->getCustomOptions()->has('expanded')) {
+            $formFieldOtions['value_type_options']['expanded'] = $propertyDto['expanded'];
         }
-        if (isset($metadata['multiple'])) {
-            $options['value_type_options']['multiple'] = $metadata['multiple'];
+        if ($propertyDto->getCustomOptions()->has('multiple')) {
+            $formFieldOtions['value_type_options']['multiple'] = $propertyDto->getCustomOptions()->has('multiple');
         }
-        if (isset($metadata['choices'])) {
-            $options['value_type_options']['choices'] = $metadata['choices'];
+        if ($propertyDto->getCustomOptions()->has('choices')) {
+            $formFieldOtions['value_type_options']['choices'] = $propertyDto->getCustomOptions()->has('choices');
         }
 
-        return $options;
+        return $formFieldOtions;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supports($type, array $options, array $metadata): bool
+    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
     {
-        return \in_array($type, ['easyadmin.filter.type.choice', ChoiceFilterType::class], true);
+        return ChoiceFilterType::class === $formTypeFqcn;
     }
 }

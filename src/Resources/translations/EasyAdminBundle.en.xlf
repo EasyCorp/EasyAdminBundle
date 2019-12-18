@@ -12,8 +12,8 @@
                 <target><![CDATA[%entity_label_singular% <span class="text-small text-muted">(#%entity_id%)</span>]]></target>
             </trans-unit>
             <trans-unit id="edit.page_title">
-                <source>edit.page_title</source>
-                <target>Edit %entity_label% (#%entity_id%)</target>
+                <source>page.edit.title</source>
+                <target>Edit %entity_label_singular% (#%entity_id%)</target>
             </trans-unit>
             <trans-unit id="page.index.title">
                 <source>page.index.title</source>

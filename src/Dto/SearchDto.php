@@ -17,7 +17,7 @@ final class SearchDto
     /** @var string[]|null */
     private $filters;
 
-    public function __construct(Request $request, array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $filters)
+    public function __construct(Request $request, ?array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $filters)
     {
         $this->request = $request;
         $this->searchableProperties = $searchableProperties;

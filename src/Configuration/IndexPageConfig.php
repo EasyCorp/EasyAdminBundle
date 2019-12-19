@@ -16,7 +16,7 @@ final class IndexPageConfig
     private $paginatorPageSize = 15;
     private $paginatorFetchJoinCollection = true;
     private $paginatorUseOutputWalkers;
-    private $filters = null;
+    private $filters;
 
     public static function new(): self
     {

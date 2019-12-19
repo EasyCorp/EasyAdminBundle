@@ -8,12 +8,12 @@ final class CrudPageDto
     private $title;
     private $help;
     private $actions;
-    private $defaultSort;
+    private $defaultSort = [];
     private $entityPermission;
     private $searchFields;
     private $filters;
     private $paginatorDto;
-    private $formOptions;
+    private $formOptions = [];
 
     public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $entityViewPermission, ?array $searchFields, ?array $filters, PaginatorDto $paginatorDto): self
     {

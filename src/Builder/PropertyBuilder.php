@@ -69,7 +69,7 @@ final class PropertyBuilder
     /**
      * @param PropertyInterface[] $propertiesConfig
      */
-    public function buildAll(EntityDto $entityDto, $entityInstances, iterable $propertiesConfig): EntityDtoCollection
+    public function buildAll(EntityDto $entityDto, iterable $entityInstances, iterable $propertiesConfig): EntityDtoCollection
     {
         $builtEntities = [];
         foreach ($entityInstances as $entityInstance) {

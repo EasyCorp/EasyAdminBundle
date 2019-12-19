@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder;
@@ -91,7 +92,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $queryBuilder = $this->createIndexQueryBuilder($this->getContext()->getSearch(), $entityDto);
         $paginator = $this->get('ea.paginator_factory')->create($queryBuilder);
 
-        $entityInstances = iterator_to_array($paginator->getResults());
+        $entityInstances = $paginator->getResults();
         $configuredProperties = iterator_to_array($this->configureProperties('index'));
         $entities = $this->get('ea.entity_factory')->createAll($entityDto, $entityInstances, $configuredProperties);
 
@@ -145,7 +146,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $configuredProperties = iterator_to_array($this->configureProperties('detail'));
+        $configuredProperties = $this->configureProperties('detail');
         $entityDto = $this->get('ea.entity_factory')->create($configuredProperties);
 
         $actions = $this->get('ea.action_builder')->setItems($this->getContext()->getCrud()->getPage()->getActions())->build();
@@ -176,7 +177,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $configuredProperties = iterator_to_array($this->configureProperties('edit'));
+        $configuredProperties = $this->configureProperties('edit');
         $entityDto = $this->get('ea.entity_factory')->create($configuredProperties);
         $entityInstance = $entityDto->getInstance();
 
@@ -206,7 +207,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $this->get('event_dispatcher')->dispatch($event);
             $entityInstance = $event->getEntityInstance();
 
-            $this->updateEntity($entityInstance, $entityDto->getFqcn());
+            $this->updateEntity($this->get('doctrine')->getManagerForClass($entityDto->getFqcn()), $entityInstance);
 
             $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 
@@ -216,7 +217,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $parameters = [
             'action' => 'edit',
             'edit_form' => $editForm->createView(),
-            //'entity_fields' => $fields,
             'entity' => $entityDto->with(['instance' => $entityInstance]),
             'delete_form' => $this->get('ea.form_factory')->createDeleteForm()->createView(),
         ];
@@ -233,13 +233,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         );
     }
 
-    protected function updateEntity($entityInstance, string $entityFqcn)
+    protected function updateEntity(ManagerRegistry $entityManager, $entityInstance)
     {
-        $this->get('doctrine')->persist($entityInstance);
-        $this->get('doctrine')->getManagerForClass($entityFqcn)->flush();
+        // there's no need to persist the entity explicitly again because it's already
+        // managed by Doctrine. The instance is passed to the method in case the
+        // user application needs to make decisions
+        $entityManager->flush();
     }
 
-    protected function createEditForm(EntityDto $entityDto)
+    protected function createEditForm(EntityDto $entityDto): FormInterface
     {
         return $this->get('ea.form_factory')->createEditForm($entityDto);
     }

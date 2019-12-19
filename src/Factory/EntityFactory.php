@@ -36,7 +36,7 @@ final class EntityFactory
     /**
      * @param PropertyInterface[] $configuredProperties
      */
-    public function create(array $configuredProperties = null): EntityDto
+    public function create(iterable $configuredProperties = null): EntityDto
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $entityFqcn = $applicationContext->getCrud()->getEntityFqcn();
@@ -61,7 +61,7 @@ final class EntityFactory
     /**
      * @param PropertyInterface[] $propertiesConfig
      */
-    public function createAll(EntityDto $entityDto, $entityInstances, array $configuredProperties): EntityDtoCollection
+    public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties): EntityDtoCollection
     {
         return $this->propertyBuilder->buildAll($entityDto, $entityInstances, $configuredProperties);
     }

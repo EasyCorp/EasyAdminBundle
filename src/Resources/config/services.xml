@@ -79,6 +79,12 @@
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory" alias="ea.entity_factory" />
 
+        <service id="ea.paginator_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory" public="false">
+            <argument type="service" id="ea.context_provider"></argument>
+            <argument type="service" id="ea.entity_paginator"></argument>
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory" alias="ea.paginator_factory" />
+
         <service id="ea.property_builder" class="EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder" public="false">
             <argument type="service" id="ea.context_provider"></argument>
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>

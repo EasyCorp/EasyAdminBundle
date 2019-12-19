@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
@@ -70,10 +71,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
             'ea.action_builder' => '?'.ActionBuilder::class,
             'ea.context_provider' => '?'.ApplicationContextProvider::class,
-            'ea.entity_paginator' => '?'.EntityPaginator::class,
             'ea.entity_factory' => '?'.EntityFactory::class,
             'ea.entity_repository' => '?'.EntityRepositoryInterface::class,
             'ea.form_factory' => '?'.FormFactory::class,
+            'ea.paginator_factory' => '?'.PaginatorFactory::class,
             'ea.property_builder' => '?'.PropertyBuilder::class,
         ]);
     }
@@ -88,10 +89,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entityDto = $this->get('ea.entity_factory')->create();
         $queryBuilder = $this->createIndexQueryBuilder($this->getContext()->getSearch(), $entityDto);
-        $paginatorDto = $this->getContext()->getCrud()->getPage()->getPaginator()->with([
-            'pageNumber' => $this->getContext()->getRequest()->query->get('page', 1),
-        ]);
-        $paginator = $this->get('ea.entity_paginator')->paginate($paginatorDto, $queryBuilder);
+        $paginator = $this->get('ea.paginator_factory')->create($queryBuilder);
 
         $entityInstances = iterator_to_array($paginator->getResults());
         $configuredProperties = iterator_to_array($this->configureProperties('index'));

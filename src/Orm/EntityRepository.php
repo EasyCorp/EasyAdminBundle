@@ -67,7 +67,9 @@ final class EntityRepository implements EntityRepositoryInterface
         ];
 
         $entitiesAlreadyJoined = [];
-        foreach ($searchDto->getSearchableProperties() as $propertyName) {
+        $configuredSearchableProperties = $searchDto->getSearchableProperties();
+        $searchableProperties = empty($configuredSearchableProperties) ? $entityDto->getAllPropertyNames() : $configuredSearchableProperties;
+        foreach ($searchableProperties as $propertyName) {
             $entityName = 'entity';
             $propertyDataType = $entityDto->getPropertyDataType($propertyName);
 

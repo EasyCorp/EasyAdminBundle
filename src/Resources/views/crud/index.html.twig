@@ -375,7 +375,7 @@
 
     {% if app.request.get('query') is not empty %}
         <script type="text/javascript">
-            const search_query = "{{ app.request.get('query')|default('')|e('js') }}";
+            const search_query = "{{ ea.search.query|default('')|e('js') }}";
             // the original query is prepended to allow matching exact phrases in addition to single words
             $('#main').find('table tbody td:not(.actions)').highlight($.merge([search_query], search_query.split(' ')));
         </script>

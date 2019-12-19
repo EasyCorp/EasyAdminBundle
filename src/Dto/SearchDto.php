@@ -9,22 +9,22 @@ final class SearchDto
     private $request;
     private $defaultSort;
     private $customSort;
+    /** @internal */
+    private $mergedSort;
     private $query;
     /** @var string[]|null */
-    private $searchProperties;
+    private $searchableProperties;
     /** @var string[]|null */
     private $filters;
-    private $allEntityProperties;
 
-    public function __construct(Request $request, CrudPageDto $crudPageDto, EntityDto $entityDto)
+    public function __construct(Request $request, array $searchableProperties, ?string $query, array $defaultSort, array $customSort, ?array $filters)
     {
         $this->request = $request;
-        $this->defaultSort = $crudPageDto->getDefaultSort();
-        $this->customSort = $request->query->get('sort', []);
-        $this->query = $request->query->get('query');
-        $this->searchProperties = $crudPageDto->getSearchFields();
-        $this->filters = $crudPageDto->getFilters();
-        $this->allEntityProperties = $entityDto->getDefinedPropertiesNames();
+        $this->searchableProperties = $searchableProperties;
+        $this->query = $query;
+        $this->defaultSort = $defaultSort;
+        $this->customSort = $customSort;
+        $this->filters = $filters;
     }
 
     public function getRequest(): Request
@@ -34,6 +34,10 @@ final class SearchDto
 
     public function getSort(): array
     {
+        if (null !== $this->mergedSort) {
+            return $this->mergedSort;
+        }
+
         // we can't use an array_merge() call because $customSort has more priority
         // than $defaultSort, so the default sort must only be applied if there's
         // not already a custom sort config for the same property
@@ -44,7 +48,7 @@ final class SearchDto
             }
         }
 
-        return $mergedSort;
+        return $this->mergedSort = $mergedSort;
     }
 
     public function getQuery(): ?string
@@ -57,11 +61,7 @@ final class SearchDto
      */
     public function getSearchableProperties(): array
     {
-        if (empty($this->searchProperties)) {
-            return $this->allEntityProperties;
-        }
-
-        return $this->searchProperties;
+        return $this->searchableProperties;
     }
 
     public function getFilters(): ?array

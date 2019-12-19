@@ -86,7 +86,7 @@ final class EntityDto
      * Returns the names of all properties defined in the entity, no matter
      * if they are used or not in the application.
      */
-    public function getDefinedPropertiesNames(): array
+    public function getAllPropertyNames(): array
     {
         return $this->metadata->getFieldNames();
     }

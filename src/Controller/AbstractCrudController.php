@@ -87,9 +87,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $entityDto = $this->get('ea.entity_factory')->create();
-
-        $searchDto = new SearchDto($this->getContext()->getRequest(), $this->getContext()->getCrud()->getPage(), $entityDto);
-        $queryBuilder = $this->createIndexQueryBuilder($searchDto, $entityDto);
+        $queryBuilder = $this->createIndexQueryBuilder($this->getContext()->getSearch(), $entityDto);
         $paginatorDto = $this->getContext()->getCrud()->getPage()->getPaginator()->with([
             'pageNumber' => $this->getContext()->getRequest()->query->get('page', 1),
         ]);

@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -35,16 +36,19 @@ final class ApplicationContextFactory
         $assetDto = $this->getAssetDto($dashboardController, $crudController);
 
         $crudDto = $this->getCrudDto($dashboardController, $crudController, $crudAction);
-        if (null !== $crudDto) {
+        if (null === $crudDto) {
+            $crudPageDto = $searchDto = null;
+        } else {
             $crudPageDto = $this->getCrudPageDto($dashboardController, $crudController, $crudAction);
             $crudDto = $crudDto->with(['crudPageDto' => $crudPageDto]);
+            $searchDto = $this->getSearchDto($request, $crudPageDto);
         }
 
-        $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto);
+        $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
         $user = $this->getUser($this->tokenStorage);
 
-        return new ApplicationContext($request, $user, $i18nDto, $dashboardDto, $dashboardController, $assetDto, $crudDto, $this->menuBuilder, $templateRegistry);
+        return new ApplicationContext($request, $user, $i18nDto, $dashboardDto, $dashboardController, $assetDto, $crudDto, $searchDto, $this->menuBuilder, $templateRegistry);
     }
 
     private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDto
@@ -131,6 +135,17 @@ final class ApplicationContextFactory
         }
 
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);
+    }
+
+    public function getSearchDto(Request $request, CrudPageDto $crudPageDto): SearchDto
+    {
+        $searchableProperties = $crudPageDto->getSearchFields();
+        $query = $request->query->get('query');
+        $defaultSort = $crudPageDto->getDefaultSort();
+        $customSort = $request->query->get('sort', []);
+        $filters = $crudPageDto->getFilters();
+
+        return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $filters);
     }
 
     // Copied from https://github.com/symfony/twig-bridge/blob/master/AppVariable.php

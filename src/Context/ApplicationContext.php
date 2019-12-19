@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,12 +29,13 @@ final class ApplicationContext
     private $dashboardControllerInstance;
     private $assetDto;
     private $crudDto;
+    private $searchDto;
     private $menuBuilder;
     private $templateRegistry;
     private $mainMenuDto;
     private $userMenuDto;
 
-    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetDto $assetDto, ?CrudDto $crudDto, MenuBuilder $menuBuilder, TemplateRegistry $templateRegistry)
+    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetDto $assetDto, ?CrudDto $crudDto, ?SearchDto $searchDto, MenuBuilder $menuBuilder, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
         $this->user = $user;
@@ -42,6 +44,7 @@ final class ApplicationContext
         $this->dashboardControllerInstance = $dashboardController;
         $this->assetDto = $assetDto;
         $this->crudDto = $crudDto;
+        $this->searchDto = $searchDto;
         $this->menuBuilder = $menuBuilder;
         $this->templateRegistry = $templateRegistry;
     }
@@ -112,6 +115,11 @@ final class ApplicationContext
     public function getCrud(): ?CrudDto
     {
         return $this->crudDto;
+    }
+
+    public function getSearch(): ?SearchDto
+    {
+        return $this->searchDto;
     }
 
     public function getTemplatePath(string $templateName): string

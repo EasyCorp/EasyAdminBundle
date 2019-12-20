@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 
 final class MenuItemDto
 {
@@ -120,11 +120,11 @@ final class MenuItemDto
 
     public function hasSubItems(): bool
     {
-        return MenuItemBuilder::TYPE_SUBMENU === $this->type && \count($this->subItems) > 0;
+        return MenuFactory::ITEM_TYPE_SUBMENU === $this->type && \count($this->subItems) > 0;
     }
 
     public function isMenuSection(): bool
     {
-        return MenuItemBuilder::TYPE_SECTION === $this->type;
+        return MenuFactory::ITEM_TYPE_SECTION === $this->type;
     }
 }

@@ -27,7 +27,7 @@
 
         <service id="ea.application_context_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\ApplicationContextFactory" public="false">
             <argument type="service" id="security.token_storage" on-invalid="null" />
-            <argument type="service" id="easyadmin.builder.menu" />
+            <argument type="service" id="ea.menu_factory" />
         </service>
 
         <service id="ea.entity_repository" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository" public="false">
@@ -57,17 +57,13 @@
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder" alias="ea.action_builder" />
 
-        <service id="easyadmin.builder.menu_item" class="EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder" public="false">
+        <service id="ea.menu_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory" public="false">
             <argument type="service" id="ea.context_provider"></argument>
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <argument type="service" id="translator"></argument>
             <argument type="service" id="router"></argument>
             <argument type="service" id="security.logout_url_generator"></argument>
             <argument type="service" id="easyadmin.router.crud_url_generator"></argument>
-        </service>
-
-        <service id="easyadmin.builder.menu" class="EasyCorp\Bundle\EasyAdminBundle\Builder\MenuBuilder" public="false">
-            <argument type="service" id="easyadmin.builder.menu_item"></argument>
         </service>
 
         <service id="ea.entity_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory" public="false">

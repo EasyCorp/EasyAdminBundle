@@ -2,9 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuItemBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Configuration\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 
 final class MenuItem
 {
@@ -33,7 +33,7 @@ final class MenuItem
     public static function linkToCrud(string $label, ?string $icon, string $crudControllerFqcn, array $routeParameters = []): self
     {
         $menuItem = new self();
-        $menuItem->type = MenuItemBuilder::TYPE_CRUD;
+        $menuItem->type = MenuFactory::ITEM_TYPE_CRUD;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->routeParameters = array_merge([
@@ -47,7 +47,7 @@ final class MenuItem
     public static function linktoDashboard(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
-        $menuItem->type = MenuItemBuilder::TYPE_DASHBOARD;
+        $menuItem->type = MenuFactory::ITEM_TYPE_DASHBOARD;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
 
@@ -57,7 +57,7 @@ final class MenuItem
     public static function linkToExitImpersonation(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
-        $menuItem->type = MenuItemBuilder::TYPE_EXIT_IMPERSONATION;
+        $menuItem->type = MenuFactory::ITEM_TYPE_EXIT_IMPERSONATION;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
 
@@ -67,7 +67,7 @@ final class MenuItem
     public static function linkToLogout(string $label, ?string $icon = null): self
     {
         $menuItem = new self();
-        $menuItem->type = MenuItemBuilder::TYPE_LOGOUT;
+        $menuItem->type = MenuFactory::ITEM_TYPE_LOGOUT;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
 
@@ -77,7 +77,7 @@ final class MenuItem
     public static function linktoRoute(string $name, array $parameters = []): self
     {
         $menuItem = new self();
-        $menuItem->type = MenuItemBuilder::TYPE_ROUTE;
+        $menuItem->type = MenuFactory::ITEM_TYPE_ROUTE;
         $menuItem->routeName = $name;
         $menuItem->routeParameters = $parameters;
 
@@ -87,7 +87,7 @@ final class MenuItem
     public static function linkToUrl(string $label, ?string $icon, string $url): self
     {
         $menuItem = new self();
-        $menuItem->type = MenuItemBuilder::TYPE_URL;
+        $menuItem->type = MenuFactory::ITEM_TYPE_URL;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->linkUrl = $url;
@@ -98,7 +98,7 @@ final class MenuItem
     public static function section(string $label = null, ?string $icon = null): self
     {
         $menuItem = new self();
-        $menuItem->type = MenuItemBuilder::TYPE_SECTION;
+        $menuItem->type = MenuFactory::ITEM_TYPE_SECTION;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
 
@@ -108,7 +108,7 @@ final class MenuItem
     public static function subMenu(string $label, ?string $icon, array $submenuItems): self
     {
         $menuItem = new self();
-        $menuItem->type = MenuItemBuilder::TYPE_SUBMENU;
+        $menuItem->type = MenuFactory::ITEM_TYPE_SUBMENU;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->subItems = $submenuItems;

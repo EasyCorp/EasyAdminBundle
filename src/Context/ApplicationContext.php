@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
-use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
@@ -13,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -30,12 +30,12 @@ final class ApplicationContext
     private $assetDto;
     private $crudDto;
     private $searchDto;
-    private $menuBuilder;
+    private $menuFactory;
     private $templateRegistry;
     private $mainMenuDto;
     private $userMenuDto;
 
-    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetDto $assetDto, ?CrudDto $crudDto, ?SearchDto $searchDto, MenuBuilder $menuBuilder, TemplateRegistry $templateRegistry)
+    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetDto $assetDto, ?CrudDto $crudDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
         $this->user = $user;
@@ -45,7 +45,7 @@ final class ApplicationContext
         $this->assetDto = $assetDto;
         $this->crudDto = $crudDto;
         $this->searchDto = $searchDto;
-        $this->menuBuilder = $menuBuilder;
+        $this->menuFactory = $menuFactory;
         $this->templateRegistry = $templateRegistry;
     }
 
@@ -94,7 +94,7 @@ final class ApplicationContext
         $selectedMenuIndex = $this->request->query->getInt('menuIndex', -1);
         $selectedMenuSubIndex = $this->request->query->getInt('submenuIndex', -1);
 
-        return $this->mainMenuDto = $this->menuBuilder->buildMainMenu($mainMenuItems, $selectedMenuIndex, $selectedMenuSubIndex);
+        return $this->mainMenuDto = $this->menuFactory->createMainMenu($mainMenuItems, $selectedMenuIndex, $selectedMenuSubIndex);
     }
 
     public function getUserMenu(): UserMenuDto
@@ -109,7 +109,7 @@ final class ApplicationContext
 
         $userMenuConfig = $this->dashboardControllerInstance->configureUserMenu($this->user);
 
-        return $this->userMenuDto = $this->menuBuilder->buildUserMenu($userMenuConfig);
+        return $this->userMenuDto = $this->menuFactory->createUserMenu($userMenuConfig);
     }
 
     public function getCrud(): ?CrudDto

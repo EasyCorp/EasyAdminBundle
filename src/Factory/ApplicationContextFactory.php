@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Builder\MenuBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
@@ -20,12 +19,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class ApplicationContextFactory
 {
     private $tokenStorage;
-    private $menuBuilder;
+    private $menuFactory;
 
-    public function __construct(?TokenStorageInterface $tokenStorage, MenuBuilder $menuBuilder)
+    public function __construct(?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory)
     {
         $this->tokenStorage = $tokenStorage;
-        $this->menuBuilder = $menuBuilder;
+        $this->menuFactory = $menuFactory;
     }
 
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): ApplicationContext
@@ -48,7 +47,7 @@ final class ApplicationContextFactory
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
         $user = $this->getUser($this->tokenStorage);
 
-        return new ApplicationContext($request, $user, $i18nDto, $dashboardDto, $dashboardController, $assetDto, $crudDto, $searchDto, $this->menuBuilder, $templateRegistry);
+        return new ApplicationContext($request, $user, $i18nDto, $dashboardDto, $dashboardController, $assetDto, $crudDto, $searchDto, $this->menuFactory, $templateRegistry);
     }
 
     private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDto

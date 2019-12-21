@@ -25,6 +25,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -69,12 +70,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         return array_merge(parent::getSubscribedServices(), [
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
-            'ea.action_builder' => '?'.ActionBuilder::class,
-            'ea.context_provider' => '?'.ApplicationContextProvider::class,
-            'ea.entity_factory' => '?'.EntityFactory::class,
-            'ea.entity_repository' => '?'.EntityRepositoryInterface::class,
-            'ea.form_factory' => '?'.FormFactory::class,
-            'ea.paginator_factory' => '?'.PaginatorFactory::class,
+            ActionBuilder::class => '?'.ActionBuilder::class,
+            ApplicationContextProvider::class => '?'.ApplicationContextProvider::class,
+            EntityFactory::class => '?'.EntityFactory::class,
+            EntityRepository::class => '?'.EntityRepository::class,
+            FormFactory::class => '?'.FormFactory::class,
+            PaginatorFactory::class => '?'.PaginatorFactory::class,
         ]);
     }
 
@@ -86,19 +87,19 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        $entityDto = $this->get('ea.entity_factory')->create();
+        $entityDto = $this->get(EntityFactory::class)->create();
         $queryBuilder = $this->createIndexQueryBuilder($this->getContext()->getSearch(), $entityDto);
-        $paginator = $this->get('ea.paginator_factory')->create($queryBuilder);
+        $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         $entityInstances = $paginator->getResults();
         $configuredProperties = iterator_to_array($this->configureProperties('index'));
-        $entities = $this->get('ea.entity_factory')->createAll($entityDto, $entityInstances, $configuredProperties);
+        $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $configuredProperties);
 
         $parameters = [
             'entities' => $entities,
             'paginator' => $paginator,
             'batch_form' => $this->createBatchForm($entityDto->getFqcn())->createView(),
-            'delete_form_template' => $this->get('ea.form_factory')->createDeleteForm(['entityId' => '__id__'])->createView(),
+            'delete_form_template' => $this->get(FormFactory::class)->createDeleteForm(['entityId' => '__id__'])->createView(),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -115,12 +116,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
     {
-        return $this->get('ea.entity_repository')->createQueryBuilder($searchDto, $entityDto);
+        return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto);
     }
 
     public function showFilters(): Response
     {
-        $filtersForm = $this->get('form.factory')->createNamed('filters', FiltersFormType::class, null, [
+        $filtersForm = $this->get(FormFactory::class)->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
             'action' => $this->getContext()->getRequest()->query->get('referrer'),
         ]);
@@ -145,14 +146,14 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $configuredProperties = $this->configureProperties('detail');
-        $entityDto = $this->get('ea.entity_factory')->create($configuredProperties);
+        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties);
 
-        $actions = $this->get('ea.action_builder')->setItems($this->getContext()->getCrud()->getPage()->getActions())->build();
+        $actions = $this->get(ActionBuilder::class)->setItems($this->getContext()->getCrud()->getPage()->getActions())->build();
 
         $parameters = [
             'actions' => $actions,
             'entity' => $entityDto,
-            'delete_form' => $this->get('ea.form_factory')->createDeleteForm()->createView(),
+            'delete_form' => $this->get(FormFactory::class)->createDeleteForm()->createView(),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -176,7 +177,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $configuredProperties = $this->configureProperties('edit');
-        $entityDto = $this->get('ea.entity_factory')->create($configuredProperties);
+        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties);
         $entityInstance = $entityDto->getInstance();
 
         /*
@@ -216,7 +217,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'action' => 'edit',
             'edit_form' => $editForm->createView(),
             'entity' => $entityDto->with(['instance' => $entityInstance]),
-            'delete_form' => $this->get('ea.form_factory')->createDeleteForm()->createView(),
+            'delete_form' => $this->get(FormFactory::class)->createDeleteForm()->createView(),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -240,7 +241,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $configuredProperties = $this->configureProperties('new');
-        $entityDto = $this->get('ea.entity_factory')->create($configuredProperties);
+        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties);
         $entityInstance = $this->createEntity($entityDto->getFqcn());
         $entityDto = $entityDto->with(['instance' => $entityInstance]);
 
@@ -265,7 +266,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'action' => 'new',
             'new_form' => $newForm->createView(),
             'entity' => $entityDto->with(['instance' => $entityInstance]),
-            'delete_form' => $this->get('ea.form_factory')->createDeleteForm()->createView(),
+            'delete_form' => $this->get(FormFactory::class)->createDeleteForm()->createView(),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -295,12 +296,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     protected function createEditForm(EntityDto $entityDto): FormInterface
     {
-        return $this->get('ea.form_factory')->createEditForm($entityDto);
+        return $this->get(FormFactory::class)->createEditForm($entityDto);
     }
 
     protected function createNewForm(EntityDto $entityDto): FormInterface
     {
-        return $this->get('ea.form_factory')->createNewForm($entityDto);
+        return $this->get(FormFactory::class)->createNewForm($entityDto);
     }
 
     /**
@@ -365,12 +366,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     protected function getContext(): ?ApplicationContext
     {
-        return $this->get('ea.context_provider')->getContext();
+        return $this->get(ApplicationContextProvider::class)->getContext();
     }
 
     protected function createBatchForm(string $entityName): FormInterface
     {
-        return $this->get('form.factory')->create();
+        // TODO: fix this
+        return $this->get(FormFactory::class)->createDeleteForm([$entityName]);
 
         return $this->get('form.factory')->createNamed('batch_form', EasyAdminBatchFormType::class, null, [
             'action' => $this->generateUrl('easyadmin', ['action' => 'batch', 'entity' => $entityName]),

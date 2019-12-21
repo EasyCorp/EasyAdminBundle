@@ -8,98 +8,6 @@
             <tag name="cache.pool" />
         </service>
 
-        <service id="ea.context_provider" class="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" public="true">
-            <argument type="service" id="request_stack" />
-        </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" alias="ea.context_provider" />
-
-        <service id="easyadmin.paramconverter.applicationcontext" class="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextParamConverter" public="false">
-            <argument type="service" id="ea.context_provider" />
-            <tag name="request.param_converter" priority="10" converter="pageContext" />
-        </service>
-
-        <service id="EasyCorp\Bundle\EasyAdminBundle\EventListener\ApplicationContextListener" public="false">
-            <argument type="service" id="ea.application_context_factory" />
-            <argument type="service" id="controller_resolver" />
-            <argument type="service" id="twig" />
-            <tag name="kernel.event_listener" event="kernel.controller" />
-        </service>
-
-        <service id="ea.application_context_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\ApplicationContextFactory" public="false">
-            <argument type="service" id="security.token_storage" on-invalid="null" />
-            <argument type="service" id="ea.menu_factory" />
-        </service>
-
-        <service id="ea.entity_repository" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository" public="false">
-            <argument type="service" id="ea.context_provider" />
-            <argument type="service" id="doctrine" />
-            <argument type="service" id="form.factory" />
-            <argument type="service" id="easyadmin.filter.registry" />
-        </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface" alias="ea.entity_repository" />
-
-        <service id="ea.entity_paginator" class="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator">
-            <argument type="service" id="easyadmin.router.crud_url_generator"/>
-        </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator" alias="ea.entity_paginator" />
-
-        <service id="easyadmin.router.crud_url_generator" class="EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator" >
-            <argument type="service" id="ea.context_provider" />
-            <argument type="service" id="router.default" />
-        </service>
-
-        <service id="ea.action_builder" class="EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder" public="false">
-            <argument type="service" id="ea.context_provider"></argument>
-            <argument type="service" id="easyadmin.security.authorization_checker"></argument>
-            <argument type="service" id="translator"></argument>
-            <argument type="service" id="router"></argument>
-            <argument type="service" id="easyadmin.router.crud_url_generator"></argument>
-        </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder" alias="ea.action_builder" />
-
-        <service id="ea.menu_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory" public="false">
-            <argument type="service" id="ea.context_provider"></argument>
-            <argument type="service" id="easyadmin.security.authorization_checker"></argument>
-            <argument type="service" id="translator"></argument>
-            <argument type="service" id="router"></argument>
-            <argument type="service" id="security.logout_url_generator"></argument>
-            <argument type="service" id="easyadmin.router.crud_url_generator"></argument>
-        </service>
-
-        <service id="ea.entity_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory" public="false">
-            <argument type="service" id="ea.context_provider"></argument>
-            <argument type="service" id="ea.property_factory"></argument>
-            <argument type="service" id="easyadmin.security.authorization_checker"></argument>
-            <argument type="service" id="doctrine"></argument>
-            <argument type="service" id="event_dispatcher"></argument>
-        </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory" alias="ea.entity_factory" />
-
-        <service id="ea.paginator_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory" public="false">
-            <argument type="service" id="ea.context_provider"></argument>
-            <argument type="service" id="ea.entity_paginator"></argument>
-        </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory" alias="ea.paginator_factory" />
-
-        <service id="ea.property_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory" public="false">
-            <argument type="service" id="ea.context_provider"></argument>
-            <argument type="service" id="easyadmin.security.authorization_checker"></argument>
-            <argument type="service" id="translator"></argument>
-            <argument type="service" id="property_accessor"></argument>
-        </service>
-        <service id="PropertyFactory" alias="ea.property_factory" />
-
-        <service id="ea.form_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory" public="false">
-            <argument type="service" id="form.factory"></argument>
-            <argument type="service" id="easyadmin.router.crud_url_generator"></argument>
-        </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory" alias="ea.form_factory" />
-
-        <service id="ea.security_voter" class="EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter" public="false">
-            <argument type="service" id="easyadmin.security.authorization_checker"></argument>
-            <tag name="security.voter" />
-        </service>
-
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument>%easyadmin.config%</argument>
             <argument>%kernel.debug%</argument>
@@ -135,7 +43,7 @@
         <service id="easyadmin.twig.extension" class="EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension" public="false">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="property_accessor" />
-            <argument type="service" id="easyadmin.router.crud_url_generator" />
+            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator" />
             <argument>%kernel.debug%</argument>
             <argument type="service" id="security.logout_url_generator" on-invalid="null" />
             <argument type="service" id="translator" on-invalid="null" />

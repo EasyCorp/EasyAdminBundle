@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
@@ -26,21 +27,27 @@ class EasyAdminExtension extends Extension
         $backendConfig = $this->processConfiguration(new Configuration(), $configs);
         $container->setParameter('easyadmin.config', $backendConfig);
 
-        // load bundle's services
+        // TODO: remove the loading of legacy services
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         $loader->load('commands.xml');
         $loader->load('form.xml');
+
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.php');
+
 
         if ($container->getParameter('kernel.debug')) {
             // in 'dev', use the built-in Symfony exception listener
             $container->removeDefinition('easyadmin.listener.exception');
         }
 
+        /*
         if ($container->hasParameter('locale')) {
             $container->getDefinition('easyadmin.configuration.design_config_pass')
                 ->replaceArgument(0, $container->getParameter('locale'));
         }
+        */
     }
 
     /**

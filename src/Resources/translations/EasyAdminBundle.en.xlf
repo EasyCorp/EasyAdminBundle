@@ -4,8 +4,8 @@
         <body>
             <!-- page titles -->
             <trans-unit id="new.page_title">
-                <source>new.page_title</source>
-                <target>Create %entity_label%</target>
+                <source>page.new.title</source>
+                <target>Create %entity_label_singular%</target>
             </trans-unit>
             <trans-unit id="page.detail.title">
                 <source>page.detail.title</source>

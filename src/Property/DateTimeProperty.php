@@ -36,9 +36,13 @@ class DateTimeProperty extends AbstractProperty
 
     public function build(PropertyDto $propertyDto, EntityDto $entityDto, ApplicationContext $applicationContext): PropertyDto
     {
-        $defaultFormat = $applicationContext->getCrud()->getDateTimeFormat();
-        $propertyFormat = $this->format;
-        $formattedValue = $propertyDto->getValue()->format($propertyFormat ?? $defaultFormat);
+        if (null === $propertyDto->getValue()) {
+            $formattedValue = null;
+        } else {
+            $defaultFormat = $applicationContext->getCrud()->getDateTimeFormat();
+            $propertyFormat = $this->format;
+            $formattedValue = $propertyDto->getValue()->format($propertyFormat ?? $defaultFormat);
+        }
 
         return $propertyDto->with([
             'customOptions' => [

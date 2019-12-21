@@ -231,6 +231,60 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         );
     }
 
+    public function new()
+    {
+        $event = new BeforeCrudActionEvent($this->getContext());
+        $this->get('event_dispatcher')->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        $configuredProperties = $this->configureProperties('new');
+        $entityDto = $this->get('ea.entity_factory')->create($configuredProperties);
+        $entityInstance = $this->createEntity($entityDto->getFqcn());
+        $entityDto = $entityDto->with(['instance' => $entityInstance]);
+
+        $newForm = $this->createNewForm($entityDto);
+        $newForm->handleRequest($this->getContext()->getRequest());
+        if ($newForm->isSubmitted() && $newForm->isValid()) {
+            // TODO:
+            // $this->processUploadedFiles($newForm);
+
+            $event = new BeforeEntitPersistedEvent($entityInstance);
+            $this->get('event_dispatcher')->dispatch($event);
+            $entityInstance = $event->getEntityInstance();
+
+            $this->persistEntity($this->get('doctrine')->getManagerForClass($entityDto->getFqcn()), $entityInstance);
+
+            $this->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance));
+
+            return $this->redirectToReferrer();
+        }
+
+        $parameters = [
+            'action' => 'new',
+            'new_form' => $newForm->createView(),
+            'entity' => $entityDto->with(['instance' => $entityInstance]),
+            'delete_form' => $this->get('ea.form_factory')->createDeleteForm()->createView(),
+        ];
+
+        $event = new AfterCrudActionEvent($this->getContext(), $parameters);
+        $this->get('event_dispatcher')->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        return $this->render(
+            $this->getContext()->getTemplatePath('crud/new'),
+            $this->getTemplateParameters('new', $event->getTemplateParameters())
+        );
+    }
+
+    protected function createEntity(string $entityFqcn)
+    {
+        return new $entityFqcn();
+    }
+
     protected function updateEntity(ManagerRegistry $entityManager, $entityInstance)
     {
         // there's no need to persist the entity explicitly again because it's already
@@ -242,6 +296,11 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     protected function createEditForm(EntityDto $entityDto): FormInterface
     {
         return $this->get('ea.form_factory')->createEditForm($entityDto);
+    }
+
+    protected function createNewForm(EntityDto $entityDto): FormInterface
+    {
+        return $this->get('ea.form_factory')->createNewForm($entityDto);
     }
 
     /**

@@ -41,4 +41,9 @@ final class FormFactory
     {
         return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), ['entityDto' => $entityDto])->getForm();
     }
+
+    public function createNewForm(EntityDto $entityDto): FormInterface
+    {
+        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), ['entityDto' => $entityDto])->getForm();
+    }
 }

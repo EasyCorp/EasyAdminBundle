@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
+namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
@@ -14,7 +14,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class PropertyBuilder
+final class PropertyFactory
 {
     private $applicationContextProvider;
     private $authorizationChecker;
@@ -32,7 +32,7 @@ final class PropertyBuilder
     /**
      * @param PropertyInterface[] $propertiesConfig
      */
-    public function build(EntityDto $entityDto, iterable $propertiesConfig): EntityDto
+    public function create(EntityDto $entityDto, iterable $propertiesConfig): EntityDto
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $translationDomain = $applicationContext->getI18n()->getTranslationDomain();
@@ -69,12 +69,12 @@ final class PropertyBuilder
     /**
      * @param PropertyInterface[] $propertiesConfig
      */
-    public function buildAll(EntityDto $entityDto, iterable $entityInstances, iterable $propertiesConfig): EntityDtoCollection
+    public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $propertiesConfig): EntityDtoCollection
     {
         $builtEntities = [];
         foreach ($entityInstances as $entityInstance) {
             $currentEntityDto = $entityDto->with(['instance' => $entityInstance]);
-            $builtEntities[] = $this->build($currentEntityDto, $propertiesConfig);
+            $builtEntities[] = $this->create($currentEntityDto, $propertiesConfig);
         }
 
         return EntityDtoCollection::new($builtEntities);

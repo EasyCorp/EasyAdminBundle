@@ -68,7 +68,7 @@
 
         <service id="ea.entity_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory" public="false">
             <argument type="service" id="ea.context_provider"></argument>
-            <argument type="service" id="ea.property_builder"></argument>
+            <argument type="service" id="ea.property_factory"></argument>
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <argument type="service" id="doctrine"></argument>
             <argument type="service" id="event_dispatcher"></argument>
@@ -81,13 +81,13 @@
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory" alias="ea.paginator_factory" />
 
-        <service id="ea.property_builder" class="EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder" public="false">
+        <service id="ea.property_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory" public="false">
             <argument type="service" id="ea.context_provider"></argument>
             <argument type="service" id="easyadmin.security.authorization_checker"></argument>
             <argument type="service" id="translator"></argument>
             <argument type="service" id="property_accessor"></argument>
         </service>
-        <service id="EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder" alias="ea.property_builder" />
+        <service id="PropertyFactory" alias="ea.property_factory" />
 
         <service id="ea.form_factory" class="EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory" public="false">
             <argument type="service" id="form.factory"></argument>

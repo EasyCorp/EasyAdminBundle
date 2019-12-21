@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
-use EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
@@ -19,15 +18,15 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final class EntityFactory
 {
     private $applicationContextProvider;
-    private $propertyBuilder;
+    private $propertyFactory;
     private $authorizationChecker;
     private $doctrine;
     private $eventDispatcher;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, PropertyBuilder $propertyBuilder, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, PropertyFactory $propertyFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
         $this->applicationContextProvider = $applicationContextProvider;
-        $this->propertyBuilder = $propertyBuilder;
+        $this->propertyFactory = $propertyFactory;
         $this->authorizationChecker = $authorizationChecker;
         $this->doctrine = $doctrine;
         $this->eventDispatcher = $eventDispatcher;
@@ -50,7 +49,7 @@ final class EntityFactory
         if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $entityDto)) {
             $entityDto->markAsInaccessible();
         } elseif (null !== $configuredProperties) {
-            $entityDto = $this->propertyBuilder->build($entityDto, $configuredProperties);
+            $entityDto = $this->propertyFactory->create($entityDto, $configuredProperties);
         }
 
         $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($entityDto));
@@ -63,7 +62,7 @@ final class EntityFactory
      */
     public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties): EntityDtoCollection
     {
-        return $this->propertyBuilder->buildAll($entityDto, $entityInstances, $configuredProperties);
+        return $this->propertyFactory->createAll($entityDto, $entityInstances, $configuredProperties);
     }
 
     private function getEntityManager(string $entityFqcn): ObjectManager

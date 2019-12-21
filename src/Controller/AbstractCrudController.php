@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Builder\PropertyBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
@@ -23,9 +22,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -76,7 +75,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'ea.entity_repository' => '?'.EntityRepositoryInterface::class,
             'ea.form_factory' => '?'.FormFactory::class,
             'ea.paginator_factory' => '?'.PaginatorFactory::class,
-            'ea.property_builder' => '?'.PropertyBuilder::class,
         ]);
     }
 

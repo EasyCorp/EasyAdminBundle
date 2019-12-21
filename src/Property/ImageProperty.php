@@ -49,7 +49,6 @@ class ImageProperty extends AbstractProperty
         return $propertyDto->with([
             'customOptions' => [
                 'basePath' => $this->basePath,
-                'contentHash' => md5($propertyDto->getValue()),
             ],
             'formattedValue' => $formattedValue,
         ]);

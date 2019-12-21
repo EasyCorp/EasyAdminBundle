@@ -28,6 +28,7 @@ final class TemplateRegistry
         'property/avatar' => '@EasyAdmin/crud/property/avatar.html.twig',
         'property/bigint' => '@EasyAdmin/crud/property/bigint.html.twig',
         'property/boolean' => '@EasyAdmin/crud/property/boolean.html.twig',
+        'property/code_editor' => '@EasyAdmin/crud/property/code_editor.html.twig',
         'property/country' => '@EasyAdmin/crud/property/country.html.twig',
         'property/date' => '@EasyAdmin/crud/property/date.html.twig',
         'property/datetime' => '@EasyAdmin/crud/property/datetime.html.twig',

@@ -44,6 +44,7 @@ return [
     'action.add_new_item' => 'Add a new item',
     'action.remove_item' => 'Remove the item',
     'action.choose_file' => 'Choose file',
+    'action.close' => 'Close',
 
     // batch actions
     'batch_action_modal.title' => 'Do you really want to alter the selected items?',

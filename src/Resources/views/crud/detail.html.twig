@@ -21,7 +21,7 @@
         {% block show_fields %}
             {% for property in entity.properties %}
                 {% block show_field %}
-                    <div class="form-group field-{{ property.type }} {{ property.cssClass ?? '' }}">
+                    <div class="form-group property-{{ property.type }} {{ property.cssClass ?? '' }}">
                         <label class="control-label">
                             {{ property.label|raw }}
                         </label>

@@ -136,8 +136,12 @@ final class ApplicationContextFactory
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);
     }
 
-    public function getSearchDto(Request $request, CrudPageDto $crudPageDto): SearchDto
+    public function getSearchDto(Request $request, ?CrudPageDto $crudPageDto): ?SearchDto
     {
+        if (null === $crudPageDto) {
+            return null;
+        }
+
         $searchableProperties = $crudPageDto->getSearchFields();
         $query = $request->query->get('query');
         $defaultSort = $crudPageDto->getDefaultSort();

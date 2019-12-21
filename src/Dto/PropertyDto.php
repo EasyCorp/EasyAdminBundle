@@ -29,10 +29,10 @@ final class PropertyDto
     private $templatePath;
     private $resolvedTemplatePath;
     private $customTemplateParams = [];
-    private $assets = [];
+    private $assetDto;
     private $customOptions;
 
-    public function __construct(string $name, string $type, string $formType, array $formTypeOptions, ?bool $sortable, ?string $label, ?string $permission, string $textAlign, ?string $help, ?string $cssClass, array $translationParams, ?string $templateName, ?string $templatePath, array $customTemplateParams, array $assets, array $customOptions)
+    public function __construct(string $name, string $type, string $formType, array $formTypeOptions, ?bool $sortable, ?string $label, ?string $permission, string $textAlign, ?string $help, ?string $cssClass, array $translationParams, ?string $templateName, ?string $templatePath, array $customTemplateParams, AssetDto $assetDto, array $customOptions)
     {
         $this->name = $name;
         $this->type = $type;
@@ -48,8 +48,13 @@ final class PropertyDto
         $this->templateName = $templateName;
         $this->templatePath = $templatePath;
         $this->customTemplateParams = $customTemplateParams;
-        $this->assets = $assets;
+        $this->assetDto = $assetDto;
         $this->customOptions = $customOptions;
+    }
+
+    public function getUniqueId(): string
+    {
+        return spl_object_hash($this);
     }
 
     public function getName(): string
@@ -145,7 +150,7 @@ final class PropertyDto
 
     public function getAssets(): AssetDto
     {
-        return $this->assets->getAsDto();
+        return $this->assetDto;
     }
 
     public function getCustomOptions(): ParameterBag

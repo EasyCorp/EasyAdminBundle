@@ -568,7 +568,10 @@ form .invalid-feedback > .d-block + .d-block {
     top: 0;
 }
 
-// EasyAdminCodeType
-.field-easyadmin_code_editor .form-widget {
+// EasyAdmin Code Editor
+.field-ea_code_editor .form-widget {
     flex-basis: 65%;
+}
+.form-group.property-code_editor .form-control {
+    height: auto;
 }

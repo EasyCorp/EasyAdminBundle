@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,7 +24,11 @@ abstract class AbstractProperty implements PropertyInterface
     protected $templateName;
     protected $templatePath;
     protected $customTemplateParams = [];
-    protected $assets = [];
+    protected $cssFiles = [];
+    protected $jsFiles = [];
+    protected $headContents = [];
+    protected $bodyContents = [];
+    protected $customOptions;
 
     private function __construct()
     {
@@ -122,6 +127,34 @@ abstract class AbstractProperty implements PropertyInterface
         return $this;
     }
 
+    public function addCssFiles(string ...$assetPaths): PropertyInterface
+    {
+        $this->cssFiles = array_merge($this->cssFiles, $assetPaths);
+
+        return $this;
+    }
+
+    public function addJsFiles(string ...$assetPaths): PropertyInterface
+    {
+        $this->jsFiles = array_merge($this->jsFiles, $assetPaths);
+
+        return $this;
+    }
+
+    public function addHtmlContentsToHead(string ...$contents): PropertyInterface
+    {
+        $this->headContents = array_merge($this->headContents, $contents);
+
+        return $this;
+    }
+
+    public function addHtmlContentsToBody(string ...$contents): PropertyInterface
+    {
+        $this->bodyContents = array_merge($this->bodyContents, $contents);
+
+        return $this;
+    }
+
     public function setCustomOptions(OptionsResolver $resolver): void
     {
     }
@@ -179,6 +212,6 @@ abstract class AbstractProperty implements PropertyInterface
             throw new \InvalidArgumentException(sprintf('Properties can only define either the name or the path of their templates, but the "%s" property defines both (remove one of them).', $this->name));
         }
 
-        return new PropertyDto($this->name, $this->type, $this->formType, $this->formTypeOptions, $this->sortable, $this->label, $this->permission, $this->textAlign, $this->help, $this->cssClass, $this->translationParams, $this->templateName, $this->templatePath, $this->customTemplateParams, $this->assets, []);
+        return new PropertyDto($this->name, $this->type, $this->formType, $this->formTypeOptions, $this->sortable, $this->label, $this->permission, $this->textAlign, $this->help, $this->cssClass, $this->translationParams, $this->templateName, $this->templatePath, $this->customTemplateParams, new AssetDto($this->cssFiles, $this->jsFiles, $this->headContents, $this->bodyContents), []);
     }
 }

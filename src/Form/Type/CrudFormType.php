@@ -3,7 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Component\Form\AbstractType;
@@ -72,7 +74,7 @@ class CrudFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (\in_array($formFieldType, ['easyadmin_group', EasyAdminGroupType::class])) {
+            if (\in_array($formFieldType, ['ea_group', EasyAdminGroupType::class])) {
                 $metadata['form_tab'] = $currentFormTab ?: null;
                 $currentFormGroup = $metadata['fieldName'];
                 $formGroups[$currentFormGroup] = $metadata;
@@ -84,7 +86,7 @@ class CrudFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (\in_array($formFieldType, ['easyadmin_tab', EasyAdminTabType::class])) {
+            if (\in_array($formFieldType, ['ea_tab', EasyAdminTabType::class])) {
                 // The first tab should be marked as active by default
                 $metadata['active'] = 0 === \count($formTabs);
                 $metadata['errors'] = 0;
@@ -99,20 +101,22 @@ class CrudFormType extends AbstractType
 
             // 'section' is a 'fake' form field used to create the design elements of the
             // complex form layouts: define it as unmapped and non-required
-            if (0 === strpos($propertyDto->getName(), '_easyadmin_form_design_element_')) {
+            if (0 === strpos($propertyDto->getName(), '_ea_form_design_element_')) {
                 $formFieldOptions['mapped'] = false;
                 $formFieldOptions['required'] = false;
             }
 
+            $formFieldOptions['ea_property'] = $propertyDto;
+
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
-            $formField->setAttribute('easyadmin_form_tab', $currentFormTab);
-            $formField->setAttribute('easyadmin_form_group', $currentFormGroup);
+            $formField->setAttribute('ea_form_tab', $currentFormTab);
+            $formField->setAttribute('ea_form_group', $currentFormGroup);
 
             $builder->add($formField);
         }
 
-        $builder->setAttribute('easyadmin_form_tabs', $formTabs);
-        $builder->setAttribute('easyadmin_form_groups', $formGroups);
+        $builder->setAttribute('ea_form_tabs', $formTabs);
+        $builder->setAttribute('ea_form_groups', $formGroups);
 
         if (\count($formTabs) > 0) {
             $builder->addEventSubscriber(new EasyAdminTabSubscriber());
@@ -124,8 +128,17 @@ class CrudFormType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['easyadmin_form_tabs'] = $form->getConfig()->getAttribute('easyadmin_form_tabs');
-        $view->vars['easyadmin_form_groups'] = $form->getConfig()->getAttribute('easyadmin_form_groups');
+        $view->vars['ea_form_tabs'] = $form->getConfig()->getAttribute('ea_form_tabs');
+        $view->vars['ea_form_groups'] = $form->getConfig()->getAttribute('ea_form_groups');
+
+        // some properties and field types require CSS/JS assets to work properly
+        // get all property assets and pass them as a form variable
+        $allAssets = new AssetDto();
+        /** @var PropertyDto $propertyDto */
+        foreach ($options['entityDto']->getProperties() as $propertyDto) {
+            $allAssets = $allAssets->mergeWith($propertyDto->getAssets());
+        }
+        $view->vars['ea_form_assets'] = $allAssets;
     }
 
     /**

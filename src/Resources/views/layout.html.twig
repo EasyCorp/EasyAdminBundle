@@ -16,9 +16,11 @@
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
     {% endblock %}
 
-    {% for css_asset in ea.assets.cssFiles ?? [] %}
-        <link rel="stylesheet" href="{{ asset(css_asset) }}">
-    {% endfor %}
+    {% block configured_stylesheets %}
+        {% for css_asset in ea.assets.cssFiles ?? [] %}
+            <link rel="stylesheet" href="{{ asset(css_asset) }}">
+        {% endfor %}
+    {% endblock %}
 
     {% block head_favicon %}
         <link rel="shortcut icon" href="{{ asset(ea.dashboardFaviconPath) }}">
@@ -32,9 +34,11 @@
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app-rtl.css') }}">
     {% endif %}
 
-    {% for htmlContent in ea.assets.headContents ?? [] %}
-        {{ htmlContent|raw }}
-    {% endfor %}
+    {% block configured_head_contents %}
+        {% for htmlContent in ea.assets.headContents ?? [] %}
+            {{ htmlContent|raw }}
+        {% endfor %}
+    {% endblock %}
 </head>
 
 {% block body %}
@@ -170,13 +174,17 @@
 
     {% block body_javascript %}{% endblock body_javascript %}
 
-    {% for js_asset in ea.assets.jsFiles ?? [] %}
-        <script src="{{ asset(js_asset) }}"></script>
-    {% endfor %}
+    {% block configured_javascripts %}
+        {% for js_asset in ea.assets.jsFiles ?? [] %}
+            <script src="{{ asset(js_asset) }}"></script>
+        {% endfor %}
+    {% endblock %}
 
-    {% for htmlContent in ea.assets.bodyContents ?? [] %}
-        {{ htmlContent|raw }}
-    {% endfor %}
+    {% block configured_body_contents %}
+        {% for htmlContent in ea.assets.bodyContents ?? [] %}
+            {{ htmlContent|raw }}
+        {% endfor %}
+    {% endblock %}
     </body>
 {% endblock body %}
 </html>

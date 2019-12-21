@@ -18,6 +18,8 @@ class CodeEditorTypeConfigurator implements TypeConfiguratorInterface
      */
     public function configure(string $name, array $formFieldOtions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
     {
+        return [];
+
         if ($propertyDto->getCustomOptions()->has('height')) {
             $formFieldOtions['height'] = $propertyDto->getCustomOptions()->get('height');
         }

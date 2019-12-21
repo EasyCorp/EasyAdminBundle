@@ -1,25 +1,20 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {% use 'bootstrap_4_layout.html.twig' %}
 
-{% block form_start -%}
-    {% if 'easyadmin' == block_prefixes|slice(-2)|first %}
-        {% set attr = attr|merge({
-            'class': [attr.class|default(''), easyadmin.view ~ '-form']|join(' '),
-            'data-view': easyadmin.view,
-            'data-entity': easyadmin.entity.name,
-            'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name) ?? '',
-        }) %}
-    {% endif %}
+{% block form_start %}
+    {% set attr = attr|merge({
+        'class': [attr.class|default(''), 'ea-' ~ ea.crud.action ~ '-form']|join(' '),
+    }) %}
 
     {% if form.vars.errors|length > 0 %}
         {{ form_errors(form) }}
     {% endif %}
 
-    {{- parent() -}}
+    {{ parent() }}
 
     {# TODO: check if this is really needed #}
     {#<input type="hidden" name="referrer" value="{{ app.request.query.get('referrer') }}"/>#}
-{%- endblock form_start %}
+{% endblock form_start %}
 
 {# Widgets #}
 
@@ -246,7 +241,8 @@
 {# Errors #}
 
 {%- block form_widget_compound -%}
-    <div class="form-widget-compound">
+    {# TODO: restore the CSS class (which was disabled because form doesn't look OK with it #}
+    <div class="REMOVE_THIS_form-widget-compound">
         {# the "is iterable" check is needed because if an object implements __toString() and
            returns an empty string, "is empty" returns true even if it's not a collection #}
         {% set isEmptyCollection = value is iterable and value is empty %}
@@ -263,7 +259,7 @@
 
 {% block empty_collection %}
     <div class="empty collection-empty">
-        {{ include(easyadmin.entity.templates.label_empty) }}
+        {{ include(ea.templatePath('label/empty')) }}
     </div>
 {% endblock empty_collection %}
 
@@ -321,17 +317,17 @@
     <div class="easyadmin-vich-image">
         {% if image_uri|default('') is not empty %}
             {% if download_uri|default('') is empty %}
-                <div class="easyadmin-thumbnail">
+                <div class="ea-lightbox-thumbnail">
                     <img style="cursor: initial" src="{{ asset(image_uri) }}">
                 </div>
             {% else %}
-                {% set _lightbox_id = 'easyadmin-lightbox-' ~ id %}
+                {% set _lightbox_id = 'ea-lightbox-' ~ id %}
 
-                <a href="#" class="easyadmin-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
+                <a href="#" class="ea-lightbox-thumbnail" data-featherlight="#{{ _lightbox_id }}" data-featherlight-close-on-click="anywhere">
                     <img src="{{ asset(download_uri) }}">
                 </a>
 
-                <div id="{{ _lightbox_id }}" class="easyadmin-lightbox">
+                <div id="{{ _lightbox_id }}" class="ea-lightbox">
                     <img src="{{ asset(download_uri) }}">
                 </div>
             {% endif %}
@@ -359,30 +355,28 @@
     </div>
 {% endblock %}
 
-{% block easyadmin_rest %}
-    {{- form_rest(form) -}}
+{% block ea_crud_rest %}
+    {{ form_rest(form) }}
 
     <section class="content-footer">
         <div class="form-actions">
-            {{- block('item_actions') -}}
+            {{ block('item_actions') }}
         </div>
     </section>
-{% endblock easyadmin_rest %}
+{% endblock ea_crud_rest %}
 
 {% block item_actions %}
-    {% set _translation_domain = easyadmin.entity.translation_domain %}
-    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans(domain = _translation_domain), '%entity_label%': easyadmin.entity.label|trans(domain = _translation_domain) } %}
-
     {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
     <button type="submit" class="btn btn-primary action-save">
-        <span class="btn-label">{{ 'action.save'|trans(_trans_parameters, _translation_domain) }}</span>
+        <span class="btn-label">{{ 'action.save'|trans(ea.i18n.translationParams, ea.i18n.translationDomain) }}</span>
     </button>
 
-    {% set _entity_actions = (easyadmin.view == 'new')
+    {#
+    {% set _entity_actions = (ea.crud.action == 'new')
         ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
         : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
 
-    {% set _entity_id = (easyadmin.view == 'new')
+    {% set _entity_id = (ea.crud.action == 'new')
         ? null
         : attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) %}
 
@@ -392,28 +386,28 @@
         actions: _entity_actions,
         entity_config: easyadmin.entity,
         request_parameters: _request_parameters,
-        translation_domain: _translation_domain,
+        translation_domain: ea.i18n.translationDomain,
         trans_parameters: _trans_parameters,
         item_id: _entity_id,
         item: easyadmin.item
     }, with_context = false) }}
+    #}
 {% endblock item_actions %}
 
 {# EasyAdmin form type #}
-{% block easyadmin_widget %}
-    {% set _translation_domain = easyadmin.entity.translation_domain %}
+{% block ea_crud_widget %}
     <div class="row">
-        {% if easyadmin_form_tabs | length > 0 %}
+        {% if ea_form_tabs | length > 0 %}
             <div class="col-12">
                 <div class="nav-tabs-custom form-tabs">
                     <ul class="nav nav-tabs">
-                        {% for tab_name, tab_config in easyadmin_form_tabs %}
+                        {% for tab_name, tab_config in ea_form_tabs %}
                             <li class="nav-item">
                                 <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
                                     {%- if tab_config.icon|default(false) -%}
                                         <i class="fa fa-fw fa-{{ tab_config.icon }}"></i>
                                     {%- endif -%}
-                                    {{ tab_config['label']|trans(domain = _translation_domain) }}
+                                    {{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
                                     {%- if tab_config.errors > 0 -%}
                                         <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'EasyAdminBundle') }}">
                                             {{- tab_config.errors -}}
@@ -424,16 +418,16 @@
                         {% endfor %}
                     </ul>
                     <div class="tab-content">
-                        {% for tab_name, tab_config in easyadmin_form_tabs %}
+                        {% for tab_name, tab_config in ea_form_tabs %}
                             <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %} {{ tab_config['css_class']|default('') }}">
                                 {% if tab_config['help']|default(false) %}
                                     <div class="content-header-help tab-help">
-                                        {{ tab_config['help']|trans(domain = _translation_domain)|raw }}
+                                        {{ tab_config['help']|trans(domain = ea.i18n.translationDomain)|raw }}
                                     </div>
                                 {% endif %}
 
                                 <div class="row">
-                                    {{ block('easyadmin_widget_groups') }}
+                                    {{ block('ea_crud_widget_groups') }}
                                 </div>
                             </div>
                         {% endfor %}
@@ -441,13 +435,13 @@
                 </div>
             </div>
         {% else %}
-            {{ block('easyadmin_widget_groups') }}
+            {{ block('ea_crud_widget_groups') }}
         {% endif %}
     </div>
-{% endblock easyadmin_widget %}
+{% endblock ea_crud_widget %}
 
-{% block easyadmin_widget_groups %}
-    {% for group_name, group_config in easyadmin_form_groups|filter(group_config => not group_config.form_tab or group_config.form_tab == tab_name) %}
+{% block ea_crud_widget_groups %}
+    {% for group_name, group_config in ea_form_groups|filter(group_config => not group_config.form_tab or group_config.form_tab == tab_name) %}
         <div class="field-group col-{{ group_config.columns|default('12') }} {{ group_config.css_class|default('') }}">
             <fieldset>
                 {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
@@ -455,18 +449,18 @@
                         {% if group_config.icon|default(false) %}
                             <i class="fa fa-fw fa-{{ group_config.icon }}"></i>
                         {% endif %}
-                        {{ group_config.label|trans(domain = _translation_domain)|raw }}
+                        {{ group_config.label|trans(domain = ea.i18n.translationDomain)|raw }}
                     </legend>
 
                     {% if group_config.help|default(false) %}
-                        <div class="legend-help">{{ group_config.help|trans(domain = _translation_domain)|raw }}</div>
+                        <div class="legend-help">{{ group_config.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
                     {% endif %}
                 {% endif %}
 
                 <div class="row">
                     {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name) %}
                         {% if not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name %}
-                            <div class="col-{{ field.vars.easyadmin.field.columns|default('12') }} {{ field.vars.easyadmin.field.css_class|default('') }}">
+                            <div class="col-{{ field.vars.ea_property.columns|default('12') }} {{ field.vars.ea_property.css_class|default('') }}">
                                 {{ form_row(field) }}
                             </div>
                         {% endif %}
@@ -475,13 +469,13 @@
             </fieldset>
         </div>
     {% else %}
-        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name)) %}
-            <div class="col-{{ field.vars.easyadmin.field.columns|default('12') }} {{ field.vars.easyadmin.field.css_class|default('') }}">
+        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
+            <div class="col-{{ field.vars.ea_property.columns|default('12') }} {{ field.vars.ea_property.css_class|default('') }}">
                 {{ form_row(field) }}
             </div>
         {% endfor %}
     {% endfor %}
-{% endblock easyadmin_widget_groups %}
+{% endblock ea_crud_widget_groups %}
 
 {# EasyAdminAutocomplete form type #}
 {% block easyadmin_autocomplete_widget %}
@@ -502,22 +496,20 @@
 {% endblock easyadmin_autocomplete_inner_label %}
 
 {# EasyAdmin's CodeEditor form type #}
-{% block easyadmin_code_editor_widget %}
+{% block ea_code_editor_widget %}
     {{ form_widget(form, { attr: attr|merge({
-        'data-easyadmin-code-editor': 'true',
-        'data-language': language,
-        'data-tab-size': tabSize,
-        'data-indent-with-tabs': indentWithTabs ? 'true' : 'false',
-        'data-js-url': asset('bundles/easyadmin/form-type-code-editor.js'),
-        'data-css-url': asset('bundles/easyadmin/form-type-code-editor.css'),
+        'data-is-ea-code-editor': 'true',
+        'data-language': ea_crud_form.property.customOptions.get('language'),
+        'data-tab-size': ea_crud_form.property.customOptions.get('tabSize'),
+        'data-indent-with-tabs': ea_crud_form.property.customOptions.get('indentWithTabs') ? 'true' : 'false',
     }) }) }}
 
-    {% if height is not null %}
+    {% if ea_crud_form.property.customOptions.get('height') is not null %}
         <style type="text/css">
-            #{{ id }} + .CodeMirror { height: {{ height }}px !important; max-height: none; }
+            #{{ id }} + .CodeMirror { height: {{ ea_crud_form.property.customOptions.get('height') }}px !important; max-height: none; }
         </style>
     {% endif %}
-{% endblock easyadmin_code_editor_widget %}
+{% endblock ea_code_editor_widget %}
 
 {# EasyAdmin's TextEditor form type #}
 {% block easyadmin_text_editor_widget %}
@@ -529,31 +521,29 @@
 
 {# EasyAdminSection form type #}
 {% block easyadmin_section_row %}
-    {% set _translation_domain = easyadmin.entity.translation_domain %}
     <div class="form-section {{ easyadmin.field.icon|default(false) == false and easyadmin.field.label|default(false) == false ? 'form-section-empty' }} {{ easyadmin.field.css_class|default('') }}">
         <h2>
             {% if easyadmin.field.icon|default(false) %}<i class="fa fa-fw fa-{{ easyadmin.field.icon }}"></i>{% endif %}
-            <span>{% if easyadmin.field.label|default(false) %}{{ easyadmin.field.label|default('')|trans(domain = _translation_domain)|raw }}{% endif %}</span>
+            <span>{% if easyadmin.field.label|default(false) %}{{ easyadmin.field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
         </h2>
 
         {% if easyadmin.field.help|default(false) %}
-            <p class="form-section-help">{{ easyadmin.field.help|trans(domain = _translation_domain)|raw }}</p>
+            <p class="form-section-help">{{ easyadmin.field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
         {% endif %}
     </div>
 {% endblock easyadmin_section_row %}
 
 {# EasyAdminBatch form type #}
 {% block easyadmin_batch_widget %}
-    {% set _translation_domain = easyadmin.entity.translation_domain %}
-    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans(domain = _translation_domain), '%entity_label%': easyadmin.entity.label|trans(domain = _translation_domain) } %}
+    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans(domain = ea.i18n.translationDomain), '%entity_label%': easyadmin.entity.label|trans(domain = ea.i18n.translationDomain) } %}
 
     {{ form_widget(form.ids) }}
-    <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(_trans_parameters, _translation_domain) }}</button>
+    <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(_trans_parameters, ea.i18n.translationDomain) }}</button>
     {% for action in batch_actions %}
         <button type="submit" class="btn {{ action.css_class|default('btn-secondary') }} {% if action.ask_confirm %}ask-confirm-batch-button{% endif -%}" title="{{ action.title|default('') is empty ? '' : action.title|trans(_trans_parameters) }}" name="{{ form.name.vars.full_name }}" value="{{ action.name }}">
             {%- if action.icon %}<i class="fa fa-fw fa-{{ action.icon }}"></i> {% endif -%}
             {%- if action.label is defined and not action.label is empty -%}
-                {{ action.label|trans(_trans_parameters, _translation_domain) }}
+                {{ action.label|trans(_trans_parameters, ea.i18n.translationDomain) }}
             {%- endif -%}
         </button>
     {% endfor %}

@@ -9,12 +9,12 @@ final class AssetDto
     private $headContents;
     private $bodyContents;
 
-    public function __construct(array $cssFiles, array $jsFiles, array $headContents, array $bodyContents)
+    public function __construct(array $cssFiles = [], array $jsFiles = [], array $headContents = [], array $bodyContents = [])
     {
-        $this->cssFiles = $cssFiles;
-        $this->jsFiles = $jsFiles;
-        $this->headContents = $headContents;
-        $this->bodyContents = $bodyContents;
+        $this->cssFiles = array_unique($cssFiles);
+        $this->jsFiles = array_unique($jsFiles);
+        $this->headContents = array_unique($headContents);
+        $this->bodyContents = array_unique($bodyContents);
     }
 
     public function getCssFiles(): array
@@ -35,5 +35,15 @@ final class AssetDto
     public function getBodyContents(): array
     {
         return $this->bodyContents;
+    }
+
+    public function mergeWith(AssetDto $assetDto): self
+    {
+        $this->cssFiles = array_unique(array_merge($this->cssFiles, $assetDto->getCssFiles()));
+        $this->jsFiles = array_unique(array_merge($this->jsFiles, $assetDto->getJsFiles()));
+        $this->headContents = array_unique(array_merge($this->headContents, $assetDto->getHeadContents()));
+        $this->bodyContents = array_unique(array_merge($this->bodyContents, $assetDto->getBodyContents()));
+
+        return $this;
     }
 }

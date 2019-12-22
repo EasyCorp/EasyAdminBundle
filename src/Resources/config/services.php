@@ -21,8 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 
-return static function(ContainerConfigurator $container) {
-
+return static function (ContainerConfigurator $container) {
     $services = $container->services()
         ->defaults()->private();
 

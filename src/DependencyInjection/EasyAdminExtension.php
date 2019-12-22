@@ -36,7 +36,6 @@ class EasyAdminExtension extends Extension
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.php');
 
-
         if ($container->getParameter('kernel.debug')) {
             // in 'dev', use the built-in Symfony exception listener
             $container->removeDefinition('easyadmin.listener.exception');

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;

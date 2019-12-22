@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Extension;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;

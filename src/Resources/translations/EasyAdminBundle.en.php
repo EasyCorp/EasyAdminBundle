@@ -1,4 +1,5 @@
 <?php
+
 return [
     // page titles
     'page.new.title' => 'Create %entity_label_singular%',

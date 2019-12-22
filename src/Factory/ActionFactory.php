@@ -5,7 +5,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Builder\ItemCollectionBuilderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
@@ -32,6 +31,7 @@ final class ActionFactory
 
     /**
      * @param Action[] $actionsConfig
+     *
      * @return ActionDto[]
      */
     public function create(array $actionsConfig): array

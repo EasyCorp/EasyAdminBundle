@@ -37,7 +37,7 @@ final class AssetDto
         return $this->bodyContents;
     }
 
-    public function mergeWith(AssetDto $assetDto): self
+    public function mergeWith(self $assetDto): self
     {
         $this->cssFiles = array_unique(array_merge($this->cssFiles, $assetDto->getCssFiles()));
         $this->jsFiles = array_unique(array_merge($this->jsFiles, $assetDto->getJsFiles()));

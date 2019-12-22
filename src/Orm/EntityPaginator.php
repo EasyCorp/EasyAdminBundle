@@ -45,8 +45,13 @@ final class EntityPaginator
         }
         $paginator->setUseOutputWalkers($useOutputWalkers);
 
-        $this->results = $paginator->getIterator();
-        $this->numResults = $paginator->count();
+        try {
+            $this->results = $paginator->getIterator();
+            $this->numResults = $paginator->count();
+        } catch (\Exception $e) {
+            $this->results = [];
+            $this->numResults = 0;
+        }
 
         return $this;
     }

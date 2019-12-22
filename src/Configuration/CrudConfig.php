@@ -11,8 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 class CrudConfig
 {
     private $entityFqcn;
-    private $entityLabelInSingular = 'Undefined';
-    private $entityLabelInPlural = 'Undefined';
+    private $entityLabelInSingular;
+    private $entityLabelInPlural;
     private $dateFormat = 'Y-m-d';
     private $timeFormat = 'H:i:s';
     private $dateTimeFormat = 'F j, Y H:i';
@@ -142,7 +142,8 @@ class CrudConfig
         }
 
         if (null === $this->entityLabelInSingular) {
-            $this->entityLabelInSingular = (new \ReflectionClass($this->entityFqcn))->getName();
+            $entityClassName = basename(str_replace('\\', '/', $this->entityFqcn));
+            $this->entityLabelInSingular = empty($entityClassName) ? 'Undefined' : $entityClassName;
         }
 
         if (null === $this->entityLabelInPlural) {

@@ -150,11 +150,7 @@ class CrudFormType extends AbstractType
             ->setDefaults([
                 'allow_extra_fields' => true,
                 'data_class' => function (Options $options, $dataClass) {
-                    if (null !== $dataClass) {
-                        return $dataClass;
-                    }
-
-                    return $options['entityDto']->getFqcn();
+                    return $dataClass ?? $options['entityDto']->getFqcn();
                 },
             ])
             ->setRequired(['entityDto'])

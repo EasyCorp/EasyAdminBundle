@@ -73,7 +73,7 @@ final class EntityDto
     public function markAsInaccessible(): void
     {
         $this->instance = null;
-        $this->propertiesDto = PropertyDtoCollection::new([]);
+        $this->properties = PropertyDtoCollection::new([]);
         $this->userHasPermission = false;
     }
 

@@ -99,7 +99,7 @@ final class Action
         return $this;
     }
 
-    public function linkToRoute(string $routeName, array $routeParameters = [])
+    public function linkToRoute(string $routeName, array $routeParameters = []): self
     {
         $this->routeName = $routeName;
         $this->routeParameters = $routeParameters;

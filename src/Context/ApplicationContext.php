@@ -24,6 +24,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class ApplicationContext
 {
     private $request;
+    private $user;
     private $i18nDto;
     private $dashboardDto;
     private $dashboardControllerInstance;
@@ -61,7 +62,7 @@ final class ApplicationContext
 
     public function getUser(): ?UserInterface
     {
-        return $this->getUser;
+        return $this->user;
     }
 
     public function getAssets(): AssetDto

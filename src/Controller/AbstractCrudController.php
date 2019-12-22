@@ -15,8 +15,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
@@ -249,7 +251,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             // TODO:
             // $this->processUploadedFiles($newForm);
 
-            $event = new BeforeEntitPersistedEvent($entityInstance);
+            $event = new BeforeEntityPersistedEvent($entityInstance);
             $this->get('event_dispatcher')->dispatch($event);
             $entityInstance = $event->getEntityInstance();
 

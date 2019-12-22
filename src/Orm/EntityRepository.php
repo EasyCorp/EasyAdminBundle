@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormInterface;
 
 final class EntityRepository implements EntityRepositoryInterface
 {
+    private $applicationContextProvider;
     private $doctrine;
     private $formFactory;
     private $filterRegistry;

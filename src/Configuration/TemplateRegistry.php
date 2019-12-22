@@ -36,6 +36,7 @@ final class TemplateRegistry
         'property/decimal' => '@EasyAdmin/crud/property/decimal.html.twig',
         'property/email' => '@EasyAdmin/crud/property/email.html.twig',
         'property/float' => '@EasyAdmin/crud/property/float.html.twig',
+        'property/generic' => '@EasyAdmin/crud/property/generic.html.twig',
         'property/id' => '@EasyAdmin/crud/property/id.html.twig',
         'property/image' => '@EasyAdmin/crud/property/image.html.twig',
         'property/integer' => '@EasyAdmin/crud/property/integer.html.twig',

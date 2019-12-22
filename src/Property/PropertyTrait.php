@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-abstract class AbstractProperty implements PropertyInterface
+trait PropertyTrait
 {
     protected $type;
     protected $name;
@@ -36,11 +36,11 @@ abstract class AbstractProperty implements PropertyInterface
 
     public static function new(string $name, ?string $label = null): self
     {
-        $field = new static();
-        $field->name = $name;
-        $field->label = $label;
+        $property = new static();
+        $property->name = $name;
+        $property->label = $label;
 
-        return $field;
+        return $property;
     }
 
     public function setFormType(string $formType): PropertyInterface

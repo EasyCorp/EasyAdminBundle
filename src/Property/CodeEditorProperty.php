@@ -3,13 +3,16 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CodeEditorProperty extends AbstractProperty
+class CodeEditorProperty implements PropertyInterface
 {
+    use PropertyTrait;
+
     private $height;
     private $language;
     private $tabSize;

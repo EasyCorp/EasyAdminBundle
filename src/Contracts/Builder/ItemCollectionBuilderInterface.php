@@ -8,5 +8,5 @@ interface ItemCollectionBuilderInterface
 
     public function setItems(array $items): self;
 
-    public function build();
+    public function create();
 }

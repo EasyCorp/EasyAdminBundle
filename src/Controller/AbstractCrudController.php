@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
@@ -19,14 +18,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
-use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
@@ -70,7 +68,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         return array_merge(parent::getSubscribedServices(), [
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
-            ActionBuilder::class => '?'.ActionBuilder::class,
+            ActionFactory::class => '?'.ActionFactory::class,
             ApplicationContextProvider::class => '?'.ApplicationContextProvider::class,
             EntityFactory::class => '?'.EntityFactory::class,
             EntityRepository::class => '?'.EntityRepository::class,
@@ -148,7 +146,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $configuredProperties = $this->configureProperties('detail');
         $entityDto = $this->get(EntityFactory::class)->create($configuredProperties);
 
-        $actions = $this->get(ActionBuilder::class)->setItems($this->getContext()->getCrud()->getPage()->getActions())->build();
+        $actions = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getPage()->getActions());
 
         $parameters = [
             'actions' => $actions,

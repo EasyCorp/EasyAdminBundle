@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Builder;
+namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
@@ -13,13 +13,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class ActionBuilder implements ItemCollectionBuilderInterface
+final class ActionFactory
 {
-    private $isBuilt;
-    /** @var ActionDto[] */
-    private $builtActions;
-    /** @var Action[] */
-    private $actionConfigs;
     private $applicationContextProvider;
     private $authChecker;
     private $translator;
@@ -36,54 +31,16 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
     }
 
     /**
-     * @param Action $actionConfig
-     */
-    public function addItem($actionConfig): ItemCollectionBuilderInterface
-    {
-        $this->actionConfigs[] = $actionConfig;
-        $this->resetBuiltActions();
-
-        return $this;
-    }
-
-    /**
-     * @param Action[] $actionConfigs
-     */
-    public function setItems(array $actionConfigs): ItemCollectionBuilderInterface
-    {
-        $this->actionConfigs = $actionConfigs;
-        $this->resetBuiltActions();
-
-        return $this;
-    }
-
-    /**
+     * @param Action[] $actionsConfig
      * @return ActionDto[]
      */
-    public function build(): array
+    public function create(array $actionsConfig): array
     {
-        if (!$this->isBuilt) {
-            $this->buildActions();
-            $this->isBuilt = true;
-        }
-
-        return $this->builtActions;
-    }
-
-    private function resetBuiltActions(): void
-    {
-        $this->builtActions = [];
-        $this->isBuilt = false;
-    }
-
-    private function buildActions(): void
-    {
-        $this->resetBuiltActions();
-
         $applicationContext = $this->applicationContextProvider->getContext();
         $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
 
-        foreach ($this->actionConfigs as $actionConfig) {
+        $builtActions = [];
+        foreach ($actionsConfig as $actionConfig) {
             $actionDto = $actionConfig->getAsDto();
             if (false === $this->authChecker->isGranted(Permission::EA_VIEW_ACTION, $actionDto)) {
                 continue;
@@ -95,13 +52,15 @@ final class ActionBuilder implements ItemCollectionBuilderInterface
 
             $defaultTemplatePath = $applicationContext->getTemplatePath($actionDto->get('templateName'));
 
-            $this->builtActions[] = $actionDto->with([
+            $builtActions[] = $actionDto->with([
                 'label' => $translatedActionLabel,
                 'linkUrl' => $generatedActionUrl,
                 'linkTitleAttribute' => $translatedActionHtmlTitle,
                 'resolvedTemplatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
             ]);
         }
+
+        return $builtActions;
     }
 
     private function generateActionUrl(ApplicationContext $applicationContext, ActionDto $actionDto): string

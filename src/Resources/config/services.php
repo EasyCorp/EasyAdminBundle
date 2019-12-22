@@ -2,13 +2,13 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Builder\ActionBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminResourceCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextParamConverter;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ApplicationContextListener;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ApplicationContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
@@ -98,7 +98,7 @@ return static function(ContainerConfigurator $container) {
             ->arg(2, ref('translator'))
             ->arg(3, ref('property_accessor'))
 
-        ->set(ActionBuilder::class)
+        ->set(ActionFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
             ->arg(2, ref('translator'))

@@ -96,8 +96,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $parameters = [
             'entities' => $entities,
             'paginator' => $paginator,
-            'batch_form' => $this->createBatchForm($entityDto->getFqcn())->createView(),
-            'delete_form_template' => $this->get(FormFactory::class)->createDeleteForm(['entityId' => '__id__'])->createView(),
+            'batch_form' => $this->createBatchForm($entityDto->getFqcn()),
+            'delete_form_template' => $this->get(FormFactory::class)->createDeleteForm(['entityId' => '__id__']),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -126,7 +126,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $filtersForm->handleRequest($this->getContext()->getRequest());
 
         $templateParameters = [
-            'filters_form' => $filtersForm->createView(),
+            'filters_form' => $filtersForm,
         ];
 
         return $this->render(
@@ -151,7 +151,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $parameters = [
             'actions' => $actions,
             'entity' => $entityDto,
-            'delete_form' => $this->get(FormFactory::class)->createDeleteForm()->createView(),
+            'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -213,9 +213,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $parameters = [
             'action' => 'edit',
-            'edit_form' => $editForm->createView(),
+            'edit_form' => $editForm,
             'entity' => $entityDto->with(['instance' => $entityInstance]),
-            'delete_form' => $this->get(FormFactory::class)->createDeleteForm()->createView(),
+            'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -262,9 +262,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $parameters = [
             'action' => 'new',
-            'new_form' => $newForm->createView(),
+            'new_form' => $newForm,
             'entity' => $entityDto->with(['instance' => $entityInstance]),
-            'delete_form' => $this->get(FormFactory::class)->createDeleteForm()->createView(),
+            'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ];
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
@@ -359,6 +359,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
      */
     public function getTemplateParameters(string $actionName, array $parameters): array
     {
+        foreach ($parameters as $i => $parameter) {
+            if ($parameter instanceof FormInterface) {
+                $parameters[$i] = $parameter->createView();
+            }
+        }
+
         return $parameters;
     }
 

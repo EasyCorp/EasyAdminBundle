@@ -64,8 +64,7 @@ class CrudFormType extends AbstractType
                 $name = $propertyDto->getName();
             }
 
-            $formFieldType = $propertyDto->getFormType();
-            if (null === $formFieldType) {
+            if (null === $formFieldType = $propertyDto->getFormType()) {
                 $formFieldType = $this->doctrineOrmTypeGuesser->guessType($entityDto->getFqcn(), $propertyDto->getName())->getType();
             }
 

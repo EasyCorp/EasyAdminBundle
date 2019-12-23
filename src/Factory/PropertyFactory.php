@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
+use EasyCorp\Bundle\EasyAdminBundle\Property\IdProperty;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Property;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -119,7 +120,7 @@ final class PropertyFactory
             }
         }
 
-        /**
+        /*
          * @var PropertyInterface
          */
         foreach ($propertiesConfig as $i => $propertyConfig) {
@@ -139,7 +140,8 @@ final class PropertyFactory
             if (isset($doctrineMetadata['id']) && true === $doctrineMetadata['id']) {
                 $propertiesConfig[$i] = $propertyConfig
                     ->setType('id')
-                    ->setTemplateName('property/id');
+                    ->setTemplateName('property/id')
+                    ->transformInto(IdProperty::class);
 
                 continue;
             }
@@ -148,7 +150,8 @@ final class PropertyFactory
             if (null !== $guessedType) {
                 $propertiesConfig[$i] = $propertyConfig
                     ->setType($guessedType)
-                    ->setTemplateName('property/'.$guessedType);
+                    ->setTemplateName('property/'.$guessedType)
+                    ->transformInto('EasyCorp\\Bundle\\EasyAdminBundle\\Property\\'.ucfirst($guessedType).'Property');
             }
         }
 

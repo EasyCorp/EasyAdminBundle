@@ -10,25 +10,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 trait PropertyTrait
 {
-    protected $type;
-    protected $name;
-    protected $label;
-    protected $formType;
-    protected $formTypeOptions = [];
-    protected $sortable;
-    protected $permission;
-    protected $textAlign = 'left';
-    protected $help;
-    protected $cssClass;
-    protected $translationParams = [];
-    protected $templateName;
-    protected $templatePath;
-    protected $customTemplateParams = [];
-    protected $cssFiles = [];
-    protected $jsFiles = [];
-    protected $headContents = [];
-    protected $bodyContents = [];
-    protected $customOptions;
+    private $type;
+    private $name;
+    private $label;
+    private $formType;
+    private $formTypeOptions = [];
+    private $sortable;
+    private $permission;
+    private $textAlign = 'left';
+    private $help;
+    private $cssClass;
+    private $translationParams = [];
+    private $templateName;
+    private $templatePath;
+    private $customTemplateParams = [];
+    private $cssFiles = [];
+    private $jsFiles = [];
+    private $headContents = [];
+    private $bodyContents = [];
+    private $customOptions;
 
     private function __construct()
     {

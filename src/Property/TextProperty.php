@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TextProperty implements PropertyInterface
@@ -18,7 +18,7 @@ class TextProperty implements PropertyInterface
     public function __construct()
     {
         $this->type = 'text';
-        $this->formType = TextType::class;
+        $this->formType = TextareaType::class;
         $this->templateName = 'property/text';
     }
 

@@ -43,6 +43,13 @@ trait PropertyTrait
         return $property;
     }
 
+    public function setType(string $type): PropertyInterface
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
     public function setFormType(string $formType): PropertyInterface
     {
         $this->formType = $formType;

@@ -4,11 +4,6 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="easyadmin.form.type" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType">
-            <argument type="tagged" tag="ea.form_type_configurator" />
-            <tag name="form.type" alias="ea_crud" />
-        </service>
-
         <service id="easyadmin.form.type.fileupload" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType">
             <argument>%kernel.project_dir%</argument>
             <tag name="form.type" />
@@ -119,6 +114,7 @@
             <tag name="easyadmin.filter.type_guesser" />
         </service>
 
+        <!-- TODO: remove this service and rely on Symfony's guesser -->
         <service id="easyadmin.form.guesser.missing_doctrine_orm_type_guesser" public="true"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Guesser\MissingDoctrineOrmTypeGuesser">
             <argument type="service" id="doctrine" />

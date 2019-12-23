@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
@@ -107,5 +108,10 @@ return static function (ContainerConfigurator $container) {
         ->set(SecurityVoter::class)
             ->arg(0, ref(AuthorizationChecker::class))
             ->tag('security.voter')
+
+        ->set(CrudFormType::class)
+            ->arg(0, tagged('ea.form_type_configurator'))
+            ->arg(1, ref('form.type_guesser.doctrine'))
+            ->tag('form.type', ['alias' => 'ea_crud'])
     ;
 };

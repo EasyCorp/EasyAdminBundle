@@ -7,6 +7,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 interface PropertyInterface
 {
+    public function setType(string $type): self;
+
     public function setFormType(string $formType): self;
 
     public function setFormTypeOptions(array $options): self;

@@ -17,21 +17,6 @@ final class Property implements PropertyInterface
         $this->templateName = 'property/generic';
     }
 
-    public static function new(string $formTypeFqcn, string $name, ?string $label = null): self
-    {
-        if (!class_exists($formTypeFqcn)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" class used as the form type of the "%s" property is not defined in the application.', $formTypeFqcn, $name));
-        }
-
-        $property = new static();
-        $property->formType = $formTypeFqcn;
-        $property->type = basename(str_replace('\\', '/', $formTypeFqcn));
-        $property->name = $name;
-        $property->label = $label;
-
-        return $property;
-    }
-
     public function build(PropertyDto $propertyDto, EntityDto $entityDto, ApplicationContext $applicationContext): PropertyDto
     {
         return $propertyDto;

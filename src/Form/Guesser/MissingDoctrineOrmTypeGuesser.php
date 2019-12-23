@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\Form\Guess\TypeGuess;
 
+// TODO: remove this class because the latest Symfony version already guesses this.
+// see https://github.com/symfony/symfony/blob/4.4/src/Symfony/Bridge/Doctrine/Form/DoctrineOrmTypeGuesser.php
 class MissingDoctrineOrmTypeGuesser extends DoctrineOrmTypeGuesser
 {
     /**

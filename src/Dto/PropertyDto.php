@@ -29,10 +29,10 @@ final class PropertyDto
     private $templatePath;
     private $resolvedTemplatePath;
     private $customTemplateParams = [];
-    private $assetDto;
+    private $assets;
     private $customOptions;
 
-    public function __construct(string $name, string $type, string $formType, array $formTypeOptions, ?bool $sortable, ?string $label, ?string $permission, string $textAlign, ?string $help, ?string $cssClass, array $translationParams, ?string $templateName, ?string $templatePath, array $customTemplateParams, AssetDto $assetDto, array $customOptions)
+    public function __construct(string $name, string $type, ?string $formType, array $formTypeOptions, ?bool $sortable, ?string $label, ?string $permission, string $textAlign, ?string $help, ?string $cssClass, array $translationParams, ?string $templateName, ?string $templatePath, array $customTemplateParams, AssetDto $assetDto, array $customOptions)
     {
         $this->name = $name;
         $this->type = $type;
@@ -48,7 +48,7 @@ final class PropertyDto
         $this->templateName = $templateName;
         $this->templatePath = $templatePath;
         $this->customTemplateParams = $customTemplateParams;
-        $this->assetDto = $assetDto;
+        $this->assets = $assetDto;
         $this->customOptions = $customOptions;
     }
 
@@ -89,7 +89,7 @@ final class PropertyDto
         return $this->label;
     }
 
-    public function getFormType(): string
+    public function getFormType(): ?string
     {
         return $this->formType;
     }
@@ -150,7 +150,7 @@ final class PropertyDto
 
     public function getAssets(): AssetDto
     {
-        return $this->assetDto;
+        return $this->assets;
     }
 
     public function getCustomOptions(): ParameterBag

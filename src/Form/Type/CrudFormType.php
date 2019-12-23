@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
+use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -25,13 +26,15 @@ class CrudFormType extends AbstractType
 {
     /** @var TypeConfiguratorInterface[] */
     private $typeConfigurators;
+    private $doctrineOrmTypeGuesser;
 
     /**
      * @param TypeConfiguratorInterface[] $typeConfigurators
      */
-    public function __construct(iterable $typeConfigurators)
+    public function __construct(iterable $typeConfigurators, DoctrineOrmTypeGuesser $doctrineOrmTypeGuesser)
     {
         $this->typeConfigurators = $typeConfigurators;
+        $this->doctrineOrmTypeGuesser = $doctrineOrmTypeGuesser;
     }
 
     /**
@@ -61,14 +64,17 @@ class CrudFormType extends AbstractType
                 $name = $propertyDto->getName();
             }
 
+            $formFieldType = $propertyDto->getFormType();
+            if (null === $formFieldType) {
+                $formFieldType = $this->doctrineOrmTypeGuesser->guessType($entityDto->getFqcn(), $propertyDto->getName())->getType();
+            }
+
             // Configure options using the list of registered type configurators:
             foreach ($this->typeConfigurators as $configurator) {
-                if ($configurator->supports($propertyDto->getFormType(), $formFieldOptions, $propertyDto)) {
+                if ($configurator->supports($formFieldType, $formFieldOptions, $propertyDto)) {
                     $formFieldOptions = $configurator->configure($name, $formFieldOptions, $propertyDto, $builder);
                 }
             }
-
-            $formFieldType = $propertyDto->getFormType();
 
             // if the form field is a special 'group' design element, don't add it
             // to the form. Instead, consider it the current form group (this is

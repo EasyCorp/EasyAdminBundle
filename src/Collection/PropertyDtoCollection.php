@@ -22,7 +22,7 @@ final class PropertyDtoCollection implements \IteratorAggregate
     }
 
     /**
-     * @param \EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface[] $propertiesConfig
+     * @param \EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface[] $propertiesConfig
      */
     public static function fromPropertiesConfig(array $propertiesConfig): self
     {

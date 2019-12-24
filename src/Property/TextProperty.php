@@ -2,16 +2,16 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Property\PropertyConfigTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TextProperty implements PropertyInterface
+class TextProperty implements PropertyConfigInterface
 {
-    use PropertyTrait;
+    use PropertyConfigTrait;
 
     private $maxLength = -1;
 
@@ -20,14 +20,6 @@ class TextProperty implements PropertyInterface
         $this->type = 'text';
         $this->formType = TextareaType::class;
         $this->templateName = 'property/text';
-    }
-
-    public function setCustomOptions(OptionsResolver $resolver): void
-    {
-        $resolver
-            ->setDefined('maxLength')
-            ->setAllowedTypes('maxLength', 'integer')
-            ->setDefault('maxLength', -1);
     }
 
     public function setMaxLength(int $length): self

@@ -25,7 +25,7 @@ interface CrudControllerInterface
     public function configureFormPage(FormPageConfig $formPageConfig): FormPageConfig;
 
     /**
-     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface[]
+     * @return \EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface[]
      */
     public function configureProperties(string $action): iterable;
 

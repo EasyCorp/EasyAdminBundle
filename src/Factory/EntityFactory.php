@@ -7,7 +7,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -33,7 +33,7 @@ final class EntityFactory
     }
 
     /**
-     * @param PropertyInterface[] $configuredProperties
+     * @param PropertyConfigInterface[] $configuredProperties
      */
     public function create(iterable $configuredProperties = null): EntityDto
     {
@@ -58,7 +58,7 @@ final class EntityFactory
     }
 
     /**
-     * @param PropertyInterface[] $propertiesConfig
+     * @param PropertyConfigInterface[] $propertiesConfig
      */
     public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties): EntityDtoCollection
     {

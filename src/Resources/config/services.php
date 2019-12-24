@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPropertyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
@@ -93,10 +94,8 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, ref(CrudUrlGenerator::class))
 
         ->set(PropertyFactory::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
-            ->arg(1, ref(AuthorizationChecker::class))
-            ->arg(2, ref('translator'))
-            ->arg(3, ref('property_accessor'))
+            ->arg(0, ref(AuthorizationChecker::class))
+            ->arg(1, tagged('ea.property_configurator'))
 
         ->set(ActionFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))
@@ -113,5 +112,11 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, tagged('ea.form_type_configurator'))
             ->arg(1, ref('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
+
+        ->set(CommonPropertyConfigurator::class)
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(1, ref('translator'))
+            ->arg(2, ref('property_accessor'))
+            ->tag('ea.property_configurator')
     ;
 };

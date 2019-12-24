@@ -31,6 +31,7 @@
         "symfony/framework-bundle": "^4.2",
         "symfony/http-foundation": "^4.2",
         "symfony/http-kernel": "^4.2",
+        "symfony/intl": "^4.2",
         "symfony/polyfill-mbstring": "^1.7",
         "symfony/property-access": "^4.2",
         "symfony/security-bundle": "^4.2",

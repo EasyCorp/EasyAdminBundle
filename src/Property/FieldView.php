@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Field;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -22,7 +22,7 @@ final class FieldView
     private $templatePath;
     private $templateParams;
 
-    public function __construct(PropertyInterface $field)
+    public function __construct(PropertyConfigInterface $field)
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver, $field);
@@ -92,7 +92,7 @@ final class FieldView
         return $this->templateParams;
     }
 
-    private function configureOptions(OptionsResolver $resolver, PropertyInterface $field): void
+    private function configureOptions(OptionsResolver $resolver, PropertyConfigInterface $field): void
     {
         $field->setDefaultOptions($resolver);
         $field->setCustomOptions($resolver);

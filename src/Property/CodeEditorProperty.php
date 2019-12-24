@@ -3,15 +3,15 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CodeEditorProperty implements PropertyInterface
+class CodeEditorProperty implements PropertyConfigInterface
 {
-    use PropertyTrait;
+    use PropertyConfigTrait;
 
     private $height;
     private $language;

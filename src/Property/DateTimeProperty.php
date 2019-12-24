@@ -3,17 +3,19 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DateTimeProperty implements PropertyInterface
+class DateTimeProperty implements PropertyConfigInterface
 {
-    use PropertyTrait;
+    use PropertyConfigTrait;
 
-    private $format;
+    private $timezoneId;
+    private $timeFormatOrPattern;
+    private $dateFormatOrPattern;
 
     public function __construct()
     {
@@ -30,9 +32,17 @@ class DateTimeProperty implements PropertyInterface
             ->setDefault('format', null);
     }
 
-    public function setFormat(string $format): self
+    public function setTimezone(string $timezoneId): self
     {
-        $this->format = $format;
+        $this->timezoneId = $timezoneId;
+
+        return $this;
+    }
+
+    public function setFormat(string $timeFormatOrPattern, string $dateFormatOrPattern): self
+    {
+        $this->timeFormatOrPattern = $timeFormatOrPattern;
+        $this->dateFormatOrPattern = $dateFormatOrPattern;
 
         return $this;
     }
@@ -49,7 +59,9 @@ class DateTimeProperty implements PropertyInterface
 
         return $propertyDto->with([
             'customOptions' => [
-                'format' => $this->format,
+                'timezone' => $this->timezoneId,
+                'time_format' => $this->timeFormatOrPattern,
+                'date_format' => $this->dateFormatOrPattern,
             ],
             'formattedValue' => $formattedValue,
         ]);

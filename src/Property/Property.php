@@ -2,7 +2,6 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Property\PropertyConfigTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 
 final class Property implements PropertyConfigInterface

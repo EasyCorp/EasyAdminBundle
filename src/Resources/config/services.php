@@ -16,9 +16,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPropertyConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\DateTimeConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\ImageConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
@@ -39,6 +43,8 @@ return static function (ContainerConfigurator $container) {
 
         ->set(AuthorizationChecker::class)
             ->arg(0, ref('security.authorization_checker')->nullOnInvalid())
+
+        ->set(IntlFormatter::class)
 
         ->set(ApplicationContextProvider::class)
             ->arg(0, ref('request_stack'))
@@ -94,8 +100,9 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, ref(CrudUrlGenerator::class))
 
         ->set(PropertyFactory::class)
-            ->arg(0, ref(AuthorizationChecker::class))
-            ->arg(1, tagged('ea.property_configurator'))
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(1, ref(AuthorizationChecker::class))
+            ->arg(2, tagged('ea.property_configurator'))
 
         ->set(ActionFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))
@@ -113,10 +120,20 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, ref('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
 
-        ->set(CommonPropertyConfigurator::class)
+        ->set(CommonConfigurator::class)
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref('translator'))
             ->arg(2, ref('property_accessor'))
+            ->tag('ea.property_configurator', ['priority' => 9999])
+
+        ->set(TextConfigurator::class)
+            ->tag('ea.property_configurator')
+
+        ->set(ImageConfigurator::class)
+            ->tag('ea.property_configurator')
+
+        ->set(DateTimeConfigurator::class)
+            ->arg(0, ref(IntlFormatter::class))
             ->tag('ea.property_configurator')
     ;
 };

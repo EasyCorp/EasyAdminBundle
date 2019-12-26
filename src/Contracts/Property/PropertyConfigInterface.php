@@ -3,45 +3,102 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 interface PropertyConfigInterface
 {
     public function setType(string $type);
 
-    public function setFormType(string $formType);
+    public function setName(string $name): self;
 
-    public function setFormTypeOptions(array $options);
+    public function setLabel(string $label): self;
 
-    public function setSortable(bool $isSortable);
+    public function setValue($value): self;
 
-    public function setPermission(string $role);
+    public function setFormattedValue($value): self;
+
+    public function setVirtual(bool $isVirtual): self;
+
+    public function setFormType(string $formType): self;
+
+    public function setFormTypeOptions(array $options): self;
+
+    public function setSortable(bool $isSortable): self;
+
+    public function setPermission(string $role): self;
 
     /**
      * @param string $textAlign It must be 'left', 'center' or 'right'
      */
-    public function setTextAlign(string $textAlign);
+    public function setTextAlign(string $textAlign): self;
 
-    public function setHelp(string $help);
+    public function setHelp(string $help): self;
 
-    public function setCssClass(string $cssClass);
+    public function setCssClass(string $cssClass): self;
 
-    public function setTranslationParams(array $params);
+    public function setTranslationParams(array $params): self;
 
-    public function setTemplateName(string $name);
+    public function setTemplateName(string $name): self;
 
-    public function setTemplatePath(string $path);
+    public function setTemplatePath(string $path): self;
 
-    public function addCssFiles(string ...$cssFilePaths);
+    public function addCssFiles(string ...$cssFilePaths): self;
 
-    public function addJsFiles(string ...$jsFilePaths);
+    public function addJsFiles(string ...$jsFilePaths): self;
 
-    public function addHtmlContentsToHead(string ...$contents);
+    public function addHtmlContentsToHead(string ...$contents): self;
 
-    public function addHtmlContentsToBody(string ...$contents);
+    public function addHtmlContentsToBody(string ...$contents): self;
 
-    public function setCustomOption(string $optionName, $optionValue);
+    public function setCustomOption(string $optionName, $optionValue): self;
 
-    public function setCustomOptions(array $options);
+    public function setCustomOptions(array $options): self;
+
+    public function getName(): string;
+
+    public function getType(): string;
+
+    public function getValue();
+
+    public function getFormattedValue();
+
+    public function getLabel(): ?string;
+
+    public function getFormType(): ?string;
+
+    public function getFormTypeOptions(): array;
+
+    public function isSortable(): bool;
+
+    public function isVirtual(): bool;
+
+    public function getTextAlign(): ?string;
+
+    public function getPermission(): ?string;
+
+    public function getHelp(): ?string;
+
+    public function getCssClass(): ?string;
+
+    public function getTranslationParams(): array;
+
+    public function getConfiguredTemplateName(): ?string;
+
+    public function getConfiguredTemplatePath(): ?string;
+
+    public function getTemplatePath(): string;
+
+    public function getCssFiles(): array;
+
+    public function getJsFiles(): array;
+
+    public function getHeadContents(): array;
+
+    public function getBodyContents(): array;
+
+    public function getCustomOption(string $optionName);
+
+    public function getCustomOptions(): ParameterBag;
 
     public function getAsDto(): PropertyDto;
 }

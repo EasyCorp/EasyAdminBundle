@@ -2,111 +2,71 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CodeEditorProperty implements PropertyConfigInterface
 {
     use PropertyConfigTrait;
 
-    private $height;
-    private $language;
-    private $tabSize;
-    private $indentWithTabs;
+    public const OPTION_LANGUAGE = 'language';
+    public const OPTION_TAB_SIZE = 'tabSize';
+    public const OPTION_INDENT_WITH_TABS = 'indentWithTabs';
+    public const OPTION_HEIGHT = 'height';
+
+    private const ALLOWED_LANGUAGES = ['css', 'dockerfile', 'js', 'markdown', 'nginx', 'php', 'shell', 'sql', 'twig', 'xml', 'yaml-frontmatter', 'yaml'];
 
     public function __construct()
     {
-        $this->type = 'code_editor';
-        $this->formType = CodeEditorType::class;
-        $this->templateName = 'property/code_editor';
-        $this->cssFiles = ['bundles/easyadmin/form-type-code-editor.css'];
-        $this->jsFiles = ['bundles/easyadmin/form-type-code-editor.js'];
-        $this->customOptions = [
-            ['name' => 'height', 'types' => [null, 'int'], 'default' => null],
-            ['name' => 'language', 'types' => ['string'], 'default' => 'markdown'],
-            ['name' => 'tabSize', 'types' => [null, 'int'], 'default' => 4],
-            ['name' => 'indentWithTabs', 'types' => ['bool'], 'default' => false],
-        ];
-    }
-
-    public static function getCustomOptions(): array
-    {
-        return ['height', 'language', 'tabSize', 'indentWithTabs'];
-    }
-
-    public function configureCustomOptions(OptionsResolver $resolver): void
-    {
-        $resolver
-            ->setDefined('height')
-            ->setAllowedTypes('height', ['null', 'int'])
-            ->setDefault('height', null)
-
-            ->setDefined('language')
-            ->setAllowedTypes('language', 'string')
-            ->setDefault('language', 'markdown')
-            ->setAllowedValues('language', ['css', 'dockerfile', 'js', 'markdown', 'nginx', 'php', 'shell', 'sql', 'twig', 'xml', 'yaml-frontmatter', 'yaml'])
-
-            ->setDefined('tabSize')
-            ->setAllowedTypes('tabSize', ['integer', 'null'])
-            ->setDefault('tabSize', 4)
-
-            ->setDefined('indentWithTabs')
-            ->setAllowedTypes('indentWithTabs', ['boolean', 'null'])
-            ->setDefault('indentWithTabs', false)
-        ;
+        $this
+            ->setType('code_editor')
+            ->setFormType(CodeEditorType::class)
+            ->setTemplateName('property/code_editor')
+            ->addCssFiles('bundles/easyadmin/form-type-code-editor.css')
+            ->addJsFiles('bundles/easyadmin/form-type-code-editor.js')
+            ->setCustomOption(self::OPTION_LANGUAGE, 'markdown')
+            ->setCustomOption(self::OPTION_TAB_SIZE, 4)
+            ->setCustomOption(self::OPTION_INDENT_WITH_TABS, false)
+            ->setCustomOption(self::OPTION_HEIGHT, null);
     }
 
     public function setHeight(int $heightInPixels): self
     {
-        $this->height = $heightInPixels;
+        if ($heightInPixels < 1) {
+            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 1 or higher (%d given).', __METHOD__, $heightInPixels));
+        }
+
+        $this->setCustomOption(self::OPTION_HEIGHT, $heightInPixels);
 
         return $this;
     }
 
     public function setLanguage(string $language): self
     {
-        $this->language = $language;
+        if (!\in_array($language, self::ALLOWED_LANGUAGES)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" language is not available for code highlighting (allowed languages: %s).', __METHOD__, implode(', ', self::ALLOWED_LANGUAGES)));
+        }
+
+        $this->setCustomOption(self::OPTION_LANGUAGE, $language);
 
         return $this;
     }
 
     public function setTabSize(int $tabSize): self
     {
-        $this->tabSize = $tabSize;
+        if ($tabSize < 1) {
+            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 1 or higher (%d given).', __METHOD__, $tabSize));
+        }
+
+        $this->setCustomOption(self::OPTION_TAB_SIZE, $tabSize);
 
         return $this;
     }
 
     public function setIndentWithTabs(bool $useTabs): self
     {
-        $this->indentWithTabs = $useTabs;
+        $this->setCustomOption(self::OPTION_INDENT_WITH_TABS, $useTabs);
 
         return $this;
-    }
-
-    public function validate(): array
-    {
-        $resolver = new OptionsResolver();
-        $this->configureCustomOptions($resolver);
-
-        $customOptionValues = [];
-        foreach ($this->customOptions as $option) {
-            $customOptionValues[$option['name']] = $this->{$option['name']};
-        }
-
-        return $resolver->resolve($customOptionValues);
-    }
-
-    public function build(PropertyDto $propertyDto, EntityDto $entityDto, ApplicationContext $applicationContext): PropertyDto
-    {
-        $customOptionValues = $this->validate();
-
-        return $propertyDto->with([
-            'customOptions' => $customOptionValues,
-        ]);
     }
 }

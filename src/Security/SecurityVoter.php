@@ -2,11 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Property\PropertyDefinition;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -56,10 +55,10 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission());
     }
 
-    private function voteOnViewPropertyPermission(PropertyDto $propertyDto): bool
+    private function voteOnViewPropertyPermission(PropertyConfigInterface $propertyConfig): bool
     {
         // users can see the property if they have the permission required by the property
-        return $this->authorizationChecker->isGranted($propertyDto->getPermission());
+        return $this->authorizationChecker->isGranted($propertyConfig->getPermission());
     }
 
     private function voteOnViewEntityPermission(EntityDto $entityDto): bool

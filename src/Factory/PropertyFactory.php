@@ -5,6 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\DBAL\Types\Type;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Property\IdProperty;
@@ -41,11 +42,13 @@ final class PropertyFactory
         Type::TIME_IMMUTABLE => 'time',
     ];
 
+    private $applicationContextProvider;
     private $authorizationChecker;
     private $propertyConfigurators;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, iterable $propertyConfigurators)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $propertyConfigurators)
     {
+        $this->applicationContextProvider = $applicationContextProvider;
         $this->authorizationChecker = $authorizationChecker;
         $this->propertyConfigurators = $propertyConfigurators;
     }
@@ -55,13 +58,13 @@ final class PropertyFactory
      */
     public function create(EntityDto $entityDto, iterable $propertiesConfig): EntityDto
     {
+        $action = $this->applicationContextProvider->getContext()->getCrud()->getAction();
         $configuredProperties = \is_array($propertiesConfig) ? $propertiesConfig : iterator_to_array($propertiesConfig);
         $configuredProperties = $this->preProcessPropertiesConfig($entityDto, $configuredProperties);
 
         $builtProperties = [];
         foreach ($configuredProperties as $propertyConfig) {
-            $propertyDto = $propertyConfig->getAsDto();
-            if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_PROPERTY, $propertyDto)) {
+            if (false === $this->authorizationChecker->isGranted(Permission::EA_VIEW_PROPERTY, $propertyConfig)) {
                 continue;
             }
 
@@ -70,10 +73,10 @@ final class PropertyFactory
                     continue;
                 }
 
-                $configurator->configure($propertyDto, $entityDto);
+                $configurator->configure($action, $propertyConfig, $entityDto);
             }
 
-            $builtProperties[] = $propertyDto;
+            $builtProperties[] = $propertyConfig->getAsDto();
         }
 
         return $entityDto->with([
@@ -97,7 +100,7 @@ final class PropertyFactory
 
     private function preProcessPropertiesConfig(EntityDto $entityDto, array $propertiesConfig): array
     {
-        // fox DX reasons, you can return a string with the property name to autoconfigure it
+        // fox DX reasons, property config can be just a string with the property name
         foreach ($propertiesConfig as $i => $propertyConfig) {
             if (\is_string($propertyConfig)) {
                 $propertiesConfig[$i] = Property::new($propertyConfig);
@@ -113,14 +116,12 @@ final class PropertyFactory
                 continue;
             }
 
-            $propertyDto = $propertyConfig->getAsDto();
-
             // this is a virtual property, so we can't autoconfigure it
-            if (!$entityDto->hasProperty($propertyDto->getName())) {
+            if (!$entityDto->hasProperty($propertyConfig->getName())) {
                 continue;
             }
 
-            $doctrineMetadata = $entityDto->getPropertyMetadata($propertyDto->getName());
+            $doctrineMetadata = $entityDto->getPropertyMetadata($propertyConfig->getName());
             if (isset($doctrineMetadata['id']) && true === $doctrineMetadata['id']) {
                 $propertiesConfig[$i] = $propertyConfig
                     ->setType('id')

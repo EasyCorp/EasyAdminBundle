@@ -72,7 +72,7 @@ class NumericFilterType extends FilterType
      */
     public function getBlockPrefix(): string
     {
-        return 'easyadmin_numeric_filter';
+        return 'ea_numeric_filter';
     }
 
     /**

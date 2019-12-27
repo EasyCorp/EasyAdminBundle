@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
@@ -96,8 +97,9 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, ref(EntityPaginator::class))
 
         ->set(FormFactory::class)
-            ->arg(0, ref('form.factory'))
-            ->arg(1, ref(CrudUrlGenerator::class))
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(1, ref('form.factory'))
+            ->arg(2, ref(CrudUrlGenerator::class))
 
         ->set(PropertyFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))
@@ -135,5 +137,9 @@ return static function (ContainerConfigurator $container) {
         ->set(DateTimeConfigurator::class)
             ->arg(0, ref(IntlFormatter::class))
             ->tag('ea.property_configurator')
+
+        ->set(FiltersFormType::class)
+            ->arg(0, tagged('ea.form_type_configurator'))
+            ->tag('form.type', ['alias' => 'ea_filters'])
     ;
 };

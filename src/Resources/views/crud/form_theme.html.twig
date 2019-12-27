@@ -240,9 +240,8 @@
 
 {# Errors #}
 
-{%- block form_widget_compound -%}
-    {# TODO: restore the CSS class (which was disabled because form doesn't look OK with it #}
-    <div class="REMOVE_THIS_form-widget-compound">
+{% block form_widget_compound %}
+    <div class="form-widget-compound">
         {# the "is iterable" check is needed because if an object implements __toString() and
            returns an empty string, "is empty" returns true even if it's not a collection #}
         {% set isEmptyCollection = value is iterable and value is empty %}
@@ -255,7 +254,7 @@
 
         {{ parent() }}
     </div>
-{%- endblock form_widget_compound -%}
+{% endblock form_widget_compound %}
 
 {% block empty_collection %}
     <div class="empty collection-empty">
@@ -550,7 +549,7 @@
 {% endblock easyadmin_batch_widget %}
 
 {# EasyAdminFilters form type #}
-{% block easyadmin_filters_widget %}
+{% block ea_filters_widget %}
     {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
 
     {% for field in form %}
@@ -598,9 +597,9 @@
     </script>
 
     {{ include('@EasyAdmin/crud/includes/_select2_widget.html.twig') }}
-{% endblock easyadmin_filters_widget %}
+{% endblock ea_filters_widget %}
 
-{% block easyadmin_numeric_filter_widget %}
+{% block ea_numeric_filter_widget %}
     <div class="form-widget-compound">
         {{ form_row(form.comparison) }}
         {{ form_row(form.value) }}
@@ -615,11 +614,11 @@
         </script>
     </div>
     {{- form_errors(form) -}}
-{% endblock  easyadmin_numeric_filter_widget %}
+{% endblock ea_numeric_filter_widget %}
 
-{% block easyadmin_datetime_filter_widget %}
-    {{ block('easyadmin_numeric_filter_widget') }}
-{% endblock  easyadmin_datetime_filter_widget %}
+{% block ea_datetime_filter_widget %}
+    {{ block('ea_numeric_filter_widget') }}
+{% endblock ea_datetime_filter_widget %}
 
 {% block easyadmin_fileupload_widget %}
     <div class="easyadmin-fileupload">

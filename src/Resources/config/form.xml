@@ -9,12 +9,6 @@
             <tag name="form.type" />
         </service>
 
-        <service id="easyadmin.form.type.filters" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType">
-            <argument type="service" id="easyadmin.config.manager"/>
-            <argument type="tagged" tag="ea.form_type_configurator" />
-            <tag name="form.type" alias="easyadmin_filters" />
-        </service>
-
         <service id="easyadmin.form.type.autocomplete" class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType">
             <argument type="service" id="easyadmin.config.manager"/>
             <tag name="form.type" alias="easyadmin_autocomplete" />

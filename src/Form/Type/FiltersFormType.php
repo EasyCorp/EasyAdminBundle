@@ -3,6 +3,9 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\NumericFilterType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\TextFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,15 +16,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FiltersFormType extends AbstractType
 {
-    private $configManager;
     private $configurators;
 
     /**
      * @param TypeConfiguratorInterface[] $configurators
      */
-    public function __construct(ConfigManager $configManager, iterable $configurators)
+    public function __construct(iterable $configurators)
     {
-        $this->configManager = $configManager;
         $this->configurators = $configurators;
     }
 
@@ -30,9 +31,13 @@ class FiltersFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $entityConfig = $this->configManager->getEntityConfig('Product');
-
-        foreach ($entityConfig['list']['filters'] as $propertyName => $filterConfig) {
+        // TODO: get the real configured filters
+        $configuredFilters = [
+            'enabled' => ['type' => BooleanFilterType::class, 'type_options' => []],
+            'price' => ['type' => NumericFilterType::class, 'type_options' => []],
+            'name' => ['type' => TextFilterType::class, 'type_options' => []],
+        ];
+        foreach ($configuredFilters as $propertyName => $filterConfig) {
             $formFieldOptions = $filterConfig['type_options'];
 
             /*
@@ -66,6 +71,6 @@ class FiltersFormType extends AbstractType
      */
     public function getBlockPrefix(): string
     {
-        return 'easyadmin_filters';
+        return 'ea_filters';
     }
 }

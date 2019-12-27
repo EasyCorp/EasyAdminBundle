@@ -91,7 +91,7 @@ class DateTimeFilterType extends FilterType
      */
     public function getBlockPrefix(): string
     {
-        return 'easyadmin_datetime_filter';
+        return 'ea_datetime_filter';
     }
 
     /**

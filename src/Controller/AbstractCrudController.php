@@ -121,14 +121,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function showFilters(): Response
     {
-        $filtersForm = $this->get(FormFactory::class)->createNamed('filters', FiltersFormType::class, null, [
-            'method' => 'GET',
-            'action' => $this->getContext()->getRequest()->query->get('referrer'),
-        ]);
-        $filtersForm->handleRequest($this->getContext()->getRequest());
-
         $templateParameters = [
-            'filters_form' => $filtersForm,
+            'filters_form' => $this->get(FormFactory::class)->createFilterForm(),
         ];
 
         return $this->render(

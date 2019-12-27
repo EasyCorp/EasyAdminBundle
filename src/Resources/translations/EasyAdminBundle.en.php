@@ -38,7 +38,6 @@ return [
     'action.new' => 'Add %entity_label%',
     'action.show' => 'Show',
     'action.edit' => 'Edit',
-    'action.save' => 'Save changes',
     'action.cancel' => 'Cancel',
     'action.list' => 'Back to listing',
     'action.deselect' => 'Deselect',
@@ -46,6 +45,11 @@ return [
     'action.remove_item' => 'Remove the item',
     'action.choose_file' => 'Choose file',
     'action.close' => 'Close',
+    'action.create' => 'Create',
+    'action.create_and_add_another' => 'Create and add another',
+    'action.create_and_continue' => 'Create and continue editing',
+    'action.save' => 'Save changes',
+    'action.save_and_continue' => 'Save changes and continue editing',
 
     // batch actions
     'batch_action_modal.title' => 'Do you really want to alter the selected items?',

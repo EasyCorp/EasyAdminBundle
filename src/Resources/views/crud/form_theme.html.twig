@@ -365,10 +365,30 @@
 {% endblock ea_crud_rest %}
 
 {% block item_actions %}
-    {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
-    <button type="submit" class="btn btn-primary action-save">
-        <span class="btn-label">{{ 'action.save'|trans(ea.i18n.translationParams, ea.i18n.translationDomain) }}</span>
-    </button>
+    {% if ea.crud.page.showSaveAndContinueButton %}
+        <button type="submit" class="btn btn-secondary action-save" name="ea[newForm][btn]" value="save-and-continue">
+            <span class="btn-label">
+                <i class="far fa-edit"></i>
+                {{ (ea.crud.action == 'new' ? 'action.create_and_continue' : 'action.save_and_continue')|trans([], 'EasyAdminBundle') }}
+            </span>
+        </button>
+    {% endif %}
+
+    {% if ea.crud.action == 'new' and ea.crud.page.showSaveAndAddAnotherButton %}
+        <button type="submit" class="btn btn-secondary action-save" name="ea[newForm][btn]" value="save-and-add">
+            <span class="btn-label">
+                <i class="fa fa-plus"></i>
+                {{ 'action.create_and_add_another'|trans([], 'EasyAdminBundle') }}
+            </span>
+        </button>
+    {% endif %}
+
+    {% if ea.crud.page.showSaveAndExitButton %}
+        <button type="submit" class="btn btn-primary action-save" name="ea[newForm][btn]" value="save-and-return">
+            <span class="btn-label">{{ (ea.crud.action == 'new' ? 'action.create' : 'action.save')|trans([], 'EasyAdminBundle') }}</span>
+        </button>
+    {% endif %}
+
 
     {#
     {% set _entity_actions = (ea.crud.action == 'new')

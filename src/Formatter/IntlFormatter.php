@@ -209,7 +209,10 @@ final class IntlFormatter
      */
     public function formatDateTime(?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string
     {
-        $date = $this->convertDate($date);
+        if (null === $date = $this->convertDate($date)) {
+            return null;
+        }
+
         $formatter = $this->createDateFormatter($locale, $dateFormat, $timeFormat, $pattern, $date->getTimezone(), $calendar);
         $formattedDateTime = $formatter->format($date);
 
@@ -220,7 +223,7 @@ final class IntlFormatter
      * @param \DateTimeInterface|string|null $date A date or null to use the current time
      * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
-    public function formatDate($date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): string
+    public function formatDate($date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string
     {
         return $this->formatDateTime($date, $dateFormat, 'none', $pattern, $timezone, $calendar, $locale);
     }
@@ -229,7 +232,7 @@ final class IntlFormatter
      * @param \DateTimeInterface|string|null $date A date or null to use the current time
      * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
-    public function formatTime($date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): string
+    public function formatTime($date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string
     {
         return $this->formatDateTime($date, 'none', $timeFormat, $pattern, $timezone, $calendar, $locale);
     }

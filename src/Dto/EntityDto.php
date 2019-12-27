@@ -52,6 +52,7 @@ final class EntityDto
 
     public function getIdValue()
     {
+        // TODO: replace by ClassMetadata:getIdentifierValues()
         return $this->idValue;
     }
 

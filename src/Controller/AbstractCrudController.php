@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
@@ -25,8 +25,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
@@ -72,6 +72,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
             ActionFactory::class => '?'.ActionFactory::class,
             ApplicationContextProvider::class => '?'.ApplicationContextProvider::class,
+            CrudUrlGenerator::class => '?'.CrudUrlGenerator::class,
             EntityFactory::class => '?'.EntityFactory::class,
             EntityRepository::class => '?'.EntityRepository::class,
             FormFactory::class => '?'.FormFactory::class,
@@ -204,7 +205,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 
-            return $this->redirectToReferrer();
+            $submitButtonName = $this->getContext()->getRequest()->request->get('ea')['newForm']['btn'];
+            if ('save-and-continue' === $submitButtonName) {
+                return $this->redirect($this->get(CrudUrlGenerator::class)->generate([
+                    'crudAction' => 'edit',
+                    'entityId' => $entityDto->getIdValue(),
+                ]));
+            } elseif ('save-and-return' === $submitButtonName) {
+                return $this->redirect($this->get(CrudUrlGenerator::class)->generate(['crudAction' => 'index']));
+            }
+
+            return $this->redirectToRoute($this->getContext()->getDashboardRouteName());
         }
 
         $parameters = [
@@ -252,14 +263,27 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $this->persistEntity($this->get('doctrine')->getManagerForClass($entityDto->getFqcn()), $entityInstance);
 
             $this->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance));
+            $entityDto = $entityDto->with(['instance' => $entityInstance]);
 
-            return $this->redirectToReferrer();
+            $submitButtonName = $this->getContext()->getRequest()->request->get('ea')['newForm']['btn'];
+            if ('save-and-continue' === $submitButtonName) {
+                return $this->redirect($this->get(CrudUrlGenerator::class)->generate([
+                    'crudAction' => 'edit',
+                    'entityId' => $entityDto->getIdValue(),
+                ]));
+            } elseif ('save-and-return' === $submitButtonName) {
+                return $this->redirect($this->get(CrudUrlGenerator::class)->generate(['crudAction' => 'index']));
+            } elseif ('save-and-add' === $submitButtonName) {
+                return $this->redirect($this->getContext()->getRequest()->getRequestUri());
+            }
+
+            return $this->redirectToRoute($this->getContext()->getDashboardRouteName());
         }
 
         $parameters = [
             'action' => 'new',
+            'entity' => $entityDto,
             'new_form' => $newForm,
-            'entity' => $entityDto->with(['instance' => $entityInstance]),
             'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ];
 
@@ -280,11 +304,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return new $entityFqcn();
     }
 
-    protected function updateEntity(ManagerRegistry $entityManager, $entityInstance)
+    protected function updateEntity(EntityManagerInterface $entityManager, $entityInstance)
     {
         // there's no need to persist the entity explicitly again because it's already
         // managed by Doctrine. The instance is passed to the method in case the
         // user application needs to make decisions
+        $entityManager->flush();
+    }
+
+    protected function persistEntity(EntityManagerInterface $entityManager, $entityInstance)
+    {
+        $entityManager->persist($entityInstance);
         $entityManager->flush();
     }
 
@@ -296,57 +326,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     protected function createNewForm(EntityDto $entityDto): FormInterface
     {
         return $this->get(FormFactory::class)->createNewForm($entityDto);
-    }
-
-    /**
-     * @return RedirectResponse
-     */
-    protected function redirectToReferrer()
-    {
-        // TODO: fix this
-        return new RedirectResponse($this->getContext()->getDashboardRouteName());
-
-        $refererUrl = $this->request->query->get('referrer', '');
-        $refererAction = $this->request->query->get('action');
-
-        // 1. redirect to list if possible
-        if ($this->isActionAllowed('list')) {
-            if (!empty($refererUrl)) {
-                return $this->redirect(urldecode($refererUrl));
-            }
-
-            return $this->redirectToRoute('easyadmin', [
-                'action' => 'list',
-                'entity' => $this->entity['name'],
-                'menuIndex' => $this->request->query->get('menuIndex'),
-                'submenuIndex' => $this->request->query->get('submenuIndex'),
-            ]);
-        }
-
-        // 2. from new|edit action, redirect to edit if possible
-        if (\in_array($refererAction, ['new', 'edit']) && $this->isActionAllowed('edit')) {
-            return $this->redirectToRoute('easyadmin', [
-                'action' => 'edit',
-                'entity' => $this->entity['name'],
-                'menuIndex' => $this->request->query->get('menuIndex'),
-                'submenuIndex' => $this->request->query->get('submenuIndex'),
-                'id' => ('new' === $refererAction)
-                    ? PropertyAccess::createPropertyAccessor()->getValue($this->request->attributes->get('easyadmin')['item'], $this->entity['primary_key_field_name'])
-                    : $this->request->query->get('id'),
-            ]);
-        }
-
-        // 3. from new action, redirect to new if possible
-        if ('new' === $refererAction && $this->isActionAllowed('new')) {
-            return $this->redirectToRoute('easyadmin', [
-                'action' => 'new',
-                'entity' => $this->entity['name'],
-                'menuIndex' => $this->request->query->get('menuIndex'),
-                'submenuIndex' => $this->request->query->get('submenuIndex'),
-            ]);
-        }
-
-        return new RedirectResponse($this->getContext()->getDashboardRouteName());
     }
 
     /**

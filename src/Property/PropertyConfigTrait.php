@@ -87,9 +87,9 @@ trait PropertyConfigTrait
         return $this->formTypeOptions;
     }
 
-    public function isSortable(): bool
+    public function isSortable(): ?bool
     {
-        return true === $this->sortable;
+        return $this->sortable;
     }
 
     public function isVirtual(): bool

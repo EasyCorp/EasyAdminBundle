@@ -68,7 +68,7 @@ interface PropertyConfigInterface
 
     public function getFormTypeOptions(): array;
 
-    public function isSortable(): bool;
+    public function isSortable(): ?bool;
 
     public function isVirtual(): bool;
 

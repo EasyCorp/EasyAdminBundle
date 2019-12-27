@@ -23,7 +23,6 @@ final class Property implements PropertyConfigInterface
         $newPropertyConfig->setValue($this->getValue());
         $newPropertyConfig->setFormattedValue($this->getFormattedValue());
         $newPropertyConfig->setVirtual($this->isVirtual());
-        $newPropertyConfig->setSortable($this->isSortable());
         $newPropertyConfig->setTextAlign($this->getTextAlign());
         $newPropertyConfig->setTranslationParams($this->getTranslationParams());
         $newPropertyConfig->addCssFiles(...$this->getCssFiles());
@@ -34,6 +33,10 @@ final class Property implements PropertyConfigInterface
 
         if (null !== $this->getLabel()) {
             $newPropertyConfig->setLabel($this->getLabel());
+        }
+
+        if (null !== $this->isSortable()) {
+            $newPropertyConfig->setSortable($this->isSortable());
         }
 
         if (null !== $this->getPermission()) {

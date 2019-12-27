@@ -23,6 +23,6 @@ class TextEditorType extends AbstractType
      */
     public function getBlockPrefix(): string
     {
-        return 'easyadmin_text_editor';
+        return 'ea_text_editor';
     }
 }

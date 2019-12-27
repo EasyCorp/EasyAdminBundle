@@ -512,12 +512,12 @@
 {% endblock ea_code_editor_widget %}
 
 {# EasyAdmin's TextEditor form type #}
-{% block easyadmin_text_editor_widget %}
-    {{ form_widget(form, { attr: attr|merge({ 'style': 'display: none' }) }) }}
+{% block ea_text_editor_widget %}
+    {{ form_widget(form, { attr: attr|merge({ style: 'display: none' }) }) }}
     <div class="easyadmin-text-editor-wrapper">
         <trix-editor input="{{ id }}" class="trix-content" data-js-url="{{ asset("bundles/easyadmin/form-type-text-editor.js") }}" data-css-url="{{ asset("bundles/easyadmin/form-type-text-editor.css") }}"></trix-editor>
     </div>
-{% endblock easyadmin_text_editor_widget %}
+{% endblock ea_text_editor_widget %}
 
 {# EasyAdminSection form type #}
 {% block easyadmin_section_row %}

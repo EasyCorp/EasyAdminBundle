@@ -88,6 +88,7 @@ return [
 
     // properties
     'property.code_editor.view_code' => 'View code',
+    'property.text_editor.view_content' => 'View content',
 
     // login page
     'login.username' => 'Username',

@@ -15,20 +15,20 @@ trait PropertyConfigTrait
     private $formattedValue;
     private $label;
     private $formType;
-    private $formTypeOptions;
+    private $formTypeOptions = [];
     private $sortable;
     private $virtual;
     private $permission;
-    private $textAlign;
+    private $textAlign = 'left';
     private $help;
     private $cssClass;
-    private $translationParams;
+    private $translationParams = [];
     private $templateName;
     private $templatePath;
-    private $cssFiles;
-    private $jsFiles;
-    private $headContents;
-    private $bodyContents;
+    private $cssFiles = [];
+    private $jsFiles = [];
+    private $headContents = [];
+    private $bodyContents = [];
     private $customOptions;
     private $processedCustomOptions;
 

@@ -46,6 +46,7 @@ final class TemplateRegistry
         'property/string' => '@EasyAdmin/crud/property/string.html.twig',
         'property/tel' => '@EasyAdmin/crud/property/tel.html.twig',
         'property/text' => '@EasyAdmin/crud/property/text.html.twig',
+        'property/text_editor' => '@EasyAdmin/crud/property/text_editor.html.twig',
         'property/time' => '@EasyAdmin/crud/property/time.html.twig',
         'property/toggle' => '@EasyAdmin/crud/property/toggle.html.twig',
         'property/url' => '@EasyAdmin/crud/property/url.html.twig',

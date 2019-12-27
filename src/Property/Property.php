@@ -8,35 +8,58 @@ final class Property implements PropertyConfigInterface
 {
     use PropertyConfigTrait;
 
-    public function __construct()
-    {
-        $this->type = 'generic';
-        $this->templateName = 'property/generic';
-    }
-
     /**
      * This method transforms the current object into any other object that implements
-     * PropertyInterface. It's needed when using autoconfigurable properties, where
+     * PropertyConfigInterface. It's needed when using autoconfigurable properties, where
      * the user gives a Property instance but the application needs TextProperty, etc.
      */
     public function transformInto(string $propertyFqcn): PropertyConfigInterface
     {
-        $objectProperties = get_object_vars($this);
-        $newObjectInstance = $propertyFqcn::new($objectProperties['name']);
+        /**
+         * @var PropertyConfigInterface $newPropertyConfig
+         */
+        $newPropertyConfig = $propertyFqcn::new($this->getName());
 
-        $newObjectReflection = new \ReflectionObject($newObjectInstance);
-        foreach ($objectProperties as $objectPropertyName => $objectPropertyValue) {
-            // special read-only object properties managed by PHP. They cannot be set:
-            // see https://stackoverflow.com/questions/9314593/cannot-set-read-only-property
-            if (\in_array($objectPropertyName, ['name', 'class'])) {
-                continue;
-            }
+        $newPropertyConfig->setValue($this->getValue());
+        $newPropertyConfig->setFormattedValue($this->getFormattedValue());
+        $newPropertyConfig->setVirtual($this->isVirtual());
+        $newPropertyConfig->setSortable($this->isSortable());
+        $newPropertyConfig->setTextAlign($this->getTextAlign());
+        $newPropertyConfig->setTranslationParams($this->getTranslationParams());
+        $newPropertyConfig->addCssFiles(...$this->getCssFiles());
+        $newPropertyConfig->addJsFiles(...$this->getJsFiles());
+        $newPropertyConfig->addHtmlContentsToHead(...$this->getHeadContents());
+        $newPropertyConfig->addHtmlContentsToBody(...$this->getBodyContents());
+        $newPropertyConfig->setCustomOptions($this->getCustomOptions()->all());
 
-            $objectProperty = $newObjectReflection->getProperty($objectPropertyName);
-            $objectProperty->setAccessible(true);
-            $objectProperty->setValue($newObjectInstance, $objectPropertyValue);
+        if (null !== $this->getLabel()) {
+            $newPropertyConfig->setLabel($this->getLabel());
         }
 
-        return $newObjectInstance;
+        if (null !== $this->getPermission()) {
+            $newPropertyConfig->setPermission($this->getPermission());
+        }
+
+        if (null !== $this->getHelp()) {
+            $newPropertyConfig->setHelp($this->getHelp());
+        }
+
+        if (null !== $this->getCssClass()) {
+            $newPropertyConfig->setCssClass($this->getCssClass());
+        }
+
+        if (null !== $this->getFormType()) {
+            $newPropertyConfig->setFormType($this->getFormType());
+        }
+
+        if (null !== $this->getTemplateName()) {
+            $newPropertyConfig->setTemplateName($this->getTemplateName());
+        }
+
+        if (null !== $this->getTemplatePath()) {
+            $newPropertyConfig->setTemplatePath($this->getTemplatePath());
+        }
+
+        return $newPropertyConfig;
     }
 }

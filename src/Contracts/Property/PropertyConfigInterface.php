@@ -82,11 +82,9 @@ interface PropertyConfigInterface
 
     public function getTranslationParams(): array;
 
-    public function getConfiguredTemplateName(): ?string;
+    public function getTemplateName(): ?string;
 
-    public function getConfiguredTemplatePath(): ?string;
-
-    public function getTemplatePath(): string;
+    public function getTemplatePath(): ?string;
 
     public function getCssFiles(): array;
 

@@ -101,7 +101,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
 
     private function buildTemplatePathProperty(ApplicationContext $applicationContext, PropertyConfigInterface $propertyConfig, EntityDto $entityDto, $propertyValue): string
     {
-        if (null !== $templatePath = $propertyConfig->getConfiguredTemplatePath()) {
+        if (null !== $templatePath = $propertyConfig->getTemplatePath()) {
             return $templatePath;
         }
 
@@ -119,7 +119,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
             return $applicationContext->getTemplatePath('label/empty');
         }
 
-        if (null === $templateName = $propertyConfig->getConfiguredTemplateName()) {
+        if (null === $templateName = $propertyConfig->getTemplateName()) {
             throw new \RuntimeException(sprintf('Properties must define either their templateName or their templatePath. None give for "%s" property.', $propertyConfig->getName()));
         }
 

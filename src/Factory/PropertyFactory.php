@@ -123,20 +123,15 @@ final class PropertyFactory
 
             $doctrineMetadata = $entityDto->getPropertyMetadata($propertyConfig->getName());
             if (isset($doctrineMetadata['id']) && true === $doctrineMetadata['id']) {
-                $propertiesConfig[$i] = $propertyConfig
-                    ->setType('id')
-                    ->setTemplateName('property/id')
-                    ->transformInto(IdProperty::class);
+                $propertiesConfig[$i] = $propertyConfig->transformInto(IdProperty::class);
 
                 continue;
             }
 
             $guessedType = self::DOCTRINE_TYPE_TO_PROPERTY_TYPE_MAP[$doctrineMetadata['type']] ?? null;
             if (null !== $guessedType) {
-                $propertiesConfig[$i] = $propertyConfig
-                    ->setType($guessedType)
-                    ->setTemplateName('property/'.$guessedType)
-                    ->transformInto('EasyCorp\\Bundle\\EasyAdminBundle\\Property\\'.ucfirst($guessedType).'Property');
+                $guessedPropertyClass = 'EasyCorp\\Bundle\\EasyAdminBundle\\Property\\'.ucfirst($guessedType).'Property';
+                $propertiesConfig[$i] = $propertyConfig->transformInto($guessedPropertyClass);
             }
         }
 

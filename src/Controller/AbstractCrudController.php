@@ -226,7 +226,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         );
     }
 
-    public function new()
+    public function new(): Response
     {
         $event = new BeforeCrudActionEvent($this->getContext());
         $this->get('event_dispatcher')->dispatch($event);

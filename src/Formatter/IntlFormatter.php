@@ -209,7 +209,7 @@ final class IntlFormatter
      */
     public function formatDateTime(?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string
     {
-        if (null === $date = $this->convertDate($date)) {
+        if (null === $date = $this->convertDate($date, $timezone)) {
             return null;
         }
 

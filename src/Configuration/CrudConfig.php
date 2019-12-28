@@ -17,6 +17,7 @@ class CrudConfig
     private $dateFormat = 'medium';
     private $timeFormat = 'medium';
     private $dateTimePattern = '';
+    private $timezone;
     private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
     private $numberFormat;
     private $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
@@ -140,6 +141,17 @@ class CrudConfig
         return $this;
     }
 
+    public function setTimezone(string $timezoneId): self
+    {
+        if (!\in_array($timezoneId, timezone_identifiers_list())) {
+            throw new \InvalidArgumentException(sprintf('The "%s" timezone is not a valid PHP timezone ID. Use any of the values listed at https://www.php.net/manual/en/timezones.php', $timezoneId));
+        }
+
+        $this->timezone = $timezoneId;
+
+        return $this;
+    }
+
     public function setNumberFormat(string $format): self
     {
         $this->numberFormat = $format;
@@ -207,7 +219,7 @@ class CrudConfig
             $this->entityLabelInPlural = $this->entityLabelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->numberFormat, $this->overriddenTemplates, $this->formThemes);
+        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->overriddenTemplates, $this->formThemes);
     }
 
     private function validate(): void

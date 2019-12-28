@@ -36,7 +36,7 @@ trait PropertyConfigTrait
     {
     }
 
-    public static function new(string $name, ?string $label = null): PropertyConfigInterface
+    public static function new(string $name, ?string $label = null): self
     {
         $property = new static();
         $property->name = $name;

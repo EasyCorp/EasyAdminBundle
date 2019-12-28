@@ -35,11 +35,12 @@ final class DateTimeConfigurator implements PropertyConfiguratorInterface
         $defaultDateFormat = $crudConfig->getDateFormat();
         $defaultTimeFormat = $crudConfig->getTimeFormat();
         $defaultDateTimePattern = $crudConfig->getDateTimePattern();
+        $defaultTimezone = $crudConfig->getTimezone();
 
         $dateFormat = $propertyConfig->getCustomOption(DateTimeProperty::OPTION_DATE_FORMAT) ?? $defaultDateFormat;
         $timeFormat = $propertyConfig->getCustomOption(DateTimeProperty::OPTION_TIME_FORMAT) ?? $defaultTimeFormat;
         $dateTimePattern = $propertyConfig->getCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN) ?? $defaultDateTimePattern;
-        $timezone = $propertyConfig->getCustomOption(DateTimeProperty::OPTION_TIMEZONE);
+        $timezone = $propertyConfig->getCustomOption(DateTimeProperty::OPTION_TIMEZONE) ?? $defaultTimezone;
 
         if ($propertyConfig instanceof DateTimeProperty) {
             $formattedValue = $this->intlFormatter->formatDateTime($propertyConfig->getValue(), $dateFormat, $timeFormat, $dateTimePattern, $timezone);

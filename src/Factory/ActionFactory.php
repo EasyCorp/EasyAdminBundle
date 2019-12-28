@@ -46,17 +46,15 @@ final class ActionFactory
                 continue;
             }
 
-            $generatedActionUrl = $this->generateActionUrl($applicationContext, $actionDto);
             $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $actionDto->getTranslationParams(), $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
             $translatedActionHtmlTitle = $this->translator->trans($actionDto->getLinkTitleAttribute(), $actionDto->getTranslationParams(), $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
 
-            $defaultTemplatePath = $applicationContext->getTemplatePath($actionDto->get('templateName'));
+            $defaultTemplatePath = $applicationContext->getTemplatePath('crud/action');
 
             $builtActions[] = $actionDto->with([
                 'label' => $translatedActionLabel,
-                'linkUrl' => $generatedActionUrl,
                 'linkTitleAttribute' => $translatedActionHtmlTitle,
-                'resolvedTemplatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
+                'templatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
             ]);
         }
 

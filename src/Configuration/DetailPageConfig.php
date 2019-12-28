@@ -18,7 +18,7 @@ final class DetailPageConfig
         $config = new self();
 
         $config
-            ->addAction(Action::new('delete', 'action.delete', 'trash-o')
+            ->addAction(Action::new('delete', 'action.delete', 'fa fa-fw fa-trash-o')
                 ->linkToCrudAction('delete')
                 ->setCssClass('btn btn-link pr-0 text-danger')
                 ->setTranslationDomain('EasyAdminBundle'))

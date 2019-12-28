@@ -16,11 +16,27 @@ final class IndexPageConfig
     private $paginatorPageSize = 15;
     private $paginatorFetchJoinCollection = true;
     private $paginatorUseOutputWalkers;
+    /** @var Action[] */
+    private $actions = [];
+    private $showEntityActionsAsDropdown = false;
     private $filters;
 
     public static function new(): self
     {
-        return new self();
+        $config = new self();
+
+        $config
+            ->addAction(Action::new('edit', 'action.edit', null)
+                ->linkToCrudAction('edit')
+                ->setCssClass('')
+                ->setTranslationDomain('EasyAdminBundle'))
+
+            ->addAction(Action::new('delete', 'action.delete')
+                ->linkToCrudAction('delete')
+                ->setCssClass('text-danger')
+                ->setTranslationDomain('EasyAdminBundle'));
+
+        return $config;
     }
 
     public function setTitle(string $title): self
@@ -97,6 +113,52 @@ final class IndexPageConfig
         return $this;
     }
 
+    public function addAction(Action $actionConfig): self
+    {
+        $actionName = (string) $actionConfig;
+        if (\array_key_exists($actionName, $this->actions)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" action already exists. You can use the "updateAction()" method to update any property of an existing action.', $actionName));
+        }
+
+        $this->actions[$actionName] = $actionConfig;
+
+        return $this;
+    }
+
+    public function updateAction(string $actionName, array $actionProperties): self
+    {
+        if (!\array_key_exists($actionName, $this->actions)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" action does not exist, so you cannot update its properties. You can use the "addAction()" method to define the action first.', $actionName));
+        }
+
+        $this->actions[$actionName] = $this->actions[$actionName]->with($actionProperties);
+
+        return $this;
+    }
+
+    public function setActionOrder(string ...$orderedActionNames): self
+    {
+        $orderedActions = [];
+        foreach ($orderedActionNames as $actionName) {
+            if (!\array_key_exists($actionName, $this->actions)) {
+                throw new \InvalidArgumentException(sprintf('The "%s" action does not exist, so you cannot set its order in the list of actions.', $actionName));
+            }
+
+            $orderedActions[$actionName] = $this->actions[$actionName];
+        }
+
+        $this->actions = $orderedActions;
+
+        return $this;
+    }
+
+    public function showEntityActionsAsDropdown(bool $showAsDropdown = true): self
+    {
+        $this->showEntityActionsAsDropdown = $showAsDropdown;
+
+        return $this;
+    }
+
     public function setFilters(?array $filters): self
     {
         $this->filters = $filters;
@@ -106,6 +168,6 @@ final class IndexPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->entityViewPermission, $this->searchProperties, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
+        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->entityViewPermission, $this->searchProperties, $this->actions, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
     }
 }

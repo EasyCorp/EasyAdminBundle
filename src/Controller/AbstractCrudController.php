@@ -96,7 +96,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $configuredProperties = iterator_to_array($this->configureProperties('index'));
         $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $configuredProperties);
 
+        $actions = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getPage()->getActions());
+
         $parameters = [
+            'actions' => $actions,
             'entities' => $entities,
             'paginator' => $paginator,
             'batch_form' => $this->createBatchForm($entityDto->getFqcn()),
@@ -221,7 +224,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $parameters = [
             'action' => 'edit',
             'edit_form' => $editForm,
-            'entity' => $entityDto->with(['instance' => $entityInstance]),
+            'entity' => $entityDto->updateInstance($entityInstance),
             'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ];
 
@@ -248,7 +251,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $configuredProperties = $this->configureProperties('new');
         $entityDto = $this->get(EntityFactory::class)->create($configuredProperties);
         $entityInstance = $this->createEntity($entityDto->getFqcn());
-        $entityDto = $entityDto->with(['instance' => $entityInstance]);
+        $entityDto = $entityDto->updateInstance($entityInstance);
 
         $newForm = $this->createNewForm($entityDto);
         $newForm->handleRequest($this->getContext()->getRequest());
@@ -263,7 +266,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             $this->persistEntity($this->get('doctrine')->getManagerForClass($entityDto->getFqcn()), $entityInstance);
 
             $this->get('event_dispatcher')->dispatch(new AfterEntityPersistedEvent($entityInstance));
-            $entityDto = $entityDto->with(['instance' => $entityInstance]);
+            $entityDto = $entityDto->updateInstance($entityInstance);
 
             $submitButtonName = $this->getContext()->getRequest()->request->get('ea')['newForm']['btn'];
             if ('save-and-continue' === $submitButtonName) {

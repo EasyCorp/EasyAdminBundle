@@ -52,55 +52,28 @@ table.datagrid {
 .datagrid td.actions {
   text-align: right;
 }
-.datagrid td.actions a {
+.datagrid td.actions a:not(.dropdown-item) {
   font-size: var(--font-size-sm);
   font-weight: 500;
+}
+.datagrid td.actions a:not(.dropdown-item) + a:not(.dropdown-item) {
   margin-left: 10px;
 }
-.datagrid td.actions .fa {
+.datagrid td.actions .action-icon {
+  filter: opacity(0.6);
   font-size: var(--font-size-base);
+  margin-right: 2px;
 }
 
-.datagrid .actions-dropdown {
-  position: relative;
-}
-.datagrid .actions-dropdown .dropdown-toggle {
-  background: transparent !important;
-  border: var(--border-width) solid transparent;
-  box-shadow: none !important;
-  padding: 1px 8px 0 8px;
-}
-.datagrid .actions-dropdown .dropdown-toggle:after {
-  display: none;
-}
-.datagrid .actions-dropdown a.dropdown-item {
-  margin: 0;
-}
-.datagrid .actions-dropdown a.dropdown-item i {
-  margin-right: 5px;
-}
-.datagrid .actions-dropdown .dropdown-menu-right {
-  border-top-right-radius: 0;
-  right: 0;
-  top: 20px;
-  box-shadow: var(--box-shadow-lg);
-}
-.datagrid .actions-dropdown:hover {
-  cursor: pointer;
-
-  .dropdown-toggle {
-    background: var(--white) !important;
-    border: var(--border-width) solid var(--border-color);
-    border-bottom-color: var(--white);
-    z-index: $zindex-dropdown + 1;
-    position: relative;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .dropdown-menu {
-    display: block;
-  }
+.datagrid .dropdown-actions {
+  .dropdown-toggle { color: var(--color-text); }
+  // hides the caret added automatically by Bootstrap
+  .dropdown-toggle:after { display: none; }
+  .dropdown-toggle:hover { cursor: pointer; }
+  .dropdown-menu { box-shadow: var(--box-shadow-lg); }
+  .dropdown-item { color: var(--link-color); }
+  .dropdown-item:hover { color: var(--link-hover-color); }
+  .action-icon { margin-right: 4px; }
 }
 
 .datagrid .ea-lightbox-thumbnail img {
@@ -130,17 +103,17 @@ table.datagrid {
 }
 
 .datagrid .highlight {
-    border-radius: var(--border-radius);
-    background: var(--highlight-bg);
-    padding: 1px;
+  border-radius: var(--border-radius);
+  background: var(--highlight-bg);
+  padding: 1px;
 }
 
 .datagrid .no-results {
-    padding: 60px 0;
-    text-align: center;
+  padding: 60px 0;
+  text-align: center;
 }
 .datagrid .no-results:hover {
-    background: transparent;
+  background: transparent;
 }
 
 .datagrid-row-empty td,
@@ -211,11 +184,11 @@ table.datagrid {
 }
 // needed to hide the visual marker in the labels of required fields
 .filter-content .form-group label.required:after {
-    content: none;
+  content: none;
 }
 .filter-content .field-choice .form-check + .form-check {
-    margin-top: 4px;
+  margin-top: 4px;
 }
 .filter-content .field-choice .form-check-label {
-    margin-top: 0;
+  margin-top: 0;
 }

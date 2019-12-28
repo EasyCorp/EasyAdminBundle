@@ -8,6 +8,7 @@ final class CrudPageDto
     private $title;
     private $help;
     private $actions;
+    private $showEntityActionsAsDropdown;
     private $defaultSort = [];
     private $entityPermission;
     private $searchFields;
@@ -18,7 +19,7 @@ final class CrudPageDto
     private $showSaveAndContinueButton;
     private $showSaveAndAddAnotherButton;
 
-    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $entityViewPermission, ?array $searchFields, ?array $filters, PaginatorDto $paginatorDto): self
+    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $entityViewPermission, ?array $searchFields, ?array $actions, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto): self
     {
         $context = new self();
 
@@ -28,6 +29,8 @@ final class CrudPageDto
         $context->defaultSort = $defaultSort;
         $context->entityPermission = $entityViewPermission;
         $context->searchFields = $searchFields;
+        $context->actions = $actions;
+        $context->showEntityActionsAsDropdown = $showEntityActionsAsDropdown;
         $context->filters = $filters;
         $context->paginatorDto = $paginatorDto;
 
@@ -80,6 +83,11 @@ final class CrudPageDto
     public function getActions(): array
     {
         return $this->actions;
+    }
+
+    public function showEntityActionsAsDropdown(): bool
+    {
+        return $this->showEntityActionsAsDropdown;
     }
 
     public function getDefaultSort(): array

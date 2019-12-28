@@ -44,7 +44,7 @@ final class EntityFactory
 
         $entityMetadata = $this->getEntityMetadata($entityFqcn);
         $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
-        $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPermission, $entityInstance, $entityId);
+        $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPermission, $entityInstance);
 
         if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $entityDto)) {
             $entityDto->markAsInaccessible();

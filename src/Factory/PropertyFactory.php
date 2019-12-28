@@ -79,9 +79,7 @@ final class PropertyFactory
             $builtProperties[] = $propertyConfig->getAsDto();
         }
 
-        return $entityDto->with([
-            'properties' => PropertyDtoCollection::new($builtProperties),
-        ]);
+        return $entityDto->updateProperties(PropertyDtoCollection::new($builtProperties));
     }
 
     /**
@@ -91,7 +89,7 @@ final class PropertyFactory
     {
         $builtEntities = [];
         foreach ($entityInstances as $entityInstance) {
-            $currentEntityDto = $entityDto->with(['instance' => $entityInstance]);
+            $currentEntityDto = $entityDto->updateInstance($entityInstance);
             $builtEntities[] = $this->create($currentEntityDto, $propertiesConfig);
         }
 

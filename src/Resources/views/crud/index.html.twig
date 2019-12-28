@@ -113,7 +113,6 @@
     {% set sort_field_name = app.request.get('sort')|keys|first %}
     {% set sort_order = app.request.get('sort')|first %}
     {% set some_results_are_hidden = false %}
-    {#{% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity_config.name) %}#}
 
     <table class="table datagrid">
         <thead>
@@ -142,15 +141,11 @@
                     </th>
                 {% endfor %}
 
-
-
-{#
-                {% if _list_item_actions|length > 0 %}
-                    <th {% if _entity_config.list.collapse_actions %}width="10px"{% endif %} {{ easyadmin_config('design.rtl') ? 'dir="rtl"' }}>
-                        <span class="sr-only">{{ 'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') }}</span>
+                {% if actions is not empty %}
+                    <th {% if ea.crud.page.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
+                        <span class="sr-only">{{ 'list.row_actions'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}</span>
                     </th>
                 {% endif %}
-                #}
             </tr>
         {% endblock table_head %}
         </thead>
@@ -174,29 +169,29 @@
                         </td>
                     {% endfor %}
 
-                        {#
-                    {% if _list_item_actions|length > 0 %}
-                        {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') %}
+                    {% if actions is not empty %}
                         <td class="actions">
-                            {% block item_actions %}
-                                {% set _actions_template = _entity_config.list.collapse_actions
-                                    ? '@EasyAdmin/default/includes/_actions_dropdown.html.twig'
-                                    : '@EasyAdmin/default/includes/_actions.html.twig'
-                                %}
-                                {{ include(_actions_template, {
-                                    actions: _list_item_actions,
-                                    entity_config: _entity_config,
-                                    request_parameters: _request_parameters,
-                                    translation_domain: _entity_config.translation_domain,
-                                    trans_parameters: _trans_parameters,
-                                    item_id: _item_id,
-                                    item: item
-                                }, with_context = false) }}
-                            {% endblock item_actions %}
+                            {% if not ea.crud.page.showEntityActionsAsDropdown %}
+                                {% for action in actions %}
+                                    {{ include(action.template, { action: action, entity: entity, isIncludedInDropdown: ea.crud.page.showEntityActionsAsDropdown }, with_context = false) }}
+                                {% endfor %}
+                            {% else %}
+                                <div class="dropdown dropdown-actions">
+                                    <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-fw fa-ellipsis-h"></i>
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        {% for action in actions %}
+                                            {{ include(action.template, { action: action, entity: entity, isIncludedInDropdown: ea.crud.page.showEntityActionsAsDropdown }, with_context = false) }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
                         </td>
                     {% endif %}
                 </tr>
-                #}
+
                 {% endif %}
             {% else %}
                 <tr>

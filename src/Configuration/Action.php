@@ -15,7 +15,6 @@ final class Action
     private $cssClass;
     private $linkTitleAttribute;
     private $linkTarget = '_self';
-    private $templateName = 'crud/action';
     private $templatePath;
     private $permission;
     private $crudActionName;
@@ -37,7 +36,7 @@ final class Action
     {
         $actionConfig = new self();
         $actionConfig->name = $name;
-        $actionConfig->label = $label;
+        $actionConfig->label = $label ?? ucfirst($name);
         $actionConfig->icon = $icon;
 
         return $actionConfig;
@@ -131,9 +130,9 @@ final class Action
         }
 
         if (null === $this->crudActionName && null === $this->routeName) {
-            throw new \InvalidArgumentException(sprintf('The method name and the route name of an action cannot be null at the same time. Either set the method name or the route name for the action "%s".', $this->name));
+            throw new \InvalidArgumentException(sprintf('Actions must link to either a route or a CRUD action. Set the "linkToCrudAction()" or "linkToRoute()" method for the "%s" action.', $this->name));
         }
 
-        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->linkTitleAttribute, $this->linkTarget, $this->templateName, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
+        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->linkTitleAttribute, $this->linkTarget, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
     }
 }

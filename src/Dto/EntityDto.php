@@ -7,8 +7,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
 
 final class EntityDto
 {
-    use PropertyModifierTrait;
-
     private $fqcn;
     private $metadata;
     private $instance;
@@ -19,13 +17,12 @@ final class EntityDto
     /** @var ?PropertyDtoCollection $properties */
     private $properties;
 
-    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, $entityInstance = null, $entityIdValue = null)
+    public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, $entityInstance = null)
     {
         $this->fqcn = $entityFqcn;
         $this->metadata = $entityMetadata;
         $this->instance = $entityInstance;
         $this->idName = $this->metadata->getIdentifierFieldNames()[0];
-        $this->idValue = $entityIdValue;
         $this->requiredPermission = $entityPermission;
         $this->userHasPermission = true;
     }
@@ -52,13 +49,25 @@ final class EntityDto
 
     public function getIdValue()
     {
-        // TODO: replace by ClassMetadata:getIdentifierValues()
-        return $this->idValue;
+        if (null === $this->instance) {
+            return null;
+        }
+
+        if (null !== $this->idValue) {
+            return $this->idValue;
+        }
+
+        $r = new \ReflectionObject($this->instance);
+        $idProperty = $r->getProperty($this->idName);
+        $idProperty->setAccessible(true);
+        $idValue = $idProperty->getValue($this->instance);
+
+        return $this->idValue = $idValue;
     }
 
     public function getIdValueAsString(): string
     {
-        return (string) $this->idValue;
+        return (string) $this->getIdValue();
     }
 
     public function getPermission(): ?string
@@ -121,5 +130,26 @@ final class EntityDto
         $propertyNameParts = explode('.', $propertyName, 2);
 
         return \array_key_exists($propertyNameParts[0], $this->metadata->embeddedClasses);
+    }
+
+    public function updateInstance($newEntityInstance): self
+    {
+        if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {
+            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, get_class($newEntityInstance)));
+        }
+
+        $clone = clone $this;
+        $clone->instance = $newEntityInstance;
+        $clone->idValue = null;
+
+        return $clone;
+    }
+
+    public function updateProperties(PropertyDtoCollection $properties): self
+    {
+        $clone = clone $this;
+        $clone->properties = $properties;
+
+        return $clone;
     }
 }

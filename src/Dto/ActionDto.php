@@ -14,11 +14,7 @@ final class ActionDto
     private $linkUrl;
     private $linkTarget;
     private $linkTitleAttribute;
-    /** @internal */
-    private $templateName;
-    /** @internal */
     private $templatePath;
-    private $resolvedTemplatePath;
     private $permission;
     private $crudActionName;
     private $routeName;
@@ -26,7 +22,7 @@ final class ActionDto
     private $translationDomain;
     private $translationParameters;
 
-    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $linkTitleAttribute, string $linkTarget, string $templateName, ?string $templatePath, ?string $permission, ?string $crudActionName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters)
+    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $linkTitleAttribute, string $linkTarget, ?string $templatePath, ?string $permission, ?string $crudActionName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters)
     {
         $this->name = $name;
         $this->label = $label;
@@ -34,7 +30,6 @@ final class ActionDto
         $this->cssClass = $cssClass;
         $this->linkTitleAttribute = $linkTitleAttribute;
         $this->linkTarget = $linkTarget;
-        $this->templateName = $templateName;
         $this->templatePath = $templatePath;
         $this->permission = $permission;
         $this->crudActionName = $crudActionName;
@@ -64,19 +59,19 @@ final class ActionDto
         return $this->cssClass;
     }
 
-    public function getLinkTitleAttribute(): ?string
-    {
-        return $this->linkTitleAttribute;
-    }
-
     public function getLinkTarget(): string
     {
         return $this->linkTarget;
     }
 
+    public function getLinkTitleAttribute(): ?string
+    {
+        return $this->linkTitleAttribute;
+    }
+
     public function getTemplate(): ?string
     {
-        return $this->resolvedTemplatePath;
+        return $this->templatePath;
     }
 
     public function getPermission(): ?string
@@ -94,14 +89,9 @@ final class ActionDto
         return $this->routeName;
     }
 
-    public function getRouteParameters(): ?array
+    public function getRouteParameters(): array
     {
         return $this->routeParameters;
-    }
-
-    public function getLinkUrl(): ?string
-    {
-        return $this->linkUrl;
     }
 
     public function getTranslationDomain(): ?string

@@ -19,8 +19,9 @@ class TimeProperty implements PropertyConfigInterface
             ->setType('time')
             ->setFormType(DateTimeType::class)
             ->setTemplateName('property/time')
-            ->setCustomOption(DateTimeProperty::OPTION_TIME_FORMAT, 'medium')
-            ->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, '')
+            // the proper default values of these options are set on the CrudConfig class
+            ->setCustomOption(DateTimeProperty::OPTION_TIME_FORMAT, null)
+            ->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, null)
             ->setCustomOption(DateTimeProperty::OPTION_TIMEZONE, null);
     }
 
@@ -51,7 +52,7 @@ class TimeProperty implements PropertyConfigInterface
             $this->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, $timeFormatOrPattern);
             $this->setCustomOption(DateTimeProperty::OPTION_TIME_FORMAT, null);
         } else {
-            $this->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, '');
+            $this->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, null);
             $this->setCustomOption(DateTimeProperty::OPTION_TIME_FORMAT, $timeFormatOrPattern);
         }
 

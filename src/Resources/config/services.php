@@ -135,7 +135,8 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.property_configurator')
 
         ->set(DateTimeConfigurator::class)
-            ->arg(0, ref(IntlFormatter::class))
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(1, ref(IntlFormatter::class))
             ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Property\DateTimeProperty;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -13,9 +14,9 @@ class CrudConfig
     private $entityFqcn;
     private $entityLabelInSingular;
     private $entityLabelInPlural;
-    private $dateFormat = 'Y-m-d';
-    private $timeFormat = 'H:i:s';
-    private $dateTimeFormat = 'F j, Y H:i';
+    private $dateFormat = 'medium';
+    private $timeFormat = 'medium';
+    private $dateTimePattern = '';
     private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
     private $numberFormat;
     private $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
@@ -55,23 +56,79 @@ class CrudConfig
         return $this;
     }
 
-    public function setDateFormat(string $format): self
+    /**
+     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     */
+    public function setDateFormat(string $formatOrPattern): self
     {
-        $this->dateFormat = $format;
+        if ('' === trim($formatOrPattern) || 'none' === $formatOrPattern) {
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
+        }
+
+        if (!in_array($formatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
+            $this->dateTimePattern = $formatOrPattern;
+            $this->dateFormat = null;
+        } else {
+            $this->dateTimePattern = '';
+            $this->dateFormat = $formatOrPattern;
+        }
 
         return $this;
     }
 
-    public function setTimeFormat(string $format): self
+    /**
+     * @param string $formatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     */
+    public function setTimeFormat(string $formatOrPattern): self
     {
-        $this->timeFormat = $format;
+        if ('' === trim($formatOrPattern) || 'none' === $formatOrPattern) {
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the time format or the datetime Intl pattern.', __METHOD__));
+        }
+
+        if (!in_array($formatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
+            $this->dateTimePattern = $formatOrPattern;
+            $this->timeFormat = null;
+        } else {
+            $this->dateTimePattern = '';
+            $this->timeFormat = $formatOrPattern;
+        }
 
         return $this;
     }
 
-    public function setDateTimeFormat(string $format): self
+    /**
+     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $timeFormat          A format name ('none', 'short', 'medium', 'long', 'full')
+     */
+    public function setDateTimeFormat(string $dateFormatOrPattern, string $timeFormat = 'none'): self
     {
-        $this->dateTimeFormat = $format;
+        if ('' === trim($dateFormatOrPattern)) {
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
+        }
+
+        if ('none' === $dateFormatOrPattern && 'none' === $timeFormat) {
+            throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "none" at the same time. Change any of them (or both).', __METHOD__));
+        }
+
+        $isDatePattern = !in_array($dateFormatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true);
+
+        if ($isDatePattern && 'none' !== $timeFormat) {
+            throw new \InvalidArgumentException(sprintf('When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format as part of the datetime pattern).', __METHOD__));
+        }
+
+        if (!$isDatePattern && !in_array($timeFormat, DateTimeProperty::VALID_DATE_FORMATS, true)) {
+            throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', DateTimeProperty::VALID_DATE_FORMATS), $timeFormat));
+        }
+
+        if ($isDatePattern) {
+            $this->dateTimePattern = $dateFormatOrPattern;
+            $this->dateFormat = null;
+            $this->timeFormat = null;
+        } else {
+            $this->dateTimePattern = '';
+            $this->dateFormat = $dateFormatOrPattern;
+            $this->timeFormat = $timeFormat;
+        }
 
         return $this;
     }
@@ -150,7 +207,7 @@ class CrudConfig
             $this->entityLabelInPlural = $this->entityLabelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimeFormat, $this->dateIntervalFormat, $this->numberFormat, $this->overriddenTemplates, $this->formThemes);
+        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->numberFormat, $this->overriddenTemplates, $this->formThemes);
     }
 
     private function validate(): void

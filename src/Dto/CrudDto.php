@@ -14,7 +14,7 @@ final class CrudDto
     private $labelInPlural;
     private $dateFormat;
     private $timeFormat;
-    private $dateTimeFormat;
+    private $dateTimePattern;
     private $dateIntervalFormat;
     private $numberFormat;
     private $overriddenTemplates;
@@ -23,14 +23,14 @@ final class CrudDto
     private $crudPageDto;
     private $actionName;
 
-    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, string $dateFormat, string $timeFormat, string $dateTimeFormat, string $dateIntervalFormat, ?string $numberFormat, TemplateDtoCollection $overriddenTemplates, $formThemes)
+    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $numberFormat, TemplateDtoCollection $overriddenTemplates, $formThemes)
     {
         $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;
         $this->labelInPlural = $labelInPlural;
         $this->dateFormat = $dateFormat;
         $this->timeFormat = $timeFormat;
-        $this->dateTimeFormat = $dateTimeFormat;
+        $this->dateTimePattern = $dateTimePattern;
         $this->dateIntervalFormat = $dateIntervalFormat;
         $this->numberFormat = $numberFormat;
         $this->overriddenTemplates = $overriddenTemplates;
@@ -52,19 +52,19 @@ final class CrudDto
         return $this->labelInPlural;
     }
 
-    public function getDateFormat(): string
+    public function getDateFormat(): ?string
     {
         return $this->dateFormat;
     }
 
-    public function getTimeFormat(): string
+    public function getTimeFormat(): ?string
     {
         return $this->timeFormat;
     }
 
-    public function getDateTimeFormat(): string
+    public function getDateTimePattern(): string
     {
-        return $this->dateTimeFormat;
+        return $this->dateTimePattern;
     }
 
     public function getDateIntervalFormat(): string

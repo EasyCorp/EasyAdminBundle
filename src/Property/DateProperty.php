@@ -20,8 +20,9 @@ class DateProperty implements PropertyConfigInterface
             ->setType('date')
             ->setFormType(DateType::class)
             ->setTemplateName('property/date')
-            ->setCustomOption(DateTimeProperty::OPTION_DATE_FORMAT, 'medium')
-            ->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, '')
+            // the proper default values of these options are set on the CrudConfig class
+            ->setCustomOption(DateTimeProperty::OPTION_DATE_FORMAT, null)
+            ->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, null)
             ->setCustomOption(DateTimeProperty::OPTION_TIMEZONE, null);
     }
 
@@ -40,7 +41,7 @@ class DateProperty implements PropertyConfigInterface
     }
 
     /**
-     * @param string $dateFormatOrPattern A format name ('none', 'short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
+     * @param string $dateFormatOrPattern A format name ('short', 'medium', 'long', 'full') or a valid ICU Datetime Pattern (see http://userguide.icu-project.org/formatparse/datetime)
      */
     public function setFormat(string $dateFormatOrPattern): self
     {
@@ -52,7 +53,7 @@ class DateProperty implements PropertyConfigInterface
             $this->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, $dateFormatOrPattern);
             $this->setCustomOption(DateTimeProperty::OPTION_DATE_FORMAT, null);
         } else {
-            $this->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, '');
+            $this->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, null);
             $this->setCustomOption(DateTimeProperty::OPTION_DATE_FORMAT, $dateFormatOrPattern);
         }
 

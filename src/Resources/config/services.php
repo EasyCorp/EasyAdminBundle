@@ -115,6 +115,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(SecurityVoter::class)
             ->arg(0, ref(AuthorizationChecker::class))
+            ->arg(1, ref(ApplicationContextProvider::class))
             ->tag('security.voter')
 
         ->set(CrudFormType::class)

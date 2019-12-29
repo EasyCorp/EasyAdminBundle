@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
@@ -27,6 +28,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
@@ -88,6 +90,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
+        if (!$this->isGranted(Permission::EA_RUN_CRUD_ACTION)) {
+            throw new ForbiddenActionException($this->getContext());
+        }
+
         $entityDto = $this->get(EntityFactory::class)->create();
         $queryBuilder = $this->createIndexQueryBuilder($this->getContext()->getSearch(), $entityDto);
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
@@ -143,6 +149,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
+        if (!$this->isGranted(Permission::EA_RUN_CRUD_ACTION)) {
+            throw new ForbiddenActionException($this->getContext());
+        }
+
         $configuredProperties = $this->configureProperties('detail');
         $entityDto = $this->get(EntityFactory::class)->create($configuredProperties);
 
@@ -172,6 +182,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
+        }
+
+        if (!$this->isGranted(Permission::EA_RUN_CRUD_ACTION)) {
+            throw new ForbiddenActionException($this->getContext());
         }
 
         $configuredProperties = $this->configureProperties('edit');
@@ -246,6 +260,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
+        }
+
+        if (!$this->isGranted(Permission::EA_RUN_CRUD_ACTION)) {
+            throw new ForbiddenActionException($this->getContext());
         }
 
         $configuredProperties = $this->configureProperties('new');

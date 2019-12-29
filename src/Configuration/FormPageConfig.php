@@ -9,6 +9,7 @@ final class FormPageConfig
     private $pageName = 'form';
     private $title;
     private $help;
+    private $permission;
     private $formOptions = [];
     private $showSaveAndExitButton = true;
     private $showSaveAndContinueButton = false;
@@ -29,6 +30,13 @@ final class FormPageConfig
     public function setHelp(string $help): self
     {
         $this->help = $help;
+
+        return $this;
+    }
+
+    public function setPermission(string $permission): self
+    {
+        $this->permission = $permission;
 
         return $this;
     }
@@ -63,6 +71,6 @@ final class FormPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromFormPage($this->pageName, $this->title, $this->help, $this->formOptions, $this->showSaveAndExitButton, $this->showSaveAndContinueButton, $this->showSaveAndAddAnotherButton);
+        return CrudPageDto::newFromFormPage($this->pageName, $this->title, $this->help, $this->permission, $this->formOptions, $this->showSaveAndExitButton, $this->showSaveAndContinueButton, $this->showSaveAndAddAnotherButton);
     }
 }

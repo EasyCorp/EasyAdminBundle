@@ -10,6 +10,7 @@ final class CrudPageDto
     private $actions;
     private $showEntityActionsAsDropdown;
     private $defaultSort = [];
+    private $permission;
     private $entityPermission;
     private $searchFields;
     private $filters;
@@ -19,7 +20,7 @@ final class CrudPageDto
     private $showSaveAndContinueButton;
     private $showSaveAndAddAnotherButton;
 
-    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $entityViewPermission, ?array $searchFields, ?array $actions, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto): self
+    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $permission, ?string $entityViewPermission, ?array $searchFields, ?array $actions, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto): self
     {
         $context = new self();
 
@@ -27,6 +28,7 @@ final class CrudPageDto
         $context->title = $title;
         $context->help = $help;
         $context->defaultSort = $defaultSort;
+        $context->permission = $permission;
         $context->entityPermission = $entityViewPermission;
         $context->searchFields = $searchFields;
         $context->actions = $actions;
@@ -37,26 +39,28 @@ final class CrudPageDto
         return $context;
     }
 
-    public static function newFromDetailPage(string $pageName, ?string $title, ?string $help, ?string $entityViewPermission, array $actions): self
+    public static function newFromDetailPage(string $pageName, ?string $title, ?string $help, ?string $permission, ?string $entityViewPermission, array $actions): self
     {
         $context = new self();
 
         $context->name = $pageName;
         $context->title = $title;
         $context->help = $help;
+        $context->permission = $permission;
         $context->entityPermission = $entityViewPermission;
         $context->actions = $actions;
 
         return $context;
     }
 
-    public static function newFromFormPage(string $pageName, ?string $title, ?string $help, array $formOptions, bool $showSaveAndExitButton, bool $showSaveAndContinueButton, bool $showSaveAndAddAnotherButton): self
+    public static function newFromFormPage(string $pageName, ?string $title, ?string $help, ?string $permission, array $formOptions, bool $showSaveAndExitButton, bool $showSaveAndContinueButton, bool $showSaveAndAddAnotherButton): self
     {
         $context = new self();
 
         $context->name = $pageName;
         $context->title = $title;
         $context->help = $help;
+        $context->permission = $permission;
         $context->formOptions = $formOptions;
         $context->showSaveAndExitButton = $showSaveAndExitButton;
         $context->showSaveAndContinueButton = $showSaveAndContinueButton;
@@ -93,6 +97,11 @@ final class CrudPageDto
     public function getDefaultSort(): array
     {
         return $this->defaultSort;
+    }
+
+    public function getPermission(): ?string
+    {
+        return $this->permission;
     }
 
     public function getEntityPermission(): ?string

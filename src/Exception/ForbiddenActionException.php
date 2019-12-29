@@ -2,16 +2,23 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class ForbiddenActionException extends BaseException
 {
-    public function __construct(array $parameters = [])
+    public function __construct(ApplicationContext $applicationContext)
     {
+        $parameters = [
+            'action' => $applicationContext->getCrud()->getAction(),
+            'crud_controller' => $applicationContext->getRequest()->query->get('crudController'),
+        ];
+
         $exceptionContext = new ExceptionContext(
             'exception.forbidden_action',
-            sprintf('The requested "%s" action is not allowed for the "%s" entity. Solution: remove the "%s" action from the "disabled_actions" option, which can be configured globally for the entire backend or locally for the "%s" entity.', $parameters['action'], $parameters['entity_name'], $parameters['action'], $parameters['entity_name']),
+            sprintf('You don\'t have enough permissions to run the "%s" action on the "%s" or the "%s" action has been disabled for this controller.', $parameters['action'], $parameters['crud_controller'], $parameters['action']),
             $parameters,
             403
         );

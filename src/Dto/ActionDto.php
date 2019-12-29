@@ -21,8 +21,9 @@ final class ActionDto
     private $routeParameters;
     private $translationDomain;
     private $translationParameters;
+    private $displayCallable;
 
-    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $linkTitleAttribute, string $linkTarget, ?string $templatePath, ?string $permission, ?string $crudActionName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters)
+    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, ?string $linkTitleAttribute, string $linkTarget, ?string $templatePath, ?string $permission, ?string $crudActionName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters, callable $displayCallable)
     {
         $this->name = $name;
         $this->label = $label;
@@ -37,6 +38,7 @@ final class ActionDto
         $this->routeParameters = $routeParameters;
         $this->translationDomain = $translationDomain;
         $this->translationParameters = $translationParameters;
+        $this->displayCallable = $displayCallable;
     }
 
     public function getName(): string
@@ -102,5 +104,10 @@ final class ActionDto
     public function getTranslationParams(): array
     {
         return $this->translationParameters;
+    }
+
+    public function shouldBeDisplayedFor(EntityDto $entityDto): bool
+    {
+        return call_user_func($this->displayCallable, $entityDto->getInstance());
     }
 }

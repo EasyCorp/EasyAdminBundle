@@ -125,13 +125,13 @@ final class IndexPageConfig
         return $this;
     }
 
-    public function updateAction(string $actionName, array $actionProperties): self
+    public function updateAction(string $actionName, callable $actionConfigurator): self
     {
         if (!\array_key_exists($actionName, $this->actions)) {
             throw new \InvalidArgumentException(sprintf('The "%s" action does not exist, so you cannot update its properties. You can use the "addAction()" method to define the action first.', $actionName));
         }
 
-        $this->actions[$actionName] = $this->actions[$actionName]->with($actionProperties);
+        $this->actions[$actionName] = $actionConfigurator($this->actions[$actionName]);
 
         return $this;
     }
@@ -147,7 +147,29 @@ final class IndexPageConfig
             $orderedActions[$actionName] = $this->actions[$actionName];
         }
 
+        // add the remaining actions that weren't ordered explicitly. This allows
+        // user to only configure the actions they want to see first and rely on the
+        // existing order for the rest of actions
+        foreach ($this->actions as $actionName => $actionConfig) {
+            if (!array_key_exists($actionName, $orderedActions)) {
+                $orderedActions[$actionName] = $actionConfig;
+            }
+        }
+
         $this->actions = $orderedActions;
+
+        return $this;
+    }
+
+    public function removeActions(string ...$actionNames): self
+    {
+        foreach ($actionNames as $actionName) {
+            if (!\array_key_exists($actionName, $this->actions)) {
+                throw new \InvalidArgumentException(sprintf('The "%s" action cannot be removed because it does not exist.', $actionName));
+            }
+
+            unset($this->actions[$actionName]);
+        }
 
         return $this;
     }

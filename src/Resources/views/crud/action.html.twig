@@ -1,16 +1,18 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {# @var action \EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto #}
-{% if action.routeName is not null %}
-    {% set link_url = path(action.routeName, { entityId: entity.idValueAsString, entityFqcn: entity.fqcn }|merge(action.routeParameters)) %}
-{% elseif action.crudActionName is not null %}
-    {% set link_url = ea_path({ crudAction: action.crudActionName, entityId: entity.idValueAsString }) %}
-{% endif %}
+{% if action.shouldBeDisplayedFor(entity) %}
+    {% if action.routeName is not null %}
+        {% set link_url = path(action.routeName, { entityId: entity.idValueAsString, entityFqcn: entity.fqcn }|merge(action.routeParameters)) %}
+    {% elseif action.crudActionName is not null %}
+        {% set link_url = ea_path({ crudAction: action.crudActionName, entityId: entity.idValueAsString }) %}
+    {% endif %}
 
-<a class="{{ isIncludedInDropdown|default(false) ? 'dropdown-item' }} {{ action.cssClass ?? '' }}"
-   title="{{ action.linkTitleAttribute ?? '' }}"
-   href="{{ link_url }}"
-   target="{{ action.linkTarget }}">
-    {%- if action.icon %}<i class="action-icon {{ action.icon }}"></i> {% endif -%}
-    {%- if action.label is not empty -%}{{ action.label }}{%- endif -%}
-</a>
+    <a class="{{ isIncludedInDropdown|default(false) ? 'dropdown-item' }} {{ action.cssClass ?? '' }}"
+       title="{{ action.linkTitleAttribute ?? '' }}"
+       href="{{ link_url }}"
+       target="{{ action.linkTarget }}">
+        {%- if action.icon %}<i class="action-icon {{ action.icon }}"></i> {% endif -%}
+        {%- if action.label is not empty -%}{{ action.label }}{%- endif -%}
+    </a>
+{% endif %}

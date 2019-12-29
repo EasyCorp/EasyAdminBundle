@@ -22,6 +22,7 @@ final class Action
     private $routeParameters;
     private $translationDomain;
     private $translationParameters = [];
+    private $displayCallable;
 
     private function __construct()
     {
@@ -123,6 +124,13 @@ final class Action
         return $this;
     }
 
+    public function displayIf(callable $displayCallable): self
+    {
+        $this->displayCallable = $displayCallable;
+
+        return $this;
+    }
+
     public function getAsDto(): ActionDto
     {
         if (null === $this->label && null === $this->icon) {
@@ -133,6 +141,6 @@ final class Action
             throw new \InvalidArgumentException(sprintf('Actions must link to either a route or a CRUD action. Set the "linkToCrudAction()" or "linkToRoute()" method for the "%s" action.', $this->name));
         }
 
-        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->linkTitleAttribute, $this->linkTarget, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters);
+        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->linkTitleAttribute, $this->linkTarget, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters, $this->displayCallable ?? static function () { return true; });
     }
 }

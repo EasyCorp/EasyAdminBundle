@@ -27,6 +27,7 @@ class CrudConfig
      * @var TemplateDtoCollection
      */
     private $overriddenTemplates;
+    private $disabledActions = [];
 
     public static function new(): self
     {
@@ -204,6 +205,15 @@ class CrudConfig
         return $this;
     }
 
+    public function disableActions(string ...$actionNames): self
+    {
+        foreach ($actionNames as $actionName) {
+            $this->disabledActions[] = $actionName;
+        }
+
+        return $this;
+    }
+
     public function getAsDto(bool $validateProperties = true): CrudDto
     {
         if ($validateProperties) {
@@ -219,7 +229,7 @@ class CrudConfig
             $this->entityLabelInPlural = $this->entityLabelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->overriddenTemplates, $this->formThemes);
+        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->overriddenTemplates, $this->formThemes, $this->disabledActions);
     }
 
     private function validate(): void

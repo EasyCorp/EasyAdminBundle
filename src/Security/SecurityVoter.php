@@ -33,8 +33,8 @@ final class SecurityVoter extends Voter
             return $this->voteOnViewMenuItemPermission($subject);
         }
 
-        if (Permission::EA_RUN_CRUD_ACTION === $permissionName) {
-            return $this->voteOnRunCrudActionPermission();
+        if (Permission::EA_EXECUTE_ACTION === $permissionName) {
+            return $this->voteOnExecuteActionPermission();
         }
 
         if (Permission::EA_VIEW_PROPERTY === $permissionName) {
@@ -62,7 +62,7 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission());
     }
 
-    private function voteOnRunCrudActionPermission(): bool
+    private function voteOnExecuteActionPermission(): bool
     {
         // users can run the Crud action if:
         // * they have the required permission to run the action
@@ -70,10 +70,8 @@ final class SecurityVoter extends Voter
         $applicationContext = $this->applicationContextProvider->getContext();
         $crudActionPermission = $applicationContext->getCrud()->getPage()->getPermission();
         $crudActionName = $applicationContext->getCrud()->getAction();
-        // TODO: get disabled actions
-        $disabledActions = [];
 
-        return $this->authorizationChecker->isGranted($crudActionPermission) && !in_array($crudActionName, $disabledActions, true);
+        return $this->authorizationChecker->isGranted($crudActionPermission) && !$this->isActionDisabled($crudActionName);
     }
 
     private function voteOnViewPropertyPermission(PropertyConfigInterface $propertyConfig): bool
@@ -90,8 +88,10 @@ final class SecurityVoter extends Voter
 
     private function voteOnViewActionPermission(ActionDto $actionDto): bool
     {
-        // users can see the action if they have the permission required by the action
-        return $this->authorizationChecker->isGranted($actionDto->getPermission());
+        // users can see the action if:
+        // * they have the permission required by the action
+        // * the action is not disabled
+        return $this->authorizationChecker->isGranted($actionDto->getPermission()) && !$this->isActionDisabled($actionDto->getName());
     }
 
     private function voteOnExitImpersonationPermission(): bool
@@ -99,5 +99,16 @@ final class SecurityVoter extends Voter
         // users can exit impersonation if they are currently impersonating another user.
         // In Symfony, that means that current user has the special 'ROLE_PREVIOUS_ADMIN' permission
         return $this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN');
+    }
+
+    private function isActionDisabled(string $actionName): bool
+    {
+        $applicationContext = $this->applicationContextProvider->getContext();
+
+        $actionsDisabledGlobally = $applicationContext->getCrud()->getDisabledActions();
+        $actionsDisabledByPage = $applicationContext->getCrud()->getPage()->getDisabledActions();
+        $disabledActions = array_unique(array_merge($actionsDisabledGlobally, $actionsDisabledByPage));
+
+        return in_array($actionName, $disabledActions, true);
     }
 }

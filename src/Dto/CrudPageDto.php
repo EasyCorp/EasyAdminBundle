@@ -8,6 +8,7 @@ final class CrudPageDto
     private $title;
     private $help;
     private $actions;
+    private $disabledActions;
     private $showEntityActionsAsDropdown;
     private $defaultSort = [];
     private $permission;
@@ -20,7 +21,7 @@ final class CrudPageDto
     private $showSaveAndContinueButton;
     private $showSaveAndAddAnotherButton;
 
-    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $permission, ?string $entityViewPermission, ?array $searchFields, ?array $actions, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto): self
+    public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $permission, ?string $entityViewPermission, ?array $searchFields, ?array $actions, array $disabledActions, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto): self
     {
         $context = new self();
 
@@ -32,6 +33,7 @@ final class CrudPageDto
         $context->entityPermission = $entityViewPermission;
         $context->searchFields = $searchFields;
         $context->actions = $actions;
+        $context->disabledActions = $disabledActions;
         $context->showEntityActionsAsDropdown = $showEntityActionsAsDropdown;
         $context->filters = $filters;
         $context->paginatorDto = $paginatorDto;
@@ -49,11 +51,12 @@ final class CrudPageDto
         $context->permission = $permission;
         $context->entityPermission = $entityViewPermission;
         $context->actions = $actions;
+        $context->disabledActions = $disabledActions;
 
         return $context;
     }
 
-    public static function newFromFormPage(string $pageName, ?string $title, ?string $help, ?string $permission, array $formOptions, bool $showSaveAndExitButton, bool $showSaveAndContinueButton, bool $showSaveAndAddAnotherButton): self
+    public static function newFromFormPage(string $pageName, ?string $title, ?string $help, ?string $permission, array $formOptions, bool $showSaveAndExitButton, bool $showSaveAndContinueButton, bool $showSaveAndAddAnotherButton, ?array $actions, array $disabledActions): self
     {
         $context = new self();
 
@@ -62,6 +65,8 @@ final class CrudPageDto
         $context->help = $help;
         $context->permission = $permission;
         $context->formOptions = $formOptions;
+        $context->actions = $actions;
+        $context->disabledActions = $disabledActions;
         $context->showSaveAndExitButton = $showSaveAndExitButton;
         $context->showSaveAndContinueButton = $showSaveAndContinueButton;
         $context->showSaveAndAddAnotherButton = $showSaveAndAddAnotherButton;
@@ -84,9 +89,14 @@ final class CrudPageDto
         return $this->help;
     }
 
-    public function getActions(): array
+    public function getActions(): ?array
     {
         return $this->actions;
+    }
+
+    public function getDisabledActions(): array
+    {
+        return $this->disabledActions;
     }
 
     public function showEntityActionsAsDropdown(): bool

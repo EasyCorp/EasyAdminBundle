@@ -90,7 +90,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        if (!$this->isGranted(Permission::EA_RUN_CRUD_ACTION)) {
+        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION)) {
             throw new ForbiddenActionException($this->getContext());
         }
 
@@ -149,7 +149,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        if (!$this->isGranted(Permission::EA_RUN_CRUD_ACTION)) {
+        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION)) {
             throw new ForbiddenActionException($this->getContext());
         }
 
@@ -184,7 +184,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        if (!$this->isGranted(Permission::EA_RUN_CRUD_ACTION)) {
+        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION)) {
             throw new ForbiddenActionException($this->getContext());
         }
 
@@ -262,7 +262,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        if (!$this->isGranted(Permission::EA_RUN_CRUD_ACTION)) {
+        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION)) {
             throw new ForbiddenActionException($this->getContext());
         }
 

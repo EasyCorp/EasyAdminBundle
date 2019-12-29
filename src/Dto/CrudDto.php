@@ -23,8 +23,9 @@ final class CrudDto
     /** @var CrudPageDto */
     private $crudPageDto;
     private $actionName;
+    private $disabledActions;
 
-    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, TemplateDtoCollection $overriddenTemplates, $formThemes)
+    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, TemplateDtoCollection $overriddenTemplates, $formThemes, array $disabledActions)
     {
         $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;
@@ -37,6 +38,7 @@ final class CrudDto
         $this->numberFormat = $numberFormat;
         $this->overriddenTemplates = $overriddenTemplates;
         $this->formThemes = $formThemes;
+        $this->disabledActions = $disabledActions;
     }
 
     public function getEntityFqcn(): string
@@ -97,5 +99,10 @@ final class CrudDto
     public function getAction(): string
     {
         return $this->actionName;
+    }
+
+    public function getDisabledActions(): array
+    {
+        return $this->disabledActions;
     }
 }

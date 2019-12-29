@@ -6,13 +6,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 
 final class DetailPageConfig
 {
+    use CommonPageConfigTrait;
+
     private $pageName = 'detail';
-    private $title;
-    private $help;
-    private $permission;
     private $entityViewPermission;
-    /** @var Action[] */
-    private $actions = [];
 
     public static function new(): self
     {
@@ -37,30 +34,6 @@ final class DetailPageConfig
         return $config;
     }
 
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function setHelp(string $help): self
-    {
-        $this->help = $help;
-
-        return $this;
-    }
-
-    /**
-     * This grants/denies access to the entire 'detail' action for all entities
-     */
-    public function setPermission(string $permission): self
-    {
-        $this->permission = $permission;
-
-        return $this;
-    }
-
     /**
      * This grants/denies access to the 'detail' action for each entity
      */
@@ -71,31 +44,8 @@ final class DetailPageConfig
         return $this;
     }
 
-    public function addAction(Action $actionConfig): self
-    {
-        $actionName = (string) $actionConfig;
-        if (\array_key_exists($actionName, $this->actions)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action already exists. You can use the "updateAction()" method to update any property of an existing action.', $actionName));
-        }
-
-        $this->actions[$actionName] = $actionConfig;
-
-        return $this;
-    }
-
-    public function updateAction(string $actionName, array $actionProperties): self
-    {
-        if (!\array_key_exists($actionName, $this->actions)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action does not exist, so you cannot update its properties. You can use the "addAction()" method to define the action first.', $actionName));
-        }
-
-        $this->actions[$actionName] = $this->actions[$actionName]->with($actionProperties);
-
-        return $this;
-    }
-
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromDetailPage($this->pageName, $this->title, $this->help, $this->permission, $this->entityViewPermission, $this->actions);
+        return CrudPageDto::newFromDetailPage($this->pageName, $this->title, $this->help, $this->permission, $this->entityViewPermission, $this->actions, $this->disabledActions);
     }
 }

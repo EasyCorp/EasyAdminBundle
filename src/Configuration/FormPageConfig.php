@@ -49,6 +49,6 @@ final class FormPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromFormPage($this->pageName, $this->title, $this->help, $this->permission, $this->formOptions, $this->showSaveAndExitButton, $this->showSaveAndContinueButton, $this->showSaveAndAddAnotherButton, $this->actions, $this->disabledActions);
+        return CrudPageDto::newFromFormPage($this->pageName, $this->title, $this->help, $this->permission, $this->formOptions, $this->showSaveAndExitButton, $this->showSaveAndContinueButton, $this->showSaveAndAddAnotherButton, $this->actions, $this->disabledActions, $this->actionUpdateCallables);
     }
 }

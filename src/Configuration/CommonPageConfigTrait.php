@@ -9,8 +9,12 @@ trait CommonPageConfigTrait
     private $permission;
     /** @var Action[] */
     private $actions = [];
+    /** @var callable[] */
+    private $actionUpdateCallables = [];
     /** @var string[] */
     private $disabledActions = [];
+    /** @internal */
+    private $builtInActions;
 
     public function setTitle(string $title): self
     {
@@ -36,25 +40,25 @@ trait CommonPageConfigTrait
         return $this;
     }
 
-    public function addAction(Action $actionConfig): self
+    /**
+     * @param Action|string $actionNameOrConfig
+     */
+    public function addAction($actionNameOrConfig): self
     {
-        $actionName = (string) $actionConfig;
+        $actionName = (string) $actionNameOrConfig;
+
         if (\array_key_exists($actionName, $this->actions)) {
             throw new \InvalidArgumentException(sprintf('The "%s" action already exists. You can use the "updateAction()" method to update any property of an existing action.', $actionName));
         }
 
-        $this->actions[$actionName] = $actionConfig;
+        $this->actions[$actionName] = $actionNameOrConfig;
 
         return $this;
     }
 
-    public function updateAction(string $actionName, callable $actionConfigurator): self
+    public function updateAction(string $actionName, callable $updateCallable): self
     {
-        if (!\array_key_exists($actionName, $this->actions)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action does not exist, so you cannot update its properties. You can use the "addAction()" method to define the action first.', $actionName));
-        }
-
-        $this->actions[$actionName] = $actionConfigurator($this->actions[$actionName]);
+        $this->actionUpdateCallables[$actionName] = $updateCallable;
 
         return $this;
     }
@@ -91,5 +95,40 @@ trait CommonPageConfigTrait
         }
 
         return $this;
+    }
+
+    private function getBuiltInActions(): array
+    {
+        if (null !== $this->builtInActions) {
+            return $this->builtInActions;
+        }
+
+        return $this->builtInActions = [
+            'index' => Action::new('index', 'action.index')
+                ->linkToCrudAction('index')
+                ->setTranslationDomain('EasyAdminBundle'),
+
+            'detail' => Action::new('detail', 'action.detail')
+                ->linkToCrudAction('detail')
+                ->setTranslationDomain('EasyAdminBundle'),
+
+            'edit' => Action::new('edit', 'action.edit', null)
+                ->linkToCrudAction('edit')
+                ->setCssClass('')
+                ->setTranslationDomain('EasyAdminBundle'),
+
+            'delete' => Action::new('delete', 'action.delete')
+                ->linkToCrudAction('delete')
+                ->setCssClass('text-danger')
+                ->setTranslationDomain('EasyAdminBundle'),
+
+            'save-and-return' => Action::new('save-and-return', 'action.save')
+                ->linkToCrudAction('edit')
+                ->setTranslationDomain('EasyAdminBundle'),
+
+            'save-and-continue' => Action::new('save-and-continue', 'action.save_and_continue')
+                ->linkToCrudAction('edit')
+                ->setTranslationDomain('EasyAdminBundle'),
+        ];
     }
 }

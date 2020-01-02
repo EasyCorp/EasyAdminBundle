@@ -24,15 +24,8 @@ final class IndexPageConfig
         $config = new self();
 
         $config
-            ->addAction(Action::new('edit', 'action.edit', null)
-                ->linkToCrudAction('edit')
-                ->setCssClass('')
-                ->setTranslationDomain('EasyAdminBundle'))
-
-            ->addAction(Action::new('delete', 'action.delete')
-                ->linkToCrudAction('delete')
-                ->setCssClass('text-danger')
-                ->setTranslationDomain('EasyAdminBundle'));
+            ->addAction('edit')
+            ->addAction('delete');
 
         return $config;
     }
@@ -116,6 +109,6 @@ final class IndexPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->permission, $this->entityViewPermission, $this->searchProperties, $this->actions, $this->disabledActions, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
+        return CrudPageDto::newFromIndexPage($this->pageName, $this->title, $this->help, $this->defaultSort, $this->permission, $this->entityViewPermission, $this->searchProperties, $this->actions, $this->disabledActions, $this->actionUpdateCallables, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));
     }
 }

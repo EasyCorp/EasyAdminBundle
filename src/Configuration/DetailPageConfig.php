@@ -46,6 +46,6 @@ final class DetailPageConfig
 
     public function getAsDto(): CrudPageDto
     {
-        return CrudPageDto::newFromDetailPage($this->pageName, $this->title, $this->help, $this->permission, $this->entityViewPermission, $this->actions, $this->disabledActions);
+        return CrudPageDto::newFromDetailPage($this->pageName, $this->title, $this->help, $this->permission, $this->entityViewPermission, $this->actions, $this->disabledActions, $this->actionUpdateCallables);
     }
 }

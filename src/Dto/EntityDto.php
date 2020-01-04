@@ -14,8 +14,10 @@ final class EntityDto
     private $idValue;
     private $requiredPermission;
     private $userHasPermission;
-    /** @var ?PropertyDtoCollection $properties */
+    /** @var ?PropertyDtoCollection */
     private $properties;
+    /** @var ?ActionDto[] */
+    private $actions;
 
     public function __construct(string $entityFqcn, ClassMetadata $entityMetadata, ?string $entityPermission = null, $entityInstance = null)
     {
@@ -93,6 +95,14 @@ final class EntityDto
     }
 
     /**
+     * @return ActionDto[]
+     */
+    public function getActions(): array
+    {
+        return $this->actions;
+    }
+
+    /**
      * Returns the names of all properties defined in the entity, no matter
      * if they are used or not in the application.
      */
@@ -149,6 +159,14 @@ final class EntityDto
     {
         $clone = clone $this;
         $clone->properties = $properties;
+
+        return $clone;
+    }
+
+    public function updateActions(array $actions): self
+    {
+        $clone = clone $this;
+        $clone->actions = $actions;
 
         return $clone;
     }

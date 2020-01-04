@@ -16,25 +16,27 @@ final class CrudUrlGenerator
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function generate(array $newQueryParams = []): string
+    public function generate(array $queryParams = []): string
     {
-        $previousQueryParams = $this->applicationContextProvider->getContext()->getRequest()->query->all();
-        unset($previousQueryParams['referrer']);
-        $previousQueryParams['referrer'] = $this->doGenerateUrl($previousQueryParams);
-
-        $queryParams = array_merge($previousQueryParams, $newQueryParams);
-
         return $this->doGenerateUrl($queryParams);
     }
 
-    public function generateWithoutReferrer(array $newQueryParams = []): string
+    public function generateCurrentUrl(array $updatedQueryParams = []): string
+    {
+        $previousQueryParams = $this->applicationContextProvider->getContext()->getRequest()->query->all();
+        $newQueryParams = array_merge($previousQueryParams, $updatedQueryParams);
+
+        return $this->doGenerateUrl($newQueryParams);
+    }
+
+    public function generateCurrentUrlWithoutReferrer(array $updatedQueryParams = []): string
     {
         $previousQueryParams = $this->applicationContextProvider->getContext()->getRequest()->query->all();
         unset($previousQueryParams['referrer']);
 
-        $queryParams = array_merge($previousQueryParams, $newQueryParams);
+        $newQueryParams = array_merge($previousQueryParams, $updatedQueryParams);
 
-        return $this->doGenerateUrl($queryParams);
+         return $this->doGenerateUrl($newQueryParams);
     }
 
     private function doGenerateUrl(array $queryParams): string

@@ -141,7 +141,7 @@
                     </th>
                 {% endfor %}
 
-                {% if actions is not empty %}
+                {% if entities|length > 0 and entities|first.actions is not empty %}
                     <th {% if ea.crud.page.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
                         <span class="sr-only">{{ 'list.row_actions'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}</span>
                     </th>
@@ -169,11 +169,11 @@
                         </td>
                     {% endfor %}
 
-                    {% if actions is not empty %}
+                    {% if entity.actions is not empty %}
                         <td class="actions">
                             {% if not ea.crud.page.showEntityActionsAsDropdown %}
-                                {% for action in actions %}
-                                    {{ include(action.template, { action: action, entity: entity, isIncludedInDropdown: ea.crud.page.showEntityActionsAsDropdown }, with_context = false) }}
+                                {% for action in entity.actions %}
+                                    {{ include(action.template, { action: action, isIncludedInDropdown: ea.crud.page.showEntityActionsAsDropdown }, with_context = false) }}
                                 {% endfor %}
                             {% else %}
                                 <div class="dropdown dropdown-actions">
@@ -182,8 +182,8 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        {% for action in actions %}
-                                            {{ include(action.template, { action: action, entity: entity, isIncludedInDropdown: ea.crud.page.showEntityActionsAsDropdown }, with_context = false) }}
+                                        {% for action in entity.actions %}
+                                            {{ include(action.template, { action: action, isIncludedInDropdown: ea.crud.page.showEntityActionsAsDropdown }, with_context = false) }}
                                         {% endfor %}
                                     </div>
                                 </div>

@@ -29,7 +29,7 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefined(['ea_property']);
+        $resolver->setDefined(['ea_crud_form']);
     }
 
     /**
@@ -42,9 +42,10 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
         }
 
         $view->vars['ea_crud_form'] = [
+            //'entity' => $form->getConfig()->getAttribute('ea_entity'),
             'form_group' => $form->getConfig()->getAttribute('ea_form_group'),
             'form_tab' => $form->getConfig()->getAttribute('ea_form_tab'),
-            'property' => $options['ea_property'] ?? null,
+            //'property' => $form->getConfig()->getAttribute('ea_property'),
         ];
 
         return;

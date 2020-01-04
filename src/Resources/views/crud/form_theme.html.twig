@@ -12,8 +12,7 @@
 
     {{ parent() }}
 
-    {# TODO: check if this is really needed #}
-    {#<input type="hidden" name="referrer" value="{{ app.request.query.get('referrer') }}"/>#}
+    <input type="hidden" name="referrer" value="{{ ea.request.query.get('referrer') }}">
 {% endblock form_start %}
 
 {# Widgets #}
@@ -359,64 +358,21 @@
 
     <section class="content-footer">
         <div class="form-actions">
-            {{ block('item_actions') }}
+            {{ block('ea_entity_actions') }}
         </div>
     </section>
 {% endblock ea_crud_rest %}
 
-{% block item_actions %}
-    {% if ea.crud.page.showSaveAndContinueButton %}
-        <button type="submit" class="btn btn-secondary action-save" name="ea[newForm][btn]" value="save-and-continue">
-            <span class="btn-label">
-                <i class="far fa-edit"></i>
-                {{ (ea.crud.action == 'new' ? 'action.create_and_continue' : 'action.save_and_continue')|trans([], 'EasyAdminBundle') }}
-            </span>
-        </button>
-    {% endif %}
-
-    {% if ea.crud.action == 'new' and ea.crud.page.showSaveAndAddAnotherButton %}
-        <button type="submit" class="btn btn-secondary action-save" name="ea[newForm][btn]" value="save-and-add">
-            <span class="btn-label">
-                <i class="fa fa-plus"></i>
-                {{ 'action.create_and_add_another'|trans([], 'EasyAdminBundle') }}
-            </span>
-        </button>
-    {% endif %}
-
-    {% if ea.crud.page.showSaveAndExitButton %}
-        <button type="submit" class="btn btn-primary action-save" name="ea[newForm][btn]" value="save-and-return">
-            <span class="btn-label">{{ (ea.crud.action == 'new' ? 'action.create' : 'action.save')|trans([], 'EasyAdminBundle') }}</span>
-        </button>
-    {% endif %}
-
-
-    {#
-    {% set _entity_actions = (ea.crud.action == 'new')
-        ? easyadmin_get_actions_for_new_item(easyadmin.entity.name)
-        : easyadmin_get_actions_for_edit_item(easyadmin.entity.name) %}
-
-    {% set _entity_id = (ea.crud.action == 'new')
-        ? null
-        : attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) %}
-
-    {% set _request_parameters = { entity: easyadmin.entity.name, referer: app.request.query.get('referer') } %}
-
-    {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
-        actions: _entity_actions,
-        entity_config: easyadmin.entity,
-        request_parameters: _request_parameters,
-        translation_domain: ea.i18n.translationDomain,
-        trans_parameters: _trans_parameters,
-        item_id: _entity_id,
-        item: easyadmin.item
-    }, with_context = false) }}
-    #}
-{% endblock item_actions %}
+{% block ea_entity_actions %}
+    {% for action in form.vars.ea_crud_form.entity.actions %}
+        {{ include(action.template, { action: action }, with_context = false) }}
+    {% endfor %}
+{% endblock ea_entity_actions %}
 
 {# EasyAdmin form type #}
 {% block ea_crud_widget %}
     <div class="row">
-        {% if ea_form_tabs | length > 0 %}
+        {% if ea_crud_form.form_tabs | length > 0 %}
             <div class="col-12">
                 <div class="nav-tabs-custom form-tabs">
                     <ul class="nav nav-tabs">
@@ -460,7 +416,7 @@
 {% endblock ea_crud_widget %}
 
 {% block ea_crud_widget_groups %}
-    {% for group_name, group_config in ea_form_groups|filter(group_config => not group_config.form_tab or group_config.form_tab == tab_name) %}
+    {% for group_name, group_config in ea_crud_form.form_groups|filter(group_config => not group_config.form_tab or group_config.form_tab == tab_name) %}
         <div class="field-group col-{{ group_config.columns|default('12') }} {{ group_config.css_class|default('') }}">
             <fieldset>
                 {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}

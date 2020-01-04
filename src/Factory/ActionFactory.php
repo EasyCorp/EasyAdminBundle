@@ -6,8 +6,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -29,66 +32,58 @@ final class ActionFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    /**
-     * @param Action[] $actionsConfig
-     *
-     * @return ActionDto[]
-     */
-    public function create(array $actionsConfig): array
+    public function create(EntityDto $entityDto, array $actionsConfig): EntityDto
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
         $currentAction = $applicationContext->getCrud()->getAction();
         $actionUpdateCallables = $applicationContext->getCrud()->getPage()->getActionUpdateCallables();
+        $actionsConfig = $this->preProcessActionsConfig($currentAction, $actionsConfig, $actionUpdateCallables);
 
         $builtActions = [];
-        $actionsConfig = $this->preProcessActionsConfig($currentAction, $actionsConfig);
         foreach ($actionsConfig as $actionConfig) {
-            $actionName = (string) $actionConfig;
-            if (array_key_exists($actionName, $actionUpdateCallables) && null !== $actionUpdateCallables[$actionName]) {
-                $actionConfig = call_user_func($actionUpdateCallables[$actionName], $actionConfig);
-            }
-
             $actionDto = $actionConfig->getAsDto();
+
             if (false === $this->authChecker->isGranted(Permission::EA_VIEW_ACTION, $actionDto)) {
                 continue;
             }
 
-            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $actionDto->getTranslationParams(), $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
-            $translatedActionHtmlTitle = $this->translator->trans($actionDto->getLinkTitleAttribute(), $actionDto->getTranslationParams(), $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
+            if (false === $actionDto->shouldBeDisplayedFor($entityDto)) {
+                continue;
+            }
 
+            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $actionDto->getTranslationParams(), $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
             $defaultTemplatePath = $applicationContext->getTemplatePath('crud/action');
 
             $builtActions[] = $actionDto->with([
                 'label' => $translatedActionLabel,
-                'linkTitleAttribute' => $translatedActionHtmlTitle,
                 'templatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
+                'linkUrl' => $this->generateActionUrl($applicationContext->getRequest(), $entityDto, $actionDto, $currentAction),
             ]);
         }
 
-        return $builtActions;
+        return $entityDto->updateActions($builtActions);
     }
 
-    private function generateActionUrl(ApplicationContext $applicationContext, ActionDto $actionDto): string
+    private function generateActionUrl(Request $request, EntityDto $entityDto, ActionDto $actionDto, string $currentAction): string
     {
-        $requestParameters = $applicationContext->getRequest()->query->all();
+        $requestParameters = [
+            'crudController' => $request->query->get('crudController'),
+            'entityId' => $entityDto->getIdValueAsString(),
+            'referrer' => $this->generateReferrerUrl($request, $actionDto, $currentAction),
+        ];
 
         if (null !== $routeName = $actionDto->getRouteName()) {
-            $routeParameters = array_merge($requestParameters, $actionDto->getRouteParameters());
+            $routeParameters = array_merge($request->query->all(), $requestParameters, $actionDto->getRouteParameters());
 
             return $this->urlGenerator->generate($routeName, $routeParameters);
         }
 
-        if ('index' !== $crudActionName = $actionDto->getCrudActionName()) {
-            return $this->crudUrlGenerator->generate(['crudAction' => $crudActionName]);
-        }
+        $requestParameters = array_merge($requestParameters, [
+            'crudAction' => $actionDto->getCrudActionName(),
+        ]);
 
-        // for the 'index' action, try to use the 'referrer' value if it exists
-        if ($applicationContext->getRequest()->query->has('referrer')) {
-            return urldecode($applicationContext->getRequest()->query->get('referrer'));
-        }
-
-        return $this->crudUrlGenerator->generate(['crudAction' => 'index']);
+        return $this->crudUrlGenerator->generate($requestParameters);
     }
 
     /**
@@ -96,13 +91,21 @@ final class ActionFactory
      *
      * @return Action[]
      */
-    private function preProcessActionsConfig(string $currentAction, array $actionsConfig): array
+    private function preProcessActionsConfig(string $currentAction, array $actionsConfig, array $actionUpdateCallables): array
     {
-        // fox DX reasons, action config can be just a string with the action name
         foreach ($actionsConfig as $i => $actionConfig) {
+            // fox DX reasons, action config can be just a string with the action name
             if (\is_string($actionConfig)) {
-                $actionsConfig[$i] = $this->createBuiltInAction($currentAction, $actionConfig);
+                $actionConfig = $this->createBuiltInAction($currentAction, $actionConfig);
             }
+
+            // apply the callables that update certain config options of the action
+            $actionName = (string) $actionConfig;
+            if (array_key_exists($actionName, $actionUpdateCallables) && null !== $actionUpdateCallables[$actionName]) {
+                $actionConfig = call_user_func($actionUpdateCallables[$actionName], $actionConfig);
+            }
+
+            $actionsConfig[$i] = $actionConfig;
         }
 
         return $actionsConfig;
@@ -117,6 +120,7 @@ final class ActionFactory
         if ('edit' === $actionName) {
             return Action::new('edit', 'action.edit', null)
                 ->linkToCrudAction('edit')
+                ->setCssClass('detail' === $currentAction ? 'btn btn-primary' : '')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
@@ -129,34 +133,78 @@ final class ActionFactory
         if ('index' === $actionName) {
             return Action::new('index', 'action.index')
                 ->linkToCrudAction('index')
+                ->setCssClass('detail' === $currentAction ? 'btn' : '')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
         if ('delete' === $actionName) {
-            return Action::new('delete', 'action.delete', 'index' === $currentAction ? null : 'fa fa-trash')
+            $cssClass = 'detail' === $currentAction ? 'btn btn-link pr-0 text-danger' : 'text-danger';
+
+            return Action::new('delete', 'action.delete', 'index' === $currentAction ? null : 'fa fa-fw fa-trash-o')
                 ->linkToCrudAction('delete')
-                ->setCssClass('text-danger')
+                ->setCssClass($cssClass)
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
-        if ('save' === $actionName) {
-            return Action::new('save', 'edit' === $currentAction ? 'action.save' : 'action.create')
+        if ('save-and-close' === $actionName) {
+            return Action::new('save-and-close', 'edit' === $currentAction ? 'action.save' : 'action.create')
+                ->setCssClass('btn btn-primary action-save')
+                ->setHtmlElement('button')
+                ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
                 ->linkToCrudAction('edit' === $currentAction ? 'edit' : 'new')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
         if ('save-and-continue' === $actionName) {
-            return Action::new('save-and-continue', 'edit' === $currentAction ? 'action.save_and_continue' : 'action.create_and_continue')
+            return Action::new('save-and-continue', 'edit' === $currentAction ? 'action.save_and_continue' : 'action.create_and_continue', 'far fa-edit')
+                ->setCssClass('btn btn-secondary action-save')
+                ->setHtmlElement('button')
+                ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
                 ->linkToCrudAction('edit' === $currentAction ? 'edit' : 'new')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
         if ('save-and-add-another' === $actionName) {
             return Action::new('save-and-add-another', 'action.create_and_add_another')
+                ->setCssClass('btn btn-secondary action-save')
+                ->setHtmlElement('button')
+                ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
                 ->linkToCrudAction('new')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
         throw new \InvalidArgumentException(sprintf('The "%s" action is not a built-in action, so you can\'t add or configure it via its name. Either refer to one of the built-in actions or create a custom action called "%s".', $actionName, $actionName));
+    }
+
+    private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string
+    {
+        $nextAction = $actionDto->getName();
+
+        if ('detail' === $currentAction) {
+            if ('edit' === $nextAction) {
+                return $this->crudUrlGenerator->generateCurrentUrlWithoutReferrer();
+            }
+        }
+
+        if ('index' === $currentAction) {
+            return $this->crudUrlGenerator->generateCurrentUrlWithoutReferrer();
+        }
+
+        if ('new' === $currentAction) {
+            return null;
+        }
+
+        $referrer = $request->get('referrer');
+        $referrerParts = parse_url($referrer);
+        parse_str($referrerParts['query'] ?? '', $referrerQueryStringVariables);
+        $referrerCrudAction = $referrerQueryStringVariables['crudAction'] ?? null;
+
+        if ('edit' === $currentAction) {
+            if (in_array($referrerCrudAction, ['index', 'detail'])) {
+                return $referrer;
+            }
+        }
+
+        return $this->crudUrlGenerator->generateCurrentUrlWithoutReferrer();
     }
 }

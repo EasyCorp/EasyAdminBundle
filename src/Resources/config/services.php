@@ -85,9 +85,10 @@ return static function (ContainerConfigurator $container) {
         ->set(EntityFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref(PropertyFactory::class))
-            ->arg(2, ref(AuthorizationChecker::class))
-            ->arg(3, ref('doctrine'))
-            ->arg(4, ref('event_dispatcher'))
+            ->arg(2, ref(ActionFactory::class))
+            ->arg(3, ref(AuthorizationChecker::class))
+            ->arg(4, ref('doctrine'))
+            ->arg(5, ref('event_dispatcher'))
 
         ->set(EntityPaginator::class)
             ->arg(0, ref(CrudUrlGenerator::class))

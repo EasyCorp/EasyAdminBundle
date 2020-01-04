@@ -82,20 +82,6 @@ final class PropertyFactory
         return $entityDto->updateProperties(PropertyDtoCollection::new($builtProperties));
     }
 
-    /**
-     * @param PropertyConfigInterface[] $propertiesConfig
-     */
-    public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $propertiesConfig): EntityDtoCollection
-    {
-        $builtEntities = [];
-        foreach ($entityInstances as $entityInstance) {
-            $currentEntityDto = $entityDto->updateInstance($entityInstance);
-            $builtEntities[] = $this->create($currentEntityDto, $propertiesConfig);
-        }
-
-        return EntityDtoCollection::new($builtEntities);
-    }
-
     private function preProcessPropertiesConfig(EntityDto $entityDto, array $propertiesConfig): array
     {
         // fox DX reasons, property config can be just a string with the property name

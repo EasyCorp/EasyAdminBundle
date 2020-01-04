@@ -45,6 +45,10 @@ trait CommonPageConfigTrait
      */
     public function addAction($actionNameOrConfig): self
     {
+        if (!is_string($actionNameOrConfig) && !$actionNameOrConfig instanceof Action) {
+            throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the action name or a "%s" object with the action config.', __METHOD__, Action::class));
+        }
+
         $actionName = (string) $actionNameOrConfig;
 
         if (\array_key_exists($actionName, $this->actions)) {

@@ -10,28 +10,28 @@
 
 {% block configured_head_contents %}
     {{ parent() }}
-    {% for htmlContent in edit_form.vars.ea_form_assets.headContents %}
+    {% for htmlContent in edit_form.vars.ea_crud_form.assets.headContents %}
         {{ htmlContent|raw }}
     {% endfor %}
 {% endblock %}
 
 {% block configured_body_contents %}
     {{ parent() }}
-    {% for htmlContent in edit_form.vars.ea_form_assets.bodyContents %}
+    {% for htmlContent in edit_form.vars.ea_crud_form.assets.bodyContents %}
         {{ htmlContent|raw }}
     {% endfor %}
 {% endblock %}
 
 {% block configured_stylesheets %}
     {{ parent() }}
-    {% for css_asset in edit_form.vars.ea_form_assets.cssFiles %}
+    {% for css_asset in edit_form.vars.ea_crud_form.assets.cssFiles %}
         <link rel="stylesheet" href="{{ asset(css_asset) }}">
     {% endfor %}
 {% endblock %}
 
 {% block configured_javascripts %}
     {{ parent() }}
-    {% for js_asset in edit_form.vars.ea_form_assets.jsFiles %}
+    {% for js_asset in edit_form.vars.ea_crud_form.assets.jsFiles %}
         <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
 {% endblock %}

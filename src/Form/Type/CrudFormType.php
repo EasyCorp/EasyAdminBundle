@@ -111,11 +111,13 @@ class CrudFormType extends AbstractType
                 $formFieldOptions['required'] = false;
             }
 
-            $formFieldOptions['ea_property'] = $propertyDto;
+            //$formFieldOptions['ea_property'] = $propertyDto;
 
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
-            $formField->setAttribute('ea_form_tab', $currentFormTab);
+            $formField->setAttribute('ea_entity', $entityDto);
             $formField->setAttribute('ea_form_group', $currentFormGroup);
+            $formField->setAttribute('ea_form_tab', $currentFormTab);
+            $formField->setAttribute('ea_property', $propertyDto);
 
             $builder->add($formField);
         }
@@ -133,17 +135,24 @@ class CrudFormType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['ea_form_tabs'] = $form->getConfig()->getAttribute('ea_form_tabs');
-        $view->vars['ea_form_groups'] = $form->getConfig()->getAttribute('ea_form_groups');
+        //$view->vars['ea_form_tabs'] = $form->getConfig()->getAttribute('ea_form_tabs');
+        //$view->vars['ea_form_groups'] = $form->getConfig()->getAttribute('ea_form_groups');
 
         // some properties and field types require CSS/JS assets to work properly
         // get all property assets and pass them as a form variable
-        $allAssets = new AssetDto();
+        $allFormFieldAssets = new AssetDto();
         /** @var PropertyDto $propertyDto */
         foreach ($options['entityDto']->getProperties() as $propertyDto) {
-            $allAssets = $allAssets->mergeWith($propertyDto->getAssets());
+            $allFormFieldAssets = $allFormFieldAssets->mergeWith($propertyDto->getAssets());
         }
-        $view->vars['ea_form_assets'] = $allAssets;
+        //$view->vars['ea_form_assets'] = $allAssets;
+
+        $view->vars['ea_crud_form'] = [
+            'assets' => $allFormFieldAssets,
+            'entity' => $options['entityDto'],
+            'form_tabs' => $form->getConfig()->getAttribute('ea_form_tabs'),
+            'form_groups' => $form->getConfig()->getAttribute('ea_form_groups'),
+        ];
     }
 
     /**
@@ -158,6 +167,7 @@ class CrudFormType extends AbstractType
                     return $dataClass ?? $options['entityDto']->getFqcn();
                 },
             ])
+            ->setDefined(['entityDto'])
             ->setRequired(['entityDto'])
             ->setNormalizer('attr', $this->getAttributesNormalizer());
     }

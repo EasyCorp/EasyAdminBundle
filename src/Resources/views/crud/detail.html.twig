@@ -40,12 +40,12 @@
         {% endblock %}
     </div>
 
-    {% if actions is not empty %}
+    {% if entity.actions is not empty %}
         <section class="content-footer">
             <div class="form-actions">
                 {% block item_actions %}
-                    {% for action in actions %}
-                        {{ include(action.template, { action: action, entity: entity }, with_context = false) }}
+                    {% for action in entity.actions %}
+                        {{ include(action.template, { action: action }, with_context = false) }}
                     {% endfor %}
                 {% endblock item_actions %}
             </div>

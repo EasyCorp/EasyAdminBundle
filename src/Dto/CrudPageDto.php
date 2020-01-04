@@ -18,9 +18,6 @@ final class CrudPageDto
     private $filters;
     private $paginatorDto;
     private $formOptions = [];
-    private $showSaveAndExitButton;
-    private $showSaveAndContinueButton;
-    private $showSaveAndAddAnotherButton;
 
     public static function newFromIndexPage(string $name, ?string $title, ?string $help, array $defaultSort, ?string $permission, ?string $entityViewPermission, ?array $searchFields, ?array $actions, array $disabledActions, array $actionUpdateCallables, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto): self
     {
@@ -59,7 +56,7 @@ final class CrudPageDto
         return $context;
     }
 
-    public static function newFromFormPage(string $pageName, ?string $title, ?string $help, ?string $permission, array $formOptions, bool $showSaveAndExitButton, bool $showSaveAndContinueButton, bool $showSaveAndAddAnotherButton, ?array $actions, array $disabledActions, array $actionUpdateCallables): self
+    public static function newFromFormPage(string $pageName, ?string $title, ?string $help, ?string $permission, array $formOptions, ?array $actions, array $disabledActions, array $actionUpdateCallables): self
     {
         $context = new self();
 
@@ -71,9 +68,6 @@ final class CrudPageDto
         $context->actions = $actions;
         $context->disabledActions = $disabledActions;
         $context->actionUpdateCallables = $actionUpdateCallables;
-        $context->showSaveAndExitButton = $showSaveAndExitButton;
-        $context->showSaveAndContinueButton = $showSaveAndContinueButton;
-        $context->showSaveAndAddAnotherButton = $showSaveAndAddAnotherButton;
 
         return $context;
     }
@@ -156,20 +150,5 @@ final class CrudPageDto
     public function getFormOptions(): ?array
     {
         return $this->formOptions;
-    }
-
-    public function showSaveAndExitButton(): bool
-    {
-        return $this->showSaveAndExitButton;
-    }
-
-    public function showSaveAndContinueButton(): bool
-    {
-        return $this->showSaveAndContinueButton;
-    }
-
-    public function showSaveAndAddAnotherButton(): bool
-    {
-        return $this->showSaveAndAddAnotherButton;
     }
 }

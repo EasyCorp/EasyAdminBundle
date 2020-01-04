@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -19,14 +20,16 @@ final class EntityFactory
 {
     private $applicationContextProvider;
     private $propertyFactory;
+    private $actionFactory;
     private $authorizationChecker;
     private $doctrine;
     private $eventDispatcher;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, PropertyFactory $propertyFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, PropertyFactory $propertyFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
         $this->applicationContextProvider = $applicationContextProvider;
         $this->propertyFactory = $propertyFactory;
+        $this->actionFactory = $actionFactory;
         $this->authorizationChecker = $authorizationChecker;
         $this->doctrine = $doctrine;
         $this->eventDispatcher = $eventDispatcher;
@@ -34,8 +37,9 @@ final class EntityFactory
 
     /**
      * @param PropertyConfigInterface[] $configuredProperties
+     * @param Action[] $configuredActions
      */
-    public function create(iterable $configuredProperties = null): EntityDto
+    public function create(iterable $configuredProperties = null, array $configuredActions = null): EntityDto
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $entityFqcn = $applicationContext->getCrud()->getEntityFqcn();
@@ -48,8 +52,14 @@ final class EntityFactory
 
         if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $entityDto)) {
             $entityDto->markAsInaccessible();
-        } elseif (null !== $configuredProperties) {
-            $entityDto = $this->propertyFactory->create($entityDto, $configuredProperties);
+        } else {
+            if (null !== $configuredProperties) {
+                $entityDto = $this->propertyFactory->create($entityDto, $configuredProperties);
+            }
+
+            if (null !== $configuredActions) {
+                $entityDto = $this->actionFactory->create($entityDto, $configuredActions);
+            }
         }
 
         $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($entityDto));
@@ -59,10 +69,20 @@ final class EntityFactory
 
     /**
      * @param PropertyConfigInterface[] $propertiesConfig
+     * @param Action[] $configuredActions
      */
-    public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties): EntityDtoCollection
+    public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties, array $configuredActions): EntityDtoCollection
     {
-        return $this->propertyFactory->createAll($entityDto, $entityInstances, $configuredProperties);
+        $builtEntities = [];
+        foreach ($entityInstances as $entityInstance) {
+            $currentEntityDto = $entityDto->updateInstance($entityInstance);
+            $currentEntityDto = $this->propertyFactory->create($currentEntityDto, $configuredProperties);
+            $currentEntityDto = $this->actionFactory->create($currentEntityDto, $configuredActions);
+
+            $builtEntities[] = $currentEntityDto;
+        }
+
+        return EntityDtoCollection::new($builtEntities);
     }
 
     private function getEntityManager(string $entityFqcn): ObjectManager

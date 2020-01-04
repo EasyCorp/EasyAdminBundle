@@ -39,7 +39,7 @@ return [
     'action.show' => 'Show',
     'action.edit' => 'Edit',
     'action.cancel' => 'Cancel',
-    'action.list' => 'Back to listing',
+    'action.index' => 'Back to listing',
     'action.deselect' => 'Deselect',
     'action.add_new_item' => 'Add a new item',
     'action.remove_item' => 'Remove the item',
@@ -49,7 +49,7 @@ return [
     'action.create_and_add_another' => 'Create and add another',
     'action.create_and_continue' => 'Create and continue editing',
     'action.save' => 'Save changes',
-    'action.save_and_continue' => 'Save changes and continue editing',
+    'action.save_and_continue' => 'Save and continue editing',
 
     // batch actions
     'batch_action_modal.title' => 'Do you really want to alter the selected items?',

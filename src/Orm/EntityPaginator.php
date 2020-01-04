@@ -58,7 +58,7 @@ final class EntityPaginator
 
     public function generateUrlForPage(int $page): string
     {
-        return $this->crudRouter->generateWithoutReferrer(['page' => $page]);
+        return $this->crudRouter->generateCurrentUrlWithoutReferrer(['page' => $page]);
     }
 
     public function getCurrentPage(): int

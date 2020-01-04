@@ -100,12 +100,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entityInstances = $paginator->getResults();
         $configuredProperties = iterator_to_array($this->configureProperties('index'));
-        $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $configuredProperties);
-
-        $actions = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getPage()->getActions());
+        $configuredActions = $this->getContext()->getCrud()->getPage()->getActions();
+        $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $configuredProperties, $configuredActions);
 
         $parameters = [
-            'actions' => $actions,
             'entities' => $entities,
             'paginator' => $paginator,
             'batch_form' => $this->createBatchForm($entityDto->getFqcn()),
@@ -154,12 +152,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $configuredProperties = $this->configureProperties('detail');
-        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties);
-
-        $actions = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getPage()->getActions());
+        $configuredActions = $this->getContext()->getCrud()->getPage()->getActions();
+        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
 
         $parameters = [
-            'actions' => $actions,
             'entity' => $entityDto,
             'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ];
@@ -189,7 +185,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $configuredProperties = $this->configureProperties('edit');
-        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties);
+        $configuredActions = $this->getContext()->getCrud()->getPage()->getActions();
+        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
         $entityInstance = $entityDto->getInstance();
 
         /*
@@ -224,12 +221,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $submitButtonName = $this->getContext()->getRequest()->request->get('ea')['newForm']['btn'];
             if ('save-and-continue' === $submitButtonName) {
-                return $this->redirect($this->get(CrudUrlGenerator::class)->generate([
+                return $this->redirect($this->get(CrudUrlGenerator::class)->generateCurrentUrl([
                     'crudAction' => 'edit',
                     'entityId' => $entityDto->getIdValue(),
                 ]));
-            } elseif ('save-and-return' === $submitButtonName) {
-                return $this->redirect($this->get(CrudUrlGenerator::class)->generate(['crudAction' => 'index']));
+            } elseif ('save-and-close' === $submitButtonName) {
+                return $this->redirect($this->getContext()->getRequest()->request->get('referrer') ?? $this->get(CrudUrlGenerator::class)->generate(['crudAction' => 'index']));
             }
 
             return $this->redirectToRoute($this->getContext()->getDashboardRouteName());
@@ -267,7 +264,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $configuredProperties = $this->configureProperties('new');
-        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties);
+        $configuredActions = $this->getContext()->getCrud()->getPage()->getActions();
+        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
         $entityInstance = $this->createEntity($entityDto->getFqcn());
         $entityDto = $entityDto->updateInstance($entityInstance);
 
@@ -292,8 +290,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
                     'crudAction' => 'edit',
                     'entityId' => $entityDto->getIdValue(),
                 ]));
-            } elseif ('save-and-return' === $submitButtonName) {
-                return $this->redirect($this->get(CrudUrlGenerator::class)->generate(['crudAction' => 'index']));
+            } elseif ('save-and-close' === $submitButtonName) {
+                return $this->redirect($this->getContext()->getRequest()->request->get('referrer') ?? $this->get(CrudUrlGenerator::class)->generate(['crudAction' => 'index']));
             } elseif ('save-and-add' === $submitButtonName) {
                 return $this->redirect($this->getContext()->getRequest()->getRequestUri());
             }

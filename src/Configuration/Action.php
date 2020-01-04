@@ -13,8 +13,8 @@ final class Action
     private $label;
     private $icon;
     private $cssClass;
-    private $linkTitleAttribute;
-    private $linkTarget = '_self';
+    private $htmlElement = 'a';
+    private $htmlAttributes = [];
     private $templatePath;
     private $permission;
     private $crudActionName;
@@ -64,16 +64,20 @@ final class Action
         return $this;
     }
 
-    public function setLinkTitleAttribute(string $title): self
+    public function setHtmlElement(string $element): self
     {
-        $this->linkTitleAttribute = $title;
+        if (!in_array($element, ['a', 'button'])) {
+            throw new \InvalidArgumentException(sprintf('The HTML element used to display an action can only be "a" for links or "button" for buttons ("%s" was given).', $element));
+        }
+
+        $this->htmlElement = $element;
 
         return $this;
     }
 
-    public function setLinkTarget(string $target): self
+    public function setHtmlAttributes(array $attributes): self
     {
-        $this->linkTarget = $target;
+        $this->htmlAttributes = $attributes;
 
         return $this;
     }
@@ -141,6 +145,10 @@ final class Action
             throw new \InvalidArgumentException(sprintf('Actions must link to either a route or a CRUD action. Set the "linkToCrudAction()" or "linkToRoute()" method for the "%s" action.', $this->name));
         }
 
-        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->linkTitleAttribute, $this->linkTarget, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters, $this->displayCallable ?? static function () { return true; });
+        if (null === $this->label) {
+            $this->htmlAttributes = array_merge(['title' => $this->name], $this->htmlAttributes);
+        }
+
+        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->htmlElement, $this->htmlAttributes, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters, $this->displayCallable ?? static function () { return true; });
     }
 }

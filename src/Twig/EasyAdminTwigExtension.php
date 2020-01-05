@@ -160,8 +160,16 @@ class EasyAdminTwigExtension extends AbstractExtension
         return $this->crudRouter->generate($entity, $action, $parameters);
     }
 
-    public function generateCrudRoute(array $queryParams = []): string
+    public function generateCrudRoute(array $queryParams = [], bool $include_referrer = true, bool $remove_existing_referrer = false): string
     {
+        if ($remove_existing_referrer) {
+            return $this->crudRouter->generateCurrentUrlWithoutReferrer($queryParams);
+        }
+
+        if ($include_referrer) {
+            return $this->crudRouter->generateCurrentUrlWithReferrer($queryParams);
+        }
+
         return $this->crudRouter->generateCurrentUrl($queryParams);
     }
 

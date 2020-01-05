@@ -26,6 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
@@ -129,8 +130,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function showFilters(): Response
     {
+        /** @var FiltersFormType $filtersForm */
+        $filtersForm = $this->get(FormFactory::class)->createFilterForm();
+        $formActionParts = parse_url($filtersForm->getConfig()->getAction());
+        $queryString = $formActionParts['query'] ?? [];
+        parse_str($queryString, $queryStringAsArray);
+
         $templateParameters = [
-            'filters_form' => $this->get(FormFactory::class)->createFilterForm(),
+            'filters_form' => $filtersForm,
+            'form_action_query_string_as_array' => $queryStringAsArray,
         ];
 
         return $this->render(

@@ -54,11 +54,9 @@ final class FormFactory
     public function createFilterForm(): FormInterface
     {
         $applicationContext = $this->applicationContextProvider->getContext();
-        $action = $applicationContext->getRequest()->query->get('referrer') ?? $this->crudUrlGenerator->generate();
-
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
-            'action' => $action,
+            'action' => $applicationContext->getRequest()->query->get('referrer'),
         ]);
 
         return $filtersForm->handleRequest($applicationContext->getRequest());

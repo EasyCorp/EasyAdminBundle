@@ -56,7 +56,7 @@
         {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
         {% block filters_action %}
             <div class="btn-group action-filters">
-                <a href="{{ ea_path({ crudAction: 'showFilters', originalCrudAction: ea.request.query.get('crudAction'), referrer: ea_path({ referrer: null }) }) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
+                <a href="{{ ea_path({ crudAction: 'showFilters', include_referrer: true }) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
                     <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
                 </a>
                 {% if applied_filters %}

@@ -44,8 +44,6 @@ class CrudFormType extends AbstractType
     {
         /** @var EntityDto $entityDto */
         $entityDto = $options['entityDto'];
-        // TODO: fix this
-        $view = 'edit'; //$options['view'];
         $formTabs = [];
         $currentFormTab = null;
         $formGroups = [];
@@ -111,8 +109,6 @@ class CrudFormType extends AbstractType
                 $formFieldOptions['required'] = false;
             }
 
-            //$formFieldOptions['ea_property'] = $propertyDto;
-
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
             $formField->setAttribute('ea_entity', $entityDto);
             $formField->setAttribute('ea_form_group', $currentFormGroup);
@@ -135,9 +131,6 @@ class CrudFormType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        //$view->vars['ea_form_tabs'] = $form->getConfig()->getAttribute('ea_form_tabs');
-        //$view->vars['ea_form_groups'] = $form->getConfig()->getAttribute('ea_form_groups');
-
         // some properties and field types require CSS/JS assets to work properly
         // get all property assets and pass them as a form variable
         $allFormFieldAssets = new AssetDto();
@@ -145,7 +138,6 @@ class CrudFormType extends AbstractType
         foreach ($options['entityDto']->getProperties() as $propertyDto) {
             $allFormFieldAssets = $allFormFieldAssets->mergeWith($propertyDto->getAssets());
         }
-        //$view->vars['ea_form_assets'] = $allAssets;
 
         $view->vars['ea_crud_form'] = [
             'assets' => $allFormFieldAssets,

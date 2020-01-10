@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\RequestStack;

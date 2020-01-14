@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

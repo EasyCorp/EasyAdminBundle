@@ -83,7 +83,12 @@ class FileUploadType extends AbstractType implements DataMapperInterface
     public function configureOptions(OptionsResolver $resolver): void
     {
         $uploadNew = static function (UploadedFile $file, string $uploadDir, string $fileName) {
-            $file->move($uploadDir, $fileName);
+            $name = str_replace('\\', '/', $fileName);
+            $pos = strrpos($name, '/');
+            $subDir = false === $pos ? '' : substr($name, 0, $pos);
+            $name = false === $pos ? $name : substr($name, $pos + 1);
+
+            $file->move(rtrim($uploadDir, '/\\').\DIRECTORY_SEPARATOR.$subDir, $name);
         };
 
         $uploadDelete = static function (File $file) {

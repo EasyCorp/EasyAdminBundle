@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 /**

@@ -3,11 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmExtension;

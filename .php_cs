@@ -19,6 +19,7 @@ return PhpCsFixer\Config::create()
         '@PHPUnit48Migration:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
         'fopen_flags' => false,
+        'no_superfluous_phpdoc_tags' => false,
         'ordered_imports' => true,
         'protected_to_private' => false,
         // Part of @Symfony:risky in PHP-CS-Fixer 2.13.0. To be removed from the config file once upgrading

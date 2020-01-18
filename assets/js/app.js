@@ -144,17 +144,21 @@ function createCodeEditorFields()
     const codeEditorJs = document.createElement('script');
     codeEditorJs.setAttribute('src', codeEditorElements[0].dataset.jsUrl);
 
+    document.querySelector('body').appendChild(codeEditorJs);
+
     const codeEditorCss = document.createElement('link');
     codeEditorCss.setAttribute('rel', 'stylesheet');
     codeEditorCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl);
 
-    const codeEditorRtlCss = document.createElement('link');
-    codeEditorRtlCss.setAttribute('rel', 'stylesheet');
-    codeEditorRtlCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
-
     document.querySelector('head').appendChild(codeEditorCss);
-    document.querySelector('head').appendChild(codeEditorRtlCss);
-    document.querySelector('body').appendChild(codeEditorJs);
+
+    if ('rtl' == document.dir) {
+        const codeEditorRtlCss = document.createElement('link');
+        codeEditorRtlCss.setAttribute('rel', 'stylesheet');
+        codeEditorRtlCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
+
+        document.querySelector('head').appendChild(codeEditorRtlCss);
+    }
 }
 
 // Text editor fields require extra JavaScript dependencies, which are loaded
@@ -169,17 +173,21 @@ function createTextEditorFields()
     const textEditorJs = document.createElement('script');
     textEditorJs.setAttribute('src', textEditorElements[0].dataset.jsUrl);
 
+    document.querySelector('body').appendChild(textEditorJs);
+
     const textEditorCss = document.createElement('link');
     textEditorCss.setAttribute('rel', 'stylesheet');
     textEditorCss.setAttribute('href', textEditorElements[0].dataset.cssUrl);
 
-    const textEditorRtlCss = document.createElement('link');
-    textEditorRtlCss.setAttribute('rel', 'stylesheet');
-    textEditorRtlCss.setAttribute('href', textEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
-
     document.querySelector('head').appendChild(textEditorCss);
-    document.querySelector('head').appendChild(textEditorRtlCss);
-    document.querySelector('body').appendChild(textEditorJs);
+
+    if ('rtl' == document.dir) {
+        const textEditorRtlCss = document.createElement('link');
+        textEditorRtlCss.setAttribute('rel', 'stylesheet');
+        textEditorRtlCss.setAttribute('href', textEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
+
+        document.querySelector('head').appendChild(textEditorRtlCss);
+    }
 }
 
 function createFileUploadFields()

@@ -66,7 +66,7 @@ abstract class AbstractDashboardController extends AbstractController implements
         return FormPageConfig::new();
     }
 
-    public function getMenuItems(): iterable
+    public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa-home');
     }

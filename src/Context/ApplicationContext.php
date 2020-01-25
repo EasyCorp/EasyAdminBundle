@@ -91,7 +91,7 @@ final class ApplicationContext
             return $this->mainMenuDto;
         }
 
-        $mainMenuItems = iterator_to_array($this->dashboardControllerInstance->getMenuItems());
+        $mainMenuItems = iterator_to_array($this->dashboardControllerInstance->configureMenuItems());
         $selectedMenuIndex = $this->request->query->getInt('menuIndex', -1);
         $selectedMenuSubIndex = $this->request->query->getInt('submenuIndex', -1);
 

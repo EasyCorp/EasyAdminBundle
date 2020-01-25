@@ -36,5 +36,5 @@ interface DashboardControllerInterface
     /**
      * @return MenuItem[]
      */
-    public function getMenuItems(): iterable;
+    public function configureMenuItems(): iterable;
 }

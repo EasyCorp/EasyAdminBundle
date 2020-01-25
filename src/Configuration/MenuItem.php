@@ -74,12 +74,14 @@ final class MenuItem
         return $menuItem;
     }
 
-    public static function linktoRoute(string $name, array $parameters = []): self
+    public static function linktoRoute(string $label, ?string $icon = null, string $routeName, array $routeParams = []): self
     {
         $menuItem = new self();
         $menuItem->type = MenuFactory::ITEM_TYPE_ROUTE;
-        $menuItem->routeName = $name;
-        $menuItem->routeParameters = $parameters;
+        $menuItem->label = $label;
+        $menuItem->icon = $icon;
+        $menuItem->routeName = $routeName;
+        $menuItem->routeParameters = $routeParams;
 
         return $menuItem;
     }

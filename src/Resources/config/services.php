@@ -105,7 +105,7 @@ return static function (ContainerConfigurator $container) {
         ->set(PropertyFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
-            ->arg(2, tagged('ea.property_configurator'))
+            ->arg(2, function_exists('tagged') ? tagged('ea.property_configurator') : tagged_iterator('ea.property_configurator'))
 
         ->set(ActionFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))
@@ -120,7 +120,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('security.voter')
 
         ->set(CrudFormType::class)
-            ->arg(0, tagged('ea.form_type_configurator'))
+            ->arg(0, function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))
             ->arg(1, ref('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
 
@@ -142,7 +142,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)
-            ->arg(0, tagged('ea.form_type_configurator'))
+            ->arg(0, function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))
             ->tag('form.type', ['alias' => 'ea_filters'])
     ;
 };

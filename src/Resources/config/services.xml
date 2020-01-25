@@ -55,11 +55,13 @@
             <argument type="service" id="security.authorization_checker" on-invalid="null" />
         </service>
 
+        <!--
         <service id="easyadmin.listener.controller" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener" public="true">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="controller_resolver" />
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
+        -->
 
         <service id="easyadmin.listener.exception" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener" public="true">
             <argument type="service" id="twig" />

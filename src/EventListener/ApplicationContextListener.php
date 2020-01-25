@@ -40,7 +40,7 @@ class ApplicationContextListener
         }
 
         $crudControllerCallable = $this->getCrudController($event->getRequest());
-        $crudControllerInstance = $crudControllerCallable[0];
+        $crudControllerInstance = null !== $crudControllerCallable ? $crudControllerCallable[0] : null;
 
         // creating the context is expensive, so it's created once and stored in the request
         // if the current request already has an ApplicationContext object, do nothing

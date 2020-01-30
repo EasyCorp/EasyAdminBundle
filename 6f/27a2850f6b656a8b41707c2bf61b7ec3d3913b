@@ -1,0 +1,15 @@
+---------------------------------------------------------------------------
+
+by javiereguiluz at 2020-01-30T16:48:05Z
+
+Oskar, thanks for contributing this! It will be very useful soon ... because we'll add the docs for the new EasyAdmin 3 version, which literally changes everything and it's easy to make mistakes.
+
+About the "actions" permission, this is what I see in this repository options. It looks OK, but please tell me if I need to change anything. Thanks!
+
+![actions-permissions](https://user-images.githubusercontent.com/73419/73470733-a15c1080-4388-11ea-9ac7-45e6c9a0a21b.png)
+
+---------------------------------------------------------------------------
+
+by OskarStark at 2020-01-30T17:11:16Z
+
+Ok I guess we need to merge it, otherwise it will not run. Can you please do this? I wollt take care of making the build green if there are some errors

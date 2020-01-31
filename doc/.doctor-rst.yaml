@@ -19,14 +19,13 @@ rules:
     php_prefix_before_bin_console: ~
     use_deprecated_directive_instead_of_versionadded: ~
     no_space_before_self_xml_closing_tag: ~
-    no_explicit_use_of_code_block_php: ~
     ensure_order_of_code_blocks_in_configuration_block: ~
     american_english: ~
     valid_use_statements: ~
     lowercase_as_in_use_statements: ~
     ordered_use_statements: ~
     no_namespace_after_use_statements: ~
-    correct_code_block_directive_based_on_the_content: ~
+    # correct_code_block_directive_based_on_the_content: ~
     max_blank_lines:
         max: 2
     replace_code_block_types: ~
@@ -37,10 +36,8 @@ rules:
     indention: ~
     unused_links: ~
     yaml_instead_of_yml_suffix: ~
-    extend_abstract_controller: ~
     no_app_bundle: ~
 
-    #   master
     versionadded_directive_major_version:
         major_version: 2
 

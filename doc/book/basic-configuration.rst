@@ -56,7 +56,7 @@ logo instead of a text-based logo:
 
     # config/packages/easy_admin.yaml
     easy_admin:
-        site_name: '<img src="https://symfony.com/logos/symfony_white_01.png" />'
+        site_name: '<img src="https://symfony.com/logos/symfony_white_01.png"/>'
         # ...
 
 Changing the Homepage of the Backend

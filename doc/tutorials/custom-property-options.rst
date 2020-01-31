@@ -102,7 +102,7 @@ for this property and make use of the ``label_colors`` custom option:
 
 The custom ``tag_collection.html.twig`` template would look as follows:
 
-.. code-block:: twig
+.. code-block:: html+twig
 
     {# templates/admin/tag_collection.html.twig #}
     {% set colors = field_options.label_colors|default(['primary']) %}

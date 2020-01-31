@@ -244,7 +244,6 @@ section to learn more about it.
 
 .. _`AdminLTE template`: https://github.com/almasaeed2010/AdminLTE
 .. _`Bootstrap 4`: https://github.com/twbs/bootstrap
-.. _`Sass`: https://sass-lang.com/
 .. _`jQuery`: https://github.com/jquery/jquery
 .. _`Font Awesome icons`: https://github.com/FortAwesome/Font-Awesome
 .. _`Webpack`: https://webpack.js.org/

@@ -203,7 +203,7 @@ VichUploaderBundle configuration.
                         fields:
                             - { property: 'image', template: 'vich_uploader_image.html.twig' }
 
-    .. code-block:: twig
+    .. code-block:: html+twig
 
         {# templates/vich_uploader_image.html.twig #}
         <a href="#" class="easyadmin-thumbnail" data-featherlight="#easyadmin-lightbox-{{ item.id }}" data-featherlight-close-on-click="anywhere">
@@ -362,7 +362,7 @@ the contents of this property:
 
 Now you must create the ``templates/contract.html.twig`` template with this content:
 
-.. code-block:: twig
+.. code-block:: html+twig
 
     <a href="{{ value }}">View contract (PDF)</a>
 
@@ -385,7 +385,7 @@ option. So you just need to add a new option in the property definition:
 
 Then, update the custom template to use this new option:
 
-.. code-block:: twig
+.. code-block:: html+twig
 
     <a href="{{ field_options.base_path ~ '/' ~ value }}">View contract (PDF)</a>
 
@@ -394,7 +394,7 @@ Then, update the custom template to use this new option:
     You can also solve this issue using Symfony asset packages instead of relying
     on EasyAdmin options. The custom template would look like this:
 
-    .. code-block:: twig
+    .. code-block:: html+twig
 
         <a href="{{ asset(value, 'user_contracts') }}">View contract (PDF)</a>
 

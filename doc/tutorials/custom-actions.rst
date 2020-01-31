@@ -74,17 +74,17 @@ Now you can define the ``restockAction()`` method in your own controller:
             $this->em->flush();
 
             // redirect to the 'list' view of the given entity ...
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'list',
                 'entity' => $this->request->query->get('entity'),
-            ));
+            ]);
 
             // ... or redirect to the 'edit' view of the given entity item
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'edit',
                 'id' => $id,
                 'entity' => $this->request->query->get('entity'),
-            ));
+            ]);
         }
     }
 
@@ -177,17 +177,17 @@ would look as follows:
             $em->flush();
 
             // redirect to the 'list' view of the given entity ...
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'list',
                 'entity' => $request->query->get('entity'),
-            ));
+            ]);
 
             // ... or redirect to the 'edit' view of the given entity item
-            return $this->redirectToRoute('easyadmin', array(
+            return $this->redirectToRoute('easyadmin', [
                 'action' => 'edit',
                 'id' => $id,
                 'entity' => $request->query->get('entity'),
-            ));
+            ]);
         }
     }
 

@@ -290,9 +290,9 @@ By default, the forms built to create and edit entities only define the
 
 .. code-block:: php
 
-    $form = $this->createFormBuilder($entity, array(
+    $form = $this->createFormBuilder($entity, [
         'data_class' => 'App\Entity\Customer',
-    ))
+    ])
     -> ...
 
 If you need to pass custom options to the forms, define the ``form_options``
@@ -313,10 +313,10 @@ The above example makes the backend use the following PHP code to build the form
 
 .. code-block:: php
 
-    $form = $this->createFormBuilder($entity, array(
+    $form = $this->createFormBuilder($entity, [
         'data_class' => 'App\Entity\Customer',
-        'validation_groups' => array('Default', 'my_validation_group'),
-    ))
+        'validation_groups' => ['Default', 'my_validation_group'],
+    ])
     -> ...
 
 Customize the Form Fields
@@ -775,7 +775,7 @@ additional information. If the field is called ``title`` and belongs to a
 The next step is to define the template fragment used by that field, which
 requires to know the `form fragment naming rules`_ defined by Symfony:
 
-.. code-block:: twig
+.. code-block:: html+twig
 
     {# templates/admin/form.html.twig #}
     {% block _product_custom_title_widget %}
@@ -988,7 +988,7 @@ of the default EasyAdmin templates, create a new template inside
 ``templates/bundles/EasyAdminBundle/default/`` with the same path as the
 template to override. Example:
 
-::
+.. code-block:: text
 
     your-project/
     ├─ ...

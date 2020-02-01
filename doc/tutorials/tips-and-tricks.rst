@@ -23,7 +23,7 @@ In addition to ``apc``, Doctrine metadata cache supports ``memcache``,
 ``memcached``, ``xcache`` and ``service`` (for using a custom cache service).
 Read the documentation about `Doctrine caching drivers`_.
 
-Note that the previous example configures metadata caching in ``config_prod.yml``
+Note that the previous example configures metadata caching in ``config_prod.yaml``
 file, which is the configuration used for the production environment. It's not
 recommended to enable this cache in the development environment to avoid having
 to clear APC cache or restart the web server whenever you make any change to

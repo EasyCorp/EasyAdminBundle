@@ -381,7 +381,7 @@ Instead of overriding the ``createNewEntity()`` method and check for the
         // Customizes the instantiation of entities only for the 'User' entity
         public function createNewUserEntity()
         {
-            return new User(array('ROLE_USER'));
+            return new User(['ROLE_USER']);
         }
     }
 
@@ -515,9 +515,9 @@ property of the ``BlogPost`` entity before persisting it:
     # src/EventSubscriber/EasyAdminSubscriber.php
     namespace App\EventSubscriber;
 
+    use App\Entity\BlogPost;
     use Symfony\Component\EventDispatcher\EventSubscriberInterface;
     use Symfony\Component\EventDispatcher\GenericEvent;
-    use App\Entity\BlogPost;
 
     class EasyAdminSubscriber implements EventSubscriberInterface
     {
@@ -530,9 +530,9 @@ property of the ``BlogPost`` entity before persisting it:
 
         public static function getSubscribedEvents()
         {
-            return array(
-                'easy_admin.pre_persist' => array('setBlogPostSlug'),
-            );
+            return [
+                'easy_admin.pre_persist' => ['setBlogPostSlug'],
+            ];
         }
 
         public function setBlogPostSlug(GenericEvent $event)
@@ -563,7 +563,7 @@ Twig Template Path: ``@EasyAdmin/page/login.html.twig``
 
 It displays a simple username + password login form that matches the style of
 the rest of the backend. The template defines lots of config options, but most
-apps can rely on its default values:
+applications can rely on its default values:
 
 .. code-block:: php
 

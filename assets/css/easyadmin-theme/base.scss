@@ -353,9 +353,11 @@ form .content-footer {
 }
 
 // Boolean labels (not switches/toggles)
-.boolean .label {
+.property-boolean .badge {
     display: inline-block;
+    font-size: 12px;
     min-width: 33px;
+    text-transform: uppercase;
 }
 
 body.show .form-horizontal {

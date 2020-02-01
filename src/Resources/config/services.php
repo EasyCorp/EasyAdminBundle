@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CountryConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\DateTimeConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\ImageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextConfigurator;
@@ -140,6 +141,9 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref(IntlFormatter::class))
             ->tag('ea.property_configurator')
+
+        ->set(CountryConfigurator::class)
+        ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)
             ->arg(0, function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))

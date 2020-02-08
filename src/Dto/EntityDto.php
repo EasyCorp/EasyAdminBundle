@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Property\BooleanProperty;
 
 final class EntityDto
 {

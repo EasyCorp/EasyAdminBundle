@@ -5,8 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
+use EasyCorp\Bundle\EasyAdminBundle\Property\BooleanProperty;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -34,7 +36,7 @@ final class SecurityVoter extends Voter
         }
 
         if (Permission::EA_EXECUTE_ACTION === $permissionName) {
-            return $this->voteOnExecuteActionPermission();
+            return $this->voteOnExecuteActionPermission($this->applicationContextProvider->getContext()->getCrud());
         }
 
         if (Permission::EA_VIEW_PROPERTY === $permissionName) {
@@ -62,14 +64,13 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission());
     }
 
-    private function voteOnExecuteActionPermission(): bool
+    private function voteOnExecuteActionPermission(?CrudDto $crudDto): bool
     {
         // users can run the Crud action if:
         // * they have the required permission to run the action
         // * the action is not disabled
-        $applicationContext = $this->applicationContextProvider->getContext();
-        $crudActionPermission = $applicationContext->getCrud()->getPage()->getPermission();
-        $crudActionName = $applicationContext->getCrud()->getAction();
+        $crudActionPermission = $crudDto->getPage()->getPermission();
+        $crudActionName = $crudDto->getAction();
 
         return $this->authorizationChecker->isGranted($crudActionPermission) && !$this->isActionDisabled($crudActionName);
     }

@@ -242,17 +242,17 @@
 
     <script type="text/javascript">
         $(function() {
-            const toggles = document.querySelectorAll('.checkbox-switch input[type="checkbox"]');
-            for (i = 0; i < toggles.length; i++) {
-                toggles[i].addEventListener('change', function () {
-                    const toggle = this;
+            const customSwitches = document.querySelectorAll('td.property-boolean .custom-control.custom-switch input[type="checkbox"]');
+            for (i = 0; i < customSwitches.length; i++) {
+                customSwitches[i].addEventListener('change', function () {
+                    const customSwitch = this;
                     const newValue = this.checked;
                     const oldValue = !newValue;
-                    const propertyName = this.closest('.checkbox-switch').dataset.propertyname;
+                    const propertyName = this.closest('.custom-switch').dataset.propertyname;
 
-                    const toggleUrl = "{{ ea_path({ crudAction: 'form' })|raw }}"
-                        + "&id=" + this.closest('tr').dataset.id
-                        + "&property=" + propertyName
+                    const toggleUrl = "{{ ea_path({ crudAction: 'edit' })|raw }}"
+                        + "&entityId=" + this.closest('tr').dataset.id
+                        + "&propertyName=" + propertyName
                         + "&newValue=" + newValue.toString();
 
                     let toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
@@ -261,9 +261,9 @@
 
                     toggleRequest.fail(function() {
                         // in case of error, restore the original value and disable the toggle
-                        toggle.checked = oldValue;
-                        toggle.disabled = true;
-                        toggle.closest('.checkbox-switch').classList.add('disabled');
+                        customSwitch.checked = oldValue;
+                        customSwitch.disabled = true;
+                        customSwitch.closest('.custom-switch').classList.add('disabled');
                     });
                 });
             }

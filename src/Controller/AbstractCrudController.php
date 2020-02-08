@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
@@ -28,6 +29,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,6 +38,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -78,6 +81,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             CrudUrlGenerator::class => '?'.CrudUrlGenerator::class,
             EntityFactory::class => '?'.EntityFactory::class,
             EntityRepository::class => '?'.EntityRepository::class,
+            EntityUpdater::class => '?'.EntityUpdater::class,
             FormFactory::class => '?'.FormFactory::class,
             PaginatorFactory::class => '?'.PaginatorFactory::class,
         ]);
@@ -197,21 +201,18 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
         $entityInstance = $entityDto->getInstance();
 
-        /*
-        if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
-            $newValue = 'true' === mb_strtolower($this->request->query->get('newValue'));
-            $fieldsMetadata = $this->entity['list']['fields'];
+        if ($this->getContext()->getRequest()->isXmlHttpRequest()) {
+            $propertyName = $this->getContext()->getRequest()->query->get('propertyName');
+            $newValue = 'true' === mb_strtolower($this->getContext()->getRequest()->query->get('newValue'));
 
-            if (!isset($fieldsMetadata[$property]) || 'toggle' !== $fieldsMetadata[$property]['dataType']) {
-                throw new \RuntimeException(sprintf('The type of the "%s" property is not "toggle".', $property));
+            $event = $this->ajaxEdit($entityDto, $propertyName, $newValue);
+            if ($event->isPropagationStopped()) {
+                return $event->getResponse();
             }
-
-            $this->updateEntityProperty($entity, $property, $newValue);
 
             // cast to integer instead of string to avoid sending empty responses for 'false'
             return new Response((int) $newValue);
         }
-        */
 
         $editForm = $this->createEditForm($entityDto);
         $editForm->handleRequest($this->getContext()->getRequest());
@@ -384,5 +385,32 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'action' => $this->generateUrl('easyadmin', ['action' => 'batch', 'entity' => $entityName]),
             'entity' => $entityName,
         ]);
+    }
+
+    private function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
+    {
+        if (!$entityDto->hasProperty($propertyName)) {
+            throw new \RuntimeException(sprintf('The "%s" boolean property cannot be changed because either it doesn\'t exist in the "%s" entity.', $propertyName, $entityDto->getName()));
+        }
+
+        $this->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);
+
+        $event = new BeforeEntityUpdatedEvent($entityDto->getInstance());
+        $this->get('event_dispatcher')->dispatch($event);
+        $entityInstance = $event->getEntityInstance();
+
+        $this->updateEntity($this->get('doctrine')->getManagerForClass($entityDto->getFqcn()), $entityInstance);
+
+        $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
+
+        $parameters = [
+            'action' => 'edit',
+            'entity' => $entityDto->updateInstance($entityInstance),
+        ];
+
+        $event = new AfterCrudActionEvent($this->getContext(), $parameters);
+        $this->get('event_dispatcher')->dispatch($event);
+
+        return $event;
     }
 }

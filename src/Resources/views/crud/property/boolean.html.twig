@@ -2,8 +2,13 @@
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
 {% trans_default_domain 'EasyAdminBundle' %}
 
-{% if property.value == true %}
-    <span class="badge badge-success">{{ 'label.true'|trans }}</span>
+{% if ea.crud.action == 'detail' or not property.customOptions.get('renderAsSwitch') %}
+    <span class="badge {{ property.value == true ? 'badge-success' : 'badge-danger' }}">
+        {{ (property.value == true ? 'label.true' : 'label.false')|trans }}
+    </span>
 {% else %}
-    <span class="badge badge-danger">{{ 'label.false'|trans }}</span>
+    <div class="custom-control custom-switch custom-switch-lg" data-propertyname="{{ property.name }}">
+        <input type="checkbox" class="custom-control-input" id="{{ property.uniqueId }}" {{ property.value == true ? 'checked' }}>
+        <label class="custom-control-label" for="{{ property.uniqueId }}"></label>
+    </div>
 {% endif %}

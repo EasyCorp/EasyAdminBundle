@@ -37,7 +37,7 @@
             </trans-unit>
             <trans-unit id="action.deselect">
                 <source>action.deselect</source>
-                <target>*** Deselect ***</target>
+                <target>Zrušit výběr</target>
             </trans-unit>
             <trans-unit id="label.form.empty_value">
                 <source>label.form.empty_value</source>

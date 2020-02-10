@@ -11,7 +11,7 @@ interface PropertyConfigInterface
 
     public function setName(string $name): self;
 
-    public function setLabel(string $label): self;
+    public function setLabel(?string $label): self;
 
     public function setValue($value): self;
 

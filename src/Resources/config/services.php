@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\AvatarConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\BooleanConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CountryConfigurator;
@@ -151,6 +152,9 @@ return static function (ContainerConfigurator $container) {
         ->tag('ea.property_configurator')
 
         ->set(BooleanConfigurator::class)
+        ->tag('ea.property_configurator')
+
+        ->set(AvatarConfigurator::class)
         ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)

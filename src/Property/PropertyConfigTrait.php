@@ -178,7 +178,7 @@ trait PropertyConfigTrait
         return $this;
     }
 
-    public function setLabel(string $label): PropertyConfigInterface
+    public function setLabel(?string $label): PropertyConfigInterface
     {
         $this->label = $label;
 

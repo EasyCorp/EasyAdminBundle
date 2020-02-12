@@ -171,4 +171,37 @@ final class EntityDto
 
         return $clone;
     }
+
+    public function getDefaultProperties(string $action)
+    {
+        $defaultPropertyNames = [];
+        $maxNumProperties = 'index' === $action ? 7 : \PHP_INT_MAX;
+
+        $excludedPropertyTypes = [
+            'edit' => ['binary', 'blob', 'json_array', 'json', 'object'],
+            'index' => ['array', 'association', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'],
+            'new' => ['binary', 'blob', 'json_array', 'json', 'object'],
+            'detail' => [],
+        ];
+
+        $excludedPropertyNames = [
+            'edit' => [$this->getIdName()],
+            'index' => ['password', 'salt', 'slug', 'updatedAt', 'uuid'],
+            'new' => [$this->getIdName()],
+            'detail' => [],
+        ];
+
+        foreach ($this->getAllPropertyNames() as $propertyName) {
+            $metadata = $this->getPropertyMetadata($propertyName);
+            if (!\in_array($propertyName, $excludedPropertyNames[$action], true) && !\in_array($metadata['type'], $excludedPropertyTypes[$action], true)) {
+                $defaultPropertyNames[] = $propertyName;
+            }
+        }
+
+        if (\count($defaultPropertyNames) > $maxNumProperties) {
+            $defaultPropertyNames = \array_slice($defaultPropertyNames, 0, $maxNumProperties, true);
+        }
+
+        return $defaultPropertyNames;
+    }
 }

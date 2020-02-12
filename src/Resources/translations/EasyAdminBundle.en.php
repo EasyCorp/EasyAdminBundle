@@ -36,7 +36,7 @@ return [
     // actions
     'list.row_actions' => 'Actions',
     'action.new' => 'Add %entity_label%',
-    'action.show' => 'Show',
+    'action.detail' => 'Show',
     'action.edit' => 'Edit',
     'action.cancel' => 'Cancel',
     'action.index' => 'Back to listing',

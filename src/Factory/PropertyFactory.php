@@ -42,6 +42,10 @@ final class PropertyFactory
         Type::TIME_IMMUTABLE => 'time',
     ];
 
+    private const PROPERTY_TYPE_TO_PROPERTY_CLASSNAME_MAP = [
+        'datetime' => 'DateTime',
+    ];
+
     private $applicationContextProvider;
     private $authorizationChecker;
     private $propertyConfigurators;
@@ -114,7 +118,8 @@ final class PropertyFactory
 
             $guessedType = self::DOCTRINE_TYPE_TO_PROPERTY_TYPE_MAP[$doctrineMetadata['type']] ?? null;
             if (null !== $guessedType) {
-                $guessedPropertyClass = 'EasyCorp\\Bundle\\EasyAdminBundle\\Property\\'.ucfirst($guessedType).'Property';
+                $guessedClassName = isset(self::PROPERTY_TYPE_TO_PROPERTY_CLASSNAME_MAP[$guessedType]) ? self::PROPERTY_TYPE_TO_PROPERTY_CLASSNAME_MAP[$guessedType] : ucfirst($guessedType);
+                $guessedPropertyClass = sprintf('EasyCorp\\Bundle\\EasyAdminBundle\\Property\\%sProperty', $guessedClassName);
                 $propertiesConfig[$i] = $propertyConfig->transformInto($guessedPropertyClass);
             }
         }

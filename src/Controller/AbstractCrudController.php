@@ -30,6 +30,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Property;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,7 +56,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     /**
      * {@inheritdoc}
      */
-    abstract public function configureProperties(string $action): iterable;
+    public function configureProperties(string $action): iterable
+    {
+        $entityDto = $this->get(EntityFactory::class)->create();
+        foreach ($entityDto->getDefaultProperties($action) as $propertyName) {
+            yield Property::new($propertyName);
+        }
+    }
 
     public function configureIndexPage(IndexPageConfig $indexPageConfig): IndexPageConfig
     {

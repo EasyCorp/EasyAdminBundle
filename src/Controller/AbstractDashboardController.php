@@ -36,6 +36,8 @@ abstract class AbstractDashboardController extends AbstractController implements
         }
 
         return UserMenuConfig::new()
+            ->displayUserName()
+            ->displayUserAvatar()
             ->setName(method_exists($user, '__toString') ? (string) $user : $user->getUsername())
             ->setAvatarUrl(null)
             ->setMenuItems($userMenuItems);

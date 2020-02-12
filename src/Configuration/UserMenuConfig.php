@@ -6,8 +6,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 
 final class UserMenuConfig
 {
-    private $isNameDisplayed = true;
-    private $isAvatarDisplayed = true;
+    private $displayName = true;
+    private $displayAvatar = true;
     private $name;
     private $avatarUrl;
     /** @var MenuItem[] */
@@ -18,16 +18,16 @@ final class UserMenuConfig
         return new self();
     }
 
-    public function isNameDisplayed(bool $isDisplayed): self
+    public function displayUserName(bool $isDisplayed = true): self
     {
-        $this->isNameDisplayed = $isDisplayed;
+        $this->displayName = $isDisplayed;
 
         return $this;
     }
 
-    public function isAvatarDisplayed(bool $isDisplayed): self
+    public function displayUserAvatar(bool $isDisplayed = true): self
     {
-        $this->isAvatarDisplayed = $isDisplayed;
+        $this->displayAvatar = $isDisplayed;
 
         return $this;
     }
@@ -76,6 +76,6 @@ final class UserMenuConfig
 
     public function getAsDto(): UserMenuDto
     {
-        return new UserMenuDto($this->isNameDisplayed, $this->isAvatarDisplayed, $this->name, $this->avatarUrl, $this->menuItems);
+        return new UserMenuDto($this->displayName, $this->displayAvatar, $this->name, $this->avatarUrl, $this->menuItems);
     }
 }

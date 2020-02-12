@@ -6,29 +6,29 @@ final class UserMenuDto
 {
     use PropertyModifierTrait;
 
-    private $isNameDisplayed;
-    private $isAvatarDisplayed;
+    private $displayName;
+    private $displayAvatar;
     private $name;
     private $avatarUrl;
     private $items;
 
-    public function __construct(bool $isNameDisplayed, bool $isAvatarDisplayed, ?string $name, ?string $avatarUrl, array $items)
+    public function __construct(bool $displayName, bool $displayAvatar, ?string $name, ?string $avatarUrl, array $items)
     {
-        $this->isNameDisplayed = $isNameDisplayed;
-        $this->isAvatarDisplayed = $isAvatarDisplayed;
+        $this->displayName = $displayName;
+        $this->displayAvatar = $displayAvatar;
         $this->name = $name;
         $this->avatarUrl = $avatarUrl;
         $this->items = $items;
     }
 
-    public function getIsNameDisplayed(): bool
+    public function isNameDisplayed(): bool
     {
-        return $this->isNameDisplayed;
+        return $this->displayName;
     }
 
-    public function getIsAvatarDisplayed(): bool
+    public function isAvatarDisplayed(): bool
     {
-        return $this->isAvatarDisplayed;
+        return $this->displayAvatar;
     }
 
     public function getName(): ?string

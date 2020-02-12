@@ -20,7 +20,7 @@ document.querySelectorAll('[data-easyadmin-code-editor]').forEach(function(codeB
     const editor = CodeMirror.fromTextArea(codeBlock, {
         autocapitalize: false,
         autocorrect: false,
-        indentWithTabs: codeBlock.dataset.indentWithTabs,
+        indentWithTabs: (codeBlock.dataset.indentWithTabs == 'true'),
         lineNumbers: true,
         lineWrapping: true,
         mode: codeBlock.dataset.language,

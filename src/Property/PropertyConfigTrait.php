@@ -14,6 +14,7 @@ trait PropertyConfigTrait
     private $value;
     private $formattedValue;
     private $label;
+    private $required;
     private $formType;
     private $formTypeOptions = [];
     private $sortable;
@@ -75,6 +76,11 @@ trait PropertyConfigTrait
     public function getLabel(): ?string
     {
         return $this->label;
+    }
+
+    public function isRequired(): ?bool
+    {
+        return $this->formTypeOptions['required'] ?? null;
     }
 
     public function getFormType(): ?string
@@ -202,6 +208,13 @@ trait PropertyConfigTrait
     public function setVirtual(bool $isVirtual): PropertyConfigInterface
     {
         $this->virtual = $isVirtual;
+
+        return $this;
+    }
+
+    public function setRequired(bool $isRequired): PropertyConfigInterface
+    {
+        $this->formTypeOptions['required'] = $isRequired;
 
         return $this;
     }

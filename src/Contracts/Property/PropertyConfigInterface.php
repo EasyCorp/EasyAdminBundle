@@ -19,6 +19,8 @@ interface PropertyConfigInterface
 
     public function setVirtual(bool $isVirtual): self;
 
+    public function setRequired(bool $isRequired): self;
+
     public function setFormType(string $formType): self;
 
     public function setFormTypeOptions(array $options): self;
@@ -63,6 +65,8 @@ interface PropertyConfigInterface
     public function getFormattedValue();
 
     public function getLabel(): ?string;
+
+    public function isRequired(): ?bool;
 
     public function getFormType(): ?string;
 

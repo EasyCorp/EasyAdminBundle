@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\TemplateDto;
 
 final class TemplateRegistry
 {
+    private static $templates;
     private static $templateNamesAndPaths = [
         'layout' => '@EasyAdmin/layout.html.twig',
         'main_menu' => '@EasyAdmin/menu.html.twig',
@@ -43,15 +44,14 @@ final class TemplateRegistry
         'property/raw' => '@EasyAdmin/crud/property/raw.html.twig',
         'property/simple_array' => '@EasyAdmin/crud/property/simple_array.html.twig',
         'property/smallint' => '@EasyAdmin/crud/property/smallint.html.twig',
-        'property/string' => '@EasyAdmin/crud/property/string.html.twig',
-        'property/tel' => '@EasyAdmin/crud/property/tel.html.twig',
+        'property/telephone' => '@EasyAdmin/crud/property/telephone.html.twig',
         'property/text' => '@EasyAdmin/crud/property/text.html.twig',
+        'property/textarea' => '@EasyAdmin/crud/property/textarea.html.twig',
         'property/text_editor' => '@EasyAdmin/crud/property/text_editor.html.twig',
         'property/time' => '@EasyAdmin/crud/property/time.html.twig',
         'property/toggle' => '@EasyAdmin/crud/property/toggle.html.twig',
         'property/url' => '@EasyAdmin/crud/property/url.html.twig',
     ];
-    private static $templates;
 
     private function __construct()
     {

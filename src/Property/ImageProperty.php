@@ -23,7 +23,7 @@ class ImageProperty implements PropertyConfigInterface
 
     public function setBasePath(string $path): self
     {
-        $this->basePath = $path;
+        $this->setCustomOption(self::OPTION_BASE_PATH, $path);
 
         return $this;
     }

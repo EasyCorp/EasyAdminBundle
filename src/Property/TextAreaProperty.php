@@ -3,19 +3,21 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class StringProperty implements PropertyConfigInterface
+class TextAreaProperty implements PropertyConfigInterface
 {
     use PropertyConfigTrait;
+
+    public const OPTION_MAX_LENGTH = 'maxLength';
 
     public function __construct()
     {
         $this
-            ->setType('string')
-            ->setFormType(TextType::class)
-            ->setTemplateName('property/string')
-            ->setCustomOption(TextProperty::OPTION_MAX_LENGTH, null);
+            ->setType('textarea')
+            ->setFormType(TextareaType::class)
+            ->setTemplateName('property/textarea')
+            ->setCustomOption(self::OPTION_MAX_LENGTH, null);
     }
 
     public function setMaxLength(int $length): self
@@ -24,7 +26,7 @@ class StringProperty implements PropertyConfigInterface
             throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 1 or higher (%d given).', __METHOD__, $length));
         }
 
-        $this->setCustomOption(TextProperty::OPTION_MAX_LENGTH, $length);
+        $this->setCustomOption(self::OPTION_MAX_LENGTH, $length);
 
         return $this;
     }

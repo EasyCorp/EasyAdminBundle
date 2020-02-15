@@ -39,10 +39,11 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         $propertyConfig
             ->setValue($value)
             ->setFormattedValue($value)
-            ->setLabel($this->buildLabelProperty($propertyConfig, $translationDomain))
-            ->setSortable($this->buildSortableProperty($propertyConfig, $entityDto))
-            ->setVirtual($this->buildVirtualProperty($propertyConfig, $entityDto))
-            ->setTemplatePath($this->buildTemplatePathProperty($applicationContext, $propertyConfig, $entityDto, $value));
+            ->setLabel($this->buildLabelOption($propertyConfig, $translationDomain))
+            ->setSortable($this->buildSortableOption($propertyConfig, $entityDto))
+            ->setVirtual($this->buildVirtualOption($propertyConfig, $entityDto))
+            ->setTemplatePath($this->buildTemplatePathOption($applicationContext, $propertyConfig, $entityDto, $value))
+            ->setRequired($this->buildRequiredOption($propertyConfig, $entityDto));
 
         if (null !== $propertyConfig->getHelp()) {
             $propertyConfig->setHelp($this->buildHelpProperty($propertyConfig, $translationDomain));
@@ -58,7 +59,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         return $this->translator->trans($help, $propertyConfig->getTranslationParams(), $translationDomain);
     }
 
-    private function buildLabelProperty(PropertyConfigInterface $propertyConfig, string $translationDomain): string
+    private function buildLabelOption(PropertyConfigInterface $propertyConfig, string $translationDomain): string
     {
         // it field doesn't define its label explicitly, generate an automatic
         // label based on the field's property name
@@ -73,7 +74,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         return $this->translator->trans($label, $propertyConfig->getTranslationParams(), $translationDomain);
     }
 
-    private function buildSortableProperty(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool
+    private function buildSortableOption(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool
     {
         if (null !== $isSortable = $propertyConfig->isSortable()) {
             return $isSortable;
@@ -82,7 +83,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         return $entityDto->hasProperty($propertyConfig->getName());
     }
 
-    private function buildVirtualProperty(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool
+    private function buildVirtualOption(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool
     {
         return !$entityDto->hasProperty($propertyConfig->getName());
     }
@@ -99,7 +100,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         return null;
     }
 
-    private function buildTemplatePathProperty(ApplicationContext $applicationContext, PropertyConfigInterface $propertyConfig, EntityDto $entityDto, $propertyValue): string
+    private function buildTemplatePathOption(ApplicationContext $applicationContext, PropertyConfigInterface $propertyConfig, EntityDto $entityDto, $propertyValue): string
     {
         if (null !== $templatePath = $propertyConfig->getTemplatePath()) {
             return $templatePath;
@@ -124,6 +125,20 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         }
 
         return $applicationContext->getTemplatePath($templateName);
+    }
+
+    private function buildRequiredOption(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool
+    {
+        if (null !== $isRequired = $propertyConfig->isRequired()) {
+            return $isRequired;
+        }
+
+        // consider that virtual properties are not required
+        if (!$entityDto->hasProperty($propertyConfig->getName())) {
+            return false;
+        }
+
+        return !$entityDto->getPropertyMetadata($propertyConfig->getName())['nullable'];
     }
 
     // copied from Symfony\Component\Form\FormRenderer::humanize()

@@ -24,7 +24,7 @@ final class DetailPageConfig
     }
 
     /**
-     * This grants/denies access to the 'detail' action for each entity
+     * This grants/denies access to the 'detail' action for each entity.
      */
     public function setEntityViewPermission(string $permission): self
     {

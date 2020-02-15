@@ -30,6 +30,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\EmailConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\ImageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TelephoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextAreaConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\UrlConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
@@ -114,7 +116,7 @@ return static function (ContainerConfigurator $container) {
         ->set(PropertyFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
-            ->arg(2, function_exists('tagged') ? tagged('ea.property_configurator') : tagged_iterator('ea.property_configurator'))
+            ->arg(2, \function_exists('tagged') ? tagged('ea.property_configurator') : tagged_iterator('ea.property_configurator'))
 
         ->set(ActionFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))
@@ -129,7 +131,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('security.voter')
 
         ->set(CrudFormType::class)
-            ->arg(0, function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))
+            ->arg(0, \function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))
             ->arg(1, ref('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
 
@@ -139,7 +141,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, ref('property_accessor'))
             ->tag('ea.property_configurator', ['priority' => 9999])
 
-        ->set(TextAreaConfigurator::class)
+        ->set(TextConfigurator::class)
             ->tag('ea.property_configurator')
 
         ->set(ImageConfigurator::class)
@@ -165,8 +167,11 @@ return static function (ContainerConfigurator $container) {
         ->set(TelephoneConfigurator::class)
         ->tag('ea.property_configurator')
 
+        ->set(UrlConfigurator::class)
+        ->tag('ea.property_configurator')
+
         ->set(FiltersFormType::class)
-            ->arg(0, function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))
+            ->arg(0, \function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))
             ->tag('form.type', ['alias' => 'ea_filters'])
     ;
 };

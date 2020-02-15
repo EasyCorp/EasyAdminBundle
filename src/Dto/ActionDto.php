@@ -86,7 +86,6 @@ final class ActionDto
         return $this->linkUrl;
     }
 
-
     public function getCrudActionName(): ?string
     {
         return $this->crudActionName;
@@ -114,6 +113,6 @@ final class ActionDto
 
     public function shouldBeDisplayedFor(EntityDto $entityDto): bool
     {
-        return call_user_func($this->displayCallable, $entityDto->getInstance());
+        return \call_user_func($this->displayCallable, $entityDto->getInstance());
     }
 }

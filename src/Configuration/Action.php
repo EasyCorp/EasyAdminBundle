@@ -66,7 +66,7 @@ final class Action
 
     public function setHtmlElement(string $element): self
     {
-        if (!in_array($element, ['a', 'button'])) {
+        if (!\in_array($element, ['a', 'button'])) {
             throw new \InvalidArgumentException(sprintf('The HTML element used to display an action can only be "a" for links or "button" for buttons ("%s" was given).', $element));
         }
 

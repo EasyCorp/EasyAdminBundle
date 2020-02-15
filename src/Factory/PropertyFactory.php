@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Type;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
@@ -36,8 +35,8 @@ final class PropertyFactory
         Type::OBJECT => 'text',
         Type::SIMPLE_ARRAY => 'array',
         Type::SMALLINT => 'integer',
-        Type::STRING => 'string',
-        Type::TEXT => 'text',
+        Type::STRING => 'text',
+        Type::TEXT => 'textarea',
         Type::TIME => 'time',
         Type::TIME_IMMUTABLE => 'time',
     ];

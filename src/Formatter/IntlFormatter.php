@@ -7,7 +7,6 @@ use Symfony\Component\Intl\Currencies;
 use Symfony\Component\Intl\Languages;
 use Symfony\Component\Intl\Locales;
 use Symfony\Component\Intl\Timezones;
-use Twig\Environment;
 use Twig\Error\RuntimeError;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -204,7 +203,7 @@ final class IntlFormatter
     }
 
     /**
-     * @param \DateTimeInterface|string|null $date A date or null to use the current time
+     * @param \DateTimeInterface|string|null  $date     A date or null to use the current time
      * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
     public function formatDateTime(?\DateTimeInterface $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string
@@ -220,7 +219,7 @@ final class IntlFormatter
     }
 
     /**
-     * @param \DateTimeInterface|string|null $date A date or null to use the current time
+     * @param \DateTimeInterface|string|null  $date     A date or null to use the current time
      * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
     public function formatDate($date, ?string $dateFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string
@@ -229,7 +228,7 @@ final class IntlFormatter
     }
 
     /**
-     * @param \DateTimeInterface|string|null $date A date or null to use the current time
+     * @param \DateTimeInterface|string|null  $date     A date or null to use the current time
      * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
      */
     public function formatTime($date, ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): ?string

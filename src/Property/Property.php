@@ -16,7 +16,7 @@ final class Property implements PropertyConfigInterface
     public function transformInto(string $propertyFqcn): PropertyConfigInterface
     {
         /**
-         * @var PropertyConfigInterface $newPropertyConfig
+         * @var PropertyConfigInterface
          */
         $newPropertyConfig = $propertyFqcn::new($this->getName());
 

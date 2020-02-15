@@ -1,0 +1,7 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{% if ea.crud.action == 'detail' %}
+    <a target="_blank" href="{{ property.value }}">{{ property.value }}</a>
+{% else %}
+    <a target="_blank" href="{{ property.value }}">{{ property.formattedValue }}</a>
+{% endif %}

@@ -3,13 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -101,8 +99,8 @@ final class ActionFactory
 
             // apply the callables that update certain config options of the action
             $actionName = (string) $actionConfig;
-            if (array_key_exists($actionName, $actionUpdateCallables) && null !== $actionUpdateCallables[$actionName]) {
-                $actionConfig = call_user_func($actionUpdateCallables[$actionName], $actionConfig);
+            if (\array_key_exists($actionName, $actionUpdateCallables) && null !== $actionUpdateCallables[$actionName]) {
+                $actionConfig = \call_user_func($actionUpdateCallables[$actionName], $actionConfig);
             }
 
             $actionsConfig[$i] = $actionConfig;
@@ -113,7 +111,7 @@ final class ActionFactory
 
     /**
      * The $currentAction is needed because sometimes the same action has different config
-     * depending on where it's displayed (to display an icon in 'detail' but not in 'index', etc.)
+     * depending on where it's displayed (to display an icon in 'detail' but not in 'index', etc.).
      */
     private function createBuiltInAction(string $currentAction, string $actionName): Action
     {
@@ -200,7 +198,7 @@ final class ActionFactory
         $referrerCrudAction = $referrerQueryStringVariables['crudAction'] ?? null;
 
         if ('edit' === $currentAction) {
-            if (in_array($referrerCrudAction, ['index', 'detail'])) {
+            if (\in_array($referrerCrudAction, ['index', 'detail'])) {
                 return $referrer;
             }
         }

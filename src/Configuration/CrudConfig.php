@@ -67,7 +67,7 @@ class CrudConfig
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
         }
 
-        if (!in_array($formatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
+        if (!\in_array($formatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
             $this->dateTimePattern = $formatOrPattern;
             $this->dateFormat = null;
         } else {
@@ -87,7 +87,7 @@ class CrudConfig
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the time format or the datetime Intl pattern.', __METHOD__));
         }
 
-        if (!in_array($formatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
+        if (!\in_array($formatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
             $this->dateTimePattern = $formatOrPattern;
             $this->timeFormat = null;
         } else {
@@ -112,13 +112,13 @@ class CrudConfig
             throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "none" at the same time. Change any of them (or both).', __METHOD__));
         }
 
-        $isDatePattern = !in_array($dateFormatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true);
+        $isDatePattern = !\in_array($dateFormatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true);
 
         if ($isDatePattern && 'none' !== $timeFormat) {
             throw new \InvalidArgumentException(sprintf('When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format as part of the datetime pattern).', __METHOD__));
         }
 
-        if (!$isDatePattern && !in_array($timeFormat, DateTimeProperty::VALID_DATE_FORMATS, true)) {
+        if (!$isDatePattern && !\in_array($timeFormat, DateTimeProperty::VALID_DATE_FORMATS, true)) {
             throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', DateTimeProperty::VALID_DATE_FORMATS), $timeFormat));
         }
 

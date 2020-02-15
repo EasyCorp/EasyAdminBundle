@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Property\BooleanProperty;
 
 final class EntityDto
 {
@@ -146,7 +145,7 @@ final class EntityDto
     public function updateInstance($newEntityInstance): self
     {
         if (null !== $this->instance && !$newEntityInstance instanceof $this->fqcn) {
-            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, get_class($newEntityInstance)));
+            throw new \InvalidArgumentException(sprintf('The new entity instance must be of the same type as the previous instance (original instance: "%s", new instance: "%s").', $this->fqcn, \get_class($newEntityInstance)));
         }
 
         $clone = clone $this;

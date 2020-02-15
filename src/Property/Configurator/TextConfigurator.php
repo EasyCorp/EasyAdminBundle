@@ -5,25 +5,26 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Property\TextProperty;
 use EasyCorp\Bundle\EasyAdminBundle\Property\TextAreaProperty;
+use EasyCorp\Bundle\EasyAdminBundle\Property\TextProperty;
+use function Symfony\Component\String\u;
 
-final class TextAreaConfigurator implements PropertyConfiguratorInterface
+final class TextConfigurator implements PropertyConfiguratorInterface
 {
     public function supports(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool
     {
-        return $propertyConfig instanceof TextAreaProperty || $propertyConfig instanceof TextProperty;
+        return $propertyConfig instanceof TextProperty || $propertyConfig instanceof TextAreaProperty;
     }
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
+        if (null === $propertyConfig->getValue()) {
+            return;
+        }
+
         $configuredMaxLength = $propertyConfig->getCustomOption(TextAreaProperty::OPTION_MAX_LENGTH);
         $defaultMaxLength = 'detail' === $action ? PHP_INT_MAX : 64;
-
-        $formattedValue = mb_substr($propertyConfig->getValue(), 0, $configuredMaxLength ?? $defaultMaxLength);
-        if ($formattedValue !== $propertyConfig->getValue()) {
-            $formattedValue .= '…';
-        }
+        $formattedValue = u($propertyConfig->getValue())->truncate($configuredMaxLength ?? $defaultMaxLength, '…');
 
         $propertyConfig->setFormattedValue($formattedValue);
     }

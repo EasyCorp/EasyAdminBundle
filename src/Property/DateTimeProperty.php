@@ -2,12 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateTimeProperty implements PropertyConfigInterface
 {
@@ -61,17 +57,17 @@ class DateTimeProperty implements PropertyConfigInterface
             throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "none" at the same time. Change any of them (or both).', __METHOD__));
         }
 
-        $isDatePattern = !in_array($dateFormatOrPattern, self::VALID_DATE_FORMATS, true);
+        $isDatePattern = !\in_array($dateFormatOrPattern, self::VALID_DATE_FORMATS, true);
 
         if ($isDatePattern && 'none' !== $timeFormat) {
             throw new \InvalidArgumentException(sprintf('When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format as part of the datetime pattern).', __METHOD__));
         }
 
-        if (!$isDatePattern && !in_array($timeFormat, self::VALID_DATE_FORMATS, true)) {
+        if (!$isDatePattern && !\in_array($timeFormat, self::VALID_DATE_FORMATS, true)) {
             throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', self::VALID_DATE_FORMATS), $timeFormat));
         }
 
-        if (!in_array($dateFormatOrPattern, self::VALID_DATE_FORMATS, true)) {
+        if (!\in_array($dateFormatOrPattern, self::VALID_DATE_FORMATS, true)) {
             $this->setCustomOption(self::OPTION_DATETIME_PATTERN, $dateFormatOrPattern);
             $this->setCustomOption(self::OPTION_DATE_FORMAT, null);
             $this->setCustomOption(self::OPTION_TIME_FORMAT, null);

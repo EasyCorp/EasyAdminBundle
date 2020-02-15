@@ -34,7 +34,6 @@ final class EasyAdminRouter
     /**
      * @param object|string $entity
      * @param string        $action
-     * @param array         $parameters
      *
      * @throws UndefinedEntityException
      *

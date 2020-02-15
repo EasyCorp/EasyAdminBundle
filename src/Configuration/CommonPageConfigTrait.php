@@ -31,7 +31,7 @@ trait CommonPageConfigTrait
     }
 
     /**
-     * This grants/denies access to the entire action
+     * This grants/denies access to the entire action.
      */
     public function setPermission(string $permission): self
     {
@@ -45,7 +45,7 @@ trait CommonPageConfigTrait
      */
     public function addAction($actionNameOrConfig): self
     {
-        if (!is_string($actionNameOrConfig) && !$actionNameOrConfig instanceof Action) {
+        if (!\is_string($actionNameOrConfig) && !$actionNameOrConfig instanceof Action) {
             throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the action name or a "%s" object with the action config.', __METHOD__, Action::class));
         }
 
@@ -82,7 +82,7 @@ trait CommonPageConfigTrait
         // user to only configure the actions they want to see first and rely on the
         // existing order for the rest of actions
         foreach ($this->actions as $actionName => $actionConfig) {
-            if (!array_key_exists($actionName, $orderedActions)) {
+            if (!\array_key_exists($actionName, $orderedActions)) {
                 $orderedActions[$actionName] = $actionConfig;
             }
         }

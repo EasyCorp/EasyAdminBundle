@@ -24,7 +24,6 @@ class Finder
     }
 
     /**
-     * @param array  $entityConfig
      * @param string $searchQuery
      * @param int    $page
      * @param int    $maxResults

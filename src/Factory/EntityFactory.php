@@ -37,7 +37,7 @@ final class EntityFactory
 
     /**
      * @param PropertyConfigInterface[] $configuredProperties
-     * @param Action[] $configuredActions
+     * @param Action[]                  $configuredActions
      */
     public function create(iterable $configuredProperties = null, array $configuredActions = null): EntityDto
     {
@@ -69,7 +69,7 @@ final class EntityFactory
 
     /**
      * @param PropertyConfigInterface[] $propertiesConfig
-     * @param Action[] $configuredActions
+     * @param Action[]                  $configuredActions
      */
     public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties, array $configuredActions): EntityDtoCollection
     {

@@ -2,13 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateProperty implements PropertyConfigInterface
 {
@@ -49,7 +44,7 @@ class DateProperty implements PropertyConfigInterface
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
         }
 
-        if (!in_array($dateFormatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
+        if (!\in_array($dateFormatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
             $this->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, $dateFormatOrPattern);
             $this->setCustomOption(DateTimeProperty::OPTION_DATE_FORMAT, null);
         } else {

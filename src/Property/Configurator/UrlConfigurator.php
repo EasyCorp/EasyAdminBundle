@@ -5,25 +5,29 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Property\BooleanProperty;
+use EasyCorp\Bundle\EasyAdminBundle\Property\UrlProperty;
+use function Symfony\Component\String\u;
 
-final class BooleanConfigurator implements PropertyConfiguratorInterface
+final class UrlConfigurator implements PropertyConfiguratorInterface
 {
     public function supports(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool
     {
-        return $propertyConfig instanceof BooleanProperty;
+        return $propertyConfig instanceof UrlProperty;
     }
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
-        if (!$propertyConfig->getCustomOption(BooleanProperty::OPTION_RENDER_AS_SWITCH)) {
-            return;
+        $formTypeOptions = $propertyConfig->getFormTypeOptions();
+        $formTypeOptions['attr']['inputmode'] = $formTypeOptions['attr']['inputmode'] ?? 'url';
+        $propertyConfig->setFormTypeOptions($formTypeOptions);
+
+        $prettyUrl = str_replace(['http://www.', 'https://www.', 'http://', 'https://'], '', $propertyConfig->getValue());
+        $prettyUrl = rtrim($prettyUrl, '/');
+
+        if ('index' === $action) {
+            $prettyUrl = u($prettyUrl)->truncate(32, '…');
         }
 
-        // see https://symfony.com/blog/new-in-symfony-4-4-bootstrap-custom-switches
-        $formTypeOptions = $propertyConfig->getFormTypeOptions();
-        $formTypeOptions['label_attr']['class'] = ($formTypeOptions['label_attr']['class'] ?? '').' switch-custom';
-
-        $propertyConfig->setFormTypeOptions($formTypeOptions);
+        $propertyConfig->setFormattedValue($prettyUrl);
     }
 }

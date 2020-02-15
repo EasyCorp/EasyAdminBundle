@@ -24,7 +24,6 @@ class QueryBuilder
      * Creates the query builder used to get all the records displayed by the
      * "list" view.
      *
-     * @param array       $entityConfig
      * @param string|null $sortField
      * @param string|null $sortDirection
      * @param string|null $dqlFilter
@@ -64,7 +63,6 @@ class QueryBuilder
      * Creates the query builder used to get the results of the search query
      * performed by the user in the "search" view.
      *
-     * @param array       $entityConfig
      * @param string      $searchQuery
      * @param string|null $sortField
      * @param string|null $sortDirection
@@ -169,8 +167,7 @@ class QueryBuilder
      * Doctrine association. This also happens when using embedded classes, so the
      * embeddedClasses property from Doctrine class metadata must be checked too.
      *
-     * @param ClassMetadata $classMetadata
-     * @param string|null   $fieldName
+     * @param string|null $fieldName
      *
      * @return bool
      */

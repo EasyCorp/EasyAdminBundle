@@ -31,7 +31,7 @@ final class IndexPageConfig
     }
 
     /**
-     * This grants/denies access to each entity included in the 'index' listing
+     * This grants/denies access to each entity included in the 'index' listing.
      */
     public function setEntityViewPermission(string $permission): self
     {

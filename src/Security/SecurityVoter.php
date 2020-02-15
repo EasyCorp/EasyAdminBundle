@@ -8,7 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
-use EasyCorp\Bundle\EasyAdminBundle\Property\BooleanProperty;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -110,6 +109,6 @@ final class SecurityVoter extends Voter
         $actionsDisabledByPage = $applicationContext->getCrud()->getPage()->getDisabledActions();
         $disabledActions = array_unique(array_merge($actionsDisabledGlobally, $actionsDisabledByPage));
 
-        return in_array($actionName, $disabledActions, true);
+        return \in_array($actionName, $disabledActions, true);
     }
 }

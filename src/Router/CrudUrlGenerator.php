@@ -48,7 +48,7 @@ final class CrudUrlGenerator
 
         $newQueryParams = array_merge($previousQueryParams, $updatedQueryParams);
 
-         return $this->doGenerateUrl($newQueryParams);
+        return $this->doGenerateUrl($newQueryParams);
     }
 
     private function doGenerateUrl(array $queryParams): string

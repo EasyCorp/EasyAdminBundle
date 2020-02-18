@@ -34,7 +34,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         $applicationContext = $this->applicationContextProvider->getContext();
         $translationDomain = $applicationContext->getI18n()->getTranslationDomain();
 
-        $value = $this->buildValueProperty($propertyConfig, $entityDto);
+        $value = $this->buildValueOption($propertyConfig, $entityDto);
 
         $propertyConfig
             ->setValue($value)
@@ -46,11 +46,30 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
             ->setRequired($this->buildRequiredOption($propertyConfig, $entityDto));
 
         if (null !== $propertyConfig->getHelp()) {
-            $propertyConfig->setHelp($this->buildHelpProperty($propertyConfig, $translationDomain));
+            $propertyConfig->setHelp($this->buildHelpOption($propertyConfig, $translationDomain));
         }
     }
 
-    private function buildHelpProperty(PropertyConfigInterface $propertyConfig, string $translationDomain): ?string
+    private function buildValueOption(PropertyConfigInterface $propertyConfig, EntityDto $entityDto)
+    {
+        $entityInstance = $entityDto->getInstance();
+        $propertyName = $propertyConfig->getName();
+
+        if (!$this->propertyAccessor->isReadable($entityInstance, $propertyName)) {
+            return null;
+        }
+
+        $value = $this->propertyAccessor->getValue($entityInstance, $propertyName);
+        if (null === $callable = $propertyConfig->getPreProcessValueCallable()) {
+            return $value;
+        }
+
+        return \call_user_func($callable, $value, $entityDto->getInstance());
+    }
+
+
+
+    private function buildHelpOption(PropertyConfigInterface $propertyConfig, string $translationDomain): ?string
     {
         if ((null === $help = $propertyConfig->getHelp()) || empty($help)) {
             return $help;
@@ -86,18 +105,6 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
     private function buildVirtualOption(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool
     {
         return !$entityDto->hasProperty($propertyConfig->getName());
-    }
-
-    private function buildValueProperty(PropertyConfigInterface $propertyConfig, EntityDto $entityDto)
-    {
-        $entityInstance = $entityDto->getInstance();
-        $propertyName = $propertyConfig->getName();
-
-        if ($this->propertyAccessor->isReadable($entityInstance, $propertyName)) {
-            return $this->propertyAccessor->getValue($entityInstance, $propertyName);
-        }
-
-        return null;
     }
 
     private function buildTemplatePathOption(ApplicationContext $applicationContext, PropertyConfigInterface $propertyConfig, EntityDto $entityDto, $propertyValue): string

@@ -17,6 +17,8 @@ interface PropertyConfigInterface
 
     public function setFormattedValue($value): self;
 
+    public function preProcessValue(callable $callable): self;
+
     public function setVirtual(bool $isVirtual): self;
 
     public function setRequired(bool $isRequired): self;
@@ -63,6 +65,8 @@ interface PropertyConfigInterface
     public function getValue();
 
     public function getFormattedValue();
+
+    public function getPreProcessValueCallable(): ?callable;
 
     public function getLabel(): ?string;
 

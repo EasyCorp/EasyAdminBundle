@@ -13,6 +13,7 @@ trait PropertyConfigTrait
     private $name;
     private $value;
     private $formattedValue;
+    private $preProcessCallable;
     private $label;
     private $required;
     private $formType;
@@ -73,6 +74,11 @@ trait PropertyConfigTrait
         return $this->formattedValue;
     }
 
+    public function getPreProcessValueCallable(): ?callable
+    {
+        return $this->preProcessCallable;
+    }
+
     public function getLabel(): ?string
     {
         return $this->label;
@@ -103,9 +109,9 @@ trait PropertyConfigTrait
         return true === $this->virtual;
     }
 
-    public function getTextAlign(): ?string
+    public function getTextAlign(): string
     {
-        return $this->textAlign;
+        return $this->textAlign ?? 'left';
     }
 
     public function getPermission(): ?string
@@ -174,7 +180,7 @@ trait PropertyConfigTrait
 
     public function getAsDto(): PropertyDto
     {
-        return new PropertyDto($this->type, $this->name, $this->value, $this->formattedValue, $this->formType, $this->formTypeOptions ?? [], $this->sortable, $this->virtual, $this->label, $this->permission, $this->textAlign ?? 'left', $this->help, $this->cssClass, $this->translationParams ?? [], $this->templateName, $this->templatePath, new AssetDto($this->getCssFiles(), $this->getJsFiles(), $this->getHeadContents(), $this->getBodyContents()), $this->getCustomOptions());
+        return new PropertyDto($this->getType(), $this->getName(), $this->getValue(), $this->getFormattedValue(), $this->getFormType(), $this->getFormTypeOptions(), $this->isSortable(), $this->isVirtual(), $this->getLabel(), $this->getPermission(), $this->getTextAlign(), $this->getHelp(), $this->getCssClass(), $this->getTranslationParams(), $this->getTemplateName(), $this->getTemplatePath(), new AssetDto($this->getCssFiles(), $this->getJsFiles(), $this->getHeadContents(), $this->getBodyContents()), $this->getCustomOptions());
     }
 
     public function setName(string $name): PropertyConfigInterface
@@ -201,6 +207,13 @@ trait PropertyConfigTrait
     public function setFormattedValue($value): PropertyConfigInterface
     {
         $this->formattedValue = $value;
+
+        return $this;
+    }
+
+    public function preProcessValue(callable $callable): self
+    {
+        $this->preProcessCallable = $callable;
 
         return $this;
     }

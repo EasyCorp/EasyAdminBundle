@@ -34,7 +34,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         $applicationContext = $this->applicationContextProvider->getContext();
         $translationDomain = $applicationContext->getI18n()->getTranslationDomain();
 
-        $value = $this->buildValueOption($propertyConfig, $entityDto);
+        $value = $this->buildValueOption($action, $propertyConfig, $entityDto);
 
         $propertyConfig
             ->setValue($value)
@@ -50,7 +50,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         }
     }
 
-    private function buildValueOption(PropertyConfigInterface $propertyConfig, EntityDto $entityDto)
+    private function buildValueOption(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto)
     {
         $entityInstance = $entityDto->getInstance();
         $propertyName = $propertyConfig->getName();
@@ -60,14 +60,17 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
         }
 
         $value = $this->propertyAccessor->getValue($entityInstance, $propertyName);
+        // the 'preProcessValue' callable is never applied to values used in forms
+        if (in_array($action, ['edit', 'new'])) {
+            return $value;
+        }
+
         if (null === $callable = $propertyConfig->getPreProcessValueCallable()) {
             return $value;
         }
 
         return \call_user_func($callable, $value, $entityDto->getInstance());
     }
-
-
 
     private function buildHelpOption(PropertyConfigInterface $propertyConfig, string $translationDomain): ?string
     {

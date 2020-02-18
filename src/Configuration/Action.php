@@ -128,9 +128,9 @@ final class Action
         return $this;
     }
 
-    public function displayIf(callable $displayCallable): self
+    public function displayIf(callable $callable): self
     {
-        $this->displayCallable = $displayCallable;
+        $this->displayCallable = $callable;
 
         return $this;
     }

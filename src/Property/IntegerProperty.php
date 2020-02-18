@@ -14,6 +14,6 @@ class IntegerProperty implements PropertyConfigInterface
         $this
             ->setType('integer')
             ->setFormType(IntegerType::class)
-            ->setTemplateName('property/string');
+            ->setTemplateName('property/integer');
     }
 }

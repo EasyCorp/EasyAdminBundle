@@ -35,18 +35,24 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
         $translationDomain = $applicationContext->getI18n()->getTranslationDomain();
 
         $value = $this->buildValueOption($action, $propertyConfig, $entityDto);
+        $label = $this->buildLabelOption($propertyConfig, $translationDomain);
+        $isRequired = $this->buildRequiredOption($propertyConfig, $entityDto);
+        $isSortable = $this->buildSortableOption($propertyConfig, $entityDto);
+        $isVirtual = $this->buildVirtualOption($propertyConfig, $entityDto);
+        $templatePath = $this->buildTemplatePathOption($applicationContext, $propertyConfig, $entityDto, $value);
 
         $propertyConfig
             ->setValue($value)
             ->setFormattedValue($value)
-            ->setLabel($this->buildLabelOption($propertyConfig, $translationDomain))
-            ->setSortable($this->buildSortableOption($propertyConfig, $entityDto))
-            ->setVirtual($this->buildVirtualOption($propertyConfig, $entityDto))
-            ->setTemplatePath($this->buildTemplatePathOption($applicationContext, $propertyConfig, $entityDto, $value))
-            ->setRequired($this->buildRequiredOption($propertyConfig, $entityDto));
+            ->setLabel($label)
+            ->setRequired($isRequired)
+            ->setSortable($isSortable)
+            ->setVirtual($isVirtual)
+            ->setTemplatePath($templatePath);
 
         if (null !== $propertyConfig->getHelp()) {
-            $propertyConfig->setHelp($this->buildHelpOption($propertyConfig, $translationDomain));
+            $helpMessage = $this->buildHelpOption($propertyConfig, $translationDomain);
+            $propertyConfig->setHelp($helpMessage);
         }
     }
 

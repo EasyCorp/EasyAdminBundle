@@ -26,6 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\BooleanConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPostConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPreConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CountryConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CurrencyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\DateTimeConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\EmailConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\ImageConfigurator;
@@ -183,6 +184,9 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref(IntlFormatter::class))
             ->arg(2, ref('property_accessor'))
+            ->tag('ea.property_configurator')
+
+        ->set(CurrencyConfigurator::class)
             ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)

@@ -31,6 +31,7 @@ final class TemplateRegistry
         'property/boolean' => '@EasyAdmin/crud/property/boolean.html.twig',
         'property/code_editor' => '@EasyAdmin/crud/property/code_editor.html.twig',
         'property/country' => '@EasyAdmin/crud/property/country.html.twig',
+        'property/currency' => '@EasyAdmin/crud/property/currency.html.twig',
         'property/date' => '@EasyAdmin/crud/property/date.html.twig',
         'property/datetime' => '@EasyAdmin/crud/property/datetime.html.twig',
         'property/datetimetz' => '@EasyAdmin/crud/property/datetimetz.html.twig',

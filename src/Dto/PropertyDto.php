@@ -129,16 +129,6 @@ final class PropertyDto
         return $this->translationParams;
     }
 
-    public function getConfiguredTemplateName(): ?string
-    {
-        return $this->templateName;
-    }
-
-    public function getConfiguredTemplatePath(): ?string
-    {
-        return $this->templatePath;
-    }
-
     public function getTemplatePath(): string
     {
         return $this->templatePath;

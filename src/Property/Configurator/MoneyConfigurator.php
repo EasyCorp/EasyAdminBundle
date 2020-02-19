@@ -37,7 +37,7 @@ final class MoneyConfigurator implements PropertyConfiguratorInterface
         }
 
         $currencyCode = $this->getCurrency($propertyConfig, $entityDto);
-        if (!Currencies::exists($currencyCode)) {
+        if (!$this->isValidCurrencyCode($currencyCode)) {
             throw new \InvalidArgumentException(sprintf('The "%s" value used as the currency of the "%s" money property is not a valid ICU currency code.', $currencyCode, $propertyConfig->getName()));
         }
 
@@ -71,5 +71,14 @@ final class MoneyConfigurator implements PropertyConfiguratorInterface
         }
 
         return $currencyCode;
+    }
+
+    private function isValidCurrencyCode(string $currencyCode): bool
+    {
+        if (!class_exists(Currencies::class)) {
+            return !empty(Intl::getCurrencyBundle()->getCurrencyName($currencyCode));
+        }
+
+        return Currencies::exists($currencyCode);
     }
 }

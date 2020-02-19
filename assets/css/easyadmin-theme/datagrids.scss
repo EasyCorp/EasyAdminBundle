@@ -107,7 +107,8 @@ table.datagrid {
   color: var(--white);
 }
 
-.datagrid td.property-language .badge-language {
+.datagrid td.property-language .badge-language,
+.datagrid td.property-currency .badge-currency {
   border: 2px solid var(--gray-300);
   display: inline-block;
   font-size: 12px;

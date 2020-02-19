@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class CommonConfigurator implements PropertyConfiguratorInterface
+final class CommonPreConfigurator implements PropertyConfiguratorInterface
 {
     private $applicationContextProvider;
     private $translator;
@@ -59,17 +59,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
             return null;
         }
 
-        $value = $this->propertyAccessor->getValue($entityInstance, $propertyName);
-        // the 'preProcessValue' callable is never applied to values used in forms
-        if (in_array($action, ['edit', 'new'])) {
-            return $value;
-        }
-
-        if (null === $callable = $propertyConfig->getPreProcessValueCallable()) {
-            return $value;
-        }
-
-        return \call_user_func($callable, $value, $entityDto->getInstance());
+        return $this->propertyAccessor->getValue($entityInstance, $propertyName);
     }
 
     private function buildHelpOption(PropertyConfigInterface $propertyConfig, string $translationDomain): ?string
@@ -121,7 +111,7 @@ final class CommonConfigurator implements PropertyConfiguratorInterface
             return $applicationContext->getTemplatePath('label/inaccessible');
         }
 
-        if (null === $propertyValue) {
+        if (null === $propertyValue && 'boolean' !== $propertyConfig->getType()) {
             return $applicationContext->getTemplatePath('label/null');
         }
 

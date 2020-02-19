@@ -26,8 +26,6 @@ final class AvatarConfigurator implements PropertyConfiguratorInterface
 
         if ($propertyConfig->getCustomOption(AvatarProperty::OPTION_IS_GRAVATAR_EMAIL)) {
             $propertyConfig->setFormattedValue('https://www.gravatar.com/avatar/%s?s=%d&d=mp', md5($propertyConfig->getValue()));
-        } else {
-            $propertyConfig->setFormattedValue($propertyConfig->getValue());
         }
 
         if (null === $propertyConfig->getFormattedValue()) {

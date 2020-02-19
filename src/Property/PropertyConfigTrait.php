@@ -13,7 +13,7 @@ trait PropertyConfigTrait
     private $name;
     private $value;
     private $formattedValue;
-    private $preProcessCallable;
+    private $formatValueCallable;
     private $label;
     private $required;
     private $formType;
@@ -74,9 +74,9 @@ trait PropertyConfigTrait
         return $this->formattedValue;
     }
 
-    public function getPreProcessValueCallable(): ?callable
+    public function getFormatValueCallable(): ?callable
     {
-        return $this->preProcessCallable;
+        return $this->formatValueCallable;
     }
 
     public function getLabel(): ?string
@@ -211,9 +211,9 @@ trait PropertyConfigTrait
         return $this;
     }
 
-    public function preProcessValue(callable $callable): self
+    public function formatValue(callable $callable): self
     {
-        $this->preProcessCallable = $callable;
+        $this->formatValueCallable = $callable;
 
         return $this;
     }
@@ -249,6 +249,22 @@ trait PropertyConfigTrait
     public function setFormTypeOptions(array $options): PropertyConfigInterface
     {
         $this->formTypeOptions = $options;
+
+        return $this;
+    }
+
+    public function setFormTypeOption(string $optionName, $optionValue): PropertyConfigInterface
+    {
+        $this->formTypeOptions[$optionName] = $optionValue;
+
+        return $this;
+    }
+
+    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): PropertyConfigInterface
+    {
+        if (!isset($this->formTypeOptions[$optionName])) {
+            $this->formTypeOptions[$optionName] = $optionValue;
+        }
 
         return $this;
     }

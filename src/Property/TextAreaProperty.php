@@ -10,6 +10,7 @@ class TextAreaProperty implements PropertyConfigInterface
     use PropertyConfigTrait;
 
     public const OPTION_MAX_LENGTH = 'maxLength';
+    public const OPTION_RENDER_AS_HTML = 'renderAsHtml';
 
     public function __construct()
     {
@@ -17,7 +18,8 @@ class TextAreaProperty implements PropertyConfigInterface
             ->setType('textarea')
             ->setFormType(TextareaType::class)
             ->setTemplateName('property/textarea')
-            ->setCustomOption(self::OPTION_MAX_LENGTH, null);
+            ->setCustomOption(self::OPTION_MAX_LENGTH, null)
+            ->setCustomOption(self::OPTION_RENDER_AS_HTML, false);
     }
 
     public function setMaxLength(int $length): self
@@ -27,6 +29,13 @@ class TextAreaProperty implements PropertyConfigInterface
         }
 
         $this->setCustomOption(self::OPTION_MAX_LENGTH, $length);
+
+        return $this;
+    }
+
+    public function renderAsHtml(bool $asHtml = true): self
+    {
+        $this->setCustomOption(self::OPTION_RENDER_AS_HTML, $asHtml);
 
         return $this;
     }

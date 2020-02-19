@@ -23,11 +23,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\AvatarConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\BooleanConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPostConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPreConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CountryConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\DateTimeConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\EmailConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\ImageConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\LanguageConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\MoneyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TelephoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextAreaConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextConfigurator;
@@ -135,11 +138,14 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, ref('form.type_guesser.doctrine'))
             ->tag('form.type', ['alias' => 'ea_crud'])
 
-        ->set(CommonConfigurator::class)
+        ->set(CommonPreConfigurator::class)
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref('translator'))
             ->arg(2, ref('property_accessor'))
             ->tag('ea.property_configurator', ['priority' => 9999])
+
+        ->set(CommonPostConfigurator::class)
+            ->tag('ea.property_configurator', ['priority' => -9999])
 
         ->set(TextConfigurator::class)
             ->tag('ea.property_configurator')
@@ -153,22 +159,31 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.property_configurator')
 
         ->set(CountryConfigurator::class)
-        ->tag('ea.property_configurator')
+            ->tag('ea.property_configurator')
 
         ->set(BooleanConfigurator::class)
-        ->tag('ea.property_configurator')
+            ->tag('ea.property_configurator')
 
         ->set(AvatarConfigurator::class)
-        ->tag('ea.property_configurator')
+            ->tag('ea.property_configurator')
 
         ->set(EmailConfigurator::class)
-        ->tag('ea.property_configurator')
+            ->tag('ea.property_configurator')
 
         ->set(TelephoneConfigurator::class)
-        ->tag('ea.property_configurator')
+            ->tag('ea.property_configurator')
 
         ->set(UrlConfigurator::class)
-        ->tag('ea.property_configurator')
+            ->tag('ea.property_configurator')
+
+        ->set(LanguageConfigurator::class)
+            ->tag('ea.property_configurator')
+
+        ->set(MoneyConfigurator::class)
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(1, ref(IntlFormatter::class))
+            ->arg(2, ref('property_accessor'))
+            ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)
             ->arg(0, \function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))

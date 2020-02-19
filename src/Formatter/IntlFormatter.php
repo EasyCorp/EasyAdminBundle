@@ -107,79 +107,20 @@ final class IntlFormatter
         'monetary_grouping_separator' => \NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL,
     ];
 
-    public function getFilters()
-    {
-        return [
-            // internationalized names
-            new TwigFilter('country_name', [$this, 'getCountryName']),
-            new TwigFilter('currency_name', [$this, 'getCurrencyName']),
-            new TwigFilter('currency_symbol', [$this, 'getCurrencySymbol']),
-            new TwigFilter('language_name', [$this, 'getLanguageName']),
-            new TwigFilter('locale_name', [$this, 'getLocaleName']),
-            new TwigFilter('timezone_name', [$this, 'getTimezoneName']),
-
-            // localized formatters
-            new TwigFilter('format_currency', [$this, 'formatCurrency']),
-            new TwigFilter('format_number', [$this, 'formatNumber']),
-            new TwigFilter('format_*_number', [$this, 'formatNumberStyle']),
-            new TwigFilter('format_datetime', [$this, 'formatDateTime'], ['needs_environment' => true]),
-            new TwigFilter('format_date', [$this, 'formatDate'], ['needs_environment' => true]),
-            new TwigFilter('format_time', [$this, 'formatTime'], ['needs_environment' => true]),
-        ];
-    }
-
-    public function getFunctions()
-    {
-        return [
-            // internationalized names
-            new TwigFunction('country_timezones', [$this, 'getCountryTimezones']),
-        ];
-    }
-
-    public function getCountryName(string $country, string $locale = null): string
-    {
-        return Countries::getName($country, $locale);
-    }
-
-    public function getCurrencyName(string $currency, string $locale = null): string
-    {
-        return Currencies::getName($currency, $locale);
-    }
-
-    public function getCurrencySymbol(string $currency, string $locale = null): string
-    {
-        return Currencies::getSymbol($currency, $locale);
-    }
-
-    public function getLanguageName(string $language, string $locale = null): string
-    {
-        return Languages::getName($language, $locale);
-    }
-
-    public function getLocaleName(string $data, string $locale = null): string
-    {
-        return Locales::getName($data, $locale);
-    }
-
-    public function getTimezoneName(string $timezone, string $locale = null): string
-    {
-        return Timezones::getName($timezone, $locale);
-    }
-
-    public function getCountryTimezones(string $country): array
-    {
-        return Timezones::forCountryCode($country);
-    }
+    private $dateFormatters = [];
+    private $numberFormatters = [];
+    private $dateFormatterPrototype;
+    private $numberFormatterPrototype;
 
     public function formatCurrency($amount, string $currency, array $attrs = [], string $locale = null): string
     {
         $formatter = $this->createNumberFormatter($locale, 'currency', $attrs);
 
-        if (false === $ret = $formatter->formatCurrency($amount, $currency)) {
+        if (false === $formattedCurrency = $formatter->formatCurrency($amount, $currency)) {
             throw new RuntimeError('Unable to format the given number as a currency.');
         }
 
-        return $ret;
+        return $formattedCurrency;
     }
 
     public function formatNumber($number, array $attrs = [], string $style = 'decimal', string $type = 'default', string $locale = null): string

@@ -3,7 +3,7 @@
 {% trans_default_domain 'EasyAdminBundle' %}
 
 {% if ea.crud.action == 'detail' or not property.customOptions.get('renderAsSwitch') %}
-    <span class="badge {{ property.value == true ? 'badge-success' : 'badge-danger' }}">
+    <span class="badge {{ property.value == true ? 'badge-boolean-true' : 'badge-boolean-false' }}">
         {{ (property.value == true ? 'label.true' : 'label.false')|trans }}
     </span>
 {% else %}

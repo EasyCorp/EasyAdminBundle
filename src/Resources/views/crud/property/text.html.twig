@@ -1,7 +1,12 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{% set render_as_html = property.customOptions.get('renderAsHtml') %}
 {% if ea.crud.action == 'detail' %}
-    <span title="{{ property.value }}">{{ property.formattedValue|nl2br }}</span>
+    <span title="{{ property.value }}">
+        {{ render_as_html ? property.formattedValue|nl2br|raw : property.formattedValue|nl2br }}
+    </span>
 {% else %}
-    <span title="{{ property.value }}">{{ property.formattedValue|striptags }}</span>
+    <span title="{{ property.value }}">
+        {{ render_as_html ? property.formattedValue|raw : property.formattedValue|striptags }}
+    </span>
 {% endif %}

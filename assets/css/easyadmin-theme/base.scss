@@ -352,14 +352,6 @@ form .content-footer {
     background: var(--white);
 }
 
-// Boolean labels (not switches/toggles)
-.property-boolean .badge {
-    display: inline-block;
-    font-size: 12px;
-    min-width: 33px;
-    text-transform: uppercase;
-}
-
 body.show .form-horizontal {
     background: var(--form-bg);
 }

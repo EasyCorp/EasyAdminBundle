@@ -32,6 +32,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\EmailConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\ImageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\LanguageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\MoneyConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\PercentConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TelephoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextAreaConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextConfigurator;
@@ -187,6 +188,9 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.property_configurator')
 
         ->set(CurrencyConfigurator::class)
+            ->tag('ea.property_configurator')
+
+        ->set(PercentConfigurator::class)
             ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)

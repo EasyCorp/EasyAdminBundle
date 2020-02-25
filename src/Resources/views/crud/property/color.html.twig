@@ -1,0 +1,8 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{% if property.customOptions.get('showSample') %}
+    <span class="color-sample" style="background: {{ property.value }}; {{ property.customOptions.get('showValue') ? 'margin-right: 5px;' }}" title="{{ property.formattedValue }}">&nbsp;</span>
+{% endif %}
+{% if property.customOptions.get('showValue') %}
+    {{ property.formattedValue }}
+{% endif %}

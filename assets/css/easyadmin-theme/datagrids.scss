@@ -116,6 +116,14 @@ table.datagrid {
   text-transform: uppercase;
 }
 
+.datagrid td.property-color .color-sample {
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--gray-300);
+  display: inline-block;
+  height: 19px;
+  width: 45px;
+}
+
 .datagrid td.property-avatar .image-avatar {
   border-radius: 50%;
   border: 0;

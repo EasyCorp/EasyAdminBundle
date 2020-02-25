@@ -30,6 +30,7 @@ final class TemplateRegistry
         'property/bigint' => '@EasyAdmin/crud/property/bigint.html.twig',
         'property/boolean' => '@EasyAdmin/crud/property/boolean.html.twig',
         'property/code_editor' => '@EasyAdmin/crud/property/code_editor.html.twig',
+        'property/color' => '@EasyAdmin/crud/property/color.html.twig',
         'property/country' => '@EasyAdmin/crud/property/country.html.twig',
         'property/currency' => '@EasyAdmin/crud/property/currency.html.twig',
         'property/date' => '@EasyAdmin/crud/property/date.html.twig',

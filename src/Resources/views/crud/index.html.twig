@@ -132,7 +132,7 @@
 
                     <th class="{{ isSortingProperty ? 'sorted' }} {{ property.isVirtual ? 'property-virtual' }} property-{{ property.type|lower }} text-{{ property.textAlign }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
                         {% if property.isSortable %}
-                            <a href="{{ ea_path({ page: 1, sort: { (property.name): nextSortDirection }}) }}">
+                            <a href="{{ ea_path({ page: 1, sort: { (property.name): nextSortDirection }}, remove_referrer = true) }}">
                                 {{ property.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                             </a>
                         {% else %}

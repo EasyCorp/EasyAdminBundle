@@ -30,18 +30,18 @@ class EasyAdminTwigExtension extends AbstractExtension
 {
     private $configManager;
     private $propertyAccessor;
-    private $crudRouter;
+    private $crudUrlGenerator;
     private $debug;
     private $logoutUrlGenerator;
     /** @var TranslatorInterface|null */
     private $translator;
     private $authorizationChecker;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, CrudUrlGenerator $crudRouter, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(ConfigManager $configManager, PropertyAccessorInterface $propertyAccessor, CrudUrlGenerator $crudUrlGenerator, bool $debug = false, LogoutUrlGenerator $logoutUrlGenerator = null, $translator = null, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->configManager = $configManager;
         $this->propertyAccessor = $propertyAccessor;
-        $this->crudRouter = $crudRouter;
+        $this->crudUrlGenerator = $crudUrlGenerator;
         $this->debug = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
         $this->translator = $translator;
@@ -157,20 +157,20 @@ class EasyAdminTwigExtension extends AbstractExtension
      */
     public function getEntityPath($entity, $action, array $parameters = [])
     {
-        return $this->crudRouter->generate($entity, $action, $parameters);
+        return $this->crudUrlGenerator->generate($entity, $action, $parameters);
     }
 
-    public function generateCrudRoute(array $queryParams = [], bool $include_referrer = true, bool $remove_existing_referrer = false): string
+    public function generateCrudRoute(array $queryParams = [], bool $include_referrer = true, bool $remove_referrer = false): string
     {
-        if ($remove_existing_referrer) {
-            return $this->crudRouter->setQueryParams($queryParams)->removeReferrer()->getUrl();
+        if ($remove_referrer) {
+            return $this->crudUrlGenerator->build($queryParams)->removeReferrer()->generateUrl();
         }
 
         if ($include_referrer) {
-            return $this->crudRouter->setQueryParams($queryParams)->includeReferrer()->getUrl();
+            return $this->crudUrlGenerator->build($queryParams)->includeReferrer()->generateUrl();
         }
 
-        return $this->crudRouter->setQueryParams($queryParams)->getUrl();
+        return $this->crudUrlGenerator->build($queryParams)->generateUrl();
     }
 
     /**

@@ -122,7 +122,7 @@ final class MenuFactory
             $defaultRouteParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'query' => null];
             $routeParameters = array_merge($defaultRouteParameters, $menuItemDto->getRouteParameters());
 
-            return $this->crudRouter->generate($routeParameters);
+            return $this->crudRouter->build()->setQueryParams($routeParameters)->generateUrl();
         }
 
         if (self::ITEM_TYPE_DASHBOARD === $menuItemType) {

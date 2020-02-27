@@ -81,7 +81,7 @@ final class ActionFactory
             'crudAction' => $actionDto->getCrudActionName(),
         ]);
 
-        return $this->crudUrlGenerator->generate($requestParameters);
+        return $this->crudUrlGenerator->build()->setQueryParams($requestParameters)->generateUrl();
     }
 
     /**
@@ -180,12 +180,12 @@ final class ActionFactory
 
         if (Action::DETAIL === $currentAction) {
             if (Action::EDIT === $nextAction) {
-                return $this->crudUrlGenerator->removeReferrer()->getUrl();
+                return $this->crudUrlGenerator->build()->removeReferrer()->generateUrl();
             }
         }
 
         if (Action::INDEX === $currentAction) {
-            return $this->crudUrlGenerator->removeReferrer()->getUrl();
+            return $this->crudUrlGenerator->build()->removeReferrer()->generateUrl();
         }
 
         if (Action::NEW === $currentAction) {
@@ -203,6 +203,6 @@ final class ActionFactory
             }
         }
 
-        return $this->crudUrlGenerator->removeReferrer()->getUrl();
+        return $this->crudUrlGenerator->build()->removeReferrer()->generateUrl();
     }
 }

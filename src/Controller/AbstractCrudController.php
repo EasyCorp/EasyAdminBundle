@@ -234,12 +234,17 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $submitButtonName = $this->getContext()->getRequest()->request->get('ea')['newForm']['btn'];
             if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
-                return $this->redirect($this->get(CrudUrlGenerator::class)->generateCurrentUrl([
-                    'crudAction' => Action::EDIT,
-                    'entityId' => $entityDto->getIdValue(),
-                ]));
+                $url = $this->get(CrudUrlGenerator::class)->build()
+                    ->setAction(Action::EDIT)
+                    ->setEntityId($entityDto->getPrimaryKeyValue())
+                    ->generateUrl();
+
+                return $this->redirect($url);
             } elseif (Action::SAVE_AND_RETURN === $submitButtonName) {
-                return $this->redirect($this->getContext()->getRequest()->request->get('referrer') ?? $this->get(CrudUrlGenerator::class)->generate(['crudAction' => Action::INDEX]));
+                $url = $this->getContext()->getRequest()->request->get('referrer')
+                    ?? $this->get(CrudUrlGenerator::class)->build()->setAction(Action::INDEX)->generateUrl();
+
+                return $this->redirect($url);
             }
 
             return $this->redirectToRoute($this->getContext()->getDashboardRouteName());
@@ -299,14 +304,21 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
             $submitButtonName = $this->getContext()->getRequest()->request->get('ea')['newForm']['btn'];
             if (Action::SAVE_AND_CONTINUE === $submitButtonName) {
-                return $this->redirect($this->get(CrudUrlGenerator::class)->generate([
-                    'crudAction' => Action::EDIT,
-                    'entityId' => $entityDto->getIdValue(),
-                ]));
+                $url = $this->get(CrudUrlGenerator::class)->build()
+                    ->setAction(Action::EDIT)
+                    ->setEntityId($entityDto->getPrimaryKeyValue())
+                    ->generateUrl();
+
+                return $this->redirect($url);
             } elseif (Action::SAVE_AND_RETURN === $submitButtonName) {
-                return $this->redirect($this->getContext()->getRequest()->request->get('referrer') ?? $this->get(CrudUrlGenerator::class)->generate(['crudAction' => Action::INDEX]));
+                $url = $this->getContext()->getRequest()->request->get('referrer')
+                    ?? $this->get(CrudUrlGenerator::class)->build()->setAction(Action::INDEX)->generateUrl();
+
+                return $this->redirect($url);
             } elseif (Action::SAVE_AND_ADD_ANOTHER === $submitButtonName) {
-                return $this->redirect($this->getContext()->getRequest()->getRequestUri());
+                $url = $this->get(CrudUrlGenerator::class)->build()->setAction(Action::NEW)->generateUrl();
+
+                return $this->redirect($url);
             }
 
             return $this->redirectToRoute($this->getContext()->getDashboardRouteName());

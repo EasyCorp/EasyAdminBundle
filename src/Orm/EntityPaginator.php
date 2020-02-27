@@ -11,15 +11,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
 final class EntityPaginator
 {
-    private $crudRouter;
+    private $crudUrlGenerator;
     private $currentPage;
     private $pageSize;
     private $results;
     private $numResults;
 
-    public function __construct(CrudUrlGenerator $crudRouter)
+    public function __construct(CrudUrlGenerator $crudUrlGenerator)
     {
-        $this->crudRouter = $crudRouter;
+        $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
     public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): self
@@ -58,7 +58,7 @@ final class EntityPaginator
 
     public function generateUrlForPage(int $page): string
     {
-        return $this->crudRouter->setQueryParam('page', $page)->removeReferrer()->getUrl();
+        return $this->crudUrlGenerator->build()->setQueryParam('page', $page)->removeReferrer()->generateUrl();
     }
 
     public function getCurrentPage(): int

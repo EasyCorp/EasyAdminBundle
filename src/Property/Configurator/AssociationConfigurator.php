@@ -107,11 +107,11 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
     private function generateLinkToAssociatedEntity(string $crudController, EntityDto $entityDto): ?string
     {
         // TODO: check if user has permission to see the related entity
-        return $this->crudUrlGenerator->generateForController($crudController)
+        return $this->crudUrlGenerator->buildForController($crudController)
             ->setAction(Action::DETAIL)
             ->setEntityId($entityDto->getPrimaryKeyValue())
             ->includeReferrer()
-            ->getUrl();
+            ->generateUrl();
     }
 
     private function countNumElements($collection): int

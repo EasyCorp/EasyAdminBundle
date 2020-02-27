@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -24,7 +25,7 @@ final class UrlConfigurator implements PropertyConfiguratorInterface
         $prettyUrl = str_replace(['http://www.', 'https://www.', 'http://', 'https://'], '', $propertyConfig->getValue());
         $prettyUrl = rtrim($prettyUrl, '/');
 
-        if ('index' === $action) {
+        if (Action::INDEX === $action) {
             $prettyUrl = u($prettyUrl)->truncate(32, '…');
         }
 

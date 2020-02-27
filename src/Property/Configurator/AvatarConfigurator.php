@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -16,12 +17,12 @@ final class AvatarConfigurator implements PropertyConfiguratorInterface
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
-        if ('index' === $action) {
+        if (Action::INDEX === $action) {
             $propertyConfig->setLabel(null);
         }
 
         if (null === $propertyConfig->getCustomOption(AvatarProperty::OPTION_HEIGHT)) {
-            $propertyConfig->setCustomOption(AvatarProperty::OPTION_HEIGHT, 'detail' === $action ? 48 : 28);
+            $propertyConfig->setCustomOption(AvatarProperty::OPTION_HEIGHT, Action::DETAIL === $action ? 48 : 28);
         }
 
         if ($propertyConfig->getCustomOption(AvatarProperty::OPTION_IS_GRAVATAR_EMAIL)) {

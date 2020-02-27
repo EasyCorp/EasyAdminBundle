@@ -9,7 +9,7 @@ final class IndexPageConfig
 {
     use CommonPageConfigTrait;
 
-    private $pageName = 'index';
+    private $pageName = Action::INDEX;
     private $entityViewPermission;
     private $defaultSort = [];
     private $searchProperties = [];
@@ -24,8 +24,8 @@ final class IndexPageConfig
         $config = new self();
 
         $config
-            ->addAction('edit')
-            ->addAction('delete');
+            ->addAction(Action::EDIT)
+            ->addAction(Action::DELETE);
 
         return $config;
     }

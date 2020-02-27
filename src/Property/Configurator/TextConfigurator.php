@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -23,7 +24,7 @@ final class TextConfigurator implements PropertyConfiguratorInterface
         }
 
         $configuredMaxLength = $propertyConfig->getCustomOption(TextAreaProperty::OPTION_MAX_LENGTH);
-        $defaultMaxLength = 'detail' === $action ? PHP_INT_MAX : 64;
+        $defaultMaxLength = Action::DETAIL === $action ? PHP_INT_MAX : 64;
         $formattedValue = u($propertyConfig->getValue())->truncate($configuredMaxLength ?? $defaultMaxLength, '…');
 
         $propertyConfig->setFormattedValue($formattedValue);

@@ -32,7 +32,7 @@ final class ActionCollection
 
     public function addAction(string $page, Action $actionConfig): self
     {
-        $validPageNames = ['index', 'detail', 'form'];
+        $validPageNames = [Action::INDEX, Action::DETAIL, 'form'];
         if (!\in_array($page, $validPageNames)) {
             throw new \InvalidArgumentException(sprintf('The "%s" action is added to the "%s" page, but it must be added to one of the following valid pages: %s.', (string) $actionConfig, $page, implode(', ', $validPageNames)));
         }

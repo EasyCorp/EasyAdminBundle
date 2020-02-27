@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 
 final class EntityDto
 {
@@ -199,20 +200,20 @@ final class EntityDto
     public function getDefaultProperties(string $action)
     {
         $defaultPropertyNames = [];
-        $maxNumProperties = 'index' === $action ? 7 : \PHP_INT_MAX;
+        $maxNumProperties = Action::INDEX === $action ? 7 : \PHP_INT_MAX;
 
         $excludedPropertyTypes = [
-            'edit' => ['binary', 'blob', 'json_array', 'json', 'object'],
-            'index' => ['array', 'association', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'],
-            'new' => ['binary', 'blob', 'json_array', 'json', 'object'],
-            'detail' => [],
+            Action::EDIT => ['binary', 'blob', 'json_array', 'json', 'object'],
+            Action::INDEX => ['array', 'association', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'],
+            Action::NEW => ['binary', 'blob', 'json_array', 'json', 'object'],
+            Action::DETAIL => [],
         ];
 
         $excludedPropertyNames = [
-            'edit' => [$this->getPrimaryKeyName()],
-            'index' => ['password', 'salt', 'slug', 'updatedAt', 'uuid'],
-            'new' => [$this->getPrimaryKeyName()],
-            'detail' => [],
+            Action::EDIT => [$this->getPrimaryKeyName()],
+            Action::INDEX => ['password', 'salt', 'slug', 'updatedAt', 'uuid'],
+            Action::NEW => [$this->getPrimaryKeyName()],
+            Action::DETAIL => [],
         ];
 
         foreach ($this->getAllPropertyNames() as $propertyName) {

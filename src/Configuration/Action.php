@@ -7,6 +7,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyModifierTrait;
 
 final class Action
 {
+    public const DELETE = 'delete';
+    public const DETAIL = 'detail';
+    public const EDIT = 'edit';
+    public const INDEX = 'index';
+    public const NEW = 'new';
+    public const SAVE_AND_ADD_ANOTHER = 'saveAndAddAnother';
+    public const SAVE_AND_CONTINUE = 'saveAndContinue';
+    public const SAVE_AND_RETURN = 'saveAndClose';
+
     use PropertyModifierTrait;
 
     private $name;

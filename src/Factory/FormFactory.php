@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -27,7 +28,7 @@ final class FormFactory
 
     public function createDeleteForm(array $queryParams = []): FormInterface
     {
-        $formActionUrl = $this->crudUrlGenerator->generate(array_merge(['crudAction' => 'delete'], $queryParams));
+        $formActionUrl = $this->crudUrlGenerator->generate(array_merge(['crudAction' => Action::DELETE], $queryParams));
 
         return $this->symfonyFormFactory->createNamedBuilder('ea_delete_form')
             ->setAction($formActionUrl)

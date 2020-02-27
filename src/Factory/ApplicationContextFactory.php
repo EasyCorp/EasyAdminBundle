@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
@@ -100,7 +101,7 @@ final class ApplicationContextFactory
 
     private function getCrudPageDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
     {
-        if (\in_array($crudAction, ['edit', 'new'])) {
+        if (\in_array($crudAction, [Action::EDIT, Action::NEW])) {
             $crudAction = 'form';
         }
 

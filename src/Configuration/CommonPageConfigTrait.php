@@ -108,30 +108,30 @@ trait CommonPageConfigTrait
         }
 
         return $this->builtInActions = [
-            'index' => Action::new('index', 'action.index')
-                ->linkToCrudAction('index')
+            Action::INDEX => Action::new(Action::INDEX, 'action.index')
+                ->linkToCrudAction(Action::INDEX)
                 ->setTranslationDomain('EasyAdminBundle'),
 
-            'detail' => Action::new('detail', 'action.detail')
-                ->linkToCrudAction('detail')
+            Action::DETAIL => Action::new(Action::DETAIL, 'action.detail')
+                ->linkToCrudAction(Action::DETAIL)
                 ->setTranslationDomain('EasyAdminBundle'),
 
-            'edit' => Action::new('edit', 'action.edit', null)
-                ->linkToCrudAction('edit')
+            Action::EDIT => Action::new(Action::EDIT, 'action.edit', null)
+                ->linkToCrudAction(Action::EDIT)
                 ->setCssClass('')
                 ->setTranslationDomain('EasyAdminBundle'),
 
-            'delete' => Action::new('delete', 'action.delete')
-                ->linkToCrudAction('delete')
+            Action::DELETE => Action::new(Action::DELETE, 'action.delete')
+                ->linkToCrudAction(Action::DELETE)
                 ->setCssClass('text-danger')
                 ->setTranslationDomain('EasyAdminBundle'),
 
-            'save-and-return' => Action::new('save-and-return', 'action.save')
-                ->linkToCrudAction('edit')
+            Action::SAVE_AND_RETURN => Action::new(Action::SAVE_AND_RETURN, 'action.save')
+                ->linkToCrudAction(Action::EDIT)
                 ->setTranslationDomain('EasyAdminBundle'),
 
-            'save-and-continue' => Action::new('save-and-continue', 'action.save_and_continue')
-                ->linkToCrudAction('edit')
+            Action::SAVE_AND_CONTINUE => Action::new(Action::SAVE_AND_CONTINUE, 'action.save_and_continue')
+                ->linkToCrudAction(Action::EDIT)
                 ->setTranslationDomain('EasyAdminBundle'),
         ];
     }

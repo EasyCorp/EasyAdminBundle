@@ -16,8 +16,8 @@ final class FormPageConfig
         $config = new self();
 
         $config
-            ->addAction('save-and-continue')
-            ->addAction('save-and-close');
+            ->addAction(Action::SAVE_AND_CONTINUE)
+            ->addAction(Action::SAVE_AND_RETURN);
 
         return $config;
     }

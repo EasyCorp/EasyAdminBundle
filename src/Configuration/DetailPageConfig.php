@@ -8,7 +8,7 @@ final class DetailPageConfig
 {
     use CommonPageConfigTrait;
 
-    private $pageName = 'detail';
+    private $pageName = Action::DETAIL;
     private $entityViewPermission;
 
     public static function new(): self
@@ -16,9 +16,9 @@ final class DetailPageConfig
         $config = new self();
 
         $config
-            ->addAction('delete')
-            ->addAction('index')
-            ->addAction('edit');
+            ->addAction(Action::DELETE)
+            ->addAction(Action::INDEX)
+            ->addAction(Action::EDIT);
 
         return $config;
     }

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\PersistentCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -107,7 +108,7 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
     {
         // TODO: check if user has permission to see the related entity
         return $this->crudUrlGenerator->generateForController($crudController)
-            ->setAction('detail')
+            ->setAction(Action::DETAIL)
             ->setEntityId($entityDto->getPrimaryKeyValue())
             ->includeReferrer()
             ->getUrl();

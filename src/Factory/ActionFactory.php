@@ -115,59 +115,59 @@ final class ActionFactory
      */
     private function createBuiltInAction(string $currentAction, string $actionName): Action
     {
-        if ('edit' === $actionName) {
-            return Action::new('edit', 'action.edit', null)
-                ->linkToCrudAction('edit')
-                ->setCssClass('detail' === $currentAction ? 'btn btn-primary' : '')
+        if (Action::EDIT === $actionName) {
+            return Action::new(Action::EDIT, 'action.edit', null)
+                ->linkToCrudAction(Action::EDIT)
+                ->setCssClass(Action::DETAIL === $currentAction ? 'btn btn-primary' : '')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
-        if ('detail' === $actionName) {
-            return Action::new('detail', 'action.detail')
-                ->linkToCrudAction('detail')
+        if (Action::DETAIL === $actionName) {
+            return Action::new(Action::DETAIL, 'action.detail')
+                ->linkToCrudAction(Action::DETAIL)
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
-        if ('index' === $actionName) {
-            return Action::new('index', 'action.index')
-                ->linkToCrudAction('index')
-                ->setCssClass('detail' === $currentAction ? 'btn' : '')
+        if (Action::INDEX === $actionName) {
+            return Action::new(Action::INDEX, 'action.index')
+                ->linkToCrudAction(Action::INDEX)
+                ->setCssClass(Action::DETAIL === $currentAction ? 'btn' : '')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
-        if ('delete' === $actionName) {
-            $cssClass = 'detail' === $currentAction ? 'btn btn-link pr-0 text-danger' : 'text-danger';
+        if (Action::DELETE === $actionName) {
+            $cssClass = Action::DETAIL === $currentAction ? 'btn btn-link pr-0 text-danger' : 'text-danger';
 
-            return Action::new('delete', 'action.delete', 'index' === $currentAction ? null : 'fa fa-fw fa-trash-o')
-                ->linkToCrudAction('delete')
+            return Action::new(Action::DELETE, 'action.delete', Action::INDEX === $currentAction ? null : 'fa fa-fw fa-trash-o')
+                ->linkToCrudAction(Action::DELETE)
                 ->setCssClass($cssClass)
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
-        if ('save-and-close' === $actionName) {
-            return Action::new('save-and-close', 'edit' === $currentAction ? 'action.save' : 'action.create')
+        if (Action::SAVE_AND_RETURN === $actionName) {
+            return Action::new(Action::SAVE_AND_RETURN, Action::EDIT === $currentAction ? 'action.save' : 'action.create')
                 ->setCssClass('btn btn-primary action-save')
                 ->setHtmlElement('button')
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction('edit' === $currentAction ? 'edit' : 'new')
+                ->linkToCrudAction(Action::EDIT === $currentAction ? Action::EDIT : Action::NEW)
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
-        if ('save-and-continue' === $actionName) {
-            return Action::new('save-and-continue', 'edit' === $currentAction ? 'action.save_and_continue' : 'action.create_and_continue', 'far fa-edit')
+        if (Action::SAVE_AND_CONTINUE === $actionName) {
+            return Action::new(Action::SAVE_AND_CONTINUE, Action::EDIT === $currentAction ? 'action.save_and_continue' : 'action.create_and_continue', 'far fa-edit')
                 ->setCssClass('btn btn-secondary action-save')
                 ->setHtmlElement('button')
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction('edit' === $currentAction ? 'edit' : 'new')
+                ->linkToCrudAction(Action::EDIT === $currentAction ? Action::EDIT : Action::NEW)
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
-        if ('save-and-add-another' === $actionName) {
-            return Action::new('save-and-add-another', 'action.create_and_add_another')
+        if (Action::SAVE_AND_ADD_ANOTHER === $actionName) {
+            return Action::new(Action::SAVE_AND_ADD_ANOTHER, 'action.create_and_add_another')
                 ->setCssClass('btn btn-secondary action-save')
                 ->setHtmlElement('button')
                 ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction('new')
+                ->linkToCrudAction(Action::NEW)
                 ->setTranslationDomain('EasyAdminBundle');
         }
 
@@ -178,17 +178,17 @@ final class ActionFactory
     {
         $nextAction = $actionDto->getName();
 
-        if ('detail' === $currentAction) {
-            if ('edit' === $nextAction) {
+        if (Action::DETAIL === $currentAction) {
+            if (Action::EDIT === $nextAction) {
                 return $this->crudUrlGenerator->removeReferrer()->getUrl();
             }
         }
 
-        if ('index' === $currentAction) {
+        if (Action::INDEX === $currentAction) {
             return $this->crudUrlGenerator->removeReferrer()->getUrl();
         }
 
-        if ('new' === $currentAction) {
+        if (Action::NEW === $currentAction) {
             return null;
         }
 
@@ -197,8 +197,8 @@ final class ActionFactory
         parse_str($referrerParts['query'] ?? '', $referrerQueryStringVariables);
         $referrerCrudAction = $referrerQueryStringVariables['crudAction'] ?? null;
 
-        if ('edit' === $currentAction) {
-            if (\in_array($referrerCrudAction, ['index', 'detail'])) {
+        if (Action::EDIT === $currentAction) {
+            if (\in_array($referrerCrudAction, [Action::INDEX, Action::DETAIL])) {
                 return $referrer;
             }
         }

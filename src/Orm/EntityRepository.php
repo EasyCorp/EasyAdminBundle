@@ -74,7 +74,7 @@ final class EntityRepository implements EntityRepositoryInterface
             $entityName = 'entity';
             $propertyDataType = $entityDto->getPropertyDataType($propertyName);
 
-            if ($entityDto->isAssociationProperty($propertyName)) {
+            if ($entityDto->isAssociation($propertyName)) {
                 // support arbitrarily nested associations (e.g. foo.bar.baz.qux)
                 $associatedProperties = explode('.', $propertyName);
                 for ($i = 0; $i < \count($associatedProperties) - 1; ++$i) {
@@ -122,7 +122,7 @@ final class EntityRepository implements EntityRepositoryInterface
     private function addOrderClause(QueryBuilder $queryBuilder, SearchDto $searchDto, EntityDto $entityDto): void
     {
         foreach ($searchDto->getSort() as $sortProperty => $sortOrder) {
-            $sortFieldIsDoctrineAssociation = $entityDto->isAssociationProperty($sortProperty);
+            $sortFieldIsDoctrineAssociation = $entityDto->isAssociation($sortProperty);
 
             if ($sortFieldIsDoctrineAssociation) {
                 $sortFieldParts = explode('.', $sortProperty, 2);

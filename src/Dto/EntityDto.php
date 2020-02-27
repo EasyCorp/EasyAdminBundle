@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
 
 final class EntityDto
@@ -10,8 +12,8 @@ final class EntityDto
     private $fqcn;
     private $metadata;
     private $instance;
-    private $idName;
-    private $idValue;
+    private $primaryKeyName;
+    private $primaryKeyValue;
     private $requiredPermission;
     private $userHasPermission;
     /** @var ?PropertyDtoCollection */
@@ -24,7 +26,7 @@ final class EntityDto
         $this->fqcn = $entityFqcn;
         $this->metadata = $entityMetadata;
         $this->instance = $entityInstance;
-        $this->idName = $this->metadata->getIdentifierFieldNames()[0];
+        $this->primaryKeyName = $this->metadata->getIdentifierFieldNames()[0];
         $this->requiredPermission = $entityPermission;
         $this->userHasPermission = true;
     }
@@ -44,32 +46,36 @@ final class EntityDto
         return $this->instance;
     }
 
-    public function getIdName(): ?string
+    public function getPrimaryKeyName(): ?string
     {
-        return $this->idName;
+        return $this->primaryKeyName;
     }
 
-    public function getIdValue()
+    public function getPrimaryKeyValue()
     {
         if (null === $this->instance) {
             return null;
         }
 
-        if (null !== $this->idValue) {
-            return $this->idValue;
+        if (null !== $this->primaryKeyValue) {
+            return $this->primaryKeyValue;
         }
 
-        $r = new \ReflectionObject($this->instance);
-        $idProperty = $r->getProperty($this->idName);
-        $idProperty->setAccessible(true);
-        $idValue = $idProperty->getValue($this->instance);
+        try {
+            $r = ClassUtils::newReflectionObject($this->instance);
+            $primaryKeyProperty = $r->getProperty($this->primaryKeyName);
+            $primaryKeyProperty->setAccessible(true);
+            $primaryKeyValue = $primaryKeyProperty->getValue($this->instance);
+        } catch (\Exception $e) {
+            $primaryKeyValue = null;
+        }
 
-        return $this->idValue = $idValue;
+        return $this->primaryKeyValue = $primaryKeyValue;
     }
 
-    public function getIdValueAsString(): string
+    public function getPrimaryKeyValueAsString(): string
     {
-        return (string) $this->getIdValue();
+        return (string) $this->getPrimaryKeyValue();
     }
 
     public function getPermission(): ?string
@@ -113,11 +119,15 @@ final class EntityDto
 
     public function getPropertyMetadata(string $propertyName): array
     {
-        if (!\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" property does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
+        if (\array_key_exists($propertyName, $this->metadata->fieldMappings)) {
+            return $this->metadata->fieldMappings[$propertyName];
         }
 
-        return $this->metadata->fieldMappings[$propertyName];
+        if (\array_key_exists($propertyName, $this->metadata->associationMappings)) {
+            return $this->metadata->associationMappings[$propertyName];
+        }
+
+        throw new \InvalidArgumentException(sprintf('The "%s" property does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
     }
 
     public function getPropertyDataType(string $propertyName)
@@ -130,9 +140,24 @@ final class EntityDto
         return \array_key_exists($propertyName, $this->metadata->fieldMappings);
     }
 
-    public function isAssociationProperty(string $propertyName): bool
+    public function isAssociation(string $propertyName): bool
     {
-        return false !== strpos($propertyName, '.') && !$this->isEmbeddedClassProperty($propertyName);
+        return array_key_exists($propertyName, $this->metadata->associationMappings)
+            || (false !== strpos($propertyName, '.') && !$this->isEmbeddedClassProperty($propertyName));
+    }
+
+    public function isToOneAssociation(string $propertyName): bool
+    {
+        $associationType = $this->getPropertyMetadata($propertyName)['type'];
+
+        return in_array($associationType, [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE]);
+    }
+
+    public function isToManyAssociation(string $propertyName): bool
+    {
+        $associationType = $this->getPropertyMetadata($propertyName)['type'];
+
+        return in_array($associationType, [ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY]);
     }
 
     public function isEmbeddedClassProperty(string $propertyName): bool
@@ -150,7 +175,7 @@ final class EntityDto
 
         $clone = clone $this;
         $clone->instance = $newEntityInstance;
-        $clone->idValue = null;
+        $clone->primaryKeyValue = null;
 
         return $clone;
     }
@@ -184,9 +209,9 @@ final class EntityDto
         ];
 
         $excludedPropertyNames = [
-            'edit' => [$this->getIdName()],
+            'edit' => [$this->getPrimaryKeyName()],
             'index' => ['password', 'salt', 'slug', 'updatedAt', 'uuid'],
-            'new' => [$this->getIdName()],
+            'new' => [$this->getPrimaryKeyName()],
             'detail' => [],
         ];
 

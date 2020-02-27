@@ -1,0 +1,11 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{% if 'toMany' == property.customOptions.get('type') %}
+    <span class="badge badge-secondary">{{ property.formattedValue }}</span>
+{% else %}
+    {% if property.customOptions.get('relatedUrl') is not null %}
+        <a href="{{ property.customOptions.get('relatedUrl') }}">{{ property.formattedValue }}</a>
+    {% else %}
+        {{ property.formattedValue }}
+    {% endif %}
+{% endif %}

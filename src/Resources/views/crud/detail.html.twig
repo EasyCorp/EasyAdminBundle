@@ -4,7 +4,7 @@
 {% extends ea.templatePath('layout') %}
 {% trans_default_domain ea.i18n.translationDomain %}
 
-{% block body_id 'easyadmin-detail-' ~ entity.name ~ '-' ~ entity.idValue %}
+{% block body_id 'easyadmin-detail-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
 {% block body_class 'detail detail-' ~ entity.name %}
 
 {% block content_title %}

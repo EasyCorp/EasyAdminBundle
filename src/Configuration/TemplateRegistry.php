@@ -25,7 +25,7 @@ final class TemplateRegistry
         'label/null' => '@EasyAdmin/label/null.html.twig',
         'label/undefined' => '@EasyAdmin/label/undefined.html.twig',
         'property/array' => '@EasyAdmin/crud/property/array.html.twig',
-        'property/association' => '@EasyAdmin/field_association.html.twig',
+        'property/association' => '@EasyAdmin/crud/property/association.html.twig',
         'property/avatar' => '@EasyAdmin/crud/property/avatar.html.twig',
         'property/bigint' => '@EasyAdmin/crud/property/bigint.html.twig',
         'property/boolean' => '@EasyAdmin/crud/property/boolean.html.twig',

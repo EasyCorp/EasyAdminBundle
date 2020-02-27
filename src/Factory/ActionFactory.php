@@ -67,7 +67,7 @@ final class ActionFactory
     {
         $requestParameters = [
             'crudController' => $request->query->get('crudController'),
-            'entityId' => $entityDto->getIdValueAsString(),
+            'entityId' => $entityDto->getPrimaryKeyValueAsString(),
             'referrer' => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
 
@@ -180,12 +180,12 @@ final class ActionFactory
 
         if ('detail' === $currentAction) {
             if ('edit' === $nextAction) {
-                return $this->crudUrlGenerator->generateCurrentUrlWithoutReferrer();
+                return $this->crudUrlGenerator->removeReferrer()->getUrl();
             }
         }
 
         if ('index' === $currentAction) {
-            return $this->crudUrlGenerator->generateCurrentUrlWithoutReferrer();
+            return $this->crudUrlGenerator->removeReferrer()->getUrl();
         }
 
         if ('new' === $currentAction) {
@@ -203,6 +203,6 @@ final class ActionFactory
             }
         }
 
-        return $this->crudUrlGenerator->generateCurrentUrlWithoutReferrer();
+        return $this->crudUrlGenerator->removeReferrer()->getUrl();
     }
 }

@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Common\Util\ClassUtils;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
@@ -46,25 +48,12 @@ final class EntityFactory
         $entityId = $applicationContext->getRequest()->query->get('entityId');
         $entityPermission = $applicationContext->getCrud()->getPage()->getEntityPermission();
 
-        $entityMetadata = $this->getEntityMetadata($entityFqcn);
-        $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
-        $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPermission, $entityInstance);
+        return $this->doCreate(null, $entityFqcn, $entityId, $entityPermission, $configuredProperties, $configuredActions);
+    }
 
-        if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $entityDto)) {
-            $entityDto->markAsInaccessible();
-        } else {
-            if (null !== $configuredProperties) {
-                $entityDto = $this->propertyFactory->create($entityDto, $configuredProperties);
-            }
-
-            if (null !== $configuredActions) {
-                $entityDto = $this->actionFactory->create($entityDto, $configuredActions);
-            }
-        }
-
-        $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($entityDto));
-
-        return $entityDto;
+    public function createForEntityInstance($entityInstance): EntityDto
+    {
+        return $this->doCreate($entityInstance);
     }
 
     /**
@@ -83,6 +72,40 @@ final class EntityFactory
         }
 
         return EntityDtoCollection::new($builtEntities);
+    }
+
+    private function doCreate($entityInstance = null, ?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, iterable $configuredProperties = null, array $configuredActions = null): EntityDto
+    {
+        if (null === $entityInstance && null !== $entityFqcn) {
+            $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
+        }
+
+        if (null !== $entityInstance && null === $entityFqcn) {
+            if ($entityInstance instanceof Proxy) {
+                $entityInstance->__load();
+            }
+
+            $entityFqcn = ClassUtils::getClass($entityInstance);
+        }
+
+        $entityMetadata = $this->getEntityMetadata($entityFqcn);
+        $entityDto = new EntityDto($entityFqcn, $entityMetadata, $entityPermission, $entityInstance);
+
+        if (!$this->authorizationChecker->isGranted(Permission::EA_VIEW_ENTITY, $entityDto)) {
+            $entityDto->markAsInaccessible();
+        } else {
+            if (null !== $configuredProperties) {
+                $entityDto = $this->propertyFactory->create($entityDto, $configuredProperties);
+            }
+
+            if (null !== $configuredActions) {
+                $entityDto = $this->actionFactory->create($entityDto, $configuredActions);
+            }
+        }
+
+        $this->eventDispatcher->dispatch(new AfterEntityBuiltEvent($entityDto));
+
+        return $entityDto;
     }
 
     private function getEntityManager(string $entityFqcn): ObjectManager

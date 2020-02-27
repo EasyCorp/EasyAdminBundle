@@ -3,18 +3,85 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class CrudUrlGenerator
 {
     private $applicationContextProvider;
     private $urlGenerator;
+    private $queryParams = [];
+    private $includeReferrer;
 
     public function __construct(ApplicationContextProvider $applicationContextProvider, UrlGeneratorInterface $urlGenerator)
     {
         $this->applicationContextProvider = $applicationContextProvider;
         $this->urlGenerator = $urlGenerator;
     }
+
+    public function generateForController(string $controllerFqcn): self
+    {
+        $generator = new self($this->applicationContextProvider, $this->urlGenerator);
+        $generator->includeReferrer = false;
+        $generator->queryParams['crudController'] = $controllerFqcn;
+
+        return $generator;
+    }
+
+    public function setAction(string $action): self
+    {
+        $this->queryParams['crudAction'] = $action;
+
+        return $this;
+    }
+
+    public function setEntityId($entityId): self
+    {
+        $this->queryParams['entityId'] = $entityId;
+
+        return $this;
+    }
+
+    public function setQueryParam(string $paramName, $paramValue): self
+    {
+        $this->queryParams[$paramName] = $paramValue;
+
+        return $this;
+    }
+
+    public function setQueryParams(array $queryParams): self
+    {
+        $this->queryParams = $queryParams;
+
+        return $this;
+    }
+
+    public function includeReferrer(): self
+    {
+        $this->includeReferrer = true;
+
+        return $this;
+    }
+
+    public function removeReferrer(): self
+    {
+        $this->includeReferrer = false;
+
+        return $this;
+    }
+
+    public function getUrl(): string
+    {
+        if (null === $this->includeReferrer()) {
+            return $this->generate($this->queryParams);
+        }
+
+        return $this->includeReferrer
+            ? $this->generateCurrentUrlWithReferrer($this->queryParams)
+            : $this->generateCurrentUrlWithoutReferrer($this->queryParams);
+    }
+
+
 
     public function generate(array $queryParams = []): string
     {

@@ -156,7 +156,7 @@
                 {% if not entity.isAccessible %}
                     {% set some_results_are_hidden = true %}
                 {% else %}
-                    <tr data-id="{{ entity.idValueAsString }}">
+                    <tr data-id="{{ entity.primaryKeyValueAsString }}">
                     {#
                         {% if _has_batch_actions %}
                             <td><input type="checkbox" class="form-batch-checkbox" value="{{ _item_id }}"></td>

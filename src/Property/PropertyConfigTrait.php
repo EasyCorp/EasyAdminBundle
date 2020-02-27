@@ -260,10 +260,20 @@ trait PropertyConfigTrait
         return $this;
     }
 
+    /**
+     * The option name can be simple ('foo') or nested ('foo.bar')
+     */
     public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): PropertyConfigInterface
     {
-        if (!isset($this->formTypeOptions[$optionName])) {
-            $this->formTypeOptions[$optionName] = $optionValue;
+        $optionParts = explode('.', $optionName);
+        if (1 === count($optionParts)) {
+            if (!isset($this->formTypeOptions[$optionName])) {
+                $this->formTypeOptions[$optionName] = $optionValue;
+            }
+        } elseif (2 === count($optionParts)) {
+            if (!isset($this->formTypeOptions[$optionParts[0]][$optionParts[1]])) {
+                $this->formTypeOptions[$optionParts[0]][$optionParts[1]] = $optionValue;
+            }
         }
 
         return $this;

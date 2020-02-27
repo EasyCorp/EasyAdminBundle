@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\AssociationConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\AvatarConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\BooleanConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPostConfigurator;
@@ -40,6 +41,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\UrlConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services()
@@ -191,6 +193,12 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.property_configurator')
 
         ->set(PercentConfigurator::class)
+            ->tag('ea.property_configurator')
+
+        ->set(AssociationConfigurator::class)
+            ->arg(0, ref(EntityFactory::class))
+            ->arg(1, ref(CrudUrlGenerator::class))
+            ->arg(2, ref(TranslatorInterface::class))
             ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)

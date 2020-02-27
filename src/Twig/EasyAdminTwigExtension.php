@@ -163,14 +163,14 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function generateCrudRoute(array $queryParams = [], bool $include_referrer = true, bool $remove_existing_referrer = false): string
     {
         if ($remove_existing_referrer) {
-            return $this->crudRouter->generateCurrentUrlWithoutReferrer($queryParams);
+            return $this->crudRouter->setQueryParams($queryParams)->removeReferrer()->getUrl();
         }
 
         if ($include_referrer) {
-            return $this->crudRouter->generateCurrentUrlWithReferrer($queryParams);
+            return $this->crudRouter->setQueryParams($queryParams)->includeReferrer()->getUrl();
         }
 
-        return $this->crudRouter->generateCurrentUrl($queryParams);
+        return $this->crudRouter->setQueryParams($queryParams)->getUrl();
     }
 
     /**

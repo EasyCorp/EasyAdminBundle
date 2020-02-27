@@ -5,7 +5,7 @@
 
 {% trans_default_domain ea.i18n.translationDomain %}
 
-{% block body_id 'ea-edit-' ~ entity.name ~ '-' ~ entity.idValue %}
+{% block body_id 'ea-edit-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
 {% block body_class 'ea-edit ea-edit-' ~ entity.name %}
 
 {% block configured_head_contents %}

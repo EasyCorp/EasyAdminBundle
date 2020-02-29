@@ -385,6 +385,8 @@
         : attribute(easyadmin.item, easyadmin.entity.primary_key_field_name) %}
 
     {% set _request_parameters = { entity: easyadmin.entity.name, referer: app.request.query.get('referer') } %}
+    
+    {% set _entity_actions = _entity_actions|filter((metadata, field) => metadata.permission is defined ? easyadmin_is_granted(metadata.permission) : true) %}
 
     {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
         actions: _entity_actions,

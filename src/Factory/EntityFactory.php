@@ -46,7 +46,7 @@ final class EntityFactory
         $applicationContext = $this->applicationContextProvider->getContext();
         $entityFqcn = $applicationContext->getCrud()->getEntityFqcn();
         $entityId = $applicationContext->getRequest()->query->get('entityId');
-        $entityPermission = $applicationContext->getCrud()->getPage()->getEntityPermission();
+        $entityPermission = $applicationContext->getCrud()->getEntityPermission();
 
         return $this->doCreate(null, $entityFqcn, $entityId, $entityPermission, $configuredProperties, $configuredActions);
     }

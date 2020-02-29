@@ -68,10 +68,8 @@ final class SecurityVoter extends Voter
         // users can run the Crud action if:
         // * they have the required permission to run the action
         // * the action is not disabled
-        $crudActionPermission = $crudDto->getPage()->getPermission();
-        $crudActionName = $crudDto->getAction();
 
-        return $this->authorizationChecker->isGranted($crudActionPermission) && !$this->isActionDisabled($crudActionName);
+        return $this->authorizationChecker->isGranted($crudDto->getPagePermission()) && !$this->isActionDisabled($crudDto->getAction());
     }
 
     private function voteOnViewPropertyPermission(PropertyConfigInterface $propertyConfig): bool
@@ -106,8 +104,10 @@ final class SecurityVoter extends Voter
         $applicationContext = $this->applicationContextProvider->getContext();
 
         $actionsDisabledGlobally = $applicationContext->getCrud()->getDisabledActions();
-        $actionsDisabledByPage = $applicationContext->getCrud()->getPage()->getDisabledActions();
-        $disabledActions = array_unique(array_merge($actionsDisabledGlobally, $actionsDisabledByPage));
+        // TODO: fix this
+        //$actionsDisabledByPage = $applicationContext->getCrud()->getPage()->getDisabledActions();
+        //$disabledActions = array_unique(array_merge($actionsDisabledGlobally, $actionsDisabledByPage));
+        $disabledActions = $actionsDisabledGlobally;
 
         return \in_array($actionName, $disabledActions, true);
     }

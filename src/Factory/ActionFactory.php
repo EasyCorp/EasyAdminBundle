@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -32,10 +33,13 @@ final class ActionFactory
 
     public function create(EntityDto $entityDto, array $actionsConfig): EntityDto
     {
+        // TODO: fix this:
+        return $entityDto;
+
         $applicationContext = $this->applicationContextProvider->getContext();
         $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
         $currentAction = $applicationContext->getCrud()->getAction();
-        $actionUpdateCallables = $applicationContext->getCrud()->getPage()->getActionUpdateCallables();
+        $actionUpdateCallables = $applicationContext->getCrud()->getActionUpdateCallables();
         $actionsConfig = $this->preProcessActionsConfig($currentAction, $actionsConfig, $actionUpdateCallables);
 
         $builtActions = [];
@@ -92,11 +96,6 @@ final class ActionFactory
     private function preProcessActionsConfig(string $currentAction, array $actionsConfig, array $actionUpdateCallables): array
     {
         foreach ($actionsConfig as $i => $actionConfig) {
-            // fox DX reasons, action config can be just a string with the action name
-            if (\is_string($actionConfig)) {
-                $actionConfig = $this->createBuiltInAction($currentAction, $actionConfig);
-            }
-
             // apply the callables that update certain config options of the action
             $actionName = (string) $actionConfig;
             if (\array_key_exists($actionName, $actionUpdateCallables) && null !== $actionUpdateCallables[$actionName]) {
@@ -107,71 +106,6 @@ final class ActionFactory
         }
 
         return $actionsConfig;
-    }
-
-    /**
-     * The $currentAction is needed because sometimes the same action has different config
-     * depending on where it's displayed (to display an icon in 'detail' but not in 'index', etc.).
-     */
-    private function createBuiltInAction(string $currentAction, string $actionName): Action
-    {
-        if (Action::EDIT === $actionName) {
-            return Action::new(Action::EDIT, 'action.edit', null)
-                ->linkToCrudAction(Action::EDIT)
-                ->setCssClass(Action::DETAIL === $currentAction ? 'btn btn-primary' : '')
-                ->setTranslationDomain('EasyAdminBundle');
-        }
-
-        if (Action::DETAIL === $actionName) {
-            return Action::new(Action::DETAIL, 'action.detail')
-                ->linkToCrudAction(Action::DETAIL)
-                ->setTranslationDomain('EasyAdminBundle');
-        }
-
-        if (Action::INDEX === $actionName) {
-            return Action::new(Action::INDEX, 'action.index')
-                ->linkToCrudAction(Action::INDEX)
-                ->setCssClass(Action::DETAIL === $currentAction ? 'btn' : '')
-                ->setTranslationDomain('EasyAdminBundle');
-        }
-
-        if (Action::DELETE === $actionName) {
-            $cssClass = Action::DETAIL === $currentAction ? 'btn btn-link pr-0 text-danger' : 'text-danger';
-
-            return Action::new(Action::DELETE, 'action.delete', Action::INDEX === $currentAction ? null : 'fa fa-fw fa-trash-o')
-                ->linkToCrudAction(Action::DELETE)
-                ->setCssClass($cssClass)
-                ->setTranslationDomain('EasyAdminBundle');
-        }
-
-        if (Action::SAVE_AND_RETURN === $actionName) {
-            return Action::new(Action::SAVE_AND_RETURN, Action::EDIT === $currentAction ? 'action.save' : 'action.create')
-                ->setCssClass('btn btn-primary action-save')
-                ->setHtmlElement('button')
-                ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(Action::EDIT === $currentAction ? Action::EDIT : Action::NEW)
-                ->setTranslationDomain('EasyAdminBundle');
-        }
-
-        if (Action::SAVE_AND_CONTINUE === $actionName) {
-            return Action::new(Action::SAVE_AND_CONTINUE, Action::EDIT === $currentAction ? 'action.save_and_continue' : 'action.create_and_continue', 'far fa-edit')
-                ->setCssClass('btn btn-secondary action-save')
-                ->setHtmlElement('button')
-                ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(Action::EDIT === $currentAction ? Action::EDIT : Action::NEW)
-                ->setTranslationDomain('EasyAdminBundle');
-        }
-
-        if (Action::SAVE_AND_ADD_ANOTHER === $actionName) {
-            return Action::new(Action::SAVE_AND_ADD_ANOTHER, 'action.create_and_add_another')
-                ->setCssClass('btn btn-secondary action-save')
-                ->setHtmlElement('button')
-                ->setHtmlAttributes(['type' => 'submit', 'name' => 'ea[newForm][btn]', 'value' => $actionName])
-                ->linkToCrudAction(Action::NEW)
-                ->setTranslationDomain('EasyAdminBundle');
-        }
-
-        throw new \InvalidArgumentException(sprintf('The "%s" action is not a built-in action, so you can\'t add or configure it via its name. Either refer to one of the built-in actions or create a custom action called "%s".', $actionName, $actionName));
     }
 
     private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string

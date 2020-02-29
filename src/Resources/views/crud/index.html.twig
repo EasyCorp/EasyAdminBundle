@@ -14,18 +14,13 @@
 
 {% block content_title %}
     {% apply spaceless %}
-        {% if 'search' == app.request.get('action') %}
-            {% set default_title = 'search.page_title'|transchoice(paginator.numResults, {}, 'EasyAdminBundle') %}
-            {{ ea.crud.page.title is null ? default_title|raw : ea.crud.page.title|transchoice(paginator.numResults)|raw }}
-        {% else %}
-            {% set default_title = 'page.index.title'|trans(ea.i18n.translationParams, 'EasyAdminBundle') %}
-            {{ ea.crud.page.title is null ? default_title|raw : ea.crud.page.title|trans(ea.i18n.translationParams)|raw }}
-        {% endif %}
+        {% set default_title = ea.crud.defaultPageTitle|trans(ea.i18n.translationParams, 'EasyAdminBundle') %}
+        {{ ea.crud.customPageTitle is null ? default_title|raw : ea.crud.customPageTitle|trans(ea.i18n.translationParams)|raw }}
     {% endapply %}
 {% endblock %}
 
 {% block global_actions %}
-    {% if ea.crud.page.isSearchEnabled %}
+    {% if ea.crud.isSearchEnabled %}
         {% block search_action %}
             <div class="form-action form-action-search">
                 <form method="get">
@@ -52,7 +47,7 @@
         {% endblock search_action %}
     {% endif %}
 
-    {% if ea.crud.page.isFilterEnabled %}
+    {% if ea.crud.isFilterEnabled %}
         {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
         {% block filters_action %}
             <div class="btn-group action-filters">
@@ -103,7 +98,7 @@
 {% block content_header %}
     {{ parent() }}
     {{ block('batch_actions') }}
-    {% if ea.crud.page.isFilterEnabled %}
+    {% if ea.crud.isFilterEnabled %}
         {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
     {% endif %}
 {% endblock content_header %}
@@ -142,7 +137,7 @@
                 {% endfor %}
 
                 {% if entities|length > 0 and entities|first.actions is not empty %}
-                    <th {% if ea.crud.page.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
+                    <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
                         <span class="sr-only">{{ 'list.row_actions'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}</span>
                     </th>
                 {% endif %}
@@ -171,9 +166,9 @@
 
                     {% if entity.actions is not empty %}
                         <td class="actions">
-                            {% if not ea.crud.page.showEntityActionsAsDropdown %}
+                            {% if not ea.crud.showEntityActionsAsDropdown %}
                                 {% for action in entity.actions %}
-                                    {{ include(action.template, { action: action, isIncludedInDropdown: ea.crud.page.showEntityActionsAsDropdown }, with_context = false) }}
+                                    {{ include(action.template, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
                                 {% endfor %}
                             {% else %}
                                 <div class="dropdown dropdown-actions">
@@ -183,7 +178,7 @@
 
                                     <div class="dropdown-menu dropdown-menu-right">
                                         {% for action in entity.actions %}
-                                            {{ include(action.template, { action: action, isIncludedInDropdown: ea.crud.page.showEntityActionsAsDropdown }, with_context = false) }}
+                                            {{ include(action.template, { action: action, isIncludedInDropdown: ea.crud.showEntityActionsAsDropdown }, with_context = false) }}
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -281,7 +276,7 @@
                     });
             });
 
-            {% if ea.crud.page.isFilterEnabled %}
+            {% if ea.crud.isFilterEnabled %}
             // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
             // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
             // That's why we can't use just 'innerHTML'. See https://stackoverflow.com/a/47614491/2804294

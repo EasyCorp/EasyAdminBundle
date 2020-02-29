@@ -53,21 +53,6 @@ abstract class AbstractDashboardController extends AbstractController implements
         return CrudConfig::new();
     }
 
-    public function configureIndexPage(): IndexPageConfig
-    {
-        return IndexPageConfig::new();
-    }
-
-    public function configureDetailPage(): DetailPageConfig
-    {
-        return DetailPageConfig::new();
-    }
-
-    public function configureFormPage(): FormPageConfig
-    {
-        return FormPageConfig::new();
-    }
-
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa-home');

@@ -23,12 +23,6 @@ interface DashboardControllerInterface
 
     public function configureCrud(): CrudConfig;
 
-    public function configureIndexPage(): IndexPageConfig;
-
-    public function configureDetailPage(): DetailPageConfig;
-
-    public function configureFormPage(): FormPageConfig;
-
     public function configureAssets(): AssetConfig;
 
     public function configureUserMenu(UserInterface $user): UserMenuConfig;

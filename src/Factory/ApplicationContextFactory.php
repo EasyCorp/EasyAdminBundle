@@ -2,14 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudPageDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -36,14 +35,7 @@ final class ApplicationContextFactory
         $assetDto = $this->getAssetDto($dashboardController, $crudController);
 
         $crudDto = $this->getCrudDto($dashboardController, $crudController, $crudAction);
-        if (null === $crudDto) {
-            $crudPageDto = $searchDto = null;
-        } else {
-            $crudPageDto = $this->getCrudPageDto($dashboardController, $crudController, $crudAction);
-            $crudDto = $crudDto->with(['crudPageDto' => $crudPageDto]);
-            $searchDto = $this->getSearchDto($request, $crudPageDto);
-        }
-
+        $searchDto = $this->getSearchDto($request, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto);
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
         $user = $this->getUser($this->tokenStorage);
@@ -78,11 +70,15 @@ final class ApplicationContextFactory
             return null;
         }
 
+        $validPageNames = [CrudConfig::PAGE_INDEX, CrudConfig::PAGE_DETAIL, CrudConfig::PAGE_EDIT, CrudConfig::PAGE_NEW];
         $defaultCrudConfig = $dashboardController->configureCrud();
 
         return $crudController->configureCrud($defaultCrudConfig)
             ->getAsDto()
-            ->with(['actionName' => $crudAction]);
+            ->with([
+                'actionName' => $crudAction,
+                'pageName' => in_array($crudAction, $validPageNames) ? $crudAction : null,
+            ]);
     }
 
     private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry
@@ -97,22 +93,6 @@ final class ApplicationContextFactory
         }
 
         return $templateRegistry;
-    }
-
-    private function getCrudPageDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $crudAction): ?CrudPageDto
-    {
-        if (\in_array($crudAction, [Action::EDIT, Action::NEW])) {
-            $crudAction = 'form';
-        }
-
-        $pageConfigMethodName = 'configure'.ucfirst($crudAction).'Page';
-        if (null === $crudController || !method_exists($crudController, $pageConfigMethodName)) {
-            return null;
-        }
-
-        $defaultPageConfig = $dashboardController->{$pageConfigMethodName}();
-
-        return $crudController->{$pageConfigMethodName}($defaultPageConfig)->getAsDto();
     }
 
     private function getI18nDto(Request $request, DashboardDto $dashboardDto, ?CrudDto $crudDto): I18nDto
@@ -137,17 +117,17 @@ final class ApplicationContextFactory
         return new I18nDto($locale, $textDirection, $translationDomain, $translationParameters);
     }
 
-    public function getSearchDto(Request $request, ?CrudPageDto $crudPageDto): ?SearchDto
+    public function getSearchDto(Request $request, ?CrudDto $crudDto): ?SearchDto
     {
-        if (null === $crudPageDto) {
+        if (null === $crudDto) {
             return null;
         }
 
-        $searchableProperties = $crudPageDto->getSearchFields();
+        $searchableProperties = $crudDto->getSearchFields();
         $query = $request->query->get('query');
-        $defaultSort = $crudPageDto->getDefaultSort();
+        $defaultSort = $crudDto->getDefaultSort();
         $customSort = $request->query->get('sort', []);
-        $filters = $crudPageDto->getFilters();
+        $filters = $crudDto->getFilters();
 
         return new SearchDto($request, $searchableProperties, $query, $defaultSort, $customSort, $filters);
     }

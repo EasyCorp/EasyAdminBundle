@@ -5,11 +5,9 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\DetailPageConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\FormPageConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\IndexPageConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
@@ -50,30 +48,61 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $assetConfig;
     }
 
+    public function configureActions(ActionConfig $actionConfig): ActionConfig
+    {
+        return $actionConfig
+            ->addAction(CrudConfig::PAGE_INDEX, Action::EDIT)
+            ->addAction(CrudConfig::PAGE_INDEX, Action::EDIT)
+
+            ->addAction(CrudConfig::PAGE_DETAIL, Action::DELETE)
+            ->addAction(CrudConfig::PAGE_DETAIL, Action::INDEX)
+            ->addAction(CrudConfig::PAGE_DETAIL, Action::EDIT)
+
+            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
+            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_RETURN)
+
+            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_ADD_ANOTHER)
+            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_RETURN)
+        ;
+
+        return $this
+            ->addIndexAction()
+            ->addGlobalIndexAction()
+            ->removeIndexAction()
+            ->removeGlobalIndexAction()
+
+            ->addDetailAction()
+            ->removeDetailAction()
+
+            ->addNewAction()
+            ->removeNewAction()
+
+            ->addEditAction()
+            ->removeEditAction()
+
+            ->addAction(CrudConfig::PAGE_INDEX, Action::DETAIL)
+            ->addAction(CrudConfig::PAGE_INDEX, Action::new('Diploma (PDF)')
+                ->linkToRoute('generateDiplomaPdf')
+                ->displayIf(function ($entity) { return $entity->isPassed(); })
+            )
+            ->removeAction(CrudConfig::PAGE_INDEX, Action::DELETE)
+            ->addGlobalAction(Action::new('Download as CSV')->linkToRoute('admin_export_csv'))
+            ->updateAction(CrudConfig::PAGE_INDEX, Action::EDIT, function (Action $action) {
+                return $action->setLabel('Modify')->setIcon('fa fa-pencil');
+            })
+
+            ;
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function configureProperties(string $action): iterable
+    public function configureProperties(string $pageName): iterable
     {
         $entityDto = $this->get(EntityFactory::class)->create();
-        foreach ($entityDto->getDefaultProperties($action) as $propertyName) {
+        foreach ($entityDto->getDefaultProperties($pageName) as $propertyName) {
             yield Property::new($propertyName);
         }
-    }
-
-    public function configureIndexPage(IndexPageConfig $indexPageConfig): IndexPageConfig
-    {
-        return $indexPageConfig;
-    }
-
-    public function configureDetailPage(DetailPageConfig $detailPageConfig): DetailPageConfig
-    {
-        return $detailPageConfig;
-    }
-
-    public function configureFormPage(FormPageConfig $formPageConfig): FormPageConfig
-    {
-        return $formPageConfig;
     }
 
     public static function getSubscribedServices()
@@ -109,7 +138,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entityInstances = $paginator->getResults();
         $configuredProperties = iterator_to_array($this->configureProperties(Action::INDEX));
-        $configuredActions = $this->getContext()->getCrud()->getPage()->getActions();
+        // TODO: fix this
+        $configuredActions = []; // $this->getContext()->getCrud()->getPage()->getActions();
         $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $configuredProperties, $configuredActions);
 
         $parameters = [
@@ -201,7 +231,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $configuredProperties = $this->configureProperties(Action::EDIT);
-        $configuredActions = $this->getContext()->getCrud()->getPage()->getActions();
+        // TODO: fix this
+        $configuredActions = []; // $this->getContext()->getCrud()->getPage()->getActions();
         $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
         $entityInstance = $entityDto->getInstance();
 

@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Property\DateTimeProperty;
 
 /**
@@ -11,16 +12,33 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\DateTimeProperty;
  */
 class CrudConfig
 {
+    public const PAGE_DETAIL = 'detail';
+    public const PAGE_EDIT = 'edit';
+    public const PAGE_INDEX = 'index';
+    public const PAGE_NEW = 'new';
+
     private $entityFqcn;
     private $entityLabelInSingular;
     private $entityLabelInPlural;
+    private $pageTitles = [Action::DETAIL => null, Action::EDIT => null, Action::INDEX => null, Action::NEW => null];
+    private $helpMessages = [Action::DETAIL => null, Action::EDIT => null, Action::INDEX => null, Action::NEW => null];
     private $dateFormat = 'medium';
     private $timeFormat = 'medium';
     private $dateTimePattern = '';
     private $timezone;
     private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
     private $numberFormat;
+    private $defaultSort = [];
+    private $searchProperties = [];
+    private $showEntityActionsAsDropdown = false;
+    private $filters;
+    private $paginatorPageSize = 15;
+    private $paginatorFetchJoinCollection = true;
+    private $paginatorUseOutputWalkers;
     private $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
+    private $formOptions = [];
+    private $pagePermission;
+    private $entityPermission;
     /**
      * @internal
      *
@@ -54,6 +72,28 @@ class CrudConfig
     public function setEntityLabelInPlural(string $label): self
     {
         $this->entityLabelInPlural = $label;
+
+        return $this;
+    }
+
+    public function setPageTitle(string $pageName, string $title): self
+    {
+        if (!array_key_exists($pageName, $this->pageTitles)) {
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', array_keys($this->pageTitles)), $pageName));
+        }
+
+        $this->pageTitles[$pageName] = $title;
+
+        return $this;
+    }
+
+    public function setHelpMessage(string $pageName, string $helpMessage): self
+    {
+        if (!array_key_exists($pageName, $this->helpMessages)) {
+            throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', array_keys($this->helpMessages)), $pageName));
+        }
+
+        $this->helpMessages[$pageName] = $helpMessage;
 
         return $this;
     }
@@ -160,6 +200,73 @@ class CrudConfig
         return $this;
     }
 
+    /**
+     * @param array $sortAndOrder ['propertyName' => 'ASC|DESC', ...]
+     */
+    public function setDefaultSort(array $sortAndOrder): self
+    {
+        $sortAndOrder = array_map('strtoupper', $sortAndOrder);
+        foreach ($sortAndOrder as $sortField => $sortOrder) {
+            if (!\in_array($sortOrder, ['ASC', 'DESC'])) {
+                throw new \InvalidArgumentException(sprintf('The sort order can be only "ASC" or "DESC", "%s" given.', $sortOrder));
+            }
+
+            if (!\is_string($sortField)) {
+                throw new \InvalidArgumentException(sprintf('The keys of the array that defines the default sort must be strings with the property names, but the given "%s" value is a "%s".', $sortField, \gettype($sortField)));
+            }
+        }
+
+        $this->defaultSort = $sortAndOrder;
+
+        return $this;
+    }
+
+    public function setSearchProperties(?array $propertyNames): self
+    {
+        $this->searchProperties = $propertyNames;
+
+        return $this;
+    }
+
+    public function showEntityActionsAsDropdown(bool $showAsDropdown = true): self
+    {
+        $this->showEntityActionsAsDropdown = $showAsDropdown;
+
+        return $this;
+    }
+
+    public function setFilters(?array $filters): self
+    {
+        $this->filters = $filters;
+
+        return $this;
+    }
+
+    public function setPaginatorPageSize(int $maxResultsPerPage): self
+    {
+        if ($maxResultsPerPage < 1) {
+            throw new \InvalidArgumentException(sprintf('The minimum value of paginator page size is 1.'));
+        }
+
+        $this->paginatorPageSize = $maxResultsPerPage;
+
+        return $this;
+    }
+
+    public function setPaginatorFetchJoinCollection(bool $fetchJoinCollection): self
+    {
+        $this->paginatorFetchJoinCollection = $fetchJoinCollection;
+
+        return $this;
+    }
+
+    public function setPaginatorUseOutputWalkers(bool $useOutputWalkers): self
+    {
+        $this->paginatorUseOutputWalkers = $useOutputWalkers;
+
+        return $this;
+    }
+
     public function overrideTemplate(string $templateName, string $templatePath): self
     {
         $validTemplateNames = TemplateRegistry::getTemplateNames();
@@ -205,6 +312,27 @@ class CrudConfig
         return $this;
     }
 
+    public function setFormOptions(array $formOptions): self
+    {
+        $this->formOptions = $formOptions;
+
+        return $this;
+    }
+
+    public function setPagePermission(string $permission): self
+    {
+        $this->pagePermission = $permission;
+
+        return $this;
+    }
+
+    public function setEntityPermission(string $permission): self
+    {
+        $this->entityPermission = $permission;
+
+        return $this;
+    }
+
     public function disableActions(string ...$actionNames): self
     {
         foreach ($actionNames as $actionName) {
@@ -229,7 +357,7 @@ class CrudConfig
             $this->entityLabelInPlural = $this->entityLabelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->overriddenTemplates, $this->formThemes, $this->disabledActions);
+        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchProperties, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->pagePermission, $this->entityPermission, $this->disabledActions);
     }
 
     private function validate(): void

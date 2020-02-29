@@ -106,7 +106,8 @@ final class EntityDto
      */
     public function getActions(): array
     {
-        return $this->actions;
+        // TODO: revert this change
+        return $this->actions ?? [];
     }
 
     /**

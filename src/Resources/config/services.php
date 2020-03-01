@@ -19,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
+use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
@@ -58,6 +59,10 @@ return static function (ContainerConfigurator $container) {
 
         ->set(MakeAdminResourceCommand::class)->public()
             ->tag('console.command', ['command' => 'make:admin:resource'])
+
+        ->set(DataCollector::class)
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
 
         ->set(AuthorizationChecker::class)
             ->arg(0, ref('security.authorization_checker')->nullOnInvalid())

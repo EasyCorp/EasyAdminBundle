@@ -75,10 +75,12 @@
             <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />
         </service>
 
+        <!--
         <service id="easyadmin.data_collector" class="EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector" public="false">
             <argument type="service" id="easyadmin.config.manager" />
             <tag name="data_collector" template="@EasyAdmin/data_collector/easyadmin.html.twig" id="easyadmin" />
         </service>
+        -->
 
         <service id="easyadmin.configuration.normalizer_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass" public="false">
             <argument type="service" id="service_container" />

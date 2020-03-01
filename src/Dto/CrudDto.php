@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 
 final class CrudDto

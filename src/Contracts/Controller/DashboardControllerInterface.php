@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\DashboardConfig;
@@ -22,6 +23,8 @@ interface DashboardControllerInterface
     public function configureDashboard(): DashboardConfig;
 
     public function configureCrud(): CrudConfig;
+
+    public function configureActions(): ActionConfig;
 
     public function configureAssets(): AssetConfig;
 

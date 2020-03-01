@@ -3,7 +3,7 @@
 
 {% block form_start %}
     {% set attr = attr|merge({
-        'class': [attr.class|default(''), 'ea-' ~ ea.crud.action ~ '-form']|join(' '),
+        'class': [attr.class|default(''), 'ea-' ~ ea.crud.currentAction ~ '-form']|join(' '),
     }) %}
 
     {% if form.vars.errors|length > 0 %}

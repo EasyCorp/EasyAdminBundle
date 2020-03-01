@@ -1,6 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
-{% if ea.crud.action == 'detail' %}
+{% if ea.crud.currentAction == 'detail' %}
     <a href="mailto:{{ property.value }}">{{ property.formattedValue }}</a>
 {% else %}
     <a href="mailto:{{ property.value }}">{{ property.formattedValue }}</a>

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
@@ -30,11 +31,14 @@ final class ApplicationContextFactory
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): ApplicationContext
     {
         $crudAction = $request->query->get('crudAction');
+        $validPageNames = [CrudConfig::PAGE_INDEX, CrudConfig::PAGE_DETAIL, CrudConfig::PAGE_EDIT, CrudConfig::PAGE_NEW];
+        $pageName = in_array($crudAction, $validPageNames) ? $crudAction : null;
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
         $assetDto = $this->getAssetDto($dashboardController, $crudController);
+        $actionDtoCollection = $this->getActions($dashboardController, $crudController, $pageName);
 
-        $crudDto = $this->getCrudDto($dashboardController, $crudController, $crudAction);
+        $crudDto = $this->getCrudDto($dashboardController, $crudController, $actionDtoCollection, $crudAction, $pageName);
         $searchDto = $this->getSearchDto($request, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto);
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
@@ -64,21 +68,32 @@ final class ApplicationContextFactory
         return $crudController->configureAssets($defaultAssetConfig)->getAsDto();
     }
 
-    private function getCrudDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $crudAction): ?CrudDto
+    private function getCrudDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionDtoCollection $actionDtoCollection, ?string $crudAction, ?string $pageName): ?CrudDto
     {
         if (null === $crudController) {
             return null;
         }
 
-        $validPageNames = [CrudConfig::PAGE_INDEX, CrudConfig::PAGE_DETAIL, CrudConfig::PAGE_EDIT, CrudConfig::PAGE_NEW];
         $defaultCrudConfig = $dashboardController->configureCrud();
 
         return $crudController->configureCrud($defaultCrudConfig)
             ->getAsDto()
             ->with([
+                'actions' => $actionDtoCollection,
                 'actionName' => $crudAction,
-                'pageName' => in_array($crudAction, $validPageNames) ? $crudAction : null,
+                'pageName' => $pageName,
             ]);
+    }
+
+    private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ?ActionDtoCollection
+    {
+        if (null === $crudController || null === $pageName) {
+            return ActionDtoCollection::new();
+        }
+
+        $defaultActionConfig = $dashboardController->configureActions();
+
+        return $crudController->configureActions($defaultActionConfig)->getAsDto($pageName);
     }
 
     private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry

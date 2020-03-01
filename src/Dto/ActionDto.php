@@ -2,11 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
+
 final class ActionDto
 {
     use PropertyAccessorTrait;
     use PropertyModifierTrait;
 
+    private $type;
     private $name;
     private $label;
     private $icon;
@@ -23,8 +26,9 @@ final class ActionDto
     private $translationParameters;
     private $displayCallable;
 
-    public function __construct(string $name, ?string $label, ?string $icon, ?string $cssClass, string $htmlElement, array $htmlAttributes, ?string $templatePath, ?string $permission, ?string $crudActionName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters, callable $displayCallable)
+    public function __construct(string $type, string $name, ?string $label, ?string $icon, ?string $cssClass, string $htmlElement, array $htmlAttributes, ?string $templatePath, ?string $permission, ?string $crudActionName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters, callable $displayCallable)
     {
+        $this->type = $type;
         $this->name = $name;
         $this->label = $label;
         $this->icon = $icon;
@@ -39,6 +43,26 @@ final class ActionDto
         $this->translationDomain = $translationDomain;
         $this->translationParameters = $translationParameters;
         $this->displayCallable = $displayCallable;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function isEntityAction(): bool
+    {
+        return $this->type === Action::TYPE_ENTITY;
+    }
+
+    public function isGlobalAction(): bool
+    {
+        return $this->type === Action::TYPE_GLOBAL;
+    }
+
+    public function isBatchAction(): bool
+    {
+        return $this->type === Action::TYPE_BATCH;
     }
 
     public function getName(): string

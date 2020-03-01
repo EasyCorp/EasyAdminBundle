@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminResourceCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextParamConverter;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ApplicationContextListener;
+use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudActionResponseListener;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ApplicationContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
@@ -41,6 +42,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\UrlConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
@@ -69,7 +72,12 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(ApplicationContextFactory::class))
             ->arg(1, ref('controller_resolver'))
             ->arg(2, ref('twig'))
-            ->tag('kernel.event_listener', ['event' => 'kernel.controller'])
+            ->tag('kernel.event_listener', ['event' => ControllerEvent::class])
+
+        ->set(CrudActionResponseListener::class)
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(1, ref('twig'))
+            ->tag('kernel.event_listener', ['event' => ViewEvent::class])
 
         ->set(ApplicationContextParamConverter::class)
             ->arg(0, ref(ApplicationContextProvider::class))

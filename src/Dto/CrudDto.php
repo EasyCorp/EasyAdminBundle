@@ -2,8 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 
 final class CrudDto
 {
@@ -12,14 +14,16 @@ final class CrudDto
 
     private $pageName;
     private $actionName;
+    /** @var ActionDtoCollection */
+    private $actions;
     private $entityFqcn;
     private $labelInSingular;
     private $labelInPlural;
     private $defaultPageTitles = [
-        Action::DETAIL => 'page.detail.title',
-        Action::EDIT => 'page.edit.title',
-        Action::INDEX => 'page.index.title',
-        Action::NEW => 'page.new.title',
+        CrudConfig::PAGE_DETAIL => 'page.detail.title',
+        CrudConfig::PAGE_EDIT => 'page.edit.title',
+        CrudConfig::PAGE_INDEX => 'page.index.title',
+        CrudConfig::PAGE_NEW => 'page.new.title',
     ];
     private $customPageTitles;
     private $helpMessages;
@@ -40,8 +44,6 @@ final class CrudDto
     private $formOptions;
     private $pagePermission;
     private $entityPermission;
-    /** @var CrudPageDto */
-    private $crudPageDto;
     private $disabledActions;
 
     public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, array $pageTitles, array $helpMessages, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, array $defaultSort, ?array $searchFields, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto, TemplateDtoCollection $overriddenTemplates, $formThemes, array $formOptions, ?string $pagePermission, ?string $entityPermission, array $disabledActions)
@@ -68,6 +70,11 @@ final class CrudDto
         $this->pagePermission = $pagePermission;
         $this->entityPermission = $entityPermission;
         $this->disabledActions = $disabledActions;
+    }
+
+    public function getCurrentPage(): ?string
+    {
+        return $this->pageName;
     }
 
     public function getEntityFqcn(): string
@@ -185,14 +192,14 @@ final class CrudDto
         return $this->entityPermission;
     }
 
-    public function getPage(): ?CrudPageDto
-    {
-        return $this->crudPageDto;
-    }
-
-    public function getAction(): string
+    public function getCurrentAction(): string
     {
         return $this->actionName;
+    }
+
+    public function getActions(): ActionDtoCollection
+    {
+        return $this->actions;
     }
 
     public function getDisabledActions(): array

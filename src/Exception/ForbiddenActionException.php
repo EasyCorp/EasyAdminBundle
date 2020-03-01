@@ -12,7 +12,7 @@ class ForbiddenActionException extends BaseException
     public function __construct(ApplicationContext $applicationContext)
     {
         $parameters = [
-            'action' => $applicationContext->getCrud()->getAction(),
+            'action' => $applicationContext->getCrud()->getCurrentAction(),
             'crud_controller' => $applicationContext->getRequest()->query->get('crudController'),
         ];
 

@@ -1,6 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
-{% if ea.crud.action == 'detail' %}
+{% if ea.crud.currentAction == 'detail' %}
     {# TODO: improve this to highlight code #}
     {% set configuredHeight = property.customOptions.get('height') %}
     <div style="{{ configuredHeight is null ? 'max-height: 350px;' : 'max-height: unset; height: ' ~ configuredHeight ~ 'px' }}">

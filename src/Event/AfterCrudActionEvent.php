@@ -3,18 +3,19 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParams;
 
 final class AfterCrudActionEvent
 {
     use StoppableEventTrait;
 
     private $applicationContext;
-    private $templateParameters;
+    private $responseParams;
 
-    public function __construct(?ApplicationContext $applicationContext, array $templateParameters)
+    public function __construct(?ApplicationContext $applicationContext, ResponseParams $responseParams)
     {
         $this->applicationContext = $applicationContext;
-        $this->templateParameters = $templateParameters;
+        $this->responseParams = $responseParams;
     }
 
     public function getApplicationContext(): ?ApplicationContext
@@ -28,11 +29,11 @@ final class AfterCrudActionEvent
      */
     public function addTemplateParameters(array $parameters): void
     {
-        $this->templateParameters = array_merge($this->templateParameters, $parameters);
+        $this->responseParams = array_merge($this->responseParams, $parameters);
     }
 
-    public function getTemplateParameters(): array
+    public function getResponseParams(): ResponseParams
     {
-        return $this->templateParameters;
+        return $this->responseParams;
     }
 }

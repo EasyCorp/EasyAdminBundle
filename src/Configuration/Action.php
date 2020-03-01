@@ -14,10 +14,19 @@ final class Action
     public const NEW = 'new';
     public const SAVE_AND_ADD_ANOTHER = 'saveAndAddAnother';
     public const SAVE_AND_CONTINUE = 'saveAndContinue';
-    public const SAVE_AND_RETURN = 'saveAndClose';
+    public const SAVE_AND_RETURN = 'saveAndReturn';
+
+    // these are the actions applied to a specific entity instance
+    public const TYPE_ENTITY = 'entity';
+    // these are the actions that are not associated to an entity
+    // (they are available only in the INDEX page)
+    public const TYPE_GLOBAL = 'global';
+    // these are actions that can be applied to one or more entities at the same time
+    public const TYPE_BATCH = 'batch';
 
     use PropertyModifierTrait;
 
+    private $type;
     private $name;
     private $label;
     private $icon;
@@ -48,8 +57,23 @@ final class Action
         $actionConfig->name = $name;
         $actionConfig->label = $label ?? ucfirst($name);
         $actionConfig->icon = $icon;
+        $actionConfig->type = self::TYPE_ENTITY;
 
         return $actionConfig;
+    }
+
+    public function isGlobalAction(bool $isGlobal = true): self
+    {
+        $this->type = self::TYPE_GLOBAL;
+
+        return $this;
+    }
+
+    public function isBatchAction(bool $isBatch = true): self
+    {
+        $this->type = self::TYPE_BATCH;
+
+        return $this;
     }
 
     public function setLabel(?string $label): self
@@ -158,6 +182,6 @@ final class Action
             $this->htmlAttributes = array_merge(['title' => $this->name], $this->htmlAttributes);
         }
 
-        return new ActionDto($this->name, $this->label, $this->icon, $this->cssClass, $this->htmlElement, $this->htmlAttributes, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters, $this->displayCallable ?? static function () { return true; });
+        return new ActionDto($this->type, $this->name, $this->label, $this->icon, $this->cssClass, $this->htmlElement, $this->htmlAttributes, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters, $this->displayCallable ?? static function () { return true; });
     }
 }

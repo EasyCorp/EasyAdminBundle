@@ -2,7 +2,7 @@
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
 {% trans_default_domain 'EasyAdminBundle' %}
 
-{% if ea.crud.action == 'detail' or not property.customOptions.get('renderAsSwitch') %}
+{% if ea.crud.currentAction == 'detail' or not property.customOptions.get('renderAsSwitch') %}
     <span class="badge {{ property.value == true ? 'badge-boolean-true' : 'badge-boolean-false' }}">
         {{ (property.value == true ? 'label.true' : 'label.false')|trans }}
     </span>

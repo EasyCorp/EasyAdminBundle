@@ -69,7 +69,7 @@ final class SecurityVoter extends Voter
         // * they have the required permission to run the action
         // * the action is not disabled
 
-        return $this->authorizationChecker->isGranted($crudDto->getPagePermission()) && !$this->isActionDisabled($crudDto->getAction());
+        return $this->authorizationChecker->isGranted($crudDto->getPagePermission()) && !$this->isActionDisabled($crudDto->getCurrentPage());
     }
 
     private function voteOnViewPropertyPermission(PropertyConfigInterface $propertyConfig): bool
@@ -99,15 +99,22 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN');
     }
 
-    private function isActionDisabled(string $actionName): bool
-    {
-        $applicationContext = $this->applicationContextProvider->getContext();
+    private function isActionDisabled(): bool {
+        return false;
+    }
 
-        $actionsDisabledGlobally = $applicationContext->getCrud()->getDisabledActions();
-        // TODO: fix this
-        //$actionsDisabledByPage = $applicationContext->getCrud()->getPage()->getDisabledActions();
-        //$disabledActions = array_unique(array_merge($actionsDisabledGlobally, $actionsDisabledByPage));
-        $disabledActions = $actionsDisabledGlobally;
+    private function FIX_THIS_isActionDisabled(?string $pageName, string $actionName): bool
+    {
+        // TODO: fix this:
+        return false;
+
+
+        if (null === $pageName) {
+            return false;
+        }
+
+        $applicationContext = $this->applicationContextProvider->getContext();
+        $disabledActions = $applicationContext->getCrud()->getDisabledActions();
 
         return \in_array($actionName, $disabledActions, true);
     }

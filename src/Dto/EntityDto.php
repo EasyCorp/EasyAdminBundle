@@ -106,8 +106,7 @@ final class EntityDto
      */
     public function getActions(): array
     {
-        // TODO: revert this change
-        return $this->actions ?? [];
+        return $this->actions;
     }
 
     /**
@@ -205,7 +204,7 @@ final class EntityDto
 
         $excludedPropertyTypes = [
             Action::EDIT => ['binary', 'blob', 'json_array', 'json', 'object'],
-            Action::INDEX => ['array', 'association', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'],
+            Action::INDEX => ['array', 'binary', 'blob', 'guid', 'json_array', 'json', 'object', 'simple_array', 'text'],
             Action::NEW => ['binary', 'blob', 'json_array', 'json', 'object'],
             Action::DETAIL => [],
         ];

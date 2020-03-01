@@ -50,48 +50,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     public function configureActions(ActionConfig $actionConfig): ActionConfig
     {
-        return $actionConfig
-            ->addAction(CrudConfig::PAGE_INDEX, Action::EDIT)
-            ->addAction(CrudConfig::PAGE_INDEX, Action::EDIT)
-
-            ->addAction(CrudConfig::PAGE_DETAIL, Action::DELETE)
-            ->addAction(CrudConfig::PAGE_DETAIL, Action::INDEX)
-            ->addAction(CrudConfig::PAGE_DETAIL, Action::EDIT)
-
-            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
-            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_RETURN)
-
-            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_ADD_ANOTHER)
-            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_RETURN)
-        ;
-
-        return $this
-            ->addIndexAction()
-            ->addGlobalIndexAction()
-            ->removeIndexAction()
-            ->removeGlobalIndexAction()
-
-            ->addDetailAction()
-            ->removeDetailAction()
-
-            ->addNewAction()
-            ->removeNewAction()
-
-            ->addEditAction()
-            ->removeEditAction()
-
-            ->addAction(CrudConfig::PAGE_INDEX, Action::DETAIL)
-            ->addAction(CrudConfig::PAGE_INDEX, Action::new('Diploma (PDF)')
-                ->linkToRoute('generateDiplomaPdf')
-                ->displayIf(function ($entity) { return $entity->isPassed(); })
-            )
-            ->removeAction(CrudConfig::PAGE_INDEX, Action::DELETE)
-            ->addGlobalAction(Action::new('Download as CSV')->linkToRoute('admin_export_csv'))
-            ->updateAction(CrudConfig::PAGE_INDEX, Action::EDIT, function (Action $action) {
-                return $action->setLabel('Modify')->setIcon('fa fa-pencil');
-            })
-
-            ;
+        return $actionConfig;
     }
 
     /**
@@ -120,7 +79,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         ]);
     }
 
-    public function index(): Response
+    public function index()
     {
         $event = new BeforeCrudActionEvent($this->getContext());
         $this->get('event_dispatcher')->dispatch($event);
@@ -137,55 +96,29 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         $entityInstances = $paginator->getResults();
-        $configuredProperties = iterator_to_array($this->configureProperties(Action::INDEX));
-        // TODO: fix this
-        $configuredActions = []; // $this->getContext()->getCrud()->getPage()->getActions();
+        $configuredProperties = iterator_to_array($this->configureProperties(CrudConfig::PAGE_INDEX));
+        $configuredActions = $this->getContext()->getCrud()->getActions();
         $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $configuredProperties, $configuredActions);
 
-        $parameters = [
+        $responseParams = $this->configureResponseParams(ResponseParams::new([
+            'pageName' => CrudConfig::PAGE_INDEX,
+            'templateName' => 'crud/index',
             'entities' => $entities,
             'paginator' => $paginator,
             'batch_form' => $this->createBatchForm($entityDto->getFqcn()),
             'delete_form_template' => $this->get(FormFactory::class)->createDeleteForm(['entityId' => '__id__']),
-        ];
+        ]));
 
-        $event = new AfterCrudActionEvent($this->getContext(), $parameters);
+        $event = new AfterCrudActionEvent($this->getContext(), $responseParams);
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
-        return $this->render(
-            $this->getContext()->getTemplatePath('crud/index'),
-            $this->getTemplateParameters(Action::INDEX, $event->getTemplateParameters())
-        );
+        return $responseParams;
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
-    {
-        return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto);
-    }
-
-    public function showFilters(): Response
-    {
-        /** @var FiltersFormType $filtersForm */
-        $filtersForm = $this->get(FormFactory::class)->createFilterForm();
-        $formActionParts = parse_url($filtersForm->getConfig()->getAction());
-        $queryString = $formActionParts['query'] ?? [];
-        parse_str($queryString, $queryStringAsArray);
-
-        $templateParameters = [
-            'filters_form' => $filtersForm,
-            'form_action_query_string_as_array' => $queryStringAsArray,
-        ];
-
-        return $this->render(
-            $this->getContext()->getTemplatePath('crud/filters'),
-            $this->getTemplateParameters('showFilters', $templateParameters)
-        );
-    }
-
-    public function detail(): Response
+    public function detail()
     {
         $event = new BeforeCrudActionEvent($this->getContext());
         $this->get('event_dispatcher')->dispatch($event);
@@ -198,27 +131,26 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $configuredProperties = $this->configureProperties(Action::DETAIL);
-        $configuredActions = $this->getContext()->getCrud()->getPage()->getActions();
+        $configuredActions = $this->getContext()->getCrud()->getActions();
         $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
 
-        $parameters = [
+        $responseParams = $this->configureResponseParams(ResponseParams::new([
+            'pageName' => CrudConfig::PAGE_DETAIL,
+            'templateName' => 'crud/detail',
             'entity' => $entityDto,
             'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
-        ];
+        ]));
 
-        $event = new AfterCrudActionEvent($this->getContext(), $parameters);
+        $event = new AfterCrudActionEvent($this->getContext(), $responseParams);
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
-        return $this->render(
-            $this->getContext()->getTemplatePath('crud/detail'),
-            $this->getTemplateParameters(Action::DETAIL, $event->getTemplateParameters())
-        );
+        return $responseParams;
     }
 
-    public function edit(): Response
+    public function edit()
     {
         $event = new BeforeCrudActionEvent($this->getContext());
         $this->get('event_dispatcher')->dispatch($event);
@@ -230,9 +162,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($this->getContext());
         }
 
-        $configuredProperties = $this->configureProperties(Action::EDIT);
-        // TODO: fix this
-        $configuredActions = []; // $this->getContext()->getCrud()->getPage()->getActions();
+        $configuredProperties = $this->configureProperties(CrudConfig::PAGE_EDIT);
+        $configuredActions = $this->getContext()->getCrud()->getActions();
         $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
         $entityInstance = $entityDto->getInstance();
 
@@ -281,26 +212,24 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirectToRoute($this->getContext()->getDashboardRouteName());
         }
 
-        $parameters = [
-            'action' => Action::EDIT,
+        $responseParams = $this->configureResponseParams(ResponseParams::new([
+            'pageName' => CrudConfig::PAGE_EDIT,
+            'templateName' => 'crud/edit',
             'edit_form' => $editForm,
             'entity' => $entityDto->updateInstance($entityInstance),
             'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
-        ];
+        ]));
 
-        $event = new AfterCrudActionEvent($this->getContext(), $parameters);
+        $event = new AfterCrudActionEvent($this->getContext(), $responseParams);
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
-        return $this->render(
-            $this->getContext()->getTemplatePath('crud/edit'),
-            $this->getTemplateParameters(Action::EDIT, $event->getTemplateParameters())
-        );
+        return $responseParams;
     }
 
-    public function new(): Response
+    public function new()
     {
         $event = new BeforeCrudActionEvent($this->getContext());
         $this->get('event_dispatcher')->dispatch($event);
@@ -312,8 +241,8 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($this->getContext());
         }
 
-        $configuredProperties = $this->configureProperties(Action::NEW);
-        $configuredActions = $this->getContext()->getCrud()->getPage()->getActions();
+        $configuredProperties = $this->configureProperties(CrudConfig::PAGE_NEW);
+        $configuredActions = $this->getContext()->getCrud()->getActions();
         $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
         $entityInstance = $this->createEntity($entityDto->getFqcn());
         $entityDto = $entityDto->updateInstance($entityInstance);
@@ -355,22 +284,44 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirectToRoute($this->getContext()->getDashboardRouteName());
         }
 
-        $parameters = [
-            'action' => Action::NEW,
+        $responseParams = $this->configureResponseParams(ResponseParams::new([
+            'pageName' => CrudConfig::PAGE_NEW,
+            'templateName' => 'crud/new',
             'entity' => $entityDto,
             'new_form' => $newForm,
             'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
-        ];
+        ]));
 
-        $event = new AfterCrudActionEvent($this->getContext(), $parameters);
+        $event = new AfterCrudActionEvent($this->getContext(), $responseParams);
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
+        return $responseParams;
+    }
+
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
+    {
+        return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto);
+    }
+
+    public function showFilters(): Response
+    {
+        /** @var FiltersFormType $filtersForm */
+        $filtersForm = $this->get(FormFactory::class)->createFilterForm();
+        $formActionParts = parse_url($filtersForm->getConfig()->getAction());
+        $queryString = $formActionParts['query'] ?? [];
+        parse_str($queryString, $queryStringAsArray);
+
+        $templateParameters = [
+            'filters_form' => $filtersForm,
+            'form_action_query_string_as_array' => $queryStringAsArray,
+        ];
+
         return $this->render(
-            $this->getContext()->getTemplatePath('crud/new'),
-            $this->getTemplateParameters(Action::NEW, $event->getTemplateParameters())
+            $this->getContext()->getTemplatePath('crud/filters'),
+            $this->getResponseParams('showFilters', $templateParameters)
         );
     }
 
@@ -405,17 +356,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
     /**
      * Used to add/modify/remove parameters before passing them to the Twig template.
-     * $templateName = 'index', 'detail' or 'form'.
      */
-    public function getTemplateParameters(string $actionName, array $parameters): array
+    public function configureResponseParams(ResponseParams $responseParams): ResponseParams
     {
-        foreach ($parameters as $i => $parameter) {
-            if ($parameter instanceof FormInterface) {
-                $parameters[$i] = $parameter->createView();
-            }
-        }
-
-        return $parameters;
+        return $responseParams;
     }
 
     protected function getContext(): ?ApplicationContext

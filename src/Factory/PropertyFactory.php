@@ -61,7 +61,7 @@ final class PropertyFactory
      */
     public function create(EntityDto $entityDto, iterable $propertiesConfig): EntityDto
     {
-        $action = $this->applicationContextProvider->getContext()->getCrud()->getAction();
+        $action = $this->applicationContextProvider->getContext()->getCrud()->getCurrentAction();
         $configuredProperties = \is_array($propertiesConfig) ? $propertiesConfig : iterator_to_array($propertiesConfig);
         $configuredProperties = $this->preProcessPropertiesConfig($entityDto, $configuredProperties);
 

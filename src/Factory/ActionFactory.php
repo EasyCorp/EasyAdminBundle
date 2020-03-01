@@ -2,7 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
@@ -31,21 +33,14 @@ final class ActionFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function create(EntityDto $entityDto, array $actionsConfig): EntityDto
+    public function create(EntityDto $entityDto, ActionDtoCollection $actionsDto): EntityDto
     {
-        // TODO: fix this:
-        return $entityDto;
-
         $applicationContext = $this->applicationContextProvider->getContext();
         $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
-        $currentAction = $applicationContext->getCrud()->getAction();
-        $actionUpdateCallables = $applicationContext->getCrud()->getActionUpdateCallables();
-        $actionsConfig = $this->preProcessActionsConfig($currentAction, $actionsConfig, $actionUpdateCallables);
+        $currentPage = $applicationContext->getCrud()->getCurrentPage();
 
         $builtActions = [];
-        foreach ($actionsConfig as $actionConfig) {
-            $actionDto = $actionConfig->getAsDto();
-
+        foreach ($actionsDto as $actionDto) {
             if (false === $this->authChecker->isGranted(Permission::EA_VIEW_ACTION, $actionDto)) {
                 continue;
             }
@@ -60,7 +55,7 @@ final class ActionFactory
             $builtActions[] = $actionDto->with([
                 'label' => $translatedActionLabel,
                 'templatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
-                'linkUrl' => $this->generateActionUrl($applicationContext->getRequest(), $entityDto, $actionDto, $currentAction),
+                'linkUrl' => $this->generateActionUrl($applicationContext->getRequest(), $entityDto, $actionDto, $currentPage),
             ]);
         }
 
@@ -86,26 +81,6 @@ final class ActionFactory
         ]);
 
         return $this->crudUrlGenerator->build()->setQueryParams($requestParameters)->generateUrl();
-    }
-
-    /**
-     * @param Action[] $actionsConfig
-     *
-     * @return Action[]
-     */
-    private function preProcessActionsConfig(string $currentAction, array $actionsConfig, array $actionUpdateCallables): array
-    {
-        foreach ($actionsConfig as $i => $actionConfig) {
-            // apply the callables that update certain config options of the action
-            $actionName = (string) $actionConfig;
-            if (\array_key_exists($actionName, $actionUpdateCallables) && null !== $actionUpdateCallables[$actionName]) {
-                $actionConfig = \call_user_func($actionUpdateCallables[$actionName], $actionConfig);
-            }
-
-            $actionsConfig[$i] = $actionConfig;
-        }
-
-        return $actionsConfig;
     }
 
     private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string

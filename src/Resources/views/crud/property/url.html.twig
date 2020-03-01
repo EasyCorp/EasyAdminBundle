@@ -1,7 +1,9 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{# NOTE: the rel="noopener" attr is needed to avoid performance and security issues
+  (see https://web.dev/external-anchors-use-rel-noopener/) #}
 {% if ea.crud.currentAction == 'detail' %}
-    <a target="_blank" href="{{ property.value }}">{{ property.value }}</a>
+    <a target="_blank" rel="noopener" href="{{ property.value }}">{{ property.value }}</a>
 {% else %}
-    <a target="_blank" href="{{ property.value }}">{{ property.formattedValue }}</a>
+    <a target="_blank" rel="noopener" href="{{ property.value }}">{{ property.formattedValue }}</a>
 {% endif %}

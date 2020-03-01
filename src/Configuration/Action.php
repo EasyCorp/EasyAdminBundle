@@ -16,6 +16,8 @@ final class Action
     public const SAVE_AND_CONTINUE = 'saveAndContinue';
     public const SAVE_AND_RETURN = 'saveAndReturn';
 
+    // these are the actions that cannot be accessed by any user or by any means
+    public const TYPE_DISABLED = 'disabled';
     // these are the actions applied to a specific entity instance
     public const TYPE_ENTITY = 'entity';
     // these are the actions that are not associated to an entity
@@ -72,6 +74,13 @@ final class Action
     public function isBatchAction(bool $isBatch = true): self
     {
         $this->type = self::TYPE_BATCH;
+
+        return $this;
+    }
+
+    public function isDisabledAction(bool $isDisabled = true): self
+    {
+        $this->type = self::TYPE_DISABLED;
 
         return $this;
     }

@@ -37,7 +37,7 @@ class CrudConfig
     private $paginatorUseOutputWalkers;
     private $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
     private $formOptions = [];
-    private $pagePermission;
+    private $pagePermissions = [Action::DETAIL => null, Action::EDIT => null, Action::INDEX => null, Action::NEW => null];
     private $entityPermission;
     /**
      * @internal
@@ -45,7 +45,6 @@ class CrudConfig
      * @var TemplateDtoCollection
      */
     private $overriddenTemplates;
-    private $disabledActions = [];
 
     public static function new(): self
     {
@@ -333,15 +332,6 @@ class CrudConfig
         return $this;
     }
 
-    public function disableActions(string ...$actionNames): self
-    {
-        foreach ($actionNames as $actionName) {
-            $this->disabledActions[] = $actionName;
-        }
-
-        return $this;
-    }
-
     public function getAsDto(bool $validateProperties = true): CrudDto
     {
         if ($validateProperties) {
@@ -357,7 +347,7 @@ class CrudConfig
             $this->entityLabelInPlural = $this->entityLabelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchProperties, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->pagePermission, $this->entityPermission, $this->disabledActions);
+        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchProperties, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->pagePermissions, $this->entityPermission);
     }
 
     private function validate(): void

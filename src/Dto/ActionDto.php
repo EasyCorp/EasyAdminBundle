@@ -50,6 +50,11 @@ final class ActionDto
         return $this->type;
     }
 
+    public function isDisabledAction(): bool
+    {
+        return Action::TYPE_DISABLED === $this->type;
+    }
+
     public function isEntityAction(): bool
     {
         return Action::TYPE_ENTITY === $this->type;

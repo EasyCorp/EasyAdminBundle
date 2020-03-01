@@ -14,29 +14,55 @@ final class ActionDtoCollection implements \IteratorAggregate
     }
 
     public static function new(array $actionsDto = null): self
-    {
+    {dump($actionsDto);
         $collection = new self();
         $collection->actionsDto = $actionsDto;
 
         return $collection;
     }
 
-    public function getGlobalActions(): self
+    /**
+     * @return ActionDto[]
+     */
+    public function getDisabledActions(): array
     {
-        return new self(array_filter($this->actionsDto, function (ActionDto $action) {
-            return $action->isGlobalAction();
-        }));
-    }
-
-    public function getEntityActions(): self
-    {
-        return new self(array_filter($this->actionsDto, function (ActionDto $action) {
-            return $action->isEntityAction();
-        }));
+        return array_filter($this->actionsDto, static function (ActionDto $action) {
+            return $action->isDisabledAction();
+        });
     }
 
     /**
-     * @return EntityDto[]
+     * @return ActionDto[]
+     */
+    public function getGlobalActions(): array
+    {
+        return array_filter($this->actionsDto, static function (ActionDto $action) {
+            return $action->isGlobalAction();
+        });
+    }
+
+    /**
+     * @return ActionDto[]
+     */
+    public function getBatchActions(): array
+    {
+        return array_filter($this->actionsDto, static function (ActionDto $action) {
+            return $action->isBatchAction();
+        });
+    }
+
+    /**
+     * @return ActionDto[]
+     */
+    public function getEntityActions(): array
+    {
+        return array_filter($this->actionsDto, static function (ActionDto $action) {
+            return $action->isEntityAction();
+        });
+    }
+
+    /**
+     * @return ActionDto[]
      */
     public function getIterator()
     {

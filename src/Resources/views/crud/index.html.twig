@@ -63,6 +63,9 @@
         {% endblock filters_action %}
     {% endif %}
 
+    {% for action in ea.crud.actions.globalActions %}
+        {{ dump(action) }}
+    {% endfor %}
     {#
     {% if easyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
         {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}

@@ -31,7 +31,10 @@ final class ActionFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function create(EntityDto $entityDto, ActionDtoCollection $actionsDto): EntityDto
+    /**
+     * @param ActionDto[] $actionsDto
+     */
+    public function create(EntityDto $entityDto, array $actionsDto): EntityDto
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
@@ -39,7 +42,7 @@ final class ActionFactory
 
         $builtActions = [];
         foreach ($actionsDto as $actionDto) {
-            if (false === $this->authChecker->isGranted(Permission::EA_VIEW_ACTION, $actionDto)) {
+            if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
                 continue;
             }
 

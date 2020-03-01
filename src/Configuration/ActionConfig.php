@@ -6,22 +6,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
 
 final class ActionConfig
 {
-    /** @var Action[] */
+    /** @var array<Action[]> */
     private $actions = [
         CrudConfig::PAGE_DETAIL => [],
         CrudConfig::PAGE_EDIT => [],
         CrudConfig::PAGE_INDEX => [],
         CrudConfig::PAGE_NEW => [],
     ];
-    /** @var callable[] */
+    /** @var array<callable[]> */
     private $actionUpdateCallables = [
-        CrudConfig::PAGE_DETAIL => [],
-        CrudConfig::PAGE_EDIT => [],
-        CrudConfig::PAGE_INDEX => [],
-        CrudConfig::PAGE_NEW => [],
-    ];
-    /** @var string[][] */
-    private $disabledActions = [
         CrudConfig::PAGE_DETAIL => [],
         CrudConfig::PAGE_EDIT => [],
         CrudConfig::PAGE_INDEX => [],
@@ -103,33 +96,37 @@ final class ActionConfig
         return $this;
     }
 
-    public function disableActions(string $pageName, string ...$actionNames): self
+    public function disableActions(string $pageName, string ...$disabledActionNames): self
     {
-        $this->disabledActions[$pageName] = $actionNames;
+        foreach ($disabledActionNames as $disabledActionName) {
+            if (!\array_key_exists($disabledActionName, $this->actions[$pageName])) {
+                throw new \InvalidArgumentException(sprintf('The "%s" action cannot be disabled because it\'s not defined in the "%s" page. Check both the action and the page name.', $disabledActionName, $pageName));
+            }
+
+            /** @var Action $action */
+            $action = $this->actions[$pageName][$disabledActionName];
+            $this->actions[$pageName][$disabledActionName] = $action->isDisabledAction();
+        }
 
         return $this;
     }
 
     public function getAsDto(string $pageName): ActionDtoCollection
     {
-        $processedActions = [];
+        $actionsDto = [];
 
         /** @var Action $actionConfig */
-        foreach ($this->actions[$pageName] ?? [] as $actionConfig) {
-            $actionName = (string) $actionConfig;
-            if (\in_array($actionName, $this->disabledActions[$pageName])) {
-                continue;
-            }
-
+        foreach ($this->actions[$pageName] ?? [] as $action) {
+            $actionName = (string) $action;
             // apply the callables that update certain config options of the action
             if (\array_key_exists($actionName, $this->actionUpdateCallables[$pageName]) && null !== $callable = $this->actionUpdateCallables[$pageName][$actionName]) {
-                $actionConfig = \call_user_func($callable, $actionConfig);
+                $action = \call_user_func($callable, $action);
             }
 
-            $processedActions[] = $actionConfig->getAsDto();
+            $actionsDto[] = $action->getAsDto();
         }
 
-        return ActionDtoCollection::new($processedActions);
+        return ActionDtoCollection::new($actionsDto);
     }
 
     /**

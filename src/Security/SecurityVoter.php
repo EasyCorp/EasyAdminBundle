@@ -34,8 +34,8 @@ final class SecurityVoter extends Voter
             return $this->voteOnViewMenuItemPermission($subject);
         }
 
-        if (Permission::EA_EXECUTE_ACTION === $permissionName) {
-            return $this->voteOnExecuteActionPermission($this->applicationContextProvider->getContext()->getCrud());
+        if (Permission::EA_VIEW_PAGE === $permissionName) {
+            return $this->voteOnViewPagePermission($this->applicationContextProvider->getContext()->getCrud());
         }
 
         if (Permission::EA_VIEW_PROPERTY === $permissionName) {
@@ -46,8 +46,8 @@ final class SecurityVoter extends Voter
             return $this->voteOnViewEntityPermission($subject);
         }
 
-        if (Permission::EA_VIEW_ACTION === $permissionName) {
-            return $this->voteOnViewActionPermission($subject);
+        if (Permission::EA_EXECUTE_ACTION === $permissionName) {
+            return $this->voteOnExecuteActionPermission($subject);
         }
 
         if (Permission::EA_EXIT_IMPERSONATION === $permissionName) {
@@ -63,13 +63,14 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($menuItemDto->getPermission());
     }
 
-    private function voteOnExecuteActionPermission(?CrudDto $crudDto): bool
+    private function voteOnViewPagePermission(CrudDto $crudDto): bool
     {
         // users can run the Crud action if:
-        // * they have the required permission to run the action
-        // * the action is not disabled
+        // * they have the required permission to view the page
+        // * the action related to the page is not disabled
+        $pagePermission = $crudDto->getPagePermission($crudDto->getCurrentPage());
 
-        return $this->authorizationChecker->isGranted($crudDto->getPagePermission()) && !$this->isActionDisabled($crudDto->getCurrentPage());
+        return $this->authorizationChecker->isGranted($pagePermission) && !$this->isActionDisabled($crudDto->getCurrentAction());
     }
 
     private function voteOnViewPropertyPermission(PropertyConfigInterface $propertyConfig): bool
@@ -84,7 +85,7 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($entityDto->getPermission(), $entityDto->getInstance());
     }
 
-    private function voteOnViewActionPermission(ActionDto $actionDto): bool
+    private function voteOnExecuteActionPermission(ActionDto $actionDto): bool
     {
         // users can see the action if:
         // * they have the permission required by the action
@@ -99,23 +100,14 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN');
     }
 
-    private function isActionDisabled(): bool
+    private function isActionDisabled(string $actionName): bool
     {
-        return false;
-    }
-
-    private function FIX_THIS_isActionDisabled(?string $pageName, string $actionName): bool
-    {
-        // TODO: fix this:
-        return false;
-
-        if (null === $pageName) {
-            return false;
+        foreach ($this->applicationContextProvider->getContext()->getCrud()->getDisabledActions() as $disabledAction) {
+            if ($actionName === $disabledAction->getName()) {
+                return true;
+            }
         }
 
-        $applicationContext = $this->applicationContextProvider->getContext();
-        $disabledActions = $applicationContext->getCrud()->getDisabledActions();
-
-        return \in_array($actionName, $disabledActions, true);
+        return false;
     }
 }

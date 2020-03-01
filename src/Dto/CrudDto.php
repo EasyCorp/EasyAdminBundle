@@ -41,11 +41,10 @@ final class CrudDto
     private $overriddenTemplates;
     private $formThemes;
     private $formOptions;
-    private $pagePermission;
+    private $pagePermissions;
     private $entityPermission;
-    private $disabledActions;
 
-    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, array $pageTitles, array $helpMessages, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, array $defaultSort, ?array $searchFields, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto, TemplateDtoCollection $overriddenTemplates, $formThemes, array $formOptions, ?string $pagePermission, ?string $entityPermission, array $disabledActions)
+    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, array $pageTitles, array $helpMessages, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, array $defaultSort, ?array $searchFields, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto, TemplateDtoCollection $overriddenTemplates, $formThemes, array $formOptions, array $pagePermissions, ?string $entityPermission)
     {
         $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;
@@ -66,9 +65,8 @@ final class CrudDto
         $this->overriddenTemplates = $overriddenTemplates;
         $this->formThemes = $formThemes;
         $this->formOptions = $formOptions;
-        $this->pagePermission = $pagePermission;
+        $this->pagePermissions = $pagePermissions;
         $this->entityPermission = $entityPermission;
-        $this->disabledActions = $disabledActions;
     }
 
     public function getCurrentPage(): ?string
@@ -181,9 +179,9 @@ final class CrudDto
         return $this->formOptions;
     }
 
-    public function getPagePermission(): ?string
+    public function getPagePermission(string $pageName): ?string
     {
-        return $this->pagePermission;
+        return $this->pagePermissions[$pageName];
     }
 
     public function getEntityPermission(): ?string
@@ -203,6 +201,6 @@ final class CrudDto
 
     public function getDisabledActions(): array
     {
-        return $this->disabledActions;
+        return $this->actions->getDisabledActions();
     }
 }

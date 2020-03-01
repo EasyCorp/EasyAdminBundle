@@ -85,7 +85,7 @@ final class ApplicationContextFactory
             ]);
     }
 
-    private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ?ActionDtoCollection
+    private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionDtoCollection
     {
         if (null === $crudController || null === $pageName) {
             return ActionDtoCollection::new();

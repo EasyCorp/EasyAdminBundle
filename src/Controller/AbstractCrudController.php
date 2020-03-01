@@ -87,7 +87,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION)) {
+        if (!$this->isGranted(Permission::EA_VIEW_PAGE)) {
             throw new ForbiddenActionException($this->getContext());
         }
 
@@ -98,7 +98,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityInstances = $paginator->getResults();
         $configuredProperties = iterator_to_array($this->configureProperties(CrudConfig::PAGE_INDEX));
         $configuredActions = $this->getContext()->getCrud()->getActions();
-        $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $configuredProperties, $configuredActions);
+        $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $configuredProperties, $configuredActions->getEntityActions());
 
         $responseParams = $this->configureResponseParams(ResponseParams::new([
             'pageName' => CrudConfig::PAGE_INDEX,
@@ -126,13 +126,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION)) {
+        if (!$this->isGranted(Permission::EA_VIEW_PAGE)) {
             throw new ForbiddenActionException($this->getContext());
         }
 
         $configuredProperties = $this->configureProperties(Action::DETAIL);
         $configuredActions = $this->getContext()->getCrud()->getActions();
-        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
+        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions->getEntityActions());
 
         $responseParams = $this->configureResponseParams(ResponseParams::new([
             'pageName' => CrudConfig::PAGE_DETAIL,
@@ -158,13 +158,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION)) {
+        if (!$this->isGranted(Permission::EA_VIEW_PAGE)) {
             throw new ForbiddenActionException($this->getContext());
         }
 
         $configuredProperties = $this->configureProperties(CrudConfig::PAGE_EDIT);
         $configuredActions = $this->getContext()->getCrud()->getActions();
-        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
+        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions->getEntityActions());
         $entityInstance = $entityDto->getInstance();
 
         if ($this->getContext()->getRequest()->isXmlHttpRequest()) {
@@ -237,13 +237,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $event->getResponse();
         }
 
-        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION)) {
+        if (!$this->isGranted(Permission::EA_VIEW_PAGE)) {
             throw new ForbiddenActionException($this->getContext());
         }
 
         $configuredProperties = $this->configureProperties(CrudConfig::PAGE_NEW);
         $configuredActions = $this->getContext()->getCrud()->getActions();
-        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions);
+        $entityDto = $this->get(EntityFactory::class)->create($configuredProperties, $configuredActions->getEntityActions());
         $entityInstance = $this->createEntity($entityDto->getFqcn());
         $entityDto = $entityDto->updateInstance($entityInstance);
 

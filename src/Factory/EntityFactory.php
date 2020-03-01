@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityBuiltEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityNotFoundException;
@@ -40,9 +41,9 @@ final class EntityFactory
 
     /**
      * @param PropertyConfigInterface[] $configuredProperties
-     * @param Action[]                  $actionsDto
+     * @param ActionDto[]               $actionsDto
      */
-    public function create(iterable $configuredProperties = null, ActionDtoCollection $actionsDto = null): EntityDto
+    public function create(iterable $configuredProperties = null, array $actionsDto = null): EntityDto
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $entityFqcn = $applicationContext->getCrud()->getEntityFqcn();
@@ -57,7 +58,10 @@ final class EntityFactory
         return $this->doCreate($entityInstance);
     }
 
-    public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties, ActionDtoCollection $actionsDto): EntityDtoCollection
+    /**
+     * @param ActionDto[] $actionsDto
+     */
+    public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties, array $actionsDto): EntityDtoCollection
     {
         $builtEntities = [];
         foreach ($entityInstances as $entityInstance) {

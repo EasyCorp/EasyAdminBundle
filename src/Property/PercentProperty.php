@@ -3,10 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Intl\Currencies;
 
 class PercentProperty implements PropertyConfigInterface
 {
@@ -41,7 +38,7 @@ class PercentProperty implements PropertyConfigInterface
 
     /**
      * If true, 15% is stored as 0.15; If false, 15% is stored as 15
-     * If your percentages can have decimals (e.g. 15.6%) set this option to TRUE
+     * If your percentages can have decimals (e.g. 15.6%) set this option to TRUE.
      */
     public function setStoredAsFractional(bool $isFractional = true): self
     {

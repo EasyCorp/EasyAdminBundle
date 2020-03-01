@@ -52,17 +52,17 @@ final class ActionDto
 
     public function isEntityAction(): bool
     {
-        return $this->type === Action::TYPE_ENTITY;
+        return Action::TYPE_ENTITY === $this->type;
     }
 
     public function isGlobalAction(): bool
     {
-        return $this->type === Action::TYPE_GLOBAL;
+        return Action::TYPE_GLOBAL === $this->type;
     }
 
     public function isBatchAction(): bool
     {
-        return $this->type === Action::TYPE_BATCH;
+        return Action::TYPE_BATCH === $this->type;
     }
 
     public function getName(): string

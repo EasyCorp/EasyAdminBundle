@@ -23,14 +23,14 @@ final class ActionDtoCollection implements \IteratorAggregate
 
     public function getGlobalActions(): self
     {
-        return new self(array_filter($this->actionsDto, function(ActionDto $action) {
+        return new self(array_filter($this->actionsDto, function (ActionDto $action) {
             return $action->isGlobalAction();
         }));
     }
 
     public function getEntityActions(): self
     {
-        return new self(array_filter($this->actionsDto, function(ActionDto $action) {
+        return new self(array_filter($this->actionsDto, function (ActionDto $action) {
             return $action->isEntityAction();
         }));
     }

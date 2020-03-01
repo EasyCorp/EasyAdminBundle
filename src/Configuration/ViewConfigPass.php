@@ -46,8 +46,6 @@ class ViewConfigPass implements ConfigPassInterface
      * those cases, we just use the $entityConfig['properties'] information and
      * we filter some fields to improve the user experience for default config.
      *
-     * @param array $backendConfig
-     *
      * @return array
      */
     private function processDefaultFieldsConfig(array $backendConfig)
@@ -79,8 +77,6 @@ class ViewConfigPass implements ConfigPassInterface
     /**
      * This methods makes some minor tweaks in fields configuration to improve
      * the user experience.
-     *
-     * @param array $backendConfig
      *
      * @return array
      */
@@ -116,8 +112,6 @@ class ViewConfigPass implements ConfigPassInterface
      * (list, edit, etc.) defines a global title for all entities that can be
      * overridden individually by each entity.
      *
-     * @param array $backendConfig
-     *
      * @return array
      */
     private function processPageTitleConfig(array $backendConfig)
@@ -138,8 +132,6 @@ class ViewConfigPass implements ConfigPassInterface
      * (list, show, etc.) defines a global value for all entities that can be
      * overridden individually by each entity.
      *
-     * @param array $backendConfig
-     *
      * @return array
      */
     private function processMaxResultsConfig(array $backendConfig)
@@ -159,8 +151,6 @@ class ViewConfigPass implements ConfigPassInterface
      * This method processes the optional 'sort' config that the 'list' and
      * 'search' views can define to override the default (id, DESC) sorting
      * applied to their contents.
-     *
-     * @param array $backendConfig
      *
      * @return array
      *
@@ -219,7 +209,6 @@ class ViewConfigPass implements ConfigPassInterface
      * according to its type and the default formats defined for the backend.
      *
      * @param string $fieldType
-     * @param array  $backendConfig
      *
      * @return string The format that should be applied to the field value
      */
@@ -242,7 +231,6 @@ class ViewConfigPass implements ConfigPassInterface
      * Returns the list of excluded field names for the given view.
      *
      * @param string $view
-     * @param array  $entityConfig
      *
      * @return array
      */
@@ -299,7 +287,6 @@ class ViewConfigPass implements ConfigPassInterface
     /**
      * Filters a list of fields excluding the given list of field names and field types.
      *
-     * @param array    $fields
      * @param string[] $excludedFieldNames
      * @param string[] $excludedFieldTypes
      * @param int      $maxNumFields

@@ -54,8 +54,6 @@ trait AdminControllerTrait
     /**
      * @Route("/", name="easyadmin")
      *
-     * @param Request $request
-     *
      * @return RedirectResponse|Response
      *
      * @throws ForbiddenActionException
@@ -89,8 +87,6 @@ trait AdminControllerTrait
     /**
      * Utility method which initializes the configuration of the entity on which
      * the user is performing the action.
-     *
-     * @param Request $request
      *
      * @throws NoEntitiesConfiguredException
      * @throws UndefinedEntityException
@@ -707,7 +703,6 @@ trait AdminControllerTrait
      *
      * @param string      $entityClass
      * @param string      $searchQuery
-     * @param array       $searchableFields
      * @param int         $page
      * @param int         $maxPerPage
      * @param string|null $sortField
@@ -740,7 +735,6 @@ trait AdminControllerTrait
      *
      * @param string      $entityClass
      * @param string      $searchQuery
-     * @param array       $searchableFields
      * @param string|null $sortField
      * @param string|null $sortDirection
      * @param string|null $dqlFilter
@@ -756,7 +750,6 @@ trait AdminControllerTrait
      * Creates the form used to edit an entity.
      *
      * @param object $entity
-     * @param array  $entityProperties
      *
      * @return Form|FormInterface
      */
@@ -769,7 +762,6 @@ trait AdminControllerTrait
      * Creates the form used to create an entity.
      *
      * @param object $entity
-     * @param array  $entityProperties
      *
      * @return Form|FormInterface
      */
@@ -815,7 +807,6 @@ trait AdminControllerTrait
      * Creates the form object used to create or edit the given entity.
      *
      * @param object $entity
-     * @param array  $entityProperties
      * @param string $view
      *
      * @return FormInterface
@@ -827,10 +818,7 @@ trait AdminControllerTrait
         if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EntityForm')) {
             $form = $this->{$customMethodName}($entity, $entityProperties, $view);
             if (!$form instanceof FormInterface) {
-                throw new \UnexpectedValueException(sprintf(
-                    'The "%s" method must return a FormInterface, "%s" given.',
-                    $customMethodName, \is_object($form) ? \get_class($form) : \gettype($form)
-                ));
+                throw new \UnexpectedValueException(sprintf('The "%s" method must return a FormInterface, "%s" given.', $customMethodName, \is_object($form) ? \get_class($form) : \gettype($form)));
             }
 
             return $form;
@@ -839,10 +827,7 @@ trait AdminControllerTrait
         $formBuilder = $this->executeDynamicMethod('create<EntityName>EntityFormBuilder', [$entity, $view]);
 
         if (!$formBuilder instanceof FormBuilderInterface) {
-            throw new \UnexpectedValueException(sprintf(
-                'The "%s" method must return a FormBuilderInterface, "%s" given.',
-                'createEntityForm', \is_object($formBuilder) ? \get_class($formBuilder) : \gettype($formBuilder)
-            ));
+            throw new \UnexpectedValueException(sprintf('The "%s" method must return a FormBuilderInterface, "%s" given.', 'createEntityForm', \is_object($formBuilder) ? \get_class($formBuilder) : \gettype($formBuilder)));
         }
 
         return $formBuilder->getForm();

@@ -48,7 +48,6 @@ final class CrudPageDto
         return $context;
     }
 
-
     public function getActions(): ?array
     {
         return $this->actions;
@@ -64,7 +63,6 @@ final class CrudPageDto
         return $this->actionUpdateCallables;
     }
 
-
     public function getPermission(): ?string
     {
         return $this->permission;
@@ -74,5 +72,4 @@ final class CrudPageDto
     {
         return $this->entityPermission;
     }
-
 }

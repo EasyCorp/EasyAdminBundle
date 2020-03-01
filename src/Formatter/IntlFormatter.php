@@ -2,14 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Formatter;
 
-use Symfony\Component\Intl\Countries;
-use Symfony\Component\Intl\Currencies;
-use Symfony\Component\Intl\Languages;
-use Symfony\Component\Intl\Locales;
-use Symfony\Component\Intl\Timezones;
 use Twig\Error\RuntimeError;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
 
 /**
  * Copied from https://github.com/twigphp/intl-extra/blob/2.x/src/IntlExtension.php

@@ -26,8 +26,6 @@ class EasyAdminTabSubscriber implements EventSubscriberInterface
     /**
      * Deal with form constraint violations. This method has to be executed with
      * a negative priority to make sure that the validation process is done.
-     *
-     * @param FormEvent $event
      */
     public function handleViolations(FormEvent $event)
     {

@@ -21,10 +21,6 @@ class RequestPostInitializeListener
     /** @var Registry */
     private $doctrine;
 
-    /**
-     * @param Registry          $doctrine
-     * @param RequestStack|null $requestStack
-     */
     public function __construct(Registry $doctrine, RequestStack $requestStack = null)
     {
         $this->doctrine = $doctrine;
@@ -34,8 +30,6 @@ class RequestPostInitializeListener
     /**
      * Adds to the request some attributes with useful information, such as the
      * current entity and the selected item, if any.
-     *
-     * @param GenericEvent $event
      */
     public function initializeRequest(GenericEvent $event)
     {
@@ -58,7 +52,6 @@ class RequestPostInitializeListener
     /**
      * Looks for the object that corresponds to the selected 'id' of the current entity.
      *
-     * @param array $entityConfig
      * @param mixed $itemId
      *
      * @return object The entity

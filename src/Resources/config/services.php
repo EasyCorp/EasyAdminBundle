@@ -36,7 +36,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\LanguageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\MoneyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\PercentConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TelephoneConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextAreaConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\UrlConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;

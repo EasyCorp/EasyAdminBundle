@@ -78,7 +78,7 @@ class CrudConfig
 
     public function setPageTitle(string $pageName, string $title): self
     {
-        if (!array_key_exists($pageName, $this->pageTitles)) {
+        if (!\array_key_exists($pageName, $this->pageTitles)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', array_keys($this->pageTitles)), $pageName));
         }
 
@@ -89,7 +89,7 @@ class CrudConfig
 
     public function setHelpMessage(string $pageName, string $helpMessage): self
     {
-        if (!array_key_exists($pageName, $this->helpMessages)) {
+        if (!\array_key_exists($pageName, $this->helpMessages)) {
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method must be one of these valid page names: %s ("%s" given).', __METHOD__, implode(', ', array_keys($this->helpMessages)), $pageName));
         }
 

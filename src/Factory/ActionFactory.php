@@ -4,8 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;

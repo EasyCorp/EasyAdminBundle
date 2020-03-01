@@ -42,8 +42,8 @@ final class ActionConfig
             throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the action name or a "%s" object with the action config.', __METHOD__, Action::class));
         }
 
-        $actionName = is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
-        $action = is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
+        $actionName = \is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
+        $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
 
         if (\array_key_exists($actionName, $this->actions[$pageName])) {
             throw new \InvalidArgumentException(sprintf('The "%s" action already exists, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any property of an existing action.', $actionName));
@@ -63,8 +63,8 @@ final class ActionConfig
             throw new \InvalidArgumentException(sprintf('The argument of "%s" can only be either a string with the action name or a "%s" object with the action config.', __METHOD__, Action::class));
         }
 
-        $actionName = is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
-        $action = is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
+        $actionName = \is_string($actionNameOrObject) ? $actionNameOrObject : (string) $actionNameOrObject;
+        $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
 
         $this->actions[$pageName][$actionName] = $action;
 
@@ -117,7 +117,7 @@ final class ActionConfig
         /** @var Action $actionConfig */
         foreach ($this->actions[$pageName] ?? [] as $actionConfig) {
             $actionName = (string) $actionConfig;
-            if (in_array($actionName, $this->disabledActions[$pageName])) {
+            if (\in_array($actionName, $this->disabledActions[$pageName])) {
                 continue;
             }
 

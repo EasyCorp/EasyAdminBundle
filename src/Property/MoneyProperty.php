@@ -4,7 +4,6 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Property;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Intl\Currencies;
 
 class MoneyProperty implements PropertyConfigInterface

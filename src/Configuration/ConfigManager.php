@@ -28,9 +28,6 @@ final class ConfigManager
         $this->cache = $cache;
     }
 
-    /**
-     * @param ConfigPassInterface $configPass
-     */
     public function addConfigPass(ConfigPassInterface $configPass)
     {
         $this->configPasses[] = $configPass;
@@ -95,8 +92,6 @@ final class ConfigManager
      * processed configuration used in the application.
      *
      * @param array $backendConfig
-     *
-     * @return array
      */
     private function doProcessConfig($backendConfig): array
     {

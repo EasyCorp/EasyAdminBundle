@@ -8,8 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInter
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Property\MoneyProperty;
-use Money\Currencies\ISOCurrencies;
-use Money\Formatter\IntlMoneyFormatter;
 use Symfony\Component\Intl\Currencies;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 

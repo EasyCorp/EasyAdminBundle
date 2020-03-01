@@ -32,7 +32,7 @@ final class ApplicationContextFactory
     {
         $crudAction = $request->query->get('crudAction');
         $validPageNames = [CrudConfig::PAGE_INDEX, CrudConfig::PAGE_DETAIL, CrudConfig::PAGE_EDIT, CrudConfig::PAGE_NEW];
-        $pageName = in_array($crudAction, $validPageNames) ? $crudAction : null;
+        $pageName = \in_array($crudAction, $validPageNames) ? $crudAction : null;
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
         $assetDto = $this->getAssetDto($dashboardController, $crudController);

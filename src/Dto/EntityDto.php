@@ -143,7 +143,7 @@ final class EntityDto
 
     public function isAssociation(string $propertyName): bool
     {
-        return array_key_exists($propertyName, $this->metadata->associationMappings)
+        return \array_key_exists($propertyName, $this->metadata->associationMappings)
             || (false !== strpos($propertyName, '.') && !$this->isEmbeddedClassProperty($propertyName));
     }
 
@@ -151,14 +151,14 @@ final class EntityDto
     {
         $associationType = $this->getPropertyMetadata($propertyName)['type'];
 
-        return in_array($associationType, [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE]);
+        return \in_array($associationType, [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE]);
     }
 
     public function isToManyAssociation(string $propertyName): bool
     {
         $associationType = $this->getPropertyMetadata($propertyName)['type'];
 
-        return in_array($associationType, [ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY]);
+        return \in_array($associationType, [ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY]);
     }
 
     public function isEmbeddedClassProperty(string $propertyName): bool

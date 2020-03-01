@@ -99,7 +99,8 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN');
     }
 
-    private function isActionDisabled(): bool {
+    private function isActionDisabled(): bool
+    {
         return false;
     }
 
@@ -107,7 +108,6 @@ final class SecurityVoter extends Voter
     {
         // TODO: fix this:
         return false;
-
 
         if (null === $pageName) {
             return false;

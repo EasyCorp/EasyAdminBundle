@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
@@ -43,8 +44,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\UrlConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
+use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
+use Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
@@ -69,6 +74,14 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref('twig'))
             ->tag('kernel.event_listener', ['event' => 'kernel.exception', 'priority' => -64])
+
+        ->set(EasyAdminTwigExtension::class)
+            ->arg(0, ref(CrudUrlGenerator::class))
+            ->arg(1, ref(AuthorizationChecker::class))
+            ->arg(2, ref(PropertyAccessorInterface::class))
+            ->arg(3, ref(TranslatorInterface::class)->nullOnInvalid())
+            ->arg(4, '%kernel.debug%')
+            ->tag('twig.extension')
 
         ->set(AuthorizationChecker::class)
             ->arg(0, ref('security.authorization_checker')->nullOnInvalid())
@@ -109,11 +122,23 @@ return static function (ContainerConfigurator $container) {
             ->arg(4, ref('security.logout_url_generator'))
             ->arg(5, ref(CrudUrlGenerator::class))
 
+        ->set(FilterRegistry::class)
+            // arguments are injected using the FilterTypePass compiler pass
+            ->arg(0, null) // $filterTypeMap collection
+            ->arg(1, null) // $filterTypeGuesser iterator
+
+        // TODO: ask Yonel about this because I don't understand anything about this service :|
+        ->set('ea.filter.extension', DependencyInjectionExtension::class)
+            // arguments are injected using the FilterTypePass compiler pass
+            ->arg(0, null) // service locator with all services tagged with 'ea.filter.type'
+            ->arg(1, [])
+            ->arg(2, [])
+
         ->set(EntityRepository::class)
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref('doctrine'))
             ->arg(2, ref('form.factory'))
-            ->arg(3, ref('easyadmin.filter.registry'))
+            ->arg(3, ref(FilterRegistry::class))
 
         ->set(EntityFactory::class)
             ->arg(0, ref(ApplicationContextProvider::class))

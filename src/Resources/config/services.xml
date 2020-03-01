@@ -4,9 +4,11 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!--
         <service id="cache.easyadmin" parent="cache.system" public="false">
             <tag name="cache.pool" />
         </service>
+
 
         <service id="easyadmin.config.manager" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" public="true">
             <argument>%easyadmin.config%</argument>
@@ -14,6 +16,7 @@
             <argument type="service" id="property_accessor" />
             <argument type="service" id="cache.easyadmin" />
         </service>
+
 
         <service id="easyadmin.query_builder" class="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" public="true">
             <argument type="service" id="doctrine" />
@@ -55,36 +58,28 @@
             <argument type="service" id="security.authorization_checker" on-invalid="null" />
         </service>
 
-        <!--
         <service id="easyadmin.listener.controller" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ControllerListener" public="true">
             <argument type="service" id="easyadmin.config.manager" />
             <argument type="service" id="controller_resolver" />
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
         </service>
-        -->
 
-        <!--
         <service id="easyadmin.listener.exception" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener" public="true">
             <argument type="service" id="twig" />
             <argument>%easyadmin.config%</argument>
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="-64" />
         </service>
-        -->
 
-        <!--
         <service id="easyadmin.listener.request_post_initialize" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener" public="true">
             <argument type="service" id="doctrine" />
             <argument type="service" id="request_stack" on-invalid="null" />
             <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />
         </service>
-        -->
 
-        <!--
         <service id="easyadmin.data_collector" class="EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector" public="false">
             <argument type="service" id="easyadmin.config.manager" />
             <tag name="data_collector" template="@EasyAdmin/data_collector/easyadmin.html.twig" id="easyadmin" />
         </service>
-        -->
 
         <service id="easyadmin.configuration.normalizer_config_pass" class="EasyCorp\Bundle\EasyAdminBundle\Configuration\NormalizerConfigPass" public="false">
             <argument type="service" id="service_container" />
@@ -134,12 +129,14 @@
         <service id="EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController" class="EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController" public="true" autowire="true">
             <tag name="container.service_subscriber" />
         </service>
+        -->
 
-        <!-- aliases needed for the service locator of the AbstractAdminController -->
+        <!-- aliases needed for the service locator of the AbstractAdminController
         <service id="EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager" alias="easyadmin.config.manager" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\QueryBuilder" alias="easyadmin.query_builder" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Paginator" alias="easyadmin.paginator" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Search\Autocomplete" alias="easyadmin.autocomplete" />
         <service id="EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker" alias="easyadmin.security.authorization_checker" />
+        -->
     </services>
 </container>

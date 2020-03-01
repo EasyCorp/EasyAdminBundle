@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!--
         <service id="easyadmin.command.make_admin_migration" class="EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand" public="true">
             <tag name="console.command" command="make:admin:migration" />
         </service>
@@ -15,5 +16,6 @@
         <service id="EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminResourceCommand" public="true">
             <tag name="console.command" command="make:admin:resource" />
         </service>
+        -->
     </services>
 </container>

@@ -26,10 +26,10 @@ class EasyAdminBundle extends Bundle
 
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new EasyAdminFormTypePass(), PassConfig::TYPE_BEFORE_REMOVING);
+        //$container->addCompilerPass(new EasyAdminFormTypePass(), PassConfig::TYPE_BEFORE_REMOVING);
         // this compiler pass must run earlier than FormPass to clear
         // the 'form.type_guesser' tag for 'easyadmin.filter.type_guesser' services
         $container->addCompilerPass(new FilterTypePass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 10);
-        $container->addCompilerPass(new EasyAdminConfigPass());
+        //$container->addCompilerPass(new EasyAdminConfigPass());
     }
 }

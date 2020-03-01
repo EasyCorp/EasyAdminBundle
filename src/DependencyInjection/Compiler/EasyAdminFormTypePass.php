@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
+ * TODO: remove this compiler pass
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class EasyAdminFormTypePass implements CompilerPassInterface
@@ -17,6 +18,8 @@ class EasyAdminFormTypePass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        return;
+
         $this->registerTypeConfigurators($container);
     }
 

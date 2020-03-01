@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 /**
+ * TODO: remove this exception.
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class NoEntitiesConfiguredException extends BaseException

@@ -63,17 +63,21 @@
         </service>
         -->
 
+        <!--
         <service id="easyadmin.listener.exception" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener" public="true">
             <argument type="service" id="twig" />
             <argument>%easyadmin.config%</argument>
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="-64" />
         </service>
+        -->
 
+        <!--
         <service id="easyadmin.listener.request_post_initialize" class="EasyCorp\Bundle\EasyAdminBundle\EventListener\RequestPostInitializeListener" public="true">
             <argument type="service" id="doctrine" />
             <argument type="service" id="request_stack" on-invalid="null" />
             <tag name="kernel.event_listener" event="easy_admin.post_initialize" method="initializeRequest" />
         </service>
+        -->
 
         <!--
         <service id="easyadmin.data_collector" class="EasyCorp\Bundle\EasyAdminBundle\DataCollector\EasyAdminDataCollector" public="false">

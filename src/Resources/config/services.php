@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextParamConverter;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ApplicationContextListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudActionResponseListener;
+use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ApplicationContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
@@ -63,6 +64,11 @@ return static function (ContainerConfigurator $container) {
         ->set(DataCollector::class)
             ->arg(0, ref(ApplicationContextProvider::class))
             ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
+
+        ->set(ExceptionListener::class)
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(1, ref('twig'))
+            ->tag('kernel.event_listener', ['event' => 'kernel.exception', 'priority' => -64])
 
         ->set(AuthorizationChecker::class)
             ->arg(0, ref('security.authorization_checker')->nullOnInvalid())

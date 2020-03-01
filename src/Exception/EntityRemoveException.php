@@ -3,9 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 /**
+ * TODO: update this class when we reimplement the DELETE action.
+ *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EntityRemoveException extends BaseException
+final class EntityRemoveException extends BaseException
 {
     public function __construct(array $parameters = [])
     {

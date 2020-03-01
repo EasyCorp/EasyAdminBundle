@@ -2,17 +2,19 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
+use function Symfony\Component\String\u;
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class ExceptionContext
+final class ExceptionContext
 {
     private $publicMessage;
     private $debugMessage;
     private $parameters;
     private $statusCode;
 
-    public function __construct($publicMessage, $debugMessage = '', $parameters = [], $statusCode = 500)
+    public function __construct(string $publicMessage, string $debugMessage = '', array $parameters = [], int $statusCode = 500)
     {
         $this->publicMessage = $publicMessage;
         $this->debugMessage = $debugMessage;
@@ -20,45 +22,30 @@ class ExceptionContext
         $this->statusCode = $statusCode;
     }
 
-    public function getPublicMessage()
+    public function getPublicMessage(): string
     {
         return $this->publicMessage;
     }
 
-    public function getDebugMessage()
+    public function getDebugMessage(): string
     {
         return $this->debugMessage;
     }
 
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    public function getTranslationParameters()
+    public function getTranslationParameters(): array
     {
-        return $this->transformIntoTranslationPlaceholders($this->parameters);
+        return array_map(function ($parameter) {
+            return u($parameter)->ensureStart('%')->ensureEnd('%')->toString();
+        }, $this->parameters);
     }
 
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
-    }
-
-    private function transformIntoTranslationPlaceholders(array $parameters)
-    {
-        $placeholders = [];
-        foreach ($parameters as $key => $value) {
-            if ('%' !== $key[0]) {
-                $key = '%'.$key;
-            }
-            if ('%' !== $key[-1]) {
-                $key .= '%';
-            }
-
-            $placeholders[$key] = $value;
-        }
-
-        return $placeholders;
     }
 }

@@ -2,10 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Twig\Environment;
 
 /**
@@ -17,43 +18,36 @@ use Twig\Environment;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
-class ExceptionListener
+final class ExceptionListener
 {
+    private $applicationContextProvider;
     private $twig;
-    private $easyAdminConfig;
-    private $currentEntityName;
 
-    public function __construct(Environment $twig, array $easyAdminConfig)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, Environment $twig)
     {
+        $this->applicationContextProvider = $applicationContextProvider;
         $this->twig = $twig;
-        $this->easyAdminConfig = $easyAdminConfig;
     }
 
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
         if (!$exception instanceof BaseException) {
             return;
         }
 
-        $this->currentEntityName = $event->getRequest()->query->get('entity');
-
-        $event->setResponse($this->showExceptionPageAction(FlattenException::create($exception)));
+        $event->setResponse($this->createExceptionResponse(FlattenException::create($exception)));
     }
 
-    public function showExceptionPageAction(FlattenException $exception)
+    public function createExceptionResponse(FlattenException $exception): Response
     {
-        $entityConfig = $this->easyAdminConfig['entities'][$this->currentEntityName] ?? null;
-        $exceptionTemplatePath = $entityConfig['templates']['exception']
-            ?? $this->easyAdminConfig['design']['templates']['exception']
-            ?? '@EasyAdmin/default/exception.html.twig';
-        $exceptionLayoutTemplatePath = $entityConfig['templates']['layout']
-            ?? $this->easyAdminConfig['design']['templates']['layout']
-            ?? '@EasyAdmin/default/layout.html.twig';
+        $context = $this->applicationContextProvider->getContext();
+        $exceptionTemplatePath = $context->getTemplatePath('exception');
+        $layoutTemplatePath = $context->getTemplatePath('layout');
 
         return Response::create($this->twig->render($exceptionTemplatePath, [
             'exception' => $exception,
-            'layout_template_path' => $exceptionLayoutTemplatePath,
+            'layout_template_path' => $layoutTemplatePath,
         ]), $exception->getStatusCode());
     }
 }

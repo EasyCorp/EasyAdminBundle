@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class ForbiddenActionException extends BaseException
+final class ForbiddenActionException extends BaseException
 {
     public function __construct(ApplicationContext $applicationContext)
     {

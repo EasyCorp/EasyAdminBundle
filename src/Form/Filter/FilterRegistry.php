@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormTypeGuesserInterface;
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class FilterRegistry
+final class FilterRegistry
 {
     private $typesMap;
     private $typeGuessers;

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
+use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -36,9 +37,9 @@ class EasyAdminExtension extends Extension
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.php');
 
+        // use EasyAdmin exception listener only in 'dev'
         if ($container->getParameter('kernel.debug')) {
-            // in 'dev', use the built-in Symfony exception listener
-            $container->removeDefinition('easyadmin.listener.exception');
+            $container->removeDefinition(ExceptionListener::class);
         }
 
         /*

@@ -7,6 +7,9 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
+ * DON'T REMOVE this class entirely. Otherwise, when upgrading from EA2 to EA3, users
+ * will see an error because nobody is able to parse the 'easy_admin' config prefix.
+ *
  * Defines the configuration options of the bundle and validates its values.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

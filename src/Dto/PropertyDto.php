@@ -25,7 +25,7 @@ final class PropertyDto
     private $assets;
     private $customOptions;
 
-    public function __construct(string $type, string $name, $value, $formattedValue, ?string $formType, array $formTypeOptions, ?bool $sortable, ?bool $virtual, ?string $label, ?string $permission, string $textAlign, ?string $help, ?string $cssClass, array $translationParams, ?string $templateName, ?string $templatePath, AssetDto $assetDto, ParameterBag $customOptions)
+    public function __construct(string $type, string $name, $value, $formattedValue, ?string $formType, array $formTypeOptions, ?bool $sortable, ?bool $virtual, ?string $label, ?string $permission, ?string $textAlign, ?string $help, ?string $cssClass, array $translationParams, ?string $templateName, ?string $templatePath, AssetDto $assetDto, ParameterBag $customOptions)
     {
         $this->type = $type;
         $this->name = $name;

@@ -138,8 +138,8 @@
                                                 <h1 class="title">{% block content_title %}{% endblock %}</h1>
                                             </div>
 
-                                            {% block global_actions_wrapper %}
-                                                <div class="global-actions">{% block global_actions %}{% endblock %}</div>
+                                            {% block page_actions_wrapper %}
+                                                <div class="page-actions">{% block page_actions %}{% endblock %}</div>
                                             {% endblock %}
                                         </div>
 
@@ -159,9 +159,12 @@
                             </section>
 
                             {% block content_footer_wrapper %}
-                                <section class="content-footer">
-                                    {% block content_footer %}{% endblock %}
-                                </section>
+                                {% set content_footer = block('content_footer') is defined ? block('content_footer') : '' %}
+                                {% if content_footer is not empty %}
+                                    <section class="content-footer">
+                                        {{ content_footer }}
+                                    </section>
+                                {% endif %}
                             {% endblock %}
                         </div>
                     {% endblock content %}

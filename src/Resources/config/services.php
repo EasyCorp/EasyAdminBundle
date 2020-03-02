@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
@@ -45,6 +46,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -82,6 +84,10 @@ return static function (ContainerConfigurator $container) {
             ->arg(3, ref(TranslatorInterface::class)->nullOnInvalid())
             ->arg(4, '%kernel.debug%')
             ->tag('twig.extension')
+
+        ->set(EaCrudFormTypeExtension::class)
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->tag('form.type_extension', ['alias' => 'form', 'extended-type' => FormType::class])
 
         ->set(AuthorizationChecker::class)
             ->arg(0, ref('security.authorization_checker')->nullOnInvalid())

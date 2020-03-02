@@ -7,7 +7,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\Util\ClassUtils;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
@@ -41,16 +41,15 @@ final class EntityFactory
 
     /**
      * @param PropertyConfigInterface[] $configuredProperties
-     * @param ActionDto[]               $actionsDto
      */
-    public function create(iterable $configuredProperties = null, array $actionsDto = null): EntityDto
+    public function create(iterable $configuredProperties = null, ActionConfigDto $actionConfigDto = null): EntityDto
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $entityFqcn = $applicationContext->getCrud()->getEntityFqcn();
         $entityId = $applicationContext->getRequest()->query->get('entityId');
         $entityPermission = $applicationContext->getCrud()->getEntityPermission();
 
-        return $this->doCreate(null, $entityFqcn, $entityId, $entityPermission, $configuredProperties, $actionsDto);
+        return $this->doCreate(null, $entityFqcn, $entityId, $entityPermission, $configuredProperties, $actionConfigDto);
     }
 
     public function createForEntityInstance($entityInstance): EntityDto
@@ -61,13 +60,13 @@ final class EntityFactory
     /**
      * @param ActionDto[] $actionsDto
      */
-    public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties, array $actionsDto): EntityDtoCollection
+    public function createAll(EntityDto $entityDto, iterable $entityInstances, iterable $configuredProperties, ActionConfigDto $actionConfigDto): EntityDtoCollection
     {
         $builtEntities = [];
         foreach ($entityInstances as $entityInstance) {
             $currentEntityDto = $entityDto->updateInstance($entityInstance);
             $currentEntityDto = $this->propertyFactory->create($currentEntityDto, $configuredProperties);
-            $currentEntityDto = $this->actionFactory->create($currentEntityDto, $actionsDto);
+            $currentEntityDto = $this->actionFactory->createForEntity($actionConfigDto, $currentEntityDto);
 
             $builtEntities[] = $currentEntityDto;
         }
@@ -75,7 +74,7 @@ final class EntityFactory
         return EntityDtoCollection::new($builtEntities);
     }
 
-    private function doCreate($entityInstance = null, ?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, iterable $configuredProperties = null, ActionDtoCollection $actionsDto = null): EntityDto
+    private function doCreate($entityInstance = null, ?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, iterable $configuredProperties = null, ?ActionConfigDto $actionConfigDto): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {
             $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);
@@ -99,8 +98,8 @@ final class EntityFactory
                 $entityDto = $this->propertyFactory->create($entityDto, $configuredProperties);
             }
 
-            if (null !== $actionsDto) {
-                $entityDto = $this->actionFactory->create($entityDto, $actionsDto);
+            if (null !== $actionConfigDto) {
+                $entityDto = $this->actionFactory->createForEntity($actionConfigDto, $entityDto);
             }
         }
 

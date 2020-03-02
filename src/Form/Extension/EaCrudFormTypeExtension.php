@@ -42,7 +42,7 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
         }
 
         $view->vars['ea_crud_form'] = [
-            'form_group' => $form->getConfig()->getAttribute('ea_form_group'),
+            'form_panel' => $form->getConfig()->getAttribute('ea_form_panel'),
             'form_tab' => $form->getConfig()->getAttribute('ea_form_tab'),
         ];
 

@@ -37,7 +37,6 @@ class CrudConfig
     private $paginatorUseOutputWalkers;
     private $formThemes = ['@EasyAdmin/crud/form_theme.html.twig'];
     private $formOptions = [];
-    private $pagePermissions = [Action::DETAIL => null, Action::EDIT => null, Action::INDEX => null, Action::NEW => null];
     private $entityPermission;
     /**
      * @internal
@@ -318,13 +317,6 @@ class CrudConfig
         return $this;
     }
 
-    public function setPagePermission(string $permission): self
-    {
-        $this->pagePermission = $permission;
-
-        return $this;
-    }
-
     public function setEntityPermission(string $permission): self
     {
         $this->entityPermission = $permission;
@@ -347,7 +339,7 @@ class CrudConfig
             $this->entityLabelInPlural = $this->entityLabelInSingular;
         }
 
-        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchProperties, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->pagePermissions, $this->entityPermission);
+        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchProperties, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->entityPermission);
     }
 
     private function validate(): void

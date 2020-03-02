@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Property\FormPanelProperty;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -47,8 +48,8 @@ class CrudFormType extends AbstractType
         $entityDto = $options['entityDto'];
         $formTabs = [];
         $currentFormTab = null;
-        $formGroups = [];
-        $currentFormGroup = null;
+        $formPanels = [];
+        $currentFormPanel = 0;
 
         foreach ($entityDto->getProperties() as $propertyDto) {
             $formFieldOptions = $propertyDto->getFormTypeOptions();
@@ -74,14 +75,22 @@ class CrudFormType extends AbstractType
                 }
             }
 
-            // if the form field is a special 'group' design element, don't add it
-            // to the form. Instead, consider it the current form group (this is
+            // if the form field is a special 'panel' design element, don't add it
+            // to the form. Instead, consider it the current form panel (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (\in_array($formFieldType, ['ea_group', EasyAdminGroupType::class])) {
-                $metadata['form_tab'] = $currentFormTab ?: null;
-                $currentFormGroup = $metadata['fieldName'];
-                $formGroups[$currentFormGroup] = $metadata;
+            if (empty($formPanels)) {
+                $formPanels[$currentFormPanel] = ['form_tab' => $currentFormTab ?? null, 'label' => null, 'icon' => null, 'help' => null];
+            }
+
+            if (EaFormPanelType::class === $formFieldType) {
+                $currentFormPanel++;
+                $formPanels[$currentFormPanel] = [
+                    'form_tab' => $currentFormTab ?? null,
+                    'label' => $propertyDto->getLabel(),
+                    'icon' => $propertyDto->getCustomOptions()->get(FormPanelProperty::OPTION_ICON),
+                    'help' => $propertyDto->getHelp(),
+                ];
 
                 continue;
             }
@@ -103,16 +112,9 @@ class CrudFormType extends AbstractType
                 continue;
             }
 
-            // 'section' is a 'fake' form field used to create the design elements of the
-            // complex form layouts: define it as unmapped and non-required
-            if (0 === strpos($propertyDto->getName(), '_ea_form_design_element_')) {
-                $formFieldOptions['mapped'] = false;
-                $formFieldOptions['required'] = false;
-            }
-
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
             $formField->setAttribute('ea_entity', $entityDto);
-            $formField->setAttribute('ea_form_group', $currentFormGroup);
+            $formField->setAttribute('ea_form_panel', $currentFormPanel);
             $formField->setAttribute('ea_form_tab', $currentFormTab);
             $formField->setAttribute('ea_property', $propertyDto);
 
@@ -120,7 +122,7 @@ class CrudFormType extends AbstractType
         }
 
         $builder->setAttribute('ea_form_tabs', $formTabs);
-        $builder->setAttribute('ea_form_groups', $formGroups);
+        $builder->setAttribute('ea_form_panels', $formPanels);
 
         if (\count($formTabs) > 0) {
             $builder->addEventSubscriber(new EasyAdminTabSubscriber());
@@ -144,7 +146,7 @@ class CrudFormType extends AbstractType
             'assets' => $allFormFieldAssets,
             'entity' => $options['entityDto'],
             'form_tabs' => $form->getConfig()->getAttribute('ea_form_tabs'),
-            'form_groups' => $form->getConfig()->getAttribute('ea_form_groups'),
+            'form_panels' => $form->getConfig()->getAttribute('ea_form_panels'),
         ];
     }
 

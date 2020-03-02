@@ -21,6 +21,10 @@ final class CountryConfigurator implements PropertyConfiguratorInterface
         $formattedValue = $this->getCountryName($propertyConfig->getValue());
         $propertyConfig->setFormattedValue($formattedValue);
 
+        if (null === $propertyConfig->getTextAlign() && false === $propertyConfig->getCustomOption(CountryProperty::OPTION_SHOW_NAME)) {
+            $propertyConfig->setTextAlign('center');
+        }
+
         if (null === $formattedValue) {
             $propertyConfig->setTemplateName('label/null');
         }

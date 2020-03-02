@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 
@@ -13,7 +13,7 @@ final class CrudDto
 
     private $pageName;
     private $actionName;
-    /** @var ActionDtoCollection */
+    /** @var ActionConfigDto */
     private $actions;
     private $entityFqcn;
     private $labelInSingular;
@@ -41,10 +41,9 @@ final class CrudDto
     private $overriddenTemplates;
     private $formThemes;
     private $formOptions;
-    private $pagePermissions;
     private $entityPermission;
 
-    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, array $pageTitles, array $helpMessages, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, array $defaultSort, ?array $searchFields, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto, TemplateDtoCollection $overriddenTemplates, $formThemes, array $formOptions, array $pagePermissions, ?string $entityPermission)
+    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, array $pageTitles, array $helpMessages, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, array $defaultSort, ?array $searchFields, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto, TemplateDtoCollection $overriddenTemplates, $formThemes, array $formOptions, ?string $entityPermission)
     {
         $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;
@@ -65,7 +64,6 @@ final class CrudDto
         $this->overriddenTemplates = $overriddenTemplates;
         $this->formThemes = $formThemes;
         $this->formOptions = $formOptions;
-        $this->pagePermissions = $pagePermissions;
         $this->entityPermission = $entityPermission;
     }
 
@@ -179,11 +177,6 @@ final class CrudDto
         return $this->formOptions;
     }
 
-    public function getPagePermission(string $pageName): ?string
-    {
-        return $this->pagePermissions[$pageName];
-    }
-
     public function getEntityPermission(): ?string
     {
         return $this->entityPermission;
@@ -194,13 +187,8 @@ final class CrudDto
         return $this->actionName;
     }
 
-    public function getActions(): ActionDtoCollection
+    public function getActions(): ActionConfigDto
     {
         return $this->actions;
-    }
-
-    public function getDisabledActions(): array
-    {
-        return $this->actions->getDisabledActions();
     }
 }

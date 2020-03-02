@@ -16,8 +16,6 @@ final class Action
     public const SAVE_AND_CONTINUE = 'saveAndContinue';
     public const SAVE_AND_RETURN = 'saveAndReturn';
 
-    // these are the actions that cannot be accessed by any user or by any means
-    public const TYPE_DISABLED = 'disabled';
     // these are the actions applied to a specific entity instance
     public const TYPE_ENTITY = 'entity';
     // these are the actions that are not associated to an entity
@@ -36,7 +34,6 @@ final class Action
     private $htmlElement = 'a';
     private $htmlAttributes = [];
     private $templatePath;
-    private $permission;
     private $crudActionName;
     private $routeName;
     private $routeParameters;
@@ -131,13 +128,6 @@ final class Action
         return $this;
     }
 
-    public function setPermission(string $permission): self
-    {
-        $this->permission = $permission;
-
-        return $this;
-    }
-
     public function linkToCrudAction(string $crudActionName): self
     {
         $this->crudActionName = $crudActionName;
@@ -191,6 +181,6 @@ final class Action
             $this->htmlAttributes = array_merge(['title' => $this->name], $this->htmlAttributes);
         }
 
-        return new ActionDto($this->type, $this->name, $this->label, $this->icon, $this->cssClass, $this->htmlElement, $this->htmlAttributes, $this->templatePath, $this->permission, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters, $this->displayCallable ?? static function () { return true; });
+        return new ActionDto($this->type, $this->name, $this->label, $this->icon, $this->cssClass, $this->htmlElement, $this->htmlAttributes, $this->templatePath, $this->crudActionName, $this->routeName, $this->routeParameters, $this->translationDomain, $this->translationParameters, $this->displayCallable ?? static function () { return true; });
     }
 }

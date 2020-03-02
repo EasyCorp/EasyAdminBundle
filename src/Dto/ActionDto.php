@@ -18,7 +18,6 @@ final class ActionDto
     private $htmlAttributes;
     private $linkUrl;
     private $templatePath;
-    private $permission;
     private $crudActionName;
     private $routeName;
     private $routeParameters;
@@ -26,7 +25,7 @@ final class ActionDto
     private $translationParameters;
     private $displayCallable;
 
-    public function __construct(string $type, string $name, ?string $label, ?string $icon, ?string $cssClass, string $htmlElement, array $htmlAttributes, ?string $templatePath, ?string $permission, ?string $crudActionName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters, callable $displayCallable)
+    public function __construct(string $type, string $name, ?string $label, ?string $icon, ?string $cssClass, string $htmlElement, array $htmlAttributes, ?string $templatePath, ?string $crudActionName, ?string $routeName, ?array $routeParameters, ?string $translationDomain, array $translationParameters, callable $displayCallable)
     {
         $this->type = $type;
         $this->name = $name;
@@ -36,7 +35,6 @@ final class ActionDto
         $this->htmlElement = $htmlElement;
         $this->htmlAttributes = $htmlAttributes;
         $this->templatePath = $templatePath;
-        $this->permission = $permission;
         $this->crudActionName = $crudActionName;
         $this->routeName = $routeName;
         $this->routeParameters = $routeParameters;
@@ -103,11 +101,6 @@ final class ActionDto
     public function getTemplate(): ?string
     {
         return $this->templatePath;
-    }
-
-    public function getPermission(): ?string
-    {
-        return $this->permission;
     }
 
     public function getLinkUrl(): string

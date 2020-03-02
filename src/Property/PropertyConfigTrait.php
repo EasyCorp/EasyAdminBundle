@@ -21,7 +21,7 @@ trait PropertyConfigTrait
     private $sortable;
     private $virtual;
     private $permission;
-    private $textAlign = 'left';
+    private $textAlign;
     private $help;
     private $cssClass;
     private $translationParams = [];
@@ -109,9 +109,9 @@ trait PropertyConfigTrait
         return true === $this->virtual;
     }
 
-    public function getTextAlign(): string
+    public function getTextAlign(): ?string
     {
-        return $this->textAlign ?? 'left';
+        return $this->textAlign;
     }
 
     public function getPermission(): ?string

@@ -1,22 +1,26 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
+namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
-
-final class ActionDtoCollection implements \IteratorAggregate
+final class ActionConfigDto
 {
     /** @var ActionDto[] */
     private $actionsDto;
+    /** @var string[] */
+    private $disabledActions;
+    /** @var string[] */
+    private $actionPermissions;
 
     private function __construct()
     {
     }
 
-    public static function new(array $actionsDto = null): self
-    {dump($actionsDto);
+    public static function new(array $actionsDto = [], array $disabledActions = [], array $actionPermissions = []): self
+    {
         $collection = new self();
         $collection->actionsDto = $actionsDto;
+        $collection->disabledActions = $disabledActions;
+        $collection->actionPermissions = $actionPermissions;
 
         return $collection;
     }
@@ -24,11 +28,29 @@ final class ActionDtoCollection implements \IteratorAggregate
     /**
      * @return ActionDto[]
      */
+    public function getActions(): array
+    {
+        return $this->actionsDto;
+    }
+
+    /**
+     * @param ActionDto[] $newActions
+     */
+    public function updateActions(array $newActionsDto): self
+    {
+        $this->actionsDto = $newActionsDto;
+
+        return $this;
+    }
+
     public function getDisabledActions(): array
     {
-        return array_filter($this->actionsDto, static function (ActionDto $action) {
-            return $action->isDisabledAction();
-        });
+        return $this->disabledActions;
+    }
+
+    public function getActionPermissions(): array
+    {
+        return $this->actionPermissions;
     }
 
     /**
@@ -59,13 +81,5 @@ final class ActionDtoCollection implements \IteratorAggregate
         return array_filter($this->actionsDto, static function (ActionDto $action) {
             return $action->isEntityAction();
         });
-    }
-
-    /**
-     * @return ActionDto[]
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->actionsDto);
     }
 }

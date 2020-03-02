@@ -191,6 +191,7 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
             "sidebar-resizer-handler  content         content-resizer-handler"
     ;
     grid-template-columns: 0 auto 0;
+    margin-top: -14px;
 
     @media(min-width: 992px) {
         grid-template-columns: 10px auto 10px;
@@ -198,40 +199,47 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 }
 
 .content {
-    background-color: var(--white);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow-lg);
 }
 
 .resizer-handler {
-    background: rgba(0, 0, 0, 0.1) center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" viewBox="0 0 320 512"><path fill="rgba(0, 0, 0, 0.7)" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"></path></svg>');
+    background: transparent center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" viewBox="0 0 320 512"><path fill="none" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"></path></svg>');
     cursor: col-resize;
     display: none;
-    opacity: 0.15;
-    transition: opacity 0.7s;
+    transition: background 0.7s;
 
     &:hover {
-        opacity: 1;
+        background: rgba(0, 0, 0, 0.1) center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" viewBox="0 0 320 512"><path fill="rgba(0, 0, 0, 0.7)" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"></path></svg>');
     }
 
     @media(min-width: 992px) {
         display: block;
     }
 }
-.resizer-handler-left {
-    border-bottom-left-radius: var(--border-radius);
-    border-top-left-radius: var(--border-radius);
-}
-.resizer-handler-right {
-    border-bottom-right-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
-}
 
 .content-header {
-    border-bottom: var(--border-width) var(--border-style) var(--border-color);
+    background: var(--body-bg);
     display: flex;
     flex-direction: column;
-    padding: 15px 17px 15px 20px;
+    margin-bottom: 2px;
+    padding: 10px 0 15px;
+    position: sticky;
+    top: 0;
+    z-index: var(--zindex-900);
+}
+// this is needed for aesthetic reasons
+.content-header:before,
+.content-header:after {
+    background: var(--body-bg);
+    content: "";
+    height: 100%;
+    left: -10px;
+    position: absolute;
+    top: 0;
+    width: 10px;
+}
+.content-header:after {
+    left: unset;
+    right: -10px;
 }
 
 // reduce the padding in 'list' pages to compensate for the height of '.global-actions'
@@ -241,7 +249,7 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 }
 
 .content-header-title {
-    align-self: center;
+    align-self: flex-end;
     flex: 1;
 }
 // when contents define help, change vertical align to 'flex-start' because it looks better than 'center'
@@ -254,16 +262,16 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
     margin: 0;
 }
 
-.content-header .global-actions {
+.content-header .page-actions {
     align-items: center;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-left: 10px;
-}
 
-.global-actions .btn {
-    margin-left: 15px;
+    .btn {
+        margin-left: 10px;
+    }
 }
 
 .batch-actions form {
@@ -302,18 +310,50 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
     padding: 15px 20px;
 }
 
-.content-body form {
+.content-panel {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-lg);
+    margin-bottom: 20px;
+}
+
+.content-panel header {
+    border-bottom: var(--border-width) var(--border-style) var(--border-color);
+    font-size: var(--font-size-lg);
+    line-height: 24px;
+    margin: 0;
+    padding: 15px 17px 15px 20px;
+}
+
+.content-panel article {
+    background: var(--content-panel-bg);
+    padding: 18px 20px;
+
+    table {
+        border-top-left-radius: var(--border-radius);
+        border-top-right-radius: var(--border-radius);
+        margin-bottom: 0;
+        overflow: hidden; // this is needed for the border-radius property
+    }
+}
+.content-panel article.without-padding {
+    padding: 0;
+}
+.content-panel article.without-header {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+.content-panel article.without-footer {
     border-bottom-left-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
 }
 
-.content-body table {
-    margin-bottom: 0;
+.content-panel footer {
+    border-top: var(--border-width) var(--border-style) var(--border-color);
+    margin: 0;
+    padding: 15px 17px 15px 20px;
 }
 
-form .content-footer {
-    margin: 20px -20px -18px;
-}
 
 .list-pagination {
     align-items: center;

@@ -355,102 +355,89 @@
 
 {% block ea_crud_rest %}
     {{ form_rest(form) }}
-
-    <section class="content-footer">
-        <div class="form-actions">
-            {{ block('ea_entity_actions') }}
-        </div>
-    </section>
 {% endblock ea_crud_rest %}
-
-{% block ea_entity_actions %}
-    {% for action in form.vars.ea_crud_form.entity.actions %}
-        {{ include(action.template, { action: action }, with_context = false) }}
-    {% endfor %}
-{% endblock ea_entity_actions %}
 
 {# EasyAdmin form type #}
 {% block ea_crud_widget %}
-    <div class="row">
-        {% if ea_crud_form.form_tabs | length > 0 %}
-            <div class="col-12">
-                <div class="nav-tabs-custom form-tabs">
-                    <ul class="nav nav-tabs">
-                        {% for tab_name, tab_config in ea_form_tabs %}
-                            <li class="nav-item">
-                                <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
-                                    {%- if tab_config.icon|default(false) -%}
-                                        <i class="fa fa-fw fa-{{ tab_config.icon }}"></i>
-                                    {%- endif -%}
-                                    {{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
-                                    {%- if tab_config.errors > 0 -%}
-                                        <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'EasyAdminBundle') }}">
-                                            {{- tab_config.errors -}}
-                                        </span>
-                                    {%- endif -%}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <div class="tab-content">
-                        {% for tab_name, tab_config in ea_form_tabs %}
-                            <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %} {{ tab_config['css_class']|default('') }}">
-                                {% if tab_config['help']|default(false) %}
-                                    <div class="content-header-help tab-help">
-                                        {{ tab_config['help']|trans(domain = ea.i18n.translationDomain)|raw }}
-                                    </div>
-                                {% endif %}
-
-                                <div class="row">
-                                    {{ block('ea_crud_widget_groups') }}
+    {% if ea_crud_form.form_tabs|length > 0 %}
+        <div class="col-12">
+            <div class="nav-tabs-custom form-tabs">
+                <ul class="nav nav-tabs">
+                    {% for tab_name, tab_config in ea_form_tabs %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if tab_config.active %}active{% endif %}" href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
+                                {%- if tab_config.icon|default(false) -%}
+                                    <i class="fa fa-fw fa-{{ tab_config.icon }}"></i>
+                                {%- endif -%}
+                                {{ tab_config['label']|trans(domain = ea.i18n.translationDomain) }}
+                                {%- if tab_config.errors > 0 -%}
+                                    <span class="badge badge-danger" title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'EasyAdminBundle') }}">
+                                        {{- tab_config.errors -}}
+                                    </span>
+                                {%- endif -%}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content">
+                    {% for tab_name, tab_config in ea_form_tabs %}
+                        <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %} {{ tab_config['css_class']|default('') }}">
+                            {% if tab_config['help']|default(false) %}
+                                <div class="content-header-help tab-help">
+                                    {{ tab_config['help']|trans(domain = ea.i18n.translationDomain)|raw }}
                                 </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        {% else %}
-            {{ block('ea_crud_widget_groups') }}
-        {% endif %}
-    </div>
-{% endblock ea_crud_widget %}
+                            {% endif %}
 
-{% block ea_crud_widget_groups %}
-    {% for group_name, group_config in ea_crud_form.form_groups|filter(group_config => not group_config.form_tab or group_config.form_tab == tab_name) %}
-        <div class="field-group col-{{ group_config.columns|default('12') }} {{ group_config.css_class|default('') }}">
-            <fieldset>
-                {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
-                    <legend class="{{ group_config.icon|default(false) ? 'with-icon' }}">
-                        {% if group_config.icon|default(false) %}
-                            <i class="fa fa-fw fa-{{ group_config.icon }}"></i>
-                        {% endif %}
-                        {{ group_config.label|trans(domain = ea.i18n.translationDomain)|raw }}
-                    </legend>
-
-                    {% if group_config.help|default(false) %}
-                        <div class="legend-help">{{ group_config.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
-                    {% endif %}
-                {% endif %}
-
-                <div class="row">
-                    {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name) %}
-                        {% if not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name %}
-                            <div class="col-{{ field.vars.ea_property.columns|default('12') }} {{ field.vars.ea_property.css_class|default('') }}">
-                                {{ form_row(field) }}
-                            </div>
-                        {% endif %}
+                            {{ block('ea_crud_widget_panels') }}
+                        </div>
                     {% endfor %}
                 </div>
-            </fieldset>
+            </div>
         </div>
     {% else %}
-        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
-            <div class="col-{{ field.vars.ea_property.columns|default('12') }} {{ field.vars.ea_property.css_class|default('') }}">
-                {{ form_row(field) }}
-            </div>
-        {% endfor %}
+        {{ block('ea_crud_widget_panels') }}
+    {% endif %}
+{% endblock ea_crud_widget %}
+
+{% block ea_crud_widget_panels %}
+    {% for panel_name, panel_config in ea_crud_form.form_panels|filter(panel_config => not panel_config.form_tab or panel_config.form_tab == tab_name) %}
+        {% set panel_has_header = panel_config.label|default(false) or panel_config.icon|default(false) %}
+        <section class="content-panel">
+            {% if panel_has_header %}
+                <header>
+                    {% if panel_config.icon|default(false) %}
+                        <i class="{{ panel_config.icon }}"></i>
+                    {% endif %}
+                    {{ panel_config.label|trans(domain = ea.i18n.translationDomain)|raw }}
+
+                    {% if panel_config.help|default(false) %}
+                        <div class="legend-help">{{ panel_config.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
+                    {% endif %}
+                </header>
+            {% endif %}
+
+            <article class="{{ not panel_has_header ? 'without-header' }} without-footer">
+                {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
+                    {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
+                        <div class="{{ field.vars.ea_property.css_class|default('') }}">
+                            {{ form_row(field) }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </article>
+        </section>
+    {% else %}
+        <section class="content-panel">
+            <article class="without-header without-footer">
+                {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
+                    <div class="{{ field.vars.ea_property.css_class|default('') }}">
+                        {{ form_row(field) }}
+                    </div>
+                {% endfor %}
+            </article>
+        </section>
     {% endfor %}
-{% endblock ea_crud_widget_groups %}
+{% endblock ea_crud_widget_panels %}
 
 {# EasyAdminAutocomplete form type #}
 {% block easyadmin_autocomplete_widget %}

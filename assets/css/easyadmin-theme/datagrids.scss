@@ -2,11 +2,12 @@
 // ----------------------------------------------------------------------------
 
 table.datagrid {
+  background: var(--white);
   border-spacing: 0;
   width: 100%;
 }
 .datagrid thead {
-  background: var(--form-bg);
+  background: var(--table-header-bg);
 }
 .datagrid thead th {
   border: 0;
@@ -17,7 +18,7 @@ table.datagrid {
   display: block;
   font-weight: 500;
   line-height: 1.357;
-  padding: 8px;
+  padding: 12px 8px;
   white-space: nowrap;
 }
 .datagrid th:first-child a, .datagrid th:first-child span, .datagrid td:first-child {

@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 
 final class ActionConfig
 {
@@ -20,6 +20,10 @@ final class ActionConfig
         CrudConfig::PAGE_INDEX => [],
         CrudConfig::PAGE_NEW => [],
     ];
+    /** @var string[] */
+    private $actionPermissions = [];
+    /** @var string[] */
+    private $disabledActions = [];
 
     public static function new(): self
     {
@@ -71,12 +75,23 @@ final class ActionConfig
         return $this;
     }
 
+    public function removeAction(string $pageName, string $actionName): self
+    {
+        if (!\array_key_exists($actionName, $this->actions[$pageName])) {
+            throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot remove it.', $actionName, $pageName));
+        }
+
+        unset($this->actions[$pageName][$actionName]);
+
+        return $this;
+    }
+
     public function setActionOrder(string $pageName, string ...$orderedActionNames): self
     {
         $orderedActions = [];
         foreach ($orderedActionNames as $actionName) {
             if (!\array_key_exists($actionName, $this->actions[$pageName])) {
-                throw new \InvalidArgumentException(sprintf('The "%s" action does not exist, so you cannot set its order in the list of actions.', $actionName));
+                throw new \InvalidArgumentException(sprintf('The "%s" action does not exist in the "%s" page, so you cannot set its order in the list of actions.', $actionName, $pageName));
             }
 
             $orderedActions[$actionName] = $this->actions[$pageName][$actionName];
@@ -96,22 +111,31 @@ final class ActionConfig
         return $this;
     }
 
-    public function disableActions(string $pageName, string ...$disabledActionNames): self
+    public function setPermission(string $actionName, string $permission): self
     {
-        foreach ($disabledActionNames as $disabledActionName) {
-            if (!\array_key_exists($disabledActionName, $this->actions[$pageName])) {
-                throw new \InvalidArgumentException(sprintf('The "%s" action cannot be disabled because it\'s not defined in the "%s" page. Check both the action and the page name.', $disabledActionName, $pageName));
-            }
-
-            /** @var Action $action */
-            $action = $this->actions[$pageName][$disabledActionName];
-            $this->actions[$pageName][$disabledActionName] = $action->isDisabledAction();
-        }
+        $this->actionPermissions[$actionName] = $permission;
 
         return $this;
     }
 
-    public function getAsDto(string $pageName): ActionDtoCollection
+    /**
+     * @param array $actionNameAndPermissions Syntax: ['actionName' => 'actionPermission', ...]
+     */
+    public function setPermissions(array $actionPermissions): self
+    {
+        $this->actionPermissions = $actionPermissions;
+
+        return $this;
+    }
+
+    public function disableActions(string ...$disabledActionNames): self
+    {
+        $this->disabledActions = $disabledActionNames;
+
+        return $this;
+    }
+
+    public function getAsDto(string $pageName): ActionConfigDto
     {
         $actionsDto = [];
 
@@ -126,7 +150,7 @@ final class ActionConfig
             $actionsDto[] = $action->getAsDto();
         }
 
-        return ActionDtoCollection::new($actionsDto);
+        return ActionConfigDto::new($actionsDto, $this->disabledActions, $this->actionPermissions);
     }
 
     /**

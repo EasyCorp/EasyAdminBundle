@@ -83,6 +83,10 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
         $collection = $propertyConfig->getValue();
         $propertyConfig->setFormTypeOptionIfNotSet('class', $collection->getTypeClass()->getName());
 
+        if (null === $propertyConfig->getTextAlign()) {
+            $propertyConfig->setTextAlign('right');
+        }
+
         $propertyConfig->setFormattedValue($this->countNumElements($collection));
     }
 

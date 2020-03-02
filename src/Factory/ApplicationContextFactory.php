@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
@@ -68,7 +68,7 @@ final class ApplicationContextFactory
         return $crudController->configureAssets($defaultAssetConfig)->getAsDto();
     }
 
-    private function getCrudDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionDtoCollection $actionDtoCollection, ?string $crudAction, ?string $pageName): ?CrudDto
+    private function getCrudDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionDtoCollection, ?string $crudAction, ?string $pageName): ?CrudDto
     {
         if (null === $crudController) {
             return null;
@@ -85,10 +85,10 @@ final class ApplicationContextFactory
             ]);
     }
 
-    private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionDtoCollection
+    private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionConfigDto
     {
         if (null === $crudController || null === $pageName) {
-            return ActionDtoCollection::new();
+            return ActionConfigDto::new();
         }
 
         $defaultActionConfig = $dashboardController->configureActions();

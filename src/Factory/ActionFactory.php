@@ -2,7 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
@@ -31,18 +32,41 @@ final class ActionFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    /**
-     * @param ActionDto[] $actionsDto
-     */
-    public function create(EntityDto $entityDto, array $actionsDto): EntityDto
+    public function create(ActionConfigDto $actionConfigDto): ActionConfigDto
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
+        $defaultTranslationParams = $applicationContext->getI18n()->getTranslationParams();
         $currentPage = $applicationContext->getCrud()->getCurrentPage();
 
         $builtActions = [];
-        foreach ($actionsDto as $actionDto) {
+        foreach ($actionConfigDto->getActions() as $actionDto) {
             if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
+                continue;
+            }
+
+            $translationParams = array_merge($defaultTranslationParams, $actionDto->getTranslationParams());
+            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParams, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
+            $defaultTemplatePath = $applicationContext->getTemplatePath('crud/action');
+
+            $builtActions[] = $actionDto->with([
+                'label' => $translatedActionLabel,
+                'templatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
+                'linkUrl' => $this->generateActionUrl($currentPage, $applicationContext->getRequest(), $actionDto),
+            ]);
+        }
+
+        return $actionConfigDto->updateActions($builtActions);
+    }
+
+    public function createForEntity(ActionConfigDto $actionConfigDto, EntityDto $entityDto): EntityDto
+    {
+        $applicationContext = $this->applicationContextProvider->getContext();
+        $currentPage = $applicationContext->getCrud()->getCurrentPage();
+
+        $builtActions = [];
+        foreach ($actionConfigDto->getActions() as $actionDto) {
+            if (!$actionDto->isEntityAction()) {
                 continue;
             }
 
@@ -50,26 +74,40 @@ final class ActionFactory
                 continue;
             }
 
-            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $actionDto->getTranslationParams(), $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
-            $defaultTemplatePath = $applicationContext->getTemplatePath('crud/action');
+            if (CrudConfig::PAGE_EDIT === $currentPage) {
+                // this is needed because buttons are rendered outside of the <form> element
+                $formId = sprintf('edit-%s-form', $entityDto->getName());
+                $actionDto = $actionDto->with([
+                    'htmlAttributes' => array_merge(['form' => $formId], $actionDto->getHtmlAttributes()),
+                ]);
+            }
+
+            if (CrudConfig::PAGE_NEW === $currentPage) {
+                // this is needed because buttons are rendered outside of the <form> element
+                $formId = sprintf('new-%s-form', $entityDto->getName());
+                $actionDto = $actionDto->with([
+                    'htmlAttributes' => array_merge(['form' => $formId], $actionDto->getHtmlAttributes()),
+                ]);
+            }
 
             $builtActions[] = $actionDto->with([
-                'label' => $translatedActionLabel,
-                'templatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
-                'linkUrl' => $this->generateActionUrl($applicationContext->getRequest(), $entityDto, $actionDto, $currentPage),
+                'linkUrl' => $this->generateActionUrl($currentPage, $applicationContext->getRequest(), $actionDto, $entityDto),
             ]);
         }
 
         return $entityDto->updateActions($builtActions);
     }
 
-    private function generateActionUrl(Request $request, EntityDto $entityDto, ActionDto $actionDto, string $currentAction): string
+    private function generateActionUrl(string $currentAction, Request $request, ActionDto $actionDto, EntityDto $entityDto = null): string
     {
         $requestParameters = [
             'crudController' => $request->query->get('crudController'),
-            'entityId' => $entityDto->getPrimaryKeyValueAsString(),
             'referrer' => $this->generateReferrerUrl($request, $actionDto, $currentAction),
         ];
+
+        if (null !== $entityDto) {
+            $requestParameters['entityId'] = $entityDto->getPrimaryKeyValueAsString();
+        }
 
         if (null !== $routeName = $actionDto->getRouteName()) {
             $routeParameters = array_merge($request->query->all(), $requestParameters, $actionDto->getRouteParameters());

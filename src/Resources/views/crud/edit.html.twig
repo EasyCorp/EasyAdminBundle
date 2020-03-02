@@ -43,6 +43,12 @@
     {% endapply %}
 {% endblock %}
 
+{% block page_actions %}
+    {% for action in entity.actions %}
+        {{ include(action.template, { action: action }, with_context = false) }}
+    {% endfor %}
+{% endblock %}
+
 {% block content_footer_wrapper '' %}
 
 {% block main %}

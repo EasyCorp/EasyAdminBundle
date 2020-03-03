@@ -81,6 +81,6 @@ abstract class AbstractDashboardController extends AbstractController implements
      */
     public function index(): Response
     {
-        return $this->render('@EasyAdmin/layout.html.twig');
+        return $this->render('@EasyAdmin/page/dashboard_simple.html.twig');
     }
 }

@@ -1,28 +1,33 @@
 // Forms
 // ----------------------------------------------------------------------------
 
-.content-body form,
-.content-body .form-horizontal {
-}
-
 // Base form groups
 .form-group {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    padding: 10px 20px;
+    padding: 10px 0px;
 }
 
 .form-group label,
 .form-group legend.col-form-label {
     align-self: self-start;
     color: var(--text-color);
-    flex: 30% 0 0;
+    flex: 100% 0 0;
     font-size: var(--font-size-base);
     font-weight: 400;
-    margin: 5px 5px 0 0;
-    text-align: right;
+    margin: 5px 0 5px;
 }
+
+@media(min-width: 992px) {
+    .form-group label,
+    .form-group legend.col-form-label {
+        flex: 30% 0 0;
+        margin: 5px 5px 0 0;
+        text-align: right;
+    }
+}
+
 .form-group .col-form-label {
     padding: 0;
 }
@@ -40,13 +45,19 @@
 // Form widgets (inputs, selects, etc.)
 .form-widget {
     align-items: flex-start;
-    flex: 0 0 55%;
+    flex: 100%;
     flex-direction: column;
-    padding-left: 5px;
+}
+
+@media(min-width: 992px) {
+    .form-widget {
+        flex: 0 0 55%;
+        padding-left: 5px;
+    }
 }
 
 .form-widget .form-help {
-    color: var(--text-muted);
+    color: var(--gray-600);
     display: inline-block;
     font-size: var(--font-size-sm);
     margin-bottom: 0;
@@ -64,6 +75,10 @@
     white-space: nowrap;
     word-break: keep-all;
     transition: box-shadow .08s ease-in, color .08s ease-in;
+}
+
+.form-widget input.form-control[align=right] {
+    text-align: right;
 }
 
 .form-widget input.form-control:focus,
@@ -388,7 +403,6 @@ fieldset .legend-help {
     justify-content: flex-end;
     padding: 0;
 }
-
 .form-actions .btn {
     margin-left: 10px;
 }
@@ -427,6 +441,30 @@ form .invalid-feedback .badge-danger {
 }
 form .invalid-feedback > .d-block + .d-block {
     margin-top: 5px;
+}
+
+// Form group inputs
+.input-group-text {
+    background-color: var(--gray-100);
+    border: 0;
+    box-shadow: 0 0 0 1px rgba(43,45,80,.16), 0 0 0 1px rgba(6,122,184,0), 0 0 0 2px rgba(6,122,184,0), 0 1px 1px rgba(0,0,0,.08);
+    color: var(--gray-700);
+    height: 30px;
+    padding: 3px 10px 5px;
+}
+.input-group-append {
+    margin-left: 0;
+}
+.input-group-prepend {
+    margin-right: 0;
+}
+
+.property-percent input.form-control {
+    max-width: 75px;
+}
+
+.property-money input.form-control {
+    max-width: 150px;
 }
 
 //fileupload widgets

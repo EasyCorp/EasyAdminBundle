@@ -17,16 +17,16 @@ final class MenuItemDto
     private $cssClass;
     private $permission;
     private $routeName;
-    private $routeParameters;
+    private $routeParams;
     private $linkUrl;
     private $linkRel;
     private $linkTarget;
     private $translationDomain;
-    private $translationParameters;
+    private $translationParams;
     /** @var MenuItem[]|MenuItemDto[] */
     private $subItems;
 
-    public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParameters, ?string $linkUrl, string $linkRel, string $linkTarget, ?string $translationDomain, array $translationParameters, array $subItems)
+    public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParams, ?string $linkUrl, string $linkRel, string $linkTarget, ?string $translationDomain, array $translationParams, array $subItems)
     {
         $this->type = $type;
         $this->label = $label;
@@ -34,12 +34,12 @@ final class MenuItemDto
         $this->permission = $permission;
         $this->cssClass = $cssClass;
         $this->routeName = $routeName;
-        $this->routeParameters = $routeParameters;
+        $this->routeParams = $routeParams;
         $this->linkUrl = $linkUrl;
         $this->linkRel = $linkRel;
         $this->linkTarget = $linkTarget;
         $this->translationDomain = $translationDomain;
-        $this->translationParameters = $translationParameters;
+        $this->translationParams = $translationParams;
         $this->subItems = $subItems;
     }
 
@@ -63,7 +63,7 @@ final class MenuItemDto
         return $this->label;
     }
 
-    public function getIcon(): string
+    public function getIcon(): ?string
     {
         return $this->icon;
     }
@@ -78,9 +78,9 @@ final class MenuItemDto
         return $this->routeName;
     }
 
-    public function getRouteParameters(): ?array
+    public function getRouteParams(): ?array
     {
-        return $this->routeParameters;
+        return $this->routeParams;
     }
 
     public function getPermission(): ?string
@@ -108,9 +108,9 @@ final class MenuItemDto
         return $this->translationDomain;
     }
 
-    public function getTranslationParameters(): array
+    public function getTranslationParams(): array
     {
-        return $this->translationParameters;
+        return $this->translationParams;
     }
 
     public function getSubItems(): array

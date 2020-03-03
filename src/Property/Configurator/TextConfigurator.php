@@ -19,6 +19,10 @@ final class TextConfigurator implements PropertyConfiguratorInterface
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
+        if ($propertyConfig instanceof TextAreaProperty) {
+            $propertyConfig->setFormTypeOptionIfNotSet('attr.rows', $propertyConfig->getCustomOption(TextAreaProperty::OPTION_NUM_OF_ROWS));
+        }
+
         if (null === $propertyConfig->getValue()) {
             return;
         }

@@ -125,9 +125,13 @@
 
 {# Rows #}
 
-{% block form_row -%}
-    {% set _field_type = easyadmin.field.fieldType|default('default') %}
-    <div class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
+{% block form_row %}
+    {% set property_type = form.vars.ea_crud_form.ea_property.type ?? block_prefixes|slice(-2)|first %}
+    {% set row_attr = row_attr|merge({
+        class: row_attr.class|default('') ~ ' form-group ' ~ ' property-' ~ property_type
+    }) %}
+
+    <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
         {{- form_label(form) -}}
         <div class="form-widget">
             {% set has_prepend_html = easyadmin.field.prepend_html|default(null) is not null %}
@@ -150,7 +154,7 @@
                 {% endif %}
                 {% if has_input_groups %}</div>{% endif %}
 
-            {% if _field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and easyadmin.field.nullable|default(false) %}
+            {% if property_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and easyadmin.field.nullable|default(false) %}
                 <div class="nullable-control">
                     <label>
                         <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
@@ -166,7 +170,7 @@
             {{- form_errors(form) -}}
         </div>
     </div>
-{%- endblock form_row %}
+{% endblock form_row %}
 
 {% block collection_row %}
     {{ block('form_row') }}
@@ -402,40 +406,36 @@
 {% block ea_crud_widget_panels %}
     {% for panel_name, panel_config in ea_crud_form.form_panels|filter(panel_config => not panel_config.form_tab or panel_config.form_tab == tab_name) %}
         {% set panel_has_header = panel_config.label|default(false) or panel_config.icon|default(false) %}
-        <section class="content-panel">
+        <div class="content-panel">
             {% if panel_has_header %}
-                <header>
+                <div class="content-panel-header">
                     {% if panel_config.icon|default(false) %}
                         <i class="{{ panel_config.icon }}"></i>
                     {% endif %}
-                    {{ panel_config.label|trans(domain = ea.i18n.translationDomain)|raw }}
+                    {{ panel_config.label|raw }}
 
                     {% if panel_config.help|default(false) %}
-                        <div class="legend-help">{{ panel_config.help|trans(domain = ea.i18n.translationDomain)|raw }}</div>
+                        <div class="content-panel-header-help">{{ panel_config.help|raw }}</div>
                     {% endif %}
-                </header>
+                </div>
             {% endif %}
 
-            <article class="{{ not panel_has_header ? 'without-header' }} without-footer">
+            <div class="content-panel-body with-background {{ not panel_has_header ? 'without-header' }} without-footer">
                 {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.ea_crud_form.form_panel == panel_name) %}
                     {% if not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name %}
-                        <div class="{{ field.vars.ea_property.css_class|default('') }}">
-                            {{ form_row(field) }}
-                        </div>
+                        {{ form_row(field) }}
                     {% endif %}
                 {% endfor %}
-            </article>
-        </section>
+            </div>
+        </div>
     {% else %}
-        <section class="content-panel">
-            <article class="without-header without-footer">
+        <div class="content-panel">
+            <div class="content-panel-body with-background without-header without-footer">
                 {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.ea_crud_form.form_tab or field.vars.ea_crud_form.form_tab == tab_name)) %}
-                    <div class="{{ field.vars.ea_property.css_class|default('') }}">
-                        {{ form_row(field) }}
-                    </div>
+                    {{ form_row(field) }}
                 {% endfor %}
-            </article>
-        </section>
+            </div>
+        </div>
     {% endfor %}
 {% endblock ea_crud_widget_panels %}
 
@@ -475,10 +475,22 @@
 
 {# EasyAdmin's TextEditor form type #}
 {% block ea_text_editor_widget %}
+    {% set numOfRows = form.vars.ea_crud_form.ea_property.customOptions.get('numOfRows') %}
+
     {{ form_widget(form, { attr: attr|merge({ style: 'display: none' }) }) }}
+
     <div class="easyadmin-text-editor-wrapper">
-        <trix-editor input="{{ id }}" class="trix-content" data-js-url="{{ asset("bundles/easyadmin/form-type-text-editor.js") }}" data-css-url="{{ asset("bundles/easyadmin/form-type-text-editor.css") }}"></trix-editor>
+        <trix-editor input="{{ id }}" class="trix-content"></trix-editor>
     </div>
+
+    {% if numOfRows %}
+        <style>
+            trix-editor[input={{ id }}].trix-content {
+                {# here we consider 21px as the average line height #}
+                min-height: {{ (numOfRows * 21)|round }}px;
+            }
+        </style>
+    {% endif %}
 {% endblock ea_text_editor_widget %}
 
 {# EasyAdminSection form type #}

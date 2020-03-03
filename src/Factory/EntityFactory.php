@@ -57,6 +57,11 @@ final class EntityFactory
         return $this->doCreate($entityInstance);
     }
 
+    public function createForEntityFqcn(string $entityFqcn): EntityDto
+    {
+        return $this->doCreate(null, $entityFqcn);
+    }
+
     /**
      * @param ActionDto[] $actionsDto
      */
@@ -74,7 +79,7 @@ final class EntityFactory
         return EntityDtoCollection::new($builtEntities);
     }
 
-    private function doCreate($entityInstance = null, ?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, iterable $configuredProperties = null, ?ActionConfigDto $actionConfigDto): EntityDto
+    private function doCreate($entityInstance = null, ?string $entityFqcn = null, $entityId = null, ?string $entityPermission = null, iterable $configuredProperties = null, ?ActionConfigDto $actionConfigDto = null): EntityDto
     {
         if (null === $entityInstance && null !== $entityFqcn) {
             $entityInstance = null === $entityId ? null : $this->getEntityInstance($entityFqcn, $entityId);

@@ -396,10 +396,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 
-        $parameters = [
+        $parameters = ResponseParams::new([
             'action' => Action::EDIT,
             'entity' => $entityDto->updateInstance($entityInstance),
-        ];
+        ]);
 
         $event = new AfterCrudActionEvent($this->getContext(), $parameters);
         $this->get('event_dispatcher')->dispatch($event);

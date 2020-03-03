@@ -46,6 +46,8 @@ interface PropertyConfigInterface
 
     public function setTemplatePath(string $path): self;
 
+    public function setDoctrineMetadata(array $metadata): self;
+
     public function addCssFiles(string ...$cssFilePaths): self;
 
     public function addJsFiles(string ...$jsFilePaths): self;
@@ -105,6 +107,8 @@ interface PropertyConfigInterface
     public function getCustomOption(string $optionName);
 
     public function getCustomOptions(): ParameterBag;
+
+    public function getDoctrineMetadata(): ParameterBag;
 
     public function getAsDto(): PropertyDto;
 }

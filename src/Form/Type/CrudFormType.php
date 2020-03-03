@@ -3,7 +3,6 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
@@ -162,8 +161,8 @@ class CrudFormType extends AbstractType
                     return $dataClass ?? $options['entityDto']->getFqcn();
                 },
             ])
-            ->setDefined(['entityDto'])
-            ->setRequired(['entityDto'])
+            ->setDefined(['entityDto', 'action'])
+            ->setRequired(['entityDto', 'action'])
             ->setNormalizer('attr', $this->getAttributesNormalizer());
     }
 
@@ -184,7 +183,7 @@ class CrudFormType extends AbstractType
     {
         return function (Options $options, $value) {
             return array_replace([
-                'id' => sprintf('%s-%s-form', $options['view'] ?? Action::EDIT, $options['entityDto']->getName()),
+                'id' => sprintf('%s-%s-form', $options['action'], $options['entityDto']->getName()),
             ], $value);
         };
     }

@@ -39,6 +39,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\ImageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\LanguageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\MoneyConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\PercentConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\SelectConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TelephoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\UrlConfigurator;
@@ -248,6 +249,11 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(EntityFactory::class))
             ->arg(1, ref(CrudUrlGenerator::class))
             ->arg(2, ref(TranslatorInterface::class))
+            ->tag('ea.property_configurator')
+
+        ->set(SelectConfigurator::class)
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(1, ref('translator'))
             ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)

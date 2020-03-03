@@ -9,6 +9,8 @@ class TextEditorProperty implements PropertyConfigInterface
 {
     use PropertyConfigTrait;
 
+    public const OPTION_NUM_OF_ROWS = 'numOfRows';
+
     public function __construct()
     {
         $this
@@ -16,6 +18,18 @@ class TextEditorProperty implements PropertyConfigInterface
             ->setFormType(TextEditorType::class)
             ->setTemplateName('property/text_editor')
             ->addCssFiles('bundles/easyadmin/form-type-text-editor.css')
-            ->addJsFiles('bundles/easyadmin/form-type-text-editor.js');
+            ->addJsFiles('bundles/easyadmin/form-type-text-editor.js')
+            ->setCustomOption(self::OPTION_NUM_OF_ROWS, null);
+    }
+
+    public function setNumOfRows(int $rows): self
+    {
+        if ($rows < 1) {
+            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 1 or higher (%d given).', __METHOD__, $rows));
+        }
+
+        $this->setCustomOption(self::OPTION_NUM_OF_ROWS, $rows);
+
+        return $this;
     }
 }

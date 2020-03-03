@@ -14,12 +14,12 @@ final class MenuItem
     private $cssClass = '';
     private $permission;
     private $routeName;
-    private $routeParameters;
+    private $routeParams;
     private $linkUrl;
     private $linkRel = '';
     private $linkTarget = '_self';
     private $translationDomain;
-    private $translationParameters = [];
+    private $translationParams = [];
     /** @var MenuItemInterface[] */
     private $subItems = [];
 
@@ -30,16 +30,16 @@ final class MenuItem
     {
     }
 
-    public static function linkToCrud(string $label, ?string $icon, string $crudControllerFqcn, array $routeParameters = []): self
+    public static function linkToCrud(string $label, ?string $icon, string $crudControllerFqcn, array $routeParams = []): self
     {
         $menuItem = new self();
         $menuItem->type = MenuFactory::ITEM_TYPE_CRUD;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
-        $menuItem->routeParameters = array_merge([
+        $menuItem->routeParams = array_merge([
             'crudController' => $crudControllerFqcn,
             'crudAction' => Action::INDEX,
-        ], $routeParameters);
+        ], $routeParams);
 
         return $menuItem;
     }
@@ -81,7 +81,7 @@ final class MenuItem
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->routeName = $routeName;
-        $menuItem->routeParameters = $routeParams;
+        $menuItem->routeParams = $routeParams;
 
         return $menuItem;
     }
@@ -156,9 +156,9 @@ final class MenuItem
         return $this;
     }
 
-    public function setTranslationParameters(string $parameters): self
+    public function setTranslationParams(string $parameters): self
     {
-        $this->translationParameters = $parameters;
+        $this->translationParams = $parameters;
 
         return $this;
     }
@@ -169,6 +169,6 @@ final class MenuItem
             throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be empty/null at the same time. Either set the label to a non-empty value, or set the icon or both.'));
         }
 
-        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, $this->subItems);
+        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParams, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParams, $this->subItems);
     }
 }

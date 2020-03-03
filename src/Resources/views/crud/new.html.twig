@@ -5,8 +5,29 @@
 
 {% trans_default_domain ea.i18n.translationDomain %}
 
-{% block body_id 'easyadmin-new-' ~ entity.name %}
-{% block body_class 'new new-' ~ entity.name %}
+{% block body_id 'ea-new-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
+{% block body_class 'ea-new ea-new-' ~ entity.name %}
+
+{% block configured_head_contents %}
+    {{ parent() }}
+    {% for htmlContent in new_form.vars.ea_crud_form.assets.headContents %}
+        {{ htmlContent|raw }}
+    {% endfor %}
+{% endblock %}
+
+{% block configured_stylesheets %}
+    {{ parent() }}
+    {% for css_asset in new_form.vars.ea_crud_form.assets.cssFiles %}
+        <link rel="stylesheet" href="{{ asset(css_asset) }}">
+    {% endfor %}
+{% endblock %}
+
+{% block configured_javascripts %}
+    {{ parent() }}
+    {% for js_asset in new_form.vars.ea_crud_form.assets.jsFiles %}
+        <script src="{{ asset(js_asset) }}"></script>
+    {% endfor %}
+{% endblock %}
 
 {% block content_title %}
     {% apply spaceless %}
@@ -15,7 +36,11 @@
     {% endapply %}
 {% endblock %}
 
-{% block content_footer_wrapper '' %}
+{% block page_actions %}
+    {% for action in entity.actions %}
+        {{ include(action.template, { action: action }, with_context = false) }}
+    {% endfor %}
+{% endblock %}
 
 {% block main %}
     {% block new_form %}

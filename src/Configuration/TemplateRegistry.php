@@ -46,6 +46,7 @@ final class TemplateRegistry
         'property/language' => '@EasyAdmin/crud/property/language.html.twig',
         'property/money' => '@EasyAdmin/crud/property/money.html.twig',
         'property/percent' => '@EasyAdmin/crud/property/percent.html.twig',
+        'property/select' => '@EasyAdmin/crud/property/select.html.twig',
         'property/raw' => '@EasyAdmin/crud/property/raw.html.twig',
         'property/simple_array' => '@EasyAdmin/crud/property/simple_array.html.twig',
         'property/smallint' => '@EasyAdmin/crud/property/smallint.html.twig',

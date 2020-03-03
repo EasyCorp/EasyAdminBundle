@@ -24,8 +24,9 @@ final class PropertyDto
     private $templatePath;
     private $assets;
     private $customOptions;
+    private $doctrineMetadata;
 
-    public function __construct(string $type, string $name, $value, $formattedValue, ?string $formType, array $formTypeOptions, ?bool $sortable, ?bool $virtual, ?string $label, ?string $permission, ?string $textAlign, ?string $help, ?string $cssClass, array $translationParams, ?string $templateName, ?string $templatePath, AssetDto $assetDto, ParameterBag $customOptions)
+    public function __construct(string $type, string $name, $value, $formattedValue, ?string $formType, array $formTypeOptions, ?bool $sortable, ?bool $virtual, ?string $label, ?string $permission, ?string $textAlign, ?string $help, ?string $cssClass, array $translationParams, ?string $templateName, ?string $templatePath, AssetDto $assetDto, ParameterBag $customOptions, ParameterBag $doctrineMetadata)
     {
         $this->type = $type;
         $this->name = $name;
@@ -45,6 +46,7 @@ final class PropertyDto
         $this->templatePath = $templatePath;
         $this->assets = $assetDto;
         $this->customOptions = $customOptions;
+        $this->doctrineMetadata = $doctrineMetadata;
     }
 
     public function getUniqueId(): string
@@ -142,5 +144,10 @@ final class PropertyDto
     public function getCustomOptions(): ParameterBag
     {
         return $this->customOptions;
+    }
+
+    public function getDoctrineMetadata(): ParameterBag
+    {
+        return $this->doctrineMetadata;
     }
 }

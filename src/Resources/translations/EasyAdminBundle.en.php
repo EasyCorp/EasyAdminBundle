@@ -2,6 +2,7 @@
 
 return [
     // page titles
+    'page.dashboard.title' => 'Dashboard',
     'page.new.title' => 'Create %entity_label_singular%',
     'page.detail.title' => '%entity_label_singular% <span class="text-small text-muted">(#%entity_id%)</span>',
     'page.edit.title' => 'Edit %entity_label_singular% (#%entity_id%)',

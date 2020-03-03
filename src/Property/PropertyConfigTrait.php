@@ -33,6 +33,8 @@ trait PropertyConfigTrait
     private $bodyContents = [];
     private $customOptions;
     private $processedCustomOptions;
+    private $doctrineMetadata;
+    private $processedDoctrineMetadata;
 
     private function __construct()
     {
@@ -178,9 +180,18 @@ trait PropertyConfigTrait
         return $this->getCustomOptions()->get($optionName);
     }
 
+    public function getDoctrineMetadata(): ParameterBag
+    {
+        if (null !== $metadata = $this->processedDoctrineMetadata) {
+            return $metadata;
+        }
+
+        return $this->processedDoctrineMetadata = new ParameterBag($this->doctrineMetadata ?? []);
+    }
+
     public function getAsDto(): PropertyDto
     {
-        return new PropertyDto($this->getType(), $this->getName(), $this->getValue(), $this->getFormattedValue(), $this->getFormType(), $this->getFormTypeOptions(), $this->isSortable(), $this->isVirtual(), $this->getLabel(), $this->getPermission(), $this->getTextAlign(), $this->getHelp(), $this->getCssClass(), $this->getTranslationParams(), $this->getTemplateName(), $this->getTemplatePath(), new AssetDto($this->getCssFiles(), $this->getJsFiles(), $this->getHeadContents(), $this->getBodyContents()), $this->getCustomOptions());
+        return new PropertyDto($this->getType(), $this->getName(), $this->getValue(), $this->getFormattedValue(), $this->getFormType(), $this->getFormTypeOptions(), $this->isSortable(), $this->isVirtual(), $this->getLabel(), $this->getPermission(), $this->getTextAlign(), $this->getHelp(), $this->getCssClass(), $this->getTranslationParams(), $this->getTemplateName(), $this->getTemplatePath(), new AssetDto($this->getCssFiles(), $this->getJsFiles(), $this->getHeadContents(), $this->getBodyContents()), $this->getCustomOptions(), $this->getDoctrineMetadata());
     }
 
     public function setName(string $name): PropertyConfigInterface
@@ -383,6 +394,13 @@ trait PropertyConfigTrait
         foreach ($options as $optionName => $optionValue) {
             $this->setCustomOption($optionName, $optionValue);
         }
+
+        return $this;
+    }
+
+    public function setDoctrineMetadata(array $metadata): PropertyConfigInterface
+    {
+        $this->doctrineMetadata = $metadata;
 
         return $this;
     }

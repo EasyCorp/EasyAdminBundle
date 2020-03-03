@@ -40,6 +40,7 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
         $isSortable = $this->buildSortableOption($propertyConfig, $entityDto);
         $isVirtual = $this->buildVirtualOption($propertyConfig, $entityDto);
         $templatePath = $this->buildTemplatePathOption($applicationContext, $propertyConfig, $entityDto, $value);
+        $doctrineMetadata = $entityDto->getPropertyMetadata($propertyConfig->getName());
 
         $propertyConfig
             ->setValue($value)
@@ -48,12 +49,28 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
             ->setRequired($isRequired)
             ->setSortable($isSortable)
             ->setVirtual($isVirtual)
-            ->setTemplatePath($templatePath);
+            ->setTemplatePath($templatePath)
+            ->setDoctrineMetadata($doctrineMetadata);
 
         if (null !== $propertyConfig->getHelp()) {
             $helpMessage = $this->buildHelpOption($propertyConfig, $translationDomain);
             $propertyConfig->setHelp($helpMessage);
+
+            $propertyConfig->setFormTypeOptionIfNotSet('help', $helpMessage);
+            $propertyConfig->setFormTypeOptionIfNotSet('help_html', true);
+            $propertyConfig->setFormTypeOptionIfNotSet('help_translation_parameters', $propertyConfig->getTranslationParams());
         }
+
+        if (null !== $propertyConfig->getCssClass()) {
+            $propertyConfig->setFormTypeOptionIfNotSet('row_attr.class', $propertyConfig->getCssClass());
+        }
+
+        if (null !== $propertyConfig->getTextAlign()) {
+            $propertyConfig->setFormTypeOptionIfNotSet('attr.align', $propertyConfig->getTextAlign());
+        }
+
+        $propertyConfig->setFormTypeOptionIfNotSet('label', $propertyConfig->getLabel());
+        $propertyConfig->setFormTypeOptionIfNotSet('label_translation_parameters', $propertyConfig->getTranslationParams());
     }
 
     private function buildValueOption(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto)

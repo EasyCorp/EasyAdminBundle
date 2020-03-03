@@ -49,10 +49,10 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
         }
     }
 
-    private function configureToOneAssociation(PropertyConfigInterface $propertyConfig, string $associatedCrudControllerFqcn): void
+    private function configureToOneAssociation(PropertyConfigInterface $propertyConfig): void
     {
         // TODO: improve this to find the related Crud Controller automatically
-        if (null === $associatedCrudController = $propertyConfig->getCustomOption(AssociationProperty::OPTION_CRUD_CONTROLLER)) {
+        if (null === $associatedCrudControllerFqcn = $propertyConfig->getCustomOption(AssociationProperty::OPTION_CRUD_CONTROLLER)) {
             throw new \RuntimeException(sprintf('The "%s" property is a Doctrine association and it must define its related controller using the setCrudController() method.', $propertyConfig->getName()));
         }
 
@@ -62,12 +62,14 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
             $propertyConfig->setFormTypeOptionIfNotSet('placeholder', $this->translator->trans('label.form.empty_value', [], 'EasyAdminBundle'));
         }
 
-        $associatedEntityDto = $this->entityFactory->createForEntityInstance($propertyConfig->getValue());
-        $propertyConfig->setFormTypeOptionIfNotSet('class', $associatedEntityDto->getFqcn());
+        $targetEntityDto = null === $propertyConfig->getValue()
+            ? $this->entityFactory->createForEntityFqcn($propertyConfig->getDoctrineMetadata()->get('targetEntity'))
+            : $this->entityFactory->createForEntityInstance($propertyConfig->getValue());
+        $propertyConfig->setFormTypeOptionIfNotSet('class', $targetEntityDto->getFqcn());
 
-        $propertyConfig->setCustomOption(AssociationProperty::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($associatedCrudControllerFqcn, $associatedEntityDto));
+        $propertyConfig->setCustomOption(AssociationProperty::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($associatedCrudControllerFqcn, $targetEntityDto));
 
-        $propertyConfig->setFormattedValue($this->formatAsString($propertyConfig->getValue(), $associatedEntityDto));
+        $propertyConfig->setFormattedValue($this->formatAsString($propertyConfig->getValue(), $targetEntityDto));
     }
 
     private function configureToManyAssociation(PropertyConfigInterface $propertyConfig): void

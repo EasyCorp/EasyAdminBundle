@@ -2,13 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudControllerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
@@ -80,7 +80,7 @@ final class ApplicationContextFactory
         $defaultCrudConfig = $dashboardController->configureCrud();
         $crudDto = $crudController->configureCrud($defaultCrudConfig)->getAsDto();
 
-        $entityFqcn = $crudControllerRegistry->getEntityFqcnByControllerFqcn(get_class($crudController));
+        $entityFqcn = $crudControllerRegistry->getEntityFqcnByControllerFqcn(\get_class($crudController));
         $entityClassName = basename(str_replace('\\', '/', $entityFqcn));
         $entityName = empty($entityClassName) ? 'Undefined' : $entityClassName;
 

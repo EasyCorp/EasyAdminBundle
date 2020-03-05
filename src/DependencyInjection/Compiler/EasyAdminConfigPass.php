@@ -7,7 +7,8 @@ use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * TODO: remove this compiler pass
+ * TODO: remove this compiler pass.
+ *
  * @author Konstantin Grachev <me@grachevko.ru>
  */
 final class EasyAdminConfigPass implements CompilerPassInterface

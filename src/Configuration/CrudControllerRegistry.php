@@ -21,7 +21,7 @@ final class CrudControllerRegistry
         $registry->crudControllers = iterator_to_array($crudControllers);
 
         foreach ($registry->crudControllers as $controller) {
-            $controllerFqcn = get_class($controller);
+            $controllerFqcn = \get_class($controller);
 
             try {
                 if (null === $entityFqcn = $controller::$entityFqcn) {
@@ -29,7 +29,7 @@ final class CrudControllerRegistry
                 }
                 $registry->controllerToEntityMap[$controllerFqcn] = $entityFqcn;
             } catch (\Throwable $e) {
-                throw new \RuntimeException(sprintf('The "%s" CRUD controller must define a public static property called "entityFqcn" with the FQCN of the Doctrine entity managed by the controller.', get_class($controller)));
+                throw new \RuntimeException(sprintf('The "%s" CRUD controller must define a public static property called "entityFqcn" with the FQCN of the Doctrine entity managed by the controller.', \get_class($controller)));
             }
         }
 

@@ -68,7 +68,7 @@ final class SecurityVoter extends Voter
         $actionPermission = $crudDto->getActions()->getActionPermissions()[$actionName] ?? null;
         $disabledActionNames = $crudDto->getActions()->getDisabledActions();
 
-        return $this->authorizationChecker->isGranted($actionPermission) && !in_array($actionName, $disabledActionNames, true);
+        return $this->authorizationChecker->isGranted($actionPermission) && !\in_array($actionName, $disabledActionNames, true);
     }
 
     private function voteOnViewPropertyPermission(PropertyConfigInterface $propertyConfig): bool

@@ -48,7 +48,7 @@ class NumberProperty implements PropertyConfigInterface
             'ROUND_HALF_UP' => NumberToLocalizedStringTransformer::ROUND_HALF_UP,
         ];
 
-        if (!in_array($mode, $validModes)) {
+        if (!\in_array($mode, $validModes)) {
             throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be the value of any of the following constants from the %s class: %s.', __METHOD__, NumberToLocalizedStringTransformer::class, implode(', ', array_keys($validModes))));
         }
 

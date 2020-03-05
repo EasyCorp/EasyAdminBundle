@@ -83,7 +83,7 @@ class CrudFormType extends AbstractType
             }
 
             if (EaFormPanelType::class === $formFieldType) {
-                $currentFormPanel++;
+                ++$currentFormPanel;
                 $formPanels[$currentFormPanel] = [
                     'form_tab' => $currentFormTab ?? null,
                     'label' => $propertyDto->getLabel(),

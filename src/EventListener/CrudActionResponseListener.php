@@ -32,7 +32,7 @@ final class CrudActionResponseListener
         }
 
         $templateParameters = $responseParameters->all();
-        $templatePath = array_key_exists('templatePath', $templateParameters)
+        $templatePath = \array_key_exists('templatePath', $templateParameters)
             ? $templateParameters['templatePath']
             : $this->applicationContextProvider->getContext()->getTemplatePath($templateParameters['templateName']);
 

@@ -63,7 +63,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     {
         $defaultProperties = $this->get(EntityFactory::class)->create()->getDefaultProperties($pageName);
 
-        return array_map(static function(string $propertyName) {
+        return array_map(static function (string $propertyName) {
             return Property::new($propertyName);
         }, $defaultProperties);
     }
@@ -101,7 +101,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $entityInstances = $paginator->getResults();
         $propertiesConfig = $this->configureProperties(CrudConfig::PAGE_INDEX);
-        $propertiesConfig = is_array($propertiesConfig) ? $propertiesConfig : iterator_to_array($propertiesConfig);
+        $propertiesConfig = \is_array($propertiesConfig) ? $propertiesConfig : iterator_to_array($propertiesConfig);
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
         $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $propertiesConfig, $actionsConfig);
 

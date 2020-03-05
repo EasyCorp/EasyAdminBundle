@@ -1,7 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
 {% if ea.crud.currentAction == 'detail' %}
-    {{ property.value }}
+    {{ property.value|raw }}
 {% else %}
     {% set html_id = 'ea-text-editor-' ~ property.uniqueId %}
     <a href="#" data-toggle="modal" data-target="#{{ html_id }}">

@@ -120,9 +120,9 @@ final class MenuFactory
             // add the index and subIndex query parameters to display the selected menu item
             // remove the 'query' parameter to not perform a search query when clicking on menu items
             $defaultRouteParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'query' => null];
-            $routeParameters = array_merge($defaultRouteParameters, $menuItemDto->getRouteParams());
+            $routeParameters = array_merge($defaultRouteParameters, $menuItemDto->getRouteParameters());
 
-            return $this->crudRouter->build()->setQueryParams($routeParameters)->generateUrl();
+            return $this->crudRouter->build()->setQueryParameters($routeParameters)->generateUrl();
         }
 
         if (self::ITEM_TYPE_DASHBOARD === $menuItemType) {
@@ -133,7 +133,7 @@ final class MenuFactory
             // add the index and subIndex query parameters to display the selected menu item
             // remove the 'query' parameter to not perform a search query when clicking on menu items
             $defaultRouteParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'query' => null];
-            $routeParameters = array_merge($defaultRouteParameters, $menuItemDto->getRouteParams());
+            $routeParameters = array_merge($defaultRouteParameters, $menuItemDto->getRouteParameters());
 
             return $this->urlGenerator->generate($menuItemDto->getRouteName(), $routeParameters);
         }

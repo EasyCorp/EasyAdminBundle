@@ -17,7 +17,6 @@ class CrudConfig
     public const PAGE_INDEX = 'index';
     public const PAGE_NEW = 'new';
 
-    private $entityFqcn;
     private $entityLabelInSingular;
     private $entityLabelInPlural;
     private $pageTitles = [Action::DETAIL => null, Action::EDIT => null, Action::INDEX => null, Action::NEW => null];
@@ -51,13 +50,6 @@ class CrudConfig
         $config->overriddenTemplates = TemplateDtoCollection::new();
 
         return $config;
-    }
-
-    public function setEntityFqcn(string $fqcn): self
-    {
-        $this->entityFqcn = $fqcn;
-
-        return $this;
     }
 
     public function setEntityLabelInSingular(string $label): self
@@ -324,28 +316,8 @@ class CrudConfig
         return $this;
     }
 
-    public function getAsDto(bool $validateProperties = true): CrudDto
+    public function getAsDto(): CrudDto
     {
-        if ($validateProperties) {
-            $this->validate();
-        }
-
-        if (null === $this->entityLabelInSingular) {
-            $entityClassName = basename(str_replace('\\', '/', $this->entityFqcn));
-            $this->entityLabelInSingular = empty($entityClassName) ? 'Undefined' : $entityClassName;
-        }
-
-        if (null === $this->entityLabelInPlural) {
-            $this->entityLabelInPlural = $this->entityLabelInSingular;
-        }
-
-        return new CrudDto($this->entityFqcn, $this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchProperties, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->entityPermission);
-    }
-
-    private function validate(): void
-    {
-        if (null === $this->entityFqcn) {
-            throw new \RuntimeException(sprintf('One of your CrudControllers doesn\'t define the FQCN of its related Doctrine entity. Did you forget to call the "setEntityFqcn()" method on the "CrudConfig" object?'));
-        }
+        return new CrudDto($this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchProperties, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->entityPermission);
     }
 }

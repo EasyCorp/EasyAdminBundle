@@ -10,46 +10,46 @@ class UrlBuilder
     private $dashboardRoute;
     private $previousPageReferrer;
     private $includeReferrer;
-    private $queryParams;
+    private $queryParameters;
     private $urlGenerator;
 
-    public function __construct(ApplicationContext $applicationContext, UrlGeneratorInterface $urlGenerator, array $newQueryParams = [])
+    public function __construct(ApplicationContext $applicationContext, UrlGeneratorInterface $urlGenerator, array $newQueryParameters = [])
     {
         $this->dashboardRoute = $applicationContext->getDashboardRouteName();
         $this->urlGenerator = $urlGenerator;
 
-        $previousQueryParams = $previousQueryParamsCopy = $applicationContext->getRequest()->query->all();
-        unset($previousQueryParamsCopy['referrer']);
-        $previousPageReferrer = sprintf('%s?%s', $applicationContext->getRequest()->getPathInfo(), http_build_query($previousQueryParamsCopy));
+        $previousQueryParameters = $previousQueryParametersCopy = $applicationContext->getRequest()->query->all();
+        unset($previousQueryParametersCopy['referrer']);
+        $previousPageReferrer = sprintf('%s?%s', $applicationContext->getRequest()->getPathInfo(), http_build_query($previousQueryParametersCopy));
         $this->previousPageReferrer = $previousPageReferrer;
 
-        $this->queryParams = array_merge($previousQueryParams, $newQueryParams);
+        $this->queryParameters = array_merge($previousQueryParameters, $newQueryParameters);
     }
 
     public function setAction(string $action): self
     {
-        $this->queryParams['crudAction'] = $action;
+        $this->queryParameters['crudAction'] = $action;
 
         return $this;
     }
 
     public function setEntityId($entityId): self
     {
-        $this->queryParams['entityId'] = $entityId;
+        $this->queryParameters['entityId'] = $entityId;
 
         return $this;
     }
 
     public function setQueryParam(string $paramName, $paramValue): self
     {
-        $this->queryParams[$paramName] = $paramValue;
+        $this->queryParameters[$paramName] = $paramValue;
 
         return $this;
     }
 
-    public function setQueryParams(array $queryParams): self
+    public function setQueryParameters(array $queryParameters): self
     {
-        $this->queryParams = $queryParams;
+        $this->queryParameters = $queryParameters;
 
         return $this;
     }
@@ -71,15 +71,15 @@ class UrlBuilder
     public function generateUrl(): string
     {
         if (true === $this->includeReferrer) {
-            $this->queryParams['referrer'] = $this->previousPageReferrer;
+            $this->queryParameters['referrer'] = $this->previousPageReferrer;
         }
 
         if (false === $this->includeReferrer) {
-            unset($this->queryParams['referrer']);
+            unset($this->queryParameters['referrer']);
         }
 
-        ksort($this->queryParams);
+        ksort($this->queryParameters);
 
-        return $this->urlGenerator->generate($this->dashboardRoute, $this->queryParams);
+        return $this->urlGenerator->generate($this->dashboardRoute, $this->queryParameters);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\DependencyInjection;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,6 +24,10 @@ class EasyAdminExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $container->registerForAutoconfiguration(CrudControllerInterface::class)
+            ->addTag('ea.crud_controller')
+        ;
+
         // process bundle's configuration parameters
         $configs = $this->processConfigFiles($configs);
         $backendConfig = $this->processConfiguration(new Configuration(), $configs);

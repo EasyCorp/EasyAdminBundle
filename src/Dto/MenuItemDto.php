@@ -17,16 +17,16 @@ final class MenuItemDto
     private $cssClass;
     private $permission;
     private $routeName;
-    private $routeParams;
+    private $routeParameters;
     private $linkUrl;
     private $linkRel;
     private $linkTarget;
     private $translationDomain;
-    private $translationParams;
+    private $translationParameters;
     /** @var MenuItem[]|MenuItemDto[] */
     private $subItems;
 
-    public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParams, ?string $linkUrl, string $linkRel, string $linkTarget, ?string $translationDomain, array $translationParams, array $subItems)
+    public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParameters, ?string $linkUrl, string $linkRel, string $linkTarget, ?string $translationDomain, array $translationParameters, array $subItems)
     {
         $this->type = $type;
         $this->label = $label;
@@ -34,12 +34,12 @@ final class MenuItemDto
         $this->permission = $permission;
         $this->cssClass = $cssClass;
         $this->routeName = $routeName;
-        $this->routeParams = $routeParams;
+        $this->routeParameters = $routeParameters;
         $this->linkUrl = $linkUrl;
         $this->linkRel = $linkRel;
         $this->linkTarget = $linkTarget;
         $this->translationDomain = $translationDomain;
-        $this->translationParams = $translationParams;
+        $this->translationParameters = $translationParameters;
         $this->subItems = $subItems;
     }
 
@@ -78,9 +78,9 @@ final class MenuItemDto
         return $this->routeName;
     }
 
-    public function getRouteParams(): ?array
+    public function getRouteParameters(): ?array
     {
-        return $this->routeParams;
+        return $this->routeParameters;
     }
 
     public function getPermission(): ?string
@@ -108,9 +108,9 @@ final class MenuItemDto
         return $this->translationDomain;
     }
 
-    public function getTranslationParams(): array
+    public function getTranslationParameters(): array
     {
-        return $this->translationParams;
+        return $this->translationParameters;
     }
 
     public function getSubItems(): array

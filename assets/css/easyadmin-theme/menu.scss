@@ -9,9 +9,13 @@
 .sidebar-menu .header {
     color: var(--text-muted);
     font-size: 12px;
-    margin-top: 20px;
+    font-weight: 500;
+    margin-top: 15px;
     padding: 7px 5px 7px 0;
     text-transform: uppercase;
+}
+.sidebar-menu .header:first-child {
+    margin-top: 0px;
 }
 
 .sidebar-menu li {
@@ -25,7 +29,7 @@
     padding: 4px 5px 8px 0;
 }
 
-.sidebar-menu .fa {
+.sidebar-menu .menu-icon {
     color: var(--text-color-dark);
     filter: opacity(50%);
     font-size: 17px;
@@ -39,7 +43,7 @@
 }
 
 .sidebar-menu li:not(.submenu-active).active a,
-.sidebar-menu li:not(.submenu-active).active .fa {
+.sidebar-menu li:not(.submenu-active).active .menu-icon {
     color: var(--color-primary);
     filter: opacity(100%);
 }

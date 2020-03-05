@@ -28,6 +28,8 @@
     --table-footer-bg: hsl(210, 45%, 98%);
     --fieldset-bg: hsl(210, 30%, 97%);
 
+    --zindex-700: 777;
+    --zindex-800: 888;
     --zindex-900: 999;
 
     --white: hsl(0, 0%, 100%);

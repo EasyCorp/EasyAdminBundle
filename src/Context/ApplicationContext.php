@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
@@ -26,6 +27,7 @@ final class ApplicationContext
     private $request;
     private $user;
     private $i18nDto;
+    private $crudControllerRegistry;
     private $dashboardDto;
     private $dashboardControllerInstance;
     private $assetDto;
@@ -36,11 +38,12 @@ final class ApplicationContext
     private $mainMenuDto;
     private $userMenuDto;
 
-    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetDto $assetDto, ?CrudDto $crudDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
+    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllerRegistry, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetDto $assetDto, ?CrudDto $crudDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
         $this->user = $user;
         $this->i18nDto = $i18nDto;
+        $this->crudControllerRegistry = $crudControllerRegistry;
         $this->dashboardDto = $dashboardDto;
         $this->dashboardControllerInstance = $dashboardController;
         $this->assetDto = $assetDto;
@@ -58,6 +61,11 @@ final class ApplicationContext
     public function getI18n(): I18nDto
     {
         return $this->i18nDto;
+    }
+
+    public function getCrudControllers(): CrudControllerRegistry
+    {
+        return $this->crudControllerRegistry;
     }
 
     public function getUser(): ?UserInterface

@@ -37,11 +37,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\DateTimeConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\EmailConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\ImageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\LanguageConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\LocaleConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\MoneyConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\NumberConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\PercentConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\SelectConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TelephoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TimezoneConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\UrlConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
@@ -52,7 +55,6 @@ use Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExte
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 return static function (ContainerConfigurator $container) {
@@ -116,6 +118,7 @@ return static function (ContainerConfigurator $container) {
         ->set(ApplicationContextFactory::class)
             ->arg(0, ref('security.token_storage')->nullOnInvalid())
             ->arg(1, ref(MenuFactory::class))
+            ->arg(2, tagged_iterator('ea.crud_controller'))
 
         ->set(CrudUrlGenerator::class)
             ->arg(0, ref(ApplicationContextProvider::class))
@@ -246,14 +249,25 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.property_configurator')
 
         ->set(AssociationConfigurator::class)
-            ->arg(0, ref(EntityFactory::class))
-            ->arg(1, ref(CrudUrlGenerator::class))
-            ->arg(2, ref(TranslatorInterface::class))
+            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(1, ref(EntityFactory::class))
+            ->arg(2, ref(CrudUrlGenerator::class))
+            ->arg(3, ref(TranslatorInterface::class))
             ->tag('ea.property_configurator')
 
         ->set(SelectConfigurator::class)
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref('translator'))
+            ->tag('ea.property_configurator')
+
+        ->set(TimezoneConfigurator::class)
+            ->tag('ea.property_configurator')
+
+        ->set(LocaleConfigurator::class)
+            ->tag('ea.property_configurator')
+
+        ->set(NumberConfigurator::class)
+            ->arg(0, ref(IntlFormatter::class))
             ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)

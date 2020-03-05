@@ -14,12 +14,12 @@ final class MenuItem
     private $cssClass = '';
     private $permission;
     private $routeName;
-    private $routeParams;
+    private $routeParameters;
     private $linkUrl;
     private $linkRel = '';
     private $linkTarget = '_self';
     private $translationDomain;
-    private $translationParams = [];
+    private $translationParameters = [];
     /** @var MenuItemInterface[] */
     private $subItems = [];
 
@@ -30,16 +30,16 @@ final class MenuItem
     {
     }
 
-    public static function linkToCrud(string $label, ?string $icon, string $crudControllerFqcn, array $routeParams = []): self
+    public static function linkToCrud(string $label, ?string $icon, string $crudControllerFqcn, array $routeParameters = []): self
     {
         $menuItem = new self();
         $menuItem->type = MenuFactory::ITEM_TYPE_CRUD;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
-        $menuItem->routeParams = array_merge([
+        $menuItem->routeParameters = array_merge([
             'crudController' => $crudControllerFqcn,
             'crudAction' => Action::INDEX,
-        ], $routeParams);
+        ], $routeParameters);
 
         return $menuItem;
     }
@@ -74,14 +74,14 @@ final class MenuItem
         return $menuItem;
     }
 
-    public static function linktoRoute(string $label, ?string $icon = null, string $routeName, array $routeParams = []): self
+    public static function linktoRoute(string $label, ?string $icon = null, string $routeName, array $routeParameters = []): self
     {
         $menuItem = new self();
         $menuItem->type = MenuFactory::ITEM_TYPE_ROUTE;
         $menuItem->label = $label;
         $menuItem->icon = $icon;
         $menuItem->routeName = $routeName;
-        $menuItem->routeParams = $routeParams;
+        $menuItem->routeParameters = $routeParameters;
 
         return $menuItem;
     }
@@ -156,9 +156,9 @@ final class MenuItem
         return $this;
     }
 
-    public function setTranslationParams(string $parameters): self
+    public function setTranslationParameters(string $parameters): self
     {
-        $this->translationParams = $parameters;
+        $this->translationParameters = $parameters;
 
         return $this;
     }
@@ -169,6 +169,6 @@ final class MenuItem
             throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be empty/null at the same time. Either set the label to a non-empty value, or set the icon or both.'));
         }
 
-        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParams, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParams, $this->subItems);
+        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, $this->subItems);
     }
 }

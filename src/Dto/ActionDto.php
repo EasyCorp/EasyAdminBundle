@@ -128,7 +128,7 @@ final class ActionDto
         return $this->translationDomain;
     }
 
-    public function getTranslationParams(): array
+    public function getTranslationParameters(): array
     {
         return $this->translationParameters;
     }

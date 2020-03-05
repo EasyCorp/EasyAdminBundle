@@ -131,7 +131,8 @@
                     {% block content %}
                         <div class="content">
                             {% block content_header_wrapper %}
-                                <section class="content-header {{ (ea.crud.helpMessage ?? '') is not empty ? 'has-content-help' }}">
+                                {% set has_help_message = (ea.crud.helpMessage ?? '') is not empty %}
+                                <section class="content-header {{ has_help_message ? 'has-content-help' }}">
                                     {% block content_header %}
                                         <div class="d-flex flex-row justify-content-between align-content-center w-100">
                                             <div class="content-header-title">
@@ -144,7 +145,7 @@
                                         </div>
 
                                         {% block content_help %}
-                                            {% if (ea.crud.helpMessage ?? '') is not empty %}
+                                            {% if has_help_message %}
                                                 <div class="content-header-help">
                                                     {{ ea.crud.helpMessage|trans|raw }}
                                                 </div>

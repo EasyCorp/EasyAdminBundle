@@ -24,7 +24,7 @@ trait PropertyConfigTrait
     private $textAlign;
     private $help;
     private $cssClass;
-    private $translationParams = [];
+    private $translationParameters = [];
     private $templateName;
     private $templatePath;
     private $cssFiles = [];
@@ -131,9 +131,9 @@ trait PropertyConfigTrait
         return $this->cssClass;
     }
 
-    public function getTranslationParams(): array
+    public function getTranslationParameters(): array
     {
-        return $this->translationParams ?? [];
+        return $this->translationParameters ?? [];
     }
 
     public function getTemplateName(): ?string
@@ -191,7 +191,7 @@ trait PropertyConfigTrait
 
     public function getAsDto(): PropertyDto
     {
-        return new PropertyDto($this->getType(), $this->getName(), $this->getValue(), $this->getFormattedValue(), $this->getFormType(), $this->getFormTypeOptions(), $this->isSortable(), $this->isVirtual(), $this->getLabel(), $this->getPermission(), $this->getTextAlign(), $this->getHelp(), $this->getCssClass(), $this->getTranslationParams(), $this->getTemplateName(), $this->getTemplatePath(), new AssetDto($this->getCssFiles(), $this->getJsFiles(), $this->getHeadContents(), $this->getBodyContents()), $this->getCustomOptions(), $this->getDoctrineMetadata());
+        return new PropertyDto($this->getType(), $this->getName(), $this->getValue(), $this->getFormattedValue(), $this->getFormType(), $this->getFormTypeOptions(), $this->isSortable(), $this->isVirtual(), $this->getLabel(), $this->getPermission(), $this->getTextAlign(), $this->getHelp(), $this->getCssClass(), $this->getTranslationParameters(), $this->getTemplateName(), $this->getTemplatePath(), new AssetDto($this->getCssFiles(), $this->getJsFiles(), $this->getHeadContents(), $this->getBodyContents()), $this->getCustomOptions(), $this->getDoctrineMetadata());
     }
 
     public function setName(string $name): PropertyConfigInterface
@@ -330,9 +330,9 @@ trait PropertyConfigTrait
         return $this;
     }
 
-    public function setTranslationParams(array $params): PropertyConfigInterface
+    public function setTranslationParameters(array $parameters): PropertyConfigInterface
     {
-        $this->translationParams = $params;
+        $this->translationParameters = $parameters;
 
         return $this;
     }

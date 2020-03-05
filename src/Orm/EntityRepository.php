@@ -59,7 +59,7 @@ final class EntityRepository implements EntityRepositoryInterface
         $isIntegerQuery = ctype_digit($query) && $query >= -2147483648 && $query <= 2147483647;
         $isUuidQuery = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $query);
 
-        $dqlParams = [
+        $dqlParameters = [
             // adding '0' turns the string into a numeric value
             'numeric_query' => is_numeric($query) ? 0 + $query : $query,
             'uuid_query' => $query,
@@ -106,15 +106,15 @@ final class EntityRepository implements EntityRepositoryInterface
                 ($isNumericProperty && $isNumericQuery)
             ) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_numbers', $entityName, $propertyName))
-                    ->setParameter('query_for_numbers', $dqlParams['numeric_query']);
+                    ->setParameter('query_for_numbers', $dqlParameters['numeric_query']);
             } elseif ($isGuidProperty && $isUuidQuery) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :query_for_uuids', $entityName, $propertyName))
-                    ->setParameter('query_for_uuids', $dqlParams['uuid_query']);
+                    ->setParameter('query_for_uuids', $dqlParameters['uuid_query']);
             } elseif ($isTextProperty) {
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :query_for_text', $entityName, $propertyName))
-                    ->setParameter('query_for_text', $dqlParams['text_query']);
+                    ->setParameter('query_for_text', $dqlParameters['text_query']);
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:query_as_words)', $entityName, $propertyName))
-                    ->setParameter('query_as_words', $dqlParams['words_query']);
+                    ->setParameter('query_as_words', $dqlParameters['words_query']);
             }
         }
     }

@@ -40,7 +40,7 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
         $isSortable = $this->buildSortableOption($propertyConfig, $entityDto);
         $isVirtual = $this->buildVirtualOption($propertyConfig, $entityDto);
         $templatePath = $this->buildTemplatePathOption($applicationContext, $propertyConfig, $entityDto, $value);
-        $doctrineMetadata = $entityDto->getPropertyMetadata($propertyConfig->getName());
+        $doctrineMetadata = $entityDto->hasProperty($propertyConfig->getName()) ? $entityDto->getPropertyMetadata($propertyConfig->getName()) : [];
 
         $propertyConfig
             ->setValue($value)
@@ -58,7 +58,7 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
 
             $propertyConfig->setFormTypeOptionIfNotSet('help', $helpMessage);
             $propertyConfig->setFormTypeOptionIfNotSet('help_html', true);
-            $propertyConfig->setFormTypeOptionIfNotSet('help_translation_parameters', $propertyConfig->getTranslationParams());
+            $propertyConfig->setFormTypeOptionIfNotSet('help_translation_parameters', $propertyConfig->getTranslationParameters());
         }
 
         if (null !== $propertyConfig->getCssClass()) {
@@ -70,7 +70,7 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
         }
 
         $propertyConfig->setFormTypeOptionIfNotSet('label', $propertyConfig->getLabel());
-        $propertyConfig->setFormTypeOptionIfNotSet('label_translation_parameters', $propertyConfig->getTranslationParams());
+        $propertyConfig->setFormTypeOptionIfNotSet('label_translation_parameters', $propertyConfig->getTranslationParameters());
     }
 
     private function buildValueOption(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto)
@@ -91,7 +91,7 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
             return $help;
         }
 
-        return $this->translator->trans($help, $propertyConfig->getTranslationParams(), $translationDomain);
+        return $this->translator->trans($help, $propertyConfig->getTranslationParameters(), $translationDomain);
     }
 
     private function buildLabelOption(PropertyConfigInterface $propertyConfig, string $translationDomain): string
@@ -106,7 +106,7 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
             return $label;
         }
 
-        return $this->translator->trans($label, $propertyConfig->getTranslationParams(), $translationDomain);
+        return $this->translator->trans($label, $propertyConfig->getTranslationParameters(), $translationDomain);
     }
 
     private function buildSortableOption(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool
@@ -158,6 +158,11 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
 
         // consider that virtual properties are not required
         if (!$entityDto->hasProperty($propertyConfig->getName())) {
+            return false;
+        }
+
+        // TODO: fix this and see if there's any way to check if an association is nullable
+        if ($entityDto->isAssociation($propertyConfig->getName())) {
             return false;
         }
 

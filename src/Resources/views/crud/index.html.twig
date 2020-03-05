@@ -14,8 +14,8 @@
 
 {% block content_title %}
     {% apply spaceless %}
-        {% set default_title = ea.crud.defaultPageTitle|trans(ea.i18n.translationParams, 'EasyAdminBundle') %}
-        {{ ea.crud.customPageTitle is null ? default_title|raw : ea.crud.customPageTitle|trans(ea.i18n.translationParams)|raw }}
+        {% set default_title = ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
+        {{ ea.crud.customPageTitle is null ? default_title|raw : ea.crud.customPageTitle|trans(ea.i18n.translationParameters)|raw }}
     {% endapply %}
 {% endblock %}
 
@@ -26,19 +26,19 @@
                 <form method="get">
                     {% block search_form %}
                         {# reset the referrer and page number whenever a new query is performed #}
-                        {% set query_params = ea.request.query.all|merge({
+                        {% set query_parameters = ea.request.query.all|merge({
                             referrer: null, page: 1,
                         }) %}
 
                         {# browsers remove the query string when submitting forms using GET;
-                           that's why all query string params are added as hidden form fields #}
-                        {% for paramName, paramValue in query_params|ea_flatten_array %}
+                           that's why all query string parameters are added as hidden form fields #}
+                        {% for paramName, paramValue in query_parameters|ea_flatten_array %}
                             <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
                         {% endfor %}
 
                         <div class="form-group">
                             <div class="form-widget">
-                                <input class="form-control" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}">
+                                <input class="form-control" type="search" name="query" value="{{ app.request.get('query') ?? '' }}" placeholder="{{ 'action.search'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}">
                             </div>
                         </div>
                     {% endblock %}
@@ -52,7 +52,7 @@
             {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
             <div class="btn-group action-filters">
                 <a href="{{ ea_path({ crudAction: 'showFilters', include_referrer: true }) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
-                    <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
+                    <i class="fa fa-filter fa-fw"></i> {{ 'filter.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}{% if applied_filters %} <span class="text-primary">({{ applied_filters|length }})</span>{% endif %}
                 </a>
                 {% if applied_filters %}
                     <a href="{{ ea_path({ filters: null }) }}" class="btn btn-secondary action-filters-reset">
@@ -145,7 +145,7 @@
 
                         {% if entities|length > 0 and entities|first.actions is not empty %}
                             <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
-                                <span class="sr-only">{{ 'list.row_actions'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}</span>
+                                <span class="sr-only">{{ 'list.row_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
                             </th>
                         {% endif %}
                     </tr>
@@ -200,7 +200,7 @@
                     {% else %}
                         <tr>
                             <td class="no-results" colspan="100">
-                                {{ 'search.no_results'|trans(ea.i18n.translationParams, 'EasyAdminBundle') }}
+                                {{ 'search.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
                             </td>
                         </tr>
                     {% endfor %}

@@ -153,7 +153,7 @@ final class Action
         return $this;
     }
 
-    public function setTranslationParameters(string $parameters): self
+    public function setTranslationParameters(array $parameters): self
     {
         $this->translationParameters = $parameters;
 

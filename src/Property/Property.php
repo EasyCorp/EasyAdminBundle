@@ -23,7 +23,7 @@ final class Property implements PropertyConfigInterface
         $newPropertyConfig->setValue($this->getValue());
         $newPropertyConfig->setFormattedValue($this->getFormattedValue());
         $newPropertyConfig->setVirtual($this->isVirtual());
-        $newPropertyConfig->setTranslationParams($this->getTranslationParams());
+        $newPropertyConfig->setTranslationParameters($this->getTranslationParameters());
         $newPropertyConfig->addCssFiles(...$this->getCssFiles());
         $newPropertyConfig->addJsFiles(...$this->getJsFiles());
         $newPropertyConfig->addHtmlContentsToHead(...$this->getHeadContents());

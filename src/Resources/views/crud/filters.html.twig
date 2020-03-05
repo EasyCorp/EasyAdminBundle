@@ -4,7 +4,7 @@
 
 {{ form_start(filters_form, { attr: { id: filters_form.vars.id } }) }}
     {# browsers remove the query string when submitting forms using GET;
-       that's why all query string params are added as hidden form fields #}
+       that's why all query string parameters are added as hidden form fields #}
     {% for paramName, paramValue in form_action_query_string_as_array|ea_flatten_array %}
         <input type="hidden" name="{{ paramName }}" value="{{ paramValue }}">
     {% endfor %}

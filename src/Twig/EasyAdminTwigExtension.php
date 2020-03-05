@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\UrlBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Exception\MissingResourceException;
@@ -54,6 +55,7 @@ class EasyAdminTwigExtension extends AbstractExtension
     {
         return [
             new TwigFunction('ea_path', [$this, 'generateCrudRoute']),
+            new TwigFunction('ea_build_url', [$this, 'buildCrudUrl']),
             new TwigFunction('ea_render_field', [$this, 'renderCrudField'], ['is_safe' => ['html'], 'needs_environment' => true]),
             new TwigFunction('easyadmin_render_field_for_*_view', [$this, 'renderEntityField'], ['is_safe' => ['html'], 'needs_environment' => true]),
             new TwigFunction('easyadmin_config', [$this, 'getBackendConfiguration']),
@@ -79,7 +81,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
-            new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParams']),
+            new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParameters']),
             new TwigFilter('easyadmin_filesize', [$this, 'fileSize']),
         ];
 
@@ -92,7 +94,7 @@ class EasyAdminTwigExtension extends AbstractExtension
 
     /**
      * Transforms ['a' => 'foo', 'b' => ['c' => ['d' => 7]]] into ['a' => 'foo', 'b[c][d]' => 7]
-     * It's useful to submit nested arrays (e.g. query string params) as form fields.
+     * It's useful to submit nested arrays (e.g. query string parameters) as form fields.
      */
     public function flattenArray($array, $parentKey = null)
     {
@@ -158,17 +160,22 @@ class EasyAdminTwigExtension extends AbstractExtension
         return $this->crudUrlGenerator->generate($entity, $action, $parameters);
     }
 
-    public function generateCrudRoute(array $queryParams = [], bool $include_referrer = true, bool $remove_referrer = false): string
+    public function generateCrudRoute(array $queryParameters = [], bool $include_referrer = true, bool $remove_referrer = false): string
     {
         if ($remove_referrer) {
-            return $this->crudUrlGenerator->build($queryParams)->removeReferrer()->generateUrl();
+            return $this->crudUrlGenerator->build($queryParameters)->removeReferrer()->generateUrl();
         }
 
         if ($include_referrer) {
-            return $this->crudUrlGenerator->build($queryParams)->includeReferrer()->generateUrl();
+            return $this->crudUrlGenerator->build($queryParameters)->includeReferrer()->generateUrl();
         }
 
-        return $this->crudUrlGenerator->build($queryParams)->generateUrl();
+        return $this->crudUrlGenerator->build($queryParameters)->generateUrl();
+    }
+
+    public function buildCrudUrl(string $controllerFqcn): UrlBuilder
+    {
+        return $this->crudUrlGenerator->buildForController($controllerFqcn);
     }
 
     /**
@@ -183,7 +190,7 @@ class EasyAdminTwigExtension extends AbstractExtension
 
         try {
             $templateParameters = $this->getTemplateParameters($entityDto, $fieldDto);
-            $templateParameters = array_merge($templateParameters, $fieldDto->getCustomTemplateParams());
+            $templateParameters = array_merge($templateParameters, $fieldDto->getCustomTemplateParameters());
 
             // if the field defines a custom template, render it (no matter if the value is null or inaccessible)
             if ($hasCustomTemplate) {
@@ -490,13 +497,13 @@ class EasyAdminTwigExtension extends AbstractExtension
         return $value;
     }
 
-    public function getFormHiddenParams(array $params, string $prefix): iterable
+    public function getFormHiddenParameters(array $params, string $prefix): iterable
     {
         foreach ($params as $key => $value) {
             $key = $prefix.'['.$key.']';
 
             if (\is_array($value)) {
-                yield from $this->getFormHiddenParams($value, $key);
+                yield from $this->getFormHiddenParameters($value, $key);
             } else {
                 yield $key => $value;
             }

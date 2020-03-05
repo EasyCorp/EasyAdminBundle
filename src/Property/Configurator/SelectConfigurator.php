@@ -33,16 +33,16 @@ final class SelectConfigurator implements PropertyConfiguratorInterface
         }
 
         $translatedChoices = [];
-        $translationParams = $this->applicationContextProvider->getContext()->getI18n()->getTranslationParams();
+        $translationParameters = $this->applicationContextProvider->getContext()->getI18n()->getTranslationParameters();
         foreach ($choices as $key => $value) {
-            $translatedKey = $this->translator->trans($key, $translationParams);
+            $translatedKey = $this->translator->trans($key, $translationParameters);
             $translatedChoices[$translatedKey] = $value;
         }
         $propertyConfig->setFormTypeOptionIfNotSet('choices', $translatedChoices);
 
         if (null !== $value = $propertyConfig->getValue()) {
             $selectedChoice = array_flip($choices)[$value];
-            $propertyConfig->setFormattedValue($this->translator->trans($selectedChoice, $translationParams));
+            $propertyConfig->setFormattedValue($this->translator->trans($selectedChoice, $translationParameters));
         }
     }
 }

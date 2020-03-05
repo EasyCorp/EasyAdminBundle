@@ -59,15 +59,15 @@ abstract class AbstractDashboardController extends AbstractController implements
             ->addAction(CrudConfig::PAGE_INDEX, Action::EDIT)
             ->addAction(CrudConfig::PAGE_INDEX, Action::DELETE)
 
-            ->addAction(CrudConfig::PAGE_DETAIL, Action::DELETE)
-            ->addAction(CrudConfig::PAGE_DETAIL, Action::INDEX)
             ->addAction(CrudConfig::PAGE_DETAIL, Action::EDIT)
+            ->addAction(CrudConfig::PAGE_DETAIL, Action::INDEX)
+            ->addAction(CrudConfig::PAGE_DETAIL, Action::DELETE)
 
-            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
             ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_RETURN)
+            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
 
-            ->addAction(CrudConfig::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
             ->addAction(CrudConfig::PAGE_NEW, Action::SAVE_AND_RETURN)
+            ->addAction(CrudConfig::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
         ;
     }
 

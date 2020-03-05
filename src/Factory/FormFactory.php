@@ -26,9 +26,9 @@ final class FormFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function createDeleteForm(array $queryParams = []): FormInterface
+    public function createDeleteForm(array $queryParameters = []): FormInterface
     {
-        $formActionUrl = $this->crudUrlGenerator->build(array_merge(['crudAction' => Action::DELETE], $queryParams))->generateUrl();
+        $formActionUrl = $this->crudUrlGenerator->build(array_merge(['crudAction' => Action::DELETE], $queryParameters))->generateUrl();
 
         return $this->symfonyFormFactory->createNamedBuilder('ea_delete_form')
             ->setAction($formActionUrl)

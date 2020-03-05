@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -14,12 +15,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class AssociationConfigurator implements PropertyConfiguratorInterface
 {
+    private $applicationContextProvider;
     private $entityFactory;
     private $crudUrlGenerator;
     private $translator;
 
-    public function __construct(EntityFactory $entityFactory, CrudUrlGenerator $crudUrlGenerator, TranslatorInterface $translator)
+    public function __construct(ApplicationContextProvider $applicationContextProvider, EntityFactory $entityFactory, CrudUrlGenerator $crudUrlGenerator, TranslatorInterface $translator)
     {
+        $this->applicationContextProvider = $applicationContextProvider;
         $this->entityFactory = $entityFactory;
         $this->crudUrlGenerator = $crudUrlGenerator;
         $this->translator = $translator;
@@ -51,9 +54,12 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
 
     private function configureToOneAssociation(PropertyConfigInterface $propertyConfig): void
     {
-        // TODO: improve this to find the related Crud Controller automatically
-        if (null === $associatedCrudControllerFqcn = $propertyConfig->getCustomOption(AssociationProperty::OPTION_CRUD_CONTROLLER)) {
-            throw new \RuntimeException(sprintf('The "%s" property is a Doctrine association and it must define its related controller using the setCrudController() method.', $propertyConfig->getName()));
+        $targetEntityFqcn = $propertyConfig->getDoctrineMetadata()->get('targetEntity');
+        $targetCrudControllerFqcn = $propertyConfig->getCustomOption(AssociationProperty::OPTION_CRUD_CONTROLLER)
+            ?? $this->applicationContextProvider->getContext()->getCrudControllers()->getControllerFqcnByEntityFqcn($targetEntityFqcn);
+
+        if (null === $targetCrudControllerFqcn) {
+            throw new \RuntimeException(sprintf('It\'s not possible to find the CRUD controller associated to the "%s" entity of the "%s" property (which is a Doctrine association). Define the CRUD controller explicitly with the setCrudController() method on this property.', $targetEntityFqcn, $propertyConfig->getName()));
         }
 
         $propertyConfig->setCustomOption(AssociationProperty::OPTION_TYPE, 'toOne');
@@ -63,11 +69,11 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
         }
 
         $targetEntityDto = null === $propertyConfig->getValue()
-            ? $this->entityFactory->createForEntityFqcn($propertyConfig->getDoctrineMetadata()->get('targetEntity'))
+            ? $this->entityFactory->createForEntityFqcn($targetEntityFqcn)
             : $this->entityFactory->createForEntityInstance($propertyConfig->getValue());
         $propertyConfig->setFormTypeOptionIfNotSet('class', $targetEntityDto->getFqcn());
 
-        $propertyConfig->setCustomOption(AssociationProperty::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($associatedCrudControllerFqcn, $targetEntityDto));
+        $propertyConfig->setCustomOption(AssociationProperty::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $targetEntityDto));
 
         $propertyConfig->setFormattedValue($this->formatAsString($propertyConfig->getValue(), $targetEntityDto));
     }

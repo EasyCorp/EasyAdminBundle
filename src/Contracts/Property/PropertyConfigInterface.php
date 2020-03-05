@@ -40,7 +40,7 @@ interface PropertyConfigInterface
 
     public function setCssClass(string $cssClass): self;
 
-    public function setTranslationParams(array $params): self;
+    public function setTranslationParameters(array $parameters): self;
 
     public function setTemplateName(string $name): self;
 
@@ -90,7 +90,7 @@ interface PropertyConfigInterface
 
     public function getCssClass(): ?string;
 
-    public function getTranslationParams(): array;
+    public function getTranslationParameters(): array;
 
     public function getTemplateName(): ?string;
 

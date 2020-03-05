@@ -1,0 +1,67 @@
+// Properties (the styles applied to properties in INDEX and DETAIL pages)
+// ----------------------------------------------------------------------------
+
+// Avatar property
+.property-avatar .image-avatar {
+  border-radius: 50%;
+  border: 0;
+  box-shadow: none;
+}
+
+// Boolean property
+.property-boolean .badge {
+  display: inline-block;
+  font-size: 12px;
+  min-width: 33px;
+  text-transform: uppercase;
+}
+// Boolean values don't use "true = green, false = red" on purpose because being FALSE
+// or TRUE can be good or bad depending on the context, so red/green doesn't always work
+.property-boolean .badge-boolean-false {
+  background: var(--gray-200);
+  border: 1px solid var(--gray-300);
+}
+.property-boolean .badge-boolean-true {
+  background: var(--color-primary);
+  color: var(--white);
+}
+
+// Color property
+.property-color .color-sample {
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--gray-300);
+  display: inline-block;
+  height: 19px;
+  width: 45px;
+}
+
+// Country property
+.property-country .country-flag {
+  margin-right: 2px;
+  max-height: 18px;
+  vertical-align: text-top;
+}
+
+// Currency property
+.property-currency .badge-currency {
+  border: 2px solid var(--gray-300);
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 4px;
+  text-transform: uppercase;
+}
+
+// Language property
+.property-language .badge-language {
+  border: 2px solid var(--gray-300);
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 4px;
+  text-transform: uppercase;
+}
+
+// Text editor property
+.property-text_editor dt {
+  max-height: 480px;
+  overflow-y: auto;
+}

@@ -36,7 +36,7 @@ final class ActionFactory
     {
         $applicationContext = $this->applicationContextProvider->getContext();
         $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
-        $defaultTranslationParams = $applicationContext->getI18n()->getTranslationParams();
+        $defaultTranslationParameters = $applicationContext->getI18n()->getTranslationParameters();
         $currentPage = $applicationContext->getCrud()->getCurrentPage();
 
         $builtActions = [];
@@ -45,8 +45,8 @@ final class ActionFactory
                 continue;
             }
 
-            $translationParams = array_merge($defaultTranslationParams, $actionDto->getTranslationParams());
-            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParams, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
+            $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
+            $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParameters, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
             $defaultTemplatePath = $applicationContext->getTemplatePath('crud/action');
 
             $builtActions[] = $actionDto->with([
@@ -119,7 +119,7 @@ final class ActionFactory
             'crudAction' => $actionDto->getCrudActionName(),
         ]);
 
-        return $this->crudUrlGenerator->build()->setQueryParams($requestParameters)->generateUrl();
+        return $this->crudUrlGenerator->build()->setQueryParameters($requestParameters)->generateUrl();
     }
 
     private function generateReferrerUrl(Request $request, ActionDto $actionDto, string $currentAction): ?string

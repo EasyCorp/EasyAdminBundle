@@ -1,56 +1,55 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{# @var fields \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto[] #}
 {% extends ea.templatePath('layout') %}
+
 {% trans_default_domain ea.i18n.translationDomain %}
 
-{% block body_id 'easyadmin-detail-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
-{% block body_class 'detail detail-' ~ entity.name %}
+{% block body_id 'ea-detail-' ~ entity.name ~ '-' ~ entity.primaryKeyValue %}
+{% block body_class 'ea-detail ea-detail-' ~ entity.name %}
 
 {% block content_title %}
     {% apply spaceless %}
-        {% set default_title = ea.crud.defaultPageTitle|trans(ea.i18n.translationParams, 'EasyAdminBundle') %}
-        {{ ea.crud.customPageTitle is null ? default_title|raw : ea.crud.customPageTitle|trans(ea.i18n.translationParams)|raw }}
+        {% set default_title = ea.crud.defaultPageTitle|trans(ea.i18n.translationParameters, 'EasyAdminBundle') %}
+        {{ ea.crud.customPageTitle is null ? default_title|raw : ea.crud.customPageTitle|trans(ea.i18n.translationParameters)|raw }}
     {% endapply %}
+{% endblock %}
+
+{% block page_actions %}
+    {% for action in entity.actions %}
+        {{ include(action.template, { action: action }, with_context = false) }}
+    {% endfor %}
 {% endblock %}
 
 {% block content_footer_wrapper '' %}
 
 {% block main %}
-    <div class="form-horizontal">
-        {% block show_fields %}
-            {% for property in entity.properties %}
-                {% block show_field %}
-                    <div class="form-group property-{{ property.type }} {{ property.cssClass ?? '' }}">
-                        <label class="control-label">
-                            {{ property.label|raw }}
-                        </label>
-                        <div class="form-widget">
-                            <div class="form-control">
-                                {{ include(property.templatePath, { property: property }, with_context = false) }}
-                            </div>
+    {% block detail_properties %}
+        {% set row_number = 0 %}
+        {% for property in entity.properties %}
+            {% set is_decoration_property = property.type == 'form_panel' %}
 
-                            {% if property.help is not empty %}
-                                <small class="form-help"><i class="fa fa-fw fa-info-circle"></i> {{ property.help|raw }}</small>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endfor %}
-        {% endblock %}
-    </div>
+            {% if loop.first and not is_decoration_property %}
+                {% set row_number = 0 %}
+                {{ _self.open_empty_content_panel() }}
+            {% endif %}
 
-    {% if entity.actions is not empty %}
-        <section class="content-footer">
-            <div class="form-actions">
-                {% block item_actions %}
-                    {% for action in entity.actions %}
-                        {{ include(action.template, { action: action }, with_context = false) }}
-                    {% endfor %}
-                {% endblock item_actions %}
-            </div>
-        </section>
-    {% endif %}
+            {% if not loop.first and is_decoration_property %}
+                {% set row_number = 0 %}
+                {{ _self.close_content_panel() }}
+                {{ _self.open_content_panel_with_header(property.label, property.help) }}
+            {% endif %}
+
+            {% block detail_property %}
+                {% if not is_decoration_property %}
+                    {{ _self.render_property(property, row_number) }}
+                {% endif %}
+            {% endblock %}
+
+            {% set row_number = is_decoration_property ? row_number : row_number + 1 %}
+        {% endfor %}
+
+        {{ _self.close_content_panel() }}
+    {% endblock %}
 
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', {
@@ -78,3 +77,46 @@
         });
     </script>
 {% endblock %}
+
+{% macro open_empty_content_panel() %}
+<div class="content-panel">
+    <div class="content-panel-body without-header without-footer without-padding">
+        <dl class="datalist">
+{% endmacro %}
+
+{% macro close_content_panel() %}
+        </dl>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro open_content_panel_with_header(header_title, header_help = '') %}
+    <div class="content-panel">
+        <div class="content-panel-header">
+            {{ header_title|raw }}
+
+            {% if header_help is not empty %}
+                <div class="content-panel-header-help">{{ header_help|raw }}</div>
+            {% endif %}
+        </div>
+
+        <div class="content-panel-body without-footer without-padding">
+            <dl class="datalist">
+{% endmacro %}
+
+{% macro render_property(property, row_number) %}
+    <div class="data-row {{ row_number is even ? 'with-background' }} property-{{ property.type }} {{ property.cssClass ?? '' }}">
+        <dd>
+            {{ property.label|raw }}
+
+            {% if property.help is not empty %}
+                <span class="data-help">
+                    <i class="far fa-question-circle" data-toggle="tooltip" title="{{ property.help|e('html_attr') }}"></i>
+                </span>
+            {% endif %}
+        </dd>
+        <dt>
+            {{ include(property.templatePath, { property: property }, with_context = false) }}
+        </dt>
+    </div>
+{% endmacro %}

@@ -16,16 +16,16 @@ final class CrudUrlGenerator
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function build(array $newQueryParams = []): UrlBuilder
+    public function build(array $newQueryParameters = []): UrlBuilder
     {
-        return new UrlBuilder($this->applicationContextProvider->getContext(), $this->urlGenerator, $newQueryParams);
+        return new UrlBuilder($this->applicationContextProvider->getContext(), $this->urlGenerator, $newQueryParameters);
     }
 
     public function buildForController(string $controllerFqcn): UrlBuilder
     {
         $applicationContext = $this->applicationContextProvider->getContext();
-        $newQueryParams = ['crudController' => $controllerFqcn];
+        $newQueryParameters = ['crudController' => $controllerFqcn];
 
-        return (new UrlBuilder($applicationContext, $this->urlGenerator, $newQueryParams))->removeReferrer();
+        return (new UrlBuilder($applicationContext, $this->urlGenerator, $newQueryParameters))->removeReferrer();
     }
 }

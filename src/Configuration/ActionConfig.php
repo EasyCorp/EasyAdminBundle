@@ -46,7 +46,11 @@ final class ActionConfig
             throw new \InvalidArgumentException(sprintf('The "%s" action already exists, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any property of an existing action.', $actionName));
         }
 
-        $this->actions[$pageName][$actionName] = $action;
+        if (CrudConfig::PAGE_INDEX === $pageName && Action::DELETE === $actionName) {
+            $this->actions[$pageName][$actionName] = $action;
+        } else {
+            $this->actions[$pageName] = array_merge([$actionName => $action], $this->actions[$pageName]);
+        }
 
         return $this;
     }
@@ -183,7 +187,7 @@ final class ActionConfig
         if (Action::INDEX === $actionName) {
             return Action::new(Action::INDEX, 'action.index')
                 ->linkToCrudAction(Action::INDEX)
-                ->setCssClass(CrudConfig::PAGE_DETAIL === $pageName ? 'btn' : '')
+                ->setCssClass(CrudConfig::PAGE_DETAIL === $pageName ? 'btn btn-secondary' : '')
                 ->setTranslationDomain('EasyAdminBundle');
         }
 

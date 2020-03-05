@@ -16,14 +16,10 @@ final class BooleanConfigurator implements PropertyConfiguratorInterface
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
-        if (!$propertyConfig->getCustomOption(BooleanProperty::OPTION_RENDER_AS_SWITCH)) {
-            return;
+        // TODO: ask someone who knows Symfony forms well how to make this work
+        if ($propertyConfig->getCustomOption(BooleanProperty::OPTION_RENDER_AS_SWITCH)) {
+            // see https://symfony.com/blog/new-in-symfony-4-4-bootstrap-custom-switches
+            // $propertyConfig->setFormTypeOptionIfNotSet('label_attr.class', 'switch-custom');
         }
-
-        // see https://symfony.com/blog/new-in-symfony-4-4-bootstrap-custom-switches
-        $formTypeOptions = $propertyConfig->getFormTypeOptions();
-        $formTypeOptions['label_attr']['class'] = ($formTypeOptions['label_attr']['class'] ?? '').' switch-custom';
-
-        $propertyConfig->setFormTypeOptions($formTypeOptions);
     }
 }

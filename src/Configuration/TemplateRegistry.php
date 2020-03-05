@@ -45,6 +45,7 @@ final class TemplateRegistry
         'property/integer' => '@EasyAdmin/crud/property/integer.html.twig',
         'property/language' => '@EasyAdmin/crud/property/language.html.twig',
         'property/money' => '@EasyAdmin/crud/property/money.html.twig',
+        'property/number' => '@EasyAdmin/crud/property/number.html.twig',
         'property/percent' => '@EasyAdmin/crud/property/percent.html.twig',
         'property/select' => '@EasyAdmin/crud/property/select.html.twig',
         'property/raw' => '@EasyAdmin/crud/property/raw.html.twig',
@@ -55,6 +56,7 @@ final class TemplateRegistry
         'property/textarea' => '@EasyAdmin/crud/property/textarea.html.twig',
         'property/text_editor' => '@EasyAdmin/crud/property/text_editor.html.twig',
         'property/time' => '@EasyAdmin/crud/property/time.html.twig',
+        'property/timezone' => '@EasyAdmin/crud/property/timezone.html.twig',
         'property/toggle' => '@EasyAdmin/crud/property/toggle.html.twig',
         'property/url' => '@EasyAdmin/crud/property/url.html.twig',
     ];

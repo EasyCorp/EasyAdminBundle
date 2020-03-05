@@ -1,0 +1,44 @@
+// Datalists (used in the DETAIL page)
+// ----------------------------------------------------------------------------
+
+dl.datalist .data-row {
+  background: var(--white);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 15px 20px;
+}
+@media(min-width: 992px) {
+  dl.datalist .data-row {
+    flex-wrap: nowrap;
+  }
+}
+
+dl.datalist .data-row.with-background {
+  background: var(--form-bg);
+}
+
+dl.datalist dd {
+  color: var(--text-color);
+  flex: 100% 0 0;
+  font-size: var(--font-size-base);
+  font-weight: 400;
+}
+@media(min-width: 992px) {
+  dl.datalist dd {
+    flex: 20% 0 0;
+  }
+}
+
+dl.datalist dt {
+  font-weight: normal;
+}
+
+dl.datalist .data-help {
+  color: var(--gray-600);
+  font-size: var(--font-size-sm);
+  margin: 15px 0 0;
+}
+dl.datalist .data-help i {
+  color: var(--gray-600);
+}

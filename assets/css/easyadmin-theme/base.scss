@@ -329,9 +329,18 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
     background: var(--white);
     padding: 18px 20px;
 
-    table {
+    &.without-header table.datagrid,
+    &.without-header dl.datalist {
         border-top-left-radius: var(--border-radius);
         border-top-right-radius: var(--border-radius);
+        margin-bottom: 0;
+        overflow: hidden; // this is needed for the border-radius property
+    }
+
+    &.without-footer table.datagrid,
+    &.without-footer dl.datalist {
+        border-bottom-left-radius: var(--border-radius);
+        border-bottom-right-radius: var(--border-radius);
         margin-bottom: 0;
         overflow: hidden; // this is needed for the border-radius property
     }

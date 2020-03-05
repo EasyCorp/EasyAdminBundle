@@ -101,14 +101,14 @@ class DefaultConfigPass implements ConfigPassInterface
                 ]);
             }
         } else {
-            $routeParams = ['menuIndex' => $menuItemConfig['menu_index'], 'submenuIndex' => $menuItemConfig['submenu_index']];
+            $routeParameters = ['menuIndex' => $menuItemConfig['menu_index'], 'submenuIndex' => $menuItemConfig['submenu_index']];
 
             if ('entity' === $menuItemConfig['type']) {
                 $backendHomepage['route'] = 'easyadmin';
-                $backendHomepage['params'] = array_merge(['action' => 'list', 'entity' => $menuItemConfig['entity']], $routeParams, $menuItemConfig['params']);
+                $backendHomepage['params'] = array_merge(['action' => 'list', 'entity' => $menuItemConfig['entity']], $routeParameters, $menuItemConfig['params']);
             } elseif ('route' === $menuItemConfig['type']) {
                 $backendHomepage['route'] = $menuItemConfig['route'];
-                $backendHomepage['params'] = array_merge($routeParams, $menuItemConfig['params']);
+                $backendHomepage['params'] = array_merge($routeParameters, $menuItemConfig['params']);
             } elseif ('link' === $menuItemConfig['type']) {
                 $backendHomepage['url'] = $menuItemConfig['url'];
             }

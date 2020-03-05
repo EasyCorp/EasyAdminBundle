@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParams;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -22,26 +22,28 @@ final class CrudActionResponseListener
 
     public function onKernelView(ViewEvent $event)
     {
-        $responseParams = $event->getControllerResult();
-        if (null === $responseParams || !$responseParams instanceof ResponseParams) {
+        $responseParameters = $event->getControllerResult();
+        if (null === $responseParameters || !$responseParameters instanceof ResponseParameters) {
             return;
         }
 
-        if (!$responseParams->has('templateName')) {
-            throw new \RuntimeException(sprintf('The params returned by CrudController actions must include a param called "templateParam" with the template used to render the action result.'));
+        if (!$responseParameters->has('templateName') && !$responseParameters->has('templatePath')) {
+            throw new \RuntimeException(sprintf('The ResponseParameters object returned by CrudController actions must include either a "templateName" or a "templatePath" parameter to define the template used to render the action result.'));
         }
 
-        $templateParams = $responseParams->all();
-        $templatePath = $this->applicationContextProvider->getContext()->getTemplatePath($templateParams['templateName']);
+        $templateParameters = $responseParameters->all();
+        $templatePath = array_key_exists('templatePath', $templateParameters)
+            ? $templateParameters['templatePath']
+            : $this->applicationContextProvider->getContext()->getTemplatePath($templateParameters['templateName']);
 
-        // to make params easier to modify, we pass around FormInterface objects
+        // to make parameters easier to modify, we pass around FormInterface objects
         // so we must convert those values to FormView before rendering the template
-        foreach ($templateParams as $paramName => $paramValue) {
+        foreach ($templateParameters as $paramName => $paramValue) {
             if ($paramValue instanceof FormInterface) {
-                $templateParams[$paramName] = $paramValue->createView();
+                $templateParameters[$paramName] = $paramValue->createView();
             }
         }
 
-        $event->setResponse(new Response($this->twig->render($templatePath, $templateParams)));
+        $event->setResponse(new Response($this->twig->render($templatePath, $templateParameters)));
     }
 }

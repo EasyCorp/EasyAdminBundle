@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParams;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -25,17 +25,17 @@ interface CrudControllerInterface
      */
     public function configureProperties(string $pageName): iterable;
 
-    public function configureResponseParams(ResponseParams $responseParams): ResponseParams;
+    public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
 
-    /** @return Response|ResponseParams */
+    /** @return Response|ResponseParameters */
     public function index();
 
-    /** @return Response|ResponseParams */
+    /** @return Response|ResponseParameters */
     public function detail();
 
-    /** @return Response|ResponseParams */
+    /** @return Response|ResponseParameters */
     public function edit();
 
-    /** @return Response|ResponseParams */
+    /** @return Response|ResponseParameters */
     public function new();
 }

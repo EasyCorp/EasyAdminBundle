@@ -41,7 +41,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
-    abstract public function configureCrud(CrudConfig $crudConfig): CrudConfig;
+    public function configureCrud(CrudConfig $crudConfig): CrudConfig
+    {
+        return $crudConfig;
+    }
 
     public function configureAssets(AssetConfig $assetConfig): AssetConfig
     {
@@ -102,7 +105,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
         $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $propertiesConfig, $actionsConfig);
 
-        $responseParams = $this->configureResponseParams(ResponseParams::new([
+        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
             'pageName' => CrudConfig::PAGE_INDEX,
             'templateName' => 'crud/index',
             'entities' => $entities,
@@ -111,13 +114,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'delete_form_template' => $this->get(FormFactory::class)->createDeleteForm(['entityId' => '__id__']),
         ]));
 
-        $event = new AfterCrudActionEvent($this->getContext(), $responseParams);
+        $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
-        return $responseParams;
+        return $responseParameters;
     }
 
     public function detail()
@@ -136,20 +139,20 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
         $entityDto = $this->get(EntityFactory::class)->create($propertiesConfig, $actionsConfig);
 
-        $responseParams = $this->configureResponseParams(ResponseParams::new([
+        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
             'pageName' => CrudConfig::PAGE_DETAIL,
             'templateName' => 'crud/detail',
             'entity' => $entityDto,
             'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ]));
 
-        $event = new AfterCrudActionEvent($this->getContext(), $responseParams);
+        $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
-        return $responseParams;
+        return $responseParameters;
     }
 
     public function edit()
@@ -214,7 +217,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirectToRoute($this->getContext()->getDashboardRouteName());
         }
 
-        $responseParams = $this->configureResponseParams(ResponseParams::new([
+        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
             'pageName' => CrudConfig::PAGE_EDIT,
             'templateName' => 'crud/edit',
             'edit_form' => $editForm,
@@ -222,13 +225,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ]));
 
-        $event = new AfterCrudActionEvent($this->getContext(), $responseParams);
+        $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
-        return $responseParams;
+        return $responseParameters;
     }
 
     public function new()
@@ -286,7 +289,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             return $this->redirectToRoute($this->getContext()->getDashboardRouteName());
         }
 
-        $responseParams = $this->configureResponseParams(ResponseParams::new([
+        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
             'pageName' => CrudConfig::PAGE_NEW,
             'templateName' => 'crud/new',
             'entity' => $entityDto,
@@ -294,13 +297,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ]));
 
-        $event = new AfterCrudActionEvent($this->getContext(), $responseParams);
+        $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);
         $this->get('event_dispatcher')->dispatch($event);
         if ($event->isPropagationStopped()) {
             return $event->getResponse();
         }
 
-        return $responseParams;
+        return $responseParameters;
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
@@ -323,7 +326,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         return $this->render(
             $this->getContext()->getTemplatePath('crud/filters'),
-            $this->getResponseParams('showFilters', $templateParameters)
+            $this->getResponseParameters('showFilters', $templateParameters)
         );
     }
 
@@ -359,9 +362,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     /**
      * Used to add/modify/remove parameters before passing them to the Twig template.
      */
-    public function configureResponseParams(ResponseParams $responseParams): ResponseParams
+    public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters
     {
-        return $responseParams;
+        return $responseParameters;
     }
 
     protected function getContext(): ?ApplicationContext
@@ -396,7 +399,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
 
         $this->get('event_dispatcher')->dispatch(new AfterEntityUpdatedEvent($entityInstance));
 
-        $parameters = ResponseParams::new([
+        $parameters = ResponseParameters::new([
             'action' => Action::EDIT,
             'entity' => $entityDto->updateInstance($entityInstance),
         ]);

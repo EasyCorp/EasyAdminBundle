@@ -138,7 +138,8 @@ final class EntityDto
 
     public function hasProperty(string $propertyName): bool
     {
-        return \array_key_exists($propertyName, $this->metadata->fieldMappings);
+        return \array_key_exists($propertyName, $this->metadata->fieldMappings)
+            || \array_key_exists($propertyName, $this->metadata->associationMappings);
     }
 
     public function isAssociation(string $propertyName): bool

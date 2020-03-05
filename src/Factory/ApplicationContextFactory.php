@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
+use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
@@ -21,11 +22,13 @@ final class ApplicationContextFactory
 {
     private $tokenStorage;
     private $menuFactory;
+    private $crudControllers;
 
-    public function __construct(?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory)
+    public function __construct(?TokenStorageInterface $tokenStorage, MenuFactory $menuFactory, iterable $crudControllers)
     {
         $this->tokenStorage = $tokenStorage;
         $this->menuFactory = $menuFactory;
+        $this->crudControllers = CrudControllerRegistry::new($crudControllers);
     }
 
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): ApplicationContext
@@ -38,13 +41,13 @@ final class ApplicationContextFactory
         $assetDto = $this->getAssetDto($dashboardController, $crudController);
         $actionDtoCollection = $this->getActions($dashboardController, $crudController, $pageName);
 
-        $crudDto = $this->getCrudDto($dashboardController, $crudController, $actionDtoCollection, $crudAction, $pageName);
+        $crudDto = $this->getCrudDto($this->crudControllers, $dashboardController, $crudController, $actionDtoCollection, $crudAction, $pageName);
         $searchDto = $this->getSearchDto($request, $crudDto);
         $i18nDto = $this->getI18nDto($request, $dashboardDto, $crudDto);
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
         $user = $this->getUser($this->tokenStorage);
 
-        return new ApplicationContext($request, $user, $i18nDto, $dashboardDto, $dashboardController, $assetDto, $crudDto, $searchDto, $this->menuFactory, $templateRegistry);
+        return new ApplicationContext($request, $user, $i18nDto, $this->crudControllers, $dashboardDto, $dashboardController, $assetDto, $crudDto, $searchDto, $this->menuFactory, $templateRegistry);
     }
 
     private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDto
@@ -68,21 +71,27 @@ final class ApplicationContextFactory
         return $crudController->configureAssets($defaultAssetConfig)->getAsDto();
     }
 
-    private function getCrudDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionDtoCollection, ?string $crudAction, ?string $pageName): ?CrudDto
+    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionDtoCollection, ?string $crudAction, ?string $pageName): ?CrudDto
     {
         if (null === $crudController) {
             return null;
         }
 
         $defaultCrudConfig = $dashboardController->configureCrud();
+        $crudDto = $crudController->configureCrud($defaultCrudConfig)->getAsDto();
 
-        return $crudController->configureCrud($defaultCrudConfig)
-            ->getAsDto()
-            ->with([
-                'actions' => $actionDtoCollection,
-                'actionName' => $crudAction,
-                'pageName' => $pageName,
-            ]);
+        $entityFqcn = $crudControllerRegistry->getEntityFqcnByControllerFqcn(get_class($crudController));
+        $entityClassName = basename(str_replace('\\', '/', $entityFqcn));
+        $entityName = empty($entityClassName) ? 'Undefined' : $entityClassName;
+
+        return $crudDto->with([
+            'actions' => $actionDtoCollection,
+            'actionName' => $crudAction,
+            'entityFqcn' => $entityFqcn,
+            'labelInSingular' => $crudDto->getLabelInSingular() ?? $entityName,
+            'labelInPlural' => $crudDto->getLabelInPlural() ?? $entityName,
+            'pageName' => $pageName,
+        ]);
     }
 
     private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionConfigDto

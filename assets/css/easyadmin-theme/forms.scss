@@ -40,6 +40,7 @@
     filter: opacity(75%);
     position: relative;
     right: -2px;
+    z-index: var(--zindex-700);
 }
 
 // Form widgets (inputs, selects, etc.)
@@ -68,7 +69,7 @@
 .form-widget textarea.form-control,
 .form-widget select.form-control {
     border: 0;
-    padding: 3px 7px 5px;
+    padding: 3px 7px 4px;
     box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
     height: 30px;
     max-width: 350px;
@@ -106,28 +107,27 @@
 }
 
 // Checkbox widgets
-.field-checkbox .form-widget,
-.form-group.field-collection-action {
-    margin-left: calc(30% + 5px);
-    margin-bottom: 0;
-    margin-top: 0;
+.property-boolean .form-widget {
+    margin: 0;
 }
-.form-group.field-collection-action {
-    margin-left: 30%;
-}
-
-.field-checkbox .form-check {
+.property-boolean .form-check {
     padding-left: 0;
 }
-.field-checkbox .form-check-label {
+.property-boolean .form-check-label {
     cursor: pointer;
     font-size: var(--font-size-base);
     margin-top: 0;
     margin-left: 4px;
 }
-.field-checkbox .form-check-input {
+.property-boolean .form-check-input {
     margin: 0;
     position: static;
+}
+
+@media(min-width: 992px) {
+    .property-boolean .form-widget {
+        margin-left: calc(30% + 5px);
+    }
 }
 
 // in Bootstrap custom file widgets, the label is used to simulate the file input

@@ -43,9 +43,8 @@ final class CrudDto
     private $formOptions;
     private $entityPermission;
 
-    public function __construct(?string $entityFqcn, string $labelInSingular, string $labelInPlural, array $pageTitles, array $helpMessages, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, array $defaultSort, ?array $searchFields, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto, TemplateDtoCollection $overriddenTemplates, $formThemes, array $formOptions, ?string $entityPermission)
+    public function __construct(?string $labelInSingular, ?string $labelInPlural, array $pageTitles, array $helpMessages, ?string $dateFormat, ?string $timeFormat, string $dateTimePattern, string $dateIntervalFormat, ?string $timezone, ?string $numberFormat, array $defaultSort, ?array $searchFields, bool $showEntityActionsAsDropdown, ?array $filters, PaginatorDto $paginatorDto, TemplateDtoCollection $overriddenTemplates, $formThemes, array $formOptions, ?string $entityPermission)
     {
-        $this->entityFqcn = $entityFqcn;
         $this->labelInSingular = $labelInSingular;
         $this->labelInPlural = $labelInPlural;
         $this->customPageTitles = $pageTitles;
@@ -77,12 +76,12 @@ final class CrudDto
         return $this->entityFqcn;
     }
 
-    public function getLabelInSingular(): string
+    public function getLabelInSingular(): ?string
     {
         return $this->labelInSingular;
     }
 
-    public function getLabelInPlural(): string
+    public function getLabelInPlural(): ?string
     {
         return $this->labelInPlural;
     }

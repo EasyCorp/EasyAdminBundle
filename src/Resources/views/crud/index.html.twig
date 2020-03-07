@@ -115,7 +115,7 @@
     {% set some_results_are_hidden = false %}
 
     <div class="content-panel">
-        <div class="content-panel-body without-padding without-header">
+        <div class="content-panel-body without-padding without-header {{ entities|length == 0 ? 'without-footer' }}">
             <table class="table datagrid">
                 <thead>
                 {% block table_head %}
@@ -217,11 +217,13 @@
             </table>
         </div>
 
-        <div class="content-panel-footer without-padding">
-            {% block paginator %}
-                {{ include(ea.templatePath('crud/paginator')) }}
-            {% endblock paginator %}
-        </div>
+        {% if entities|length > 0 %}
+            <div class="content-panel-footer without-padding">
+                {% block paginator %}
+                    {{ include(ea.templatePath('crud/paginator')) }}
+                {% endblock paginator %}
+            </div>
+        {% endif %}
     </div>
 
     {% block delete_form %}

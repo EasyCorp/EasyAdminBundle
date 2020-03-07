@@ -26,7 +26,7 @@ final class MenuItemDto
     /** @var MenuItem[]|MenuItemDto[] */
     private $subItems;
 
-    public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParameters, ?string $linkUrl, string $linkRel, string $linkTarget, ?string $translationDomain, array $translationParameters, array $subItems)
+    public function __construct(string $type, string $label, ?string $icon, ?string $permission, ?string $cssClass, ?string $routeName, ?array $routeParameters, ?string $linkUrl, string $linkRel, string $linkTarget, ?string $translationDomain, array $translationParameters, ?array $subItems)
     {
         $this->type = $type;
         $this->label = $label;
@@ -40,7 +40,7 @@ final class MenuItemDto
         $this->linkTarget = $linkTarget;
         $this->translationDomain = $translationDomain;
         $this->translationParameters = $translationParameters;
-        $this->subItems = $subItems;
+        $this->subItems = $subItems ?? [];
     }
 
     public function getType(): string

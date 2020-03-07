@@ -122,6 +122,15 @@ final class MenuFactory
             $defaultRouteParameters = ['menuIndex' => $index, 'submenuIndex' => $subIndex, 'query' => null];
             $routeParameters = array_merge($defaultRouteParameters, $menuItemDto->getRouteParameters());
 
+            if (null === $routeParameters['crudController'] && null !== $entityFqcn = $routeParameters['entityFqcn']) {
+                $controllerRegistry = $this->applicationContextProvider->getContext()->getCrudControllers();
+                $routeParameters['crudController'] = $controllerRegistry->getControllerFqcnByEntityFqcn($entityFqcn);
+            }
+
+            if (null !== $routeParameters['crudController']) {
+                unset($routeParameters['entityFqcn']);
+            }
+
             return $this->crudRouter->build()->setQueryParameters($routeParameters)->generateUrl();
         }
 

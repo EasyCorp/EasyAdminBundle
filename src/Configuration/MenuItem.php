@@ -2,27 +2,16 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Configuration\MenuItemInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\CrudMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\GenericMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\RouteMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\SectionMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\SubMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Menu\UrlMenuItem;
 
 final class MenuItem
 {
-    private $type;
-    private $label;
-    private $icon;
-    private $cssClass = '';
-    private $permission;
-    private $routeName;
-    private $routeParameters;
-    private $linkUrl;
-    private $linkRel = '';
-    private $linkTarget = '_self';
-    private $translationDomain;
-    private $translationParameters = [];
-    /** @var MenuItemInterface[] */
-    private $subItems = [];
-
     /**
      * @internal Don't use this constructor; use the named constructors
      */
@@ -30,145 +19,43 @@ final class MenuItem
     {
     }
 
-    public static function linkToCrud(string $label, ?string $icon, string $crudControllerFqcn, array $routeParameters = []): self
+    public static function linkToCrud(string $label, ?string $icon, string $entityFqcn): CrudMenuItem
     {
-        $menuItem = new self();
-        $menuItem->type = MenuFactory::ITEM_TYPE_CRUD;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-        $menuItem->routeParameters = array_merge([
-            'crudController' => $crudControllerFqcn,
-            'crudAction' => Action::INDEX,
-        ], $routeParameters);
-
-        return $menuItem;
+        return new CrudMenuItem($label, $icon, $entityFqcn);
     }
 
-    public static function linktoDashboard(string $label, ?string $icon = null): self
+    public static function linktoDashboard(string $label, ?string $icon = null): GenericMenuItem
     {
-        $menuItem = new self();
-        $menuItem->type = MenuFactory::ITEM_TYPE_DASHBOARD;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-
-        return $menuItem;
+        return new GenericMenuItem(MenuFactory::ITEM_TYPE_DASHBOARD, $label, $icon);
     }
 
-    public static function linkToExitImpersonation(string $label, ?string $icon = null): self
+    public static function linkToExitImpersonation(string $label, ?string $icon = null): GenericMenuItem
     {
-        $menuItem = new self();
-        $menuItem->type = MenuFactory::ITEM_TYPE_EXIT_IMPERSONATION;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-
-        return $menuItem;
+        return new GenericMenuItem(MenuFactory::ITEM_TYPE_EXIT_IMPERSONATION, $label, $icon);
     }
 
-    public static function linkToLogout(string $label, ?string $icon = null): self
+    public static function linkToLogout(string $label, ?string $icon = null): GenericMenuItem
     {
-        $menuItem = new self();
-        $menuItem->type = MenuFactory::ITEM_TYPE_LOGOUT;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-
-        return $menuItem;
+        return new GenericMenuItem(MenuFactory::ITEM_TYPE_LOGOUT, $label, $icon);
     }
 
-    public static function linktoRoute(string $label, ?string $icon = null, string $routeName, array $routeParameters = []): self
+    public static function linktoRoute(string $label, ?string $icon = null, string $routeName, array $routeParameters = []): RouteMenuItem
     {
-        $menuItem = new self();
-        $menuItem->type = MenuFactory::ITEM_TYPE_ROUTE;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-        $menuItem->routeName = $routeName;
-        $menuItem->routeParameters = $routeParameters;
-
-        return $menuItem;
+        return new RouteMenuItem($label, $icon, $routeName, $routeParameters);
     }
 
-    public static function linkToUrl(string $label, ?string $icon, string $url): self
+    public static function linkToUrl(string $label, ?string $icon, string $url): UrlMenuItem
     {
-        $menuItem = new self();
-        $menuItem->type = MenuFactory::ITEM_TYPE_URL;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-        $menuItem->linkUrl = $url;
-
-        return $menuItem;
+        return new UrlMenuItem($label, $icon, $url);
     }
 
-    public static function section(string $label = null, ?string $icon = null): self
+    public static function section(string $label = null, ?string $icon = null): SectionMenuItem
     {
-        $menuItem = new self();
-        $menuItem->type = MenuFactory::ITEM_TYPE_SECTION;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-
-        return $menuItem;
+        return new SectionMenuItem($label, $icon);
     }
 
-    public static function subMenu(string $label, ?string $icon, array $submenuItems): self
+    public static function subMenu(string $label, ?string $icon): SubMenuItem
     {
-        $menuItem = new self();
-        $menuItem->type = MenuFactory::ITEM_TYPE_SUBMENU;
-        $menuItem->label = $label;
-        $menuItem->icon = $icon;
-        $menuItem->subItems = $submenuItems;
-
-        return $menuItem;
-    }
-
-    public function setCssClass(string $cssClass): self
-    {
-        $this->cssClass = $cssClass;
-
-        return $this;
-    }
-
-    public function setLinkRel(string $rel): self
-    {
-        $this->linkRel = $rel;
-
-        return $this;
-    }
-
-    public function setLinkTarget(string $target): self
-    {
-        $this->linkTarget = $target;
-
-        return $this;
-    }
-
-    public function setPermission(string $role): self
-    {
-        $this->permission = $role;
-
-        return $this;
-    }
-
-    /**
-     * If not defined, menu items use the same domain as configured for the entire dashboard.
-     */
-    public function setTranslationDomain(string $domain): self
-    {
-        $this->translationDomain = $domain;
-
-        return $this;
-    }
-
-    public function setTranslationParameters(string $parameters): self
-    {
-        $this->translationParameters = $parameters;
-
-        return $this;
-    }
-
-    public function getAsDto()
-    {
-        if (empty($this->label) && null === $this->icon) {
-            throw new \InvalidArgumentException(sprintf('The label and icon of an action cannot be empty/null at the same time. Either set the label to a non-empty value, or set the icon or both.'));
-        }
-
-        return new MenuItemDto($this->type, $this->label, $this->icon, $this->permission, $this->cssClass, $this->routeName, $this->routeParameters, $this->linkUrl, $this->linkRel, $this->linkTarget, $this->translationDomain, $this->translationParameters, $this->subItems);
+        return new SubMenuItem($label, $icon);
     }
 }

@@ -1,7 +1,7 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {% set delete_url = ea_build_url(app.request.query.get('crudController'))
     .setAction('delete')
-    .setEntityId('__entityId_placeholder__')
+    .setEntityId(entity_id ?? '__entityId_placeholder__')
     .includeReferrer()
     .generateUrl() %}
 

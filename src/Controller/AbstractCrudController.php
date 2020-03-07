@@ -146,7 +146,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'pageName' => CrudConfig::PAGE_DETAIL,
             'templateName' => 'crud/detail',
             'entity' => $entityDto,
-            'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ]));
 
         $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);
@@ -225,7 +224,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'templateName' => 'crud/edit',
             'edit_form' => $editForm,
             'entity' => $entityDto->updateInstance($entityInstance),
-            'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ]));
 
         $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);
@@ -297,7 +295,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'templateName' => 'crud/new',
             'entity' => $entityDto,
             'new_form' => $newForm,
-            'delete_form' => $this->get(FormFactory::class)->createDeleteForm(),
         ]));
 
         $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);

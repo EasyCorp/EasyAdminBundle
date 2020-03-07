@@ -26,20 +26,25 @@ final class FormFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function createDeleteForm(array $queryParameters = []): FormInterface
+    public function createDeleteForm(array $queryParameters = [], string $referrer = null): FormInterface
     {
         $formActionUrl = $this->crudUrlGenerator->build(array_merge(['crudAction' => Action::DELETE], $queryParameters))->generateUrl();
 
-        return $this->symfonyFormFactory->createNamedBuilder('ea_delete_form')
+        $deleteForm = $this->symfonyFormFactory->createNamedBuilder('ea_delete_form')
             ->setAction($formActionUrl)
             ->setMethod('DELETE')
-            ->add('submit', SubmitType::class, [
-                'label' => 'delete_modal.action',
-                'translation_domain' => 'EasyAdminBundle',
-            ])
+            //->add('submit', SubmitType::class, [
+            //    'label' => 'delete_modal.action',
+            //    'translation_domain' => 'EasyAdminBundle',
+            //])
             // needed to avoid submitting empty delete forms (see issue #1409)
-            ->add('ea_delete_flag', HiddenType::class, ['data' => '1'])
-            ->getForm();
+            ->add('ea_delete_flag', HiddenType::class, ['data' => '1']);
+
+        if (null !== $referrer) {
+            $deleteForm->add('referrer', HiddenType::class, ['data' => $referrer]);
+        }
+
+        return $deleteForm->getForm();
     }
 
     public function createEditForm(EntityDto $entityDto): FormInterface

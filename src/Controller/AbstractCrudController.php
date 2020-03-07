@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
@@ -14,11 +15,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
@@ -111,7 +115,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'entities' => $entities,
             'paginator' => $paginator,
             'batch_form' => $this->createBatchForm($entityDto->getFqcn()),
-            'delete_form_template' => $this->get(FormFactory::class)->createDeleteForm(['entityId' => '__id__']),
         ]));
 
         $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);
@@ -306,6 +309,53 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
+    public function delete()
+    {
+        $event = new BeforeCrudActionEvent($this->getContext());
+        $this->get('event_dispatcher')->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        if (!$this->isGranted(Permission::EA_EXECUTE_ACTION)) {
+            throw new ForbiddenActionException($this->getContext());
+        }
+
+        $request = $this->getContext()->getRequest();
+        if (!$this->isCsrfTokenValid('ea-delete', $request->request->get('token'))) {
+            return $this->redirectToRoute($this->getContext()->getDashboardRouteName());
+        }
+
+        $entityDto = $this->get(EntityFactory::class)->create();
+        $entityInstance = $entityDto->getInstance();
+
+        $event = new BeforeEntityDeletedEvent($entityInstance);
+        $this->get('event_dispatcher')->dispatch($event);
+        $entityInstance = $event->getEntityInstance();
+
+        try {
+            $this->deleteEntity($this->get('doctrine')->getManagerForClass($entityDto->getFqcn()), $entityInstance);
+        } catch (ForeignKeyConstraintViolationException $e) {
+            throw new EntityRemoveException(['entity_name' => $entityDto->getName(), 'message' => $e->getMessage()]);
+        }
+
+        $this->get('event_dispatcher')->dispatch(new AfterEntityDeletedEvent($entityInstance));
+
+        $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
+            'entity' => $entityDto,
+        ]));
+
+        $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);
+        $this->get('event_dispatcher')->dispatch($event);
+        if ($event->isPropagationStopped()) {
+            return $event->getResponse();
+        }
+
+        return null !== $request->query->get('referrer')
+            ? $this->redirect($request->query->get('referrer'))
+            : $this->redirectToRoute($this->getContext()->getDashboardRouteName());
+    }
+
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
     {
         return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto);
@@ -346,6 +396,12 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     protected function persistEntity(EntityManagerInterface $entityManager, $entityInstance)
     {
         $entityManager->persist($entityInstance);
+        $entityManager->flush();
+    }
+
+    protected function deleteEntity(EntityManagerInterface $entityManager, $entityInstance)
+    {
+        $entityManager->remove($entityInstance);
         $entityManager->flush();
     }
 

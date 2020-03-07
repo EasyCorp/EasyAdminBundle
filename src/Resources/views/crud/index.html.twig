@@ -227,6 +227,8 @@
     </div>
 
     {% block delete_form %}
+        {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig') }}
+
         {#
         {% set referer = paginator.currentPage == paginator.nbPages and 1 != paginator.currentPage and 1 == paginator.currentPageResults|length
             ? path('easyadmin', app.request.query|merge({ page: app.request.query.get('page') - 1 }))
@@ -284,7 +286,7 @@
                     .off('click', '#modal-delete-button')
                     .on('click', '#modal-delete-button', function () {
                         let deleteForm = $('#delete-form');
-                        deleteForm.attr('action', deleteForm.attr('action').replace('__id__', id));
+                        deleteForm.attr('action', deleteForm.attr('action').replace('__entityId_placeholder__', id));
                         deleteForm.trigger('submit');
                     });
             });

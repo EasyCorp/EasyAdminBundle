@@ -1,6 +1,6 @@
 @import '~trix/dist/trix.css';
 
-.easyadmin-text-editor-wrapper {
+.ea-text-editor-wrapper {
     background: var(--white);
     border: 0;
     border-radius: var(--border-radius);

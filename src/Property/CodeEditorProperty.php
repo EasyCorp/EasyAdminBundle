@@ -9,10 +9,10 @@ class CodeEditorProperty implements PropertyConfigInterface
 {
     use PropertyConfigTrait;
 
-    public const OPTION_LANGUAGE = 'language';
-    public const OPTION_TAB_SIZE = 'tabSize';
     public const OPTION_INDENT_WITH_TABS = 'indentWithTabs';
-    public const OPTION_HEIGHT = 'height';
+    public const OPTION_LANGUAGE = 'language';
+    public const OPTION_NUM_OF_ROWS = 'numOfRows';
+    public const OPTION_TAB_SIZE = 'tabSize';
 
     private const ALLOWED_LANGUAGES = ['css', 'dockerfile', 'js', 'markdown', 'nginx', 'php', 'shell', 'sql', 'twig', 'xml', 'yaml-frontmatter', 'yaml'];
 
@@ -24,19 +24,15 @@ class CodeEditorProperty implements PropertyConfigInterface
             ->setTemplateName('property/code_editor')
             ->addCssFiles('bundles/easyadmin/form-type-code-editor.css')
             ->addJsFiles('bundles/easyadmin/form-type-code-editor.js')
-            ->setCustomOption(self::OPTION_LANGUAGE, 'markdown')
-            ->setCustomOption(self::OPTION_TAB_SIZE, 4)
             ->setCustomOption(self::OPTION_INDENT_WITH_TABS, false)
-            ->setCustomOption(self::OPTION_HEIGHT, null);
+            ->setCustomOption(self::OPTION_LANGUAGE, 'markdown')
+            ->setCustomOption(self::OPTION_NUM_OF_ROWS, null)
+            ->setCustomOption(self::OPTION_TAB_SIZE, 4);
     }
 
-    public function setHeight(int $heightInPixels): self
+    public function setIndentWithTabs(bool $useTabs): self
     {
-        if ($heightInPixels < 1) {
-            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 1 or higher (%d given).', __METHOD__, $heightInPixels));
-        }
-
-        $this->setCustomOption(self::OPTION_HEIGHT, $heightInPixels);
+        $this->setCustomOption(self::OPTION_INDENT_WITH_TABS, $useTabs);
 
         return $this;
     }
@@ -52,6 +48,17 @@ class CodeEditorProperty implements PropertyConfigInterface
         return $this;
     }
 
+    public function setNumOfRows(int $rows): self
+    {
+        if ($rows < 1) {
+            throw new \InvalidArgumentException(sprintf('The argument of the "%s()" method must be 1 or higher (%d given).', __METHOD__, $rows));
+        }
+
+        $this->setCustomOption(self::OPTION_NUM_OF_ROWS, $rows);
+
+        return $this;
+    }
+
     public function setTabSize(int $tabSize): self
     {
         if ($tabSize < 1) {
@@ -59,13 +66,6 @@ class CodeEditorProperty implements PropertyConfigInterface
         }
 
         $this->setCustomOption(self::OPTION_TAB_SIZE, $tabSize);
-
-        return $this;
-    }
-
-    public function setIndentWithTabs(bool $useTabs): self
-    {
-        $this->setCustomOption(self::OPTION_INDENT_WITH_TABS, $useTabs);
 
         return $this;
     }

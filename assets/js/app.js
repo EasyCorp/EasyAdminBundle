@@ -19,7 +19,6 @@ window.addEventListener('load', function() {
     $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);
     createContentResizer();
     createNavigationToggler();
-    createCodeEditorFields();
     createFileUploadFields();
 });
 
@@ -130,31 +129,6 @@ function createNavigationToggler() {
             modalBackdrop = null;
         }
     });
-}
-
-// Code editor fields require extra JavaScript dependencies, which are loaded
-// dynamically only when there are code editor fields in the page
-function createCodeEditorFields()
-{
-    const codeEditorElements = document.querySelectorAll('[data-easyadmin-code-editor]');
-    if (codeEditorElements.length === 0) {
-        return;
-    }
-
-    const codeEditorJs = document.createElement('script');
-    codeEditorJs.setAttribute('src', codeEditorElements[0].dataset.jsUrl);
-
-    const codeEditorCss = document.createElement('link');
-    codeEditorCss.setAttribute('rel', 'stylesheet');
-    codeEditorCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl);
-
-    const codeEditorRtlCss = document.createElement('link');
-    codeEditorRtlCss.setAttribute('rel', 'stylesheet');
-    codeEditorRtlCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
-
-    document.querySelector('head').appendChild(codeEditorCss);
-    document.querySelector('head').appendChild(codeEditorRtlCss);
-    document.querySelector('body').appendChild(codeEditorJs);
 }
 
 function createFileUploadFields()

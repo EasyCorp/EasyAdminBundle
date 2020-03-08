@@ -461,14 +461,16 @@
 {% block ea_code_editor_widget %}
     {{ form_widget(form, { attr: attr|merge({
         'data-is-ea-code-editor': 'true',
-        'data-language': ea_crud_form.property.customOptions.get('language'),
-        'data-tab-size': ea_crud_form.property.customOptions.get('tabSize'),
-        'data-indent-with-tabs': ea_crud_form.property.customOptions.get('indentWithTabs') ? 'true' : 'false',
+        'data-language': form.vars.ea_crud_form.ea_property.customOptions.get('language'),
+        'data-tab-size': form.vars.ea_crud_form.ea_property.customOptions.get('tabSize'),
+        'data-indent-with-tabs': form.vars.ea_crud_form.ea_property.customOptions.get('indentWithTabs') ? 'true' : 'false',
     }) }) }}
 
-    {% if ea_crud_form.property.customOptions.get('height') is not null %}
+    {% set numOfRows = form.vars.ea_crud_form.ea_property.customOptions.get('numOfRows') %}
+    {% if numOfRows is not null %}
         <style type="text/css">
-            #{{ id }} + .CodeMirror { height: {{ ea_crud_form.property.customOptions.get('height') }}px !important; max-height: none; }
+            {# here we consider 21px as the average line height #}
+            #{{ id }} + .CodeMirror { height: {{ (21 * numOfRows)|round }}px !important; max-height: none; }
         </style>
     {% endif %}
 {% endblock ea_code_editor_widget %}
@@ -479,12 +481,12 @@
 
     {{ form_widget(form, { attr: attr|merge({ style: 'display: none' }) }) }}
 
-    <div class="easyadmin-text-editor-wrapper">
+    <div class="ea-text-editor-wrapper">
         <trix-editor input="{{ id }}" class="trix-content"></trix-editor>
     </div>
 
     {% if numOfRows %}
-        <style>
+        <style type="text/css">
             trix-editor[input={{ id }}].trix-content {
                 {# here we consider 21px as the average line height #}
                 min-height: {{ (numOfRows * 21)|round }}px;

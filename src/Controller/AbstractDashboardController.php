@@ -29,7 +29,7 @@ abstract class AbstractDashboardController extends AbstractController implements
 
     public function configureUserMenu(UserInterface $user): UserMenuConfig
     {
-        $userMenuItems = [MenuItem::linkToLogout('user.signout', 'fa-sign-out')->setTranslationDomain('EasyAdminBundle')];
+        $userMenuItems = [MenuItem::linkToLogout('user.sign_out', 'fa-sign-out')->setTranslationDomain('EasyAdminBundle')];
         if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {
             $userMenuItems[] = MenuItem::linkToExitImpersonation('user.exit_impersonation', 'fa-user-lock')->setTranslationDomain('EasyAdminBundle');
         }

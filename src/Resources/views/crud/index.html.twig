@@ -9,7 +9,7 @@
 {% set _has_batch_actions = batch_form is defined and batch_form.vars.batch_actions|length > 0 %}
 #}
 
-{% block body_id entities|length > 0 ? 'easyadmin-index-' ~ entities|first.name : '' %}
+{% block body_id entities|length > 0 ? 'ea-index-' ~ entities|first.name : '' %}
 {% block body_class 'index' ~ (entities|length > 0 ? ' index-' ~ entities|first.name : '') %}
 
 {% block content_title %}

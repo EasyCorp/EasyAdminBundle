@@ -77,10 +77,10 @@ class EasyAdminTwigExtension extends AbstractExtension
     {
         $filters = [
             new TwigFilter('ea_flatten_array', [$this, 'flattenArray']),
+            new TwigFilter('ea_filesize', [$this, 'fileSize']),
             new TwigFilter('easyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
             new TwigFilter('easyadmin_urldecode', 'urldecode'),
             new TwigFilter('easyadmin_form_hidden_params', [$this, 'getFormHiddenParameters']),
-            new TwigFilter('easyadmin_filesize', [$this, 'fileSize']),
         ];
 
         if (Kernel::VERSION_ID >= 40200) {

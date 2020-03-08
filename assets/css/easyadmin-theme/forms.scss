@@ -418,14 +418,14 @@ fieldset .legend-help {
 .has-error .form-widget input.form-control,
 .has-error .form-widget textarea.form-control,
 .has-error .form-widget select.form-control,
-.has-error .easyadmin-fileupload .input-group,
+.has-error .ea-fileupload .input-group,
 .has-error .btn.input-file-container,
 .has-error .CodeMirror,
 .has-error .ea-text-editor-wrapper {
     box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(183, 6, 32, .2), 0 0 0 2px rgba(183, 6, 32, .25), 0 1px 1px rgba(0, 0, 0, .08);
 }
 
-.has-error .easyadmin-fileupload .input-group {
+.has-error .ea-fileupload .input-group {
     border-radius: var(--border-radius);
 }
 
@@ -468,7 +468,7 @@ form .invalid-feedback > .d-block + .d-block {
 }
 
 //fileupload widgets
-.easyadmin-fileupload {
+.ea-fileupload {
     max-width: 350px;
 
     .custom-file {
@@ -542,44 +542,44 @@ form .invalid-feedback > .d-block + .d-block {
 }
 
 // Image/file vich uploads
-.easyadmin-vich-image img {
+.ea-vich-image img {
     box-shadow: 0 0 0 4px var(--white), 0px 0px 4px 3px var(--gray-600);
     margin: 6px 4px 12px;
     max-height: 300px;
     max-width: 100%;
 }
 
-.easyadmin-vich-file-name {
+.ea-vich-file-name {
     display: block;
     margin: 4px 0 8px;
 }
 
-.easyadmin-vich-file-name .fa {
+.ea-vich-file-name .fa {
     font-size: 18px;
 }
 
 // this element should use 'display: flex', but that doesn't work with
 // the CSS trick used to customize the <input type="file" /> fields.
 
-.easyadmin-vich-image-actions > div,
-.easyadmin-vich-file-actions > div {
+.ea-vich-image-actions > div,
+.ea-vich-file-actions > div {
     float: left;
     margin-right: 4px;
 }
 
-.easyadmin-vich-image-actions:after,
-.easyadmin-vich-file-actions:after {
+.ea-vich-image-actions:after,
+.ea-vich-file-actions:after {
     clear: left;
     content: "";
     display: block;
 }
 
-.easyadmin-vich-image-actions .field-checkbox,
-.easyadmin-vich-file-actions .field-checkbox {
+.ea-vich-image-actions .field-checkbox,
+.ea-vich-file-actions .field-checkbox {
     padding-top: 4px;
 }
 
-.easyadmin-vich-image-actions .form-widget {
+.ea-vich-image-actions .form-widget {
     flex-basis: 100%;
 }
 

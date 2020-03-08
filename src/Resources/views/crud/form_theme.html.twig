@@ -26,7 +26,7 @@
             var containerDiv = $('#{{ id }}').parents('.form-group:first');
             var parentDiv = containerDiv.parents('[data-prototype]:first');
             containerDiv.remove();
-            parentDiv.trigger('easyadmin.collection.item-deleted');
+            parentDiv.trigger('ea.collection.item-deleted');
 
             var hasCountAttr = parentDiv.data('count');
 
@@ -44,7 +44,7 @@
         <div class="field-collection-item-row">
             {{ parent() }}
 
-            <a class="field-collection-item-action" id="easyadmin-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}; return false;" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
+            <a class="field-collection-item-action" id="ea-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}; return false;" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
                 &times;
             </a>
         </div>
@@ -88,7 +88,7 @@
             var containerDiv = $('#{{ id }}').parents('.form-group:first');
             var parentDiv = containerDiv.parents('[data-prototype]:first');
             containerDiv.remove();
-            parentDiv.trigger('easyadmin.collection.item-deleted');
+            parentDiv.trigger('ea.collection.item-deleted');
 
             if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
             $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
@@ -97,7 +97,7 @@
         {% endset %}
 
         <div class="text-right field-collection-item-action">
-            <a id="easyadmin-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
+            <a id="ea-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
                 <i class="fa fa-fw fa-remove"></i>
                 {{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}
             </a>
@@ -134,14 +134,14 @@
     <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
         {{- form_label(form) -}}
         <div class="form-widget">
-            {% set has_prepend_html = easyadmin.field.prepend_html|default(null) is not null %}
-            {% set has_append_html = easyadmin.field.append_html|default(null) is not null %}
+            {% set has_prepend_html = ea.field.prepend_html|default(null) is not null %}
+            {% set has_append_html = ea.field.append_html|default(null) is not null %}
             {% set has_input_groups = has_prepend_html or has_append_html %}
 
             {% if has_input_groups %}<div class="input-group">{% endif %}
                 {% if has_prepend_html %}
                     <div class="input-group-prepend">
-                        <span class="input-group-text">{{ easyadmin.field.prepend_html|raw }}</span>
+                        <span class="input-group-text">{{ ea.field.prepend_html|raw }}</span>
                     </div>
                 {% endif %}
 
@@ -149,12 +149,12 @@
 
                 {% if has_append_html %}
                     <div class="input-group-append">
-                        <span class="input-group-text">{{ easyadmin.field.append_html|raw }}</span>
+                        <span class="input-group-text">{{ ea.field.append_html|raw }}</span>
                     </div>
                 {% endif %}
                 {% if has_input_groups %}</div>{% endif %}
 
-            {% if property_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and easyadmin.field.nullable|default(false) %}
+            {% if property_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and ea.field.nullable|default(false) %}
                 <div class="nullable-control">
                     <label>
                         <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
@@ -163,8 +163,8 @@
                 </div>
             {% endif %}
 
-            {% if easyadmin.field.help|default(form.vars.help) != '' %}
-                <small class="form-help">{{ easyadmin.field.help|default(form.vars.help)|trans(domain = form.vars.translation_domain)|raw }}</small>
+            {% if ea.field.help|default(form.vars.help) != '' %}
+                <small class="form-help">{{ ea.field.help|default(form.vars.help)|trans(domain = form.vars.translation_domain)|raw }}</small>
             {% endif %}
 
             {{- form_errors(form) -}}
@@ -195,12 +195,12 @@
             // Increment the counter and store it in the collection
             collection.data('count', ++numItems);
 
-            collection.append(newItem).trigger('easyadmin.collection.item-added');
+            collection.append(newItem).trigger('ea.collection.item-added');
             });
         {% endset %}
 
         <div class="form-group field-collection-action">
-            <a id="easyadmin-add-collection-item-{{ form.vars.id }}" href="#" onclick="{{ js_add_item|raw }}; return false;">
+            <a id="ea-add-collection-item-{{ form.vars.id }}" href="#" onclick="{{ js_add_item|raw }}; return false;">
                 <i class="fa fa-plus pr-1"></i>
                 {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
             </a>
@@ -209,7 +209,7 @@
 {% endblock collection_row %}
 
 {% block button_row -%}
-    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ easyadmin.field.css_class|default('') }}">
+    <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ ea.field.css_class|default('') }}">
         {{- form_widget(form) -}}
     </div>
 {%- endblock button_row %}
@@ -271,7 +271,7 @@
 {% endblock %}
 
 {% block vich_file_widget %}
-    <div class="easyadmin-vich-file">
+    <div class="ea-vich-file">
         {% if download_uri|default('') is not empty %}
             {% set download_title = download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') %}
             {% set file_extension = download_uri|split('.')|last %}
@@ -282,7 +282,7 @@
                 'png': 'fa-file-image-o',
                 'zip': 'fa-file-archive-o'
             } %}
-            <a class="easyadmin-vich-file-name" href="{{ asset(download_uri) }}">
+            <a class="ea-vich-file-name" href="{{ asset(download_uri) }}">
                 <i class="fa fa-fw {{ extension_icons[file_extension] ?? 'fa-file-o' }}"></i>
                 {{ download_title }}
             </a>
@@ -295,7 +295,7 @@
             document.getElementById('{{ form.file.vars.id }}_new_file_name').innerText = newFile.name + ' (' + fileSize.toFixed(2) + ' ' + (fileSizeInMegabytes ? 'MB' : 'KB') + ')';
         {% endset %}
 
-        <div class="easyadmin-vich-file-actions">
+        <div class="ea-vich-file-actions">
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
                 <i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
@@ -316,7 +316,7 @@
 {% endblock %}
 
 {% block vich_image_widget %}
-    <div class="easyadmin-vich-image">
+    <div class="ea-vich-image">
         {% if image_uri|default('') is not empty %}
             {% if download_uri|default('') is empty %}
                 <div class="ea-lightbox-thumbnail">
@@ -342,7 +342,7 @@
             document.getElementById('{{ form.file.vars.id }}_new_file_name').innerText = newFile.name + ' (' + fileSize.toFixed(2) + ' ' + (fileSizeInMegabytes ? 'MB' : 'KB') + ')';
         {% endset %}
 
-        <div class="easyadmin-vich-image-actions">
+        <div class="ea-vich-image-actions">
             {# the container element is needed to allow customizing the <input type="file" /> #}
             <div class="btn btn-secondary input-file-container">
                 <i class="fa fa-fw fa-upload"></i> {{ 'action.choose_file'|trans({}, 'EasyAdminBundle') }}
@@ -440,22 +440,22 @@
 {% endblock ea_crud_widget_panels %}
 
 {# EasyAdminAutocomplete form type #}
-{% block easyadmin_autocomplete_widget %}
+{% block ea_autocomplete_widget %}
     {{ form_widget(form.autocomplete, {
         attr: attr|merge({
             'required': required,
-            'data-easyadmin-autocomplete-url' : path('easyadmin', {
+            'data-ea-autocomplete-url' : path('ea', {
                 action: 'autocomplete',
                 entity: autocomplete_entity_name,
             })|raw })
     })
     }}
-{% endblock easyadmin_autocomplete_widget %}
+{% endblock ea_autocomplete_widget %}
 
-{% block easyadmin_autocomplete_inner_label %}
+{% block ea_autocomplete_inner_label %}
     {% set name = form.parent.vars.name %}
     {{- block('form_label') -}}
-{% endblock easyadmin_autocomplete_inner_label %}
+{% endblock ea_autocomplete_inner_label %}
 
 {# EasyAdmin's CodeEditor form type #}
 {% block ea_code_editor_widget %}
@@ -496,22 +496,22 @@
 {% endblock ea_text_editor_widget %}
 
 {# EasyAdminSection form type #}
-{% block easyadmin_section_row %}
-    <div class="form-section {{ easyadmin.field.icon|default(false) == false and easyadmin.field.label|default(false) == false ? 'form-section-empty' }} {{ easyadmin.field.css_class|default('') }}">
+{% block ea_section_row %}
+    <div class="form-section {{ ea.field.icon|default(false) == false and ea.field.label|default(false) == false ? 'form-section-empty' }} {{ ea.field.css_class|default('') }}">
         <h2>
-            {% if easyadmin.field.icon|default(false) %}<i class="fa fa-fw fa-{{ easyadmin.field.icon }}"></i>{% endif %}
-            <span>{% if easyadmin.field.label|default(false) %}{{ easyadmin.field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
+            {% if ea.field.icon|default(false) %}<i class="fa fa-fw fa-{{ ea.field.icon }}"></i>{% endif %}
+            <span>{% if ea.field.label|default(false) %}{{ ea.field.label|default('')|trans(domain = ea.i18n.translationDomain)|raw }}{% endif %}</span>
         </h2>
 
-        {% if easyadmin.field.help|default(false) %}
-            <p class="form-section-help">{{ easyadmin.field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
+        {% if ea.field.help|default(false) %}
+            <p class="form-section-help">{{ ea.field.help|trans(domain = ea.i18n.translationDomain)|raw }}</p>
         {% endif %}
     </div>
-{% endblock easyadmin_section_row %}
+{% endblock ea_section_row %}
 
 {# EasyAdminBatch form type #}
-{% block easyadmin_batch_widget %}
-    {% set _trans_parameters = { '%entity_name%':  easyadmin.entity.name|trans(domain = ea.i18n.translationDomain), '%entity_label%': easyadmin.entity.label|trans(domain = ea.i18n.translationDomain) } %}
+{% block ea_batch_widget %}
+    {% set _trans_parameters = { '%entity_name%':  ea.entity.name|trans(domain = ea.i18n.translationDomain), '%entity_label%': ea.entity.label|trans(domain = ea.i18n.translationDomain) } %}
 
     {{ form_widget(form.ids) }}
     <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(_trans_parameters, ea.i18n.translationDomain) }}</button>
@@ -523,7 +523,7 @@
             {%- endif -%}
         </button>
     {% endfor %}
-{% endblock easyadmin_batch_widget %}
+{% endblock ea_batch_widget %}
 
 {# EasyAdminFilters form type #}
 {% block ea_filters_widget %}
@@ -597,8 +597,8 @@
     {{ block('ea_numeric_filter_widget') }}
 {% endblock ea_datetime_filter_widget %}
 
-{% block easyadmin_fileupload_widget %}
-    <div class="easyadmin-fileupload">
+{% block ea_fileupload_widget %}
+    <div class="ea-fileupload">
         <div class="input-group">
             {% set placeholder = null %}
             {% set title = null %}
@@ -616,14 +616,14 @@
                 <span class="input-group-text" {% if currentFiles is empty %}style="display: none"{% endif %}>
                     {%- if currentFiles -%}
                         {% if multiple %}
-                            {{ (currentFiles|reduce((carry, file) => carry + file.size))|easyadmin_filesize }}
+                            {{ (currentFiles|reduce((carry, file) => carry + file.size))|ea_filesize }}
                         {% else %}
-                            {{ (currentFiles|first).size|easyadmin_filesize }}
+                            {{ (currentFiles|first).size|ea_filesize }}
                         {% endif %}
                     {%- endif -%}
                 </span>
                 {% if allow_delete %}
-                    <label class="btn easyadmin-fileupload-delete-btn" {% if currentFiles is empty %}style="display: none"{% endif %} for="{{ form.delete.vars.id }}">
+                    <label class="btn ea-fileupload-delete-btn" {% if currentFiles is empty %}style="display: none"{% endif %} for="{{ form.delete.vars.id }}">
                         <i class="fa fa-trash-o"></i>
                     </label>
                 {% endif %}
@@ -645,7 +645,7 @@
                                     </span>
                                     {% if download_path %}</a>{% endif %}
                             </td>
-                            <td class="text-right file-size">{{ file.size|easyadmin_filesize }}</td>
+                            <td class="text-right file-size">{{ file.size|ea_filesize }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

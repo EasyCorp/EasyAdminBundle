@@ -16,7 +16,7 @@ window.addEventListener('load', function() {
     $('[data-toggle="tooltip"]').tooltip();
     createNullableControls();
     createAutoCompleteFields();
-    $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);
+    $(document).on('ea.collection.item-added', createAutoCompleteFields);
     createContentResizer();
     createNavigationToggler();
     createFileUploadFields();
@@ -42,11 +42,11 @@ function createNullableControls() {
 }
 
 function createAutoCompleteFields() {
-    var autocompleteFields = $('[data-easyadmin-autocomplete-url]');
+    var autocompleteFields = $('[data-ea-autocomplete-url]');
 
     autocompleteFields.each(function () {
         var $this = $(this),
-            url = $this.data('easyadmin-autocomplete-url');
+            url = $this.data('ea-autocomplete-url');
 
         $this.select2({
             theme: 'bootstrap',
@@ -140,7 +140,7 @@ function createFileUploadFields()
         return parseInt(bytes / (1024 ** factor)) + size[factor];
     }
 
-    $(document).on('change', '.easyadmin-fileupload input[type=file].custom-file-input', function () {
+    $(document).on('change', '.ea-fileupload input[type=file].custom-file-input', function () {
         if (this.files.length === 0) {
             return;
         }
@@ -157,14 +157,14 @@ function createFileUploadFields()
             bytes += this.files[i].size;
         }
 
-        const container = $(this).closest('.easyadmin-fileupload');
+        const container = $(this).closest('.ea-fileupload');
         container.find('.custom-file-label').text(filename);
         container.find('.input-group-text').text(fileSize(bytes)).show();
-        container.find('.easyadmin-fileupload-delete-btn').show();
+        container.find('.ea-fileupload-delete-btn').show();
     });
 
-    $(document).on('click', '.easyadmin-fileupload .easyadmin-fileupload-delete-btn', function () {
-        const container = $(this).closest('.easyadmin-fileupload');
+    $(document).on('click', '.ea-fileupload .ea-fileupload-delete-btn', function () {
+        const container = $(this).closest('.ea-fileupload');
         container.find('input').val('').removeAttr('title');
         container.find('.custom-file-label').text('');
         container.find('.input-group-text').text('').hide();

@@ -57,6 +57,10 @@
                 <source>paginator.counter</source>
                 <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> з <strong>%results%</strong>]]></target>
             </trans-unit>
+            <trans-unit id="paginator.results">
+                <source>paginator.results</source>
+                <target><![CDATA[{0} Немає результатів|{1} <strong>1</strong> результат|]1,Inf] <strong>%count%</strong> результатів]]></target>
+            </trans-unit>
 
             <!-- labels -->
             <trans-unit id="label.true">
@@ -113,6 +117,10 @@
                 <source>user.signout</source>
                 <target>Вихід</target>
             </trans-unit>
+            <trans-unit id="user.exit_impersonation">
+                <source>user.exit_impersonation</source>
+                <target>Зміна ролі</target>
+            </trans-unit>
 
             <!-- misc. elements -->
             <trans-unit id="delete_modal.title">
@@ -126,6 +134,14 @@
             <trans-unit id="delete_modal.action">
                 <source>delete_modal.action</source>
                 <target>Видалити</target>
+            </trans-unit>
+            <trans-unit id="batch_action_modal.title">
+                <source>batch_action_modal.title</source>
+                <target>Ви збираєтесь застосовувати дію %action_name%" action to %num_items% item(s).</target>
+            </trans-unit>
+            <trans-unit id="batch_action_modal.content">
+                <source>batch_action_modal.content</source>
+                <target>Ви не зможете відмінити цю дію.</target>
             </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
@@ -147,9 +163,39 @@
                 <source>form.are_you_sure</source>
                 <target>Ви не зберегли зроблені зміни.</target>
             </trans-unit>
+            <trans-unit id="form.tab.error_badge_title">
+                <source>form.tab.error_badge_title</source>
+                <target>Одне невірне поле|%count% невірних полей</target>
+            </trans-unit>
             <trans-unit id="show.remaining_items">
                 <source>show.remaining_items</source>
                 <target><![CDATA[{1} %count% елемент не відображається у цьому списку|{2,3,4} %count% елемента не відображаються у цьому списку|]5,Inf] %count% елементів не відображаються у цьому списку]]></target>
+            </trans-unit>
+
+            <!-- Exceptions -->
+            <trans-unit id="exception.entity_not_found">
+                <source>exception.entity_not_found</source>
+                <target>Цей елемент надалі не доступний.</target>
+            </trans-unit>
+            <trans-unit id="exception.entity_remove">
+                <source>exception.entity_remove</source>
+                <target>Цей елемент не може бути видалений тому що інші елементи залежать від нього.</target>
+            </trans-unit>
+            <trans-unit id="exception.forbidden_action">
+                <source>exception.forbidden_action</source>
+                <target>Запрошена дія не може бути виконана ні цьому елементі.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_entities_configured">
+                <source>exception.no_entities_configured</source>
+                <target>Система не вірно налаштована.</target>
+            </trans-unit>
+            <trans-unit id="exception.undefined_entity">
+                <source>exception.undefined_entity</source>
+                <target>Система не вірно налаштована для цьго елемента.</target>
+            </trans-unit>
+            <trans-unit id="exception.no_permission">
+                <source>exception.no_permission</source>
+                <target>У Вас недостатньо прав для виконання.</target>
             </trans-unit>
 
             <!-- Login page -->
@@ -203,6 +249,10 @@
                 <source>filter.label.is_less_than_or_equal_to</source>
                 <target>менше ніж або рівно</target>
             </trans-unit>
+            <trans-unit id="filter.label.is_between">
+                <source>filter.label.is_between</source>
+                <target>поміж</target>
+            </trans-unit>
             <trans-unit id="filter.label.contains">
                 <source>filter.label.contains</source>
                 <target>містить</target>
@@ -250,6 +300,12 @@
             <trans-unit id="filter.label.is_before_or_same">
                 <source>filter.label.is_before_or_same</source>
                 <target>до або ж</target>
+            </trans-unit>
+
+            <!-- security -->
+            <trans-unit id="security.list.hidden_results">
+                <source>security.list.hidden_results</source>
+                <target>Деякі результати не відображені бо у Вас недостатньо прав</target>
             </trans-unit>
         </body>
     </file>

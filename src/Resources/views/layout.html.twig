@@ -51,6 +51,10 @@
     </script>
 
     {% block wrapper_wrapper %}
+        {% block flash_messages %}
+            {{ include(ea.templatePath('flash_messages')) }}
+        {% endblock flash_messages %}
+
         <div class="wrapper">
             {% block wrapper %}
                 <header class="main-header">
@@ -122,10 +126,6 @@
                 </aside>
 
                 <div class="content-wrapper">
-                    {% block flash_messages %}
-                        {{ include(ea.templatePath('flash_messages')) }}
-                    {% endblock flash_messages %}
-
                     <div id="sidebar-resizer-handler" class="resizer-handler resizer-handler-left"></div>
 
                     {% block content %}

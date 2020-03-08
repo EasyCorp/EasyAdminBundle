@@ -36,7 +36,6 @@ i.fad {
 .content { grid-area: content; }
 #sidebar-resizer-handler { grid-area: sidebar-resizer-handler; }
 #content-resizer-handler { grid-area: content-resizer-handler; }
-#flash-messages { grid-area: flash-messages; }
 
 .wrapper {
     display: grid;
@@ -187,8 +186,7 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
     grid-column-gap: 0;
     grid-row-gap: 0;
     grid-template-areas:
-            "flash-messages           flash-messages  flash-messages"
-            "sidebar-resizer-handler  content         content-resizer-handler"
+            "sidebar-resizer-handler content content-resizer-handler"
     ;
     grid-template-columns: 0 auto 0;
     margin-top: -14px;
@@ -476,16 +474,15 @@ body.show .field-avatar .image-avatar {
 
 // Flash messages
 #flash-messages {
-    @media(min-width: 992px) {
-        // needed to compensate the content resizer handlers
-        margin-left: 10px;
-        margin-right: 10px;
-    }
+    background: transparent;
+    box-shadow: var(--box-shadow-lg);
+    margin: 0 0 20px;
 }
 .alert {
-    box-shadow: var(--box-shadow-lg);
-    margin-bottom: 15px;
-    padding-right: 48px;
+    border-width: 0 0 var(--border-width);
+    border-radius: 0;
+    margin: 0;
+    padding-right: 55px;
     position: relative;
 }
 .alert .alert-close {
@@ -497,8 +494,8 @@ body.show .field-avatar .image-avatar {
     font-weight: bold;
     line-height:1;
     opacity: 0.5;
-    padding: 0 3px;
+    padding: 0 0 0 3px;
     position: absolute;
-    right: 13px;
+    right: 30px;
     top: 9px;
 }

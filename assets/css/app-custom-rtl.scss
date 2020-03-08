@@ -27,8 +27,8 @@ html[dir="rtl"] .page-item:last-child .page-link {
 }
 
 @media (min-width: 992px) {
-    html[dir="rtl"].easyadmin-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu,
-    html[dir="rtl"].easyadmin-sidebar-width-compact .sidebar-menu > li:hover > a > span {
+    html[dir="rtl"].ea-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu,
+    html[dir="rtl"].ea-sidebar-width-compact .sidebar-menu > li:hover > a > span {
         left: unset;
         right: 37px;
         width: calc(var(--sidebar-width) - 37px);

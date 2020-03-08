@@ -82,30 +82,30 @@ function createContentResizer() {
 
     if (null !== sidebarResizerHandler) {
         sidebarResizerHandler.addEventListener('click', function() {
-            const oldValue = localStorage.getItem('easyadmin/sidebar/width') || 'normal';
+            const oldValue = localStorage.getItem('ea/sidebar/width') || 'normal';
             const newValue = 'normal' == oldValue ? 'compact' : 'normal';
 
-            document.querySelector('body').classList.remove('easyadmin-sidebar-width-' + oldValue);
-            document.querySelector('body').classList.add('easyadmin-sidebar-width-' + newValue);
-            localStorage.setItem('easyadmin/sidebar/width', newValue);
+            document.querySelector('body').classList.remove('ea-sidebar-width-' + oldValue);
+            document.querySelector('body').classList.add('ea-sidebar-width-' + newValue);
+            localStorage.setItem('ea/sidebar/width', newValue);
         });
     }
 
     if (null !== contentResizerHandler) {
         contentResizerHandler.addEventListener('click', function() {
-            const oldValue = localStorage.getItem('easyadmin/content/width') || 'normal';
+            const oldValue = localStorage.getItem('ea/content/width') || 'normal';
             const newValue = 'normal' == oldValue ? 'full' : 'normal';
 
-            document.querySelector('body').classList.remove('easyadmin-content-width-' + oldValue);
-            document.querySelector('body').classList.add('easyadmin-content-width-' + newValue);
-            localStorage.setItem('easyadmin/content/width', newValue);
+            document.querySelector('body').classList.remove('ea-content-width-' + oldValue);
+            document.querySelector('body').classList.add('ea-content-width-' + newValue);
+            localStorage.setItem('ea/content/width', newValue);
         });
     }
 }
 
 function createNavigationToggler() {
     const toggler = document.getElementById('navigation-toggler');
-    const cssClassName = 'easyadmin-mobile-sidebar-visible';
+    const cssClassName = 'ea-mobile-sidebar-visible';
     let modalBackdrop;
 
     if (null === toggler) {

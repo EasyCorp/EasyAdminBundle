@@ -42,11 +42,11 @@
 </head>
 
 {% block body %}
-    <body id="{% block body_id %}{% endblock %}" class="easyadmin {% block body_class %}{% endblock %}">
+    <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
     <script>
         document.body.classList.add(
-            'easyadmin-content-width-' + (localStorage.getItem('easyadmin/content/width') || 'normal'),
-            'easyadmin-sidebar-width-' + (localStorage.getItem('easyadmin/sidebar/width') || 'normal')
+            'ea-content-width-' + (localStorage.getItem('ea/content/width') || 'normal'),
+            'ea-sidebar-width-' + (localStorage.getItem('ea/sidebar/width') || 'normal')
         );
     </script>
 

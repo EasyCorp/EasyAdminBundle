@@ -47,8 +47,8 @@ i.fad {
     margin: 20px 15px;
 
     @media(min-width: 992px) {
-        grid-template-columns: var(--sidebar-width) auto;
-        grid-column-gap: 15px;
+        grid-template-columns: fit-content(var(--sidebar-width)) auto;
+        grid-column-gap: 35px;
         grid-template-areas:
             "header   header"
             "sidebar  content-wrapper"
@@ -127,8 +127,8 @@ body.ea-sidebar-width-compact .wrapper {
         height: unset;
         padding: 0;
         position: static;
-        width: var(--sidebar-width);
         z-index: $zindex-modal-backdrop - 1;
+        width: unset;
     }
 }
 body.ea-mobile-sidebar-visible .main-sidebar {

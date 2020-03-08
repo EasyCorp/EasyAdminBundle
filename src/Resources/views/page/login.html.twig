@@ -4,9 +4,9 @@
 {% block body_class 'page-login' %}
 
 {% block wrapper_wrapper %}
-    {% set _username_label = username_label is defined ? username_label|trans : 'login.username'|trans({}, 'EasyAdminBundle') %}
-    {% set _password_label = password_label is defined ? password_label|trans : 'login.password'|trans({}, 'EasyAdminBundle') %}
-    {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login.sign_in'|trans({}, 'EasyAdminBundle') %}
+    {% set _username_label = username_label is defined ? username_label|trans : 'login_page.username'|trans({}, 'EasyAdminBundle') %}
+    {% set _password_label = password_label is defined ? password_label|trans : 'login_page.password'|trans({}, 'EasyAdminBundle') %}
+    {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login_page.sign_in'|trans({}, 'EasyAdminBundle') %}
 
     <div class="login-wrapper">
         <header class="main-header mb-4">

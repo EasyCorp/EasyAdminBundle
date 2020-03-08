@@ -18,10 +18,10 @@ final class CrudDto
     private $labelInSingular;
     private $labelInPlural;
     private $defaultPageTitles = [
-        CrudConfig::PAGE_DETAIL => 'page.detail.title',
-        CrudConfig::PAGE_EDIT => 'page.edit.title',
-        CrudConfig::PAGE_INDEX => 'page.index.title',
-        CrudConfig::PAGE_NEW => 'page.new.title',
+        CrudConfig::PAGE_DETAIL => 'page_title.detail',
+        CrudConfig::PAGE_EDIT => 'page_title.edit',
+        CrudConfig::PAGE_INDEX => 'page_title.index',
+        CrudConfig::PAGE_NEW => 'page_title.new',
     ];
     private $customPageTitles;
     private $helpMessages;

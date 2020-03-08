@@ -145,7 +145,7 @@
 
                         {% if entities|length > 0 and entities|first.actions is not empty %}
                             <th {% if ea.crud.showEntityActionsAsDropdown %}width="10px"{% endif %} dir="{{ ea.i18n.textDirection }}">
-                                <span class="sr-only">{{ 'list.row_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
+                                <span class="sr-only">{{ 'action.entity_actions'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
                             </th>
                         {% endif %}
                     </tr>
@@ -200,7 +200,7 @@
                     {% else %}
                         <tr>
                             <td class="no-results" colspan="100">
-                                {{ 'search.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
+                                {{ 'datagrid.no_results'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}
                             </td>
                         </tr>
                     {% endfor %}
@@ -208,7 +208,7 @@
                     {% if some_results_are_hidden %}
                         <tr class="datagrid-row-empty">
                             <td class="text-center" colspan="{{ entities|first.properties|length + 1 }}">
-                                <span class="datagrid-row-empty-message"><i class="fa fa-lock mr-1"></i> {{ 'security.list.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
+                                <span class="datagrid-row-empty-message"><i class="fa fa-lock mr-1"></i> {{ 'datagrid.hidden_results'|trans({}, 'EasyAdminBundle') }}</span>
                             </td>
                         </tr>
                     {% endif %}

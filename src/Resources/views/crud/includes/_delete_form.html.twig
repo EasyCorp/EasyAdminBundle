@@ -13,16 +13,16 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <h4>{{ 'delete_modal.title'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</h4>
-                <p>{{ 'delete_modal.content'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</p>
+                <h4>{{ 'delete_modal.title'|trans([], 'EasyAdminBundle') }}</h4>
+                <p>{{ 'delete_modal.content'|trans([], 'EasyAdminBundle') }}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-secondary">
-                    <span class="btn-label">{{ 'action.cancel'|trans(ea.i18n.translationParameters, ea.i18n.translationDomain) }}</span>
+                    <span class="btn-label">{{ 'action.cancel'|trans([], 'EasyAdminBundle') }}</span>
                 </button>
 
                 <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button" formtarget="delete-form">
-                    <span class="btn-label">{{ 'delete_modal.action'|trans(ea.i18n.translationParameters, 'EasyAdminBundle') }}</span>
+                    <span class="btn-label">{{ 'action.delete'|trans([], 'EasyAdminBundle') }}</span>
                 </button>
             </div>
         </div>

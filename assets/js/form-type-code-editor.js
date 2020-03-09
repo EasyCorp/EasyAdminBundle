@@ -16,7 +16,7 @@ import 'codemirror/mode/yaml-frontmatter/yaml-frontmatter';
 import 'codemirror/mode/yaml/yaml';
 import 'codemirror/addon/display/autorefresh';
 
-document.querySelectorAll('[data-is-ea-code-editor]').forEach(function(codeBlock) {
+document.querySelectorAll('[data-ea-code-editor-property]').forEach(function(codeBlock) {
     const editor = CodeMirror.fromTextArea(codeBlock, {
         autocapitalize: false,
         autocorrect: false,

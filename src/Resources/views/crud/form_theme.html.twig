@@ -19,34 +19,9 @@
 
 {% block form_widget %}
     {% if form.parent.vars.allow_delete|default(false) %}
-        {% set remove_item_javascript %}
-            $(function() {
-            event.preventDefault();
-
-            var containerDiv = $('#{{ id }}').parents('.form-group:first');
-            var parentDiv = containerDiv.parents('[data-prototype]:first');
-            containerDiv.remove();
-            parentDiv.trigger('ea.collection.item-deleted');
-
-            var hasCountAttr = parentDiv.data('count');
-
-            if (hasCountAttr === undefined) {
-            var numItems = parentDiv.children('div.form-group').length;
-            parentDiv.data('count', ++numItems)
-            }
-
-            if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
-            $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
-            }
-            });
-        {% endset %}
-
-        <div class="field-collection-item-row">
+        <div class="property-collection-item">
             {{ parent() }}
-
-            <a class="field-collection-item-action" id="ea-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}; return false;" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
-                &times;
-            </a>
+            {{ block('remove_collection_item_button') }}
         </div>
     {% else %}
         {{ parent() }}
@@ -76,34 +51,23 @@
     </div>
 {%- endblock time_widget %}
 
-{% block choice_widget_collapsed -%}
-    {%- set attr = attr|merge({class: (attr.class|default(''))|trim}) -%}
-    {{- parent() -}}
+{% block choice_widget_collapsed %}
+    {% set attr = attr|merge({class: (attr.class|default(''))|trim}) %}
+    {# TODO: ask Yonel if this is the best way to detect if a <select> is part of a collection or stand-alone #}
+    {% set is_collection = block_prefixes|last ends with '_entry' %}
 
-    {% if form.parent.vars.allow_delete|default(false) %}
-        {% set remove_item_javascript %}
-            $(function() {
-            event.preventDefault();
+    {% if is_collection %}
+        <div class="property-collection-item">
+            {{ parent() }}
 
-            var containerDiv = $('#{{ id }}').parents('.form-group:first');
-            var parentDiv = containerDiv.parents('[data-prototype]:first');
-            containerDiv.remove();
-            parentDiv.trigger('ea.collection.item-deleted');
-
-            if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
-            $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
-            }
-            });
-        {% endset %}
-
-        <div class="text-right field-collection-item-action">
-            <a id="ea-remove-collection-item-{{ form.vars.id }}" href="#" onclick="{{ remove_item_javascript|raw }}" class="text-danger">
-                <i class="fa fa-fw fa-remove"></i>
-                {{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}
-            </a>
+            {% if form.parent.vars.allow_delete|default(false) %}
+                {{ block('remove_collection_item_button') }}
+            {% endif %}
         </div>
+    {% else %}
+        {{ parent() }}
     {% endif %}
-{%- endblock %}
+{% endblock %}
 
 {% block file_widget -%}
     {% if vich|default(false) %}
@@ -173,40 +137,38 @@
 {% endblock form_row %}
 
 {% block collection_row %}
+    {% if prototype is defined and not prototype.rendered %}
+        {% set row_attr = row_attr|merge({ 'data-prototype': form_row(prototype) }) %}
+    {% endif %}
+
+    {% set row_attr = row_attr|merge({
+        'data-ea-collection-property': 'true',
+        'data-allow-add': allow_add ? 'true' : 'false',
+        'data-allow-delete': allow_delete ? 'true' : 'false',
+        'data-num-items': form.children|length,
+        'data-form-type-name-placeholder': prototype.vars.name,
+    }) %}
+
     {{ block('form_row') }}
+{% endblock collection_row %}
+
+{% block collection_widget %}
+    {{ block('form_widget') }}
 
     {% if allow_add|default(false) %}
-        {% set js_add_item %}
-            $(function() {
-            event.preventDefault();
-
-            var collection = $('#{{ id }}');
-            // Use a counter to avoid having the same index more than once
-            var numItems = collection.data('count') || collection.children('div.form-group').length;
-
-            collection.prev('.collection-empty').remove();
-
-            var newItem = collection.attr('data-prototype')
-            .replace(/\>{{ prototype.vars.name }}label__\</g, '>' + numItems + '<')
-            .replace(/_{{ name }}_{{ prototype.vars.name }}/g, '_{{ name }}_' + numItems)
-            .replace(/{{ name }}\]\[{{ prototype.vars.name }}\]/g, '{{ name }}][' + numItems + ']')
-            ;
-
-            // Increment the counter and store it in the collection
-            collection.data('count', ++numItems);
-
-            collection.append(newItem).trigger('ea.collection.item-added');
-            });
-        {% endset %}
-
-        <div class="form-group field-collection-action">
-            <a id="ea-add-collection-item-{{ form.vars.id }}" href="#" onclick="{{ js_add_item|raw }}; return false;">
-                <i class="fa fa-plus pr-1"></i>
-                {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
-            </a>
-        </div>
+        <button type="button" class="btn btn-link property-collection-add-button">
+            <i class="fa fa-plus pr-1"></i>
+            {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
+        </button>
     {% endif %}
-{% endblock collection_row %}
+{% endblock collection_widget %}
+
+{% block remove_collection_item_button %}
+    <button type="button" class="btn btn-link property-collection-delete-button" title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}"
+        onclick="this.closest('.form-group').remove(); return false;">
+        <i class="fas fa-times"></i>
+    </button>
+{% endblock %}
 
 {% block button_row -%}
     <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ ea.field.css_class|default('') }}">
@@ -460,7 +422,7 @@
 {# EasyAdmin's CodeEditor form type #}
 {% block ea_code_editor_widget %}
     {{ form_widget(form, { attr: attr|merge({
-        'data-is-ea-code-editor': 'true',
+        'data-ea-code-editor-property': 'true',
         'data-language': form.vars.ea_crud_form.ea_property.customOptions.get('language'),
         'data-tab-size': form.vars.ea_crud_form.ea_property.customOptions.get('tabSize'),
         'data-indent-with-tabs': form.vars.ea_crud_form.ea_property.customOptions.get('indentWithTabs') ? 'true' : 'false',

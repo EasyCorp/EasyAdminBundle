@@ -74,14 +74,6 @@ class CrudFormType extends AbstractType
                 }
             }
 
-            // if the form field is a special 'panel' design element, don't add it
-            // to the form. Instead, consider it the current form panel (this is
-            // applied to the form fields defined after it) and store its details
-            // in a property to get them in form template
-            if (empty($formPanels)) {
-                $formPanels[$currentFormPanel] = ['form_tab' => $currentFormTab ?? null, 'label' => null, 'icon' => null, 'help' => null];
-            }
-
             if (EaFormPanelType::class === $formFieldType) {
                 ++$currentFormPanel;
                 $formPanels[$currentFormPanel] = [

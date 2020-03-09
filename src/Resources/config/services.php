@@ -29,6 +29,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\AssociationConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\AvatarConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\BooleanConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CollectionConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPostConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPreConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CountryConfigurator;
@@ -268,6 +269,9 @@ return static function (ContainerConfigurator $container) {
 
         ->set(NumberConfigurator::class)
             ->arg(0, ref(IntlFormatter::class))
+            ->tag('ea.property_configurator')
+
+        ->set(CollectionConfigurator::class)
             ->tag('ea.property_configurator')
 
         ->set(FiltersFormType::class)

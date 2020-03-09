@@ -26,6 +26,36 @@
   color: var(--white);
 }
 
+// Collection property
+.form-widget-compound .collection-empty {
+  padding-top: 5px;
+}
+
+.form-widget-compound .form-group {
+  display: flex;
+  padding: 0 20px 15px 0;
+}
+
+.form-widget-compound .form-group .form-widget {
+  fflex: 0 0 100%;
+  padding-left: 0;
+}
+
+.property-collection-item {
+  display: flex;
+}
+.property-collection-add-button {
+  padding-left: 5px;
+}
+.property-collection-delete-button {
+  font-size: 16px;
+  margin-left: 4px;
+  padding: 0 6px;
+}
+.form-widget-compound > div > .form-group:last-child {
+  padding-bottom: 5px;
+}
+
 // Color property
 .property-color .color-sample {
   border-radius: var(--border-radius);

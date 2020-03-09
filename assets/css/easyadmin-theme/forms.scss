@@ -32,6 +32,21 @@
     padding: 0;
 }
 
+// Used in checkbox and radio buttons
+label.form-check-label {
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    margin-top: 0;
+    margin-left: 4px;
+}
+.form-group label.form-check-label.required:after {
+    content: '';
+}
+.form-widget .form-check:first-child,
+.form-widget .form-check + .form-check {
+    margin-top: 5px;
+}
+
 .form-group label.required:after,
 .form-group .col-form-label.required:after {
     bottom: 4px;
@@ -112,12 +127,6 @@
 }
 .property-boolean .form-check {
     padding-left: 0;
-}
-.property-boolean .form-check-label {
-    cursor: pointer;
-    font-size: var(--font-size-base);
-    margin-top: 0;
-    margin-left: 4px;
 }
 .property-boolean .form-check-input {
     margin: 0;
@@ -220,37 +229,6 @@ fieldset .form-group .nullable-control label {
     flex: 0 0 100% !important;
     height: 500px;
     max-width: unset !important;
-}
-
-// Form collections
-.form-widget-compound .collection-empty {
-    padding-top: 5px;
-}
-
-.form-widget-compound .form-group {
-    padding: 0 20px 15px 0;
-}
-
-.form-widget-compound .form-group .form-widget {
-    flex: 0 0 100%;
-    padding-left: 0;
-}
-
-.field-collection-item-row .form-control {
-    display: inline-flex;
-}
-.form-group.field-collection-action {
-    padding-top: 0;
-}
-.field-collection-item-action {
-    font-size: 21px;
-    font-weight: bold;
-    margin-left: 4px;
-    position: relative;
-    top: 2px;
-}
-.form-widget-compound > div > .form-group:last-child {
-    padding-bottom: 5px;
 }
 
 // Form tabs

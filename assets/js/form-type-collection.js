@@ -1,0 +1,35 @@
+window.addEventListener('DOMContentLoaded', function (event) {
+    document.querySelectorAll('[data-ea-collection-property]').forEach(function(collection) {
+        let addButton = collection.querySelector('button.property-collection-add-button');
+        if (null !== addButton) {
+            EaCollectionProperty.handleAddButton(addButton, collection);
+        }
+    });
+});
+
+const EaCollectionProperty = {
+    handleAddButton: function(addButton, collection) {
+        addButton.addEventListener('click', function() {
+            // Use a counter to avoid having the same index more than once
+            let numItems = parseInt(collection.dataset.numItems);
+
+            // Remove the 'Empty Collection' content, if any
+            // TODO ...
+
+            const newItemNumber = numItems + 1;
+            const formTypeNamePlaceholder = collection.dataset.formTypeNamePlaceholder;
+            const labelRegexp = new RegExp(formTypeNamePlaceholder + 'label__', 'g');
+            const nameRegexp = new RegExp(formTypeNamePlaceholder, 'g');
+
+            let newItemHtml = collection.dataset.prototype
+                .replace(labelRegexp, newItemNumber)
+                .replace(nameRegexp, newItemNumber);
+
+            collection.dataset.numItems = ++numItems;
+            collection.querySelector('.form-widget .form-widget-compound > div').innerHTML += newItemHtml;
+
+            window.dispatchEvent(new Event('ea.collection.item-added'));
+        });
+    }
+};
+

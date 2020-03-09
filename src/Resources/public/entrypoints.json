@@ -34,6 +34,11 @@
       "js": [
         "./form-type-text-editor.js"
       ]
+    },
+    "form-type-collection": {
+      "js": [
+        "./form-type-collection.js"
+      ]
     }
   }
 }

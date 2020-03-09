@@ -166,7 +166,15 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
             return false;
         }
 
-        return !$entityDto->getPropertyMetadata($propertyConfig->getName())['nullable'];
+        $doctrinePropertyMetadata = $entityDto->getPropertyMetadata($propertyConfig->getName());
+
+        // TODO: check if it's correct to never make a boolean value required
+        // I guess it's correct because Symfony Forms treat NULL as FALSE by default (i.e. in the database the value won't be NULL)
+        if ('boolean' === $doctrinePropertyMetadata['type']) {
+            return false;
+        }
+
+        return !$doctrinePropertyMetadata['nullable'];
     }
 
     // copied from Symfony\Component\Form\FormRenderer::humanize()

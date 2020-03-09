@@ -47,6 +47,7 @@ Encore
     .addEntry('app-custom-rtl', './assets/js/app-custom-rtl.js')
     .addEntry('form-type-code-editor', './assets/js/form-type-code-editor.js')
     .addEntry('form-type-text-editor', './assets/js/form-type-text-editor.js')
+    .addEntry('form-type-collection', './assets/js/form-type-collection.js')
 ;
 
 module.exports = Encore.getWebpackConfig();

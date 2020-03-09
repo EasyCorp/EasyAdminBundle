@@ -33,9 +33,12 @@
                 {{ _self.open_empty_content_panel() }}
             {% endif %}
 
-            {% if not loop.first and is_decoration_property %}
+            {% if is_decoration_property %}
+                {% if not loop.first %}
+                    {{ _self.close_content_panel() }}
+                {% endif %}
+
                 {% set row_number = 0 %}
-                {{ _self.close_content_panel() }}
                 {{ _self.open_content_panel_with_header(property.label, property.help) }}
             {% endif %}
 

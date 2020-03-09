@@ -266,7 +266,12 @@ trait PropertyConfigTrait
 
     public function setFormTypeOption(string $optionName, $optionValue): PropertyConfigInterface
     {
-        $this->formTypeOptions[$optionName] = $optionValue;
+        $optionParts = explode('.', $optionName);
+        if (1 === \count($optionParts)) {
+            $this->formTypeOptions[$optionName] = $optionValue;
+        } elseif (2 === \count($optionParts)) {
+            $this->formTypeOptions[$optionParts[0]][$optionParts[1]] = $optionValue;
+        }
 
         return $this;
     }

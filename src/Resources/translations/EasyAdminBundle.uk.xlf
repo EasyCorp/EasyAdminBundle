@@ -59,7 +59,7 @@
             </trans-unit>
             <trans-unit id="paginator.results">
                 <source>paginator.results</source>
-                <target><![CDATA[{0} Немає результатів|{1} <strong>1</strong> результат|]1,Inf] <strong>%count%</strong> результатів]]></target>
+                <target><![CDATA[{0} Немає результатів|{1} <strong>1</strong> результат|{2,3,4} <strong>%count%</strong> результати|[5,Inf] <strong>%count%</strong> результатів]]></target>
             </trans-unit>
 
             <!-- labels -->

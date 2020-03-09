@@ -574,3 +574,12 @@ form .invalid-feedback > .d-block + .d-block {
 .field-easyadmin_code_editor .form-widget {
     flex-basis: 65%;
 }
+
+.form-group.field-money{
+.input-group-append{
+    span.input-group-text{
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+}

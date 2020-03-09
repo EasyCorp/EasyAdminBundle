@@ -447,6 +447,7 @@ form .invalid-feedback > .d-block + .d-block {
         margin: 1px 0 0 1px;
         padding: 0 8px;
         vertical-align: middle;
+        flex-basis: 50%;
     }
 
     .custom-file-input {

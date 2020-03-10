@@ -1,6 +1,10 @@
 // Forms
 // ----------------------------------------------------------------------------
 
+input[disabled] {
+    cursor: not-allowed;
+}
+
 // Base form groups
 .form-group {
     display: flex;
@@ -9,14 +13,18 @@
     padding: 10px 0px;
 }
 
-.form-group label,
-.form-group legend.col-form-label {
+.form-group label {
     align-self: self-start;
     color: var(--text-color);
     flex: 100% 0 0;
     font-size: var(--font-size-base);
     font-weight: 400;
     margin: 5px 0 5px;
+    text-align: left;
+}
+
+.form-group legend.col-form-label {
+    align-self: self-start;
 }
 
 @media(min-width: 992px) {

@@ -36,8 +36,19 @@
   padding: 0 20px 15px 0;
 }
 
-.form-widget-compound .form-group .form-widget {
-  fflex: 0 0 100%;
+.form-group .property-collection-item-complex label,
+.form-group .property-collection-item-complex legend.col-form-label {
+  align-self: self-start;
+  color: var(--text-color);
+  flex: 100% 0 0;
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  margin: 5px 0 5px;
+  text-align: left;
+}
+
+.property-collection[data-entry-is-complex="true"] .form-group .form-widget {
+  flex: 0 0 100%;
   padding-left: 0;
 }
 
@@ -48,12 +59,23 @@
   padding-left: 5px;
 }
 .property-collection-delete-button {
+  align-self: flex-start;
   font-size: 16px;
   margin-left: 4px;
   padding: 0 6px;
 }
 .form-widget-compound > div > .form-group:last-child {
   padding-bottom: 5px;
+}
+
+.property-collection-item-complex {
+  background: var(--fieldset-bg);
+  border: var(--border-width) var(--border-style) var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 10px 20px 15px;
+}
+.property-collection-item-complex .property-collection-delete-button {
+  padding: 0;
 }
 
 // Color property

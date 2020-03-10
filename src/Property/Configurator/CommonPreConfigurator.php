@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Property\FormPanelProperty;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -15,6 +16,7 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
     private $applicationContextProvider;
     private $translator;
     private $propertyAccessor;
+    private static $numOfSpecialFormProperties = 0;
 
     public function __construct(ApplicationContextProvider $applicationContextProvider, TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
     {
@@ -31,6 +33,14 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
+        if ($propertyConfig instanceof FormPanelProperty) {
+            if (null === $propertyConfig->getLabel()) {
+                $propertyConfig->setLabel($propertyConfig->getName());
+            }
+
+            $propertyConfig->setName('ea_form_panel_'.self::$numOfSpecialFormProperties++);
+        }
+
         $applicationContext = $this->applicationContextProvider->getContext();
         $translationDomain = $applicationContext->getI18n()->getTranslationDomain();
 

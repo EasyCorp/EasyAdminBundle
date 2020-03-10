@@ -153,9 +153,8 @@ class CrudFormType extends AbstractType
                     return $dataClass ?? $options['entityDto']->getFqcn();
                 },
             ])
-            ->setDefined(['entityDto', 'action'])
-            ->setRequired(['entityDto', 'action'])
-            ->setNormalizer('attr', $this->getAttributesNormalizer());
+            ->setDefined(['entityDto'])
+            ->setRequired(['entityDto']);
     }
 
     /**
@@ -164,19 +163,5 @@ class CrudFormType extends AbstractType
     public function getBlockPrefix()
     {
         return 'ea_crud';
-    }
-
-    /**
-     * Returns a closure normalizing the form html attributes.
-     *
-     * @return \Closure
-     */
-    private function getAttributesNormalizer()
-    {
-        return function (Options $options, $value) {
-            return array_replace([
-                'id' => sprintf('%s-%s-form', $options['action'], $options['entityDto']->getName()),
-            ], $value);
-        };
     }
 }

@@ -49,12 +49,22 @@ final class FormFactory
 
     public function createEditForm(EntityDto $entityDto): FormInterface
     {
-        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), ['entityDto' => $entityDto, 'action' => 'edit'])->getForm();
+        $formTypeOptions = [
+            'entityDto' => $entityDto,
+            'attr' => ['id' => sprintf('edit-%s-form', $entityDto->getName())],
+        ];
+
+        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formTypeOptions)->getForm();
     }
 
     public function createNewForm(EntityDto $entityDto): FormInterface
     {
-        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), ['entityDto' => $entityDto, 'action' => 'new'])->getForm();
+        $formTypeOptions = [
+            'entityDto' => $entityDto,
+            'attr' => ['id' => sprintf('new-%s-form', $entityDto->getName())],
+        ];
+
+        return $this->symfonyFormFactory->createNamedBuilder($entityDto->getName(), CrudFormType::class, $entityDto->getInstance(), $formTypeOptions)->getForm();
     }
 
     public function createFilterForm(): FormInterface

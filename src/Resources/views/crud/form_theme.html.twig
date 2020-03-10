@@ -19,10 +19,8 @@
 
 {% block form_widget %}
     {% if form.parent.vars.allow_delete|default(false) %}
-        <div class="property-collection-item">
-            {{ parent() }}
-            {{ block('remove_collection_item_button') }}
-        </div>
+        {{ parent() }}
+        {{ block('remove_collection_item_button') }}
     {% else %}
         {{ parent() }}
     {% endif %}
@@ -39,24 +37,12 @@
     {{- parent() -}}
 {%- endblock form_widget_simple %}
 
-{% block date_widget -%}
-    <div class="datetime-widget datetime-widget-date">
-        {{- parent() -}}
-    </div>
-{%- endblock date_widget %}
-
-{% block time_widget -%}
-    <div class="datetime-widget datetime-widget-time">
-        {{- parent() -}}
-    </div>
-{%- endblock time_widget %}
-
 {% block choice_widget_collapsed %}
     {% set attr = attr|merge({class: (attr.class|default(''))|trim}) %}
     {# TODO: ask Yonel if this is the best way to detect if a <select> is part of a collection or stand-alone #}
-    {% set is_collection = block_prefixes|last ends with '_entry' %}
+    {% set is_collection_item = block_prefixes|last ends with '_entry' %}
 
-    {% if is_collection %}
+    {% if is_collection_item %}
         <div class="property-collection-item">
             {{ parent() }}
 
@@ -68,6 +54,18 @@
         {{ parent() }}
     {% endif %}
 {% endblock %}
+
+{% block date_widget -%}
+    <div class="datetime-widget datetime-widget-date">
+        {{- parent() -}}
+    </div>
+{%- endblock date_widget %}
+
+{% block time_widget -%}
+    <div class="datetime-widget datetime-widget-time">
+        {{- parent() -}}
+    </div>
+{%- endblock time_widget %}
 
 {% block file_widget -%}
     {% if vich|default(false) %}
@@ -95,6 +93,8 @@
         class: row_attr.class|default('') ~ ' form-group ' ~ ' property-' ~ property_type
     }) %}
 
+    {% set is_collection_item = block_prefixes|last ends with '_entry' %}
+
     <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
         {{- form_label(form) -}}
         <div class="form-widget">
@@ -109,7 +109,14 @@
                     </div>
                 {% endif %}
 
-                {{- form_widget(form) -}}
+                {% if is_collection_item %}
+                    {% set is_complex = form.parent.vars.ea_crud_form.ea_property.customOptions.get('entryIsComplex') ?? false %}
+                    <div class="property-collection-item {{ is_complex ? 'property-collection-item-complex' }}">
+                        {{ form_widget(form) }}
+                    </div>
+                {% else %}
+                    {{ form_widget(form) }}
+                {% endif %}
 
                 {% if has_append_html %}
                     <div class="input-group-append">
@@ -143,6 +150,7 @@
 
     {% set row_attr = row_attr|merge({
         'data-ea-collection-property': 'true',
+        'data-entry-is-complex': form.vars.ea_crud_form.ea_property.customOptions.get('entryIsComplex') ? 'true' : 'false',
         'data-allow-add': allow_add ? 'true' : 'false',
         'data-allow-delete': allow_delete ? 'true' : 'false',
         'data-num-items': form.children|length,

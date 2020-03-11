@@ -42,6 +42,19 @@ final class EntityDto
         return basename(str_replace('\\', '/', $this->fqcn));
     }
 
+    public function toString(): string
+    {
+        if (null === $this->instance) {
+            return '';
+        }
+
+        if (method_exists($this->instance, '__toString')) {
+            return (string) $this->instance;
+        }
+
+        return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
+    }
+
     public function getInstance()
     {
         return $this->instance;

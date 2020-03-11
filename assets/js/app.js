@@ -42,11 +42,11 @@ function createNullableControls() {
 }
 
 function createAutoCompleteFields() {
-    var autocompleteFields = $('[data-ea-autocomplete-url]');
+    var autocompleteFields = $('[data-ea-autocomplete-endpoint-url]');
 
     autocompleteFields.each(function () {
         var $this = $(this),
-            url = $this.data('ea-autocomplete-url');
+            url = $this.data('ea-autocomplete-endpoint-url');
 
         $this.select2({
             theme: 'bootstrap',
@@ -60,7 +60,9 @@ function createAutoCompleteFields() {
                 // to indicate that infinite scrolling can be used
                 processResults: function (data, params) {
                     return {
-                        results: data.results,
+                        results: $.map(data.results, function(result) {
+                            return { id: result.entityId, text: result.entityAsString };
+                        }),
                         pagination: {
                             more: data.has_next_page
                         }

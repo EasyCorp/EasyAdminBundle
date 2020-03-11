@@ -18,6 +18,8 @@ final class LocaleConfigurator implements PropertyConfiguratorInterface
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
+        $propertyConfig->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+
         if (null === $localeCode = $propertyConfig->getValue()) {
             return;
         }

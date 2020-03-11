@@ -16,6 +16,7 @@ final class TimezoneConfigurator implements PropertyConfiguratorInterface
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
+        $propertyConfig->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
         $propertyConfig->setFormTypeOptionIfNotSet('intl', true);
     }
 }

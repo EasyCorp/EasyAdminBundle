@@ -14,24 +14,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class EasyAdminBatchFormType extends AbstractType
+class CrudBatchActionFormType extends AbstractType
 {
-    private $configManager;
-
-    public function __construct(ConfigManager $configManager)
-    {
-        $this->configManager = $configManager;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('name', HiddenType::class);
-        $builder->add('ids', HiddenType::class);
+        $builder->add('crudController', HiddenType::class);
+        $builder->add('crudAction', HiddenType::class);
+        $builder->add('entityIds', HiddenType::class);
 
-        $builder->get('ids')->addModelTransformer(new CallbackTransformer(
+        $builder->get('entityIds')->addModelTransformer(new CallbackTransformer(
             function ($value) { return $value; },
             function ($value) { return explode(',', $value); }
         ));
@@ -42,6 +36,7 @@ class EasyAdminBatchFormType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
+        /*
         $entityConfig = $this->configManager->getEntityConfig($options['entity']);
         $disabledActions = $entityConfig['disabled_actions'];
         $batchActions = $entityConfig['list']['batch_actions'];
@@ -49,6 +44,7 @@ class EasyAdminBatchFormType extends AbstractType
         $view->vars['batch_actions'] = array_filter($batchActions, function ($batchAction) use ($disabledActions) {
             return !\in_array($batchAction['name'], $disabledActions, true);
         });
+        */
     }
 
     /**
@@ -58,7 +54,7 @@ class EasyAdminBatchFormType extends AbstractType
     {
         // This input is not intended to be rendered
         // It's used to map the clicked batch button
-        $view->children['name']->setRendered()->setMethodRendered();
+        //$view->children['name']->setRendered()->setMethodRendered();
     }
 
     /**
@@ -66,7 +62,7 @@ class EasyAdminBatchFormType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setRequired('entity');
+        //$resolver->setRequired('entity');
         $resolver->setDefaults([
             'allow_extra_fields' => true,
         ]);
@@ -77,6 +73,6 @@ class EasyAdminBatchFormType extends AbstractType
      */
     public function getBlockPrefix(): string
     {
-        return 'easyadmin_batch';
+        return 'ea_batch_action';
     }
 }

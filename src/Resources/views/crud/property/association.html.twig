@@ -1,6 +1,6 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
-{% if 'toMany' == property.customOptions.get('type') %}
+{% if 'toMany' == property.customOptions.get('associationType') %}
     <span class="badge badge-secondary">{{ property.formattedValue }}</span>
 {% else %}
     {% if property.customOptions.get('relatedUrl') is not null %}

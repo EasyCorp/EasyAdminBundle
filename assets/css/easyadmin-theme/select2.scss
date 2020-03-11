@@ -1,3 +1,7 @@
+.select2-dropdown {
+    z-index: var(--zindex-700);
+}
+
 .select2-container--bootstrap .select2-selection {
     border: 0;
     border-radius: var(--border-radius);
@@ -34,6 +38,7 @@
 }
 
 .select2-container--bootstrap .select2-selection--single {
+    box-shadow: 0 0 0 1px rgba(43,45,80,.1), 0 2px 5px 0 rgba(43,45,80,.08), 0 1px 1.5px 0 rgba(0,0,0,.07), 0 1px 2px 0 rgba(0,0,0,.08);
     height: 30px;
     padding: 5px 24px 5px 7px;
 }

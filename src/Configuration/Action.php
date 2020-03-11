@@ -61,14 +61,14 @@ final class Action
         return $actionConfig;
     }
 
-    public function isGlobalAction(bool $isGlobal = true): self
+    public function createAsGlobalAction(): self
     {
         $this->type = self::TYPE_GLOBAL;
 
         return $this;
     }
 
-    public function isBatchAction(bool $isBatch = true): self
+    public function createAsBatchAction(): self
     {
         $this->type = self::TYPE_BATCH;
 

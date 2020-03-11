@@ -18,6 +18,8 @@ final class CountryConfigurator implements PropertyConfiguratorInterface
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
+        $propertyConfig->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+
         $formattedValue = $this->getCountryName($propertyConfig->getValue());
         $propertyConfig->setFormattedValue($formattedValue);
 

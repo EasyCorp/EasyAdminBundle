@@ -5,6 +5,8 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 final class ActionConfigDto
 {
     /** @var ActionDto[] */
+    private $batchActionsDto;
+    /** @var ActionDto[] */
     private $actionsDto;
     /** @var string[] */
     private $disabledActions;
@@ -31,6 +33,16 @@ final class ActionConfigDto
     public function getActions(): array
     {
         return $this->actionsDto;
+    }
+
+    /**
+     * @param ActionDto[] $newActions
+     */
+    public function updateBatchActions(array $newBatchActionsDto): self
+    {
+        $this->batchActionsDto = $newBatchActionsDto;
+
+        return $this;
     }
 
     /**

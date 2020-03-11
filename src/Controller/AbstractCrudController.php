@@ -28,8 +28,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Formatter\EntityPaginatorJsonFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
 use EasyCorp\Bundle\EasyAdminBundle\Property\Property;
@@ -38,6 +39,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -114,7 +116,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             'templateName' => 'crud/index',
             'entities' => $entities,
             'paginator' => $paginator,
-            'batch_form' => $this->createBatchForm($entityDto->getFqcn()),
+            // 'batch_form' => $this->createBatchActionsForm(),
         ]));
 
         $event = new AfterCrudActionEvent($this->getContext(), $responseParameters);
@@ -353,6 +355,15 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             : $this->redirectToRoute($this->getContext()->getDashboardRouteName());
     }
 
+    public function autocomplete(): JsonResponse
+    {
+        $entityDto = $this->get(EntityFactory::class)->create();
+        $queryBuilder = $this->createIndexQueryBuilder($this->getContext()->getSearch(), $entityDto);
+        $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
+
+        return JsonResponse::fromJsonString($paginator->getJsonResults());
+    }
+
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto): QueryBuilder
     {
         return $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto);
@@ -423,17 +434,6 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     protected function getContext(): ?ApplicationContext
     {
         return $this->get(ApplicationContextProvider::class)->getContext();
-    }
-
-    protected function createBatchForm(string $entityName): FormInterface
-    {
-        // TODO: fix this
-        return $this->get(FormFactory::class)->createDeleteForm([$entityName]);
-
-        return $this->get('form.factory')->createNamed('batch_form', EasyAdminBatchFormType::class, null, [
-            'action' => $this->generateUrl('easyadmin', ['action' => 'batch', 'entity' => $entityName]),
-            'entity' => $entityName,
-        ]);
     }
 
     private function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent

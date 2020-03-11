@@ -7,19 +7,22 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
 final class EntityPaginator
 {
     private $crudUrlGenerator;
+    private $entityFactory;
     private $currentPage;
     private $pageSize;
     private $results;
     private $numResults;
 
-    public function __construct(CrudUrlGenerator $crudUrlGenerator)
+    public function __construct(CrudUrlGenerator $crudUrlGenerator, EntityFactory $entityFactory)
     {
         $this->crudUrlGenerator = $crudUrlGenerator;
+        $this->entityFactory = $entityFactory;
     }
 
     public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): self
@@ -109,5 +112,21 @@ final class EntityPaginator
     public function getResults(): ?iterable
     {
         return $this->results;
+    }
+
+    public function getJsonResults(): string
+    {
+        foreach (iterator_to_array($this->getResults() ?? []) as $entityInstance) {
+            $entityDto = $this->entityFactory->createForEntityInstance($entityInstance);
+
+            $jsonResult['results'][] = [
+                'entityId' => $entityDto->getPrimaryKeyValueAsString(),
+                'entityAsString' => $entityDto->toString(),
+            ];
+        }
+
+        $jsonResult['has_next_page'] = $this->hasNextPage();
+
+        return json_encode($jsonResult);
     }
 }

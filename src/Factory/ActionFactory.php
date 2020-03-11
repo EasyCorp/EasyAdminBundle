@@ -41,8 +41,17 @@ final class ActionFactory
 
         $builtActions = [];
         foreach ($actionConfigDto->getActions() as $actionDto) {
+            // TODO: remove this when we reenable "batch actions"
+            if ($actionDto->isBatchAction()) {
+                throw new \RuntimeException(sprintf('Batch actions are not supported yet, but we\'ll add suport for them very soon. Meanwhile, remove the "%s" batch action from the "%s" page.', $actionDto->getName(), $currentPage));
+            }
+
             if (false === $this->authChecker->isGranted(Permission::EA_EXECUTE_ACTION, $actionDto)) {
                 continue;
+            }
+
+            if (CrudConfig::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
+                throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
             $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());

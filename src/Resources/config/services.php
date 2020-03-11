@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Formatter\EntityPaginatorJsonFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
@@ -161,6 +162,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EntityPaginator::class)
             ->arg(0, ref(CrudUrlGenerator::class))
+            ->arg(1, ref(EntityFactory::class))
 
         ->set(EntityUpdater::class)
             ->arg(0, ref('property_accessor'))

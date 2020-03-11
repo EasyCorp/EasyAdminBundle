@@ -4,10 +4,8 @@
 {% extends ea.templatePath('layout') %}
 {% trans_default_domain ea.i18n.translationDomain %}
 
-{#
-{% set _request_parameters = _request_parameters|merge({ referer: path('easyadmin', _request_parameters)|url_encode }) %}
-{% set _has_batch_actions = batch_form is defined and batch_form.vars.batch_actions|length > 0 %}
-#}
+{# TODO: change this when reenabling batch actions #}
+{% set has_batch_actions = false and batch_form is defined and ea.crud.actions.batchActions|length > 0 %}
 
 {% block body_id entities|length > 0 ? 'ea-index-' ~ entities|first.name : '' %}
 {% block body_class 'index' ~ (entities|length > 0 ? ' index-' ~ entities|first.name : '') %}
@@ -49,6 +47,8 @@
 
     {% block filters %}
         {% if ea.crud.isFilterEnabled %}
+            {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
+
             {% set applied_filters = ea.request.query.get('filters')|default([])|keys %}
             <div class="btn-group action-filters">
                 <a href="{{ ea_path({ crudAction: 'showFilters', include_referrer: true }) }}" class="btn btn-secondary btn-labeled btn-labeled-right action-filters-button {{ applied_filters ? 'action-filters-applied' }}" data-modal="#modal-filters">
@@ -61,51 +61,25 @@
                 {% endif %}
             </div>
         {% endif %}
+
+        {% block global_actions %}
+            {% for action in ea.crud.actions.globalActions %}
+                {{ include(action.template, { action: action }, with_context = false) }}
+            {% endfor %}
+        {% endblock global_actions %}
     {% endblock filters %}
-
-    {% block global_actions %}
-        {% for action in ea.crud.actions.globalActions %}
-            {{ include(action.template, { action: action }, with_context = false) }}
-        {% endfor %}
-    {% endblock global_actions %}
-    {#
-    {% if easyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
-        {% set _action = easyadmin_get_action_for_list_view('new', _entity_config.name) %}
-        {% block new_action %}
-            <div class="button-action">
-                <a class="{{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}" target="{{ _action.target }}">
-                    {% if _action.icon %}<i class="fa fa-fw fa-{{ _action.icon }}"></i>{% endif %}
-                    {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
-                </a>
-            </div>
-        {% endblock new_action %}
-    {% endif %}
-#}
 {% endblock page_actions %}
-
-{% block batch_actions %}
-    {#
-    {% if _has_batch_actions %}
-        <div class="batch-actions" style="display: none">
-            {% form_theme batch_form with easyadmin_config('design.form_theme') only %}
-            {{ form(batch_form) }}
-
-            {{ include('@EasyAdmin/default/includes/_batch_action_modal.html.twig', {
-                _translation_domain: _entity_config.translation_domain,
-                _trans_parameters: _trans_parameters,
-                _entity_config: _entity_config,
-            }, with_context = false) }}
-        </div>
-    {% endif %}
-    #}
-{% endblock batch_actions %}
 
 {% block content_header %}
     {{ parent() }}
-    {{ block('batch_actions') }}
-    {% if ea.crud.isFilterEnabled %}
-        {{ include('@EasyAdmin/crud/includes/_filters_modal.html.twig') }}
-    {% endif %}
+
+    {% block batch_actions %}
+        {% for batchAction in ea.crud.actions.batchActions %}
+            {{ include(batchAction.template, { action: batchAction }, with_context = false) }}
+        {% endfor %}
+
+        {{ include('@EasyAdmin/crud/includes/_batch_action_modal.html.twig', {}, with_context = false) }}
+    {% endblock %}
 {% endblock content_header %}
 
 {% block main %}
@@ -120,12 +94,9 @@
                 <thead>
                 {% block table_head %}
                     <tr>
-                        {#
-                        {% if _has_batch_actions %}
+                        {% if has_batch_actions %}
                             <th width="1px"><span><input type="checkbox" class="form-batch-checkbox-all"></span></th>
                         {% endif %}
-                        #}
-
 
                         {% for property in entities|first.properties ?? [] %}
                             {% set isSortingProperty = (property.name == sort_field_name) or ('association' == property.type and sort_field_name starts with property.name ~ '.') %}
@@ -159,11 +130,9 @@
                             {% set some_results_are_hidden = true %}
                         {% else %}
                             <tr data-id="{{ entity.primaryKeyValueAsString }}">
-                                {#
-                                    {% if _has_batch_actions %}
-                                        <td><input type="checkbox" class="form-batch-checkbox" value="{{ _item_id }}"></td>
-                                    {% endif %}
-                                #}
+                                {% if has_batch_actions %}
+                                    <td><input type="checkbox" class="form-batch-checkbox" value="{{ entity.primaryKeyValue }}"></td>
+                                {% endif %}
 
                                 {% for property in entity.properties %}
                                     <td class="{{ property.name == sort_field_name ? 'sorted' }} property-{{ property.type|lower }} text-{{ property.textAlign }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
@@ -228,22 +197,6 @@
 
     {% block delete_form %}
         {{ include('@EasyAdmin/crud/includes/_delete_form.html.twig', with_context = false) }}
-
-        {#
-        {% set referer = paginator.currentPage == paginator.nbPages and 1 != paginator.currentPage and 1 == paginator.currentPageResults|length
-            ? path('easyadmin', app.request.query|merge({ page: app.request.query.get('page') - 1 }))
-            : app.request.requestUri
-        %}
-
-        {{ include('@EasyAdmin/default/includes/_delete_form.html.twig', {
-            view: 'list',
-            referer: referer,
-            delete_form: delete_form_template,
-            _translation_domain: _entity_config.translation_domain,
-            _trans_parameters: _trans_parameters,
-            _entity_config: _entity_config,
-        }, with_context = false) }}
-        #}
     {% endblock delete_form %}
 {% endblock main %}
 
@@ -323,8 +276,8 @@
             });
             {% endif %}
 
-            {#
-            {% if _has_batch_actions %}
+
+            {% if has_batch_actions %}
             const titleContent = $('.content-header-title > .title').html();
             $(document).on('click', '.deselect-batch-button', function () {
                 $(this).closest('.content').find(':checkbox.form-batch-checkbox-all').prop('checked', false).trigger('change');
@@ -374,7 +327,6 @@
                     });
             });
             {% endif %}
-            #}
         });
     </script>
 

@@ -411,20 +411,12 @@
 
 {# EasyAdminAutocomplete form type #}
 {% block ea_autocomplete_widget %}
-    {{ form_widget(form.autocomplete, {
-        attr: attr|merge({
-            'required': required,
-            'data-ea-autocomplete-url' : path('ea', {
-                action: 'autocomplete',
-                entity: autocomplete_entity_name,
-            })|raw })
-    })
-    }}
+    {{ form_widget(form.autocomplete, { attr: attr|merge({ required: required }) }) }}
 {% endblock ea_autocomplete_widget %}
 
 {% block ea_autocomplete_inner_label %}
     {% set name = form.parent.vars.name %}
-    {{- block('form_label') -}}
+    {{ block('form_label') }}
 {% endblock ea_autocomplete_inner_label %}
 
 {# EasyAdmin's CodeEditor form type #}

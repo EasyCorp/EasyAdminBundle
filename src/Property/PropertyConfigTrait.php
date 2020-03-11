@@ -264,14 +264,23 @@ trait PropertyConfigTrait
         return $this;
     }
 
+    /**
+     * @param string $optionName This value can use "dot" notation to set nested options (e.g. 'attr.class')
+     */
     public function setFormTypeOption(string $optionName, $optionValue): PropertyConfigInterface
     {
-        $optionParts = explode('.', $optionName);
-        if (1 === \count($optionParts)) {
-            $this->formTypeOptions[$optionName] = $optionValue;
-        } elseif (2 === \count($optionParts)) {
-            $this->formTypeOptions[$optionParts[0]][$optionParts[1]] = $optionValue;
+        // Code copied from https://github.com/adbario/php-dot-notation/blob/dc4053b44d71a5cf782e6c59dcbf09c78f036ceb/src/Dot.php#L437
+        // (c) Riku Särkinen <riku@adbar.io> - MIT License
+        $formTypeOptions = &$this->formTypeOptions;
+        foreach (explode('.', $optionName) as $key) {
+            if (!isset($formTypeOptions[$key]) || !is_array($formTypeOptions[$key])) {
+                $formTypeOptions[$key] = [];
+            }
+
+            $formTypeOptions = &$formTypeOptions[$key];
         }
+
+        $formTypeOptions = $optionValue;
 
         return $this;
     }

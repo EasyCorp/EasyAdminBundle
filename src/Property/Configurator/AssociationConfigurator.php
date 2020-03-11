@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudAutocompleteType;
 use EasyCorp\Bundle\EasyAdminBundle\Property\AssociationProperty;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -40,20 +41,6 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
             throw new \RuntimeException(sprintf('The "%s" property is not a Doctrine association, so it cannot be used as an association property.', $propertyName));
         }
 
-        // this enables autocompletion for compatible associations
-        $propertyConfig->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
-
-        if ($entityDto->isToOneAssociation($propertyName)) {
-            $this->configureToOneAssociation($propertyConfig);
-        }
-
-        if ($entityDto->isToManyAssociation($propertyName)) {
-            $this->configureToManyAssociation($propertyConfig);
-        }
-    }
-
-    private function configureToOneAssociation(PropertyConfigInterface $propertyConfig): void
-    {
         $targetEntityFqcn = $propertyConfig->getDoctrineMetadata()->get('targetEntity');
         $targetCrudControllerFqcn = $propertyConfig->getCustomOption(AssociationProperty::OPTION_CRUD_CONTROLLER)
             ?? $this->applicationContextProvider->getContext()->getCrudControllers()->getControllerFqcnByEntityFqcn($targetEntityFqcn);
@@ -62,11 +49,41 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
             throw new \RuntimeException(sprintf('It\'s not possible to find the CRUD controller associated to the "%s" entity of the "%s" property (which is a Doctrine association). Define the CRUD controller explicitly with the setCrudController() method on this property.', $targetEntityFqcn, $propertyConfig->getName()));
         }
 
-        $propertyConfig->setCustomOption(AssociationProperty::OPTION_TYPE, 'toOne');
+        $propertyConfig->setCustomOption(AssociationProperty::OPTION_CRUD_CONTROLLER, $targetCrudControllerFqcn);
+
+        if ($entityDto->isToOneAssociation($propertyName)) {
+            $this->configureToOneAssociation($propertyConfig);
+        }
+
+        if ($entityDto->isToManyAssociation($propertyName)) {
+            $this->configureToManyAssociation($propertyConfig);
+        }
+
+        if (true === $propertyConfig->getCustomOption(AssociationProperty::OPTION_AUTOCOMPLETE)) {
+            // this enables autocompletion for compatible associations
+            $propertyConfig->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+
+            $propertyConfig->setFormType(CrudAutocompleteType::class);
+            $autocompleteEndpointUrl = $this->crudUrlGenerator
+                ->buildForController($propertyConfig->getCustomOption(AssociationProperty::OPTION_CRUD_CONTROLLER))
+                ->setAction('autocomplete')
+                ->setEntityId(null)
+                ->generateUrl();
+
+            $propertyConfig->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
+        }
+    }
+
+    private function configureToOneAssociation(PropertyConfigInterface $propertyConfig): void
+    {
+        $propertyConfig->setCustomOption(AssociationProperty::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
 
         if (false === $propertyConfig->isRequired()) {
             $propertyConfig->setFormTypeOptionIfNotSet('placeholder', $this->translator->trans('label.form.empty_value', [], 'EasyAdminBundle'));
         }
+
+        $targetEntityFqcn = $propertyConfig->getDoctrineMetadata()->get('targetEntity');
+        $targetCrudControllerFqcn = $propertyConfig->getCustomOption(AssociationProperty::OPTION_CRUD_CONTROLLER);
 
         $targetEntityDto = null === $propertyConfig->getValue()
             ? $this->entityFactory->createForEntityFqcn($targetEntityFqcn)
@@ -80,7 +97,7 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
 
     private function configureToManyAssociation(PropertyConfigInterface $propertyConfig): void
     {
-        $propertyConfig->setCustomOption(AssociationProperty::OPTION_TYPE, 'toMany');
+        $propertyConfig->setCustomOption(AssociationProperty::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toMany');
 
         // associations different from *-to-one cannot be sorted
         $propertyConfig->setSortable(false);

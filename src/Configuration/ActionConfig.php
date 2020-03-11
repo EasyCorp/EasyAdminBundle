@@ -141,17 +141,17 @@ final class ActionConfig
 
     public function getAsDto(string $pageName): ActionConfigDto
     {
-        $actionsDto = [];
+        $batchActionsDto = [];
 
         /** @var Action $actionConfig */
-        foreach ($this->actions[$pageName] ?? [] as $action) {
-            $actionName = (string) $action;
+        foreach ($this->actions[$pageName] ?? [] as $batchAction) {
+            $actionName = (string) $batchAction;
             // apply the callables that update certain config options of the action
             if (\array_key_exists($actionName, $this->actionUpdateCallables[$pageName]) && null !== $callable = $this->actionUpdateCallables[$pageName][$actionName]) {
-                $action = \call_user_func($callable, $action);
+                $batchAction = \call_user_func($callable, $batchAction);
             }
 
-            $actionsDto[] = $action->getAsDto();
+            $actionsDto[] = $batchAction->getAsDto();
         }
 
         return ActionConfigDto::new($actionsDto, $this->disabledActions, $this->actionPermissions);
@@ -165,8 +165,8 @@ final class ActionConfig
     {
         if (Action::NEW === $actionName) {
             return Action::new(Action::NEW, 'action.new', null)
+                ->createAsGlobalAction()
                 ->linkToCrudAction(Action::NEW)
-                ->isGlobalAction()
                 ->setCssClass('btn btn-primary')
                 ->setTranslationDomain('EasyAdminBundle');
         }

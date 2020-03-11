@@ -13,7 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\NoPermissionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminBatchFormType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Model\FileUploadState;
@@ -431,7 +431,7 @@ trait AdminControllerTrait
 
     protected function createBatchForm(string $entityName): FormInterface
     {
-        return $this->get('form.factory')->createNamed('batch_form', EasyAdminBatchFormType::class, null, [
+        return $this->get('form.factory')->createNamed('batch_form', CrudBatchActionFormType::class, null, [
             'action' => $this->generateUrl('easyadmin', ['action' => 'batch', 'entity' => $entityName]),
             'entity' => $entityName,
         ]);

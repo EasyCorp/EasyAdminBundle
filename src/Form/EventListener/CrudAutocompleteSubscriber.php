@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormEvents;
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class EasyAdminAutocompleteSubscriber implements EventSubscriberInterface
+class CrudAutocompleteSubscriber implements EventSubscriberInterface
 {
     /**
      * {@inheritdoc}

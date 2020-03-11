@@ -15,8 +15,10 @@ window.addEventListener('load', function() {
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
     createNullableControls();
+
     createAutoCompleteFields();
-    $(document).on('ea.collection.item-added', createAutoCompleteFields);
+    document.addEventListener('ea.collection.item-added', function() { createAutoCompleteFields(); });
+
     createContentResizer();
     createNavigationToggler();
     createFileUploadFields();
@@ -42,38 +44,42 @@ function createNullableControls() {
 }
 
 function createAutoCompleteFields() {
-    var autocompleteFields = $('[data-ea-autocomplete-endpoint-url]');
+    var autocompleteFields = $('[data-widget="select2"]');
 
     autocompleteFields.each(function () {
         var $this = $(this),
-            url = $this.data('ea-autocomplete-endpoint-url');
+            autocompleteUrl = $this.data('ea-autocomplete-endpoint-url');
 
-        $this.select2({
-            theme: 'bootstrap',
-            ajax: {
-                url: url,
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return { 'query': params.term, 'page': params.page };
+        if (undefined === autocompleteUrl) {
+            $this.select2({ theme: 'bootstrap', placeholder: '', allowClear: true });
+        } else {
+            $this.select2({
+                theme: 'bootstrap',
+                ajax: {
+                    url: autocompleteUrl,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { 'query': params.term, 'page': params.page };
+                    },
+                    // to indicate that infinite scrolling can be used
+                    processResults: function (data, params) {
+                        return {
+                            results: $.map(data.results, function(result) {
+                                return { id: result.entityId, text: result.entityAsString };
+                            }),
+                            pagination: {
+                                more: data.has_next_page
+                            }
+                        };
+                    },
+                    cache: true
                 },
-                // to indicate that infinite scrolling can be used
-                processResults: function (data, params) {
-                    return {
-                        results: $.map(data.results, function(result) {
-                            return { id: result.entityId, text: result.entityAsString };
-                        }),
-                        pagination: {
-                            more: data.has_next_page
-                        }
-                    };
-                },
-                cache: true
-            },
-            placeholder: '',
-            allowClear: true,
-            minimumInputLength: 1
-        });
+                placeholder: '',
+                allowClear: false,
+                minimumInputLength: 1
+            });
+        }
     });
 }
 

@@ -28,7 +28,7 @@ const EaCollectionProperty = {
             collection.dataset.numItems = ++numItems;
             collection.querySelector('.form-widget .form-widget-compound > div').innerHTML += newItemHtml;
 
-            window.dispatchEvent(new Event('ea.collection.item-added'));
+            document.dispatchEvent(new Event('ea.collection.item-added'));
         });
     }
 };

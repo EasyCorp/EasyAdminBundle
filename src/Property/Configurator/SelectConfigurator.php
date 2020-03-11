@@ -44,5 +44,9 @@ final class SelectConfigurator implements PropertyConfiguratorInterface
             $selectedChoice = array_flip($choices)[$value];
             $propertyConfig->setFormattedValue($this->translator->trans($selectedChoice, $translationParameters));
         }
+
+        if (true === $propertyConfig->getCustomOption(SelectProperty::OPTION_AUTOCOMPLETE)) {
+            $propertyConfig->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
+        }
     }
 }

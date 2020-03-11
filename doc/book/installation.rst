@@ -6,7 +6,7 @@ integrate EasyAdmin in your application:
 
 .. code-block:: terminal
 
-    $ composer require admin
+    $ composer require easycorp/easyadmin-bundle
 
 This command executes a Symfony Flex recipe that creates the following file to
 enable the routes of the bundle:

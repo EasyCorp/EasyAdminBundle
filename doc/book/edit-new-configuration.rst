@@ -270,17 +270,17 @@ Virtual Properties
 
 The ``fields`` option can also include properties that are not defined in the
 Doctrine entities. These properties are called "virtual properties" and the only
-requirement is that they must define a *setter* method for them. For example, if
-your entity contains a ``setName()`` method but not a ``name`` property, the
+requirement is that they must define a *getter* method for them. For example, if
+your entity contains a ``getName()`` method but not a ``name`` property, the
 ``fields`` option can include the ``name`` *virtual property* to set its value.
 
 .. note::
 
     The values or virtual properties are set using the `PropertyAccess component`_
-    from Symfony, which requires to follow a strict syntax for setter names:
+    from Symfony, which requires to follow a strict syntax for getter names:
     ``set`` + camelized version of the property name. Example: ``name`` ->
-    ``setName()``; ``firstName`` -> ``setFirstName()``; ``first_and_last_name`` ->
-    ``setFirstAndLastName()``.
+    ``getName()``; ``firstName`` -> ``getFirstName()``; ``first_and_last_name`` ->
+    ``getFirstAndLastName()``.
 
 Defining Custom Form Options
 ----------------------------

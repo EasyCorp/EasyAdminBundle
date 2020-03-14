@@ -1,9 +1,0 @@
-# TEST
-# configuration format #3 expanded to define the entity label explicitly
-
-# CONFIGURATION
-easy_admin:
-    entities:
-        Category:
-            class: AppTestBundle\Entity\UnitTests\Category
-            label: Category

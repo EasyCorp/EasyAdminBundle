@@ -1,7 +1,0 @@
-# TEST
-# configuration format #1: no labels and no options, just the entity namespace
-
-# CONFIGURATION
-easy_admin:
-    entities:
-        - AppTestBundle\Entity\UnitTests\Category

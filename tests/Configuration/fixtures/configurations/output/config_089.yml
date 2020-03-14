@@ -1,5 +1,0 @@
-easy_admin:
-    design:
-        form_theme:
-            - '@App/form/custom_layout.html.twig'
-            - form_div_layout.html.twig

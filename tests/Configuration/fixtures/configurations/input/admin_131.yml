@@ -1,8 +1,0 @@
-# TEST
-# when defining actions in the global "actions" configuration, their order must
-# be preserved to display them in the same order in the backend interface
-
-# CONFIGURATION
-easy_admin:
-    edit:
-        actions: ['list', 'delete']

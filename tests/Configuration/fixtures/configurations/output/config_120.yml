@@ -1,6 +1,0 @@
-easy_admin:
-    design:
-        assets:
-            favicon:
-                path: favicon.bar
-                mime_type: foo/bar

@@ -1,6 +1,0 @@
-easy_admin:
-    design:
-        assets:
-            favicon:
-                path: favicon.png
-                mime_type: image/png

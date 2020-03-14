@@ -1,9 +1,0 @@
-easy_admin:
-    entities:
-        Category:
-            show:
-                actions:
-                    delete:
-                        name: delete
-                    list:
-                        name: list

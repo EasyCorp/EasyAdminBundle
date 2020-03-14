@@ -17,6 +17,7 @@ class EasyAdminBundle extends Bundle
     public const VERSION = '3.0.0-DEV';
     public const REQUEST_ATTRIBUTE_NAME = 'easyadmin_context';
 
+    // TODO: remove this method when EasyAdmin 3 is released.
     public function boot()
     {
         if ('cli' !== \PHP_SAPI) {
@@ -26,10 +27,6 @@ class EasyAdminBundle extends Bundle
 
     public function build(ContainerBuilder $container)
     {
-        //$container->addCompilerPass(new EasyAdminFormTypePass(), PassConfig::TYPE_BEFORE_REMOVING);
-        // this compiler pass must run earlier than FormPass to clear
-        // the 'form.type_guesser' tag for 'easyadmin.filter.type_guesser' services
         $container->addCompilerPass(new FilterTypePass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 10);
-        //$container->addCompilerPass(new EasyAdminConfigPass());
     }
 }

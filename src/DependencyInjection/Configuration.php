@@ -7,10 +7,13 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * DON'T REMOVE this class entirely. Otherwise, when upgrading from EA2 to EA3, users
- * will see an error because nobody is able to parse the 'easy_admin' config prefix.
+ * @deprecated
  *
- * Defines the configuration options of the bundle and validates its values.
+ * This class is kept for backward-compatibility reasons. Otherwise, when installing EasyAdmin 3.0
+ * in an application using EasyAdmin 2.x, users will see a "Unrecognized option ..." error.
+ *
+ * Starting from EasyAdmin 3.0, this bundle no longer defines any traditional configuration option.
+ * Everything is configured via PHP code in classes.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */

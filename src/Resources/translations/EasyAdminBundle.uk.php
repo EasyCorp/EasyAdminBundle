@@ -21,7 +21,7 @@ return [
         'next' => 'Наступна',
         'last' => 'Остання',
         'counter' => '<strong>%start%</strong> - <strong>%end%</strong> з <strong>%results%</strong>',
-        // 'results' => '',
+        'results' => '{0} Немає результатів|{1} <strong>1</strong> результат|{2,3,4} <strong>%count%</strong> результати|[5,Inf] <strong>%count%</strong> результатів',
     ],
 
     'label' => [

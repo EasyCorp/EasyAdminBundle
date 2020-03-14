@@ -63,9 +63,9 @@ return [
     ],
 
     'batch_action_modal' => [
-        // 'title' => '',
-        // 'content' => '',
-        // 'action' => '',
+        'title' => 'Seçili öğeleri değiştirmek istediğinize emin misiniz?',
+        'content' => 'Bu işlem geri alınamaz.',
+        'action' => 'İlerle',
     ],
 
     'delete_modal' => [

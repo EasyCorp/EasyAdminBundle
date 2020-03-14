@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        // 'hidden_results' => '',
+        'hidden_results' => 'Některé výsledky nebohly být zobrazeny neboď nemáte patřičná oprávnění',
         'no_results' => 'Žádné položky.',
     ],
 
@@ -74,33 +74,33 @@ return [
     ],
 
     'filter' => [
-        // 'title' => '',
-        // 'button.clear' => '',
-        // 'button.apply' => '',
-        // 'label.is_equal_to' => '',
-        // 'label.is_not_equal_to' => '',
-        // 'label.is_greater_than' => '',
-        // 'label.is_greater_than_or_equal_to' => '',
-        // 'label.is_less_than' => '',
-        // 'label.is_less_than_or_equal_to' => '',
-        // 'label.is_between' => '',
-        // 'label.contains' => '',
-        // 'label.not_contains' => '',
-        // 'label.starts_with' => '',
-        // 'label.ends_with' => '',
-        // 'label.exactly' => '',
-        // 'label.not_exactly' => '',
-        // 'label.is_same' => '',
-        // 'label.is_not_same' => '',
-        // 'label.is_after' => '',
-        // 'label.is_after_or_same' => '',
-        // 'label.is_before' => '',
-        // 'label.is_before_or_same' => '',
+        'title' => 'Filtry',
+        'button.clear' => 'Zrušit',
+        'button.apply' => 'Aplikovat',
+        'label.is_equal_to' => 'rovná se',
+        'label.is_not_equal_to' => 'nerovná se',
+        'label.is_greater_than' => 'je větší než',
+        'label.is_greater_than_or_equal_to' => 'je větší než nebo rovno',
+        'label.is_less_than' => 'je menší než',
+        'label.is_less_than_or_equal_to' => 'je menší než nebo rovno',
+        'label.is_between' => 'je mezi',
+        'label.contains' => 'obsahuje',
+        'label.not_contains' => 'neobsahuje',
+        'label.starts_with' => 'začíná na',
+        'label.ends_with' => 'končí na',
+        'label.exactly' => 'je přesně',
+        'label.not_exactly' => 'není přesně',
+        'label.is_same' => 'je stejný',
+        'label.is_not_same' => 'není stejný',
+        'label.is_after' => 'je po',
+        'label.is_after_or_same' => 'je po nebo stejně',
+        'label.is_before' => 'je před',
+        'label.is_before_or_same' => 'je před nebo stejně',
     ],
 
     'form' => [
-        // 'are_you_sure' => '',
-        // 'tab.error_badge_title' => '',
+        'are_you_sure' => 'Neuložili jste změny provedené v tomto formuláři.',
+        'tab.error_badge_title' => '{1} Jeden neplatný vstup|{2,3,4} %count% neplatné vstupy|]5,Inf] %count% neplatných vstupů',
     ],
 
     'user' => [
@@ -108,7 +108,7 @@ return [
         'unnamed' => 'Nepojmenovaný uživatel',
         'anonymous' => 'Anonymní uživatel',
         'sign_out' => 'Odhlásit se',
-        // 'exit_impersonation' => '',
+        'exit_impersonation' => 'Ukončit impersonaci',
     ],
 
     'login_page' => [
@@ -118,8 +118,8 @@ return [
     ],
 
     'exception' => [
-        // 'entity_not_found' => '',
-        // 'entity_remove' => '',
-        // 'forbidden_action' => '',
+        'entity_not_found' => 'Tato položka již není dostupná.',
+        'entity_remove' => 'Tato položka nemůže být smazána, neboť na ní závisí ostatní položky.',
+        'forbidden_action' => 'Požadovaná akce nemůže být provedena na této položce.',
     ],
 ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
+namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;

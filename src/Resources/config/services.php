@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminResourceCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminContextListener;
-use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudActionResponseListener;
+use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudResponseListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
@@ -107,7 +107,7 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, ref('twig'))
             ->tag('kernel.event_listener', ['event' => ControllerEvent::class])
 
-        ->set(CrudActionResponseListener::class)
+        ->set(CrudResponseListener::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('twig'))
             ->tag('kernel.event_listener', ['event' => ViewEvent::class])

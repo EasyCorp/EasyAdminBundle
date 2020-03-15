@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Twig\Environment;
 
-final class CrudActionResponseListener
+final class CrudResponseListener
 {
     private $adminContextProvider;
     private $twig;

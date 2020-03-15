@@ -1,12 +1,12 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Formatter;
+namespace EasyCorp\Bundle\EasyAdminBundle\Intl;
 
 use Twig\Error\RuntimeError;
 
 /**
  * Copied from https://github.com/twigphp/intl-extra/blob/2.x/src/IntlExtension.php
- * (c) Fabien Potencier.
+ * (c) Fabien Potencier - MIT License
  */
 final class IntlFormatter
 {
@@ -102,7 +102,6 @@ final class IntlFormatter
 
     private $dateFormatters = [];
     private $numberFormatters = [];
-    private $dateFormatterPrototype;
     private $numberFormatterPrototype;
 
     public function formatCurrency($amount, string $currency, array $attrs = [], string $locale = null): string
@@ -129,11 +128,6 @@ final class IntlFormatter
         }
 
         return $ret;
-    }
-
-    public function formatNumberStyle(string $style, $number, array $attrs = [], string $type = 'default', string $locale = null): string
-    {
-        return $this->formatNumber($number, $attrs, $style, $type, $locale);
     }
 
     /**

@@ -6,7 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Formatter\IntlFormatter;
+use EasyCorp\Bundle\EasyAdminBundle\Intl\IntlFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Property\DateProperty;
 use EasyCorp\Bundle\EasyAdminBundle\Property\DateTimeProperty;
 use EasyCorp\Bundle\EasyAdminBundle\Property\TimeProperty;

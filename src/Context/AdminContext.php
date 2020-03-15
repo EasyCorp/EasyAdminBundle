@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\CrudControllerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Config\TemplateRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;

@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Property\DateTimeProperty;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

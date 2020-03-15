@@ -31,11 +31,11 @@ final class DateTimeConfigurator implements PropertyConfiguratorInterface
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
-        $crudConfig = $this->adminContextProvider->getContext()->getCrud();
-        $defaultDateFormat = $crudConfig->getDateFormat();
-        $defaultTimeFormat = $crudConfig->getTimeFormat();
-        $defaultDateTimePattern = $crudConfig->getDateTimePattern();
-        $defaultTimezone = $crudConfig->getTimezone();
+        $crud = $this->adminContextProvider->getContext()->getCrud();
+        $defaultDateFormat = $crud->getDateFormat();
+        $defaultTimeFormat = $crud->getTimeFormat();
+        $defaultDateTimePattern = $crud->getDateTimePattern();
+        $defaultTimezone = $crud->getTimezone();
 
         $dateFormat = $propertyConfig->getCustomOption(DateTimeProperty::OPTION_DATE_FORMAT) ?? $defaultDateFormat;
         $timeFormat = $propertyConfig->getCustomOption(DateTimeProperty::OPTION_TIME_FORMAT) ?? $defaultTimeFormat;

@@ -2,14 +2,14 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudControllerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Config\TemplateRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
@@ -34,7 +34,7 @@ final class AdminContextFactory
     public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext
     {
         $crudAction = $request->query->get('crudAction');
-        $validPageNames = [CrudConfig::PAGE_INDEX, CrudConfig::PAGE_DETAIL, CrudConfig::PAGE_EDIT, CrudConfig::PAGE_NEW];
+        $validPageNames = [Crud::PAGE_INDEX, Crud::PAGE_DETAIL, Crud::PAGE_EDIT, Crud::PAGE_NEW];
         $pageName = \in_array($crudAction, $validPageNames) ? $crudAction : null;
 
         $dashboardDto = $this->getDashboardDto($request, $dashboardController);
@@ -60,25 +60,25 @@ final class AdminContextFactory
             ->with(['routeName' => $currentRouteName]);
     }
 
-    private function getAssetDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetDto
+    private function getAssetDto(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AssetsDto
     {
-        $defaultAssetConfig = $dashboardController->configureAssets();
+        $defaultAssets = $dashboardController->configureAssets();
 
         if (null === $crudController) {
-            return $defaultAssetConfig->getAsDto();
+            return $defaultAssets->getAsDto();
         }
 
-        return $crudController->configureAssets($defaultAssetConfig)->getAsDto();
+        return $crudController->configureAssets($defaultAssets)->getAsDto();
     }
 
-    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionConfigDto $actionDtoCollection, ?string $crudAction, ?string $pageName): ?CrudDto
+    private function getCrudDto(CrudControllerRegistry $crudControllerRegistry, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ActionsDto $actionDtoCollection, ?string $crudAction, ?string $pageName): ?CrudDto
     {
         if (null === $crudController) {
             return null;
         }
 
-        $defaultCrudConfig = $dashboardController->configureCrud();
-        $crudDto = $crudController->configureCrud($defaultCrudConfig)->getAsDto();
+        $defaultCrud = $dashboardController->configureCrud();
+        $crudDto = $crudController->configureCrud($defaultCrud)->getAsDto();
 
         $entityFqcn = $crudControllerRegistry->getEntityFqcnByControllerFqcn(\get_class($crudController));
         $entityClassName = basename(str_replace('\\', '/', $entityFqcn));
@@ -94,15 +94,15 @@ final class AdminContextFactory
         ]);
     }
 
-    private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionConfigDto
+    private function getActions(DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController, ?string $pageName): ActionsDto
     {
         if (null === $crudController || null === $pageName) {
-            return ActionConfigDto::new();
+            return ActionsDto::new();
         }
 
-        $defaultActionConfig = $dashboardController->configureActions();
+        $defaultActions = $dashboardController->configureActions();
 
-        return $crudController->configureActions($defaultActionConfig)->getAsDto($pageName);
+        return $crudController->configureActions($defaultActions)->getAsDto($pageName);
     }
 
     private function getTemplateRegistry(DashboardControllerInterface $dashboardController, ?CrudDto $crudDto): TemplateRegistry

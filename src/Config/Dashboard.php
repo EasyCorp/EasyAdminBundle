@@ -1,13 +1,13 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 
 /**
  * Holds the configuration options of the dashboard.
  */
-final class DashboardConfig
+final class Dashboard
 {
     private $faviconPath = 'favicon.ico';
     private $title = 'EasyAdmin';

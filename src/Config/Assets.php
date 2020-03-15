@@ -1,10 +1,10 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 
-final class AssetConfig
+final class Assets
 {
     private $cssFiles = [];
     private $jsFiles = [];
@@ -44,8 +44,8 @@ final class AssetConfig
         return $this;
     }
 
-    public function getAsDto(): AssetDto
+    public function getAsDto(): AssetsDto
     {
-        return new AssetDto($this->cssFiles, $this->jsFiles, $this->headContents, $this->bodyContents);
+        return new AssetsDto($this->cssFiles, $this->jsFiles, $this->headContents, $this->bodyContents);
     }
 }

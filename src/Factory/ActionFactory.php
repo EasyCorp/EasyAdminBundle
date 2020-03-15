@@ -2,10 +2,10 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
@@ -32,7 +32,7 @@ final class ActionFactory
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
 
-    public function create(ActionConfigDto $actionConfigDto): ActionConfigDto
+    public function create(ActionsDto $actionsDto): ActionsDto
     {
         $adminContext = $this->adminContextProvider->getContext();
         $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
@@ -40,7 +40,7 @@ final class ActionFactory
         $currentPage = $adminContext->getCrud()->getCurrentPage();
 
         $builtActions = [];
-        foreach ($actionConfigDto->getActions() as $actionDto) {
+        foreach ($actionsDto->getActions() as $actionDto) {
             // TODO: remove this when we reenable "batch actions"
             if ($actionDto->isBatchAction()) {
                 throw new \RuntimeException(sprintf('Batch actions are not supported yet, but we\'ll add suport for them very soon. Meanwhile, remove the "%s" batch action from the "%s" page.', $actionDto->getName(), $currentPage));
@@ -50,7 +50,7 @@ final class ActionFactory
                 continue;
             }
 
-            if (CrudConfig::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
+            if (Crud::PAGE_INDEX !== $currentPage && $actionDto->isBatchAction()) {
                 throw new \RuntimeException(sprintf('Batch actions can be added only to the "index" page, but the "%s" batch action is defined in the "%s" page.', $actionDto->getName(), $currentPage));
             }
 
@@ -65,16 +65,16 @@ final class ActionFactory
             ]);
         }
 
-        return $actionConfigDto->updateActions($builtActions);
+        return $actionsDto->updateActions($builtActions);
     }
 
-    public function createForEntity(ActionConfigDto $actionConfigDto, EntityDto $entityDto): EntityDto
+    public function createForEntity(ActionsDto $actionsDto, EntityDto $entityDto): EntityDto
     {
         $adminContext = $this->adminContextProvider->getContext();
         $currentPage = $adminContext->getCrud()->getCurrentPage();
 
         $builtActions = [];
-        foreach ($actionConfigDto->getActions() as $actionDto) {
+        foreach ($actionsDto->getActions() as $actionDto) {
             if (!$actionDto->isEntityAction()) {
                 continue;
             }
@@ -83,7 +83,7 @@ final class ActionFactory
                 continue;
             }
 
-            if (CrudConfig::PAGE_EDIT === $currentPage) {
+            if (Crud::PAGE_EDIT === $currentPage) {
                 // this is needed because buttons are rendered outside of the <form> element
                 $formId = sprintf('edit-%s-form', $entityDto->getName());
                 $actionDto = $actionDto->with([
@@ -91,7 +91,7 @@ final class ActionFactory
                 ]);
             }
 
-            if (CrudConfig::PAGE_NEW === $currentPage) {
+            if (Crud::PAGE_NEW === $currentPage) {
                 // this is needed because buttons are rendered outside of the <form> element
                 $formId = sprintf('new-%s-form', $entityDto->getName());
                 $actionDto = $actionDto->with([

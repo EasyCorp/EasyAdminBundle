@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-final class ActionConfigDto
+final class ActionsDto
 {
     /** @var ActionDto[] */
     private $batchActionsDto;

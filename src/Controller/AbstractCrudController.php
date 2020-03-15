@@ -5,10 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
@@ -47,19 +47,19 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractCrudController extends AbstractController implements CrudControllerInterface
 {
-    public function configureCrud(CrudConfig $crudConfig): CrudConfig
+    public function configureCrud(Crud $crud): Crud
     {
-        return $crudConfig;
+        return $crud;
     }
 
-    public function configureAssets(AssetConfig $assetConfig): AssetConfig
+    public function configureAssets(Assets $assets): Assets
     {
-        return $assetConfig;
+        return $assets;
     }
 
-    public function configureActions(ActionConfig $actionConfig): ActionConfig
+    public function configureActions(Actions $actions): Actions
     {
-        return $actionConfig;
+        return $actions;
     }
 
     /**
@@ -106,13 +106,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         $entityInstances = $paginator->getResults();
-        $propertiesConfig = $this->configureProperties(CrudConfig::PAGE_INDEX);
+        $propertiesConfig = $this->configureProperties(Crud::PAGE_INDEX);
         $propertiesConfig = \is_array($propertiesConfig) ? $propertiesConfig : iterator_to_array($propertiesConfig);
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
         $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $propertiesConfig, $actionsConfig);
 
         $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
-            'pageName' => CrudConfig::PAGE_INDEX,
+            'pageName' => Crud::PAGE_INDEX,
             'templateName' => 'crud/index',
             'entities' => $entities,
             'paginator' => $paginator,
@@ -145,7 +145,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $entityDto = $this->get(EntityFactory::class)->create($propertiesConfig, $actionsConfig);
 
         $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
-            'pageName' => CrudConfig::PAGE_DETAIL,
+            'pageName' => Crud::PAGE_DETAIL,
             'templateName' => 'crud/detail',
             'entity' => $entityDto,
         ]));
@@ -171,7 +171,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($this->getContext());
         }
 
-        $propertiesConfig = $this->configureProperties(CrudConfig::PAGE_EDIT);
+        $propertiesConfig = $this->configureProperties(Crud::PAGE_EDIT);
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
         $entityDto = $this->get(EntityFactory::class)->create($propertiesConfig, $actionsConfig);
         $entityInstance = $entityDto->getInstance();
@@ -222,7 +222,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
-            'pageName' => CrudConfig::PAGE_EDIT,
+            'pageName' => Crud::PAGE_EDIT,
             'templateName' => 'crud/edit',
             'edit_form' => $editForm,
             'entity' => $entityDto->updateInstance($entityInstance),
@@ -249,7 +249,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($this->getContext());
         }
 
-        $propertiesConfig = $this->configureProperties(CrudConfig::PAGE_NEW);
+        $propertiesConfig = $this->configureProperties(Crud::PAGE_NEW);
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
         $entityDto = $this->get(EntityFactory::class)->create($propertiesConfig, $actionsConfig);
         $entityInstance = $this->createEntity($entityDto->getFqcn());
@@ -293,7 +293,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         }
 
         $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
-            'pageName' => CrudConfig::PAGE_NEW,
+            'pageName' => Crud::PAGE_NEW,
             'templateName' => 'crud/new',
             'entity' => $entityDto,
             'new_form' => $newForm,

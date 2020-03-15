@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
-final class AssetDto
+final class AssetsDto
 {
     private $cssFiles;
     private $jsFiles;

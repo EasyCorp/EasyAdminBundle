@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Configuration\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
@@ -52,9 +52,9 @@ final class MenuFactory
         return new MainMenuDto($this->buildMenuItems($menuItems), $selectedIndex, $selectedSubIndex);
     }
 
-    public function createUserMenu(UserMenuConfig $userMenuConfig): UserMenuDto
+    public function createUserMenu(UserMenu $userMenu): UserMenuDto
     {
-        $userMenuDto = $userMenuConfig->getAsDto();
+        $userMenuDto = $userMenu->getAsDto();
         $builtUserMenuItems = $this->buildMenuItems($userMenuDto->getItems());
 
         return $userMenuDto->with([

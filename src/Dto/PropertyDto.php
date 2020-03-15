@@ -26,7 +26,7 @@ final class PropertyDto
     private $customOptions;
     private $doctrineMetadata;
 
-    public function __construct(string $type, string $name, $value, $formattedValue, ?string $formType, array $formTypeOptions, ?bool $sortable, ?bool $virtual, ?string $label, ?string $permission, ?string $textAlign, ?string $help, ?string $cssClass, array $translationParameters, ?string $templateName, ?string $templatePath, AssetDto $assetDto, ParameterBag $customOptions, ParameterBag $doctrineMetadata)
+    public function __construct(string $type, string $name, $value, $formattedValue, ?string $formType, array $formTypeOptions, ?bool $sortable, ?bool $virtual, ?string $label, ?string $permission, ?string $textAlign, ?string $help, ?string $cssClass, array $translationParameters, ?string $templateName, ?string $templatePath, AssetsDto $assetDto, ParameterBag $customOptions, ParameterBag $doctrineMetadata)
     {
         $this->type = $type;
         $this->name = $name;
@@ -136,7 +136,7 @@ final class PropertyDto
         return $this->templatePath;
     }
 
-    public function getAssets(): AssetDto
+    public function getAssets(): AssetsDto
     {
         return $this->assets;
     }

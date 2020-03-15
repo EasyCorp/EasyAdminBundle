@@ -2,13 +2,13 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Controller;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\DashboardConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,19 +22,19 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 abstract class AbstractDashboardController extends AbstractController implements DashboardControllerInterface
 {
-    public function configureDashboard(): DashboardConfig
+    public function configureDashboard(): Dashboard
     {
-        return DashboardConfig::new();
+        return Dashboard::new();
     }
 
-    public function configureUserMenu(UserInterface $user): UserMenuConfig
+    public function configureUserMenu(UserInterface $user): UserMenu
     {
         $userMenuItems = [MenuItem::linkToLogout('user.sign_out', 'fa-sign-out')->setTranslationDomain('EasyAdminBundle')];
         if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {
             $userMenuItems[] = MenuItem::linkToExitImpersonation('user.exit_impersonation', 'fa-user-lock')->setTranslationDomain('EasyAdminBundle');
         }
 
-        return UserMenuConfig::new()
+        return UserMenu::new()
             ->displayUserName()
             ->displayUserAvatar()
             ->setName(method_exists($user, '__toString') ? (string) $user : $user->getUsername())
@@ -42,32 +42,32 @@ abstract class AbstractDashboardController extends AbstractController implements
             ->setMenuItems($userMenuItems);
     }
 
-    public function configureAssets(): AssetConfig
+    public function configureAssets(): Assets
     {
-        return AssetConfig::new();
+        return Assets::new();
     }
 
-    public function configureCrud(): CrudConfig
+    public function configureCrud(): Crud
     {
-        return CrudConfig::new();
+        return Crud::new();
     }
 
-    public function configureActions(): ActionConfig
+    public function configureActions(): Actions
     {
-        return ActionConfig::new()
-            ->addAction(CrudConfig::PAGE_INDEX, Action::NEW)
-            ->addAction(CrudConfig::PAGE_INDEX, Action::EDIT)
-            ->addAction(CrudConfig::PAGE_INDEX, Action::DELETE)
+        return Actions::new()
+            ->add(Crud::PAGE_INDEX, Action::NEW)
+            ->add(Crud::PAGE_INDEX, Action::EDIT)
+            ->add(Crud::PAGE_INDEX, Action::DELETE)
 
-            ->addAction(CrudConfig::PAGE_DETAIL, Action::EDIT)
-            ->addAction(CrudConfig::PAGE_DETAIL, Action::INDEX)
-            ->addAction(CrudConfig::PAGE_DETAIL, Action::DELETE)
+            ->add(Crud::PAGE_DETAIL, Action::EDIT)
+            ->add(Crud::PAGE_DETAIL, Action::INDEX)
+            ->add(Crud::PAGE_DETAIL, Action::DELETE)
 
-            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_RETURN)
-            ->addAction(CrudConfig::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
+            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN)
+            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
 
-            ->addAction(CrudConfig::PAGE_NEW, Action::SAVE_AND_RETURN)
-            ->addAction(CrudConfig::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
+            ->add(Crud::PAGE_NEW, Action::SAVE_AND_RETURN)
+            ->add(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
         ;
     }
 

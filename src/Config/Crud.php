@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\DateTimeProperty;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class CrudConfig
+class Crud
 {
     public const PAGE_DETAIL = 'detail';
     public const PAGE_EDIT = 'edit';

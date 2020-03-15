@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 
 use ArrayObject;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
@@ -127,7 +127,7 @@ class CrudFormType extends AbstractType
     {
         // some properties and field types require CSS/JS assets to work properly
         // get all property assets and pass them as a form variable
-        $allFormFieldAssets = new AssetDto();
+        $allFormFieldAssets = new AssetsDto();
         /** @var PropertyDto $propertyDto */
         foreach ($options['entityDto']->getProperties() as $propertyDto) {
             $allFormFieldAssets = $allFormFieldAssets->mergeWith($propertyDto->getAssets());

@@ -1,10 +1,10 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\UserMenuDto;
 
-final class UserMenuConfig
+final class UserMenu
 {
     private $displayName = true;
     private $displayAvatar = true;

@@ -22,7 +22,7 @@ class DateTimeProperty implements PropertyConfigInterface
             ->setType('datetime')
             ->setFormType(DateTimeType::class)
             ->setTemplateName('property/datetime')
-            // the proper default values of these options are set on the CrudConfig class
+            // the proper default values of these options are set on the Crud class
             ->setCustomOption(self::OPTION_DATE_FORMAT, null)
             ->setCustomOption(self::OPTION_TIME_FORMAT, null)
             ->setCustomOption(self::OPTION_DATETIME_PATTERN, null)

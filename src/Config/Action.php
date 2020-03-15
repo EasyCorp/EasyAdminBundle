@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyCorp\Bundle\EasyAdminBundle\Configuration;
+namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyModifierTrait;
@@ -52,13 +52,13 @@ final class Action
 
     public static function new(string $name, ?string $label = null, ?string $icon = null): self
     {
-        $actionConfig = new self();
-        $actionConfig->name = $name;
-        $actionConfig->label = $label ?? ucfirst($name);
-        $actionConfig->icon = $icon;
-        $actionConfig->type = self::TYPE_ENTITY;
+        $action = new self();
+        $action->name = $name;
+        $action->label = $label ?? ucfirst($name);
+        $action->icon = $icon;
+        $action->type = self::TYPE_ENTITY;
 
-        return $actionConfig;
+        return $action;
     }
 
     public function createAsGlobalAction(): self
@@ -71,13 +71,6 @@ final class Action
     public function createAsBatchAction(): self
     {
         $this->type = self::TYPE_BATCH;
-
-        return $this;
-    }
-
-    public function isDisabledAction(bool $isDisabled = true): self
-    {
-        $this->type = self::TYPE_DISABLED;
 
         return $this;
     }

@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 final class CrudDto
 {
@@ -12,16 +12,16 @@ final class CrudDto
 
     private $pageName;
     private $actionName;
-    /** @var ActionConfigDto */
+    /** @var ActionsDto */
     private $actions;
     private $entityFqcn;
     private $labelInSingular;
     private $labelInPlural;
     private $defaultPageTitles = [
-        CrudConfig::PAGE_DETAIL => 'page_title.detail',
-        CrudConfig::PAGE_EDIT => 'page_title.edit',
-        CrudConfig::PAGE_INDEX => 'page_title.index',
-        CrudConfig::PAGE_NEW => 'page_title.new',
+        Crud::PAGE_DETAIL => 'page_title.detail',
+        Crud::PAGE_EDIT => 'page_title.edit',
+        Crud::PAGE_INDEX => 'page_title.index',
+        Crud::PAGE_NEW => 'page_title.new',
     ];
     private $customPageTitles;
     private $helpMessages;
@@ -185,7 +185,7 @@ final class CrudDto
         return $this->actionName;
     }
 
-    public function getActions(): ActionConfigDto
+    public function getActions(): ActionsDto
     {
         return $this->actions;
     }

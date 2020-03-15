@@ -2,12 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\DashboardConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -17,15 +17,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 interface DashboardControllerInterface
 {
-    public function configureDashboard(): DashboardConfig;
+    public function configureDashboard(): Dashboard;
 
-    public function configureCrud(): CrudConfig;
+    public function configureCrud(): Crud;
 
-    public function configureActions(): ActionConfig;
+    public function configureActions(): Actions;
 
-    public function configureAssets(): AssetConfig;
+    public function configureAssets(): Assets;
 
-    public function configureUserMenu(UserInterface $user): UserMenuConfig;
+    public function configureUserMenu(UserInterface $user): UserMenu;
 
     /**
      * @return MenuItem[]

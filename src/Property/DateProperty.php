@@ -15,7 +15,7 @@ class DateProperty implements PropertyConfigInterface
             ->setType('date')
             ->setFormType(DateType::class)
             ->setTemplateName('property/date')
-            // the proper default values of these options are set on the CrudConfig class
+            // the proper default values of these options are set on the Crud class
             ->setCustomOption(DateTimeProperty::OPTION_DATE_FORMAT, null)
             ->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, null)
             ->setCustomOption(DateTimeProperty::OPTION_TIMEZONE, null);

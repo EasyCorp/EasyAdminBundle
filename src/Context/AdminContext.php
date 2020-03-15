@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudControllerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Config\CrudControllerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Config\TemplateRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\DashboardDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\I18nDto;
@@ -38,7 +38,7 @@ final class AdminContext
     private $mainMenuDto;
     private $userMenuDto;
 
-    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllerRegistry, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetDto $assetDto, ?CrudDto $crudDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
+    public function __construct(Request $request, ?UserInterface $user, I18nDto $i18nDto, CrudControllerRegistry $crudControllerRegistry, DashboardDto $dashboardDto, DashboardControllerInterface $dashboardController, AssetsDto $assetDto, ?CrudDto $crudDto, ?SearchDto $searchDto, MenuFactory $menuFactory, TemplateRegistry $templateRegistry)
     {
         $this->request = $request;
         $this->user = $user;
@@ -73,7 +73,7 @@ final class AdminContext
         return $this->user;
     }
 
-    public function getAssets(): AssetDto
+    public function getAssets(): AssetsDto
     {
         return $this->assetDto;
     }
@@ -113,12 +113,12 @@ final class AdminContext
         }
 
         if (null === $this->user) {
-            return UserMenuConfig::new()->getAsDto();
+            return UserMenu::new()->getAsDto();
         }
 
-        $userMenuConfig = $this->dashboardControllerInstance->configureUserMenu($this->user);
+        $userMenu = $this->dashboardControllerInstance->configureUserMenu($this->user);
 
-        return $this->userMenuDto = $this->menuFactory->createUserMenu($userMenuConfig);
+        return $this->userMenuDto = $this->menuFactory->createUserMenu($userMenu);
     }
 
     public function getCrud(): ?CrudDto

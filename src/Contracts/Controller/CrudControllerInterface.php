@@ -2,9 +2,9 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller;
 
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,11 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 interface CrudControllerInterface
 {
-    public function configureCrud(CrudConfig $crudConfig): CrudConfig;
+    public function configureCrud(Crud $crud): Crud;
 
-    public function configureAssets(AssetConfig $assetConfig): AssetConfig;
+    public function configureAssets(Assets $assets): Assets;
 
-    public function configureActions(ActionConfig $actionConfig): ActionConfig;
+    public function configureActions(Actions $actions): Actions;
 
     /**
      * @return PropertyConfigInterface[]

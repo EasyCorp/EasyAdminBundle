@@ -15,7 +15,7 @@ class TimeProperty implements PropertyConfigInterface
             ->setType('time')
             ->setFormType(DateTimeType::class)
             ->setTemplateName('property/time')
-            // the proper default values of these options are set on the CrudConfig class
+            // the proper default values of these options are set on the Crud class
             ->setCustomOption(DateTimeProperty::OPTION_TIME_FORMAT, null)
             ->setCustomOption(DateTimeProperty::OPTION_DATETIME_PATTERN, null)
             ->setCustomOption(DateTimeProperty::OPTION_TIMEZONE, null);

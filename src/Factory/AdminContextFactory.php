@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\TemplateRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-final class ApplicationContextFactory
+final class AdminContextFactory
 {
     private $tokenStorage;
     private $menuFactory;
@@ -31,7 +31,7 @@ final class ApplicationContextFactory
         $this->crudControllers = CrudControllerRegistry::new($crudControllers);
     }
 
-    public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): ApplicationContext
+    public function create(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext
     {
         $crudAction = $request->query->get('crudAction');
         $validPageNames = [CrudConfig::PAGE_INDEX, CrudConfig::PAGE_DETAIL, CrudConfig::PAGE_EDIT, CrudConfig::PAGE_NEW];
@@ -47,7 +47,7 @@ final class ApplicationContextFactory
         $templateRegistry = $this->getTemplateRegistry($dashboardController, $crudDto);
         $user = $this->getUser($this->tokenStorage);
 
-        return new ApplicationContext($request, $user, $i18nDto, $this->crudControllers, $dashboardDto, $dashboardController, $assetDto, $crudDto, $searchDto, $this->menuFactory, $templateRegistry);
+        return new AdminContext($request, $user, $i18nDto, $this->crudControllers, $dashboardDto, $dashboardController, $assetDto, $crudDto, $searchDto, $this->menuFactory, $templateRegistry);
     }
 
     private function getDashboardDto(Request $request, DashboardControllerInterface $dashboardControllerInstance): DashboardDto

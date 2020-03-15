@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\Util\ClassUtils;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
@@ -21,16 +21,16 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class EntityFactory
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $propertyFactory;
     private $actionFactory;
     private $authorizationChecker;
     private $doctrine;
     private $eventDispatcher;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, PropertyFactory $propertyFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(AdminContextProvider $adminContextProvider, PropertyFactory $propertyFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->propertyFactory = $propertyFactory;
         $this->actionFactory = $actionFactory;
         $this->authorizationChecker = $authorizationChecker;
@@ -43,10 +43,10 @@ final class EntityFactory
      */
     public function create(iterable $configuredProperties = null, ActionConfigDto $actionConfigDto = null): EntityDto
     {
-        $applicationContext = $this->applicationContextProvider->getContext();
-        $entityFqcn = $applicationContext->getCrud()->getEntityFqcn();
-        $entityId = $applicationContext->getRequest()->query->get('entityId');
-        $entityPermission = $applicationContext->getCrud()->getEntityPermission();
+        $adminContext = $this->adminContextProvider->getContext();
+        $entityFqcn = $adminContext->getCrud()->getEntityFqcn();
+        $entityId = $adminContext->getRequest()->query->get('entityId');
+        $entityPermission = $adminContext->getCrud()->getEntityPermission();
 
         return $this->doCreate(null, $entityFqcn, $entityId, $entityPermission, $configuredProperties, $actionConfigDto);
     }

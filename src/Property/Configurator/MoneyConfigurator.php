@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -13,12 +13,12 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 final class MoneyConfigurator implements PropertyConfiguratorInterface
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $intlFormatter;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, IntlFormatter $intlFormatter, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(AdminContextProvider $adminContextProvider, IntlFormatter $intlFormatter, PropertyAccessorInterface $propertyAccessor)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->intlFormatter = $intlFormatter;
         $this->propertyAccessor = $propertyAccessor;
     }

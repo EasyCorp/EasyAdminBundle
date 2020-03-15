@@ -2,30 +2,30 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class CrudUrlGenerator
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $urlGenerator;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, UrlGeneratorInterface $urlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, UrlGeneratorInterface $urlGenerator)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->urlGenerator = $urlGenerator;
     }
 
     public function build(array $newQueryParameters = []): UrlBuilder
     {
-        return new UrlBuilder($this->applicationContextProvider->getContext(), $this->urlGenerator, $newQueryParameters);
+        return new UrlBuilder($this->adminContextProvider->getContext(), $this->urlGenerator, $newQueryParameters);
     }
 
     public function buildForController(string $controllerFqcn): UrlBuilder
     {
-        $applicationContext = $this->applicationContextProvider->getContext();
+        $adminContext = $this->adminContextProvider->getContext();
         $newQueryParameters = ['crudController' => $controllerFqcn];
 
-        return (new UrlBuilder($applicationContext, $this->urlGenerator, $newQueryParameters))->removeReferrer();
+        return (new UrlBuilder($adminContext, $this->urlGenerator, $newQueryParameters))->removeReferrer();
     }
 }

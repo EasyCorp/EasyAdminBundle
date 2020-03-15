@@ -9,8 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ActionConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\AssetConfig;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -79,7 +79,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return array_merge(parent::getSubscribedServices(), [
             'event_dispatcher' => '?'.EventDispatcherInterface::class,
             ActionFactory::class => '?'.ActionFactory::class,
-            ApplicationContextProvider::class => '?'.ApplicationContextProvider::class,
+            AdminContextProvider::class => '?'.AdminContextProvider::class,
             CrudUrlGenerator::class => '?'.CrudUrlGenerator::class,
             EntityFactory::class => '?'.EntityFactory::class,
             EntityRepository::class => '?'.EntityRepository::class,
@@ -431,9 +431,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         return $responseParameters;
     }
 
-    protected function getContext(): ?ApplicationContext
+    protected function getContext(): ?AdminContext
     {
-        return $this->get(ApplicationContextProvider::class)->getContext();
+        return $this->get(AdminContextProvider::class)->getContext();
     }
 
     private function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent

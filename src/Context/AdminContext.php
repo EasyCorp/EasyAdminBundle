@@ -18,11 +18,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * A context object that stores all the config about the current dashboard and resource.
+ * A context object that stores all the state and config of the current admin request.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ApplicationContext
+final class AdminContext
 {
     private $request;
     private $user;

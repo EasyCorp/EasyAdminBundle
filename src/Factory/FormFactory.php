@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudBatchActionFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -13,13 +13,13 @@ use Symfony\Component\Form\FormInterface;
 
 final class FormFactory
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $symfonyFormFactory;
     private $crudUrlGenerator;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, FormFactoryInterface $symfonyFormFactory, CrudUrlGenerator $crudUrlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, FormFactoryInterface $symfonyFormFactory, CrudUrlGenerator $crudUrlGenerator)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->symfonyFormFactory = $symfonyFormFactory;
         $this->crudUrlGenerator = $crudUrlGenerator;
     }
@@ -53,12 +53,12 @@ final class FormFactory
 
     public function createFilterForm(): FormInterface
     {
-        $applicationContext = $this->applicationContextProvider->getContext();
+        $adminContext = $this->adminContextProvider->getContext();
         $filtersForm = $this->symfonyFormFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
-            'action' => $applicationContext->getRequest()->query->get('referrer'),
+            'action' => $adminContext->getRequest()->query->get('referrer'),
         ]);
 
-        return $filtersForm->handleRequest($applicationContext->getRequest());
+        return $filtersForm->handleRequest($adminContext->getRequest());
     }
 }

@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\UserMenuConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Configuration\MenuItemInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MainMenuDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto;
@@ -27,16 +27,16 @@ final class MenuFactory
     public const ITEM_TYPE_SUBMENU = 'submenu';
     public const ITEM_TYPE_URL = 'url';
 
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $authChecker;
     private $translator;
     private $urlGenerator;
     private $logoutUrlGenerator;
     private $crudRouter;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator, CrudUrlGenerator $crudRouter)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, LogoutUrlGenerator $logoutUrlGenerator, CrudUrlGenerator $crudRouter)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
@@ -69,9 +69,9 @@ final class MenuFactory
      */
     private function buildMenuItems(array $menuItems): array
     {
-        $applicationContext = $this->applicationContextProvider->getContext();
-        $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
-        $dashboardRouteName = $applicationContext->getDashboardRouteName();
+        $adminContext = $this->adminContextProvider->getContext();
+        $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
+        $dashboardRouteName = $adminContext->getDashboardRouteName();
 
         $builtItems = [];
         /** @var MenuItem $menuItem */
@@ -123,7 +123,7 @@ final class MenuFactory
             $routeParameters = array_merge($defaultRouteParameters, $menuItemDto->getRouteParameters());
 
             if (null === $routeParameters['crudController'] && null !== $entityFqcn = $routeParameters['entityFqcn']) {
-                $controllerRegistry = $this->applicationContextProvider->getContext()->getCrudControllers();
+                $controllerRegistry = $this->adminContextProvider->getContext()->getCrudControllers();
                 $routeParameters['crudController'] = $controllerRegistry->getControllerFqcnByEntityFqcn($entityFqcn);
             }
 

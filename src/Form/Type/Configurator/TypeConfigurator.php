@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -12,11 +12,11 @@ use Symfony\Component\Form\FormConfigInterface;
 // TODO: this can be removed by adding the needed data to the PropertyDto in PropertyBuilder
 final class TypeConfigurator implements TypeConfiguratorInterface
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider)
+    public function __construct(AdminContextProvider $adminContextProvider)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
     }
 
     /**
@@ -29,7 +29,7 @@ final class TypeConfigurator implements TypeConfiguratorInterface
         }
 
         if (empty($formFieldOptions['translation_domain'])) {
-            $formFieldOptions['translation_domain'] = $this->applicationContextProvider->getContext()->getI18n()->getTranslationDomain();
+            $formFieldOptions['translation_domain'] = $this->adminContextProvider->getContext()->getI18n()->getTranslationDomain();
         }
 
         return $formFieldOptions;

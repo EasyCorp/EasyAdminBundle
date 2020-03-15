@@ -1,4 +1,4 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var action \EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto #}
 {% if 'a' == action.htmlElement %}
     <a class="action-{{ action.name }} {{ isIncludedInDropdown|default(false) ? 'dropdown-item' }} {{ action.cssClass ?? '' }}"

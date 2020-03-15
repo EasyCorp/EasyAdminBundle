@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\CrudConfig;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionConfigDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -17,15 +17,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ActionFactory
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $authChecker;
     private $translator;
     private $urlGenerator;
     private $crudUrlGenerator;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, CrudUrlGenerator $crudUrlGenerator)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authChecker, TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator, CrudUrlGenerator $crudUrlGenerator)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->authChecker = $authChecker;
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
@@ -34,10 +34,10 @@ final class ActionFactory
 
     public function create(ActionConfigDto $actionConfigDto): ActionConfigDto
     {
-        $applicationContext = $this->applicationContextProvider->getContext();
-        $defaultTranslationDomain = $applicationContext->getI18n()->getTranslationDomain();
-        $defaultTranslationParameters = $applicationContext->getI18n()->getTranslationParameters();
-        $currentPage = $applicationContext->getCrud()->getCurrentPage();
+        $adminContext = $this->adminContextProvider->getContext();
+        $defaultTranslationDomain = $adminContext->getI18n()->getTranslationDomain();
+        $defaultTranslationParameters = $adminContext->getI18n()->getTranslationParameters();
+        $currentPage = $adminContext->getCrud()->getCurrentPage();
 
         $builtActions = [];
         foreach ($actionConfigDto->getActions() as $actionDto) {
@@ -56,12 +56,12 @@ final class ActionFactory
 
             $translationParameters = array_merge($defaultTranslationParameters, $actionDto->getTranslationParameters());
             $translatedActionLabel = $this->translator->trans($actionDto->getLabel(), $translationParameters, $actionDto->getTranslationDomain() ?? $defaultTranslationDomain);
-            $defaultTemplatePath = $applicationContext->getTemplatePath('crud/action');
+            $defaultTemplatePath = $adminContext->getTemplatePath('crud/action');
 
             $builtActions[] = $actionDto->with([
                 'label' => $translatedActionLabel,
                 'templatePath' => $actionDto->get('templatePath') ?? $defaultTemplatePath,
-                'linkUrl' => $this->generateActionUrl($currentPage, $applicationContext->getRequest(), $actionDto),
+                'linkUrl' => $this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto),
             ]);
         }
 
@@ -70,8 +70,8 @@ final class ActionFactory
 
     public function createForEntity(ActionConfigDto $actionConfigDto, EntityDto $entityDto): EntityDto
     {
-        $applicationContext = $this->applicationContextProvider->getContext();
-        $currentPage = $applicationContext->getCrud()->getCurrentPage();
+        $adminContext = $this->adminContextProvider->getContext();
+        $currentPage = $adminContext->getCrud()->getCurrentPage();
 
         $builtActions = [];
         foreach ($actionConfigDto->getActions() as $actionDto) {
@@ -100,7 +100,7 @@ final class ActionFactory
             }
 
             $builtActions[] = $actionDto->with([
-                'linkUrl' => $this->generateActionUrl($currentPage, $applicationContext->getRequest(), $actionDto, $entityDto),
+                'linkUrl' => $this->generateActionUrl($currentPage, $adminContext->getRequest(), $actionDto, $entityDto),
             ]);
         }
 

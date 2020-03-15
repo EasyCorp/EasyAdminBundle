@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class UrlBuilder
@@ -13,14 +13,14 @@ class UrlBuilder
     private $queryParameters;
     private $urlGenerator;
 
-    public function __construct(ApplicationContext $applicationContext, UrlGeneratorInterface $urlGenerator, array $newQueryParameters = [])
+    public function __construct(AdminContext $adminContext, UrlGeneratorInterface $urlGenerator, array $newQueryParameters = [])
     {
-        $this->dashboardRoute = $applicationContext->getDashboardRouteName();
+        $this->dashboardRoute = $adminContext->getDashboardRouteName();
         $this->urlGenerator = $urlGenerator;
 
-        $previousQueryParameters = $previousQueryParametersCopy = $applicationContext->getRequest()->query->all();
+        $previousQueryParameters = $previousQueryParametersCopy = $adminContext->getRequest()->query->all();
         unset($previousQueryParametersCopy['referrer']);
-        $previousPageReferrer = sprintf('%s?%s', $applicationContext->getRequest()->getPathInfo(), http_build_query($previousQueryParametersCopy));
+        $previousPageReferrer = sprintf('%s?%s', $adminContext->getRequest()->getPathInfo(), http_build_query($previousQueryParametersCopy));
         $this->previousPageReferrer = $previousPageReferrer;
 
         $this->queryParameters = array_merge($previousQueryParameters, $newQueryParameters);

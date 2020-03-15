@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
@@ -15,12 +15,12 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 final class SecurityVoter extends Voter
 {
     private $authorizationChecker;
-    private $applicationContextProvider;
+    private $adminContextProvider;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, ApplicationContextProvider $applicationContextProvider)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, AdminContextProvider $adminContextProvider)
     {
         $this->authorizationChecker = $authorizationChecker;
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
     }
 
     protected function supports($permissionName, $subject)
@@ -35,7 +35,7 @@ final class SecurityVoter extends Voter
         }
 
         if (Permission::EA_EXECUTE_ACTION === $permissionName) {
-            return $this->voteOnExecuteActionPermission($this->applicationContextProvider->getContext()->getCrud(), $subject);
+            return $this->voteOnExecuteActionPermission($this->adminContextProvider->getContext()->getCrud(), $subject);
         }
 
         if (Permission::EA_VIEW_PROPERTY === $permissionName) {

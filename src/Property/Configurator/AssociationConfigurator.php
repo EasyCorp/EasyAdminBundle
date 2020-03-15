@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -16,14 +16,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class AssociationConfigurator implements PropertyConfiguratorInterface
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $entityFactory;
     private $crudUrlGenerator;
     private $translator;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, EntityFactory $entityFactory, CrudUrlGenerator $crudUrlGenerator, TranslatorInterface $translator)
+    public function __construct(AdminContextProvider $adminContextProvider, EntityFactory $entityFactory, CrudUrlGenerator $crudUrlGenerator, TranslatorInterface $translator)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->entityFactory = $entityFactory;
         $this->crudUrlGenerator = $crudUrlGenerator;
         $this->translator = $translator;
@@ -43,7 +43,7 @@ final class AssociationConfigurator implements PropertyConfiguratorInterface
 
         $targetEntityFqcn = $propertyConfig->getDoctrineMetadata()->get('targetEntity');
         $targetCrudControllerFqcn = $propertyConfig->getCustomOption(AssociationProperty::OPTION_CRUD_CONTROLLER)
-            ?? $this->applicationContextProvider->getContext()->getCrudControllers()->getControllerFqcnByEntityFqcn($targetEntityFqcn);
+            ?? $this->adminContextProvider->getContext()->getCrudControllers()->getControllerFqcnByEntityFqcn($targetEntityFqcn);
 
         if (null === $targetCrudControllerFqcn) {
             throw new \RuntimeException(sprintf('It\'s not possible to find the CRUD controller associated to the "%s" entity of the "%s" property (which is a Doctrine association). Define the CRUD controller explicitly with the setCrudController() method on this property.', $targetEntityFqcn, $propertyConfig->getName()));

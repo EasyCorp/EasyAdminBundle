@@ -1,4 +1,4 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
 {% if property.customOptions.get('showCode') and property.value is not null %}
     <span class="badge badge-language" title="{{ property.formattedValue }}">{{ property.value }}</span>

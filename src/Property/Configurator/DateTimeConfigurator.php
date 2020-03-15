@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -13,12 +13,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Property\TimeProperty;
 
 final class DateTimeConfigurator implements PropertyConfiguratorInterface
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $intlFormatter;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, IntlFormatter $intlFormatter)
+    public function __construct(AdminContextProvider $adminContextProvider, IntlFormatter $intlFormatter)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->intlFormatter = $intlFormatter;
     }
 
@@ -31,7 +31,7 @@ final class DateTimeConfigurator implements PropertyConfiguratorInterface
 
     public function configure(string $action, PropertyConfigInterface $propertyConfig, EntityDto $entityDto): void
     {
-        $crudConfig = $this->applicationContextProvider->getContext()->getCrud();
+        $crudConfig = $this->adminContextProvider->getContext()->getCrud();
         $defaultDateFormat = $crudConfig->getDateFormat();
         $defaultTimeFormat = $crudConfig->getTimeFormat();
         $defaultDateTimePattern = $crudConfig->getDateTimePattern();

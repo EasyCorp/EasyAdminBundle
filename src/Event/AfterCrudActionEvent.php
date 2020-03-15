@@ -2,25 +2,25 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Event;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 
 final class AfterCrudActionEvent
 {
     use StoppableEventTrait;
 
-    private $applicationContext;
+    private $adminContext;
     private $responseParameters;
 
-    public function __construct(?ApplicationContext $applicationContext, ResponseParameters $responseParameters)
+    public function __construct(?AdminContext $adminContext, ResponseParameters $responseParameters)
     {
-        $this->applicationContext = $applicationContext;
+        $this->adminContext = $adminContext;
         $this->responseParameters = $responseParameters;
     }
 
-    public function getApplicationContext(): ?ApplicationContext
+    public function getAdminContext(): ?AdminContext
     {
-        return $this->applicationContext;
+        return $this->adminContext;
     }
 
     /**

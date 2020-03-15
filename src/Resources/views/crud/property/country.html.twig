@@ -1,4 +1,4 @@
-{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext #}
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var property \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
 {% if property.customOptions.get('showFlag') and property.formattedValue is not null %}
     <img class="country-flag" alt="{{ property.formattedValue }}" src="{{ asset('bundles/easyadmin/images/flags/' ~ property.value ~ '.png') }}">

@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Inspector;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector as BaseDataCollector;
@@ -16,11 +16,11 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector as BaseDataCollecto
  */
 class DataCollector extends BaseDataCollector
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider)
+    public function __construct(AdminContextProvider $adminContextProvider)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
     }
 
     /**
@@ -36,7 +36,7 @@ class DataCollector extends BaseDataCollector
      */
     public function collect(Request $request, Response $response, $exception = null)
     {
-        if (null === $context = $this->applicationContextProvider->getContext()) {
+        if (null === $context = $this->adminContextProvider->getContext()) {
             return;
         }
 
@@ -58,7 +58,7 @@ class DataCollector extends BaseDataCollector
         return $this->data;
     }
 
-    private function collectData(ApplicationContext $context): array
+    private function collectData(AdminContext $context): array
     {
         return [
             'CRUD Controller' => $context->getRequest()->get('crudController') ?? null,

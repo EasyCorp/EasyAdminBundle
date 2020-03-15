@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class EasyAdminBundle extends Bundle
 {
     public const VERSION = '3.0.0-DEV';
-    public const REQUEST_ATTRIBUTE_NAME = 'easyadmin_context';
+    public const CONTEXT_ATTRIBUTE_NAME = 'easyadmin_context';
 
     // TODO: remove this method when EasyAdmin 3 is released.
     public function boot()

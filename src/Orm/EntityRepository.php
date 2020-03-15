@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Orm;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityRepositoryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -15,14 +15,14 @@ use Symfony\Component\Form\FormInterface;
 
 final class EntityRepository implements EntityRepositoryInterface
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $doctrine;
     private $formFactory;
     private $filterRegistry;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, ManagerRegistry $doctrine, FormFactoryInterface $formFactory, FilterRegistry $filterRegistry)
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, FormFactoryInterface $formFactory, FilterRegistry $filterRegistry)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->doctrine = $doctrine;
         $this->formFactory = $formFactory;
         $this->filterRegistry = $filterRegistry;
@@ -140,7 +140,7 @@ final class EntityRepository implements EntityRepositoryInterface
         /** @var FormInterface $filtersForm */
         $filtersForm = $this->formFactory->createNamed('filters', FiltersFormType::class, null, [
             'method' => 'GET',
-            'action' => $this->applicationContextProvider->getContext()->getRequest()->query->get('referrer'),
+            'action' => $this->adminContextProvider->getContext()->getRequest()->query->get('referrer'),
         ]);
         $filtersForm->handleRequest($searchDto->getRequest());
         if (!$filtersForm->isSubmitted()) {

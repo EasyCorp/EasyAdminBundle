@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -11,12 +11,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class SelectConfigurator implements PropertyConfiguratorInterface
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $translator;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, TranslatorInterface $translator)
+    public function __construct(AdminContextProvider $adminContextProvider, TranslatorInterface $translator)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->translator = $translator;
     }
 
@@ -33,7 +33,7 @@ final class SelectConfigurator implements PropertyConfiguratorInterface
         }
 
         $translatedChoices = [];
-        $translationParameters = $this->applicationContextProvider->getContext()->getI18n()->getTranslationParameters();
+        $translationParameters = $this->adminContextProvider->getContext()->getI18n()->getTranslationParameters();
         foreach ($choices as $key => $value) {
             $translatedKey = $this->translator->trans($key, $translationParameters);
             $translatedChoices[$translatedKey] = $value;

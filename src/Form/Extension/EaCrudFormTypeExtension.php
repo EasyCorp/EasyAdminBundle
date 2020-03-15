@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Extension;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
@@ -17,11 +17,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class EaCrudFormTypeExtension extends AbstractTypeExtension
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider)
+    public function __construct(AdminContextProvider $adminContextProvider)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
     }
 
     /**
@@ -37,7 +37,7 @@ class EaCrudFormTypeExtension extends AbstractTypeExtension
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        if (null === $this->applicationContextProvider->getContext()) {
+        if (null === $this->adminContextProvider->getContext()) {
             return;
         }
 

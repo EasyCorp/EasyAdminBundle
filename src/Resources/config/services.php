@@ -5,12 +5,12 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminResourceCommand;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\EventListener\ApplicationContextListener;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\EventListener\AdminContextListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudActionResponseListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ExceptionListener;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ActionFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\ApplicationContextFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
@@ -73,11 +73,11 @@ return static function (ContainerConfigurator $container) {
             ->tag('console.command', ['command' => 'make:admin:resource'])
 
         ->set(DataCollector::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->tag('data_collector', ['id' => 'easyadmin', 'template' => '@EasyAdmin/inspector/data_collector.html.twig'])
 
         ->set(ExceptionListener::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('twig'))
             ->tag('kernel.event_listener', ['event' => 'kernel.exception', 'priority' => -64])
 
@@ -90,7 +90,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('twig.extension')
 
         ->set(EaCrudFormTypeExtension::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->tag('form.type_extension', ['alias' => 'form', 'extended-type' => FormType::class])
 
         ->set(AuthorizationChecker::class)
@@ -98,31 +98,31 @@ return static function (ContainerConfigurator $container) {
 
         ->set(IntlFormatter::class)
 
-        ->set(ApplicationContextProvider::class)
+        ->set(AdminContextProvider::class)
             ->arg(0, ref('request_stack'))
 
-        ->set(ApplicationContextListener::class)
-            ->arg(0, ref(ApplicationContextFactory::class))
+        ->set(AdminContextListener::class)
+            ->arg(0, ref(AdminContextFactory::class))
             ->arg(1, ref('controller_resolver'))
             ->arg(2, ref('twig'))
             ->tag('kernel.event_listener', ['event' => ControllerEvent::class])
 
         ->set(CrudActionResponseListener::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('twig'))
             ->tag('kernel.event_listener', ['event' => ViewEvent::class])
 
-        ->set(ApplicationContextFactory::class)
+        ->set(AdminContextFactory::class)
             ->arg(0, ref('security.token_storage')->nullOnInvalid())
             ->arg(1, ref(MenuFactory::class))
             ->arg(2, tagged_iterator('ea.crud_controller'))
 
         ->set(CrudUrlGenerator::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('router.default'))
 
         ->set(MenuFactory::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
             ->arg(2, ref('translator'))
             ->arg(3, ref('router'))
@@ -142,13 +142,13 @@ return static function (ContainerConfigurator $container) {
             ->arg(2, [])
 
         ->set(EntityRepository::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('doctrine'))
             ->arg(2, ref('form.factory'))
             ->arg(3, ref(FilterRegistry::class))
 
         ->set(EntityFactory::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(PropertyFactory::class))
             ->arg(2, ref(ActionFactory::class))
             ->arg(3, ref(AuthorizationChecker::class))
@@ -163,21 +163,21 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref('property_accessor'))
 
         ->set(PaginatorFactory::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(EntityPaginator::class))
 
         ->set(FormFactory::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('form.factory'))
             ->arg(2, ref(CrudUrlGenerator::class))
 
         ->set(PropertyFactory::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
             ->arg(2, \function_exists('tagged') ? tagged('ea.property_configurator') : tagged_iterator('ea.property_configurator'))
 
         ->set(ActionFactory::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
             ->arg(2, ref('translator'))
             ->arg(3, ref('router'))
@@ -185,7 +185,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(SecurityVoter::class)
             ->arg(0, ref(AuthorizationChecker::class))
-            ->arg(1, ref(ApplicationContextProvider::class))
+            ->arg(1, ref(AdminContextProvider::class))
             ->tag('security.voter')
 
         ->set(CrudFormType::class)
@@ -194,7 +194,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('form.type', ['alias' => 'ea_crud'])
 
         ->set(CommonPreConfigurator::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('translator'))
             ->arg(2, ref('property_accessor'))
             ->tag('ea.property_configurator', ['priority' => 9999])
@@ -209,7 +209,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.property_configurator')
 
         ->set(DateTimeConfigurator::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(IntlFormatter::class))
             ->tag('ea.property_configurator')
 
@@ -235,7 +235,7 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.property_configurator')
 
         ->set(MoneyConfigurator::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(IntlFormatter::class))
             ->arg(2, ref('property_accessor'))
             ->tag('ea.property_configurator')
@@ -247,14 +247,14 @@ return static function (ContainerConfigurator $container) {
             ->tag('ea.property_configurator')
 
         ->set(AssociationConfigurator::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(EntityFactory::class))
             ->arg(2, ref(CrudUrlGenerator::class))
             ->arg(3, ref(TranslatorInterface::class))
             ->tag('ea.property_configurator')
 
         ->set(SelectConfigurator::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
+            ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('translator'))
             ->tag('ea.property_configurator')
 

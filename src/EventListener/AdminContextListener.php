@@ -2,11 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\ApplicationContextFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -14,21 +14,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig\Environment;
 
 /**
- * Initializes the ApplicationContext variable and stores it as a request attribute.
+ * Initializes the AdminContext variable and stores it as a request attribute.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class ApplicationContextListener
+class AdminContextListener
 {
-    private $applicationContextFactory;
+    private $adminContextFactory;
     private $controllerResolver;
     private $twig;
 
-    public function __construct(ApplicationContextFactory $applicationContextFactory, ControllerResolverInterface $controllerResolver, Environment $twig)
+    public function __construct(AdminContextFactory $adminContextFactory, ControllerResolverInterface $controllerResolver, Environment $twig)
     {
-        $this->applicationContextFactory = $applicationContextFactory;
+        $this->adminContextFactory = $adminContextFactory;
         $this->controllerResolver = $controllerResolver;
         $this->twig = $twig;
     }
@@ -43,16 +43,16 @@ class ApplicationContextListener
         $crudControllerInstance = null !== $crudControllerCallable ? $crudControllerCallable[0] : null;
 
         // creating the context is expensive, so it's created once and stored in the request
-        // if the current request already has an ApplicationContext object, do nothing
-        if (null === $applicationContext = $this->getApplicationContext($event)) {
+        // if the current request already has an AdminContext object, do nothing
+        if (null === $adminContext = $this->getAdminContext($event)) {
             $dashboardControllerInstance = $event->getController()[0];
-            $applicationContext = $this->createApplicationContext($event->getRequest(), $dashboardControllerInstance, $crudControllerInstance);
+            $adminContext = $this->createAdminContext($event->getRequest(), $dashboardControllerInstance, $crudControllerInstance);
         }
 
-        $this->setApplicationContext($event, $applicationContext);
+        $this->setAdminContext($event, $adminContext);
 
-        // this makes the ApplicationContext available in all templates as a short named variable
-        $this->twig->addGlobal('ea', $applicationContext);
+        // this makes the AdminContext available in all templates as a short named variable
+        $this->twig->addGlobal('ea', $adminContext);
 
         if (null !== $crudControllerInstance) {
             // Changes the controller associated to the current request to execute the
@@ -104,18 +104,18 @@ class ApplicationContextListener
         return $crudControllerCallable;
     }
 
-    private function createApplicationContext(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): ApplicationContext
+    private function createAdminContext(Request $request, DashboardControllerInterface $dashboardController, ?CrudControllerInterface $crudController): AdminContext
     {
-        return $this->applicationContextFactory->create($request, $dashboardController, $crudController);
+        return $this->adminContextFactory->create($request, $dashboardController, $crudController);
     }
 
-    private function getApplicationContext(ControllerEvent $event): ?ApplicationContext
+    private function getAdminContext(ControllerEvent $event): ?AdminContext
     {
-        return $event->getRequest()->attributes->get(EasyAdminBundle::REQUEST_ATTRIBUTE_NAME);
+        return $event->getRequest()->attributes->get(EasyAdminBundle::CONTEXT_ATTRIBUTE_NAME);
     }
 
-    private function setApplicationContext(ControllerEvent $event, ApplicationContext $applicationContext): void
+    private function setAdminContext(ControllerEvent $event, AdminContext $adminContext): void
     {
-        $event->getRequest()->attributes->set(EasyAdminBundle::REQUEST_ATTRIBUTE_NAME, $applicationContext);
+        $event->getRequest()->attributes->set(EasyAdminBundle::CONTEXT_ATTRIBUTE_NAME, $adminContext);
     }
 }

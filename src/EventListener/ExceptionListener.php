@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,12 +20,12 @@ use Twig\Environment;
  */
 final class ExceptionListener
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $twig;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, Environment $twig)
+    public function __construct(AdminContextProvider $adminContextProvider, Environment $twig)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->twig = $twig;
     }
 
@@ -41,7 +41,7 @@ final class ExceptionListener
 
     public function createExceptionResponse(FlattenException $exception): Response
     {
-        $context = $this->applicationContextProvider->getContext();
+        $context = $this->adminContextProvider->getContext();
         $exceptionTemplatePath = $context->getTemplatePath('exception');
         $layoutTemplatePath = $context->getTemplatePath('layout');
 

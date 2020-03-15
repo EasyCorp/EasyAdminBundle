@@ -33,7 +33,7 @@
         </service>
 
         <service id="easyadmin.form.type.extension" class="EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension">
-            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" />
+            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider" />
             <tag name="form.type_extension" alias="form" extended-type="Symfony\Component\Form\Extension\Core\Type\FormType" />
         </service>
 -->
@@ -73,7 +73,7 @@
 
         <service id="ea.form_type_configurator.type" public="false"
                  class="EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfigurator">
-            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider" />
+            <argument type="service" id="EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider" />
             <tag name="ea.form_type_configurator" priority="0" />
         </service>
 

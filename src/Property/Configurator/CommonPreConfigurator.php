@@ -2,8 +2,8 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Property\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfiguratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -13,14 +13,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class CommonPreConfigurator implements PropertyConfiguratorInterface
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $translator;
     private $propertyAccessor;
     private static $numOfSpecialFormProperties = 0;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
+    public function __construct(AdminContextProvider $adminContextProvider, TranslatorInterface $translator, PropertyAccessorInterface $propertyAccessor)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->translator = $translator;
         $this->propertyAccessor = $propertyAccessor;
     }
@@ -41,15 +41,15 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
             $propertyConfig->setName('ea_form_panel_'.self::$numOfSpecialFormProperties++);
         }
 
-        $applicationContext = $this->applicationContextProvider->getContext();
-        $translationDomain = $applicationContext->getI18n()->getTranslationDomain();
+        $adminContext = $this->adminContextProvider->getContext();
+        $translationDomain = $adminContext->getI18n()->getTranslationDomain();
 
         $value = $this->buildValueOption($action, $propertyConfig, $entityDto);
         $label = $this->buildLabelOption($propertyConfig, $translationDomain);
         $isRequired = $this->buildRequiredOption($propertyConfig, $entityDto);
         $isSortable = $this->buildSortableOption($propertyConfig, $entityDto);
         $isVirtual = $this->buildVirtualOption($propertyConfig, $entityDto);
-        $templatePath = $this->buildTemplatePathOption($applicationContext, $propertyConfig, $entityDto, $value);
+        $templatePath = $this->buildTemplatePathOption($adminContext, $propertyConfig, $entityDto, $value);
         $doctrineMetadata = $entityDto->hasProperty($propertyConfig->getName()) ? $entityDto->getPropertyMetadata($propertyConfig->getName()) : [];
 
         $propertyConfig
@@ -133,7 +133,7 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
         return !$entityDto->hasProperty($propertyConfig->getName());
     }
 
-    private function buildTemplatePathOption(ApplicationContext $applicationContext, PropertyConfigInterface $propertyConfig, EntityDto $entityDto, $propertyValue): string
+    private function buildTemplatePathOption(AdminContext $adminContext, PropertyConfigInterface $propertyConfig, EntityDto $entityDto, $propertyValue): string
     {
         if (null !== $templatePath = $propertyConfig->getTemplatePath()) {
             return $templatePath;
@@ -141,23 +141,23 @@ final class CommonPreConfigurator implements PropertyConfiguratorInterface
 
         $isPropertyReadable = $this->propertyAccessor->isReadable($entityDto->getInstance(), $propertyConfig->getName());
         if (!$isPropertyReadable) {
-            return $applicationContext->getTemplatePath('label/inaccessible');
+            return $adminContext->getTemplatePath('label/inaccessible');
         }
 
         if (null === $propertyValue && 'boolean' !== $propertyConfig->getType()) {
-            return $applicationContext->getTemplatePath('label/null');
+            return $adminContext->getTemplatePath('label/null');
         }
 
         // TODO: move this condition to each property class
         if (empty($propertyValue) && \in_array($propertyConfig->getType(), ['image', 'file', 'array', 'simple_array'])) {
-            return $applicationContext->getTemplatePath('label/empty');
+            return $adminContext->getTemplatePath('label/empty');
         }
 
         if (null === $templateName = $propertyConfig->getTemplateName()) {
             throw new \RuntimeException(sprintf('Properties must define either their templateName or their templatePath. None give for "%s" property.', $propertyConfig->getName()));
         }
 
-        return $applicationContext->getTemplatePath($templateName);
+        return $adminContext->getTemplatePath($templateName);
     }
 
     private function buildRequiredOption(PropertyConfigInterface $propertyConfig, EntityDto $entityDto): bool

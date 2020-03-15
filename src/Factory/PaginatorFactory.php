@@ -3,25 +3,25 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 
 final class PaginatorFactory
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $entityPaginator;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, EntityPaginator $entityPaginator)
+    public function __construct(AdminContextProvider $adminContextProvider, EntityPaginator $entityPaginator)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->entityPaginator = $entityPaginator;
     }
 
     public function create(QueryBuilder $queryBuilder): EntityPaginator
     {
-        $applicationContext = $this->applicationContextProvider->getContext();
-        $paginatorDto = $applicationContext->getCrud()->getPaginator()->with([
-            'pageNumber' => $applicationContext->getRequest()->query->get('page', 1),
+        $adminContext = $this->adminContextProvider->getContext();
+        $paginatorDto = $adminContext->getCrud()->getPaginator()->with([
+            'pageNumber' => $adminContext->getRequest()->query->get('page', 1),
         ]);
 
         return $this->entityPaginator->paginate($paginatorDto, $queryBuilder);

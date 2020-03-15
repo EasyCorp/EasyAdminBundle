@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,12 +11,12 @@ use Twig\Environment;
 
 final class CrudActionResponseListener
 {
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $twig;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, Environment $twig)
+    public function __construct(AdminContextProvider $adminContextProvider, Environment $twig)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->twig = $twig;
     }
 
@@ -34,7 +34,7 @@ final class CrudActionResponseListener
         $templateParameters = $responseParameters->all();
         $templatePath = \array_key_exists('templatePath', $templateParameters)
             ? $templateParameters['templatePath']
-            : $this->applicationContextProvider->getContext()->getTemplatePath($templateParameters['templateName']);
+            : $this->adminContextProvider->getContext()->getTemplatePath($templateParameters['templateName']);
 
         // to make parameters easier to modify, we pass around FormInterface objects
         // so we must convert those values to FormView before rendering the template

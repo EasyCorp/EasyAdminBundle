@@ -4,7 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Factory;
 
 use Doctrine\DBAL\Types\Type;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Property\IdProperty;
@@ -45,13 +45,13 @@ final class PropertyFactory
         'datetime' => 'DateTime',
     ];
 
-    private $applicationContextProvider;
+    private $adminContextProvider;
     private $authorizationChecker;
     private $propertyConfigurators;
 
-    public function __construct(ApplicationContextProvider $applicationContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $propertyConfigurators)
+    public function __construct(AdminContextProvider $adminContextProvider, AuthorizationCheckerInterface $authorizationChecker, iterable $propertyConfigurators)
     {
-        $this->applicationContextProvider = $applicationContextProvider;
+        $this->adminContextProvider = $adminContextProvider;
         $this->authorizationChecker = $authorizationChecker;
         $this->propertyConfigurators = $propertyConfigurators;
     }
@@ -61,7 +61,7 @@ final class PropertyFactory
      */
     public function create(EntityDto $entityDto, iterable $propertiesConfig): EntityDto
     {
-        $action = $this->applicationContextProvider->getContext()->getCrud()->getCurrentAction();
+        $action = $this->adminContextProvider->getContext()->getCrud()->getCurrentAction();
         $configuredProperties = \is_array($propertiesConfig) ? $propertiesConfig : iterator_to_array($propertiesConfig);
         $configuredProperties = $this->preProcessPropertiesConfig($entityDto, $configuredProperties);
 

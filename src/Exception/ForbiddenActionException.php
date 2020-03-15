@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
 
 /**
@@ -10,11 +10,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
  */
 final class ForbiddenActionException extends BaseException
 {
-    public function __construct(ApplicationContext $applicationContext)
+    public function __construct(AdminContext $adminContext)
     {
         $parameters = [
-            'action' => $applicationContext->getCrud()->getCurrentAction(),
-            'crud_controller' => $applicationContext->getRequest()->query->get('crudController'),
+            'action' => $adminContext->getCrud()->getCurrentAction(),
+            'crud_controller' => $adminContext->getRequest()->query->get('crudController'),
         ];
 
         $exceptionContext = new ExceptionContext(

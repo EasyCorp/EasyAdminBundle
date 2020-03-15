@@ -9,7 +9,7 @@ use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\Util\ClassUtils;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -22,16 +22,16 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final class EntityFactory
 {
     private $adminContextProvider;
-    private $propertyFactory;
+    private $fieldFactory;
     private $actionFactory;
     private $authorizationChecker;
     private $doctrine;
     private $eventDispatcher;
 
-    public function __construct(AdminContextProvider $adminContextProvider, PropertyFactory $propertyFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(AdminContextProvider $adminContextProvider, FieldFactory $fieldFactory, ActionFactory $actionFactory, AuthorizationCheckerInterface $authorizationChecker, ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
         $this->adminContextProvider = $adminContextProvider;
-        $this->propertyFactory = $propertyFactory;
+        $this->fieldFactory = $fieldFactory;
         $this->actionFactory = $actionFactory;
         $this->authorizationChecker = $authorizationChecker;
         $this->doctrine = $doctrine;
@@ -39,7 +39,7 @@ final class EntityFactory
     }
 
     /**
-     * @param PropertyConfigInterface[] $configuredProperties
+     * @param FieldInterface[] $configuredProperties
      */
     public function create(iterable $configuredProperties = null, ActionsDto $actionsDto = null): EntityDto
     {
@@ -69,7 +69,7 @@ final class EntityFactory
         $builtEntities = [];
         foreach ($entityInstances as $entityInstance) {
             $currentEntityDto = $entityDto->updateInstance($entityInstance);
-            $currentEntityDto = $this->propertyFactory->create($currentEntityDto, $configuredProperties);
+            $currentEntityDto = $this->fieldFactory->create($currentEntityDto, $configuredProperties);
             $currentEntityDto = $this->actionFactory->createForEntity($actionsDto, $currentEntityDto);
 
             $builtEntities[] = $currentEntityDto;
@@ -99,7 +99,7 @@ final class EntityFactory
             $entityDto->markAsInaccessible();
         } else {
             if (null !== $configuredProperties) {
-                $entityDto = $this->propertyFactory->create($entityDto, $configuredProperties);
+                $entityDto = $this->fieldFactory->create($entityDto, $configuredProperties);
             }
 
             if (null !== $actionsDto) {

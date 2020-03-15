@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', function (event) {
-    document.querySelectorAll('[data-ea-collection-property]').forEach(function(collection) {
-        let addButton = collection.querySelector('button.property-collection-add-button');
+    document.querySelectorAll('[data-ea-collection-field]').forEach(function(collection) {
+        let addButton = collection.querySelector('button.field-collection-add-button');
         if (null !== addButton) {
             EaCollectionProperty.handleAddButton(addButton, collection);
         }

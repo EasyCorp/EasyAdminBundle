@@ -33,7 +33,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Formatter\EntityPaginatorJsonFormatter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Property;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -65,13 +65,13 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     /**
      * {@inheritdoc}
      */
-    public function configureProperties(string $pageName): iterable
+    public function configureFields(string $pageName): iterable
     {
-        $defaultProperties = $this->get(EntityFactory::class)->create()->getDefaultProperties($pageName);
+        $defaultFields = $this->get(EntityFactory::class)->create()->getDefaultProperties($pageName);
 
-        return array_map(static function (string $propertyName) {
-            return Property::new($propertyName);
-        }, $defaultProperties);
+        return array_map(static function (string $fieldName) {
+            return Field::new($fieldName);
+        }, $defaultFields);
     }
 
     public static function getSubscribedServices()
@@ -106,10 +106,10 @@ abstract class AbstractCrudController extends AbstractController implements Crud
         $paginator = $this->get(PaginatorFactory::class)->create($queryBuilder);
 
         $entityInstances = $paginator->getResults();
-        $propertiesConfig = $this->configureProperties(Crud::PAGE_INDEX);
-        $propertiesConfig = \is_array($propertiesConfig) ? $propertiesConfig : iterator_to_array($propertiesConfig);
+        $fields = $this->configureFields(Crud::PAGE_INDEX);
+        $fields = \is_array($fields) ? $fields : iterator_to_array($fields);
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
-        $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $propertiesConfig, $actionsConfig);
+        $entities = $this->get(EntityFactory::class)->createAll($entityDto, $entityInstances, $fields, $actionsConfig);
 
         $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
             'pageName' => Crud::PAGE_INDEX,
@@ -140,9 +140,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($this->getContext());
         }
 
-        $propertiesConfig = $this->configureProperties(Action::DETAIL);
+        $fields = $this->configureFields(Action::DETAIL);
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
-        $entityDto = $this->get(EntityFactory::class)->create($propertiesConfig, $actionsConfig);
+        $entityDto = $this->get(EntityFactory::class)->create($fields, $actionsConfig);
 
         $responseParameters = $this->configureResponseParameters(ResponseParameters::new([
             'pageName' => Crud::PAGE_DETAIL,
@@ -171,16 +171,16 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($this->getContext());
         }
 
-        $propertiesConfig = $this->configureProperties(Crud::PAGE_EDIT);
+        $fields = $this->configureFields(Crud::PAGE_EDIT);
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
-        $entityDto = $this->get(EntityFactory::class)->create($propertiesConfig, $actionsConfig);
+        $entityDto = $this->get(EntityFactory::class)->create($fields, $actionsConfig);
         $entityInstance = $entityDto->getInstance();
 
         if ($this->getContext()->getRequest()->isXmlHttpRequest()) {
-            $propertyName = $this->getContext()->getRequest()->query->get('propertyName');
+            $fieldName = $this->getContext()->getRequest()->query->get('fieldName');
             $newValue = 'true' === mb_strtolower($this->getContext()->getRequest()->query->get('newValue'));
 
-            $event = $this->ajaxEdit($entityDto, $propertyName, $newValue);
+            $event = $this->ajaxEdit($entityDto, $fieldName, $newValue);
             if ($event->isPropagationStopped()) {
                 return $event->getResponse();
             }
@@ -249,9 +249,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             throw new ForbiddenActionException($this->getContext());
         }
 
-        $propertiesConfig = $this->configureProperties(Crud::PAGE_NEW);
+        $fields = $this->configureFields(Crud::PAGE_NEW);
         $actionsConfig = $this->get(ActionFactory::class)->create($this->getContext()->getCrud()->getActions());
-        $entityDto = $this->get(EntityFactory::class)->create($propertiesConfig, $actionsConfig);
+        $entityDto = $this->get(EntityFactory::class)->create($fields, $actionsConfig);
         $entityInstance = $this->createEntity($entityDto->getFqcn());
         $entityDto = $entityDto->updateInstance($entityInstance);
 
@@ -439,7 +439,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
     private function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
     {
         if (!$entityDto->hasProperty($propertyName)) {
-            throw new \RuntimeException(sprintf('The "%s" boolean property cannot be changed because either it doesn\'t exist in the "%s" entity.', $propertyName, $entityDto->getName()));
+            throw new \RuntimeException(sprintf('The "%s" boolean field cannot be changed because it doesn\'t exist in the "%s" entity.', $propertyName, $entityDto->getName()));
         }
 
         $this->get(EntityUpdater::class)->updateProperty($entityDto, $propertyName, $newValue);

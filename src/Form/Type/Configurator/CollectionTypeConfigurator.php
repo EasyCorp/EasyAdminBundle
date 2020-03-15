@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormConfigInterface;
@@ -18,7 +18,7 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
+    public function configure(string $name, array $formFieldOptions, FieldDto $fieldDto, FormConfigInterface $parentConfig): array
     {
         if (!isset($formFieldOptions['allow_add'])) {
             $formFieldOptions['allow_add'] = true;
@@ -52,7 +52,7 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
+    public function supports(string $formTypeFqcn, array $formFieldOptions, FieldDto $fieldDto): bool
     {
         return CollectionType::class === $formTypeFqcn;
     }

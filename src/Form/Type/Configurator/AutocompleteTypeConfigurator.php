@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -19,22 +19,22 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
+    public function configure(string $name, array $formFieldOptions, FieldDto $fieldDto, FormConfigInterface $parentConfig): array
     {
         // TODO: add targetEntity and associationType to PropertyDto
 
         // by default, guess the mandatory 'class' option from the Doctrine metadata
-        if (!isset($formFieldOptions['class']) && isset($propertyDto['targetEntity'])) {
-            $formFieldOptions['class'] = $propertyDto['targetEntity'];
+        if (!isset($formFieldOptions['class']) && isset($fieldDto['targetEntity'])) {
+            $formFieldOptions['class'] = $fieldDto['targetEntity'];
         }
 
         // by default, allow to autocomplete multiple values for OneToMany and ManyToMany associations
-        if (!isset($formFieldOptions['multiple']) && isset($propertyDto['associationType']) && $propertyDto['associationType'] & ClassMetadata::TO_MANY) {
+        if (!isset($formFieldOptions['multiple']) && isset($fieldDto['associationType']) && $fieldDto['associationType'] & ClassMetadata::TO_MANY) {
             $formFieldOptions['multiple'] = true;
         }
 
-        if (null !== $propertyDto->getLabel() && !isset($formFieldOptions['label'])) {
-            $formFieldOptions['label'] = $propertyDto->getLabel();
+        if (null !== $fieldDto->getLabel() && !isset($formFieldOptions['label'])) {
+            $formFieldOptions['label'] = $fieldDto->getLabel();
         }
 
         return $formFieldOptions;
@@ -43,7 +43,7 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
+    public function supports(string $formTypeFqcn, array $formFieldOptions, FieldDto $fieldDto): bool
     {
         return EasyAdminAutocompleteType::class === $formTypeFqcn;
     }

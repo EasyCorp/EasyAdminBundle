@@ -1,0 +1,3 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+<time datetime="{{ field.value|date('c') }}" title="{{ field.value|date('r') }}">{{ field.formattedValue }}</time>

@@ -98,18 +98,18 @@
                             <th width="1px"><span><input type="checkbox" class="form-batch-checkbox-all"></span></th>
                         {% endif %}
 
-                        {% for property in entities|first.properties ?? [] %}
-                            {% set isSortingProperty = (property.name == sort_field_name) or ('association' == property.type and sort_field_name starts with property.name ~ '.') %}
-                            {% set nextSortDirection = isSortingProperty ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
-                            {% set column_icon = isSortingProperty ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
+                        {% for field in entities|first.properties ?? [] %}
+                            {% set isSortingField = (field.name == sort_field_name) or ('association' == field.type and sort_field_name starts with field.name ~ '.') %}
+                            {% set nextSortDirection = isSortingField ? (sort_order == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
+                            {% set column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort' %}
 
-                            <th class="{{ isSortingProperty ? 'sorted' }} {{ property.isVirtual ? 'property-virtual' }} property-{{ property.type|lower }} text-{{ property.textAlign }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
-                                {% if property.isSortable %}
-                                    <a href="{{ ea_path({ page: 1, sort: { (property.name): nextSortDirection }}, remove_referrer = true) }}">
-                                        {{ property.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
+                            <th class="{{ isSortingField ? 'sorted' }} {{ field.isVirtual ? 'field-virtual' }} field-{{ field.type|lower }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                                {% if field.isSortable %}
+                                    <a href="{{ ea_path({ page: 1, sort: { (field.name): nextSortDirection }}, remove_referrer = true) }}">
+                                        {{ field.label|raw }} <i class="fa fa-fw {{ column_icon }}"></i>
                                     </a>
                                 {% else %}
-                                    <span>{{ property.label|raw }}</span>
+                                    <span>{{ field.label|raw }}</span>
                                 {% endif %}
                             </th>
                         {% endfor %}
@@ -134,9 +134,9 @@
                                     <td><input type="checkbox" class="form-batch-checkbox" value="{{ entity.primaryKeyValue }}"></td>
                                 {% endif %}
 
-                                {% for property in entity.properties %}
-                                    <td class="{{ property.name == sort_field_name ? 'sorted' }} property-{{ property.type|lower }} text-{{ property.textAlign }} {{ property.cssClass }}" dir="{{ ea.i18n.textDirection }}">
-                                        {{ include(property.templatePath, { property: property }, with_context = false) }}
+                                {% for field in entity.properties %}
+                                    <td class="{{ field.name == sort_field_name ? 'sorted' }} field-{{ field.type|lower }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                                        {{ include(field.templatePath, { field: field }, with_context = false) }}
                                     </td>
                                 {% endfor %}
 
@@ -205,17 +205,17 @@
 
     <script type="text/javascript">
         $(function() {
-            const customSwitches = document.querySelectorAll('td.property-boolean .custom-control.custom-switch input[type="checkbox"]');
+            const customSwitches = document.querySelectorAll('td.field-boolean .custom-control.custom-switch input[type="checkbox"]');
             for (i = 0; i < customSwitches.length; i++) {
                 customSwitches[i].addEventListener('change', function () {
                     const customSwitch = this;
                     const newValue = this.checked;
                     const oldValue = !newValue;
-                    const propertyName = this.closest('.custom-switch').dataset.propertyname;
+                    const fieldName = this.closest('.custom-switch').dataset.fieldname;
 
                     const toggleUrl = "{{ ea_path({ crudAction: 'edit' })|raw }}"
                         + "&entityId=" + this.closest('tr').dataset.id
-                        + "&propertyName=" + propertyName
+                        + "&fieldName=" + fieldName
                         + "&newValue=" + newValue.toString();
 
                     let toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });

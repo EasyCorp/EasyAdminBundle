@@ -26,7 +26,7 @@ class DateTimeFilterTypeTest extends FilterTypeTest
             $this->assertTrue($form->isSynchronized());
 
             $filter = $this->filterRegistry->resolveType($form);
-            $filter->filter($this->qb, $form, ['property' => 'foo']);
+            $filter->filter($this->qb, $form, ['field' => 'foo']);
             $this->assertSame(static::FILTER_TYPE, \get_class($filter));
             $this->assertSame($dql, $this->qb->getDQL());
             $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
@@ -89,7 +89,7 @@ class DateTimeFilterTypeTest extends FilterTypeTest
             ['value_type' => TimeType::class],
             '',
             [],
-            'Unable to reverse value for property path "easyadmin_datetime_filter": Two values must be provided when "BETWEEN" comparison is selected.',
+            'Unable to reverse value for field path "easyadmin_datetime_filter": Two values must be provided when "BETWEEN" comparison is selected.',
         ];
     }
 }

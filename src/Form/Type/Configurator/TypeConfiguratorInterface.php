@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -25,14 +25,14 @@ interface TypeConfiguratorInterface
      *
      * @return array The array with the updated form field options
      */
-    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array;
+    public function configure(string $name, array $formFieldOptions, FieldDto $fieldDto, FormConfigInterface $parentConfig): array;
 
     /**
      * Returns true if the type option configurator supports this field.
      *
      * @param string $formTypeFqcn     The FQCN of the form type
      * @param array  $formFieldOptions The configured field options provided by Symfony Form component
-     * @param array  $propertyDto      The PropertyDto object related to this field
+     * @param array  $fieldDto      The PropertyDto object related to this field
      */
-    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool;
+    public function supports(string $formTypeFqcn, array $formFieldOptions, FieldDto $fieldDto): bool;
 }

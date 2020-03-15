@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -17,7 +17,7 @@ class FOSCKEditorTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
+    public function configure(string $name, array $formFieldOptions, FieldDto $fieldDto, FormConfigInterface $parentConfig): array
     {
         // when the IvoryCKEditor doesn't define the toolbar to use, EasyAdmin uses a simple toolbar
         if (!isset($formFieldOptions['config']['toolbar']) && !isset($formFieldOptions['config_name'])) {
@@ -35,7 +35,7 @@ class FOSCKEditorTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
+    public function supports(string $formTypeFqcn, array $formFieldOptions, FieldDto $fieldDto): bool
     {
         return 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType' == $formTypeFqcn;
     }

@@ -36,7 +36,7 @@ return [
         'form.empty_value' => 'Aucun(e)',
     ],
 
-    'property' => [
+    'field' => [
         // 'code_editor.view_code' => '',
         // 'text_editor.view_content' => '',
     ],

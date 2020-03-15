@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\PropertyDtoCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 
 final class EntityDto
@@ -105,11 +105,11 @@ final class EntityDto
     public function markAsInaccessible(): void
     {
         $this->instance = null;
-        $this->properties = PropertyDtoCollection::new([]);
+        $this->properties = FieldDtoCollection::new([]);
         $this->userHasPermission = false;
     }
 
-    public function getProperties(): ?PropertyDtoCollection
+    public function getProperties(): ?FieldDtoCollection
     {
         return $this->properties;
     }
@@ -141,7 +141,7 @@ final class EntityDto
             return $this->metadata->associationMappings[$propertyName];
         }
 
-        throw new \InvalidArgumentException(sprintf('The "%s" property does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
+        throw new \InvalidArgumentException(sprintf('The "%s" field does not exist in the "%s" entity.', $propertyName, $this->getFqcn()));
     }
 
     public function getPropertyDataType(string $propertyName)
@@ -195,7 +195,7 @@ final class EntityDto
         return $clone;
     }
 
-    public function updateProperties(PropertyDtoCollection $properties): self
+    public function updateProperties(FieldDtoCollection $properties): self
     {
         $clone = clone $this;
         $clone->properties = $properties;

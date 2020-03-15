@@ -67,7 +67,7 @@ class ComparisonFilterType extends FilterType
     public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
     {
         $alias = current($queryBuilder->getRootAliases());
-        $property = $metadata['property'];
+        $property = $metadata['field'];
         $paramName = static::createAlias($property);
         $data = $form->getData();
 

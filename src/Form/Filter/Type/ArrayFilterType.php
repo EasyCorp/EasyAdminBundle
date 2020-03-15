@@ -76,7 +76,7 @@ class ArrayFilterType extends FilterType
     public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
     {
         $alias = current($queryBuilder->getRootAliases());
-        $property = $metadata['property'];
+        $property = $metadata['field'];
         $useQuotes = 'simple_array' !== $metadata['dataType'];
         $data = $form->getData();
 

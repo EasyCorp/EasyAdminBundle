@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -19,9 +19,9 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(string $name, array $formFieldOptions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
+    public function configure(string $name, array $formFieldOptions, FieldDto $fieldDto, FormConfigInterface $parentConfig): array
     {
-        if (!isset($formFieldOptions['multiple']) && $propertyDto['associationType'] & ClassMetadata::TO_MANY) {
+        if (!isset($formFieldOptions['multiple']) && $fieldDto['associationType'] & ClassMetadata::TO_MANY) {
             $formFieldOptions['multiple'] = true;
         }
 
@@ -29,7 +29,7 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
         $formFieldOptions['attr']['data-widget'] = 'select2';
 
         // Configure "placeholder" option for entity fields
-        if (($propertyDto['associationType'] & ClassMetadata::TO_ONE)
+        if (($fieldDto['associationType'] & ClassMetadata::TO_ONE)
             && !isset($formFieldOptions['placeholder'])
             && isset($formFieldOptions['required']) && false === $formFieldOptions['required']
         ) {
@@ -42,7 +42,7 @@ class EntityTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
+    public function supports(string $formTypeFqcn, array $formFieldOptions, FieldDto $fieldDto): bool
     {
         // TODO: add suport for this
         return false;

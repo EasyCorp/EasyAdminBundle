@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Security;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -38,7 +38,7 @@ final class SecurityVoter extends Voter
             return $this->voteOnExecuteActionPermission($this->adminContextProvider->getContext()->getCrud(), $subject);
         }
 
-        if (Permission::EA_VIEW_PROPERTY === $permissionName) {
+        if (Permission::EA_VIEW_FIELD === $permissionName) {
             return $this->voteOnViewPropertyPermission($subject);
         }
 
@@ -71,10 +71,10 @@ final class SecurityVoter extends Voter
         return $this->authorizationChecker->isGranted($actionPermission) && !\in_array($actionName, $disabledActionNames, true);
     }
 
-    private function voteOnViewPropertyPermission(PropertyConfigInterface $propertyConfig): bool
+    private function voteOnViewPropertyPermission(FieldInterface $field): bool
     {
-        // users can see the property if they have the permission required by the property
-        return $this->authorizationChecker->isGranted($propertyConfig->getPermission());
+        // users can see the field if they have the permission required by the field
+        return $this->authorizationChecker->isGranted($field->getPermission());
     }
 
     private function voteOnViewEntityPermission(EntityDto $entityDto): bool

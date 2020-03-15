@@ -32,11 +32,11 @@ return [
         'nullable_field' => 'Zostaw niewypełnione',
         'object' => 'Obiekt PHP',
         'inaccessible' => 'Niedostępny',
-        'inaccessible.explanation' => 'Metoda pobierająca (<i>ang. getter</i>) nie istnieje  dla tego pola lub właściwość (<i>ang. property</i>) nie jest publiczna',
+        'inaccessible.explanation' => 'Metoda pobierająca (<i>ang. getter</i>) nie istnieje  dla tego pola lub właściwość (<i>ang. field</i>) nie jest publiczna',
         'form.empty_value' => 'Pusta wartość',
     ],
 
-    'property' => [
+    'field' => [
         // 'code_editor.view_code' => '',
         // 'text_editor.view_content' => '',
     ],

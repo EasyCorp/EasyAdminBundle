@@ -249,7 +249,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('field_toggle')->info('Used to render toggle field types (a special type that display booleans as flip switches)')->end()
                                 ->scalarNode('field_url')->info('Used to render clickable URLs')->end()
                                 ->scalarNode('label_empty')->info('Used when the field to render is an empty collection')->end()
-                                ->scalarNode('label_inaccessible')->info('Used when is not possible to access the value of the field to render (there is no getter or public property)')->end()
+                                ->scalarNode('label_inaccessible')->info('Used when is not possible to access the value of the field to render (there is no getter or public field)')->end()
                                 ->scalarNode('label_null')->info('Used when the value of the field to render is null')->end()
                                 ->scalarNode('label_undefined')->info('Used when any kind of error or exception happens when trying to access the value of the field to render')->end()
                             ->end()

@@ -12,7 +12,7 @@ return [
 
     'datagrid' => [
         // 'hidden_results' => '',
-        'no_results' => 'No s'han trobat resultats.',
+        'no_results' => 'No s\'han trobat resultats.',
     ],
 
     'paginator' => [
@@ -36,7 +36,7 @@ return [
         'form.empty_value' => 'Ningú',
     ],
 
-    'property' => [
+    'field' => [
         // 'code_editor.view_code' => '',
         // 'text_editor.view_content' => '',
     ],
@@ -112,7 +112,7 @@ return [
     ],
 
     'login_page' => [
-        'username' => 'Nom d'usuari',
+        'username' => 'Nom d\'usuari',
         'password' => 'Contrasenya',
         'sign_in' => 'Iniciar sessió',
     ],

@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Property\PropertyConfigInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\ResponseParameters;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -21,9 +21,9 @@ interface CrudControllerInterface
     public function configureActions(Actions $actions): Actions;
 
     /**
-     * @return PropertyConfigInterface[]
+     * @return FieldInterface[]
      */
-    public function configureProperties(string $pageName): iterable;
+    public function configureFields(string $pageName): iterable;
 
     public function configureResponseParameters(ResponseParameters $responseParameters): ResponseParameters;
 

@@ -70,7 +70,7 @@ class EntityFilterTypeTest extends FilterTypeTest
         $this->assertTrue($form->isSynchronized());
 
         $filter = $this->filterRegistry->resolveType($form);
-        $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_ONE]);
+        $filter->filter($this->qb, $form, ['field' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_ONE]);
         $this->assertSame(static::FILTER_TYPE, \get_class($filter));
         $this->assertSame($dql, $this->qb->getDQL());
         $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
@@ -92,7 +92,7 @@ class EntityFilterTypeTest extends FilterTypeTest
         $this->assertTrue($form->isSynchronized());
 
         $filter = $this->filterRegistry->resolveType($form);
-        $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_MANY]);
+        $filter->filter($this->qb, $form, ['field' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_MANY]);
         $this->assertSame(static::FILTER_TYPE, \get_class($filter));
         $this->assertSame($dql, $this->qb->getDQL());
         $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());

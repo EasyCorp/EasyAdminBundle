@@ -23,7 +23,7 @@ class ArrayFilterTypeTest extends FilterTypeTest
         $this->assertTrue($form->isSynchronized());
 
         $filter = $this->filterRegistry->resolveType($form);
-        $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'array']);
+        $filter->filter($this->qb, $form, ['field' => 'foo', 'dataType' => 'array']);
         $this->assertSame(static::FILTER_TYPE, \get_class($filter));
         $this->assertSame($dql, $this->qb->getDQL());
         $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());

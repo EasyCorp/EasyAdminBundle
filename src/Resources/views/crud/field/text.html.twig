@@ -1,0 +1,12 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{% set render_as_html = field.customOptions.get('renderAsHtml') %}
+{% if ea.crud.currentAction == 'detail' %}
+    <span title="{{ field.value }}">
+        {{ render_as_html ? field.formattedValue|nl2br|raw : field.formattedValue|nl2br }}
+    </span>
+{% else %}
+    <span title="{{ field.value }}">
+        {{ render_as_html ? field.formattedValue|raw : field.formattedValue|striptags }}
+    </span>
+{% endif %}

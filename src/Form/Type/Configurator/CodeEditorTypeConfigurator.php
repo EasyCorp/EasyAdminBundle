@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator;
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CodeEditorType;
 use Symfony\Component\Form\FormConfigInterface;
 
@@ -16,21 +16,21 @@ class CodeEditorTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(string $name, array $formFieldOtions, PropertyDto $propertyDto, FormConfigInterface $parentConfig): array
+    public function configure(string $name, array $formFieldOtions, FieldDto $fieldDto, FormConfigInterface $parentConfig): array
     {
         return [];
 
-        if ($propertyDto->getCustomOptions()->has('height')) {
-            $formFieldOtions['height'] = $propertyDto->getCustomOptions()->get('height');
+        if ($fieldDto->getCustomOptions()->has('height')) {
+            $formFieldOtions['height'] = $fieldDto->getCustomOptions()->get('height');
         }
-        if ($propertyDto->getCustomOptions()->has('tabSize')) {
-            $formFieldOtions['tab_size'] = $propertyDto->getCustomOptions()->get('tabSize');
+        if ($fieldDto->getCustomOptions()->has('tabSize')) {
+            $formFieldOtions['tab_size'] = $fieldDto->getCustomOptions()->get('tabSize');
         }
-        if ($propertyDto->getCustomOptions()->has('indentWithTabs')) {
-            $formFieldOtions['indent_with_tabs'] = $propertyDto->getCustomOptions()->get('indentWithTabs');
+        if ($fieldDto->getCustomOptions()->has('indentWithTabs')) {
+            $formFieldOtions['indent_with_tabs'] = $fieldDto->getCustomOptions()->get('indentWithTabs');
         }
-        if ($propertyDto->getCustomOptions()->has('language')) {
-            $formFieldOtions['language'] = $propertyDto->getCustomOptions()->get('language');
+        if ($fieldDto->getCustomOptions()->has('language')) {
+            $formFieldOtions['language'] = $fieldDto->getCustomOptions()->get('language');
         }
 
         return $formFieldOtions;
@@ -39,7 +39,7 @@ class CodeEditorTypeConfigurator implements TypeConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(string $formTypeFqcn, array $formFieldOptions, PropertyDto $propertyDto): bool
+    public function supports(string $formTypeFqcn, array $formFieldOptions, FieldDto $fieldDto): bool
     {
         return CodeEditorType::class === $formTypeFqcn;
     }

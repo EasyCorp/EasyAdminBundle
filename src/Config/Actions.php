@@ -43,7 +43,7 @@ final class Actions
         $action = \is_string($actionNameOrObject) ? $this->createBuiltInAction($pageName, $actionNameOrObject) : $actionNameOrObject;
 
         if (\array_key_exists($actionName, $this->actions[$pageName])) {
-            throw new \InvalidArgumentException(sprintf('The "%s" action already exists, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any property of an existing action.', $actionName));
+            throw new \InvalidArgumentException(sprintf('The "%s" action already exists, so you can\'t add it again. Instead, you can use the "updateAction()" method to update any field of an existing action.', $actionName));
         }
 
         if (Crud::PAGE_INDEX === $pageName && Action::DELETE === $actionName) {

@@ -32,11 +32,11 @@ return [
         'nullable_field' => 'Leave empty',
         'object' => 'PHP Object',
         'inaccessible' => 'Inaccessible',
-        'inaccessible.explanation' => 'Getter method does not exist for this field or the property is not public',
+        'inaccessible.explanation' => 'Getter method does not exist for this field or the field is not public',
         'form.empty_value' => 'None',
     ],
 
-    'property' => [
+    'field' => [
         'code_editor.view_code' => 'View code',
         'text_editor.view_content' => 'View content',
     ],

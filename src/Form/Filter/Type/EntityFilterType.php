@@ -42,7 +42,7 @@ class EntityFilterType extends FilterType
     public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
     {
         $alias = current($queryBuilder->getRootAliases());
-        $property = $metadata['property'];
+        $property = $metadata['field'];
         $paramName = static::createAlias($property);
         $multiple = $form->get('value')->getConfig()->getOption('multiple');
         $data = $form->getData();

@@ -5,10 +5,10 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Form\Type;
 use ArrayObject;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Form\EventListener\EasyAdminTabSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Property\FormPanelProperty;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormPanelField;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -50,27 +50,27 @@ class CrudFormType extends AbstractType
         $formPanels = [];
         $currentFormPanel = 0;
 
-        foreach ($entityDto->getProperties() as $propertyDto) {
-            $formFieldOptions = $propertyDto->getFormTypeOptions();
+        foreach ($entityDto->getProperties() as $fieldDto) {
+            $formFieldOptions = $fieldDto->getFormTypeOptions();
 
             // the names of embedded Doctrine entities contain dots, which are not allowed
             // in HTML element names. In those cases, fix the name but also update the
             // 'property_path' option to keep the original field name
-            if (false !== strpos($propertyDto->getName(), '.')) {
-                $formFieldOptions['property_path'] = $propertyDto->getName();
-                $name = str_replace('.', '_', $propertyDto->getName());
+            if (false !== strpos($fieldDto->getName(), '.')) {
+                $formFieldOptions['property_path'] = $fieldDto->getName();
+                $name = str_replace('.', '_', $fieldDto->getName());
             } else {
-                $name = $propertyDto->getName();
+                $name = $fieldDto->getName();
             }
 
-            if (null === $formFieldType = $propertyDto->getFormType()) {
-                $formFieldType = $this->doctrineOrmTypeGuesser->guessType($entityDto->getFqcn(), $propertyDto->getName())->getType();
+            if (null === $formFieldType = $fieldDto->getFormType()) {
+                $formFieldType = $this->doctrineOrmTypeGuesser->guessType($entityDto->getFqcn(), $fieldDto->getName())->getType();
             }
 
             // Configure options using the list of registered type configurators:
             foreach ($this->typeConfigurators as $configurator) {
-                if ($configurator->supports($formFieldType, $formFieldOptions, $propertyDto)) {
-                    $formFieldOptions = $configurator->configure($name, $formFieldOptions, $propertyDto, $builder);
+                if ($configurator->supports($formFieldType, $formFieldOptions, $fieldDto)) {
+                    $formFieldOptions = $configurator->configure($name, $formFieldOptions, $fieldDto, $builder);
                 }
             }
 
@@ -78,9 +78,9 @@ class CrudFormType extends AbstractType
                 ++$currentFormPanel;
                 $formPanels[$currentFormPanel] = [
                     'form_tab' => $currentFormTab ?? null,
-                    'label' => $propertyDto->getLabel(),
-                    'icon' => $propertyDto->getCustomOptions()->get(FormPanelProperty::OPTION_ICON),
-                    'help' => $propertyDto->getHelp(),
+                    'label' => $fieldDto->getLabel(),
+                    'icon' => $fieldDto->getCustomOptions()->get(FormPanelField::OPTION_ICON),
+                    'help' => $fieldDto->getHelp(),
                 ];
 
                 continue;
@@ -89,7 +89,7 @@ class CrudFormType extends AbstractType
             // if the form field is a special 'tab' design element, don't add it
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
-            // in a property to get them in form template
+            // in a field to get them in form template
             if (\in_array($formFieldType, ['ea_tab', EasyAdminTabType::class])) {
                 // The first tab should be marked as active by default
                 $metadata['active'] = 0 === \count($formTabs);
@@ -107,7 +107,7 @@ class CrudFormType extends AbstractType
             $formField->setAttribute('ea_entity', $entityDto);
             $formField->setAttribute('ea_form_panel', $currentFormPanel);
             $formField->setAttribute('ea_form_tab', $currentFormTab);
-            $formField->setAttribute('ea_property', $propertyDto);
+            $formField->setAttribute('ea_field', $fieldDto);
 
             $builder->add($formField);
         }
@@ -126,11 +126,11 @@ class CrudFormType extends AbstractType
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         // some properties and field types require CSS/JS assets to work properly
-        // get all property assets and pass them as a form variable
+        // get all field assets and pass them as a form variable
         $allFormFieldAssets = new AssetsDto();
-        /** @var PropertyDto $propertyDto */
-        foreach ($options['entityDto']->getProperties() as $propertyDto) {
-            $allFormFieldAssets = $allFormFieldAssets->mergeWith($propertyDto->getAssets());
+        /** @var FieldDto $fieldDto */
+        foreach ($options['entityDto']->getProperties() as $fieldDto) {
+            $allFormFieldAssets = $allFormFieldAssets->mergeWith($fieldDto->getAssets());
         }
 
         $view->vars['ea_crud_form'] = [

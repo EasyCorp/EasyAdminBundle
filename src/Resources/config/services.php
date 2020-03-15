@@ -15,7 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\FormFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\MenuFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\PaginatorFactory;
-use EasyCorp\Bundle\EasyAdminBundle\Factory\PropertyFactory;
+use EasyCorp\Bundle\EasyAdminBundle\Factory\FieldFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Extension\EaCrudFormTypeExtension;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\FilterRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType;
@@ -26,27 +26,27 @@ use EasyCorp\Bundle\EasyAdminBundle\Inspector\DataCollector;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityPaginator;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityUpdater;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\AssociationConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\AvatarConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\BooleanConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CollectionConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPostConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CommonPreConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CountryConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\CurrencyConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\DateTimeConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\EmailConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\ImageConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\LanguageConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\LocaleConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\MoneyConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\NumberConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\PercentConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\SelectConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TelephoneConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TextConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\TimezoneConfigurator;
-use EasyCorp\Bundle\EasyAdminBundle\Property\Configurator\UrlConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\AssociationConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\AvatarConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\BooleanConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CollectionConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CommonPostConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CommonPreConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CountryConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\CurrencyConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\DateTimeConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\EmailConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\ImageConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LanguageConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LocaleConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\MoneyConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\NumberConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\PercentConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\SelectConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TelephoneConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TextConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\TimezoneConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\UrlConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\AuthorizationChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Security\SecurityVoter;
@@ -149,7 +149,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set(EntityFactory::class)
             ->arg(0, ref(AdminContextProvider::class))
-            ->arg(1, ref(PropertyFactory::class))
+            ->arg(1, ref(FieldFactory::class))
             ->arg(2, ref(ActionFactory::class))
             ->arg(3, ref(AuthorizationChecker::class))
             ->arg(4, ref('doctrine'))
@@ -171,10 +171,10 @@ return static function (ContainerConfigurator $container) {
             ->arg(1, ref('form.factory'))
             ->arg(2, ref(CrudUrlGenerator::class))
 
-        ->set(PropertyFactory::class)
+        ->set(FieldFactory::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(AuthorizationChecker::class))
-            ->arg(2, \function_exists('tagged') ? tagged('ea.property_configurator') : tagged_iterator('ea.property_configurator'))
+            ->arg(2, \function_exists('tagged') ? tagged('ea.field_configurator') : tagged_iterator('ea.field_configurator'))
 
         ->set(ActionFactory::class)
             ->arg(0, ref(AdminContextProvider::class))
@@ -197,79 +197,79 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('translator'))
             ->arg(2, ref('property_accessor'))
-            ->tag('ea.property_configurator', ['priority' => 9999])
+            ->tag('ea.field_configurator', ['priority' => 9999])
 
         ->set(CommonPostConfigurator::class)
-            ->tag('ea.property_configurator', ['priority' => -9999])
+            ->tag('ea.field_configurator', ['priority' => -9999])
 
         ->set(TextConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(ImageConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(DateTimeConfigurator::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(IntlFormatter::class))
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(CountryConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(BooleanConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(AvatarConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(EmailConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(TelephoneConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(UrlConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(LanguageConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(MoneyConfigurator::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(IntlFormatter::class))
             ->arg(2, ref('property_accessor'))
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(CurrencyConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(PercentConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(AssociationConfigurator::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref(EntityFactory::class))
             ->arg(2, ref(CrudUrlGenerator::class))
             ->arg(3, ref(TranslatorInterface::class))
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(SelectConfigurator::class)
             ->arg(0, ref(AdminContextProvider::class))
             ->arg(1, ref('translator'))
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(TimezoneConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(LocaleConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(NumberConfigurator::class)
             ->arg(0, ref(IntlFormatter::class))
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(CollectionConfigurator::class)
-            ->tag('ea.property_configurator')
+            ->tag('ea.field_configurator')
 
         ->set(FiltersFormType::class)
             ->arg(0, \function_exists('tagged') ? tagged('ea.form_type_configurator') : tagged_iterator('ea.form_type_configurator'))

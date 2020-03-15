@@ -1,0 +1,14 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\PropertyDto #}
+{% trans_default_domain 'EasyAdminBundle' %}
+
+{% if ea.crud.currentAction == 'detail' or not field.customOptions.get('renderAsSwitch') %}
+    <span class="badge {{ field.value == true ? 'badge-boolean-true' : 'badge-boolean-false' }}">
+        {{ (field.value == true ? 'label.true' : 'label.false')|trans }}
+    </span>
+{% else %}
+    <div class="custom-control custom-switch custom-switch-lg" data-fieldname="{{ field.name }}">
+        <input type="checkbox" class="custom-control-input" id="{{ field.uniqueId }}" {{ field.value == true ? 'checked' }}>
+        <label class="custom-control-label" for="{{ field.uniqueId }}"></label>
+    </div>
+{% endif %}

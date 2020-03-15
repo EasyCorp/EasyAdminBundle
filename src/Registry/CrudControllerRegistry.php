@@ -29,7 +29,7 @@ final class CrudControllerRegistry
                 }
                 $registry->controllerToEntityMap[$controllerFqcn] = $entityFqcn;
             } catch (\Throwable $e) {
-                throw new \RuntimeException(sprintf('The "%s" CRUD controller must define a public static property called "entityFqcn" with the FQCN of the Doctrine entity managed by the controller.', \get_class($controller)));
+                throw new \RuntimeException(sprintf('The "%s" CRUD controller must define a public static field called "entityFqcn" with the FQCN of the Doctrine entity managed by the controller.', \get_class($controller)));
             }
         }
 

@@ -130,19 +130,19 @@ label.form-check-label {
 }
 
 // Checkbox widgets
-.property-boolean .form-widget {
+.field-boolean .form-widget {
     margin: 0;
 }
-.property-boolean .form-check {
+.field-boolean .form-check {
     padding-left: 0;
 }
-.property-boolean .form-check-input {
+.field-boolean .form-check-input {
     margin: 0;
     position: static;
 }
 
 @media(min-width: 992px) {
-    .property-boolean .form-widget {
+    .field-boolean .form-widget {
         margin-left: calc(30% + 5px);
     }
 }
@@ -445,11 +445,11 @@ form .invalid-feedback > .d-block + .d-block {
     margin-right: 0;
 }
 
-.property-percent input.form-control {
+.field-percent input.form-control {
     max-width: 75px;
 }
 
-.property-money input.form-control {
+.field-money input.form-control {
     max-width: 150px;
 }
 
@@ -594,6 +594,6 @@ form .invalid-feedback > .d-block + .d-block {
 .field-ea_code_editor .form-widget {
     flex-basis: 65%;
 }
-.form-group.property-code_editor .form-control {
+.form-group.field-code_editor .form-control {
     height: auto;
 }

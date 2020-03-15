@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\TemplateDtoCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
-use EasyCorp\Bundle\EasyAdminBundle\Property\DateTimeProperty;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\TemplateRegistry;
 
 /**
@@ -29,7 +29,7 @@ class Crud
     private $dateIntervalFormat = '%%y Year(s) %%m Month(s) %%d Day(s)';
     private $numberFormat;
     private $defaultSort = [];
-    private $searchProperties = [];
+    private $searchFields = [];
     private $showEntityActionsAsDropdown = false;
     private $filters;
     private $paginatorPageSize = 15;
@@ -98,7 +98,7 @@ class Crud
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the date format or the datetime Intl pattern.', __METHOD__));
         }
 
-        if (!\in_array($formatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
+        if (!\in_array($formatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
             $this->dateTimePattern = $formatOrPattern;
             $this->dateFormat = null;
         } else {
@@ -118,7 +118,7 @@ class Crud
             throw new \InvalidArgumentException(sprintf('The first argument of the "%s()" method cannot be "none" or an empty string. Define either the time format or the datetime Intl pattern.', __METHOD__));
         }
 
-        if (!\in_array($formatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true)) {
+        if (!\in_array($formatOrPattern, DateTimeField::VALID_DATE_FORMATS, true)) {
             $this->dateTimePattern = $formatOrPattern;
             $this->timeFormat = null;
         } else {
@@ -143,14 +143,14 @@ class Crud
             throw new \InvalidArgumentException(sprintf('The values of the arguments of "%s()" cannot be "none" at the same time. Change any of them (or both).', __METHOD__));
         }
 
-        $isDatePattern = !\in_array($dateFormatOrPattern, DateTimeProperty::VALID_DATE_FORMATS, true);
+        $isDatePattern = !\in_array($dateFormatOrPattern, DateTimeField::VALID_DATE_FORMATS, true);
 
         if ($isDatePattern && 'none' !== $timeFormat) {
             throw new \InvalidArgumentException(sprintf('When the first argument of "%s()" is a datetime pattern, you cannot set the time format in the second argument (define the time format as part of the datetime pattern).', __METHOD__));
         }
 
-        if (!$isDatePattern && !\in_array($timeFormat, DateTimeProperty::VALID_DATE_FORMATS, true)) {
-            throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', DateTimeProperty::VALID_DATE_FORMATS), $timeFormat));
+        if (!$isDatePattern && !\in_array($timeFormat, DateTimeField::VALID_DATE_FORMATS, true)) {
+            throw new \InvalidArgumentException(sprintf('The value of the time format can only be one of the following: %s (but "%s" was given).', implode(', ', DateTimeField::VALID_DATE_FORMATS), $timeFormat));
         }
 
         if ($isDatePattern) {
@@ -192,7 +192,7 @@ class Crud
     }
 
     /**
-     * @param array $sortAndOrder ['propertyName' => 'ASC|DESC', ...]
+     * @param array $sortAndOrder ['fieldName' => 'ASC|DESC', ...]
      */
     public function setDefaultSort(array $sortAndOrder): self
     {
@@ -203,7 +203,7 @@ class Crud
             }
 
             if (!\is_string($sortField)) {
-                throw new \InvalidArgumentException(sprintf('The keys of the array that defines the default sort must be strings with the property names, but the given "%s" value is a "%s".', $sortField, \gettype($sortField)));
+                throw new \InvalidArgumentException(sprintf('The keys of the array that defines the default sort must be strings with the field names, but the given "%s" value is a "%s".', $sortField, \gettype($sortField)));
             }
         }
 
@@ -212,9 +212,9 @@ class Crud
         return $this;
     }
 
-    public function setSearchProperties(?array $propertyNames): self
+    public function setSearchFields(?array $fieldNames): self
     {
-        $this->searchProperties = $propertyNames;
+        $this->searchFields = $fieldNames;
 
         return $this;
     }
@@ -319,6 +319,6 @@ class Crud
 
     public function getAsDto(): CrudDto
     {
-        return new CrudDto($this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchProperties, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->entityPermission);
+        return new CrudDto($this->entityLabelInSingular, $this->entityLabelInPlural, $this->pageTitles, $this->helpMessages, $this->dateFormat, $this->timeFormat, $this->dateTimePattern, $this->dateIntervalFormat, $this->timezone, $this->numberFormat, $this->defaultSort, $this->searchFields, $this->showEntityActionsAsDropdown, $this->filters, new PaginatorDto($this->paginatorPageSize, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers), $this->overriddenTemplates, $this->formThemes, $this->formOptions, $this->entityPermission);
     }
 }

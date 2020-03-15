@@ -30,6 +30,6 @@ easy_admin:
             disabled_actions: ['show']
         Product:
             class: AppTestBundle\Entity\FunctionalTests\Product
-            # the 'edit' action is disabled to test if the 'enabled' property is
+            # the 'edit' action is disabled to test if the 'enabled' field is
             # displayed as a boolean label instead of a toggle
             disabled_actions: ['edit']

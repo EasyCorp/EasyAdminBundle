@@ -25,30 +25,30 @@
 {% block main %}
     {% block detail_properties %}
         {% set row_number = 0 %}
-        {% for property in entity.properties %}
-            {% set is_decoration_property = property.type == 'form_panel' %}
+        {% for field in entity.properties %}
+            {% set is_decoration_field = field.type == 'form_panel' %}
 
-            {% if loop.first and not is_decoration_property %}
+            {% if loop.first and not is_decoration_field %}
                 {% set row_number = 0 %}
                 {{ _self.open_empty_content_panel() }}
             {% endif %}
 
-            {% if is_decoration_property %}
+            {% if is_decoration_field %}
                 {% if not loop.first %}
                     {{ _self.close_content_panel() }}
                 {% endif %}
 
                 {% set row_number = 0 %}
-                {{ _self.open_content_panel_with_header(property.label, property.help) }}
+                {{ _self.open_content_panel_with_header(field.label, field.help) }}
             {% endif %}
 
-            {% block detail_property %}
-                {% if not is_decoration_property %}
-                    {{ _self.render_property(property, row_number) }}
+            {% block detail_field %}
+                {% if not is_decoration_field %}
+                    {{ _self.render_field(field, row_number) }}
                 {% endif %}
             {% endblock %}
 
-            {% set row_number = is_decoration_property ? row_number : row_number + 1 %}
+            {% set row_number = is_decoration_field ? row_number : row_number + 1 %}
         {% endfor %}
 
         {{ _self.close_content_panel() }}
@@ -103,19 +103,19 @@
             <dl class="datalist">
 {% endmacro %}
 
-{% macro render_property(property, row_number) %}
-    <div class="data-row {{ row_number is even ? 'with-background' }} property-{{ property.type }} {{ property.cssClass ?? '' }}">
+{% macro render_field(field, row_number) %}
+    <div class="data-row {{ row_number is even ? 'with-background' }} field-{{ field.type }} {{ field.cssClass ?? '' }}">
         <dd>
-            {{ property.label|raw }}
+            {{ field.label|raw }}
 
-            {% if property.help is not empty %}
+            {% if field.help is not empty %}
                 <span class="data-help">
-                    <i class="far fa-question-circle" data-toggle="tooltip" title="{{ property.help|e('html_attr') }}"></i>
+                    <i class="far fa-question-circle" data-toggle="tooltip" title="{{ field.help|e('html_attr') }}"></i>
                 </span>
             {% endif %}
         </dd>
         <dt>
-            {{ include(property.templatePath, { property: property }, with_context = false) }}
+            {{ include(field.templatePath, { field: field }, with_context = false) }}
         </dt>
     </div>
 {% endmacro %}

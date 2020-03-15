@@ -332,7 +332,7 @@ body.ea-mobile-sidebar-visible .main-sidebar {
         border-top-left-radius: var(--border-radius);
         border-top-right-radius: var(--border-radius);
         margin-bottom: 0;
-        overflow: hidden; // this is needed for the border-radius property
+        overflow: hidden; // this is needed for the border-radius field
     }
 
     &.without-footer table.datagrid,
@@ -340,7 +340,7 @@ body.ea-mobile-sidebar-visible .main-sidebar {
         border-bottom-left-radius: var(--border-radius);
         border-bottom-right-radius: var(--border-radius);
         margin-bottom: 0;
-        overflow: hidden; // this is needed for the border-radius property
+        overflow: hidden; // this is needed for the border-radius field
     }
 }
 .content-panel-body.with-background {

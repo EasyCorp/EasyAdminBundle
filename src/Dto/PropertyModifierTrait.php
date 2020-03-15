@@ -3,7 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Dto;
 
 /**
- * Allows to modify the value of any object property.
+ * Allows to modify the value of any object field.
  */
 trait PropertyModifierTrait
 {
@@ -16,7 +16,7 @@ trait PropertyModifierTrait
 
         foreach ($newPropertyValues as $propertyName => $propertyValue) {
             if (!property_exists($this, $propertyName)) {
-                throw new \InvalidArgumentException(sprintf('The "%s" property is not defined in the "%s" class. Valid property names are: %s', $propertyName, static::class, implode(', ', array_keys(get_object_vars($this)))));
+                throw new \InvalidArgumentException(sprintf('The "%s" field is not defined in the "%s" class. Valid field names are: %s', $propertyName, static::class, implode(', ', array_keys(get_object_vars($this)))));
             }
 
             $clone->{$propertyName} = $propertyValue;

@@ -17,7 +17,7 @@ final class EntityUpdater
     public function updateProperty(EntityDto $entityDto, string $propertyName, bool $value): void
     {
         if (!$this->propertyAccesor->isWritable($entityDto->getInstance(), $propertyName)) {
-            throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $propertyName, $entityDto->getName()));
+            throw new \RuntimeException(sprintf('The "%s" field of the "%s" entity is not writable.', $propertyName, $entityDto->getName()));
         }
 
         $entityInstance = $entityDto->getInstance();

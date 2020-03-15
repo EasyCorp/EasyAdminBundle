@@ -163,7 +163,7 @@ final class EntityRepository implements EntityRepositoryInterface
             $filterType = $this->filterRegistry->resolveType($filterForm);
 
             // TODO: fix this
-            $metadata = ['property' => 'enabled']; //$this->entity['list']['filters'][$name] ?? [];
+            $metadata = ['field' => 'enabled']; //$this->entity['list']['filters'][$name] ?? [];
             $filterType->filter($queryBuilder, $filterForm, $metadata);
         }
     }

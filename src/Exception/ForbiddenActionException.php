@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

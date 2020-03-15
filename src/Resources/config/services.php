@@ -5,7 +5,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminDashboardCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminMigrationCommand;
 use EasyCorp\Bundle\EasyAdminBundle\Command\MakeAdminResourceCommand;
-use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextParamConverter;
 use EasyCorp\Bundle\EasyAdminBundle\Context\ApplicationContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\ApplicationContextListener;
 use EasyCorp\Bundle\EasyAdminBundle\EventListener\CrudActionResponseListener;
@@ -112,10 +111,6 @@ return static function (ContainerConfigurator $container) {
             ->arg(0, ref(ApplicationContextProvider::class))
             ->arg(1, ref('twig'))
             ->tag('kernel.event_listener', ['event' => ViewEvent::class])
-
-        ->set(ApplicationContextParamConverter::class)
-            ->arg(0, ref(ApplicationContextProvider::class))
-            ->tag('request.param_converter', ['priority' => 10, 'converter' => 'pageContext'])
 
         ->set(ApplicationContextFactory::class)
             ->arg(0, ref('security.token_storage')->nullOnInvalid())

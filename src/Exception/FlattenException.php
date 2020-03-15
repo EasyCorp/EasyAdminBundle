@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
 use Symfony\Component\ErrorHandler\Exception\FlattenException as BaseFlattenException;
 
 /**

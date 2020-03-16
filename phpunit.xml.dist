@@ -13,8 +13,4 @@
             <exclude>tests/Form/</exclude>
         </testsuite>
     </testsuites>
-
-    <php>
-        <env name="SYMFONY_PHPUNIT_VERSION" value="8.5.0" />
-    </php>
 </phpunit>

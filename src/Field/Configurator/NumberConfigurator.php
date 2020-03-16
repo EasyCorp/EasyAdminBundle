@@ -23,7 +23,7 @@ final class NumberConfigurator implements FieldConfiguratorInterface
         return $field instanceof NumberField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         if (null === $value = $field->getValue()) {
             return;

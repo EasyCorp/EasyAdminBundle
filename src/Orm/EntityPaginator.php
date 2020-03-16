@@ -6,11 +6,12 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Orm\EntityPaginatorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\PaginatorDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\EntityFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
-final class EntityPaginator
+final class EntityPaginator implements EntityPaginatorInterface
 {
     private $crudUrlGenerator;
     private $entityFactory;
@@ -25,7 +26,7 @@ final class EntityPaginator
         $this->entityFactory = $entityFactory;
     }
 
-    public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): self
+    public function paginate(PaginatorDto $paginatorDto, QueryBuilder $queryBuilder): EntityPaginatorInterface
     {
         $this->pageSize = $paginatorDto->getPageSize();
         $this->currentPage = max(1, $paginatorDto->getPageNumber());
@@ -114,7 +115,7 @@ final class EntityPaginator
         return $this->results;
     }
 
-    public function getJsonResults(): string
+    public function getResultsAsJson(): string
     {
         foreach (iterator_to_array($this->getResults() ?? []) as $entityInstance) {
             $entityDto = $this->entityFactory->createForEntityInstance($entityInstance);

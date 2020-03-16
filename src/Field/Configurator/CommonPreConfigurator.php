@@ -31,7 +31,7 @@ final class CommonPreConfigurator implements FieldConfiguratorInterface
         return true;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         if ($field instanceof FormPanelField) {
             if (null === $field->getLabel()) {

@@ -14,7 +14,7 @@ final class PercentConfigurator implements FieldConfiguratorInterface
         return $field instanceof PercentField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         if (null === $field->getValue()) {
             return;

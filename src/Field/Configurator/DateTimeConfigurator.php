@@ -29,7 +29,7 @@ final class DateTimeConfigurator implements FieldConfiguratorInterface
             || $field instanceof TimeField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         $crud = $this->adminContextProvider->getContext()->getCrud();
         $defaultDateFormat = $crud->getDateFormat();

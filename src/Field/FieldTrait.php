@@ -32,9 +32,7 @@ trait FieldTrait
     private $headContents = [];
     private $bodyContents = [];
     private $customOptions;
-    private $processedCustomOptions;
     private $doctrineMetadata;
-    private $processedDoctrineMetadata;
 
     private function __construct()
     {
@@ -168,11 +166,7 @@ trait FieldTrait
 
     public function getCustomOptions(): ParameterBag
     {
-        if (null !== $customOptions = $this->processedCustomOptions) {
-            return $customOptions;
-        }
-
-        return $this->processedCustomOptions = new ParameterBag($this->customOptions ?? []);
+        return new ParameterBag($this->customOptions ?? []);
     }
 
     public function getCustomOption(string $optionName)
@@ -182,11 +176,7 @@ trait FieldTrait
 
     public function getDoctrineMetadata(): ParameterBag
     {
-        if (null !== $metadata = $this->processedDoctrineMetadata) {
-            return $metadata;
-        }
-
-        return $this->processedDoctrineMetadata = new ParameterBag($this->doctrineMetadata ?? []);
+        return new ParameterBag($this->doctrineMetadata ?? []);
     }
 
     public function getAsDto(): FieldDto
@@ -194,9 +184,16 @@ trait FieldTrait
         return new FieldDto($this->getType(), $this->getProperty(), $this->getValue(), $this->getFormattedValue(), $this->getFormType(), $this->getFormTypeOptions(), $this->isSortable(), $this->isVirtual(), $this->getLabel(), $this->getPermission(), $this->getTextAlign(), $this->getHelp(), $this->getCssClass(), $this->getTranslationParameters(), $this->getTemplateName(), $this->getTemplatePath(), new AssetsDto($this->getCssFiles(), $this->getJsFiles(), $this->getHeadContents(), $this->getBodyContents()), $this->getCustomOptions(), $this->getDoctrineMetadata());
     }
 
-    public function setProperty(string $property): FieldInterface
+    public function setType(string $type): FieldInterface
     {
-        $this->property = $property;
+        $this->type = str_replace(' ', '-', $type);
+
+        return $this;
+    }
+
+    public function setProperty(string $propertyName): FieldInterface
+    {
+        $this->property = $propertyName;
 
         return $this;
     }
@@ -243,13 +240,6 @@ trait FieldTrait
         return $this;
     }
 
-    public function setType(string $type): FieldInterface
-    {
-        $this->type = str_replace(' ', '-', $type);
-
-        return $this;
-    }
-
     public function setFormType(string $formType): FieldInterface
     {
         $this->formType = $formType;
@@ -265,7 +255,7 @@ trait FieldTrait
     }
 
     /**
-     * @param string $optionName This value can use "dot" notation to set nested options (e.g. 'attr.class')
+     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
     public function setFormTypeOption(string $optionName, $optionValue): FieldInterface
     {
@@ -286,19 +276,12 @@ trait FieldTrait
     }
 
     /**
-     * The option name can be simple ('foo') or nested ('foo.bar').
+     * @param string $optionName You can use "dot" notation to set nested options (e.g. 'attr.class')
      */
     public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): FieldInterface
     {
-        $optionParts = explode('.', $optionName);
-        if (1 === \count($optionParts)) {
-            if (!isset($this->formTypeOptions[$optionName])) {
-                $this->formTypeOptions[$optionName] = $optionValue;
-            }
-        } elseif (2 === \count($optionParts)) {
-            if (!isset($this->formTypeOptions[$optionParts[0]][$optionParts[1]])) {
-                $this->formTypeOptions[$optionParts[0]][$optionParts[1]] = $optionValue;
-            }
+        if (!$this->arrayNestedKeyExists($this->formTypeOptions, $optionName)) {
+            $this->setFormTypeOption($optionName, $optionValue);
         }
 
         return $this;
@@ -318,6 +301,9 @@ trait FieldTrait
         return $this;
     }
 
+    /**
+     * @param string $textAlign It can be 'left', 'center' or 'right'
+     */
     public function setTextAlign(string $textAlign): FieldInterface
     {
         $validOptions = ['left', 'center', 'right'];
@@ -351,18 +337,18 @@ trait FieldTrait
         return $this;
     }
 
-    public function setTemplatePath(string $path): FieldInterface
-    {
-        $this->templatePath = $path;
-        $this->templateName = null;
-
-        return $this;
-    }
-
     public function setTemplateName(string $name): FieldInterface
     {
         $this->templateName = $name;
         $this->templatePath = null;
+
+        return $this;
+    }
+
+    public function setTemplatePath(string $path): FieldInterface
+    {
+        $this->templatePath = $path;
+        $this->templateName = null;
 
         return $this;
     }
@@ -398,16 +384,13 @@ trait FieldTrait
     public function setCustomOption(string $optionName, $optionValue): FieldInterface
     {
         $this->customOptions[$optionName] = $optionValue;
-        $this->processedCustomOptions = null;
 
         return $this;
     }
 
     public function setCustomOptions(array $options): FieldInterface
     {
-        foreach ($options as $optionName => $optionValue) {
-            $this->setCustomOption($optionName, $optionValue);
-        }
+        $this->customOptions = $options;
 
         return $this;
     }
@@ -417,5 +400,20 @@ trait FieldTrait
         $this->doctrineMetadata = $metadata;
 
         return $this;
+    }
+
+    private function arrayNestedKeyExists(array $array, $key): bool
+    {
+        if (array_key_exists($key, $array)) {
+            return true;
+        }
+
+        foreach ($array as $element) {
+            if (is_array($element) && $this->arrayNestedKeyExists($element, $key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

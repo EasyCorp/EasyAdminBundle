@@ -14,7 +14,7 @@ final class CommonPostConfigurator implements FieldConfiguratorInterface
         return true;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         $formattedValue = $this->buildFormattedValueOption($field->getFormattedValue(), $field, $entityDto);
         $field->setFormattedValue($formattedValue);

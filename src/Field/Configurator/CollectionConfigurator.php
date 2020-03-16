@@ -22,7 +22,7 @@ final class CollectionConfigurator implements FieldConfiguratorInterface
         return $field instanceof CollectionField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         if (null !== $entryTypeFqcn = $field->getCustomOptions()->get(CollectionField::OPTION_ENTRY_TYPE)) {
             $field->setFormTypeOption('entry_type', $entryTypeFqcn);

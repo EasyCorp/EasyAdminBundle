@@ -14,7 +14,7 @@ final class ImageConfigurator implements FieldConfiguratorInterface
         return $field instanceof ImageField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         $configuredBasePath = $field->getCustomOption(ImageField::OPTION_BASE_PATH);
         $formattedValue = $this->getImagePath($field->getValue(), $configuredBasePath);

@@ -25,7 +25,7 @@ final class SelectConfigurator implements FieldConfiguratorInterface
         return $field instanceof SelectField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         $choices = $field->getCustomOption(SelectField::OPTION_CHOICES);
         if (empty($choices)) {

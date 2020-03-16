@@ -14,7 +14,7 @@ final class BooleanConfigurator implements FieldConfiguratorInterface
         return $field instanceof BooleanField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         // TODO: ask someone who knows Symfony forms well how to make this work
         if ($field->getCustomOption(BooleanField::OPTION_RENDER_AS_SWITCH)) {

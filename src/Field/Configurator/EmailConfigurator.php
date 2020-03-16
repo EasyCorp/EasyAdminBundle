@@ -14,7 +14,7 @@ final class EmailConfigurator implements FieldConfiguratorInterface
         return $field instanceof EmailField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         $formTypeOptions = $field->getFormTypeOptions();
         $formTypeOptions['attr']['inputmode'] = $formTypeOptions['attr']['inputmode'] ?? 'email';

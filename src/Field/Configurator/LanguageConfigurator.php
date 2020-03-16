@@ -16,7 +16,7 @@ final class LanguageConfigurator implements FieldConfiguratorInterface
         return $field instanceof LanguageField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         $field->setFormTypeOptionIfNotSet('attr.data-widget', 'select2');
 

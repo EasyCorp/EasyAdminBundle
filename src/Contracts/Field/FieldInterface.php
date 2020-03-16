@@ -9,7 +9,7 @@ interface FieldInterface
 {
     public function setType(string $type);
 
-    public function setProperty(string $name): self;
+    public function setProperty(string $propertyName): self;
 
     public function setLabel(?string $label): self;
 
@@ -27,13 +27,14 @@ interface FieldInterface
 
     public function setFormTypeOptions(array $options): self;
 
+    public function setFormTypeOption(string $optionName, $optionValue): self;
+
+    public function setFormTypeOptionIfNotSet(string $optionName, $optionValue): self;
+
     public function setSortable(bool $isSortable): self;
 
     public function setPermission(string $role): self;
 
-    /**
-     * @param string $textAlign It must be 'left', 'center' or 'right'
-     */
     public function setTextAlign(string $textAlign): self;
 
     public function setHelp(string $help): self;
@@ -46,8 +47,6 @@ interface FieldInterface
 
     public function setTemplatePath(string $path): self;
 
-    public function setDoctrineMetadata(array $metadata): self;
-
     public function addCssFiles(string ...$cssFilePaths): self;
 
     public function addJsFiles(string ...$jsFilePaths): self;
@@ -59,6 +58,8 @@ interface FieldInterface
     public function setCustomOption(string $optionName, $optionValue): self;
 
     public function setCustomOptions(array $options): self;
+
+    public function setDoctrineMetadata(array $metadata): self;
 
     public function getProperty(): string;
 
@@ -104,9 +105,9 @@ interface FieldInterface
 
     public function getBodyContents(): array;
 
-    public function getCustomOption(string $optionName);
-
     public function getCustomOptions(): ParameterBag;
+
+    public function getCustomOption(string $optionName);
 
     public function getDoctrineMetadata(): ParameterBag;
 

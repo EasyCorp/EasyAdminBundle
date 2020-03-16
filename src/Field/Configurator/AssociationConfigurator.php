@@ -34,7 +34,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         return $field instanceof AssociationField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         $propertyName = $field->getProperty();
         if (!$entityDto->isAssociation($propertyName)) {

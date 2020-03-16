@@ -15,7 +15,7 @@ final class AvatarConfigurator implements FieldConfiguratorInterface
         return $field instanceof AvatarField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         if (Action::INDEX === $action) {
             $field->setLabel(null);

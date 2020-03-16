@@ -17,7 +17,7 @@ final class TextConfigurator implements FieldConfiguratorInterface
         return $field instanceof TextField || $field instanceof TextAreaField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         if ($field instanceof TextAreaField) {
             $field->setFormTypeOptionIfNotSet('attr.rows', $field->getCustomOption(TextAreaField::OPTION_NUM_OF_ROWS));

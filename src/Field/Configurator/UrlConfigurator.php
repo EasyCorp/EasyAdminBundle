@@ -16,7 +16,7 @@ final class UrlConfigurator implements FieldConfiguratorInterface
         return $field instanceof UrlField;
     }
 
-    public function configure(string $action, FieldInterface $field, EntityDto $entityDto): void
+    public function configure(FieldInterface $field, EntityDto $entityDto, string $action): void
     {
         $formTypeOptions = $field->getFormTypeOptions();
         $formTypeOptions['attr']['inputmode'] = $formTypeOptions['attr']['inputmode'] ?? 'url';

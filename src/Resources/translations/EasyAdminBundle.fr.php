@@ -11,7 +11,7 @@ return [
     ],
 
     'datagrid' => [
-        'hidden_results' => 'Certains résultats ne peuvent pas être affichés car vous n'avez pas la permission',
+        'hidden_results' => 'Certains résultats ne peuvent pas être affichés car vous n\'avez pas la permission',
         'no_results' => 'Aucun résultat trouvé',
     ],
 
@@ -32,7 +32,7 @@ return [
         'nullable_field' => 'Laisser vide',
         'object' => 'Objet PHP',
         'inaccessible' => 'Inaccessible',
-        'inaccessible.explanation' => 'Aucun accesseur n'existe pour cette propriété ou celle-ci n'est pas publique.',
+        'inaccessible.explanation' => 'Aucun accesseur n\'existe pour cette propriété ou celle-ci n\'est pas publique.',
         'form.empty_value' => 'Aucun(e)',
     ],
 
@@ -52,7 +52,7 @@ return [
         'index' => 'Retour à la liste',
         'deselect' => 'Désélectionner',
         'add_new_item' => 'Ajouter un nouvel élément',
-        'remove_item' => 'Supprimer l'élément',
+        'remove_item' => 'Supprimer l\'élément',
         'choose_file' => 'Choisir un fichier',
         // 'close' => '',
         // 'create' => '',
@@ -91,7 +91,7 @@ return [
         'label.exactly' => 'est strictement égal(e) à',
         'label.not_exactly' => 'est strictement différent(e) de',
         'label.is_same' => 'est',
-        'label.is_not_same' => 'n'est pas',
+        'label.is_not_same' => 'n\'est pas',
         'label.is_after' => 'est postérieure à',
         'label.is_after_or_same' => 'est postérieure à ou est le',
         'label.is_before' => 'est antérieure à',
@@ -99,7 +99,7 @@ return [
     ],
 
     'form' => [
-        'are_you_sure' => 'Vous n'avez pas sauvegardé vos modifications.',
+        'are_you_sure' => 'Vous n\'avez pas sauvegardé vos modifications.',
         'tab.error_badge_title' => '1 champ invalide|%count% champs invalides',
     ],
 
@@ -108,7 +108,7 @@ return [
         'unnamed' => 'Utilisateur sans nom',
         'anonymous' => 'Utilisateur anonyme',
         'sign_out' => 'Déconnexion',
-        'exit_impersonation' => 'Arrêter l'impersonnalisation',
+        'exit_impersonation' => 'Arrêter l\'impersonnalisation',
     ],
 
     'login_page' => [
@@ -118,8 +118,8 @@ return [
     ],
 
     'exception' => [
-        'entity_not_found' => 'Cet élément n'est plus disponible.',
-        'entity_remove' => 'Cet élément ne peut être supprimé car d'autres éléments en dépendent.',
-        'forbidden_action' => 'L'action demandée ne peut être exécutée sur cet élément.',
+        'entity_not_found' => 'Cet élément n\'est plus disponible.',
+        'entity_remove' => 'Cet élément ne peut être supprimé car d\'autres éléments en dépendent.',
+        'forbidden_action' => 'L\'action demandée ne peut être exécutée sur cet élément.',
     ],
 ];

@@ -52,7 +52,7 @@ return [
         'index' => 'Torna alla lista',
         'deselect' => 'Deseleziona',
         'add_new_item' => 'Aggiungi un nuovo elemento',
-        'remove_item' => 'Rimuovi l'elemento',
+        'remove_item' => 'Rimuovi l\'elemento',
         'choose_file' => 'Scegli file',
         // 'close' => '',
         // 'create' => '',
@@ -108,7 +108,7 @@ return [
         'unnamed' => 'Utente senza nome',
         'anonymous' => 'Utente anonimo',
         'sign_out' => 'Esci',
-        'exit_impersonation' => 'Esci dall'impersonazione',
+        'exit_impersonation' => 'Esci dall\'impersonazione',
     ],
 
     'login_page' => [
@@ -119,7 +119,7 @@ return [
 
     'exception' => [
         'entity_not_found' => 'Questo elemento non è più disponibile.',
-        'entity_remove' => 'L'elemento selezionato non può essere cancellato perché altri elementi dipendono da questo.',
-        'forbidden_action' => 'L'azione richiesta non può essere eseguita su questo elemento.',
+        'entity_remove' => 'L\'elemento selezionato non può essere cancellato perché altri elementi dipendono da questo.',
+        'forbidden_action' => 'L\'azione richiesta non può essere eseguita su questo elemento.',
     ],
 ];
